@@ -32,7 +32,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
       </td>
     </tr>
   </table>`;
-  text("header_title", titleHtml, 20, 16, 950, 52, "align=left;");
+  text("header_title", titleHtml, 20, 14, 950, 52, "align=left;");
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
@@ -43,13 +43,13 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
       </td>
     </tr>
   </table>`;
-  text("header_logo", logoHtml, 1260, 16, 280, 48, "align=right;");
+  text("header_logo", logoHtml, 1260, 14, 280, 48, "align=right;");
 
   // =========================================================================
-  // 2. PRIMARY USERS TOP BAR (x: 200 to 1340, y: 76 to 128)
+  // 2. PRIMARY USERS TOP BAR (x: 210 to 1330, y: 70 to 118)
   // =========================================================================
-  rect("users_top_frame", "", 200, 76, 1130, 52, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  text("users_top_title", "<b>PRIMARY USERS</b>", 200, 78, 1130, 14, "fontSize=8.5;fontColor=#1E3A8A;align=center;");
+  rect("users_top_frame", "", 210, 70, 1120, 48, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  text("users_top_title", "<b>PRIMARY USERS</b>", 210, 72, 1120, 14, "fontSize=8.5;fontColor=#1E3A8A;align=center;");
 
   const primaryUsers = [
     { title: "Research\nScientists", icon: "🔬" },
@@ -62,16 +62,16 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     { title: "Platform\nAdmins", icon: "⚙️" },
   ];
   primaryUsers.forEach((u, i) => {
-    const ux = 208 + i * 140;
-    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${u.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title.replace(/\n/g, "<br/>")}</div></div>`;
-    rect(`p_user_${i}`, html, ux, 94, 132, 30, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+    const ux = 218 + i * 138;
+    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:11px;">${u.icon}</span><div style="font-size:6.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title.replace(/\n/g, "<br/>")}</div></div>`;
+    rect(`user_pod_${i}`, html, ux, 86, 130, 28, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
   // =========================================================================
-  // 3. LEFT PANEL: SYSTEMS OF RECORD / DATA SOURCES (x: 20 to 190, y: 135 to 680)
+  // 3. LEFT PANEL: SYSTEMS OF RECORD / DATA SOURCES (x: 20 to 175, y: 130 to 650)
   // =========================================================================
-  rect("sor_box", "", 20, 135, 170, 540, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
-  rect("sor_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>SYSTEMS OF RECORD /<br/>DATA SOURCES</b>", 20, 135, 170, 30, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
+  rect("sor_box", "", 20, 130, 155, 520, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
+  rect("sor_hdr", "<b style='font-size:9px;color:#FFFFFF;'>SYSTEMS OF RECORD /<br/>DATA SOURCES</b>", 20, 130, 155, 28, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const sorList = [
     { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "📁" },
@@ -83,31 +83,31 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     { title: "Regulatory Gateways", sub: "eSubmissions, Queries,\nResponses", icon: "🏛️" },
   ];
   sorList.forEach((s, i) => {
-    const sy = 170 + i * 72;
+    const sy = 162 + i * 69;
     const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
       <tr>
-        <td style="width:24px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:14px;">${s.icon}</span></td>
+        <td style="width:22px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:13px;">${s.icon}</span></td>
         <td style="text-align:left;vertical-align:top;padding-left:4px;">
-          <div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${s.title}</div>
-          <div style="font-size:6.5px;color:#64748B;line-height:1.1;margin-top:1px;">${s.sub.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;">${s.title}</div>
+          <div style="font-size:6px;color:#64748B;line-height:1.1;margin-top:1px;">${s.sub.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
-    rect(`sor_card_${i}`, html, 24, sy, 162, 66, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
+    rect(`sor_card_${i}`, html, 24, sy, 147, 63, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
   // =========================================================================
-  // 4. CENTRAL BOUNDARY: 7 TIERS A TO G (x: 200 to 1340, y: 135 to 680)
+  // 4. CENTRAL BOUNDARY: 7 TIERS A TO G (x: 210 to 1330, y: 130 to 650)
   // =========================================================================
-  rect("platform_frame", "", 200, 135, 1130, 540, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
-  rect("platform_hdr", "<b style='font-size:11px;color:#FFFFFF;letter-spacing:1px;'>NOVACURA BIO-PHARMA PLATFORM — COMPONENT ARCHITECTURE</b>", 200, 135, 1130, 24, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+  rect("platform_frame", "", 210, 130, 1120, 520, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
+  rect("platform_hdr", "<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>NOVACURA BIO-PHARMA PLATFORM — COMPONENT ARCHITECTURE</b>", 210, 130, 1120, 22, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
 
   const layers = [
     {
       code: "A",
       name: "EXPERIENCE & ACCESS LAYER",
-      y: 164,
-      h: 68,
+      y: 156,
+      h: 66,
       color: "#1E3A8A",
       items: [
         { title: "Web Portal /\nWorkspace UI", icon: "🌐" },
@@ -119,8 +119,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "B",
       name: "PROCESS & ORCHESTRATION LAYER",
-      y: 236,
-      h: 70,
+      y: 226,
+      h: 68,
       color: "#1E40AF",
       items: [
         { title: "Workflow\nOrchestrator", icon: "🔄" },
@@ -133,8 +133,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "C",
       name: "DOMAIN BUSINESS SERVICES LAYER",
-      y: 310,
-      h: 72,
+      y: 298,
+      h: 70,
       color: "#0369A1",
       items: [
         { title: "R&D / Clinical\nStudy Service", icon: "🔬" },
@@ -150,8 +150,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "D",
       name: "AI & KNOWLEDGE SERVICES LAYER",
-      y: 386,
-      h: 72,
+      y: 372,
+      h: 70,
       color: "#6D28D9",
       items: [
         { title: "AI Copilot\nService", icon: "✨" },
@@ -165,8 +165,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "E",
       name: "DATA & ANALYTICS LAYER",
-      y: 462,
-      h: 70,
+      y: 446,
+      h: 68,
       color: "#0D9488",
       items: [
         { title: "Operational\nData Store", icon: "🗄️" },
@@ -180,8 +180,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "F",
       name: "INTEGRATION & EVENTING LAYER",
-      y: 536,
-      h: 68,
+      y: 518,
+      h: 66,
       color: "#15803D",
       items: [
         { title: "API\nGateway", icon: "⚡" },
@@ -194,8 +194,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     {
       code: "G",
       name: "CROSS-CUTTING PLATFORM SERVICES",
-      y: 608,
-      h: 62,
+      y: 588,
+      h: 58,
       color: "#334155",
       items: [
         { title: "Identity & Access\nManagement", icon: "👤" },
@@ -209,28 +209,29 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
 
   layers.forEach((ly) => {
-    rect(`ly_badge_${ly.code}`, `<div style="text-align:center;"><b style="font-size:12px;color:#FFFFFF;">${ly.code}</b></div>`, 206, ly.y, 24, ly.h, `rounded=1;fillColor=${ly.color};strokeColor=${ly.color};align=center;`);
-    rect(`ly_lbl_${ly.code}`, `<div style="text-align:left;padding-left:4px;"><b style="font-size:7.5px;color:${ly.color};">${ly.name}</b></div>`, 234, ly.y, 160, 16, "strokeColor=none;fillColor=none;");
+    rect(`ly_box_${ly.code}`, "", 214, ly.y, 1112, ly.h, `rounded=1;strokeColor=${ly.color};strokeWidth=1;fillColor=#FFFFFF;`);
+    rect(`ly_badge_${ly.code}`, `<div style="text-align:center;"><b style="font-size:11px;color:#FFFFFF;">${ly.code}</b></div>`, 218, ly.y + 4, 22, ly.h - 8, `rounded=1;fillColor=${ly.color};strokeColor=${ly.color};align=center;`);
+    rect(`ly_lbl_${ly.code}`, `<div style="text-align:left;padding-left:4px;"><b style="font-size:7px;color:${ly.color};">${ly.name}</b></div>`, 244, ly.y + 2, 160, 14, "strokeColor=none;fillColor=none;");
 
     const count = ly.items.length;
-    const itemW = (1100 - 40) / count;
+    const itemW = (1080 - 44) / count;
     ly.items.forEach((it, i) => {
-      const ix = 236 + i * itemW;
+      const ix = 244 + i * itemW;
       const html = `<table style="width:100%;height:100%;text-align:center;">
         <tr>
-          <td style="width:18px;"><span style="font-size:12px;">${it.icon}</span></td>
-          <td style="text-align:left;font-size:7px;font-weight:700;color:#0F2A4A;line-height:1.15;">${it.title.replace(/\n/g, "<br/>")}</td>
+          <td style="width:18px;"><span style="font-size:11px;">${it.icon}</span></td>
+          <td style="text-align:left;font-size:6.5px;font-weight:700;color:#0F2A4A;line-height:1.15;">${it.title.replace(/\n/g, "<br/>")}</td>
         </tr>
       </table>`;
-      rect(`it_${ly.code}_${i}`, html, ix, ly.y + 14, itemW - 8, ly.h - 18, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
+      rect(`it_${ly.code}_${i}`, html, ix, ly.y + 14, itemW - 6, ly.h - 18, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
     });
   });
 
   // =========================================================================
-  // 5. RIGHT PANEL: EXTERNAL PARTICIPANTS (x: 1350 to 1540, y: 135 to 680)
+  // 5. RIGHT PANEL: EXTERNAL PARTICIPANTS (x: 1365 to 1540, y: 130 to 650)
   // =========================================================================
-  rect("ext_part_box", "", 1350, 135, 190, 540, "rounded=1;strokeColor=#0D9488;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
-  rect("ext_part_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>EXTERNAL PARTICIPANTS</b>", 1350, 135, 190, 30, "rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;");
+  rect("ext_part_box", "", 1365, 130, 175, 520, "rounded=1;strokeColor=#0D9488;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
+  rect("ext_part_hdr", "<b style='font-size:9px;color:#FFFFFF;'>EXTERNAL PARTICIPANTS</b>", 1365, 130, 175, 28, "rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;");
 
   const extList = [
     { title: "CRO / CDMO Partners", sub: "Collaborate on studies, data\n& supply chain", icon: "👥" },
@@ -240,24 +241,41 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     { title: "HCPs / Healthcare Providers", sub: "Engage with medical content\n& communications", icon: "🩺" },
   ];
   extList.forEach((ep, i) => {
-    const epy = 175 + i * 100;
+    const epy = 166 + i * 96;
     const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
       <tr>
-        <td style="width:28px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:16px;">${ep.icon}</span></td>
+        <td style="width:26px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:15px;">${ep.icon}</span></td>
         <td style="text-align:left;vertical-align:top;padding-left:4px;">
-          <div style="font-size:8px;font-weight:800;color:#0F2A4A;line-height:1.2;">${ep.title}</div>
-          <div style="font-size:6.5px;color:#64748B;line-height:1.15;margin-top:2px;">${ep.sub.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.2;">${ep.title}</div>
+          <div style="font-size:6px;color:#64748B;line-height:1.15;margin-top:2px;">${ep.sub.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
-    rect(`ext_card_${i}`, html, 1356, epy, 178, 92, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
+    rect(`ext_card_${i}`, html, 1370, epy, 165, 88, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
   });
 
   // =========================================================================
-  // 6. BOTTOM: GOOGLE CLOUD TECH MAPPING & CONNECTED APPS (y: 690 to 825)
+  // 6. LEGEND BAR (x: 210 to 1330, y: 656 to 678)
   // =========================================================================
-  rect("tech_map_box", "", 20, 690, 1140, 130, "rounded=1;strokeColor=#0284C7;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  text("tech_map_title", "<b>GOOGLE CLOUD TECHNOLOGY MAPPING</b>", 20, 694, 1140, 16, "fontSize=8.5;fontColor=#0369A1;align=center;");
+  rect("legend_box", "", 210, 656, 1120, 22, "rounded=1;strokeColor=#CBD5E1;fillColor=#F8FAFC;shadow=0;");
+  const legendHtml = `<table style="width:100%;height:100%;border-collapse:collapse;font-size:7px;color:#334155;">
+    <tr>
+      <td style="font-weight:900;color:#0F2A4A;padding-left:8px;width:70px;">LEGEND:</td>
+      <td><span style="color:#1D4ED8;font-weight:bold;">&harr;</span> User Interaction</td>
+      <td><span style="color:#1D4ED8;font-weight:bold;">&rarr;</span> Synchronous Service Call</td>
+      <td><span style="color:#EA580C;font-weight:bold;">- - &rarr;</span> Async Event Flow</td>
+      <td><span style="color:#0D9488;font-weight:bold;">&rarr;</span> External Integration</td>
+      <td><span style="color:#7C3AED;font-weight:bold;">- - &rarr;</span> AI / Knowledge Flow</td>
+      <td style="padding-right:8px;"><span style="color:#64748B;font-weight:bold;">- - &rarr;</span> Governance / Control Flow</td>
+    </tr>
+  </table>`;
+  text("legend_txt", legendHtml, 210, 656, 1120, 22, "align=center;");
+
+  // =========================================================================
+  // 7. BOTTOM: GOOGLE CLOUD TECH MAPPING & CONNECTED APPS (y: 686 to 818)
+  // =========================================================================
+  rect("tech_map_box", "", 20, 686, 1140, 128, "rounded=1;strokeColor=#0284C7;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  text("tech_map_title", "<b>GOOGLE CLOUD TECHNOLOGY MAPPING</b>", 20, 690, 1140, 14, "fontSize=8;fontColor=#0369A1;align=center;");
 
   const gcpTech = [
     { name: "Compute", tech: "Cloud Run / GKE", icon: "☸️" },
@@ -276,13 +294,13 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
   gcpTech.forEach((gt, i) => {
     const gtx = 26 + i * 86;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:15px;">${gt.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;margin-top:2px;">${gt.name}</div><div style="font-size:6px;color:#64748B;">${gt.tech}</div></div>`;
-    rect(`gcp_tech_${i}`, html, gtx, 716, 80, 96, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${gt.icon}</span><div style="font-size:6.5px;font-weight:800;color:#0F2A4A;margin-top:2px;">${gt.name}</div><div style="font-size:5.5px;color:#64748B;">${gt.tech}</div></div>`;
+    rect(`gcp_tech_${i}`, html, gtx, 708, 80, 98, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
   // Connected Apps on Right
-  rect("conn_apps_box", "", 1170, 690, 370, 130, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  text("conn_apps_title", "<b>ENTERPRISE APPLICATIONS (CONNECTED)</b>", 1170, 694, 370, 16, "fontSize=8.5;fontColor=#1E3A8A;align=center;");
+  rect("conn_apps_box", "", 1170, 686, 370, 128, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  text("conn_apps_title", "<b>ENTERPRISE APPLICATIONS (CONNECTED)</b>", 1170, 690, 370, 14, "fontSize=8;fontColor=#1E3A8A;align=center;");
 
   const connApps = [
     { title: "Salesforce\nHealth Cloud", icon: "☁️" },
@@ -292,15 +310,15 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
   connApps.forEach((ca, i) => {
     const cax = 1178 + i * 89;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ca.icon}</span><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.15;margin-top:4px;">${ca.title.replace(/\n/g, "<br/>")}</div></div>`;
-    rect(`conn_app_${i}`, html, cax, 716, 82, 96, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:15px;">${ca.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;margin-top:3px;">${ca.title.replace(/\n/g, "<br/>")}</div></div>`;
+    rect(`conn_app_${i}`, html, cax, 708, 82, 98, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
   // =========================================================================
-  // 7. KEY ARCHITECTURAL CHARACTERISTICS (y: 830 to 890)
+  // 8. KEY ARCHITECTURAL CHARACTERISTICS (y: 824 to 884)
   // =========================================================================
-  rect("arch_char_box", "", 20, 830, 1520, 56, "rounded=1;strokeColor=#15803D;strokeWidth=1.2;fillColor=#F0FDF4;shadow=0;");
-  text("arch_char_title", "<b>KEY ARCHITECTURAL CHARACTERISTICS</b>", 20, 832, 1520, 14, "fontSize=8.5;fontColor=#15803D;align=center;");
+  rect("arch_char_box", "", 20, 824, 1520, 56, "rounded=1;strokeColor=#15803D;strokeWidth=1.2;fillColor=#F0FDF4;shadow=0;");
+  text("arch_char_title", "<b>KEY ARCHITECTURAL CHARACTERISTICS</b>", 20, 826, 1520, 14, "fontSize=8;fontColor=#15803D;align=center;");
 
   const chars = [
     { title: "Compliant by Design", desc: "Built-in compliance with GxP, 21 CFR Part 11, EU Annex 11, HIPAA", icon: "🛡️" },
@@ -313,34 +331,64 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   chars.forEach((ch, i) => {
     const chx = 28 + i * 252;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:12px;">${ch.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7px;font-weight:800;color:#14532D;">${ch.title}</div><div style="font-size:6px;color:#64748B;line-height:1.1;">${ch.desc}</div></td></tr></table>`;
-    rect(`ch_pod_${i}`, html, chx, 848, 244, 32, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
+    rect(`ch_pod_${i}`, html, chx, 842, 244, 32, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 
   // =========================================================================
-  // 8. CONNECTORS & INTER-TIER SERVICE CALLS
+  // 9. EXPLICIT ARROWS & CONNECTORS (Exact match to images/08.png)
   // =========================================================================
-  // Primary Users <-> Tier A
+
+  // 1. Top Primary Users <-> Layer A (8 double-headed blue arrows)
   for (let i = 0; i < 8; i++) {
-    c.push(`<mxCell id="e_user_to_tierA_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=${0.1 + i * 0.11};entryY=0;" edge="1" parent="1" source="user_pod_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_user_to_tierA_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=${0.07 + i * 0.122};entryY=0;" edge="1" parent="1" source="user_pod_${i}" target="ly_box_A"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   }
 
-  // Inter-tier connectors (A <-> B <-> C <-> D <-> E <-> F <-> G)
-  c.push(`<mxCell id="e_tierA_to_B" value="Synchronous Service Call" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_A" target="ly_badge_B"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_tierB_to_C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_B" target="ly_badge_C"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_tierC_to_D" value="AI / Knowledge Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_C" target="ly_badge_D"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_tierD_to_E" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_D" target="ly_badge_E"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_tierE_to_F" value="Async Event Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.4;dashed=1;dashPattern=6 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#EA580C;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_E" target="ly_badge_F"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_tierF_to_G" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_F" target="ly_badge_G"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 2. Left SORs <-> Central Platform (7 double-headed blue horizontal arrows)
+  c.push(`<mxCell id="arr_sor_0_to_lyA" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_0" target="ly_box_A"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_1_to_lyB" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_1" target="ly_box_B"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_2_to_lyC" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_2" target="ly_box_C"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_3_to_lyD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_3" target="ly_box_D"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_4_to_lyE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_4" target="ly_box_E"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_5_to_lyF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_5" target="ly_box_F"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_sor_6_to_lyG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sor_card_6" target="ly_box_G"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Left SORs <-> Platform
-  for (let i = 0; i < 7; i++) {
-    c.push(`<mxCell id="e_sor_to_plat_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.1 + i * 0.12};" edge="1" parent="1" source="sor_card_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  }
+  // 3. Central Platform <-> Right External Participants (5 horizontal arrows)
+  c.push(`<mxCell id="arr_lyA_to_ext0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.3;" edge="1" parent="1" source="ly_box_A" target="ext_card_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_lyB_to_ext1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ly_box_B" target="ext_card_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_lyC_to_ext2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ly_box_C" target="ext_card_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_lyD_to_ext3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ly_box_D" target="ext_card_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_lyE_to_ext4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ly_box_E" target="ext_card_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Right External Participants <-> Platform
-  for (let i = 0; i < 5; i++) {
-    c.push(`<mxCell id="e_ext_to_plat_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0;exitY=0.5;entryX=1;entryY=${0.15 + i * 0.18};" edge="1" parent="1" source="ext_card_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  }
+  // 4. Inter-Tier Vertical Arrows between Layer Components (A <-> B <-> C <-> D <-> E <-> F <-> G)
+  // Layer A <-> B (Synchronous Solid Blue)
+  c.push(`<mxCell id="arr_ly_A_to_B_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="it_A_0" target="it_B_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_A_to_B_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_1" target="it_B_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_A_to_B_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_3" target="it_B_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Layer B <-> C (Synchronous Solid Blue)
+  c.push(`<mxCell id="arr_ly_B_to_C_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_0" target="it_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_B_to_C_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_3" target="it_C_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_B_to_C_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_4" target="it_C_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Layer C <-> D (AI & Knowledge Purple Dashed)
+  c.push(`<mxCell id="arr_ly_C_to_D_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_0" target="it_D_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_C_to_D_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_4" target="it_D_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_C_to_D_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_7" target="it_D_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Layer D <-> E (AI & Knowledge Purple Dashed / Blue)
+  c.push(`<mxCell id="arr_ly_D_to_E_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_0" target="it_E_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_D_to_E_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_3" target="it_E_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_D_to_E_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_4" target="it_E_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Layer E <-> F (Async Event Orange Dashed)
+  c.push(`<mxCell id="arr_ly_E_to_F_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_0" target="it_F_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_E_to_F_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_1" target="it_F_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_E_to_F_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_3" target="it_F_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Layer F <-> G (Cross-cutting / Control Slate Dashed)
+  c.push(`<mxCell id="arr_ly_F_to_G_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_0" target="it_G_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_F_to_G_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_2" target="it_G_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_F_to_G_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_4" target="it_G_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_08_component_arch" name="08 — Component Architecture">

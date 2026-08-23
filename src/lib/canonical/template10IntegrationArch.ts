@@ -32,7 +32,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
       </td>
     </tr>
   </table>`;
-  text("header_title", titleHtml, 20, 16, 950, 52, "align=left;");
+  text("header_title", titleHtml, 20, 14, 950, 52, "align=left;");
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
@@ -43,13 +43,13 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
       </td>
     </tr>
   </table>`;
-  text("header_logo", logoHtml, 1260, 16, 280, 48, "align=right;");
+  text("header_logo", logoHtml, 1260, 14, 280, 48, "align=right;");
 
   // =========================================================================
-  // 2. TOP INTEGRATION PRINCIPLES (x: 230 to 1200, y: 76 to 125)
+  // 2. TOP INTEGRATION PRINCIPLES (x: 230 to 1200, y: 72 to 118)
   // =========================================================================
-  rect("principles_frame", "", 230, 76, 970, 48, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  text("principles_title", "<b>INTEGRATION PRINCIPLES</b>", 230, 78, 970, 14, "fontSize=8.5;fontColor=#1E3A8A;align=center;");
+  rect("principles_frame", "", 230, 72, 970, 46, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  text("principles_title", "<b>INTEGRATION PRINCIPLES</b>", 230, 74, 970, 14, "fontSize=8;fontColor=#1E3A8A;align=center;");
 
   const principles = [
     { name: "API-First", icon: "⚡" },
@@ -63,14 +63,14 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   principles.forEach((pr, i) => {
     const prx = 240 + i * 136;
     const html = `<table style="width:100%;height:100%;text-align:center;"><tr><td style="width:18px;"><span style="font-size:12px;">${pr.icon}</span></td><td style="text-align:left;font-size:7.5px;font-weight:700;color:#0F2A4A;">${pr.name}</td></tr></table>`;
-    rect(`pr_pod_${i}`, html, prx, 92, 128, 28, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+    rect(`pr_pod_${i}`, html, prx, 88, 128, 26, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
   // =========================================================================
-  // 3. LEFT PANEL: EXTERNAL SYSTEMS (x: 20 to 220, y: 135 to 670)
+  // 3. LEFT PANEL: EXTERNAL SYSTEMS (x: 20 to 220, y: 126 to 660)
   // =========================================================================
-  rect("ext_sys_box", "", 20, 135, 200, 535, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
-  rect("ext_sys_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>EXTERNAL SYSTEMS</b>", 20, 135, 200, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
+  rect("ext_sys_box", "", 20, 126, 200, 534, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
+  rect("ext_sys_hdr", "<b style='font-size:9px;color:#FFFFFF;'>EXTERNAL SYSTEMS</b>", 20, 126, 200, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const extSysGroups = [
     { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "🏢" },
@@ -79,22 +79,22 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "Real-time Sources", items: ["IoT / Sensors", "Manufacturing Systems", "Wearables / ePRO", "Clickstream / Web Events"], icon: "📡" },
   ];
   extSysGroups.forEach((es, i) => {
-    const esy = 168 + i * 122;
+    const esy = 158 + i * 124;
     let bHtml = "";
     es.items.forEach(it => { bHtml += `<div style="font-size:6.5px;color:#475569;line-height:1.15;">&bull; ${it}</div>`; });
     const html = `<div style="padding:2px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${es.icon}</span><b style="font-size:7.5px;color:#0F2A4A;">${es.title}</b></div><div style="margin-top:4px;padding-left:2px;">${bHtml}</div></div>`;
-    rect(`ext_sys_grp_${i}`, html, 24, esy, 192, 114, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
+    rect(`ext_sys_grp_${i}`, html, 24, esy, 192, 116, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
   // =========================================================================
-  // 4. CENTRAL BOUNDARY: INTEGRATION BACKBONE (x: 230 to 1010, y: 135 to 670)
+  // 4. CENTRAL BOUNDARY: INTEGRATION BACKBONE (x: 235 to 1015, y: 126 to 660)
   // =========================================================================
-  rect("backbone_frame", "", 230, 135, 780, 535, "rounded=1;strokeColor=#7C3AED;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
-  rect("backbone_hdr", "<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>INTEGRATION BACKBONE</b>", 230, 135, 780, 24, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
+  rect("backbone_frame", "", 235, 126, 780, 534, "rounded=1;strokeColor=#7C3AED;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
+  rect("backbone_hdr", "<b style='font-size:10px;color:#FFFFFF;letter-spacing:1px;'>INTEGRATION BACKBONE</b>", 235, 126, 780, 24, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
-  // Column 1: API & Service Integration (x: 240 to 480)
-  rect("api_int_frame", "", 240, 165, 240, 420, "rounded=1;fillColor=#F0F9FF;strokeColor=#BAE6FD;");
-  text("api_int_title", "<b>API &amp; SERVICE INTEGRATION</b>", 240, 168, 240, 16, "fontSize=7.5;fontColor=#0369A1;align=center;");
+  // Column 1: API & Service Integration (x: 245 to 485)
+  rect("api_int_frame", "", 245, 156, 235, 416, "rounded=1;fillColor=#F0F9FF;strokeColor=#BAE6FD;");
+  text("api_int_title", "<b>API &amp; SERVICE INTEGRATION</b>", 245, 158, 235, 16, "fontSize=7.5;fontColor=#0369A1;align=center;");
 
   const apiIntCards = [
     { title: "API Gateway", sub: "Apigee X", icon: "⚡" },
@@ -105,21 +105,21 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "Validation", sub: "Schema Registry (Confluent)", icon: "📑" },
   ];
   apiIntCards.forEach((ac, i) => {
-    const acy = 190 + i * 64;
+    const acy = 180 + i * 64;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;text-align:center;"><span style="font-size:16px;">${ac.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0F2A4A;">${ac.title}</div><div style="font-size:7px;color:#0284C7;font-weight:600;">${ac.sub}</div></td></tr></table>`;
-    rect(`api_card_${i}`, html, 246, acy, 228, 58, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
+    rect(`api_card_${i}`, html, 251, acy, 223, 58, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
-  // Column 2: Event Integration (x: 490 to 730)
-  rect("ev_int_frame", "", 490, 165, 240, 420, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
-  text("ev_int_title", "<b>EVENT INTEGRATION</b>", 490, 168, 240, 16, "fontSize=7.5;fontColor=#6D28D9;align=center;");
+  // Column 2: Event Integration (x: 495 to 735)
+  rect("ev_int_frame", "", 495, 156, 235, 416, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
+  text("ev_int_title", "<b>EVENT INTEGRATION</b>", 495, 158, 235, 16, "fontSize=7.5;fontColor=#6D28D9;align=center;");
 
   const evTopHtml = `<table style="width:100%;height:100%;text-align:center;"><tr><td style="width:28px;"><span style="font-size:18px;">📡</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8.5px;font-weight:800;color:#6D28D9;">Event Streaming</div><div style="font-size:7px;color:#475569;">Pub/Sub</div></td></tr></table>`;
-  rect("ev_stream_pod", evTopHtml, 496, 190, 228, 54, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
+  rect("ev_stream_pod", evTopHtml, 501, 180, 223, 52, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
   // Topics Box
-  rect("topics_box", "", 496, 252, 228, 324, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1;");
-  text("topics_title", "<b style='font-size:7.5px;color:#6D28D9;'>Topics / Domains</b>", 496, 256, 228, 16, "align=center;");
+  rect("topics_box", "", 501, 240, 223, 324, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1;");
+  text("topics_title", "<b style='font-size:7.5px;color:#6D28D9;'>Topics / Domains</b>", 501, 244, 223, 14, "align=center;");
 
   const topics = [
     "clinical-events",
@@ -130,13 +130,13 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     "audit-events",
   ];
   topics.forEach((tp, i) => {
-    const tpy = 280 + i * 46;
-    rect(`tp_card_${i}`, `<div style="text-align:center;font-size:7.5px;font-family:monospace;font-weight:700;color:#0F2A4A;">${tp}</div>`, 506, tpy, 208, 38, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
+    const tpy = 266 + i * 46;
+    rect(`tp_card_${i}`, `<div style="text-align:center;font-size:7.5px;font-family:monospace;font-weight:700;color:#0F2A4A;">${tp}</div>`, 511, tpy, 203, 38, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   });
 
-  // Column 3: Data Integration (x: 740 to 995)
-  rect("dt_int_frame", "", 740, 165, 255, 420, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;");
-  text("dt_int_title", "<b>DATA INTEGRATION</b>", 740, 168, 255, 16, "fontSize=7.5;fontColor=#15803D;align=center;");
+  // Column 3: Data Integration (x: 745 to 1000)
+  rect("dt_int_frame", "", 745, 156, 255, 416, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;");
+  text("dt_int_title", "<b>DATA INTEGRATION</b>", 745, 158, 255, 16, "fontSize=7.5;fontColor=#15803D;align=center;");
 
   const dtIntCards = [
     { title: "Batch / Bulk", sub: "Cloud Storage", icon: "🗄️" },
@@ -146,14 +146,14 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "File Transfer", sub: "Cloud Storage Transfer", icon: "📁" },
   ];
   dtIntCards.forEach((dc, i) => {
-    const dcy = 190 + i * 76;
+    const dcy = 180 + i * 76;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:26px;text-align:center;"><span style="font-size:16px;">${dc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8.5px;font-weight:800;color:#0F2A4A;">${dc.title}</div><div style="font-size:7px;color:#15803D;font-weight:600;">${dc.sub}</div></td></tr></table>`;
-    rect(`dt_card_${i}`, html, 748, dcy, 238, 68, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
+    rect(`dt_card_${i}`, html, 753, dcy, 239, 68, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 
-  // Cross-Cutting Integration Services (y: 592 to 662)
-  rect("cross_int_frame", "", 240, 592, 755, 70, "rounded=1;strokeColor=#0284C7;strokeWidth=1;fillColor=#F8FAFC;");
-  text("cross_int_title", "<b>CROSS-CUTTING INTEGRATION SERVICES</b>", 240, 594, 755, 14, "fontSize=7.5;fontColor=#0369A1;align=center;");
+  // Cross-Cutting Integration Services (y: 582 to 650)
+  rect("cross_int_frame", "", 245, 582, 755, 68, "rounded=1;strokeColor=#0284C7;strokeWidth=1;fillColor=#F8FAFC;");
+  text("cross_int_title", "<b>CROSS-CUTTING INTEGRATION SERVICES</b>", 245, 584, 755, 14, "fontSize=7.5;fontColor=#0369A1;align=center;");
 
   const crossInt = [
     { title: "Monitoring", sub: "Cloud Monitoring", icon: "📈" },
@@ -166,19 +166,19 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "Audit & Compliance", sub: "Cloud Audit Logs", icon: "📊" },
   ];
   crossInt.forEach((ci, i) => {
-    const cix = 246 + i * 92;
+    const cix = 251 + i * 92;
     const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;margin-top:1px;">${ci.title}</div><div style="font-size:6px;color:#64748B;">${ci.sub}</div></div>`;
-    rect(`ci_pod_${i}`, html, cix, 610, 88, 48, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
+    rect(`ci_pod_${i}`, html, cix, 600, 88, 46, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
   });
 
   // =========================================================================
-  // 5. RIGHT: INTEGRATION CONSUMERS (x: 1020 to 1270, y: 135 to 670)
+  // 5. RIGHT: INTEGRATION CONSUMERS (x: 1025 to 1275, y: 126 to 660)
   // =========================================================================
-  rect("consumers_box", "", 1020, 135, 250, 535, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
-  rect("consumers_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>INTEGRATION CONSUMERS</b>", 1020, 135, 250, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
+  rect("consumers_box", "", 1025, 126, 245, 534, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
+  rect("consumers_hdr", "<b style='font-size:9px;color:#FFFFFF;'>INTEGRATION CONSUMERS</b>", 1025, 126, 245, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   // Platform Services Section
-  text("plat_cons_title", "<b>NOVACURA PLATFORM SERVICES</b>", 1020, 168, 250, 16, "fontSize=7.5;fontColor=#1E3A8A;align=center;");
+  text("plat_cons_title", "<b>NOVACURA PLATFORM SERVICES</b>", 1025, 158, 245, 14, "fontSize=7.5;fontColor=#1E3A8A;align=center;");
   const platCons = [
     { title: "Data Ingestion Services", icon: "📥" },
     { title: "AI / ML Services", icon: "✨" },
@@ -187,13 +187,13 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "Search & Discovery", icon: "🔍" },
   ];
   platCons.forEach((pc, i) => {
-    const pcy = 190 + i * 48;
+    const pcy = 178 + i * 48;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${pc.title}</div></td></tr></table>`;
-    rect(`pc_pod_${i}`, html, 1028, pcy, 234, 42, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
+    rect(`pc_pod_${i}`, html, 1033, pcy, 229, 42, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
   // External Consumers Section
-  text("ext_cons_title", "<b>EXTERNAL CONSUMERS</b>", 1020, 440, 250, 16, "fontSize=7.5;fontColor=#0D9488;align=center;");
+  text("ext_cons_title", "<b>EXTERNAL CONSUMERS</b>", 1025, 432, 245, 14, "fontSize=7.5;fontColor=#0D9488;align=center;");
   const extCons = [
     { title: "Downstream Applications", icon: "💻" },
     { title: "Partner Applications", icon: "🤝" },
@@ -202,16 +202,16 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { title: "Third-party Analytics", icon: "📊" },
   ];
   extCons.forEach((ec, i) => {
-    const ecy = 462 + i * 42;
+    const ecy = 452 + i * 40;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ec.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${ec.title}</div></td></tr></table>`;
-    rect(`ec_pod_${i}`, html, 1028, ecy, 234, 38, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
+    rect(`ec_pod_${i}`, html, 1033, ecy, 229, 36, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
   });
 
   // =========================================================================
-  // 6. FAR RIGHT: PROTOCOLS & STANDARDS (x: 1280 to 1540, y: 135 to 670)
+  // 6. FAR RIGHT: PROTOCOLS & STANDARDS (x: 1280 to 1540, y: 126 to 660)
   // =========================================================================
-  rect("protocols_box", "", 1280, 135, 260, 535, "rounded=1;strokeColor=#0F2A4A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
-  rect("protocols_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>PROTOCOLS &amp; STANDARDS</b>", 1280, 135, 260, 26, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+  rect("protocols_box", "", 1280, 126, 260, 534, "rounded=1;strokeColor=#0F2A4A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
+  rect("protocols_hdr", "<b style='font-size:9px;color:#FFFFFF;'>PROTOCOLS &amp; STANDARDS</b>", 1280, 126, 260, 26, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
 
   const protoSections = [
     {
@@ -232,24 +232,24 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     }
   ];
 
-  let pY = 168;
+  let pY = 158;
   protoSections.forEach((ps, sIdx) => {
-    text(`ps_hdr_${sIdx}`, `<b style='font-size:8px;color:#0284C7;'>${ps.title}</b>`, 1285, pY, 250, 14, "align=left;paddingLeft=4;");
-    pY += 16;
+    text(`ps_hdr_${sIdx}`, `<b style='font-size:7.5px;color:#0284C7;'>${ps.title}</b>`, 1285, pY, 250, 14, "align=left;paddingLeft=4;");
+    pY += 15;
     let bHtml = "";
     ps.items.forEach(it => {
-      bHtml += `<div style="font-size:7px;color:#334155;line-height:1.25;margin-bottom:2px;">&bull; ${it}</div>`;
+      bHtml += `<div style="font-size:6.5px;color:#334155;line-height:1.2;margin-bottom:2px;">&bull; ${it}</div>`;
     });
-    rect(`ps_box_${sIdx}`, `<div style="padding:4px;">${bHtml}</div>`, 1288, pY, 244, ps.items.length * 18 + 12, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
-    pY += ps.items.length * 18 + 20;
+    rect(`ps_box_${sIdx}`, `<div style="padding:3px;">${bHtml}</div>`, 1288, pY, 244, ps.items.length * 17 + 10, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+    pY += ps.items.length * 17 + 18;
   });
 
   // =========================================================================
-  // 7. BOTTOM: INTEGRATION FLOW OVERVIEW & PATTERNS (y: 680 to 805)
+  // 7. BOTTOM: INTEGRATION FLOW OVERVIEW & PATTERNS & LEGEND (y: 672 to 810)
   // =========================================================================
-  // Integration Flow Overview on Left (x: 20 to 700)
-  rect("flow_box", "", 20, 680, 680, 120, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  rect("flow_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION FLOW OVERVIEW</b>", 20, 680, 680, 20, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
+  // Integration Flow Overview on Left (x: 20 to 680)
+  rect("flow_box", "", 20, 672, 660, 134, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  rect("flow_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION FLOW OVERVIEW</b>", 20, 672, 660, 20, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const flowSteps = [
     { num: "1", title: "Source system\npublishes data\nor triggers event" },
@@ -260,56 +260,79 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     { num: "6", title: "Insights, actions &\nfeedback loop\n(if applicable)" },
   ];
   flowSteps.forEach((fs, i) => {
-    const fsx = 28 + i * 110;
-    const html = `<div style="text-align:center;padding:2px;"><div style="width:18px;height:18px;border-radius:9px;background:#15803D;color:#FFFFFF;font-size:8.5px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto;">${fs.num}</div><div style="font-size:6.5px;color:#334155;line-height:1.2;margin-top:3px;">${fs.title.replace(/\n/g, "<br/>")}</div></div>`;
-    rect(`fs_pod_${i}`, html, fsx, 706, 102, 88, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+    const fsx = 28 + i * 106;
+    const html = `<div style="text-align:center;padding:2px;"><div style="width:18px;height:18px;border-radius:9px;background:#15803D;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto;">${fs.num}</div><div style="font-size:6.5px;color:#334155;line-height:1.2;margin-top:3px;">${fs.title.replace(/\n/g, "<br/>")}</div></div>`;
+    rect(`fs_pod_${i}`, html, fsx, 696, 98, 86, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
-  // Integration Patterns on Right (x: 710 to 1540)
-  rect("pat_box", "", 710, 680, 830, 120, "rounded=1;strokeColor=#7C3AED;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
-  rect("pat_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION PATTERNS</b>", 710, 680, 830, 20, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
+  // Integration Patterns in Middle (x: 690 to 1180)
+  rect("pat_box", "", 690, 672, 490, 134, "rounded=1;strokeColor=#7C3AED;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  rect("pat_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION PATTERNS</b>", 690, 672, 490, 20, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
   const patterns = [
-    { title: "API-led", sub: "Expose and consume standardized APIs", icon: "⚡" },
-    { title: "Event-Driven", sub: "Decouple systems using events", icon: "📡" },
-    { title: "Batch ETL/ELT", sub: "Scheduled bulk data movement", icon: "🔄" },
-    { title: "Change Data Capture", sub: "Real-time data sync using CDC", icon: "🔄" },
-    { title: "File-based", sub: "Secure file exchange (SFTP/AS2)", icon: "📁" },
+    { title: "API-led", sub: "Expose & consume standard APIs", icon: "⚡" },
+    { title: "Event-Driven", sub: "Decouple systems via events", icon: "📡" },
+    { title: "Batch ETL/ELT", sub: "Scheduled bulk movement", icon: "🔄" },
+    { title: "CDC Sync", sub: "Real-time data sync using CDC", icon: "🔄" },
+    { title: "File-based", sub: "Secure file exchange SFTP/AS2", icon: "📁" },
     { title: "Request-Reply", sub: "Synchronous interactions", icon: "💬" },
   ];
   patterns.forEach((pt, i) => {
     const row = Math.floor(i / 2);
     const col = i % 2;
-    const ptx = 718 + col * 408;
-    const pty = 708 + row * 28;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pt.icon}</span></td><td style="text-align:left;padding-left:4px;"><span style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${pt.title}:</span> <span style="font-size:7px;color:#64748B;">${pt.sub}</span></td></tr></table>`;
-    rect(`pat_pod_${i}`, html, ptx, pty, 400, 26, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
+    const ptx = 698 + col * 238;
+    const pty = 698 + row * 34;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:18px;text-align:center;"><span style="font-size:12px;">${pt.icon}</span></td><td style="text-align:left;padding-left:2px;"><div style="font-size:7px;font-weight:800;color:#0F2A4A;">${pt.title}</div><div style="font-size:6px;color:#64748B;">${pt.sub}</div></td></tr></table>`;
+    rect(`pat_pod_${i}`, html, ptx, pty, 230, 30, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   });
 
+  // Dedicated Legend Box on Far Right (x: 1190 to 1540)
+  rect("legend_box", "", 1190, 672, 350, 134, "rounded=1;strokeColor=#CBD5E1;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
+  rect("legend_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION LEGEND</b>", 1190, 672, 350, 20, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+  const legendItemsHtml = `<table style="width:100%;height:100%;border-collapse:collapse;font-size:7px;color:#334155;padding:4px;">
+    <tr><td style="width:20px;text-align:center;color:#1D4ED8;font-weight:bold;">&harr;</td><td><b>Synchronous Integration</b> (API / REST)</td></tr>
+    <tr><td style="width:20px;text-align:center;color:#7C3AED;font-weight:bold;">- - &rarr;</td><td><b>Asynchronous Integration</b> (Pub/Sub Events)</td></tr>
+    <tr><td style="width:20px;text-align:center;color:#16A34A;font-weight:bold;">- - &rarr;</td><td><b>Feedback Flow</b> (Closed Loop)</td></tr>
+    <tr><td style="width:20px;text-align:center;color:#475569;font-weight:bold;">- - &rarr;</td><td><b>File / Batch Flow</b> (Bulk ETL / CDC)</td></tr>
+    <tr><td style="width:20px;text-align:center;color:#0284C7;font-weight:bold;">&harr;</td><td><b>Cross-Cutting Telemetry</b> (Observability)</td></tr>
+  </table>`;
+  rect("legend_content", `<div style="padding:4px;">${legendItemsHtml}</div>`, 1194, 696, 342, 104, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
+
   // =========================================================================
-  // 8. CONNECTORS, STEP FLOW OVERVIEW & RETURNING FEEDBACK LOOP
+  // 8. CONNECTORS & STEP FLOW OVERVIEW (Exact match to images/10.png)
   // =========================================================================
-  // External Systems <-> Integration Backbone
-  for (let i = 0; i < 4; i++) {
-    c.push(`<mxCell id="e_ext_to_bb_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.2 + i * 0.2};" edge="1" parent="1" source="ext_grp_${i}" target="bb_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  }
 
-  // Inter-pillar connections (API <-> Event <-> Data)
-  c.push(`<mxCell id="e_api_to_event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pillar_api" target="pillar_event"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_event_to_data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pillar_event" target="pillar_data"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 1. External Systems -> Integration Backbone (4 bidirectional blue arrows)
+  c.push(`<mxCell id="arr_ext0_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_0" target="api_card_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ext1_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_1" target="api_card_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ext2_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_2" target="api_card_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ext3_to_ev" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_3" target="ev_stream_pod"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Backbone to Consumers
-  c.push(`<mxCell id="e_bb_to_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="bb_box" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 2. Inter-Pillar Connections inside Backbone (API <-> Event <-> Data)
+  c.push(`<mxCell id="arr_api_to_event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="api_int_frame" target="ev_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_event_to_data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ev_int_frame" target="dt_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Step Flow Sequence: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+  // 3. Three Pillars down to Cross-Cutting Services (3 vertical blue double-headed arrows)
+  c.push(`<mxCell id="arr_api_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="api_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ev_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="ev_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.8;entryY=0;" edge="1" parent="1" source="dt_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // 4. Data Integration -> Consumers (Right)
+  c.push(`<mxCell id="arr_dt0_to_pc0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_0" target="pc_pod_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt1_to_pc1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_1" target="pc_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt2_to_ec0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_2" target="ec_pod_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt3_to_ec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_3" target="ec_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt4_to_ec3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_4" target="ec_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // 5. Step Flow Sequence: 1 -> 2 -> 3 -> 4 -> 5 -> 6
   c.push(`<mxCell id="arr_fs_0_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_0" target="fs_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_1" target="fs_pod_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_2" target="fs_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_3" target="fs_pod_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_4_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_4" target="fs_pod_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Step 6 -> Step 1 Returning Feedback Loop (Green Dashed)
-  c.push(`<mxCell id="arr_fs_loopback" value="Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;dashed=1;dashPattern=5 5;endArrow=block;endFill=1;fontSize=7;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="fs_pod_5" target="fs_pod_0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="630" y="800"/><mxPoint x="80" y="800"/></Array></mxGeometry></mxCell>`);
+  // 6. Step 6 -> Step 1 Returning Feedback Loop (Green Dashed)
+  c.push(`<mxCell id="arr_fs_loopback" value="Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;dashed=1;dashPattern=5 5;endArrow=block;endFill=1;fontSize=7;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="fs_pod_5" target="fs_pod_0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="607" y="794"/><mxPoint x="77" y="794"/></Array></mxGeometry></mxCell>`);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_10_integration_arch" name="10 — Integration Architecture">
