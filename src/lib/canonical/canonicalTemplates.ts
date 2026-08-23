@@ -42,6 +42,7 @@ import { generateTemplate08ComponentArchXml } from "./template08ComponentArch";
 import { generateTemplate09DataFlowXml } from "./template09DataFlow";
 import { generateTemplate10IntegrationArchXml } from "./template10IntegrationArch";
 import { generateTemplate11SequenceDiagramXml } from "./template11SequenceDiagram";
+import { generateTemplate12StateMachineXml } from "./template12StateMachine";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -290,15 +291,15 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   },
   {
     id: '12',
-    name: 'State Machine',
+    name: 'State Machine Diagram',
     family: 'Process',
     level: 'L2/L3',
     primaryPurpose: 'Discrete entity lifecycle states, trigger events, and transition guard conditions',
     examples: 'Order states, AI agent execution lifecycle, approval workflows',
     defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
     previewImage: '/templates/governance_state_machine.png',
-    keyComponents: ['Initial/Final States', 'Transition Triggers', 'Guardrail Rules', 'State Handlers'],
-    generateXml: () => buildAiAgentApprovalWorkflowXml()
+    keyComponents: ['S0..S9 States', 'E1..E8 Triggers', 'Guardrail Failure Branches', '4 Analytical Cards'],
+    generateXml: generateTemplate12StateMachineXml
   },
   {
     id: '13',
