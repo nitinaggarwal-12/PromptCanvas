@@ -50,6 +50,15 @@ const nextConfig: NextConfig = {
         ]
       }
     ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/canonical-templates',
+        destination: '/canonical',
+        permanent: true,
+      },
+    ];
   }
 };
 
