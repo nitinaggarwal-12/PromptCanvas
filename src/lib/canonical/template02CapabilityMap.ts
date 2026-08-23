@@ -21,8 +21,8 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push("<mxCell id=\"" + id + "\" value=\"" + E(label) + "\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=" + color + ";strokeWidth=1.8;endArrow=block;endFill=1;fontSize=8;fontColor=" + color + ";fontStyle=1;" + (dash ? "dashed=1;dashPattern=6 4;" : "") + s + "\" edge=\"1\" parent=\"1\" source=\"" + src + "\" target=\"" + tgt + "\"><mxGeometry relative=\"1\" as=\"geometry\"/></mxCell>");
 
   // 1. TOP HEADER BANNER
-  text("t1", "02 — Capability Map | NOVACURA Bio-Pharma Platform", 24, 14, 950, 32, "fontSize=24;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
-  text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 44, 600, 20, "fontSize=13;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
+  text("t1", "02 — Capability Map | NOVACURA Bio-Pharma Platform", 24, 14, 950, 26, "fontSize=22;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
+  text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 44, 600, 18, "fontSize=12;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
 
   // 2. TOP CONTAINER: USER / BUSINESS EXPERIENCE LAYER (x: 224, y: 68, w: 980, h: 90)
   rect("exp_layer", "", 224, 68, 980, 90, "strokeColor=#8B5CF6;strokeWidth=1.5;fillColor=#FAF5FF;shadow=0;");

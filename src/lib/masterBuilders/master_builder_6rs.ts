@@ -44,10 +44,7 @@ export function build6RsMigrationMatrixXml(): string {
 
         <!-- 1. On-Premise VMs -->
         <mxCell id="icon_onprem_vms" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;strokeColor=none;fillColor=#0284C7;align=center;verticalAlign=top;shape=mxgraph.gcp2.compute_engine;" vertex="1" parent="1">
-          <mxGeometry x="68" y="145" width="34" height="34" as="geometry"/>
-        </mxCell>
-        <mxCell id="cyl_vm_backing" value="" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=3;fillColor=#E0F2FE;strokeColor=#0284C7;strokeWidth=1;" vertex="1" parent="1">
-          <mxGeometry x="92" y="158" width="18" height="20" as="geometry"/>
+          <mxGeometry x="73" y="145" width="34" height="34" as="geometry"/>
         </mxCell>
         <mxCell id="lbl_onprem_vms" value="&lt;font style=&quot;font-size:8.5px;color:#0F172A;&quot;&gt;On-Premise VMs&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=top;fillColor=none;strokeColor=none;" vertex="1" parent="1">
           <mxGeometry x="38" y="184" width="104" height="18" as="geometry"/>

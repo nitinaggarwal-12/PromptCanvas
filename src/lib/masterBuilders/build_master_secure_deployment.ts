@@ -103,7 +103,7 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <!-- Lock Badge 1 -->
         <mxCell id="lock1" value="🔒" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontSize=10;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="195" y="390" width="22" height="22" as="geometry"/>
+          <mxGeometry x="180" y="390" width="22" height="22" as="geometry"/>
         </mxCell>
 
         <!-- Bottom Detail Cards in Section 1 to fill canvas -->
@@ -394,14 +394,18 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <!-- ==================== RIGHT SIDE: PRODUCTION SECURITY & COMPLIANCE ==================== -->
         <mxCell id="lbl_firewalls" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Firewalls&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1060" y="245" width="45" height="15" as="geometry"/>
+          <mxGeometry x="1050" y="245" width="45" height="15" as="geometry"/>
         </mxCell>
 
-        <mxCell id="lbl_audit_logs" value="&lt;b style=&quot;font-size:7px;color:#475569;&quot;&gt;Cloud Audit Logs&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;rotation=-90;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="380" width="80" height="20" as="geometry"/>
+        <mxCell id="lbl_audit_logs" value="&lt;b style=&quot;font-size:6.5px;color:#475569;&quot;&gt;Cloud Audit Logs&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="990" y="450" width="75" height="15" as="geometry"/>
         </mxCell>
 
         <!-- Right Side Security Cards Column -->
+        <mxCell id="lbl_stage5_title" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Stage 5:&lt;br&gt;Production&lt;br&gt;Security &amp;amp;&lt;br&gt;Compliance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1135" y="170" width="85" height="40" as="geometry"/>
+        </mxCell>
+
         <mxCell id="card_scc_gemini" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;🛡️ ✨&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Security&lt;br&gt;Command&lt;br&gt;Center (SCC)&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;Gemini-Driven&lt;br&gt;Threat Analysis&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="1135" y="250" width="85" height="70" as="geometry"/>
         </mxCell>
@@ -416,10 +420,6 @@ export function buildSecureDeploymentTopologyXml(): string {
 
         <mxCell id="card_assured_workloads" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:18px;color:#2563EB;&quot;&gt;🛡️&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6.5px;font-weight:bold;color:#0F172A;&quot;&gt;Assured&lt;br&gt;Workloads&lt;br&gt;&lt;span style=&quot;font-size:5.5px;color:#64748B;&quot;&gt;for compliance&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;align=center;verticalAlign=middle;padding=2;" vertex="1" parent="1">
           <mxGeometry x="1135" y="460" width="85" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="lbl_stage5_title" value="&lt;b style=&quot;font-size:7px;color:#0F172A;&quot;&gt;Stage 5:&lt;br&gt;Production&lt;br&gt;Security &amp;amp;&lt;br&gt;Compliance&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1135" y="195" width="85" height="40" as="geometry"/>
         </mxCell>
 
         <mxCell id="card_siem_export" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:14px;color:#2563EB;&quot;&gt;📊 📡&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:6px;font-weight:bold;color:#0F172A;&quot;&gt;SIEM &amp;amp; Chronicle&lt;br&gt;Telemetry Ingest&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;align=center;verticalAlign=middle;padding=1;" vertex="1" parent="1">

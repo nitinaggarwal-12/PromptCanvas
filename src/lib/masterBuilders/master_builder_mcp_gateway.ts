@@ -115,11 +115,11 @@ export function buildMcpContextGatewayXml(): string {
     '<mxCell id="0"/>',
     '<mxCell id="1" parent="0"/>',
 
-    lane('hosts', 1, 'AI HOSTS & AGENTS', 'MCP clients live in the host/agent runtime', 20, 20, 225, 635, '#6D28D9', '#FAF5FF'),
-    lane('client', 2, 'MCP CLIENT LAYER', 'Discovery, request construction, normalization', 265, 20, 225, 635, '#1A73E8', '#EFF6FF'),
-    lane('gateway', 3, 'ENTERPRISE MCP GATEWAY', 'Central policy, authentication, routing & audit', 510, 20, 430, 635, '#1669C1', '#F8FBFF'),
-    lane('servers', 4, 'REMOTE MCP SERVERS', 'Google-managed or enterprise-hosted endpoints', 960, 20, 265, 635, '#7E57C2', '#FAF5FF'),
-    lane('tools', 5, 'ENTERPRISE TOOLS & DATA', 'Systems reached through MCP tools/resources', 1245, 20, 315, 635, '#1A73E8', '#F8FBFF'),
+    lane('hosts', 1, 'AI HOSTS & AGENTS', 'MCP clients live in the host/agent runtime', 20, 20, 225, 685, '#6D28D9', '#FAF5FF'),
+    lane('client', 2, 'MCP CLIENT LAYER', 'Discovery, request construction, normalization', 265, 20, 225, 685, '#1A73E8', '#EFF6FF'),
+    lane('gateway', 3, 'ENTERPRISE MCP GATEWAY', 'Central policy, authentication, routing & audit', 510, 20, 430, 685, '#1669C1', '#F8FBFF'),
+    lane('servers', 4, 'REMOTE MCP SERVERS', 'Google-managed or enterprise-hosted endpoints', 960, 20, 265, 685, '#7E57C2', '#FAF5FF'),
+    lane('tools', 5, 'ENTERPRISE TOOLS & DATA', 'Systems reached through MCP tools/resources', 1245, 20, 315, 685, '#1A73E8', '#F8FBFF'),
 
     // Hosts
     card('host_gemini', 'Gemini Enterprise / Gemini App', 'Enterprise AI experience hosting MCP-capable clients where supported', ICON.gemini, 38, 85, 190, 86, '#6D28D9'),
@@ -163,7 +163,7 @@ export function buildMcpContextGatewayXml(): string {
     card('tool_gcp', 'Google Cloud APIs & Enterprise Apps', 'Managed APIs and custom internal business capabilities', ICON.cloud, 1263, 519, 280, 82, '#1A73E8'),
 
     // Stateless transport note
-    cell('transport_note', '<b>STATELESS, STREAMABLE HTTP REQUEST / RESPONSE</b><br><span style="font-size:10px;color:#475569">Gateway nodes should not become a server-side conversational memory store. Correlation metadata may be externalized when required.</span>', 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.4;dashed=1;dashPattern=4 4;fontColor=#1D4ED8;fontSize=12;align=center;verticalAlign=middle;', 530, 638, 675, 66),
+    cell('transport_note', '<b>STATELESS, STREAMABLE HTTP REQUEST / RESPONSE</b><br><span style="font-size:9.5px;color:#475569">Gateway nodes should not become a server-side memory store.</span>', 'rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.4;dashed=1;dashPattern=4 4;fontColor=#1D4ED8;fontSize=11;align=center;verticalAlign=middle;', 530, 634, 390, 56),
 
     // Governance band
     lane('governance', 0, 'CROSS-CUTTING GOVERNANCE & OPERATIONS', 'Apply across hosts, clients, gateway, servers and downstream tools', 20, 725, 1540, 180, '#188038', '#F0FDF4'),

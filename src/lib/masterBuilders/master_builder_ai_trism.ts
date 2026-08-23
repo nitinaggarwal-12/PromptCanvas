@@ -11,7 +11,7 @@ const v=(id:string,value:string,style:string,x:number,y:number,w:number,h:number
 const img=(id:string,url:string,x:number,y:number,w:number,h:number)=>v(id,'',`shape=image;imageAspect=0;aspect=fixed;image=${url};align=center;verticalAlign=middle;`,x,y,w,h);
 const zone=(id:string,n:number,title:string,sub:string,x:number,a:number,b:string|number,c:string|number,d?:string,e?:string)=>{
  const customGeometry=typeof b==='number'&&typeof c==='number'&&typeof d==='string'&&typeof e==='string';
- const y=customGeometry?a:25,w=customGeometry?b as number:a,h=customGeometry?c as number:625,accent=customGeometry?d!:b as string,fill=customGeometry?e!:c as string;
+ const y=customGeometry?a:65,w=customGeometry?b as number:a,h=customGeometry?c as number:600,accent=customGeometry?d!:b as string,fill=customGeometry?e!:c as string;
  return [
   v(id,'',`rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${accent};strokeWidth=1.5;`,x,y,w,h),
   v(`${id}_n`,String(n),`ellipse;whiteSpace=wrap;html=1;fillColor=${accent};strokeColor=${accent};fontColor=#FFFFFF;fontStyle=1;fontSize=13;align=center;verticalAlign=middle;`,x+14,y+15,30,30),
@@ -31,39 +31,39 @@ export function buildAiTrismGuardrailsXml():string{
  c.push(v('principle','<b>AI TRiSM RUNTIME GUARDRAILS</b>   Trust, risk and security are an operating model. Runtime enforcement is implemented through explicit identity, authorization, content-security and observability controls—not a fictional all-in-one “TRiSM engine.”','rounded=1;arcSize=7;whiteSpace=wrap;html=1;overflow=hidden;spacing=7;fillColor=#F8FBFF;strokeColor=#8AB4F8;strokeWidth=1.2;fontColor=#334155;fontSize=11;align=center;verticalAlign=middle;',25,15,1710,40));
 
  c.push(zone('host',1,'CLIENTS & AGENT HOSTS','Requests enter with identity and application context',25,285,'#1A73E8','#EFF6FF'));
- c.push(card('ge','Gemini Enterprise / Agent Platform','Employee or custom agent experience using governed runtime paths',45,95,245,86,'#1A73E8'));
- c.push(mini('apps','Calling applications','Web/API/mobile/automation callers with authenticated application or user context',45,201,245,82,'#1A73E8'));
- c.push(mini('context','Security context','Caller identity • agent identity • tenant/project • task • data class • requested destination',45,303,245,82,'#1A73E8'));
- c.push(mini('risk','Risk classification','Autonomy • external action • sensitive data • regulated process • consequence of error',45,405,245,92,'#1A73E8'));
- c.push(mini('boundary','Scope boundary','Do not expose or log private chain-of-thought. Capture decisions, tool calls, sources, policy outcomes and audit evidence instead.',45,517,245,98,'#D93025','#FFF7F7'));
+ c.push(card('ge','Gemini Enterprise / Agent Platform','Employee or custom agent experience using governed runtime paths',45,125,245,80,'#1A73E8'));
+ c.push(mini('apps','Calling applications','Web/API/mobile/automation callers with authenticated application or user context',45,213,245,78,'#1A73E8'));
+ c.push(mini('context','Security context','Caller identity • agent identity • tenant/project • task • data class • requested destination',45,299,245,78,'#1A73E8'));
+ c.push(mini('risk','Risk classification','Autonomy • external action • sensitive data • regulated process • consequence of error',45,385,245,84,'#1A73E8'));
+ c.push(mini('boundary','Scope boundary','Do not expose or log private chain-of-thought. Capture decisions, tool calls, sources, policy outcomes and audit evidence instead.',45,477,245,90,'#D93025','#FFF7F7'));
 
  c.push(zone('ingress',2,'CLIENT-TO-AGENT GUARDRAILS','Authenticate path and screen live content before execution',335,300,'#D93025','#FEF2F2'));
- c.push(card('ingress_gateway','Agent Gateway — ingress','Managed ingress path for governed client-to-agent interactions',355,95,260,82,'#D93025'));
- c.push(mini('ingress_auth','Ingress authorization policy','Apply supported gateway authorization configuration; validate the caller/application path separately from agent egress IAM.',355,197,260,90,'#D93025'));
- c.push(card('armor_in','Model Armor — ingress','Configured prompt injection/jailbreak • harmful content • malicious URL/file • sensitive-data screening',355,307,260,96,'#D93025','#FFF7F7'));
- c.push(mini('template_in','Policy template','Organization-specific filters, thresholds and block/redact behavior; template/version is part of release evidence',355,423,260,86,'#D93025'));
- c.push(mini('blocked','Blocked / sanitized path','Return a controlled policy outcome; do not send rejected content to the agent runtime.',355,529,260,70,'#D93025','#FFF7F7'));
+ c.push(card('ingress_gateway','Agent Gateway — ingress','Managed ingress path for governed client-to-agent interactions',355,125,260,80,'#D93025'));
+ c.push(mini('ingress_auth','Ingress authorization policy','Apply supported gateway authorization configuration; validate caller path separately from agent egress IAM.',355,213,260,82,'#D93025'));
+ c.push(card('armor_in','Model Armor — ingress','Configured prompt injection/jailbreak • harmful content • malicious URL/file • sensitive-data screening',355,303,260,88,'#D93025','#FFF7F7'));
+ c.push(mini('template_in','Policy template','Organization-specific filters, thresholds and block/redact behavior; template/version is part of release evidence',355,399,260,82,'#D93025'));
+ c.push(mini('blocked','Blocked / sanitized path','Return a controlled policy outcome; do not send rejected content to the agent runtime.',355,489,260,76,'#D93025','#FFF7F7'));
 
  c.push(zone('runtime',3,'AGENT RUNTIME & MODEL EXECUTION','Only policy-qualified requests proceed',660,355,'#7B61A8','#F7F4FF'));
- c.push(card('runtime_core','Agent Runtime','Managed execution for ADK/supported agents with sessions and configured memory/tool behavior',680,95,315,86,'#7B61A8'));
- c.push(mini('model','Approved model configuration','Configured Gemini/approved model • tool/function calling • structured response contract',680,201,315,82,'#7B61A8'));
- c.push(mini('grounding','Grounding & evidence','Use configured enterprise search/RAG/data path; preserve citations/provenance where the use case requires it',680,303,315,86,'#7B61A8'));
- c.push(mini('action_policy','Agent decision policy','Select approved tool/agent/data call based on purpose and delegated authorization; no implicit unrestricted access',680,409,315,88,'#7B61A8'));
- c.push(mini('human','Human authority','Pause for approval before consequential, irreversible or regulated actions when policy requires it',680,517,315,82,'#D93025','#FFF7F7'));
+ c.push(card('runtime_core','Agent Runtime','Managed execution for ADK/supported agents with sessions and configured memory/tool behavior',680,125,315,80,'#7B61A8'));
+ c.push(mini('model','Approved model configuration','Configured Gemini/approved model • tool/function calling • structured response contract',680,213,315,78,'#7B61A8'));
+ c.push(mini('grounding','Grounding & evidence','Use configured enterprise search/RAG/data path; preserve citations/provenance where use case requires it',680,299,315,80,'#7B61A8'));
+ c.push(mini('action_policy','Agent decision policy','Select approved tool/agent/data call based on purpose and delegated authorization; no implicit unrestricted access',680,387,315,84,'#7B61A8'));
+ c.push(mini('human','Human authority','Pause for approval before consequential, irreversible or regulated actions when policy requires it',680,479,315,86,'#D93025','#FFF7F7'));
 
  c.push(zone('egress',4,'AGENT-TO-ANYWHERE GUARDRAILS','Authorize destinations and inspect outbound interactions',1040,335,'#0F8B82','#ECFDF5'));
- c.push(card('egress_gateway','Agent Gateway — egress','Central enforcement path for registered agent-to-tool, model, API, MCP and agent traffic',1060,95,295,88,'#0F8B82'));
- c.push(mini('registry','Agent Registry allowlist','Register intended tools, MCP servers, API endpoints and peer agents; unknown outbound hosts are denied by gateway policy.',1060,203,295,92,'#0F8B82'));
- c.push(mini('identity','Agent Identity + IAP/IAM','Use the agent principal and supported authorization policy to grant least-privilege destination access',1060,315,295,92,'#0F8B82'));
- c.push(card('armor_out','Model Armor — egress','Optional inspection of tool/MCP/model requests and responses for leakage, injection and unsafe content',1060,427,295,96,'#0F8B82','#F0FDFA'));
- c.push(mini('destinations','Authorized destinations','Enterprise APIs • remote MCP • A2A agents • Google Cloud services • model endpoints as registered and allowed',1060,543,295,56,'#0F8B82'));
+ c.push(card('egress_gateway','Agent Gateway — egress','Central enforcement path for registered agent-to-tool, model, API, MCP and agent traffic',1060,125,295,80,'#0F8B82'));
+ c.push(mini('registry','Agent Registry allowlist','Register intended tools, MCP servers, API endpoints and peer agents; unknown outbound hosts are denied by gateway policy.',1060,213,295,84,'#0F8B82'));
+ c.push(mini('identity','Agent Identity + IAP/IAM','Use the agent principal and supported authorization policy to grant least-privilege destination access',1060,305,295,84,'#0F8B82'));
+ c.push(card('armor_out','Model Armor — egress','Optional inspection of tool/MCP/model requests and responses for leakage, injection and unsafe content',1060,397,295,88,'#0F8B82','#F0FDFA'));
+ c.push(mini('destinations','Authorized destinations','Enterprise APIs • remote MCP • A2A agents • Google Cloud services • model endpoints as registered and allowed',1060,493,295,74,'#0F8B82'));
 
  c.push(zone('response',5,'RESPONSE & ACTION RELEASE','Validate what leaves the governed agent system',1400,335,'#E87900','#FFF7ED'));
- c.push(mini('response_policy','Response policy','Required citations/evidence • structured schema • safety verdict • no secrets/credentials in user-visible output',1420,95,295,88,'#E87900'));
- c.push(mini('action_gate','Action release gate','For high-impact actions: human approval / deterministic business rule / transaction controls as defined by the application',1420,203,295,94,'#D93025','#FFF7F7'));
- c.push(mini('consumer','Verified consumer response','Return answer, tool result or workflow status with policy/audit context appropriate to the experience',1420,317,295,88,'#E87900'));
- c.push(mini('denial','Denied response/action','Fail closed when required authorization or content-security conditions are not satisfied',1420,425,295,80,'#D93025','#FFF7F7'));
- c.push(mini('experience_rule','Experience-specific controls','Gemini Enterprise connector/assistant paths and custom Agent Platform paths can have different enforcement surfaces—model them explicitly.',1420,525,295,74,'#E87900'));
+ c.push(mini('response_policy','Response policy','Required citations/evidence • structured schema • safety verdict • no secrets/credentials in user-visible output',1420,125,295,80,'#E87900'));
+ c.push(mini('action_gate','Action release gate','For high-impact actions: human approval / deterministic business rule / transaction controls as defined by application',1420,213,295,86,'#D93025','#FFF7F7'));
+ c.push(mini('consumer','Verified consumer response','Return answer, tool result or workflow status with policy/audit context appropriate to experience',1420,307,295,82,'#E87900'));
+ c.push(mini('denial','Denied response/action','Fail closed when required authorization or content-security conditions are not satisfied',1420,397,295,80,'#D93025','#FFF7F7'));
+ c.push(mini('experience_rule','Experience-specific controls','Gemini Enterprise connector/assistant paths and custom Agent Platform paths can have different enforcement surfaces.',1420,485,295,82,'#E87900'));
 
  c.push(edge('r1','ge','ingress_gateway','request','#2563EB')); c.push(edge('r2','ingress_gateway','armor_in','screen','#D93025')); c.push(edge('r3','armor_in','runtime_core','allowed / sanitized','#7B61A8')); c.push(edge('r4','action_policy','egress_gateway','tool / agent / model call','#0F8B82')); c.push(edge('r5','egress_gateway','destinations','authorized destination','#0F8B82')); c.push(edge('r6','destinations','armor_out','result','#64748B',true,0,.7,1,.7)); c.push(edge('r7','armor_out','response_policy','screened result','#E87900')); c.push(edge('r8','response_policy','consumer','release','#E87900')); c.push(edge('r9','consumer','ingress_gateway','response','#64748B',true,0,.7,1,.75)); c.push(edge('r10','ingress_gateway','ge','response','#64748B',true,0,.75,1,.75));
 

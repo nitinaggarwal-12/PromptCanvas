@@ -11,10 +11,10 @@ export function buildIncidentTriageSwimlaneXml(): string {
           <mxGeometry x="25" y="10" width="35" height="35" as="geometry"/>
         </mxCell>
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Google Cloud SRE OPERATIONS: INCIDENT TRIAGE &amp;amp; MULTI-TIER ESCALATION SWIMLANE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="10" width="1050" height="24" as="geometry"/>
+          <mxGeometry x="65" y="10" width="1050" height="22" as="geometry"/>
         </mxCell>
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;Day-2 Operational Playbook: L1 Automated Alerting &amp;amp; Gemini Cloud Assist $\rightarrow$ L2 Auto-Remediation $\rightarrow$ L3 Incident Commander War Room&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="65" y="32" width="1050" height="18" as="geometry"/>
+          <mxGeometry x="65" y="34" width="1050" height="18" as="geometry"/>
         </mxCell>
         <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Assist RCA&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1220" y="10" width="140" height="36" as="geometry"/>

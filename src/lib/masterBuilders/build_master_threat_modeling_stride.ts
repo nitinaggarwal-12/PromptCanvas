@@ -264,8 +264,8 @@ export function buildThreatModelingStrideXml(): string {
         </mxCell>
 
         <!-- Floating Badge [6] IAM Validation -->
-        <mxCell id="pill_transit_6" value="&lt;b style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;[6] IAM Validation&lt;/b&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1118" y="351" width="36" height="18" as="geometry"/>
+        <mxCell id="pill_transit_6" value="&lt;b style=&quot;font-size:7.5px;color:#15803D;&quot;&gt;[6]&lt;/b&gt;" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1141" y="351" width="12" height="18" as="geometry"/>
         </mxCell>
 
         <!-- 1. [I] Information Disclosure Guard (VPC-SC) -->

@@ -125,8 +125,8 @@ export function buildGoLiveWarRoomRunbookXml(): string {
   ];
 
   const stageBody = stages.map(stageXml).join('');
-  const arrows = [205, 405, 625, 825, 1025].map((x, i) =>
-    v(`stage_arrow_${i + 1}`, '▶', 'text;html=1;align=center;verticalAlign=middle;fontColor=#33465F;fontSize=28;fontStyle=1;', x, 250, 22, 40)
+  const arrows = [201, 401, 621, 821, 1021].map((x, i) =>
+    v(`stage_arrow_${i + 1}`, '▶', 'text;html=1;align=center;verticalAlign=middle;fontColor=#33465F;fontSize=18;fontStyle=1;', x, 255, 14, 30)
   ).join('');
 
   const services = [
@@ -168,7 +168,7 @@ export function buildGoLiveWarRoomRunbookXml(): string {
 
         ${image('rollback_icon', ICON_WARNING, 1248, 405, 34, 34)}
         ${v('rollback_title', '&lt;b&gt;Rollback Criteria&lt;/b&gt;', 'text;html=1;align=left;verticalAlign=middle;fontColor=#D82323;fontSize=13;fontStyle=1;', 1288, 400, 276, 30)}
-        ${v('rollback_body', '• Sustained error rate &gt; threshold (e.g., 1% for 5 min)&lt;br&gt;• Failed smoke tests or critical user journeys&lt;br&gt;• DNS / LB instability or elevated 5xx responses&lt;br&gt;• Data inconsistency or replication lag beyond SLA&lt;br&gt;• Critical business workflow failure / KPI breach', 'rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8F8;strokeColor=#EF4444;strokeWidth=1.2;fontColor=#6B1B1B;fontSize=8.6;align=left;verticalAlign=top;spacing=8;arcSize=5;', 1236, 394, 348, 148)}
+        ${v('rollback_body', '• Sustained error rate &gt; threshold (e.g., 1% for 5 min)&lt;br&gt;• Failed smoke tests or critical user journeys&lt;br&gt;• DNS / LB instability or elevated 5xx responses&lt;br&gt;• Data inconsistency or replication lag beyond SLA&lt;br&gt;• Critical business workflow failure / KPI breach', 'rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8F8;strokeColor=#EF4444;strokeWidth=1.2;fontColor=#6B1B1B;fontSize=8.6;align=left;verticalAlign=top;spacing=8;arcSize=5;', 1236, 394, 348, 136)}
 
         ${v('telemetry_band', '&lt;b&gt;🛡 End-to-End Telemetry &amp;amp; Audit&lt;/b&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;│&amp;nbsp;&amp;nbsp; 📋 Cloud Audit Logs &amp;nbsp;&amp;nbsp;│&amp;nbsp;&amp;nbsp; 🔔 Cloud Monitoring Alerts &amp;nbsp;&amp;nbsp;│&amp;nbsp;&amp;nbsp; ☷ Cloud Logging &amp;amp; Trace &amp;nbsp;&amp;nbsp;│&amp;nbsp;&amp;nbsp; ▥ War Room Metrics Overlay', 'rounded=1;whiteSpace=wrap;html=1;fillColor=#FBFDFF;strokeColor=#4F88D6;dashed=1;strokeWidth=1.2;fontColor=#244A78;fontSize=9.5;align=center;verticalAlign=middle;arcSize=4;', 16, 490, 1205, 36)}
 
