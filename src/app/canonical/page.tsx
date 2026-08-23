@@ -458,6 +458,19 @@ export default function CanonicalPage() {
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
                 <button
+                  onClick={() => {
+                    if (activeTemplate) {
+                      setCurrentXml(activeTemplate.generateXml(selectedDomain, themeMode));
+                    }
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Reload 1:1 clean master geometry"
+                >
+                  <RefreshCw className="w-3.5 h-3.5 text-sky-500" />
+                  <span>Reload Master</span>
+                </button>
+
+                <button
                   onClick={handleCopyXml}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
