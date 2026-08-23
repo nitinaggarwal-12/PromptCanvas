@@ -34,6 +34,7 @@ export const DOMAIN_PRESETS = [
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
 import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
+import { generateTemplate04ValueStreamXml } from "./template04ValueStream";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -90,6 +91,14 @@ export function generateSwimlane03Xml(domainFlavor = "biopharma", theme: "light"
   return generateTemplate03SwimlaneXml(domainFlavor, theme);
 }
 
+/**
+ * High-Fidelity 1:1 XML Generator for Template 04: Value Stream Map
+ * Matches the NOVACURA End-to-End Value Delivery from Canonical PDF Page 4 / images/04.png
+ */
+export function generateValueStream04Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+  return generateTemplate04ValueStreamXml(domainFlavor, theme);
+}
+
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
   {
     id: '01',
@@ -137,7 +146,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     defaultDomain: 'Research-to-Commercial Patient Journey',
     previewImage: '/templates/value_stream_map_vsm.png',
     keyComponents: ['Value Stages', 'Key Activities', 'Process & Lead Time Metrics', 'Delivered Outcomes'],
-    generateXml: () => buildValueStreamMapXml()
+    generateXml: generateValueStream04Xml
   },
   {
     id: '05',
