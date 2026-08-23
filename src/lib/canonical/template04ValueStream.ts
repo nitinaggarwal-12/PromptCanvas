@@ -238,11 +238,12 @@ export function generateTemplate04ValueStreamXml(domainFlavor = "biopharma", the
       <span style="font-size:16px;">${st.flowIcon}</span>
       <div style="font-size:8.5px;font-weight:700;color:#0F172A;margin-top:2px;">${st.flowItem}</div>
     </div>`;
-    rect(`st_flow_${i}`, flowHtml, x + 6, 480, colWidth - 40, 65, "strokeColor=none;fillColor=none;align=center;");
+    rect(`st_flow_${i}`, flowHtml, x + 6, 480, colWidth - 40, 65, "rounded=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=center;");
 
     // Flow arrow between items
     if (i < 4) {
-      text(`arr_flow_${i}`, "➔", x + colWidth - 24, 498, 20, 20, "fontSize=14;fontColor=#2563EB;align=center;");
+      c.push(`<mxCell id="arr_flow_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_flow_${i}" target="st_flow_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+      c.push(`<mxCell id="arr_chevron_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_hdr_${i}" target="st_hdr_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
     }
   });
 

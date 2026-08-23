@@ -286,6 +286,31 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     rect(`pat_pod_${i}`, html, ptx, pty, 400, 26, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   });
 
+  // =========================================================================
+  // 8. CONNECTORS, STEP FLOW OVERVIEW & RETURNING FEEDBACK LOOP
+  // =========================================================================
+  // External Systems <-> Integration Backbone
+  for (let i = 0; i < 4; i++) {
+    c.push(`<mxCell id="e_ext_to_bb_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.2 + i * 0.2};" edge="1" parent="1" source="ext_grp_${i}" target="bb_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
+  // Inter-pillar connections (API <-> Event <-> Data)
+  c.push(`<mxCell id="e_api_to_event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pillar_api" target="pillar_event"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_event_to_data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="pillar_event" target="pillar_data"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Backbone to Consumers
+  c.push(`<mxCell id="e_bb_to_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="bb_box" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Step Flow Sequence: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+  c.push(`<mxCell id="arr_fs_0_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_0" target="fs_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_fs_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_1" target="fs_pod_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_fs_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_2" target="fs_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_fs_3_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_3" target="fs_pod_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_fs_4_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_4" target="fs_pod_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Step 6 -> Step 1 Returning Feedback Loop (Green Dashed)
+  c.push(`<mxCell id="arr_fs_loopback" value="Feedback Loop" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=14;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;dashed=1;dashPattern=5 5;endArrow=block;endFill=1;fontSize=7;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="fs_pod_5" target="fs_pod_0"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="630" y="800"/><mxPoint x="80" y="800"/></Array></mxGeometry></mxCell>`);
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_10_integration_arch" name="10 — Integration Architecture">
     <mxGraphModel dx="1600" dy="820" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="820" background="${bg}" math="0" shadow="0">

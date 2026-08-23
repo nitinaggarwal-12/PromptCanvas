@@ -257,14 +257,14 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   text("legend_content", legendHtml, 28, 832, 1500, 40, "align=left;");
 
   // 8. INTER-LAYER SINGLE CRISP CONNECTORS
-  // Left: Outcomes -> Core
-  edge("e_outcomes_to_core", "outcomes_container", "core_container", "", "#2563EB", false, ";exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
-  // Right: Personas -> Core
+  // Left: Core -> Outcomes (Arrow points LEFT into Outcomes)
+  edge("e_core_to_outcomes", "core_container", "outcomes_container", "", "#2563EB", false, ";exitX=0;exitY=0.5;entryX=1;entryY=0.5;");
+  // Right: Personas -> Core (Arrow points LEFT into Core)
   edge("e_personas_to_core", "personas_container", "core_container", "", "#16A34A", false, ";exitX=0;exitY=0.5;entryX=1;entryY=0.5;");
-  // Top: Experience -> Core
-  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=1.8;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  // Bottom: Foundation -> Core
-  c.push(`<mxCell id="e_found_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Top: Experience <-> Core (Bidirectional)
+  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Bottom: Foundation <-> Core (Bidirectional)
+  c.push(`<mxCell id="e_found_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_02_capability_map" name="02 — Capability Map">

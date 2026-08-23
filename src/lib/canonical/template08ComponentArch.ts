@@ -316,6 +316,32 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     rect(`ch_pod_${i}`, html, chx, 848, 244, 32, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 
+  // =========================================================================
+  // 8. CONNECTORS & INTER-TIER SERVICE CALLS
+  // =========================================================================
+  // Primary Users <-> Tier A
+  for (let i = 0; i < 8; i++) {
+    c.push(`<mxCell id="e_user_to_tierA_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=${0.1 + i * 0.11};entryY=0;" edge="1" parent="1" source="user_pod_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
+  // Inter-tier connectors (A <-> B <-> C <-> D <-> E <-> F <-> G)
+  c.push(`<mxCell id="e_tierA_to_B" value="Synchronous Service Call" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_A" target="ly_badge_B"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_tierB_to_C" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_B" target="ly_badge_C"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_tierC_to_D" value="AI / Knowledge Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_C" target="ly_badge_D"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_tierD_to_E" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_D" target="ly_badge_E"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_tierE_to_F" value="Async Event Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.4;dashed=1;dashPattern=6 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#EA580C;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_E" target="ly_badge_F"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_tierF_to_G" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.3;exitY=1;entryX=0.3;entryY=0;" edge="1" parent="1" source="ly_badge_F" target="ly_badge_G"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Left SORs <-> Platform
+  for (let i = 0; i < 7; i++) {
+    c.push(`<mxCell id="e_sor_to_plat_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.1 + i * 0.12};" edge="1" parent="1" source="sor_card_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
+  // Right External Participants <-> Platform
+  for (let i = 0; i < 5; i++) {
+    c.push(`<mxCell id="e_ext_to_plat_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0;exitY=0.5;entryX=1;entryY=${0.15 + i * 0.18};" edge="1" parent="1" source="ext_card_${i}" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_08_component_arch" name="08 — Component Architecture">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="900" background="${bg}" math="0" shadow="0">

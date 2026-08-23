@@ -386,6 +386,29 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
   </table>`;
   text("legend_footer", legendHtml, 20, 822, 1520, 32, "align=left;");
 
+  // =========================================================================
+  // 7. CONNECTORS & TRANSFORMATION CHEVRON
+  // =========================================================================
+  // As-Is Red Dashed Vertical Batch/Manual Flows
+  for (let i = 0; i < 4; i++) {
+    c.push(`<mxCell id="arr_asis_flow_ch_app_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="as_is_ch_${i}" target="as_is_app_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_asis_flow_app_data_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="as_is_app_${i}" target="as_is_data_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_asis_flow_data_int_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="as_is_data_${i}" target="as_is_int_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_asis_flow_int_inf_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EF4444;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="as_is_int_${i}" target="as_is_inf_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
+  // Central Transformation Transition Bridge Arrow
+  c.push(`<mxCell id="arr_center_transformation" value="&lt;b style='font-size:10px;color:#FFFFFF;'&gt;TRANSFORMATION&lt;/b&gt;" style="shape=flexArrow;endArrow=classic;startArrow=none;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;width=22;endSize=10;" edge="1" parent="1" source="as_is_box" target="to_be_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // To-Be Green Real-Time Automated Flow Connectors
+  for (let i = 0; i < 6; i++) {
+    c.push(`<mxCell id="arr_tobe_ch_plat_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="to_be_ch_${i}" target="to_be_plat_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+  for (let i = 0; i < 5; i++) {
+    c.push(`<mxCell id="arr_tobe_plat_dp_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="to_be_plat_${i}" target="to_be_dp_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_tobe_dp_int_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="to_be_dp_${i}" target="to_be_int_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_05_asis_tobe" name="05 — As-Is / To-Be Process Flow">
     <mxGraphModel dx="1600" dy="860" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="860" background="${bg}" math="0" shadow="0">

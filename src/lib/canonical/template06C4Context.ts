@@ -286,6 +286,49 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   </table>`;
   text("legend_footer", legendHtml, 20, 930, 1520, 32, "align=left;");
 
+  // =========================================================================
+  // 9. CONNECTORS & PROTOCOL EDGES (Typed, Color-Coded, High-Contrast Pills)
+  // =========================================================================
+  // Left Users <-> Platform
+  c.push(`<mxCell id="e_users_access" value="Access platform via secure web portal / workflows &amp; APIs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.35;entryX=0;entryY=0.35;" edge="1" parent="1" source="users_box" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_users_notifications" value="Notifications, tasks, insights &amp; approvals" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.75;entryX=0;entryY=0.75;" edge="1" parent="1" source="users_box" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Top Governance -> Platform
+  c.push(`<mxCell id="e_gov_oversight" value="Policy, Standards, Risk Oversight &amp; Strategic Direction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;fontSize=7.5;fontColor=#64748B;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="gov_box" target="platform_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // External Partners (Right, 5 Green Arrows)
+  const extLabels = [
+    "Exchange study & manufacturing data",
+    "Submit clinical data & documents",
+    "Submissions, queries & responses",
+    "Patient programs, communications & support",
+    "Medical content, engagement & communications",
+  ];
+  extLabels.forEach((lbl, i) => {
+    c.push(`<mxCell id="e_ext_partner_${i}" value="${E(lbl)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=${0.16 + i * 0.18};entryX=0;entryY=0.5;" edge="1" parent="1" source="platform_box" target="ext_part_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  });
+
+  // Enterprise Systems (Bottom Left, 8 Purple Arrows)
+  const entLabels = [
+    "CRM & patient sync",
+    "Finance & master data",
+    "Regulatory docs sync",
+    "Clinical trial data",
+    "Lab & sample data",
+    "Safety cases & signal",
+    "Curated data & analytics",
+    "Authentication & SSO",
+  ];
+  entLabels.forEach((lbl, i) => {
+    c.push(`<mxCell id="e_ent_sync_${i}" value="${E(lbl)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7;fontColor=#6D28D9;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=${0.08 + i * 0.08};exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="platform_box" target="ent_sys_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  });
+
+  // AI Services (Bottom Center, 2 Dashed Blue Arrows)
+  c.push(`<mxCell id="e_ai_grounding" value="Use for grounded AI, search &amp; insights" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.72;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="platform_box" target="ai_svc_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Platform Services (Bottom Right, 2 Dashed Green Arrows)
+  c.push(`<mxCell id="e_plat_telemetry" value="Events, integrations &amp; operational telemetry" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.92;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="platform_box" target="plat_svc_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_06_c4_context" name="06 — C4 Context">
     <mxGraphModel dx="1600" dy="970" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="970" background="${bg}" math="0" shadow="0">

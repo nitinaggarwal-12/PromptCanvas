@@ -52,15 +52,18 @@
 * **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**: Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
 * **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
 
+### 8. Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops
+* **Step Numbers & Flow Sequence**: All process workflows, data pipelines, lifecycle maps, and integration architectures MUST feature explicit sequential step number badges (❶..❻ / 1..6) showing what happens when, with drop-lines or chained orthogonal edges.
+* **Typed Connectors Palette**:
+  - *Synchronous / Direct API / Data Ingestion*: Solid blue (`#2563EB` / `#1D4ED8`, `strokeWidth=1.5 - 2`).
+  - *Asynchronous / Event Stream / CDC*: Dashed orange/amber (`#EA580C` / `#D97706`, `dashed=1;dashPattern=6 4`).
+  - *AI Copilot / Vertex RAG / Grounding*: Dashed purple (`#7C3AED` / `#9333EA`, `dashed=1;dashPattern=4 4`).
+  - *External Ecosystem / Protocol Exchanges*: Green (`#16A34A` / `#059669`) with high-contrast protocol pill badges (`IDMP`, `FHIR`, `SFTP`, `REST`).
+  - *Governance / Policy Oversight*: Dashed slate/purple (`#64748B`, `dashed=1;dashPattern=2 4`).
+  - *Closed-Loop Feedback Returns*: Dashed teal/green (`#0D9488` / `#16A34A`, `dashed=1;dashPattern=5 5`) looping back to source systems.
+
 ---
 
-### 7. Automated Headless Chrome Visual Audit Verification
-* Before presenting ANY visual task or diagram as complete, run the automated Puppeteer test harness to render the SVG, capture high-resolution screenshots into `scratch/screenshots_<task_id>/`, and physically verify that:
-  1. The diagram renders completely without blank canvas errors.
-  2. All text strings, titles (using clean pipe `|` separators), and icons are visible and un-truncated.
-  3. No line collisions, overlapping knots, or unstyled empty boxes exist.
-
----
-
-### 8. Mandatory Git Push Protocol
+### 9. Mandatory Git Push Protocol
 * Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
+

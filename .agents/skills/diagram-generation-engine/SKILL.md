@@ -68,14 +68,24 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
 
 ---
 
-## 🔀 4. Edge Routing, Connector Badges & Collision Rules
+## 🔀 4. Edge Routing, Typed Connectors, Step Sequences & Collision Rules
 
 1. **High-Contrast Label Pills**: All edge labels crossing container boundaries MUST use solid white pill badges:
    ```
-   labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;
+   labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;fontColor=#0F172A;
    ```
-2. **Zero Slicing**: Connector paths must never intersect or pass through intermediate cards, decision diamonds, or container headers.
-3. **Dedicated Inter-Row Channels**: Route cross-column lines through open channel waypoints:
+2. **Mandatory Step Sequence Badges & Flow Drop-Lines**:
+   - Every process flow, data pipeline, and integration architecture MUST feature sequential step badges (❶..❻ / 1..6) showing what happens when.
+   - Pipelines must connect steps with vertical drop-lines into storage/processing tiers or sequential task-to-task orthogonal edges.
+3. **Color-Coded Typed Connectors Palette**:
+   - **Synchronous Service Calls / Data Ingestion**: Solid blue (`strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;`)
+   - **Asynchronous / Event Streams / CDC**: Dashed orange (`strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;`)
+   - **AI Copilot / Vertex RAG Grounding**: Dashed purple (`strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;`)
+   - **External Ecosystem / Partner Protocols**: Green (`strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endFill=1;`) with protocol labels (`IDMP`, `FHIR`, `SFTP`, `REST`)
+   - **Governance & Policy Oversight**: Dashed slate (`strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=open;`)
+   - **Closed-Loop Feedback Returns**: Dashed teal/green (`strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;endArrow=block;`) looping back to upstream sources.
+4. **Zero Slicing**: Connector paths must never intersect or pass through intermediate cards, decision diamonds, or container headers.
+5. **Dedicated Inter-Row Channels**: Route cross-column lines through open channel waypoints:
    ```xml
    <mxGeometry relative="1" as="geometry">
      <Array as="points">
@@ -83,7 +93,7 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
      </Array>
    </mxGeometry>
    ```
-4. **Single Crisp Directional Connectors**: Avoid duplicate or conflicting arrowheads on bidirectional connectors. Use explicit single orthogonal connectors with clear source/target bindings.
+6. **Single Crisp Directional Connectors**: Avoid duplicate or conflicting arrowheads on bidirectional connectors. Use explicit single orthogonal connectors with clear source/target bindings.
 
 ---
 

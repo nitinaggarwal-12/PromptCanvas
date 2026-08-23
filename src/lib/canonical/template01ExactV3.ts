@@ -244,6 +244,55 @@ export function generateTemplate01ExactV3Xml(domainFlavor = "biopharma", theme: 
 
   text("footer_note", "ⓘ Conceptual context view — not deployment topology", 24, 1002, 400, 16, "fontSize=8.5;fontStyle=2;fontColor=#64748B;align=left;");
 
+  // =========================================================================
+  // 10. CONNECTORS & PROTOCOL EDGES (Typed, Color-Coded, Collision-Free)
+  // =========================================================================
+  // User Portal Single Sign-on / Lock Flow
+  rect("user_lock_badge", "<div style='font-size:16px;'>🔒</div><div style='font-size:7.5px;font-weight:bold;color:#1E40AF;margin-top:2px;'>Role-Based Access<br/>&amp; Workflows</div>", 298, 360, 84, 52, "strokeColor=#3B82F6;fillColor=#FFFFFF;rounded=1;align=center;verticalAlign=middle;shadow=1;");
+  edge("e_user_to_lock", "users_container", "user_lock_badge", "", "#1D4ED8", false, "exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_lock_to_plat", "user_lock_badge", "platform_container", "Secure Web Portal\n(Single Experience)", "#1D4ED8", false, "exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Governance Oversight (Dashed Purple)
+  edge("e_gov_to_plat", "gov_container", "platform_container", "Policy, Standards & Risk Oversight", "#7C3AED", true, "exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // External Partner Connections (Green, Protocol Labels)
+  const extEdges = [
+    { target: "ext_card_0", label: "Collaboration Packages & Data Exchange (APIs / SFTP)", y: 220 },
+    { target: "ext_card_1", label: "Clinical Data & Documents (HTTPS / APIs)", y: 340 },
+    { target: "ext_card_2", label: "Submissions & Responses (IDMP / eCTD)", y: 460 },
+    { target: "ext_card_3", label: "Programs & Communications (Secure Portal / APIs)", y: 580 },
+  ];
+  extEdges.forEach((ee, i) => {
+    edge(`e_ext_${i}`, "platform_container", ee.target, ee.label, "#16A34A", false, `exitX=1;exitY=${(i + 1) * 0.2};entryX=0;entryY=0.5;`);
+  });
+
+  // Enterprise Systems Connections (Blue, Bidirectional Sync Labels)
+  const entEdges = [
+    { target: "ent_card_0", label: "Documents Sync\n(REST / Bulk API)" },
+    { target: "ent_card_1", label: "Customer & HCP Data\n(REST / APIs)" },
+    { target: "ent_card_2", label: "Product & Mfg Data\n(IDoc / OData)" },
+    { target: "ent_card_3", label: "Lab Results & LIMS\n(HL7 / FHIR / APIs)" },
+    { target: "ent_card_4", label: "Trial Data Ingestion\n(EDC / CTMS APIs)" },
+    { target: "ent_card_5", label: "Safety Cases Exchange\n(REST / ICH E2B)" },
+    { target: "ent_card_6", label: "Curated Analytics\n(SQL / APIs)" },
+  ];
+  entEdges.forEach((ee, i) => {
+    edge(`e_ent_${i}`, "platform_container", ee.target, ee.label, "#2563EB", false, `exitX=${0.1 + i * 0.12};exitY=1;entryX=0.5;entryY=0;`);
+  });
+
+  // AI Services Connections (Purple Dashed Grounding Lines)
+  const aiEdges = [
+    { target: "ai_card_0", label: "Enterprise Content Indexing & Sync (APIs)" },
+    { target: "ai_card_1", label: "Semantic Search Queries & Results (REST / Graph)" },
+    { target: "ai_card_2", label: "Grounded AI Requests / Responses (Private Endpoint)" },
+  ];
+  aiEdges.forEach((ae, i) => {
+    edge(`e_ai_${i}`, "platform_container", ae.target, ae.label, "#7C3AED", true, `exitX=${0.85 + i * 0.05};exitY=1;entryX=0.5;entryY=0;`);
+  });
+
+  // Operations to Enterprise line
+  edge("e_ops_to_ent", "ops_container", "ent_container", "Infrastructure & Tenant Operations", "#64748B", true, "exitX=0.5;exitY=0;entryX=0.35;entryY=1;");
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_01_system_context" name="01 — System Context">
     <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1050" background="${bg}" math="0" shadow="0">

@@ -189,4 +189,14 @@ Every modification to diagram compiler, layout engine, cleaner, or preflight cod
    - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels. Always use native vector Unicode symbols/emojis or inline SVGs.
 6. **High-Contrast Pill Badges for Connectors**:
    - All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`) to guarantee 100% collision-free legibility.
+7. **Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops**:
+   - **Step Numbers & Flow Sequence**: All process workflows, data pipelines, lifecycle maps, and integration architectures MUST feature explicit sequential step number badges (❶..❻ / 1..6) showing what happens when, with drop-lines or chained orthogonal edges.
+   - **Typed Connectors Palette**:
+     - *Synchronous / Direct API / Data Ingestion*: Solid blue (`#2563EB` / `#1D4ED8`, `strokeWidth=1.5 - 2`).
+     - *Asynchronous / Event Stream / CDC*: Dashed orange/amber (`#EA580C` / `#D97706`, `dashed=1;dashPattern=6 4`).
+     - *AI Copilot / Vertex RAG / Grounding*: Dashed purple (`#7C3AED` / `#9333EA`, `dashed=1;dashPattern=4 4`).
+     - *External Ecosystem / Protocol Exchanges*: Green (`#16A34A` / `#059669`) with high-contrast protocol pill badges (`IDMP`, `FHIR`, `SFTP`, `REST`).
+     - *Governance / Policy Oversight*: Dashed slate/purple (`#64748B`, `dashed=1;dashPattern=2 4`).
+     - *Closed-Loop Feedback Returns*: Dashed teal/green (`#0D9488` / `#16A34A`, `dashed=1;dashPattern=5 5`) looping back to source systems.
+
 

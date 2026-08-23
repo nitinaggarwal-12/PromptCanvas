@@ -298,6 +298,35 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
     rect(`gcp_st_${i}`, html, gsx, 778, 68, 88, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
+  // =========================================================================
+  // 9. CONNECTORS, STEP DROP-LINES & CLOSED FEEDBACK LOOP
+  // =========================================================================
+  // Vertical Step Drop-lines (Dashed Slate)
+  c.push(`<mxCell id="arr_step_drop_0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_0" target="ingest_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_1" target="landing_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_2" target="proc_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_3" target="cur_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_4" target="serv_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_5" target="outcomes_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Horizontal Pipeline Data Flows (Solid Blue)
+  for (let i = 0; i < 5; i++) {
+    c.push(`<mxCell id="arr_src_to_ing_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="src_pod_${i}" target="ing_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_ing_to_land_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.2 + i * 0.15};" edge="1" parent="1" source="ing_pod_${i}" target="landing_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  }
+
+  // Inter-layer flows inside Google Cloud Platform
+  c.push(`<mxCell id="arr_land_to_proc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="landing_frame" target="proc_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_proc_to_cur" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="proc_frame" target="cur_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_cur_to_serv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cur_frame" target="serv_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_serv_to_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="serv_frame" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Consumers -> Business Outcomes (Thick Blue Arrow)
+  c.push(`<mxCell id="arr_cons_to_outcomes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="consumers_box" target="outcomes_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Closed-Loop Feedback Arrow: Outcomes -> Sources (Purple Dashed Return Loop)
+  c.push(`<mxCell id="arr_feedback_loop" value="Closed-Loop Feedback: Actions &amp; Insights" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=20;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="outcomes_box" target="sources_box"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1315" y="675"/><mxPoint x="100" y="675"/></Array></mxGeometry></mxCell>`);
+
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_09_data_flow" name="09 — Data Flow Architecture">
     <mxGraphModel dx="1600" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="900" background="${bg}" math="0" shadow="0">
