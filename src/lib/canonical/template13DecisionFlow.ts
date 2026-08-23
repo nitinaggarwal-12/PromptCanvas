@@ -112,34 +112,34 @@ export function generateTemplate13DecisionFlowXml(
   rect("seq_0", "<b style='color:#FFFFFF;font-size:9px;'>0</b>", 215, 76, 20, 20, "fillColor=#0F2A4A;strokeColor=none;ellipse;align=center;verticalAlign=middle;");
   rect("stg0_node", "<span style='font-size:8.5px;font-weight:800;color:#166534;'>User Request / Event</span>", 240, 72, 130, 28, "fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
   
-  // Single straight horizontal arrow from WHO INITIATES to Step 0 / Spine
-  line(nid(), 185, 173, 205, 173, "strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  // Single straight horizontal arrow from WHO INITIATES to Step 0 (matching height y=86)
+  line(nid(), 185, 86, 240, 86, "strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
   // Step 1: Request Type?
   rect("seq_1", "<b style='color:#FFFFFF;font-size:9px;'>1</b>", 215, 126, 20, 20, "fillColor=#0F2A4A;strokeColor=none;ellipse;align=center;verticalAlign=middle;");
   rect("gate_1", "<div style='font-size:7.5px;font-weight:800;color:#0F172A;'>Request<br/>Type?</div>", 240, 112, 130, 48, "shape=rhombus;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;");
   
-  // Step 1 Category Pods (6 wide columns across x=380..1360)
-  rect("cat_med", "<div style='font-size:7.2px;font-weight:700;'>Medical<br/>Information</div>", 380, 120, 155, 34, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
-  rect("cat_clin", "<div style='font-size:7.2px;font-weight:700;'>Clinical Trial</div>", 543, 120, 155, 34, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
-  rect("cat_reg", "<div style='font-size:7.2px;font-weight:700;'>Regulatory</div>", 706, 120, 155, 34, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=center;verticalAlign=middle;");
-  rect("cat_safe", "<div style='font-size:7.2px;font-weight:700;'>Safety</div>", 869, 120, 155, 34, "fillColor=#FFF7ED;strokeColor=#EA580C;rounded=1;align=center;verticalAlign=middle;");
-  rect("cat_qual", "<div style='font-size:7.2px;font-weight:700;'>Quality</div>", 1032, 120, 155, 34, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
-  rect("cat_comm", "<div style='font-size:7.2px;font-weight:700;'>Commercial<br/>Analytics</div>", 1195, 120, 165, 34, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
+  // Step 1 Category Pods (6 wide columns across x=400..1360 with 30px gap from gate_1)
+  rect("cat_med", "<div style='font-size:7.2px;font-weight:700;'>Medical<br/>Information</div>", 400, 120, 150, 34, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
+  rect("cat_clin", "<div style='font-size:7.2px;font-weight:700;'>Clinical Trial</div>", 560, 120, 150, 34, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
+  rect("cat_reg", "<div style='font-size:7.2px;font-weight:700;'>Regulatory</div>", 720, 120, 150, 34, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=center;verticalAlign=middle;");
+  rect("cat_safe", "<div style='font-size:7.2px;font-weight:700;'>Safety</div>", 880, 120, 150, 34, "fillColor=#FFF7ED;strokeColor=#EA580C;rounded=1;align=center;verticalAlign=middle;");
+  rect("cat_qual", "<div style='font-size:7.2px;font-weight:700;'>Quality</div>", 1040, 120, 150, 34, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
+  rect("cat_comm", "<div style='font-size:7.2px;font-weight:700;'>Commercial<br/>Analytics</div>", 1200, 120, 160, 34, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
 
   // Step 0 -> Step 1 straight vertical down
   line(nid(), 305, 100, 305, 112, "strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
   
-  // Step 1 Distribution Header Line & Vertical Drop Connectors
-  line(nid(), 370, 136, 457, 136, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 457, 136, 457, 104, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 457, 104, 1277, 104, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 457, 104, 457, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  line(nid(), 620, 104, 620, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  line(nid(), 783, 104, 783, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  line(nid(), 946, 104, 946, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  line(nid(), 1109, 104, 1109, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
-  line(nid(), 1277, 104, 1277, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  // Step 1 Distribution Header Line & Vertical Drop Connectors (routed in the 30px gap x=385)
+  line(nid(), 370, 136, 385, 136, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 385, 136, 385, 104, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 385, 104, 1280, 104, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 475, 104, 475, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 635, 104, 635, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 795, 104, 795, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 955, 104, 955, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 1115, 104, 1115, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 1280, 104, 1280, 120, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
 
   // Step 2: Contains regulated or sensitive data?
   rect("seq_2", "<b style='color:#FFFFFF;font-size:9px;'>2</b>", 215, 195, 20, 20, "fillColor=#0F2A4A;strokeColor=none;ellipse;align=center;verticalAlign=middle;");
@@ -275,28 +275,60 @@ export function generateTemplate13DecisionFlowXml(
   rect("out_r_clin", "<div style='font-size:7.5px;font-weight:700;color:#0284C7;'>🔗 Clinical Workflow<br/>Triggered</div>", 980, 668, 180, 42, "fillColor=#E0F2FE;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
   rect("out_r_bi", "<div style='font-size:7.5px;font-weight:700;color:#D97706;'>📊 Analytics Insight<br/>Delivered</div>", 1170, 668, 190, 42, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
 
-  // Direct drop line from Low Risk into Response to User
+  // Connections into Step 8 Outcome boxes:
+  // 1. Direct drop line from Low Risk into Response to User (routed along x=200 perimeter)
   line(nid(), 470, 460, 470, 470, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
   line(nid(), 470, 470, 200, 470, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
   line(nid(), 200, 470, 200, 642, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 200, 642, 245, 642, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 245, 642, 245, 668, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=block;endSize=3;");
+  line(nid(), 200, 642, 270, 642, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 270, 642, 270, 668, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=block;endSize=3;");
   
-  // Gate 7 (NO) -> Response to User
+  // 2. Gate 7 (NO) -> Response to User (entering top center at x=340)
   line(nid(), 305, 610, 305, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;", "NO");
-  line(nid(), 305, 642, 310, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 310, 642, 310, 668, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
+  line(nid(), 305, 642, 340, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 340, 642, 340, 668, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
   
-  // Electronic Signature / HITL -> Regulatory Draft
-  line(nid(), 525, 602, 525, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
-  line(nid(), 525, 642, 500, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  // 3. Electronic Signature -> Regulatory Draft Generated
+  line(nid(), 890, 602, 890, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 890, 642, 500, 642, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=none;");
   line(nid(), 500, 642, 500, 668, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;");
 
+  // 4. Human Expert Review -> Safety Case Escalated
+  line(nid(), 565, 530, 565, 642, "strokeColor=#DC2626;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 565, 642, 690, 642, "strokeColor=#DC2626;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 690, 642, 690, 668, "strokeColor=#DC2626;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=block;endSize=3;");
+
+  // 5. Create Task/Ticket -> QMS Task Created
+  line(nid(), 1068, 387, 1068, 642, "strokeColor=#16A34A;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 1068, 642, 880, 642, "strokeColor=#16A34A;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 880, 642, 880, 668, "strokeColor=#16A34A;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=block;endSize=3;");
+
+  // 6. Trigger Downstream Workflow -> Clinical Workflow Triggered
+  line(nid(), 1266, 387, 1266, 642, "strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 1266, 642, 1070, 642, "strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 1070, 642, 1070, 668, "strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=block;endSize=3;");
+
+  // 7. Commercial Analytics -> Analytics Insight Delivered
+  line(nid(), 1280, 154, 1280, 642, "strokeColor=#D97706;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 1280, 642, 1265, 642, "strokeColor=#D97706;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
+  line(nid(), 1265, 642, 1265, 668, "strokeColor=#D97706;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=block;endSize=3;");
+
+  // Step 8 Collector Bus to Terminal Pill: End / Outcome Logged & Audited
+  line(nid(), 310, 710, 310, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 500, 710, 500, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 690, 710, 690, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 880, 710, 880, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 1070, 710, 1070, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  line(nid(), 1265, 710, 1265, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  
+  // Horizontal bus connecting all 6 outputs
+  line(nid(), 310, 720, 1265, 720, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=none;");
+  
   // Terminal Pill: End / Outcome Logged & Audited (Centered)
   rect("out_final_pill", "<span style='font-size:8.5px;font-weight:800;color:#166534;'>✔ End / Outcome Logged &amp; Audited</span>", 630, 730, 320, 28, "fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;");
   
-  // Single straight vertical connector from center of Step 8 into End Pill
-  line(nid(), 790, 710, 790, 730, "strokeColor=#16A34A;strokeWidth=1.5;endArrow=block;endSize=4;");
+  // Single straight vertical connector from bus center into End Pill
+  line(nid(), 790, 720, 790, 730, "strokeColor=#16A34A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
   // =========================================================================
   // 5. BOTTOM PLATFORM SERVICES & LEGEND (y=770..950)
