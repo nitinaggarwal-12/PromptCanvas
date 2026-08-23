@@ -9,6 +9,7 @@ import {
   CanonicalTemplate,
   generateSystemContextXml
 } from '@/lib/canonical/canonicalTemplates';
+import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
   Layers,
   LayoutGrid,
@@ -439,35 +440,13 @@ export default function CanonicalPage() {
             </div>
 
             {/* Embedded Live Draw.io Viewer Viewport */}
-            <div className="flex-1 w-full h-full bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-4">
-              <iframe
-                title="Draw.io Canonical Canvas"
-                className="w-full h-full border-0 rounded-xl shadow-inner bg-white dark:bg-[#0B111E]"
-                srcDoc={`
-                  <!DOCTYPE html>
-                  <html>
-                  <head>
-                    <meta charset="utf-8">
-                    <style>
-                      html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background-color: ${isDark ? '#0B111E' : '#F8FAFC'}; }
-                      .mxgraph { width:100%; height:100%; }
-                    </style>
-                    <script src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
-                  </head>
-                  <body>
-                    <div class="mxgraph" style="max-width:100%;border:none;" data-mxgraph="${encodeURIComponent(
-                      JSON.stringify({
-                        highlight: '#0000ff',
-                        nav: true,
-                        resize: true,
-                        toolbar: 'zoom layers lightbox',
-                        edit: '_blank',
-                        xml: currentXml
-                      })
-                    )}"></div>
-                  </body>
-                  </html>
-                `}
+            <div className="flex-1 w-full h-full min-h-[550px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+              <DiagramViewerRenderSafe
+                xml={currentXml}
+                bgTheme={themeMode}
+                diagramId={activeTemplate.id}
+                diagramType="canonical_system_context"
+                aspectRatioId="21:9"
               />
             </div>
           </div>
