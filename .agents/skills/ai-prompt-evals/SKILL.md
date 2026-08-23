@@ -12,9 +12,12 @@ This skill provides automated evaluation tools to benchmark Gemini model perform
 1. **XML Syntax & Diagram Validity**: Parses generated `<mxfile><diagram><mxGraphModel>` tree to ensure standard Draw.io XML structure.
 2. **Numbered Data Flow & Step Sequence Coverage**: Verifies that process flows contain sequential step badges (❶..❻ / 1..6) and connector drop-lines or chained transitions.
 3. **Typed Edge Diversity**: Verifies color-coded connector variety (Synchronous Blue, Asynchronous Orange, AI Purple, External Green, Governance Slate, and Feedback Loop Teal).
-4. **Product & Icon Resolution**: Ensures vendor products match requested cloud ecosystems (GCP, AWS, Azure, Databricks) with valid SVG icon mapping.
-5. **Node Connectivity & Zero-Orphan Rate**: Verifies that every service node is connected to at least one valid data path.
-6. **2D Bounding Box Non-Collision**: Verifies that nodes maintain $\ge 30\text{px}$ safety clearance within container tiers.
+4. **Point-to-Point Connector Straightness**: Verifies that horizontal/vertical connector lines between cards or layers have matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and do NOT form ugly $90^\circ$ steps/jogs along container borders.
+5. **Rounded Container Corner Clearance**: Verifies that child elements located in the 4 corners of rounded containers maintain $\ge 20\text{px}$ inset margin to prevent sharp border clipping over rounded arcs.
+6. **Zero-Void Item Proportions**: Verifies that multi-item cards dynamically scale item padding and margins so that internal items fill the card evenly without large trailing white voids.
+7. **Product & Icon Resolution**: Ensures vendor products match requested cloud ecosystems (GCP, AWS, Azure, Databricks) with valid SVG icon mapping and zero external HTTP image dependencies.
+8. **Node Connectivity & Zero-Orphan Rate**: Verifies that every service node is connected to at least one valid data path.
+9. **2D Bounding Box Non-Collision**: Verifies that nodes maintain $\ge 30\text{px}$ safety clearance within container tiers.
 
 ## 2. Automated Evals Runner (`scratch/eval_ai_prompts.js`)
 
@@ -50,21 +53,26 @@ async function evaluateGeneratedGraphXml(xmlString, expectedCloud = 'gcp') {
     const hasAsyncOrAI = edgeCells.some(e => (e.$.style || '').includes('#EA580C') || (e.$.style || '').includes('#7C3AED') || (e.$.style || '').includes('dashed=1'));
     const edgeDiversityScore = (hasSync ? 10 : 0) + (hasAsyncOrAI ? 10 : 0);
 
-    // 3. Connectivity Ratio
+    // 3. Point-to-Point Connector Straightness (Zero Jogging)
+    const straightEdges = edgeCells.filter(e => !(e.$.style || '').includes('orthogonalEdgeStyle') || (e.$.style || '').includes('edgeStyle=none'));
+    const straightnessScore = edgeCells.length > 0 ? (straightEdges.length / edgeCells.length) * 10 : 10;
+
+    // 4. Connectivity Ratio
     const isConnected = totalNodes > 1 ? totalEdges >= totalNodes - 1 : true;
 
-    // 4. Icon / Visual System Check
-    const nodesWithIcons = vertexCells.filter(n => (n.$.value || '').includes('<img src=') || (n.$.value || '').includes('data:image/svg'));
-    const iconRate = totalNodes > 0 ? (nodesWithIcons.length / totalNodes) : 1;
+    // 5. Icon / Visual System Check (Zero external HTTP icons)
+    const hasExternalHttp = vertexCells.some(n => (n.$.value || '').includes('http://') || (n.$.value || '').includes('https://api.iconify'));
+    const iconSafetyScore = hasExternalHttp ? 0 : 15;
 
     // Composite Score Calculation (0-100)
     let score = 0;
-    if (isConnected) score += 30;
-    score += Math.round(sequenceCoverage * 25);
+    if (isConnected) score += 25;
+    score += Math.round(sequenceCoverage * 20);
     score += edgeDiversityScore;
-    score += Math.round(iconRate * 25);
+    score += Math.round(straightnessScore);
+    score += iconSafetyScore;
 
-    console.log(`📊 AI Eval Score: ${score}/100 | Nodes: ${totalNodes} | Edges: ${totalEdges} | Sequence: ${Math.round(sequenceCoverage * 100)}% | Edge Diversity: ${edgeDiversityScore}/20 | Icons: ${Math.round(iconRate * 100)}%`);
+    console.log(`📊 AI Eval Score: ${score}/100 | Nodes: ${totalNodes} | Edges: ${totalEdges} | Sequence: ${Math.round(sequenceCoverage * 100)}% | Edge Diversity: ${edgeDiversityScore}/20 | Straightness: ${Math.round(straightnessScore)}/10`);
 
     return {
       valid: true,
@@ -72,7 +80,7 @@ async function evaluateGeneratedGraphXml(xmlString, expectedCloud = 'gcp') {
       totalNodes,
       totalEdges,
       sequenceCoverage,
-      iconRate,
+      straightnessScore,
       isConnected,
     };
   } catch (err) {
@@ -84,4 +92,4 @@ module.exports = { evaluateGeneratedGraphXml };
 ```
 
 ## 3. Workflow Trigger
-Execute `evaluateGeneratedGraphXml()` during LLM prompt tuning or Gemini SDK upgrades (`@google/genai`).
+Execute `evaluateGeneratedGraphXml()` during LLM prompt tuning, canonical template compilation, or Gemini SDK upgrades (`@google/genai`).

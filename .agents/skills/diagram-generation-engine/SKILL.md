@@ -84,8 +84,11 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
    - **External Ecosystem / Partner Protocols**: Green (`strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endFill=1;`) with protocol labels (`IDMP`, `FHIR`, `SFTP`, `REST`)
    - **Governance & Policy Oversight**: Dashed slate (`strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=open;`)
    - **Closed-Loop Feedback Returns**: Dashed teal/green (`strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;endArrow=block;`) looping back to upstream sources.
-4. **Zero Slicing**: Connector paths must never intersect or pass through intermediate cards, decision diamonds, or container headers.
-5. **Dedicated Inter-Row Channels**: Route cross-column lines through open channel waypoints:
+4. **Point-to-Point Alignment & Zero Stepped Jogs**:
+   - When connecting between shapes with different heights, widths, or center coordinates, never use default `exitY=0.5;entryY=0.5;` with `edgeStyle=orthogonalEdgeStyle;` across narrow gaps, which forces ugly $90^\circ$ steps along container borders.
+   - Always compute exact matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and enforce `edgeStyle=none;` for direct straight point-to-point connectors.
+5. **Zero Slicing**: Connector paths must never intersect or pass through intermediate cards, decision diamonds, or container headers.
+6. **Dedicated Inter-Row Channels**: Route cross-column lines through open channel waypoints:
    ```xml
    <mxGeometry relative="1" as="geometry">
      <Array as="points">
@@ -93,11 +96,23 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
      </Array>
    </mxGeometry>
    ```
-6. **Single Crisp Directional Connectors**: Avoid duplicate or conflicting arrowheads on bidirectional connectors. Use explicit single orthogonal connectors with clear source/target bindings.
+7. **Single Crisp Directional Connectors**: Avoid duplicate or conflicting arrowheads on bidirectional connectors. Use explicit single orthogonal connectors with clear source/target bindings.
 
 ---
 
-## 🚫 5. Zero External URL Dependencies
+## 🛡️ 5. Rounded Container Corner Insetting & Zero-Void Scaling
+
+1. **Corner Inset Safety Margin ($\ge 20\text{px}$)**:
+   - Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
+   - Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
+2. **Zero-Void Proportional Card Item Scaling**:
+   - Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
+3. **Brand Header Balance**:
+   - Master templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
+
+---
+
+## 🚫 6. Zero External URL Dependencies
 
 * **Rule**: Never reference `https://api.iconify.design/...` or unverified external HTTP images inside HTML tables or cell labels.
 * **Native Icon Palette**: Always use native vector Unicode emojis and symbols:
@@ -108,7 +123,7 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
 
 ---
 
-## 🏷️ 6. Title Typography & String Formatting
+## 🏷️ 7. Title Typography & String Formatting
 
 * Always use a clean pipe separator with spaces for master titles:
   `01 — System Context | NOVACURA Bio-Pharma Platform` (Never `I` or broken dashes).
@@ -116,13 +131,15 @@ Every generated diagram string MUST be wrapped in a standard `<mxfile><diagram><
 
 ---
 
-## 🔁 7. Automated Headless Chrome Visual Audit Protocol
+## 🔁 8. Automated Headless Chrome Visual Audit Protocol
 
 Before declaring any diagram complete, execute the automated headless Chrome test harness:
 ```bash
-npx ts-node --compiler-options '{"module":"commonjs"}' scratch/render_all_perfect_shots.ts
+npx tsx scratch/test_canonical_01_10.ts
 ```
 Verify the generated PNG screenshot:
 1. Canvas is 100% visible with valid SVG elements.
 2. All labels are collision-free and legible.
-3. No cards or text truncated at container boundaries.
+3. Zero jagged connector jogs along container borders.
+4. Zero corner clipping over rounded container boundaries.
+5. No cards or text truncated at container boundaries.
