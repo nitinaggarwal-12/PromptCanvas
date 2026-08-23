@@ -5,13 +5,44 @@ const elk = new ELK();
 
 /**
  * Calculates node width dynamically based on label length heuristic.
- * Min width 180, capped at 260.
+ * Min width 190, capped at 280.
  */
 export function calculateNodeWidth(label: string): number {
-  const charWidth = 7.5;
-  const padding = 40;
-  const computed = Math.ceil(label.length * charWidth + padding);
-  return Math.min(Math.max(computed, 180), 260);
+  const charWidth = 8.0;
+  const padding = 50;
+  const computed = Math.ceil((label || '').length * charWidth + padding);
+  return Math.min(Math.max(computed, 190), 280);
+}
+
+/**
+ * 2D Collision Auto-Healer:
+ * Sweeps nodes within a tier to ensure strict non-overlapping bounds with minimum 30px horizontal clearance.
+ */
+function healTierNodeCollisions(
+  nodes: { id: string; x: number; y: number; width: number; height: number }[],
+  minMargin = 30
+): { nodes: { id: string; x: number; y: number; width: number; height: number }[]; requiredWidth: number } {
+  if (!nodes || nodes.length === 0) return { nodes: [], requiredWidth: 800 };
+
+  // Sort nodes by X coordinate within the tier
+  const sorted = [...nodes].sort((a, b) => a.x - b.x);
+
+  let currentX = Math.max(sorted[0].x, 30);
+  let maxRight = 0;
+
+  for (let i = 0; i < sorted.length; i++) {
+    const node = sorted[i];
+    if (node.x < currentX) {
+      node.x = currentX;
+    }
+    currentX = node.x + node.width + minMargin;
+    maxRight = Math.max(maxRight, node.x + node.width + 30);
+  }
+
+  return {
+    nodes: sorted,
+    requiredWidth: Math.max(maxRight + 30, 800),
+  };
 }
 
 export async function computeElkLayout(graph: ArchitectureGraph): Promise<ArchitectureGraph> {
@@ -22,7 +53,7 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     const nodesInTier = graph.nodes.filter((n) => n.tier === tier.id);
     const children: ElkNode[] = nodesInTier.map((node) => {
       const w = calculateNodeWidth(node.label);
-      const h = 72;
+      const h = 64;
       return {
         id: node.id,
         width: w,
@@ -33,9 +64,9 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     return {
       id: tier.id,
       layoutOptions: {
-        'elk.padding': '[top=50, left=30, bottom=30, right=30]',
-        'elk.spacing.nodeNode': '60',
-        'elk.layered.spacing.nodeNodeBetweenLayers': '70',
+        'elk.padding': '[top=45, left=30, bottom=25, right=30]',
+        'elk.spacing.nodeNode': '50',
+        'elk.layered.spacing.nodeNodeBetweenLayers': '60',
       },
       children,
     };
@@ -53,8 +84,8 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     layoutOptions: {
       'elk.algorithm': 'layered',
       'elk.direction': 'DOWN',
-      'elk.layered.spacing.nodeNodeBetweenLayers': '70',
-      'elk.spacing.nodeNode': '60',
+      'elk.layered.spacing.nodeNodeBetweenLayers': '60',
+      'elk.spacing.nodeNode': '50',
       'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
       'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
       'elk.edgeRouting': 'ORTHOGONAL',
@@ -74,8 +105,34 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
   const canvasX = 40;
 
   for (const tierElkNode of laidOutRoot.children || []) {
-    const tierWidth = Math.max(tierElkNode.width || 800, 600);
-    const tierHeight = Math.max(tierElkNode.height || 160, 120);
+    const rawTierNodes: { id: string; x: number; y: number; width: number; height: number }[] = [];
+
+    // Process child nodes of tier
+    for (const childNode of tierElkNode.children || []) {
+      const relX = childNode.x || 30;
+      const relY = childNode.y || 45;
+      rawTierNodes.push({
+        id: childNode.id,
+        x: Math.round(relX),
+        y: Math.round(relY),
+        width: Math.round(childNode.width || 190),
+        height: Math.round(childNode.height || 64),
+      });
+    }
+
+    // Apply 2D collision auto-healer
+    const healed = healTierNodeCollisions(rawTierNodes, 30);
+    healed.nodes.forEach((n) => {
+      nodeMap.set(n.id, {
+        x: n.x,
+        y: n.y,
+        width: n.width,
+        height: n.height,
+      });
+    });
+
+    const tierWidth = Math.max(tierElkNode.width || 800, healed.requiredWidth, 800);
+    const tierHeight = Math.max(tierElkNode.height || 140, 130);
     const tierX = canvasX;
     const tierY = currentTierY;
 
@@ -86,26 +143,12 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
       height: tierHeight,
     });
 
-    // Process child nodes of tier
-    for (const childNode of tierElkNode.children || []) {
-      // Child coordinates inside ELK are relative to parent tier container
-      const relX = childNode.x || 30;
-      const relY = childNode.y || 50;
-
-      nodeMap.set(childNode.id, {
-        x: Math.round(relX),
-        y: Math.round(relY),
-        width: Math.round(childNode.width || 180),
-        height: Math.round(childNode.height || 72),
-      });
-    }
-
-    currentTierY += tierHeight + 40; // 40px vertical gap between tier containers
+    currentTierY += tierHeight + 45; // 45px vertical gap between tier containers
   }
 
   // Enrich tiers with x, y, width, height
   const enrichedTiers: GraphTier[] = graph.tiers.map((t) => {
-    const coords = tierMap.get(t.id) || { x: 40, y: 40, width: 800, height: 160 };
+    const coords = tierMap.get(t.id) || { x: 40, y: 40, width: 800, height: 140 };
     return {
       ...t,
       ...coords,
@@ -114,7 +157,7 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
 
   // Enrich nodes with relative coordinates & dimensions
   const enrichedNodes: GraphNode[] = graph.nodes.map((n) => {
-    const coords = nodeMap.get(n.id) || { x: 30, y: 50, width: 180, height: 72 };
+    const coords = nodeMap.get(n.id) || { x: 30, y: 45, width: 190, height: 64 };
     return {
       ...n,
       ...coords,
@@ -151,3 +194,4 @@ export async function computeElkLayout(graph: ArchitectureGraph): Promise<Archit
     edges: enrichedEdges,
   };
 }
+

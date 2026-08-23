@@ -33,6 +33,38 @@ export const DOMAIN_PRESETS = [
 
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
+import { buildIncidentTriageSwimlaneXml } from "../masterBuilders/build_master_incident_triage_swimlane";
+import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
+import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
+import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
+import { buildMasterSaasMultiTenantXml } from "../masterBuilders/build_master_saas_multi_tenant";
+import { buildC4ComponentLldXml } from "../masterBuilders/build_master_c4_component_lld";
+import { buildMasterEtlEltCdcPipelineXml } from "../masterBuilders/build_master_etl_elt_cdc_pipeline";
+import { buildMasterEnterpriseApiManagementXml } from "../masterBuilders/build_master_enterprise_api_management";
+import { buildMultiAgentSequenceXml } from "../masterBuilders/build_master_multi_agent_sequence";
+import { buildAiAgentApprovalWorkflowXml } from "../masterBuilders/build_master_ai_agent_approval_workflow";
+import { buildIncidentTriageSreXml } from "../masterBuilders/build_master_incident_triage_sre";
+import { buildUnifiedDataGovernanceXml } from "../masterBuilders/master_builder_unified_data_governance";
+import { buildGcpLandingZoneVpcXml } from "../masterBuilders/build_master_gcp_landing_zone_vpc";
+import { buildMasterHaMultiRegionAppXml } from "../masterBuilders/build_master_ha_multi_region_application";
+import { buildMasterWorkloadIdentityAuthXml } from "../masterBuilders/build_master_workload_identity_authorization";
+import { buildMultiFlowZeroTrustPlatformXml } from "../masterBuilders/build_master_multiflow_zerotrust_platform";
+import { buildCompleteWellArchitectedGcpDrMasterXml } from "../masterBuilders/master_builder";
+import { buildSecureDeploymentTopologyXml } from "../masterBuilders/build_master_secure_deployment";
+import { buildEnterpriseSreObservabilityXml } from "../masterBuilders/master_builder_enterprise_sre";
+import { build6RsMigrationMatrixXml } from "../masterBuilders/master_builder_6rs";
+import { buildAgenticMeshXml } from "../masterBuilders/build_master_agentic_mesh";
+import { buildMasterGraphragKnowledgeGraphXml } from "../masterBuilders/build_master_graphrag_knowledge_graph";
+import { buildMcpContextGatewayXml } from "../masterBuilders/master_builder_mcp_gateway";
+import { buildEvalSafetyXml } from "../masterBuilders/build_master_eval_safety";
+import { buildThreatModelingStrideXml } from "../masterBuilders/build_master_threat_modeling_stride";
+import { buildServerlessEdaXml } from "../masterBuilders/build_master_serverless_eda";
+import { buildGoLiveWarRoomRunbookXml } from "../masterBuilders/master_builder_golive_warroom";
+import { buildPristineFinopsXml } from "../masterBuilders/master_builder_finops";
+import { buildLegacyDataDependencyMapXml } from "../masterBuilders/build_master_legacy_data_dependency";
+import { buildPristineAiCoeXml } from "../masterBuilders/master_builder_ai_coe";
+import { buildAiTrismGuardrailsXml } from "../masterBuilders/master_builder_ai_trism";
+import { buildDataResidencySovereignMapXml } from "../masterBuilders/master_builder_data_residency";
 
 /**
  * High-Fidelity 1:1 XML Generator for Template 01: System Context
@@ -82,7 +114,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Claims triage, onboarding, approval gates, DevOps release',
     defaultDomain: 'Clinical Trials & Regulatory Operations',
     keyComponents: ['Department Swimlanes', 'Hand-off Triggers', 'Approval Decision Gates', 'Audit Milestones'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildIncidentTriageSwimlaneXml()
   },
   {
     id: '04',
@@ -93,7 +125,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Migration VSM, software delivery, patient journey',
     defaultDomain: 'Research-to-Commercial Patient Journey',
     keyComponents: ['Value Stages', 'Key Activities', 'Process & Lead Time Metrics', 'Delivered Outcomes'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildValueStreamMapXml()
   },
   {
     id: '05',
@@ -104,7 +136,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Cloud migration, modernization, AI transformation',
     defaultDomain: 'Enterprise Cloud Transformation',
     keyComponents: ['As-Is Legacy Silos', 'Transformation Drivers', 'To-Be Cloud Target', 'Business ROI'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildAsIsToBeProcessFlowXml()
   },
   {
     id: '06',
@@ -115,7 +147,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Enterprise application ecosystem, SaaS boundary',
     defaultDomain: 'Enterprise Product Architecture',
     keyComponents: ['System in Scope', 'User Personas', 'External Software Systems', 'Data Contracts'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildEnterpriseReferenceArchitectureXml()
   },
   {
     id: '07',
@@ -126,7 +158,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Microservices, web applications, serverless clusters',
     defaultDomain: 'Cloud Native Microservices Platform',
     keyComponents: ['Web/Mobile Apps', 'API Gateway', 'Microservices Pods', 'Databases & Caches'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterSaasMultiTenantXml()
   },
   {
     id: '08',
@@ -137,7 +169,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Services, modules, internal pipelines, class libraries',
     defaultDomain: 'Microservice Internal Component Structure',
     keyComponents: ['Controllers', 'Service Adapters', 'Repository Layer', 'Domain Logic Entities'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildC4ComponentLldXml()
   },
   {
     id: '09',
@@ -148,7 +180,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'ETL/ELT, streaming lakehouse, payments pipeline',
     defaultDomain: 'Medallion Data Lakehouse & Stream Processing',
     keyComponents: ['Raw Bronze Storage', 'Dataflow Cleaning', 'Silver/Gold Marts', 'Serving APIs'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterEtlEltCdcPipelineXml()
   },
   {
     id: '10',
@@ -159,7 +191,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'APIs, Pub/Sub, SaaS connectors, B2B integration',
     defaultDomain: 'Enterprise API Management & Integration Hub',
     keyComponents: ['Apigee Gateway', 'Event Backbone', 'Data Integration Connectors', 'External Sinks'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterEnterpriseApiManagementXml()
   },
   {
     id: '11',
@@ -170,7 +202,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'API call sequences, agent task workflow, login SSO, payments',
     defaultDomain: 'Multi-Agent LLM Retrieval & Grounding Flow',
     keyComponents: ['Lifelines', 'Synchronous Messages', 'Async Events', 'Activation Bars'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMultiAgentSequenceXml()
   },
   {
     id: '12',
@@ -181,7 +213,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Order states, AI agent execution lifecycle, approval workflows',
     defaultDomain: 'Clinical Study Protocol Intelligence State Machine',
     keyComponents: ['Initial/Final States', 'Transition Triggers', 'Guardrail Rules', 'State Handlers'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildAiAgentApprovalWorkflowXml()
   },
   {
     id: '13',
@@ -192,7 +224,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Routing trees, approvals, AI confidence thresholds, risk scoring',
     defaultDomain: 'AI Regulatory Triage & Multi-Tier Escalation Decision Tree',
     keyComponents: ['Inbound Event', 'Decision Diamonds', 'Confidence Gates', 'Action Sinks'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildIncidentTriageSreXml()
   },
   {
     id: '14',
@@ -203,7 +235,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Relational databases, lakehouse star schema, semantic model',
     defaultDomain: 'Clinical Trial Genomics & EHR Star Schema',
     keyComponents: ['Entities/Tables', 'Primary/Foreign Keys', 'Crow\'s Foot Cardinality', 'Data Types'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildUnifiedDataGovernanceXml()
   },
   {
     id: '15',
@@ -214,7 +246,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'VPC hub-and-spoke, hybrid cloud, zero-trust perimeter',
     defaultDomain: 'GCP Enterprise Landing Zone & Shared VPC',
     keyComponents: ['Public Subnet DMZ', 'Private App Subnet', 'Database Subnet', 'Cloud Interconnect'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildGcpLandingZoneVpcXml()
   },
   {
     id: '16',
@@ -225,7 +257,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'GKE multi-cluster, Cloud Run, multi-region failover',
     defaultDomain: 'Multi-Region High-Availability Cloud Deployment',
     keyComponents: ['Primary Region', 'Secondary Region', 'Global Load Balancer', 'Data Replication'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterHaMultiRegionAppXml()
   },
   {
     id: '17',
@@ -236,7 +268,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Workload Identity Federation, OAuth 2.1 / OIDC, BeyondCorp',
     defaultDomain: 'Zero-Trust Enterprise IAM & Token Exchange',
     keyComponents: ['External IdP', 'Security Token Service (STS)', 'IAM Workload Pools', 'Audit Ledger'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterWorkloadIdentityAuthXml()
   },
   {
     id: '18',
@@ -247,7 +279,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Zero Trust, PCI-DSS enclaves, PHI protection, Assured Workloads',
     defaultDomain: 'Sovereign Zero-Trust Data Protection Enclave',
     keyComponents: ['Internet Untrusted Zone', 'Edge WAF DMZ', 'Trusted App Enclave', 'Hardware Key Vault'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMultiFlowZeroTrustPlatformXml()
   },
   {
     id: '19',
@@ -258,7 +290,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Active-active multi-region, hot standby, backup/restore',
     defaultDomain: 'Active-Active Multi-Region Resiliency (Cloud Spanner TrueTime)',
     keyComponents: ['Active Region (Iowa)', 'Standby Region (Virginia)', 'DNS Health Checks', 'RTO/RPO Metrics'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildCompleteWellArchitectedGcpDrMasterXml()
   },
   {
     id: '20',
@@ -269,7 +301,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'GitOps declarative delivery, progressive canary rollout, SLSA L3',
     defaultDomain: 'SLSA Level 3 GitOps Continuous Delivery Pipeline',
     keyComponents: ['Source Repo', 'Cloud Build CI', 'Artifact Registry & Scan', 'Canary Rollout Target'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildSecureDeploymentTopologyXml()
   },
   {
     id: '21',
@@ -280,7 +312,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Logs, metrics, traces, SLO error budget burn rates',
     defaultDomain: 'Enterprise SRE Observability & OpenTelemetry Mesh',
     keyComponents: ['OpenTelemetry Sidecars', 'Cloud Logging / Monitoring', 'Prometheus', 'SLO Alert Engine'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildEnterpriseSreObservabilityXml()
   },
   {
     id: '22',
@@ -291,7 +323,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Datacenter to GCP, database CDC migration, Strangler Fig pattern',
     defaultDomain: '6-Rs Wave Migration & Cloud Factory',
     keyComponents: ['Assess & Discover', 'Target Landing Zone', 'Live CDC Replication', 'Cutover & Decommission'],
-    generateXml: generateSystemContextXml
+    generateXml: () => build6RsMigrationMatrixXml()
   },
   {
     id: '23',
@@ -302,7 +334,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Supervisor-subagents, swarm mesh, planner/executor',
     defaultDomain: 'Hierarchical Multi-Agent Clinical Reasoning Swarm',
     keyComponents: ['Supervisor Agent', 'Domain Subagents', 'Shared Redis Memory', 'Safety Gate'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildAgenticMeshXml()
   },
   {
     id: '24',
@@ -313,7 +345,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Vector RAG, GraphRAG, multimodal clinical RAG',
     defaultDomain: 'Multi-Hop GraphRAG Knowledge Engine',
     keyComponents: ['Document Parser', 'Vector Embeddings', 'Spanner Graph (ISO GQL)', 'Gemini Model Armor'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMasterGraphragKnowledgeGraphXml()
   },
   {
     id: '25',
@@ -324,7 +356,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Model Context Protocol (MCP), Agent-to-Agent (A2A), OpenAPI tool bridges',
     defaultDomain: 'Model Context Protocol (MCP) Enterprise Gateway',
     keyComponents: ['Agent Client', 'MCP JSON-RPC Bridge', 'MicroVM Sandboxes', 'Enterprise Tool Registry'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildMcpContextGatewayXml()
   },
   {
     id: '26',
@@ -335,7 +367,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'AI approval gates, escalation workflows, risk triage',
     defaultDomain: 'FDA 21 CFR Part 11 Electronic Signature HITL Gate',
     keyComponents: ['AI Recommendation', 'Confidence Scorer', 'Medical Review Cockpit', 'Immutable Audit Signoff'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildEvalSafetyXml()
   },
   {
     id: '27',
@@ -346,7 +378,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'STRIDE model, prompt injection defense, API attack vectors',
     defaultDomain: 'STRIDE Threat Modeling & AI Defense Architecture',
     keyComponents: ['Threat Actors', 'Attack Surface Map', 'STRIDE Matrix', 'Mitigating Controls'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildThreatModelingStrideXml()
   },
   {
     id: '28',
@@ -357,7 +389,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'DLQ, retries, circuit breakers, agent timeouts',
     defaultDomain: 'Distributed Saga Failure Compensation & DLQ Quarantine',
     keyComponents: ['Failure Detection', 'Circuit Breaker', 'Compensating Rollback', 'Quarantine DLQ'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildServerlessEdaXml()
   },
   {
     id: '29',
@@ -368,7 +400,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Production launch, DR exercise, cloud cutover runbook',
     defaultDomain: 'Production Go-Live War Room & Cutover Checklist',
     keyComponents: ['Pre-Cutover (T-120)', 'Cutover Window', 'Smoke Verification', 'Rollback Trigger Matrix'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildGoLiveWarRoomRunbookXml()
   },
   {
     id: '30',
@@ -379,7 +411,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Cloud spend, AI token cost attribution, tenant unit economics',
     defaultDomain: 'Enterprise Cloud FinOps & AI Token Cost Attribution',
     keyComponents: ['Billing Export', 'Cost Attribution Marts', 'Idle Resource Reclaimer', 'Executive Cockpit'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildPristineFinopsXml()
   },
   {
     id: '31',
@@ -390,7 +422,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Microservice dependency graph, blast-radius impact analysis',
     defaultDomain: 'Multi-Tier System & Database Dependency Matrix',
     keyComponents: ['Applications', 'Data Stores', 'Integrations', 'Criticality Risk Heatmap'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildLegacyDataDependencyMapXml()
   },
   {
     id: '32',
@@ -401,7 +433,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Target state evolution, 3-year AI transformation roadmap',
     defaultDomain: 'Enterprise Cloud & AI Maturity Evolution Roadmap',
     keyComponents: ['Phase 0 Foundation', 'Phase 1 Scale', 'Phase 2 Autonomous AI', 'Strategic Drivers'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildPristineAiCoeXml()
   },
   {
     id: '33',
@@ -412,7 +444,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Vendor evaluation matrix, security control compliance heatmap',
     defaultDomain: 'Architecture Evaluation Matrix & Capability Heatmap',
     keyComponents: ['Evaluation Criteria', 'Option Scoring (1-5)', 'Weighted Rank', 'Strategic Recommendation'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildAiTrismGuardrailsXml()
   },
   {
     id: '34',
@@ -423,6 +455,6 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     examples: 'Global user base, multi-region sovereign cloud, edge CDN',
     defaultDomain: 'Global Sovereign Cloud & Data Residency Architecture',
     keyComponents: ['North America (US-East)', 'Europe (EU-Central)', 'APAC (Tokyo)', 'Global Edge Anycast'],
-    generateXml: generateSystemContextXml
+    generateXml: () => buildDataResidencySovereignMapXml()
   }
 ];
