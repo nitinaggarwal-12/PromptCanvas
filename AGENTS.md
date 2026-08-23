@@ -171,3 +171,17 @@ Every modification to diagram compiler, layout engine, cleaner, or preflight cod
    - Physically render and visually inspect the actual browser output across creation AND page refresh (`restoreDetailedView`).
 4. **Strict Separation of Domain Flavoring vs. Spatial Geometry**:
    - Flavoring (`injectUseCaseFlavor`) mutates text titles and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`).
+
+---
+
+# 🏛️ CANONICAL BLUEPRINT IMMUTABILITY & PREFLIGHT PASSTHROUGH PROTOCOL
+
+1. **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**:
+   - Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
+2. **Zero-Mutation Preflight Passthrough**:
+   - `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
+3. **16:9 Aspect Ratio Preservation**:
+   - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
+4. **Valid `<mxfile><diagram>` Envelope**:
+   - Every canonical template generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure to prevent Draw.io viewer wrapping artifacts.
+
