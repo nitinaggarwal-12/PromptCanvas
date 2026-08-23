@@ -17,19 +17,16 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   const text = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
     c.push(`<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
 
-  const edge = (id: string, src: string, tgt: string, label = "", color = "#1D4ED8", dash = false, s = "") =>
-    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.8;endArrow=block;endFill=1;fontSize=8;fontColor=${color};fontStyle=1;${dash ? "dashed=1;dashPattern=6 4;" : ""}${s}" edge="1" parent="1" source="${src}" target="${tgt}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-
   // 1. TOP HEADER BANNER
-  text("t1", "02 — Capability Map | NOVACURA Bio-Pharma Platform", 24, 16, 950, 28, "fontSize=24;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
-  text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 46, 600, 20, "fontSize=13;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
+  text("t1", "02 — Capability Map | NOVACURA Bio-Pharma Platform", 24, 14, 950, 28, "fontSize=24;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
+  text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 44, 600, 20, "fontSize=13;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
 
-  // 2. TOP CONTAINER: USER / BUSINESS EXPERIENCE LAYER (x: 250, y: 72, w: 1040, h: 96)
-  rect("exp_layer", "", 250, 72, 1040, 96, "strokeColor=#8B5CF6;strokeWidth=1.5;fillColor=#FAF5FF;shadow=0;");
-  text("exp_title", "USER / BUSINESS EXPERIENCE LAYER", 590, 75, 360, 18, "fontSize=12;fontStyle=1;fontColor=#6D28D9;align=center;");
+  // 2. TOP CONTAINER: USER / BUSINESS EXPERIENCE LAYER (x: 250, y: 72, w: 1040, h: 90)
+  rect("exp_layer", "", 250, 72, 1040, 90, "strokeColor=#8B5CF6;strokeWidth=1.5;fillColor=#FAF5FF;shadow=0;");
+  text("exp_title", "USER / BUSINESS EXPERIENCE LAYER", 590, 75, 360, 16, "fontSize=11.5;fontStyle=1;fontColor=#6D28D9;align=center;");
 
   const expCards = [
-    { title: "Role-Based Portals", desc: "Tailored experiences for every\nrole and function", icon: "💻" },
+    { title: "Role-Based Portals", desc: "Tailored experiences for every\nrole and function", icon: "👤" },
     { title: "Workflow Experiences", desc: "Guided workflows that drive\nconsistency and speed", icon: "🔀" },
     { title: "Dashboards & Insights", desc: "Real-time KPIs, performance\nand operational visibility", icon: "📊" },
     { title: "Collaboration & Communication", desc: "Secure communication, tasks,\nand document collaboration", icon: "💬" },
@@ -44,12 +41,12 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
           </div>
         </td>
         <td style="vertical-align:middle;padding-left:6px;text-align:left;">
-          <div style="font-size:10.5px;font-weight:800;color:#4C1D95;line-height:1.2;">${ec.title}</div>
-          <div style="font-size:8px;color:#475569;margin-top:2px;line-height:1.2;">${ec.desc.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:10px;font-weight:800;color:#4C1D95;line-height:1.2;">${ec.title}</div>
+          <div style="font-size:7.5px;color:#475569;margin-top:2px;line-height:1.2;">${ec.desc.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
-    c.push(`<mxCell id="exp_c_${i}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1;" vertex="1" parent="1"><mxGeometry x="${x}" y="96" width="242" height="62" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="exp_c_${i}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1;" vertex="1" parent="1"><mxGeometry x="${x}" y="94" width="242" height="58" as="geometry"/></mxCell>`);
   });
 
   // 3. LEFT COLUMN: BUSINESS OUTCOMES (x: 24, y: 72, w: 205, h: 630)
@@ -90,7 +87,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
 
   const personas = [
     { title: "Research Scientists", icon: "🔬" },
-    { title: "Clinical Ops", icon: "🩺" },
+    { title: "Clinical Ops", icon: "👥" },
     { title: "Regulatory Affairs", icon: "⚖️" },
     { title: "Safety Specialists", icon: "🛡️" },
     { title: "Quality Teams", icon: "🏭" },
@@ -113,8 +110,8 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push(`<mxCell id="per_c_${i}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;" vertex="1" parent="1"><mxGeometry x="1327" y="${y}" width="196" height="60" as="geometry"/></mxCell>`);
   });
 
-  // 5. CENTRAL CORE BUSINESS CAPABILITIES (x: 250, y: 180, w: 1040, h: 522)
-  rect("core_container", "", 250, 180, 1040, 522, "strokeColor=#2563EB;strokeWidth=2;fillColor=#FFFFFF;shadow=1;");
+  // 5. CENTRAL CORE BUSINESS CAPABILITIES (x: 250, y: 182, w: 1040, h: 520)
+  rect("core_container", "", 250, 182, 1040, 520, "strokeColor=#2563EB;strokeWidth=2;fillColor=#FFFFFF;shadow=1;");
   
   const coreLogoHtml = `<table style="margin:0 auto;text-align:center;">
     <tr>
@@ -125,21 +122,23 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
       </td>
     </tr>
   </table>`;
-  text("core_logo", coreLogoHtml, 420, 186, 700, 38, "align=center;");
+  text("core_logo", coreLogoHtml, 420, 188, 700, 36, "align=center;");
 
   // Helper for capability box item
-  const capBox = (id: string, num: string, title: string, items: Array<{ text: string; icon?: string }>, x: number, y: number, w: number, h: number, color = "#1D4ED8", bgTint = "#EFF6FF", isAi = false) => {
+  const capBox = (id: string, num: string, title: string, items: Array<{ text: string; icon?: string }>, x: number, y: number, w: number, h: number, color = "#1D4ED8", bgTint = "#EFF6FF", isAi = false, headerIcon = "") => {
     let itemsHtml = "";
     items.forEach((it) => {
       const iconSpan = it.icon ? `<span style="font-size:11px;margin-right:4px;">${it.icon}</span>` : "";
-      itemsHtml += `<div style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:4px;padding:4px 6px;margin-bottom:4px;font-size:8.5px;font-weight:600;color:#1E293B;display:flex;align-items:center;">${iconSpan}<span>${it.text}</span></div>`;
+      itemsHtml += `<div style="background:#FFFFFF;border:1px solid #E2E8F0;border-radius:4px;padding:3.5px 6px;margin-bottom:4px;font-size:8.5px;font-weight:600;color:#1E293B;display:flex;align-items:center;">${iconSpan}<span>${it.text}</span></div>`;
     });
 
     const aiBadge = isAi ? `<span style="font-size:10px;color:#7C3AED;margin-left:4px;">✨</span>` : "";
+    const hIconSpan = headerIcon ? `<span style="font-size:13px;margin-right:2px;">${headerIcon}</span>` : "";
 
     const html = `<div style="padding:4px 6px;">
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:6px;">
         <div style="width:18px;height:18px;border-radius:9px;background:${color};color:#FFFFFF;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;">${num}</div>
+        ${hIconSpan}
         <div style="font-size:10.5px;font-weight:800;color:${color};">${title} ${aiBadge}</div>
       </div>
       ${itemsHtml}
@@ -154,7 +153,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Preclinical Data Management", icon: "🗄️" },
     { text: "Protocol Design", icon: "📋" },
     { text: "Study Planning", icon: "📅" },
-  ], 262, 228, 245, 220, "#1E824C", "#F0FDF4");
+  ], 262, 228, 245, 220, "#1D4ED8", "#EFF6FF", false, "🔬");
 
   capBox("cap_2", "2", "Clinical Development", [
     { text: "Trial Design", icon: "🧪" },
@@ -162,21 +161,21 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Patient Recruitment & Enrollment", icon: "👥" },
     { text: "Clinical Data Capture", icon: "📊" },
     { text: "Monitoring & Oversight", icon: "🔍" },
-  ], 517, 228, 248, 220, "#2563EB", "#EFF6FF");
+  ], 517, 228, 248, 220, "#1D4ED8", "#EFF6FF", false, "👥");
 
   capBox("cap_3", "3", "Regulatory Affairs", [
     { text: "Submission Authoring", icon: "📄" },
     { text: "eCTD / IDMP Management", icon: "📁" },
     { text: "Health Authority Correspondence", icon: "🏛️" },
     { text: "Commitments & Variations", icon: "✅" },
-  ], 775, 228, 248, 220, "#0D9488", "#F0FDFA");
+  ], 775, 228, 248, 220, "#1D4ED8", "#EFF6FF", false, "⚖️");
 
   capBox("cap_4", "4", "Safety / Pharmacovigilance", [
     { text: "Case Intake", icon: "📥" },
     { text: "Signal Detection", icon: "📡" },
     { text: "Benefit-Risk Assessment", icon: "⚖️" },
     { text: "Safety Reporting", icon: "📊" },
-  ], 1033, 228, 245, 220, "#7C3AED", "#FAF5FF");
+  ], 1033, 228, 245, 220, "#7C3AED", "#FAF5FF", false, "🛡️");
 
   // Bottom Row of 4 Core Capability Boxes (y: 460, h: 230)
   capBox("cap_5", "5", "Quality & Manufacturing", [
@@ -185,14 +184,14 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Change Control", icon: "🔄" },
     { text: "Product Release", icon: "📦" },
     { text: "Supplier Quality", icon: "🏭" },
-  ], 262, 460, 245, 230, "#059669", "#F0FDF4");
+  ], 262, 460, 245, 230, "#0D9488", "#F0FDFA", false, "🏭");
 
   capBox("cap_6", "6", "Medical & Commercial", [
     { text: "Medical Information", icon: "💬" },
     { text: "Content & Evidence Management", icon: "📚" },
     { text: "Market Analytics", icon: "📈" },
     { text: "Forecasting & Performance Insights", icon: "📊" },
-  ], 517, 460, 248, 230, "#0284C7", "#F0F9FF");
+  ], 517, 460, 248, 230, "#0284C7", "#F0F9FF", false, "🩺");
 
   capBox("cap_7", "7", "Knowledge, Data & AI Foundation", [
     { text: "Document & Knowledge Hub", icon: "📁" },
@@ -200,7 +199,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "Data Lake / Warehouse", icon: "☁️" },
     { text: "Semantic Search / Vector Index", icon: "🕸️" },
     { text: "AI Copilot & Workflow Automation", icon: "✨" },
-  ], 775, 460, 248, 230, "#6D28D9", "#FAF5FF", true);
+  ], 775, 460, 248, 230, "#6D28D9", "#FAF5FF", true, "🧠");
 
   capBox("cap_8", "8", "Platform, Security & Operations", [
     { text: "Identity & Access Management", icon: "🔒" },
@@ -209,11 +208,11 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { text: "API & Interoperability Layer", icon: "🌐" },
     { text: "Monitoring & Support", icon: "🎧" },
     { text: "Tenant / Configuration Management", icon: "⚙️" },
-  ], 1033, 460, 245, 230, "#334155", "#F8FAFC");
+  ], 1033, 460, 245, 230, "#4338CA", "#F5F3FF", false, "🛡️");
 
-  // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 24, y: 720, w: 1511, h: 96)
-  rect("foundation_container", "", 24, 720, 1511, 96, "strokeColor=#0284C7;strokeWidth=1.5;fillColor=#F0F9FF;shadow=0;");
-  text("found_title", "SHARED DIGITAL FOUNDATION", 625, 724, 310, 18, "fontSize=12;fontStyle=1;fontColor=#0369A1;align=center;");
+  // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 24, y: 722, w: 1511, h: 96)
+  rect("foundation_container", "", 24, 722, 1511, 96, "strokeColor=#0284C7;strokeWidth=1.5;fillColor=#F0F9FF;shadow=0;");
+  text("found_title", "SHARED DIGITAL FOUNDATION", 625, 726, 310, 18, "fontSize=12;fontStyle=1;fontColor=#0369A1;align=center;");
 
   const foundationCards = [
     { title: "Integrations & Connectivity", desc: "Enterprise & partner systems,\nAPIs, data exchange and ecosystem", icon: "🔗" },
@@ -237,11 +236,11 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
         </td>
       </tr>
     </table>`;
-    c.push(`<mxCell id="found_c_${i}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1;" vertex="1" parent="1"><mxGeometry x="${x}" y="746" width="286" height="60" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="found_c_${i}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1;" vertex="1" parent="1"><mxGeometry x="${x}" y="748" width="286" height="60" as="geometry"/></mxCell>`);
   });
 
-  // 7. LEGEND BOX (x: 24, y: 830, w: 1511, h: 44)
-  rect("legend_box", "", 24, 830, 1511, 44, "strokeColor=#CBD5E1;strokeWidth=1.2;fillColor=#F8FAFC;");
+  // 7. LEGEND BOX (x: 24, y: 836, w: 1511, h: 44)
+  rect("legend_box", "", 24, 836, 1511, 44, "strokeColor=#CBD5E1;strokeWidth=1.2;fillColor=#F8FAFC;");
   
   const legendHtml = `<table style="width:100%;height:100%;text-align:left;margin-left:12px;"><tr>
     <td style="width:80px;vertical-align:middle;font-size:11px;font-weight:900;color:#0F172A;">LEGEND</td>
@@ -254,17 +253,23 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
       </div>
     </td>
   </tr></table>`;
-  text("legend_content", legendHtml, 28, 832, 1500, 40, "align=left;");
+  text("legend_content", legendHtml, 28, 838, 1500, 40, "align=left;");
 
-  // 8. INTER-LAYER SINGLE CRISP CONNECTORS
-  // Left: Core -> Outcomes (Arrow points LEFT into Outcomes)
-  edge("e_core_to_outcomes", "core_container", "outcomes_container", "", "#2563EB", false, ";exitX=0;exitY=0.5;entryX=1;entryY=0.5;");
-  // Right: Personas -> Core (Arrow points LEFT into Core)
-  edge("e_personas_to_core", "personas_container", "core_container", "", "#16A34A", false, ";exitX=0;exitY=0.5;entryX=1;entryY=0.5;");
-  // Top: Experience <-> Core (Bidirectional)
-  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  // Bottom: Foundation <-> Core (Bidirectional)
-  c.push(`<mxCell id="e_found_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 8. INTER-LAYER CONNECTORS (Matching images/02.png 100%)
+  // Left: Outcomes -> Core (Arrow points RIGHT from Business Outcomes into Core Platform)
+  c.push(`<mxCell id="e_outcomes_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="outcomes_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Right: Personas -> Core (Arrow points LEFT from Primary Personas into Core Platform)
+  c.push(`<mxCell id="e_personas_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="personas_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Top: Experience <-> Core (Bidirectional Purple Vertical Connector)
+  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Bottom 1: Core <-> Foundation (Bidirectional Blue Vertical Connector)
+  c.push(`<mxCell id="e_core_to_found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Bottom 2: Foundation <-> Legend (Bidirectional Slate Vertical Connector)
+  c.push(`<mxCell id="e_found_to_legend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="foundation_container" target="legend_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_02_capability_map" name="02 — Capability Map">
