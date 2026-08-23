@@ -483,13 +483,13 @@ export default function CanonicalPage() {
             </div>
 
             {/* Embedded Live Draw.io Viewer Viewport */}
-            <div className="flex-1 w-full h-full min-h-[550px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+            <div className="flex-1 w-full h-full min-h-[600px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
               <DiagramViewerRenderSafe
                 xml={currentXml}
                 bgTheme={themeMode}
-                diagramId={activeTemplate.id}
-                diagramType="canonical_system_context"
-                aspectRatioId="21:9"
+                diagramId={`canonical_${activeTemplate.id}`}
+                diagramType={`canonical_${activeTemplate.id}`}
+                aspectRatioId="16:9"
               />
             </div>
           </div>

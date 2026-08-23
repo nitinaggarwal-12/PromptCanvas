@@ -273,5 +273,15 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   "</tr></table>";
   text("legend_content", legendHtml, 28, 694, 1380, 38, "align=left;");
 
-  return "<mxGraphModel dx=\"1440\" dy=\"800\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"1440\" pageHeight=\"748\" background=\"" + bg + "\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/>" + c.join("\n") + "</root></mxGraphModel>";
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="template_02_capability_map" name="02 — Capability Map">
+    <mxGraphModel dx="1440" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="748" background="${bg}" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join("\n        ")}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
 }

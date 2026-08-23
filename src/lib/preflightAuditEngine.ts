@@ -78,12 +78,20 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       archType.startsWith('p5-') ||
       archType.startsWith('ind-') ||
       archType.startsWith('arch-') ||
+      archType.startsWith('canonical') ||
+      archType.includes('canonical') ||
       archType.includes('wbs') ||
       archType.includes('blueprint')
     )
   ) || (
     xmlInput && (
       xmlInput.includes('PromptCanvas') ||
+      xmlInput.includes('canonical') ||
+      xmlInput.includes('NOVACURA') ||
+      xmlInput.includes('template_0') ||
+      xmlInput.includes('02 — Capability Map') ||
+      xmlInput.includes('03 — Business Process') ||
+      xmlInput.includes('01 — System Context') ||
       xmlInput.includes('wbs') ||
       xmlInput.includes('WBS') ||
       xmlInput.includes('Blueprint') ||

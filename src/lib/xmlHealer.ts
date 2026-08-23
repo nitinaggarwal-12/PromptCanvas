@@ -98,11 +98,19 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.startsWith('p5-') ||
       archType.startsWith('ind-') ||
       archType.startsWith('arch-') ||
+      archType.startsWith('canonical') ||
+      archType.includes('canonical') ||
       archType.includes('wbs') ||
       archType.includes('blueprint')
     )
   ) || (
     inputXml.includes('PromptCanvas') ||
+    inputXml.includes('canonical') ||
+    inputXml.includes('NOVACURA') ||
+    inputXml.includes('template_0') ||
+    inputXml.includes('02 — Capability Map') ||
+    inputXml.includes('03 — Business Process') ||
+    inputXml.includes('01 — System Context') ||
     inputXml.includes('wbs') ||
     inputXml.includes('WBS') ||
     inputXml.includes('Blueprint') ||
