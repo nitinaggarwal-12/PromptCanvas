@@ -8642,10 +8642,22 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   type="button"
                   onClick={async () => {
                     if (typeof window !== 'undefined') {
-                      localStorage.setItem('pc_user_persona', selectedPersona);
+                      try {
+                        localStorage.setItem('pc_user_persona', selectedPersona);
+                        localStorage.setItem('pc_tour_completed', 'true');
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('tab', 'editor');
+                        url.searchParams.delete('tour');
+                        window.history.replaceState(null, '', url.toString());
+                      } catch (e) {}
                     }
+                    setCurrentTab('editor');
                     if (!activeDiagram && diagrams.length > 0) {
-                      await loadDiagramDetails(diagrams[0].id);
+                      try {
+                        await loadDiagramDetails(diagrams[0].id);
+                      } catch (e) {
+                        console.error('Error loading diagram details:', e);
+                      }
                     }
                     const targetArch =
                       selectedPersona === 'architect'
@@ -8655,8 +8667,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                         : selectedPersona === 'ai_engineer'
                         ? 'agentic_rag'
                         : 'governance_state_machine';
-                    handleArchitectureSwitch(targetArch);
-                    setTourStep(2);
+                    try {
+                      handleArchitectureSwitch(targetArch);
+                    } catch (e) {
+                      console.error('Error switching architecture:', e);
+                    }
+                    setTourStep(null);
                   }}
                   className="w-full md:w-auto px-8 py-3 rounded-xl bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 hover:from-teal-300 hover:to-cyan-300 text-bg-dark text-xs font-black transition-all shadow-xl shadow-teal-500/25 hover:shadow-teal-500/40 cursor-pointer flex items-center justify-center gap-2"
                 >
