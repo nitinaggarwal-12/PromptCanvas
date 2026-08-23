@@ -24,9 +24,10 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     c.push(`<mxCell id="${id}" style="edgeStyle=none;html=1;strokeWidth=1.2;${style}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y1}" as="sourcePoint"/><mxPoint x="${x2}" y="${y2}" as="targetPoint"/></mxGeometry></mxCell>`);
   };
 
-  const msg = (id: string, label: string, x1: number, x2: number, y: number, color = "#1D4ED8", dashed = false) => {
+  const msg = (id: string, label: string, x1: number, x2: number, y: number, color = "#1D4ED8", dashed = false, align: "center" | "left" = "center") => {
     const dashStyle = dashed ? "dashed=1;dashPattern=5 4;" : "";
-    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=none;html=1;${dashStyle}strokeColor=${color};strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9.5;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y}" as="sourcePoint"/><mxPoint x="${x2}" y="${y}" as="targetPoint"/></mxGeometry></mxCell>`);
+    const alignStyle = align === "left" ? "align=left;spacingLeft=6;" : "align=center;";
+    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=none;html=1;${dashStyle}strokeColor=${color};strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;${alignStyle}" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="${x1}" y="${y}" as="sourcePoint"/><mxPoint x="${x2}" y="${y}" as="targetPoint"/></mxGeometry></mxCell>`);
   };
 
   // =========================================================================
@@ -62,18 +63,18 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // 2. 12 LIFELINE PARTICIPANTS ACROSS TOP (y: 98, h: 46)
   // =========================================================================
   const lifelines = [
-    { id: "p_user", name: "Scientist<br>(User)", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-    { id: "p_copilot", name: "AI Copilot<br>(Web App)", icon: "💬", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-    { id: "p_gateway", name: "API Gateway<br>(Apigee X)", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-    { id: "p_auth", name: "Auth Service<br>(Cloud Identity)", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-    { id: "p_orch", name: "Orchestration<br>Service", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-    { id: "p_rag", name: "RAG Service<br>(Vertex AI)", icon: "🔍", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-    { id: "p_vdb", name: "Vector DB<br>(BigQuery Vector)", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-    { id: "p_data", name: "Data Services<br>(Clinical Data APIs)", icon: "📁", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-    { id: "p_llm", name: "LLM Service<br>(Vertex AI)", icon: "🧠", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-    { id: "p_policy", name: "Response &amp; Policy<br>Service", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-    { id: "p_audit", name: "Audit &amp; Logging<br>(Cloud Logging)", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-    { id: "p_mon", name: "Monitoring<br>(Cloud Monitoring)", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+    { id: "p_user", name: "Scientist<br><span style='color:#64748B;font-weight:500;'>(User)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+    { id: "p_copilot", name: "AI Copilot<br><span style='color:#64748B;font-weight:500;'>(Web App)</span>", icon: "💬", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+    { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee X)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+    { id: "p_auth", name: "Auth Service<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+    { id: "p_orch", name: "Orchestration<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+    { id: "p_rag", name: "RAG Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "🔍", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+    { id: "p_vdb", name: "Vector DB<br><span style='color:#64748B;font-weight:500;'>(BigQuery Vector)</span>", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+    { id: "p_data", name: "Data Services<br><span style='color:#64748B;font-weight:500;'>(Clinical Data APIs)</span>", icon: "📁", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+    { id: "p_llm", name: "LLM Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "🧠", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+    { id: "p_policy", name: "Response &amp; Policy<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+    { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+    { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
   ];
 
   const centers: Record<string, number> = {};
@@ -112,8 +113,8 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   act("act_data", "p_data", 465, 45, "#F0FDF4", "#059669");
   act("act_llm", "p_llm", 545, 55, "#FAF5FF", "#7C3AED");
   act("act_policy", "p_policy", 595, 55, "#FAF5FF", "#6D28D9");
-  act("act_audit", "p_audit", 665, 45, "#F0F9FF", "#0284C7");
-  act("act_mon", "p_mon", 685, 25, "#F0F9FF", "#0284C7");
+  act("act_audit", "p_audit", 665, 50, "#F0F9FF", "#0284C7");
+  act("act_mon", "p_mon", 685, 30, "#F0F9FF", "#0284C7");
 
   // =========================================================================
   // 4. SEQUENCE MESSAGES & NUMBERED STEPS (1..20)
@@ -178,26 +179,38 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // 18: Orchestrator logs interaction to Audit
   msg("m18", "⓲ Log interaction (query, response, user_id, tokens)", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
 
-  // 19: Audit writes metrics & traces to Monitoring
-  msg("m19", "⓳ Write logs &amp; emit telemetry", centers.p_audit, centers.p_mon, 710, "#0284C7");
+  // 19: Audit Self Loop (Write logs)
+  c.push(`<mxCell id="m19_loop" value="⓳ Write logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;exitX=1;exitY=0.4;entryX=1;entryY=0.8;" edge="1" parent="1" source="act_audit" target="act_audit"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${centers.p_audit + 30}" y="685"/><mxPoint x="${centers.p_audit + 30}" y="705"/></Array></mxGeometry></mxCell>`);
+
+  // 20: Audit writes metrics & traces to Monitoring
+  msg("m20", "⓴ Metrics &amp; traces", centers.p_audit, centers.p_mon, 715, "#0284C7");
 
   // =========================================================================
-  // 5. RIGHT-SIDE "ALT" (ALTERNATIVE FLOWS) BOX
+  // 5. RIGHT-SIDE "ALT" (ALTERNATIVE FLOWS) BOX WITH SEPARATE TEXT & ARROW SEGMENTS
   // =========================================================================
   const altHeaderHtml = `<div style="background:#0284C7;color:#FFFFFF;font-weight:900;font-size:9px;padding:2px 6px;display:inline-block;border-radius:2px;">ALT</div>`;
-  rect("alt_container", "", 1220, 260, 270, 230, "fillColor=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;");
+  rect("alt_container", "", 1220, 260, 310, 245, "fillColor=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;");
   text("alt_label", altHeaderHtml, 1224, 264, 40, 18, "align=left;");
 
-  const altBodyHtml = `<div style="font-size:8.5px;line-height:1.35;color:#0F172A;padding:4px;">
+  const altBodyHtml = `<div style="font-size:8.5px;line-height:1.4;color:#0F172A;padding:4px;">
     <div style="font-weight:700;color:#0284C7;margin-bottom:2px;">[ If no relevant results found ]</div>
-    <div style="color:#475569;margin-left:4px;"><b>A1</b> Notify no results</div>
-    <div style="color:#475569;margin-left:4px;"><b>A2</b> Suggest refined query or broader search</div>
-    <div style="border-top:1px dashed #CBD5E1;margin:10px 0 8px 0;"></div>
+    <div style="color:#334155;margin-left:4px;"><b>A1</b> Notify no results</div>
+    <div style="height:12px;"></div>
+    <div style="color:#334155;margin-left:4px;"><b>A2</b> Suggest refined query or broader search</div>
+    <div style="height:12px;"></div>
+    <div style="border-top:1px dashed #CBD5E1;margin:8px 0 6px 0;"></div>
     <div style="font-weight:700;color:#DC2626;margin-bottom:2px;">[ If policy violation detected ]</div>
-    <div style="color:#475569;margin-left:4px;"><b>B1</b> Block response</div>
-    <div style="color:#475569;margin-left:4px;"><b>B2</b> Return safe response with explanation</div>
+    <div style="color:#334155;margin-left:4px;"><b>B1</b> Block response</div>
+    <div style="height:12px;"></div>
+    <div style="color:#334155;margin-left:4px;"><b>B2</b> Return safe response with explanation</div>
   </div>`;
-  text("alt_content", altBodyHtml, 1222, 285, 264, 200, "align=left;verticalAlign=top;");
+  text("alt_content", altBodyHtml, 1222, 285, 304, 215, "align=left;verticalAlign=top;");
+
+  // Dashed return arrows placed in dedicated spacing tracks below each text item
+  line("alt_a1_arrow", 1510, 320, 1230, 320, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+  line("alt_a2_arrow", 1510, 355, 1230, 355, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+  line("alt_b1_arrow", 1510, 420, 1230, 420, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+  line("alt_b2_arrow", 1510, 460, 1230, 460, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // =========================================================================
   // 6. BOTTOM 5 ANALYTICAL SUMMARY CARDS (y: 755, h: 185)
