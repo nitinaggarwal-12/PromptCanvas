@@ -52,8 +52,8 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push("<mxCell id=\"exp_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"" + x + "\" y=\"90\" width=\"230\" height=\"60\" as=\"geometry\"/></mxCell>");
   });
 
-  // 3. LEFT COLUMN: BUSINESS OUTCOMES (x: 24, y: 68, w: 186, h: 676)
-  rect("outcomes_container", "", 24, 68, 186, 676, "strokeColor=#3B82F6;strokeWidth=1.5;fillColor=#EFF6FF;shadow=0;");
+  // 3. LEFT COLUMN: BUSINESS OUTCOMES (x: 24, y: 68, w: 186, h: 510)
+  rect("outcomes_container", "", 24, 68, 186, 510, "strokeColor=#3B82F6;strokeWidth=1.5;fillColor=#EFF6FF;shadow=0;");
   
   const outcomeHeaderHtml = "<table style=\"margin:0 auto;\"><tr>" +
     "<td style=\"vertical-align:middle;padding-right:6px;\"><img src=\"https://api.iconify.design/lucide:trophy.svg?color=%231E40AF\" width=\"18\" height=\"18\"/></td>" +
@@ -63,30 +63,30 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
 
   const outcomes = [
     { title: "Faster submissions", desc: "Accelerate regulatory approvals with quality submissions.", icon: "https://api.iconify.design/lucide:rocket.svg?color=%231D4ED8" },
-    { title: "Improved trial execution", desc: "Optimize trials with better planning, monitoring and data quality.", icon: "https://api.iconify.design/lucide:clipboard-check.svg?color=%231D4ED8" },
+    { title: "Improved trial execution", desc: "Optimize trials with better planning, monitoring and data.", icon: "https://api.iconify.design/lucide:clipboard-check.svg?color=%231D4ED8" },
     { title: "Better signal detection", desc: "Detect safety signals earlier with integrated data and AI.", icon: "https://api.iconify.design/lucide:radio.svg?color=%231D4ED8" },
     { title: "Stronger compliance", desc: "Ensure adherence to regulations and internal standards.", icon: "https://api.iconify.design/lucide:shield-check.svg?color=%231D4ED8" },
-    { title: "Reusable enterprise knowledge", desc: "Capture, standardize and reuse institutional knowledge.", icon: "https://api.iconify.design/lucide:book-open.svg?color=%231D4ED8" },
+    { title: "Reusable knowledge", desc: "Capture, standardize and reuse institutional knowledge.", icon: "https://api.iconify.design/lucide:book-open.svg?color=%231D4ED8" },
     { title: "Scalable automation", desc: "Automate processes to drive efficiency and reduce cost.", icon: "https://api.iconify.design/lucide:cpu.svg?color=%231D4ED8" },
   ];
   outcomes.forEach((o, i) => {
-    const y = 104 + i * 105;
+    const y = 98 + i * 78;
     const html = "<table style=\"width:100%;height:100%;border-collapse:collapse;\">" +
       "<tr>" +
-        "<td style=\"width:32px;vertical-align:top;padding-top:6px;text-align:center;\">" +
-          "<img src=\"" + o.icon + "\" width=\"20\" height=\"20\" style=\"display:block;margin:0 auto;\"/>" +
+        "<td style=\"width:30px;vertical-align:top;padding-top:3px;text-align:center;\">" +
+          "<img src=\"" + o.icon + "\" width=\"17\" height=\"17\" style=\"display:block;margin:0 auto;\"/>" +
         "</td>" +
-        "<td style=\"vertical-align:top;padding-left:4px;padding-top:4px;text-align:left;\">" +
-          "<div style=\"font-size:10px;font-weight:800;color:#1E3A8A;line-height:1.2;\">" + o.title + "</div>" +
-          "<div style=\"font-size:8px;color:#334155;margin-top:2px;line-height:1.2;\">" + o.desc + "</div>" +
+        "<td style=\"vertical-align:top;padding-left:4px;padding-top:1px;text-align:left;\">" +
+          "<div style=\"font-size:9.5px;font-weight:800;color:#1E3A8A;line-height:1.2;\">" + o.title + "</div>" +
+          "<div style=\"font-size:7.5px;color:#334155;margin-top:1px;line-height:1.15;\">" + o.desc + "</div>" +
         "</td>" +
       "</tr>" +
     "</table>";
-    c.push("<mxCell id=\"out_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"30\" y=\"" + y + "\" width=\"174\" height=\"98\" as=\"geometry\"/></mxCell>");
+    c.push("<mxCell id=\"out_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"30\" y=\"" + y + "\" width=\"174\" height=\"72\" as=\"geometry\"/></mxCell>");
   });
 
-  // 4. RIGHT COLUMN: PRIMARY PERSONAS (x: 1220, y: 68, w: 196, h: 676)
-  rect("personas_container", "", 1220, 68, 196, 676, "strokeColor=#16A34A;strokeWidth=1.5;fillColor=#F0FDF4;shadow=0;");
+  // 4. RIGHT COLUMN: PRIMARY PERSONAS (x: 1220, y: 68, w: 196, h: 510)
+  rect("personas_container", "", 1220, 68, 196, 510, "strokeColor=#16A34A;strokeWidth=1.5;fillColor=#F0FDF4;shadow=0;");
   
   const personaHeaderHtml = "<table style=\"margin:0 auto;\"><tr>" +
     "<td style=\"vertical-align:middle;padding-right:6px;\"><img src=\"https://api.iconify.design/lucide:users.svg?color=%2315803D\" width=\"18\" height=\"18\"/></td>" +
@@ -105,33 +105,33 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { title: "Platform Admins", icon: "https://api.iconify.design/lucide:settings.svg?color=%2316A34A" },
   ];
   personas.forEach((p, i) => {
-    const y = 104 + i * 78;
+    const y = 98 + i * 58;
     const html = "<table style=\"width:100%;height:100%;border-collapse:collapse;\">" +
       "<tr>" +
-        "<td style=\"width:32px;vertical-align:middle;text-align:center;\">" +
-          "<img src=\"" + p.icon + "\" width=\"20\" height=\"20\" style=\"display:block;margin:0 auto;\"/>" +
+        "<td style=\"width:28px;vertical-align:middle;text-align:center;\">" +
+          "<img src=\"" + p.icon + "\" width=\"17\" height=\"17\" style=\"display:block;margin:0 auto;\"/>" +
         "</td>" +
         "<td style=\"vertical-align:middle;padding-left:4px;text-align:left;\">" +
-          "<div style=\"font-size:10px;font-weight:800;color:#166534;\">" + p.title + "</div>" +
+          "<div style=\"font-size:9.5px;font-weight:800;color:#166534;\">" + p.title + "</div>" +
         "</td>" +
       "</tr>" +
     "</table>";
-    c.push("<mxCell id=\"per_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"1228\" y=\"" + y + "\" width=\"180\" height=\"70\" as=\"geometry\"/></mxCell>");
+    c.push("<mxCell id=\"per_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"1228\" y=\"" + y + "\" width=\"180\" height=\"52\" as=\"geometry\"/></mxCell>");
   });
 
-  // 5. CENTER PLATFORM: NOVACURA Bio-Pharma Platform (x: 224, y: 170, w: 980, h: 574)
-  rect("main_platform", "", 224, 170, 980, 574, "strokeColor=#1D4ED8;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
+  // 5. CENTER PLATFORM: NOVACURA Bio-Pharma Platform (x: 224, y: 168, w: 980, h: 410)
+  rect("main_platform", "", 224, 168, 980, 410, "strokeColor=#1D4ED8;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
 
   const logoCenterHtml = "<table style=\"margin:0 auto;\"><tr>" +
     "<td style=\"vertical-align:middle;padding-right:10px;\">" +
-      "<svg width=\"34\" height=\"26\" viewBox=\"0 0 40 32\"><path d=\"M4 28L14 4h9L15 28z\" fill=\"#2563EB\"/><path d=\"M18 28L28 4h9L27 28z\" fill=\"#1E3A8A\"/></svg>" +
+      "<svg width=\"30\" height=\"22\" viewBox=\"0 0 40 32\"><path d=\"M4 28L14 4h9L15 28z\" fill=\"#2563EB\"/><path d=\"M18 28L28 4h9L27 28z\" fill=\"#1E3A8A\"/></svg>" +
     "</td>" +
     "<td style=\"vertical-align:middle;text-align:left;\">" +
-      "<div style=\"font-size:19px;font-weight:900;color:#1E3A8A;letter-spacing:1px;line-height:1;\">NOVACURA Bio-Pharma Platform</div>" +
-      "<div style=\"font-size:10px;font-weight:800;color:#2563EB;line-height:1.2;letter-spacing:1px;margin-top:2px;\">CORE BUSINESS CAPABILITIES</div>" +
+      "<div style=\"font-size:17px;font-weight:900;color:#1E3A8A;letter-spacing:0.8px;line-height:1;\">NOVACURA Bio-Pharma Platform</div>" +
+      "<div style=\"font-size:9px;font-weight:800;color:#2563EB;line-height:1.2;letter-spacing:1px;margin-top:2px;\">CORE BUSINESS CAPABILITIES</div>" +
     "</td>" +
   "</tr></table>";
-  text("novacura_center_hdr", logoCenterHtml, 464, 176, 500, 34, "align=center;");
+  text("novacura_center_hdr", logoCenterHtml, 464, 172, 500, 30, "align=center;");
 
   // Helper to build domain card with high contrast & crisp capsules
   const domainBox = (id: string, num: string, title: string, domainIcon: string, items: { name: string; icon: string; ai?: boolean }[], x: number, y: number, w: number, h: number, border = "#BFDBFE", bg = "#FFFFFF", titleColor = "#1E3A8A", badgeBg = "#1D4ED8") => {
@@ -140,17 +140,17 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
       const itBg = it.ai ? "#FAF5FF" : "#FFFFFF";
       const itBorder = it.ai ? "#C084FC" : "#CBD5E1";
       const itColor = it.ai ? "#6B21A8" : "#0F172A";
-      itemsHtml += "<div style=\"display:flex;align-items:center;background:" + itBg + ";border:1px solid " + itBorder + ";border-radius:4px;padding:3px 5px;margin-bottom:3px;box-shadow:0 1px 2px rgba(0,0,0,0.03);\">" +
-        "<img src=\"" + it.icon + "\" width=\"13\" height=\"13\" style=\"margin-right:5px;flex-shrink:0;\"/>" +
+      itemsHtml += "<div style=\"display:flex;align-items:center;background:" + itBg + ";border:1px solid " + itBorder + ";border-radius:4px;padding:2px 4px;margin-bottom:2px;box-shadow:0 1px 2px rgba(0,0,0,0.03);\">" +
+        "<img src=\"" + it.icon + "\" width=\"12\" height=\"12\" style=\"margin-right:5px;flex-shrink:0;\"/>" +
         "<div style=\"font-size:8.5px;font-weight:" + (it.ai ? "800" : "600") + ";color:" + itColor + ";white-space:nowrap;overflow:hidden;text-overflow:ellipsis;\">" + it.name + "</div>" +
       "</div>";
     });
 
-    const cardHtml = "<div style=\"padding:4px 5px;\">" +
-      "<div style=\"display:flex;align-items:center;margin-bottom:5px;\">" +
-        "<div style=\"width:17px;height:17px;border-radius:50%;background:" + badgeBg + ";color:#FFF;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-right:5px;flex-shrink:0;\">" + num + "</div>" +
-        "<img src=\"" + domainIcon + "\" width=\"16\" height=\"16\" style=\"margin-right:5px;flex-shrink:0;\"/>" +
-        "<div style=\"font-size:10.5px;font-weight:800;color:" + titleColor + ";\">" + title + "</div>" +
+    const cardHtml = "<div style=\"padding:2px 3px;\">" +
+      "<div style=\"display:flex;align-items:center;margin-bottom:3px;\">" +
+        "<div style=\"width:15px;height:15px;border-radius:50%;background:" + badgeBg + ";color:#FFF;font-size:8.5px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-right:4px;flex-shrink:0;\">" + num + "</div>" +
+        "<img src=\"" + domainIcon + "\" width=\"14\" height=\"14\" style=\"margin-right:4px;flex-shrink:0;\"/>" +
+        "<div style=\"font-size:9.5px;font-weight:800;color:" + titleColor + ";\">" + title + "</div>" +
       "</div>" +
       itemsHtml +
     "</div>";
@@ -158,13 +158,13 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push("<mxCell id=\"" + id + "\" value=\"" + E(cardHtml) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=" + bg + ";strokeColor=" + border + ";strokeWidth=1.2;shadow=0;verticalAlign=top;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"" + x + "\" y=\"" + y + "\" width=\"" + w + "\" height=\"" + h + "\" as=\"geometry\"/></mxCell>");
   };
 
-  // Row 1 of Domains (Top 4 Domains, y: 216, h: 244, w: 230)
+  // Row 1 of Domains (Top 4 Domains, y: 206, h: 162, w: 230)
   domainBox("dom_1", "1", "Research & Discovery", "https://api.iconify.design/lucide:microscope.svg?color=%231D4ED8", [
     { name: "Target Identification", icon: "https://api.iconify.design/lucide:crosshair.svg?color=%231D4ED8" },
     { name: "Preclinical Data Management", icon: "https://api.iconify.design/lucide:database.svg?color=%231D4ED8" },
     { name: "Protocol Design", icon: "https://api.iconify.design/lucide:file-edit.svg?color=%231D4ED8" },
     { name: "Study Planning", icon: "https://api.iconify.design/lucide:calendar.svg?color=%231D4ED8" },
-  ], 236, 216, 230, 244, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
+  ], 236, 206, 230, 162, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
 
   domainBox("dom_2", "2", "Clinical Development", "https://api.iconify.design/lucide:users.svg?color=%231D4ED8", [
     { name: "Trial Design", icon: "https://api.iconify.design/lucide:file-text.svg?color=%231D4ED8" },
@@ -172,37 +172,37 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { name: "Patient Recruitment & Enrollment", icon: "https://api.iconify.design/lucide:user-plus.svg?color=%231D4ED8" },
     { name: "Clinical Data Capture", icon: "https://api.iconify.design/lucide:file-input.svg?color=%231D4ED8" },
     { name: "Monitoring & Oversight", icon: "https://api.iconify.design/lucide:search.svg?color=%231D4ED8" },
-  ], 478, 216, 230, 244, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
+  ], 478, 206, 230, 162, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
 
   domainBox("dom_3", "3", "Regulatory Affairs", "https://api.iconify.design/lucide:scale.svg?color=%231D4ED8", [
     { name: "Submission Authoring", icon: "https://api.iconify.design/lucide:file-signature.svg?color=%231D4ED8" },
     { name: "eCTD / IDMP Management", icon: "https://api.iconify.design/lucide:folder-tree.svg?color=%231D4ED8" },
     { name: "Health Authority Correspondence", icon: "https://api.iconify.design/lucide:landmark.svg?color=%231D4ED8" },
     { name: "Commitments & Variations", icon: "https://api.iconify.design/lucide:check-square.svg?color=%231D4ED8" },
-  ], 720, 216, 230, 244, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
+  ], 720, 206, 230, 162, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#1D4ED8");
 
   domainBox("dom_4", "4", "Safety / Pharmacovigilance", "https://api.iconify.design/lucide:shield-alert.svg?color=%236D28D9", [
     { name: "Case Intake", icon: "https://api.iconify.design/lucide:inbox.svg?color=%236D28D9" },
     { name: "Signal Detection", icon: "https://api.iconify.design/lucide:activity.svg?color=%236D28D9" },
     { name: "Benefit-Risk Assessment", icon: "https://api.iconify.design/lucide:scale.svg?color=%236D28D9" },
     { name: "Safety Reporting", icon: "https://api.iconify.design/lucide:file-warning.svg?color=%236D28D9" },
-  ], 962, 216, 230, 244, "#DDD6FE", "#FFFFFF", "#4C1D95", "#6D28D9");
+  ], 962, 206, 230, 162, "#DDD6FE", "#FFFFFF", "#4C1D95", "#6D28D9");
 
-  // Row 2 of Domains (Bottom 4 Domains, y: 472, h: 258, w: 230)
+  // Row 2 of Domains (Bottom 4 Domains, y: 376, h: 194, w: 230)
   domainBox("dom_5", "5", "Quality & Manufacturing", "https://api.iconify.design/lucide:factory.svg?color=%230D9488", [
     { name: "QMS / Deviations / CAPA", icon: "https://api.iconify.design/lucide:check-circle-2.svg?color=%230D9488" },
     { name: "Batch Record Review", icon: "https://api.iconify.design/lucide:file-check.svg?color=%230D9488" },
     { name: "Change Control", icon: "https://api.iconify.design/lucide:refresh-cw.svg?color=%230D9488" },
     { name: "Product Release", icon: "https://api.iconify.design/lucide:package-check.svg?color=%230D9488" },
     { name: "Supplier Quality", icon: "https://api.iconify.design/lucide:award.svg?color=%230D9488" },
-  ], 236, 472, 230, 258, "#99F6E4", "#FFFFFF", "#0F766E", "#0D9488");
+  ], 236, 376, 230, 194, "#99F6E4", "#FFFFFF", "#0F766E", "#0D9488");
 
   domainBox("dom_6", "6", "Medical & Commercial", "https://api.iconify.design/lucide:message-square.svg?color=%230D9488", [
     { name: "Medical Information", icon: "https://api.iconify.design/lucide:help-circle.svg?color=%230D9488" },
     { name: "Content & Evidence Management", icon: "https://api.iconify.design/lucide:library.svg?color=%230D9488" },
     { name: "Market Analytics", icon: "https://api.iconify.design/lucide:bar-chart.svg?color=%230D9488" },
     { name: "Forecasting & Performance Insights", icon: "https://api.iconify.design/lucide:trending-up.svg?color=%230D9488" },
-  ], 478, 472, 230, 258, "#99F6E4", "#FFFFFF", "#0F766E", "#0D9488");
+  ], 478, 376, 230, 194, "#99F6E4", "#FFFFFF", "#0F766E", "#0D9488");
 
   domainBox("dom_7", "7", "Knowledge, Data & AI Foundation", "https://api.iconify.design/lucide:sparkles.svg?color=%237C3AED", [
     { name: "Document & Knowledge Hub", icon: "https://api.iconify.design/lucide:folder-git-2.svg?color=%237C3AED" },
@@ -210,7 +210,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { name: "Data Lake / Warehouse", icon: "https://api.iconify.design/lucide:layers.svg?color=%237C3AED" },
     { name: "Semantic Search / Vector Index", icon: "https://api.iconify.design/lucide:network.svg?color=%237C3AED" },
     { name: "✨ AI Copilot & Workflow Automation", icon: "https://api.iconify.design/lucide:bot.svg?color=%237C3AED", ai: true },
-  ], 720, 472, 230, 258, "#DDD6FE", "#FFFFFF", "#581C87", "#7C3AED");
+  ], 720, 376, 230, 194, "#DDD6FE", "#FFFFFF", "#581C87", "#7C3AED");
 
   domainBox("dom_8", "8", "Platform, Security & Operations", "https://api.iconify.design/lucide:shield-check.svg?color=%23475569", [
     { name: "Identity & Access Management", icon: "https://api.iconify.design/lucide:key.svg?color=%23475569" },
@@ -219,16 +219,16 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { name: "API & Interoperability Layer", icon: "https://api.iconify.design/lucide:network.svg?color=%23475569" },
     { name: "Monitoring & Support", icon: "https://api.iconify.design/lucide:gauge.svg?color=%23475569" },
     { name: "Tenant / Configuration Management", icon: "https://api.iconify.design/lucide:sliders.svg?color=%23475569" },
-  ], 962, 472, 230, 258, "#CBD5E1", "#FFFFFF", "#1E293B", "#334155");
+  ], 962, 376, 230, 194, "#CBD5E1", "#FFFFFF", "#1E293B", "#334155");
 
   // Middle layer connecting edges
   edge("e_exp_to_main", "exp_layer", "main_platform", "", "#8B5CF6", false, "exitX=0.5;exitY=1;entryX=0.5;entryY=0;startArrow=block;startFill=1;");
   edge("e_outcomes_to_main", "outcomes_container", "main_platform", "", "#2563EB", false, "exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
   edge("e_personas_to_main", "personas_container", "main_platform", "", "#16A34A", false, "exitX=0;exitY=0.5;entryX=1;entryY=0.5;startArrow=block;startFill=1;");
 
-  // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 24, y: 760, w: 1392, h: 96)
-  rect("foundation_container", "", 24, 760, 1392, 96, "strokeColor=#2563EB;strokeWidth=1.5;fillColor=#F8FAFC;shadow=0;");
-  text("found_title", "SHARED DIGITAL FOUNDATION", 560, 762, 320, 18, "fontSize=11.5;fontStyle=1;fontColor=#1E40AF;align=center;");
+  // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 24, y: 590, w: 1392, h: 90)
+  rect("foundation_container", "", 24, 590, 1392, 90, "strokeColor=#2563EB;strokeWidth=1.5;fillColor=#F8FAFC;shadow=0;");
+  text("found_title", "SHARED DIGITAL FOUNDATION", 560, 592, 320, 18, "fontSize=11.5;fontStyle=1;fontColor=#1E40AF;align=center;");
 
   const foundations = [
     { title: "Integrations & Connectivity", desc: "Enterprise & partner systems, APIs, data exchange and ecosystem connectivity", icon: "https://api.iconify.design/lucide:link-2.svg?color=%231D4ED8" },
@@ -241,27 +241,27 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     const x = 36 + i * 276;
     const html = "<table style=\"width:100%;height:100%;border-collapse:collapse;\">" +
       "<tr>" +
-        "<td style=\"width:36px;vertical-align:middle;text-align:center;\">" +
-          "<div style=\"width:32px;height:32px;border-radius:6px;background:#EFF6FF;border:1px solid #BFDBFE;display:flex;align-items:center;justify-content:center;margin:0 auto;\">" +
-            "<img src=\"" + fd.icon + "\" width=\"18\" height=\"18\" style=\"display:block;margin:auto;\"/>" +
+        "<td style=\"width:34px;vertical-align:middle;text-align:center;\">" +
+          "<div style=\"width:30px;height:30px;border-radius:6px;background:#EFF6FF;border:1px solid #BFDBFE;display:flex;align-items:center;justify-content:center;margin:0 auto;\">" +
+            "<img src=\"" + fd.icon + "\" width=\"16\" height=\"16\" style=\"display:block;margin:auto;\"/>" +
           "</div>" +
         "</td>" +
         "<td style=\"vertical-align:middle;padding-left:6px;text-align:left;\">" +
-          "<div style=\"font-size:10px;font-weight:800;color:#1E3A8A;line-height:1.2;\">" + fd.title + "</div>" +
-          "<div style=\"font-size:7.5px;color:#334155;margin-top:1px;line-height:1.2;\">" + fd.desc + "</div>" +
+          "<div style=\"font-size:9.5px;font-weight:800;color:#1E3A8A;line-height:1.2;\">" + fd.title + "</div>" +
+          "<div style=\"font-size:7.5px;color:#334155;margin-top:1px;line-height:1.15;\">" + fd.desc + "</div>" +
         "</td>" +
       "</tr>" +
     "</table>";
-    c.push("<mxCell id=\"fd_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"" + x + "\" y=\"784\" width=\"264\" height=\"64\" as=\"geometry\"/></mxCell>");
+    c.push("<mxCell id=\"fd_c_" + i + "\" value=\"" + E(html) + "\" style=\"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"" + x + "\" y=\"612\" width=\"264\" height=\"58\" as=\"geometry\"/></mxCell>");
   });
 
   edge("e_main_to_found", "main_platform", "foundation_container", "", "#2563EB", false, "exitX=0.5;exitY=1;entryX=0.5;entryY=0;startArrow=block;startFill=1;");
 
-  // 7. LEGEND BOX (x: 24, y: 868, w: 1392, h: 44)
-  rect("legend_box", "", 24, 868, 1392, 44, "strokeColor=#CBD5E1;strokeWidth=1.2;fillColor=#F8FAFC;");
+  // 7. LEGEND BOX (x: 24, y: 692, w: 1392, h: 42)
+  rect("legend_box", "", 24, 692, 1392, 42, "strokeColor=#CBD5E1;strokeWidth=1.2;fillColor=#F8FAFC;");
   
   const legendHtml = "<table style=\"width:100%;height:100%;text-align:left;margin-left:12px;\"><tr>" +
-    "<td style=\"width:80px;vertical-align:middle;font-size:11px;font-weight:900;color:#0F172A;\">LEGEND</td>" +
+    "<td style=\"width:80px;vertical-align:middle;font-size:10.5px;font-weight:900;color:#0F172A;\">LEGEND</td>" +
     "<td style=\"vertical-align:middle;\">" +
       "<div style=\"display:flex;align-items:center;gap:20px;font-size:8.5px;color:#334155;\">" +
         "<div style=\"display:flex;align-items:center;gap:6px;\"><div style=\"width:18px;height:14px;border:1.5px solid #1D4ED8;background:#FFFFFF;border-radius:2px;\"></div><div><b>Business Capability</b> (Core business domain capabilities)</div></div>" +
@@ -271,7 +271,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
       "</div>" +
     "</td>" +
   "</tr></table>";
-  text("legend_content", legendHtml, 28, 870, 1380, 40, "align=left;");
+  text("legend_content", legendHtml, 28, 694, 1380, 38, "align=left;");
 
-  return "<mxGraphModel dx=\"1440\" dy=\"950\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"1440\" pageHeight=\"920\" background=\"" + bg + "\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/>" + c.join("\n") + "</root></mxGraphModel>";
+  return "<mxGraphModel dx=\"1440\" dy=\"800\" grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"1440\" pageHeight=\"748\" background=\"" + bg + "\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/>" + c.join("\n") + "</root></mxGraphModel>";
 }
