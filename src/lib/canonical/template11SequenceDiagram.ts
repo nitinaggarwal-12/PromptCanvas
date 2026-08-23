@@ -216,138 +216,133 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   line("alt_b1_arrow", 1510, 462, 1230, 462, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // B2: Return safe response (Text at y: 480, Arrow at y: 506)
-  text("alt_b2_text", "<span style='font-size:8px;color:#1E293B;'><b>B2</b> Return safe response with explanation</span>", 1248, 480, 260, 16, "align=left;verticalAlign=top;");
+  text("alt_b2_text", "<span style='font-size:8px;color:#1E293B;'><b>B2</b> Return safe response with explanation</span>", 1248, 480, 260, 14, "align=left;verticalAlign=top;");
   line("alt_b2_arrow", 1510, 506, 1230, 506, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // =========================================================================
-  // 6. BOTTOM 5 ANALYTICAL SUMMARY CARDS (y: 755, h: 185)
+  // 6. BOTTOM 5 ANALYTICAL SUMMARY CARDS (y: 755, h: 185) — BALANCED & PROPORTIONAL
   // =========================================================================
-  // Card 1: MESSAGE TYPES (x: 40, w: 165)
-  const card1Html = `<div style="padding:6px;">
-    <div style="font-size:9.5px;font-weight:800;color:#0F2A4A;margin-bottom:8px;border-bottom:1px solid #E2E8F0;padding-bottom:3px;">MESSAGE TYPES</div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:8.5px;color:#1E293B;">
-      <span style="font-weight:900;color:#1D4ED8;font-size:13px;">➔</span>
+  // Card 1: MESSAGE TYPES (x: 40, w: 175)
+  const card1Html = `<div style="padding:8px 10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">MESSAGE TYPES</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:9px;color:#1E293B;">
+      <span style="font-weight:900;color:#1D4ED8;font-size:16px;">➔</span>
       <span><b>Synchronous Call</b></span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:8.5px;color:#1E293B;">
-      <span style="font-weight:900;color:#EA580C;font-size:13px;">⇢</span>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:9px;color:#1E293B;">
+      <span style="font-weight:900;color:#EA580C;font-size:16px;">⇢</span>
       <span><b>Asynchronous Call</b></span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:8.5px;color:#1E293B;">
-      <span style="font-weight:900;color:#64748B;font-size:13px;">⇠</span>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:9px;color:#1E293B;">
+      <span style="font-weight:900;color:#64748B;font-size:16px;">⇠</span>
       <span><b>Return / Response</b></span>
     </div>
+    <div style="flex:1;"></div>
   </div>`;
-  rect("card_msg_types", card1Html, 40, 755, 165, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;");
+  rect("card_msg_types", card1Html, 40, 755, 175, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
-  // Card 2: SEQUENCE STEPS SUMMARY (x: 215, w: 460)
-  const card2Html = `<div style="padding:6px;">
-    <div style="font-size:9.5px;font-weight:800;color:#0F2A4A;margin-bottom:6px;border-bottom:1px solid #E2E8F0;padding-bottom:3px;">SEQUENCE STEPS SUMMARY</div>
-    <table style="width:100%;font-size:7.5px;color:#1E293B;line-height:1.25;">
+  // Card 2: SEQUENCE STEPS SUMMARY (x: 225, w: 460)
+  const card2Html = `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">SEQUENCE STEPS SUMMARY</div>
+    <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b>❶</b> User asks question in AI Copilot</div>
-          <div><b>❷</b> Request sent to API Gateway</div>
-          <div><b>❸</b> Gateway validates access token</div>
-          <div><b>❹</b> Token validation response</div>
-          <div><b>❺</b> Request forwarded to Orchestrator</div>
-          <div><b>❻</b> Plan retrieval and data sources</div>
-          <div><b>❼</b> Send query to RAG service</div>
-          <div><b>❽</b> Perform vector search</div>
-          <div><b>❾</b> Return top-k documents</div>
-          <div><b>❿</b> Fetch latest clinical data</div>
+          <div><b style="color:#1D4ED8;">❶</b> User asks question in AI Copilot</div>
+          <div><b style="color:#1D4ED8;">❷</b> Request sent to API Gateway</div>
+          <div><b style="color:#0D9488;">❸</b> Gateway validates access token</div>
+          <div><b style="color:#64748B;">❹</b> Token validation response</div>
+          <div><b style="color:#0D9488;">❺</b> Request forwarded to Orchestrator</div>
+          <div><b style="color:#7C3AED;">❻</b> Plan retrieval and data sources</div>
+          <div><b style="color:#7C3AED;">❼</b> Send query to RAG service</div>
+          <div><b style="color:#7C3AED;">❽</b> Perform vector search</div>
+          <div><b style="color:#64748B;">❾</b> Return top-k documents</div>
+          <div><b style="color:#7C3AED;">❿</b> Fetch latest clinical data</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
-          <div><b>⓫</b> Return clinical data</div>
-          <div><b>⓬</b> Return combined context</div>
-          <div><b>⓭</b> Send context to LLM for reasoning</div>
-          <div><b>⓮</b> LLM returns answer</div>
-          <div><b>⓯</b> Apply safety and quality checks</div>
-          <div><b>⓰</b> Return final answer to Copilot</div>
-          <div><b>⓱</b> Display answer to user</div>
-          <div><b>⓲</b> Log interaction for audit</div>
-          <div><b>⓳</b> Persist logs</div>
-          <div><b>⓴</b> Emit metrics &amp; traces</div>
+          <div><b style="color:#64748B;">⓫</b> Return clinical data</div>
+          <div><b style="color:#64748B;">⓬</b> Return combined context</div>
+          <div><b style="color:#7C3AED;">⓭</b> Send context to LLM for reasoning</div>
+          <div><b style="color:#64748B;">⓮</b> LLM returns answer</div>
+          <div><b style="color:#6D28D9;">⓯</b> Apply safety and quality checks</div>
+          <div><b style="color:#64748B;">⓰</b> Return final answer to Copilot</div>
+          <div><b style="color:#1D4ED8;">⓱</b> Display answer to user</div>
+          <div><b style="color:#0284C7;">⓲</b> Log interaction for audit</div>
+          <div><b style="color:#0284C7;">⓳</b> Persist logs</div>
+          <div><b style="color:#0284C7;">⓴</b> Emit metrics &amp; traces</div>
         </td>
       </tr>
     </table>
   </div>`;
-  rect("card_steps_summary", card2Html, 215, 755, 460, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;");
+  rect("card_steps_summary", card2Html, 225, 755, 460, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
-  // Card 3: KEY NOTATIONS (x: 685, w: 165)
-  const card3Html = `<div style="padding:6px;">
-    <div style="font-size:9.5px;font-weight:800;color:#0F2A4A;margin-bottom:8px;border-bottom:1px solid #E2E8F0;padding-bottom:3px;">KEY NOTATIONS</div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:8px;color:#1E293B;">
-      <div style="width:14px;height:10px;border:1px solid #3B82F6;background:#EFF6FF;"></div>
+  // Card 3: KEY NOTATIONS (x: 695, w: 175)
+  const card3Html = `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">KEY NOTATIONS</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:8.5px;color:#1E293B;">
+      <div style="width:18px;height:12px;border:1px solid #3B82F6;background:#EFF6FF;border-radius:2px;"></div>
       <span>Processing / Activity</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:8px;color:#1E293B;">
-      <div style="width:14px;height:10px;border:1px dashed #0284C7;"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:8.5px;color:#1E293B;">
+      <div style="width:18px;height:12px;border:1px dashed #0284C7;border-radius:2px;"></div>
       <span>Alternative Flow (ALT)</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:8px;color:#1E293B;">
-      <div style="width:12px;height:12px;border-radius:6px;background:#0F2A4A;color:#FFFFFF;font-size:7px;font-weight:900;display:flex;align-items:center;justify-content:center;">N</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:8.5px;color:#1E293B;">
+      <div style="width:14px;height:14px;border-radius:7px;background:#0F2A4A;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;">N</div>
       <span>Step Number</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:8px;color:#1E293B;">
-      <div style="width:14px;height:12px;border:1px solid #CBD5E1;border-radius:2px;"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:8.5px;color:#1E293B;">
+      <div style="width:18px;height:14px;border:1px solid #CBD5E1;border-radius:3px;background:#F8FAFC;"></div>
       <span>Service / Component</span>
     </div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:8px;color:#1E293B;">
-      <span style="font-weight:900;color:#94A3B8;">┆</span>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:8.5px;color:#1E293B;">
+      <span style="font-weight:900;color:#94A3B8;font-size:12px;">┆</span>
       <span>Lifeline</span>
     </div>
   </div>`;
-  rect("card_notations", card3Html, 685, 755, 165, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;");
+  rect("card_notations", card3Html, 695, 755, 175, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
-  // Card 4: TECHNOLOGY STACK (GOOGLE CLOUD) (x: 860, w: 410)
-  const card4Html = `<div style="padding:6px;">
-    <div style="font-size:9.5px;font-weight:800;color:#0F2A4A;margin-bottom:8px;border-bottom:1px solid #E2E8F0;padding-bottom:3px;text-align:center;">TECHNOLOGY STACK (GOOGLE CLOUD)</div>
-    <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;">
+  // Card 4: TECHNOLOGY STACK (GOOGLE CLOUD) (x: 880, w: 385)
+  const card4Html = `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;text-align:center;">TECHNOLOGY STACK (GOOGLE CLOUD)</div>
+    <table style="width:100%;text-align:center;font-size:8.5px;font-weight:700;color:#1E293B;margin-top:10px;">
       <tr>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">🌐</div>
+        <td style="padding:6px;width:25%;">
+          <div style="font-size:20px;margin-bottom:2px;">🌐</div>
           <div>Apigee X</div>
         </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">🛡️</div>
+        <td style="padding:6px;width:25%;">
+          <div style="font-size:20px;margin-bottom:2px;">🛡️</div>
           <div>Cloud Identity</div>
         </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">🧠</div>
+        <td style="padding:6px;width:25%;">
+          <div style="font-size:20px;margin-bottom:2px;">🧠</div>
           <div>Vertex AI</div>
         </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">📊</div>
+        <td style="padding:6px;width:25%;">
+          <div style="font-size:20px;margin-bottom:2px;">📊</div>
           <div>BigQuery<br>Vector Search</div>
         </td>
       </tr>
       <tr>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">📑</div>
+        <td style="padding:6px;"></td>
+        <td style="padding:6px;">
+          <div style="font-size:20px;margin-bottom:2px;">📑</div>
           <div>Cloud Logging</div>
         </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">📈</div>
+        <td style="padding:6px;">
+          <div style="font-size:20px;margin-bottom:2px;">📈</div>
           <div>Cloud Monitoring</div>
         </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">⚙️</div>
-          <div>Cloud Run</div>
-        </td>
-        <td style="padding:4px;">
-          <div style="font-size:16px;">🔒</div>
-          <div>Secret Manager</div>
-        </td>
+        <td style="padding:6px;"></td>
       </tr>
     </table>
   </div>`;
-  rect("card_tech_stack", card4Html, 860, 755, 410, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;");
+  rect("card_tech_stack", card4Html, 880, 755, 385, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
-  // Card 5: NOTES (x: 1280, w: 270)
-  const card5Html = `<div style="padding:6px;">
-    <div style="font-size:9.5px;font-weight:800;color:#0F2A4A;margin-bottom:8px;border-bottom:1px solid #E2E8F0;padding-bottom:3px;">NOTES</div>
-    <div style="font-size:7.5px;color:#334155;line-height:1.45;">
+  // Card 5: NOTES (x: 1275, w: 275)
+  const card5Html = `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">NOTES</div>
+    <div style="font-size:8px;color:#334155;line-height:1.55;margin-top:8px;">
       <div>• All API calls use HTTPS / TLS 1.2+</div>
       <div>• Authentication via OAuth 2.0 / OIDC</div>
       <div>• Data encrypted in transit and at rest</div>
@@ -356,7 +351,7 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
       <div>• Guardrails include toxicity, PII, and clinical safety filters</div>
     </div>
   </div>`;
-  rect("card_notes", card5Html, 1280, 755, 270, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;align=left;verticalAlign=top;");
+  rect("card_notes", card5Html, 1275, 755, 275, 185, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
   // =========================================================================
   // 7. FOOTER METADATA
