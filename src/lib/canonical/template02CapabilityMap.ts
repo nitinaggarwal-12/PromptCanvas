@@ -19,10 +19,20 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     c.push(`<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
 
   // =========================================================================
-  // 1. TOP HEADER BANNER
+  // 1. TOP HEADER BANNER & LOGO
   // =========================================================================
   text("t1", "02 — Capability Map | NOVACURA Bio-Pharma Platform", 24, 14, 950, 28, "fontSize=24;fontStyle=1;align=left;fontColor=#0F172A;fontFamily=Inter,sans-serif;");
   text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 44, 600, 20, "fontSize=13;fontStyle=1;fontColor=#475569;align=left;fontFamily=Inter,sans-serif;");
+
+  const brandLogoHtml = `<table style="text-align:right;float:right;">
+    <tr>
+      <td style="vertical-align:middle;text-align:right;">
+        <div style="font-size:18px;font-weight:900;color:#0F2A4A;letter-spacing:1px;display:flex;align-items:center;justify-content:flex-end;gap:6px;"><span style="font-size:20px;">🧬</span> NOVACURA</div>
+        <div style="font-size:9px;font-weight:600;color:#64748B;font-style:italic;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
+      </td>
+    </tr>
+  </table>`;
+  text("brand_logo", brandLogoHtml, 1260, 14, 275, 46, "align=right;");
 
   // =========================================================================
   // 2. TOP CONTAINER: USER / BUSINESS EXPERIENCE LAYER (x: 248, y: 72, w: 1044, h: 90)
@@ -292,22 +302,22 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   text("legend_content", legendHtml, 28, 838, 1500, 40, "align=left;");
 
   // =========================================================================
-  // 8. INTER-LAYER CONNECTORS (Matching images/02.png 100%)
+  // 8. INTER-LAYER CONNECTORS (Exact Point-to-Point Alignment, Zero Jagged Bends)
   // =========================================================================
-  // Left: Outcomes -> Core (Arrow points RIGHT from Business Outcomes into Core Platform)
-  c.push(`<mxCell id="e_outcomes_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="outcomes_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Left: Outcomes -> Core (100% Perfectly Straight Horizontal Blue Arrow at Y=442)
+  c.push(`<mxCell id="e_outcomes_to_core" style="edgeStyle=none;rounded=0;html=1;strokeColor=#1D4ED8;strokeWidth=2.5;endArrow=classic;endFill=1;exitX=1;exitY=0.5873;entryX=0;entryY=0.5;" edge="1" parent="1" source="outcomes_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Right: Personas -> Core (Arrow points LEFT from Primary Personas into Core Platform)
-  c.push(`<mxCell id="e_personas_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endFill=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="personas_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Right: Personas -> Core (100% Perfectly Straight Horizontal Green Arrow at Y=442)
+  c.push(`<mxCell id="e_personas_to_core" style="edgeStyle=none;rounded=0;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=classic;endFill=1;exitX=0;exitY=0.5873;entryX=1;entryY=0.5;" edge="1" parent="1" source="personas_container" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Top: Experience <-> Core (Bidirectional Purple Vertical Connector)
-  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#8B5CF6;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Top: Experience <-> Core (100% Straight Vertical Bidirectional Purple Arrow at X=770)
+  c.push(`<mxCell id="e_exp_to_core" style="edgeStyle=none;rounded=0;html=1;strokeColor=#8B5CF6;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="exp_layer" target="core_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Bottom 1: Core <-> Foundation (Bidirectional Blue Vertical Connector)
-  c.push(`<mxCell id="e_core_to_found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Bottom 1: Core <-> Foundation (100% Straight Vertical Bidirectional Sky-Blue Arrow at X=770)
+  c.push(`<mxCell id="e_core_to_found" style="edgeStyle=none;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.4937;entryY=0;" edge="1" parent="1" source="core_container" target="foundation_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Bottom 2: Foundation <-> Legend (Bidirectional Slate Vertical Connector)
-  c.push(`<mxCell id="e_found_to_legend" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="foundation_container" target="legend_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Bottom 2: Foundation <-> Legend (100% Straight Vertical Bidirectional Sky-Blue Arrow at X=770)
+  c.push(`<mxCell id="e_found_to_legend" style="edgeStyle=none;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.4937;exitY=1;entryX=0.4937;entryY=0;" edge="1" parent="1" source="foundation_container" target="legend_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_02_capability_map" name="02 — Capability Map">
