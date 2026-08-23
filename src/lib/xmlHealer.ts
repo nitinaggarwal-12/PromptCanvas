@@ -132,6 +132,16 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('PromptCanvas-LayoutEngineV2')
   );
 
+  if (isMasterOrStructured) {
+    const safeXml = inputXml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
+    return {
+      isValid: true,
+      isHealed: false,
+      xml: safeXml,
+      healingLog: ['Protected master/canonical blueprint passed through without geometric mutation.']
+    };
+  }
+
   let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
