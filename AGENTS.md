@@ -80,6 +80,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # 🧰 Registered Workspace Skill Trigger Index
 
+* **`diagram-generation-engine`**: Triggered when compiling, generating, styling, or repairing Draw.io architecture diagrams, canonical master templates, and high-contrast cloud topologies.
 * **`ui-first-design-system`**: Triggered when designing or refactoring UI components, cards, layouts, micro-interactions, or dark glassmorphic panels.
 * **`visual-regression-testing`**: Triggered when running automated pixel-by-pixel image diffing (`pixelmatch`) to verify CSS & visual layout integrity.
 * **`cross-viewport-auditor`**: Triggered when auditing responsive UI breakpoints across Mobile (390px), Tablet (834px), and Ultra-Wide Desktop (1600px+).
