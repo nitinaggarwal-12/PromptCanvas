@@ -344,6 +344,31 @@ export default function CanonicalPage() {
                     {template.primaryPurpose}
                   </p>
 
+                  {/* Architecture Diagram Preview Thumbnail */}
+                  {template.previewImage && (
+                    <div
+                      onClick={() => handleOpenCanvas(template)}
+                      className="relative w-full h-44 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800 cursor-pointer group-hover:border-sky-500/50 transition-all shadow-inner flex items-center justify-center"
+                    >
+                      <img
+                        src={template.previewImage}
+                        alt={template.name}
+                        className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-3">
+                        <span className="text-[11px] font-bold text-white flex items-center gap-1.5 drop-shadow-md">
+                          <Eye className="w-3.5 h-3.5 text-sky-400" /> Click to Open Live Canvas
+                        </span>
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded bg-sky-500 text-white shadow">
+                          1:1 XML Ready
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Key Component Pills */}
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {template.keyComponents.map((comp, idx) => (
