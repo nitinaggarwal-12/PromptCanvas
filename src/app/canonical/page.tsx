@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
   DOMAIN_PRESETS,
   CanonicalTemplate,
-  generateSystemContextXml
 } from '@/lib/canonical/canonicalTemplates';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
@@ -26,23 +26,21 @@ import {
   Sliders,
   Shield,
   Zap,
-  Database,
-  Network,
-  GitBranch,
-  Activity,
-  Cpu,
-  FileText,
-  Globe,
+  ChevronLeft,
   ChevronRight,
   Maximize2,
   Sun,
   Moon,
   ArrowRight,
   BookOpen,
+  Share2,
   X
 } from 'lucide-react';
 
-export default function CanonicalPage() {
+function CanonicalContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -56,19 +54,105 @@ export default function CanonicalPage() {
   const [isAdaptModalOpen, setIsAdaptModalOpen] = useState<boolean>(false);
   const [currentXml, setCurrentXml] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
+  const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
 
-  // Close modals on Escape key
+  // Compute navigation indices
+  const currentIndex = useMemo(() => {
+    if (!activeTemplate) return -1;
+    return CANONICAL_TEMPLATES.findIndex((t) => t.id === activeTemplate.id);
+  }, [activeTemplate]);
+
+  const prevTemplate = useMemo(() => {
+    if (currentIndex <= 0) return null;
+    return CANONICAL_TEMPLATES[currentIndex - 1];
+  }, [currentIndex]);
+
+  const nextTemplate = useMemo(() => {
+    if (currentIndex < 0 || currentIndex >= CANONICAL_TEMPLATES.length - 1) return null;
+    return CANONICAL_TEMPLATES[currentIndex + 1];
+  }, [currentIndex]);
+
+  // Open Template in Canvas Viewer & sync URL
+  const handleOpenCanvas = useCallback((tpl: CanonicalTemplate, updateHistory = true) => {
+    setActiveTemplate(tpl);
+    const xml = tpl.generateXml(selectedDomain, themeMode);
+    setCurrentXml(xml);
+    setIsViewerOpen(true);
+    if (updateHistory && typeof window !== 'undefined') {
+      window.history.pushState({ templateId: tpl.id }, '', `/canonical?id=${tpl.id}`);
+    }
+  }, [selectedDomain, themeMode]);
+
+  // Close Viewer & sync URL
+  const handleCloseViewer = useCallback((updateHistory = true) => {
+    setIsViewerOpen(false);
+    setActiveTemplate(null);
+    if (updateHistory && typeof window !== 'undefined') {
+      window.history.pushState(null, '', '/canonical');
+    }
+  }, []);
+
+  // Check URL on mount & query param changes
+  useEffect(() => {
+    const idParam = searchParams.get('id') || searchParams.get('template');
+    if (idParam) {
+      const formattedId = idParam.padStart(2, '0');
+      const matched = CANONICAL_TEMPLATES.find((t) => t.id === formattedId || t.id === idParam);
+      if (matched) {
+        handleOpenCanvas(matched, false);
+      }
+    }
+  }, [searchParams, handleOpenCanvas]);
+
+  // Handle browser back/forward buttons (popstate)
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const idParam = urlParams.get('id') || urlParams.get('template');
+      if (idParam) {
+        const formattedId = idParam.padStart(2, '0');
+        const matched = CANONICAL_TEMPLATES.find((t) => t.id === formattedId || t.id === idParam);
+        if (matched) {
+          handleOpenCanvas(matched, false);
+          return;
+        }
+      }
+      setIsViewerOpen(false);
+      setActiveTemplate(null);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [handleOpenCanvas]);
+
+  // Keyboard navigation for Escape, Left and Right arrows
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) {
+        return;
+      }
       if (e.key === 'Escape') {
-        setIsViewerOpen(false);
+        handleCloseViewer();
         setIsAdaptModalOpen(false);
+      } else if (isViewerOpen) {
+        if (e.key === 'ArrowLeft' && prevTemplate) {
+          handleOpenCanvas(prevTemplate);
+        } else if (e.key === 'ArrowRight' && nextTemplate) {
+          handleOpenCanvas(nextTemplate);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isViewerOpen, prevTemplate, nextTemplate, handleOpenCanvas, handleCloseViewer]);
+
+  // Re-generate current XML when domain or theme changes while viewing
+  useEffect(() => {
+    if (isViewerOpen && activeTemplate) {
+      setCurrentXml(activeTemplate.generateXml(selectedDomain, themeMode));
+    }
+  }, [selectedDomain, themeMode, isViewerOpen, activeTemplate]);
 
   // Filter templates
   const filteredTemplates = useMemo(() => {
@@ -83,14 +167,6 @@ export default function CanonicalPage() {
       return matchFamily && matchLevel && matchSearch;
     });
   }, [selectedFamily, selectedLevel, searchQuery]);
-
-  // Open Template in Canvas Viewer
-  const handleOpenCanvas = (tpl: CanonicalTemplate) => {
-    setActiveTemplate(tpl);
-    const xml = tpl.generateXml(selectedDomain, themeMode);
-    setCurrentXml(xml);
-    setIsViewerOpen(true);
-  };
 
   // Open Adapt Modal
   const handleOpenAdapt = (tpl: CanonicalTemplate) => {
@@ -109,6 +185,9 @@ export default function CanonicalPage() {
       setIsGenerating(false);
       setIsAdaptModalOpen(false);
       setIsViewerOpen(true);
+      if (typeof window !== 'undefined') {
+        window.history.pushState({ templateId: activeTemplate.id }, '', `/canonical?id=${activeTemplate.id}`);
+      }
     }, 600);
   };
 
@@ -116,6 +195,15 @@ export default function CanonicalPage() {
     navigator.clipboard.writeText(currentXml);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyShareUrl = () => {
+    if (typeof window !== 'undefined' && activeTemplate) {
+      const fullUrl = `${window.location.origin}/canonical/${activeTemplate.id}`;
+      navigator.clipboard.writeText(fullUrl);
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 2000);
+    }
   };
 
   const handleDownloadXml = () => {
@@ -315,16 +403,16 @@ export default function CanonicalPage() {
         {/* 34 TEMPLATES GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
           {filteredTemplates.map((template) => {
-            const isFirst = template.id === '01';
+            const isHighlighted = ['01', '02', '03', '04'].includes(template.id);
 
             return (
               <div
                 key={template.id}
                 className={`group relative rounded-2xl border p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${cardClass} ${
-                  isFirst ? 'ring-2 ring-sky-500/40' : ''
+                  isHighlighted ? 'ring-2 ring-sky-500/30' : ''
                 }`}
               >
-                {isFirst && (
+                {isHighlighted && (
                   <div className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> Live 1:1 Replica Ready
                   </div>
@@ -424,28 +512,29 @@ export default function CanonicalPage() {
         </div>
       </main>
 
-      {/* FULL-FEATURED LIVE DRAW.IO CANVAS VIEWER MODAL */}
+      {/* FULL-FEATURED LIVE DRAW.IO CANVAS VIEWER MODAL WITH URL SYNC & PREV/NEXT NAVIGATION */}
       {isViewerOpen && activeTemplate && (
         <div
-          onClick={() => setIsViewerOpen(false)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 md:p-8 cursor-pointer"
+          onClick={() => handleCloseViewer()}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-2 md:p-6 cursor-pointer"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-7xl h-[90vh] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden cursor-default"
+            className="relative w-full max-w-[1680px] h-[92vh] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden cursor-default"
           >
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div className="px-4 md:px-6 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
+              {/* Left: Template ID & Title */}
               <div className="flex items-center gap-3">
-                <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center">
+                <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-sm">
                   {activeTemplate.id}
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-sm md:text-base font-bold text-slate-900 dark:text-white">
                       {activeTemplate.name} &bull; Live Draw.io Architecture
                     </h2>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                    <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                       Self-Healed &bull; Zero Collisions
                     </span>
                   </div>
@@ -455,8 +544,64 @@ export default function CanonicalPage() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2">
+              {/* Center: Prev / Next Navigation Arrows */}
+              <div className="hidden sm:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+                <button
+                  disabled={!prevTemplate}
+                  onClick={() => prevTemplate && handleOpenCanvas(prevTemplate)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                    prevTemplate
+                      ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
+                      : 'opacity-30 cursor-not-allowed text-slate-400'
+                  }`}
+                  title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Prev {prevTemplate ? `(${prevTemplate.id})` : ''}</span>
+                </button>
+
+                <span className="text-[11px] font-mono font-bold px-2 text-slate-500">
+                  {currentIndex + 1} / {CANONICAL_TEMPLATES.length}
+                </span>
+
+                <button
+                  disabled={!nextTemplate}
+                  onClick={() => nextTemplate && handleOpenCanvas(nextTemplate)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                    nextTemplate
+                      ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
+                      : 'opacity-30 cursor-not-allowed text-slate-400'
+                  }`}
+                  title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
+                >
+                  <span>Next {nextTemplate ? `(${nextTemplate.id})` : ''}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Right: Action Buttons */}
+              <div className="flex items-center gap-1.5 md:gap-2">
+                {/* Full Page Link */}
+                <Link
+                  href={`/canonical/${activeTemplate.id}`}
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Open in dedicated full page"
+                >
+                  <Maximize2 className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Full Page</span>
+                </Link>
+
+                {/* Share URL */}
+                <button
+                  onClick={handleCopyShareUrl}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  title="Copy Direct Link to this Template"
+                >
+                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5 text-sky-500" />}
+                  <span className="hidden lg:inline">{copiedUrl ? 'Copied Link!' : 'Share'}</span>
+                </button>
+
+                {/* Reload Master */}
                 <button
                   onClick={() => {
                     if (activeTemplate) {
@@ -467,27 +612,30 @@ export default function CanonicalPage() {
                   title="Reload 1:1 clean master geometry"
                 >
                   <RefreshCw className="w-3.5 h-3.5 text-sky-500" />
-                  <span>Reload Master</span>
+                  <span className="hidden lg:inline">Reload Master</span>
                 </button>
 
+                {/* Copy XML */}
                 <button
                   onClick={handleCopyXml}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Copied XML!' : 'Copy XML'}</span>
+                  <span className="hidden sm:inline">{copied ? 'Copied XML!' : 'Copy XML'}</span>
                 </button>
 
+                {/* Download */}
                 <button
                   onClick={handleDownloadXml}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Download .drawio</span>
+                  <span className="hidden sm:inline">Download .drawio</span>
                 </button>
 
+                {/* Close Button */}
                 <button
-                  onClick={() => setIsViewerOpen(false)}
+                  onClick={() => handleCloseViewer()}
                   className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
                 >
                   <X className="w-5 h-5" />
@@ -495,8 +643,30 @@ export default function CanonicalPage() {
               </div>
             </div>
 
-            {/* Embedded Live Draw.io Viewer Viewport */}
-            <div className="flex-1 w-full h-full min-h-[600px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+            {/* Embedded Live Draw.io Viewer Viewport with Floating Prev/Next Buttons */}
+            <div className="flex-1 w-full h-full min-h-[550px] bg-[#F8FAFC] dark:bg-[#0B111E] relative overflow-hidden flex items-center justify-center p-2 md:p-4">
+              {/* Floating Prev Button */}
+              {prevTemplate && (
+                <button
+                  onClick={() => handleOpenCanvas(prevTemplate)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center hover:scale-110 hover:bg-sky-500 hover:text-white transition-all text-slate-700 dark:text-slate-200"
+                  title={`Previous (Left Arrow): ${prevTemplate.id} - ${prevTemplate.name}`}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* Floating Next Button */}
+              {nextTemplate && (
+                <button
+                  onClick={() => handleOpenCanvas(nextTemplate)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-xl flex items-center justify-center hover:scale-110 hover:bg-sky-500 hover:text-white transition-all text-slate-700 dark:text-slate-200"
+                  title={`Next (Right Arrow): ${nextTemplate.id} - ${nextTemplate.name}`}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              )}
+
               <DiagramViewerRenderSafe
                 xml={currentXml}
                 bgTheme={themeMode}
@@ -613,5 +783,20 @@ export default function CanonicalPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function CanonicalPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0B111E] flex items-center justify-center text-white">
+        <div className="flex items-center gap-2 font-mono text-xs text-sky-400">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          <span>Loading Canonical Hub...</span>
+        </div>
+      </div>
+    }>
+      <CanonicalContent />
+    </Suspense>
   );
 }
