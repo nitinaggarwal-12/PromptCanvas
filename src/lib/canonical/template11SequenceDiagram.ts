@@ -186,31 +186,38 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   msg("m20", "⓴ Metrics &amp; traces", centers.p_audit, centers.p_mon, 715, "#0284C7");
 
   // =========================================================================
-  // 5. RIGHT-SIDE "ALT" (ALTERNATIVE FLOWS) BOX WITH SEPARATE TEXT & ARROW SEGMENTS
+  // 5. RIGHT-SIDE "ALT" (ALTERNATIVE FLOWS) BOX WITH 100% COLLISION-FREE GEOMETRY
   // =========================================================================
-  const altHeaderHtml = `<div style="background:#0284C7;color:#FFFFFF;font-weight:900;font-size:9px;padding:2px 6px;display:inline-block;border-radius:2px;">ALT</div>`;
-  rect("alt_container", "", 1220, 260, 310, 245, "fillColor=none;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;");
-  text("alt_label", altHeaderHtml, 1224, 264, 40, 18, "align=left;");
+  // Outer Solid Container (fillColor=#FFFFFF blocks background lifelines)
+  rect("alt_container", "", 1220, 275, 310, 260, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;rounded=1;arcSize=4;shadow=0;");
+  
+  // Header Badge "ALT"
+  rect("alt_badge", "<b style='color:#FFFFFF;font-size:9px;letter-spacing:0.5px;'>ALT</b>", 1226, 281, 38, 18, "fillColor=#0284C7;strokeColor=none;rounded=0;arcSize=0;align=center;verticalAlign=middle;");
 
-  const altBodyHtml = `<div style="font-size:8.5px;line-height:1.4;color:#0F172A;padding:4px;">
-    <div style="font-weight:700;color:#0284C7;margin-bottom:2px;">[ If no relevant results found ]</div>
-    <div style="color:#334155;margin-left:4px;"><b>A1</b> Notify no results</div>
-    <div style="height:12px;"></div>
-    <div style="color:#334155;margin-left:4px;"><b>A2</b> Suggest refined query or broader search</div>
-    <div style="height:12px;"></div>
-    <div style="border-top:1px dashed #CBD5E1;margin:8px 0 6px 0;"></div>
-    <div style="font-weight:700;color:#DC2626;margin-bottom:2px;">[ If policy violation detected ]</div>
-    <div style="color:#334155;margin-left:4px;"><b>B1</b> Block response</div>
-    <div style="height:12px;"></div>
-    <div style="color:#334155;margin-left:4px;"><b>B2</b> Return safe response with explanation</div>
-  </div>`;
-  text("alt_content", altBodyHtml, 1222, 285, 304, 215, "align=left;verticalAlign=top;");
+  // Section 1 Header: [ If no relevant results found ]
+  text("alt_sec1_title", "<b style='font-size:8.5px;color:#0284C7;'>[ If no relevant results found ]</b>", 1234, 302, 280, 16, "align=left;verticalAlign=top;");
 
-  // Dashed return arrows placed in dedicated spacing tracks below each text item
-  line("alt_a1_arrow", 1510, 320, 1230, 320, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
-  line("alt_a2_arrow", 1510, 355, 1230, 355, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
-  line("alt_b1_arrow", 1510, 420, 1230, 420, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
-  line("alt_b2_arrow", 1510, 460, 1230, 460, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+  // A1: Notify no results (Text at y: 322, Arrow at y: 348)
+  text("alt_a1_text", "<span style='font-size:8px;color:#1E293B;'><b>A1</b> Notify no results</span>", 1248, 322, 260, 16, "align=left;verticalAlign=top;");
+  line("alt_a1_arrow", 1510, 348, 1230, 348, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+
+  // A2: Suggest refined query (Text at y: 366, Arrow at y: 392)
+  text("alt_a2_text", "<span style='font-size:8px;color:#1E293B;'><b>A2</b> Suggest refined query or broader search</span>", 1248, 366, 260, 16, "align=left;verticalAlign=top;");
+  line("alt_a2_arrow", 1510, 392, 1230, 392, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+
+  // Divider Line
+  line("alt_divider", 1230, 408, 1520, 408, "strokeColor=#CBD5E1;dashed=1;dashPattern=4 3;endArrow=none;strokeWidth=1;");
+
+  // Section 2 Header: [ If policy violation detected ]
+  text("alt_sec2_title", "<b style='font-size:8.5px;color:#DC2626;'>[ If policy violation detected ]</b>", 1234, 416, 280, 16, "align=left;verticalAlign=top;");
+
+  // B1: Block response (Text at y: 436, Arrow at y: 462)
+  text("alt_b1_text", "<span style='font-size:8px;color:#1E293B;'><b>B1</b> Block response</span>", 1248, 436, 260, 16, "align=left;verticalAlign=top;");
+  line("alt_b1_arrow", 1510, 462, 1230, 462, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
+
+  // B2: Return safe response (Text at y: 480, Arrow at y: 506)
+  text("alt_b2_text", "<span style='font-size:8px;color:#1E293B;'><b>B2</b> Return safe response with explanation</span>", 1248, 480, 260, 16, "align=left;verticalAlign=top;");
+  line("alt_b2_arrow", 1510, 506, 1230, 506, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // =========================================================================
   // 6. BOTTOM 5 ANALYTICAL SUMMARY CARDS (y: 755, h: 185)
