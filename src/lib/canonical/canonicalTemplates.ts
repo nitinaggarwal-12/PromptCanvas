@@ -41,6 +41,7 @@ import { generateTemplate07C4ContainerXml } from "./template07C4Container";
 import { generateTemplate08ComponentArchXml } from "./template08ComponentArch";
 import { generateTemplate09DataFlowXml } from "./template09DataFlow";
 import { generateTemplate10IntegrationArchXml } from "./template10IntegrationArch";
+import { generateTemplate11SequenceDiagramXml } from "./template11SequenceDiagram";
 import { buildValueStreamMapXml } from "../masterBuilders/master_builder_vsm";
 import { buildAsIsToBeProcessFlowXml } from "../masterBuilders/master_builder_asis_tobe";
 import { buildEnterpriseReferenceArchitectureXml } from "../masterBuilders/build_master_enterprise_reference";
@@ -282,10 +283,10 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     level: 'L2/L3',
     primaryPurpose: 'Time-ordered chronological message exchanges between systems and services',
     examples: 'API call sequences, agent task workflow, login SSO, payments',
-    defaultDomain: 'Multi-Agent LLM Retrieval & Grounding Flow',
+    defaultDomain: 'Bio-Pharma Enterprise AI Platform (Scientist Copilot Q&A)',
     previewImage: '/templates/multi_agent_sequence_flow.png',
-    keyComponents: ['Lifelines', 'Synchronous Messages', 'Async Events', 'Activation Bars'],
-    generateXml: () => buildMultiAgentSequenceXml()
+    keyComponents: ['12 Lifelines', '20 Sequence Steps (❶..⑳)', 'Alternative Flows (ALT)', 'Summary Cards'],
+    generateXml: generateTemplate11SequenceDiagramXml
   },
   {
     id: '12',
