@@ -130,7 +130,7 @@ export class CanonicalBlueprintBuilder {
 
     // Objective Card
     const objHtml =
-      `<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div>` +
+      `<div style='white-space:normal;word-break:break-word;font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div>` +
       `<div style='font-size:7.5px;line-height:1.35;color:#0F172A;'>${config.objective}</div>`;
     this.addRawCell(
       "hdr_obj",

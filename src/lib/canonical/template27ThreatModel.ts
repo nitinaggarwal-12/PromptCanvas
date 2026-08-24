@@ -52,10 +52,10 @@ export function generateTemplate27ThreatModelXml(
   const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:40px;vertical-align:middle;text-align:center;"><span style="font-size:36px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:26px;font-weight:900;color:#0284C7;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:11px;color:#64748B;font-weight:700;font-style:italic;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  const objHtml = `<div style='font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:3px;'>OBJECTIVE</div><div style='font-size:9.5px;line-height:1.4;color:#0F172A;font-weight:600;'>
+  const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:3px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.4;color:#0F172A;font-weight:600;'>
     Identify, assess, and mitigate threats across NovaCura to protect data, ensure system resilience, maintain compliance, and preserve customer trust.
   </div>`;
-  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
   // ==================== 2. TOP CENTER: SYSTEM CONTEXT & TRUST ZONES (x=16..1090, y=78..260, w=1074) ====================
   cell("box_trust_zones", "", 16, 78, 1074, 184, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");

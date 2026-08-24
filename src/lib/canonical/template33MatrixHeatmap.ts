@@ -55,7 +55,7 @@ export function generateTemplate33MatrixHeatmapXml(
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const howToReadHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>HOW TO READ</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'><b>Scores:</b> 1 (Low / Poor) to 5 (High / Excellent)<br/><span style='color:#16A34A;font-weight:700;'>Colors: Green = Strong</span> &nbsp; <span style='color:#CA8A04;font-weight:700;'>Yellow = Moderate</span> &nbsp; <span style='color:#DC2626;font-weight:700;'>Red = Weak</span><br/><b>Higher score is better for all criteria</b></div>`;
-  cell("hdr_obj", howToReadHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;html=1;align=left;verticalAlign=top;padding=6;");
+  cell("hdr_obj", howToReadHtml, 1140, 12, 380, 54, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;html=1;align=left;verticalAlign=top;padding=6;");
 
   // ==================== 2. LEFT SIDEBAR (x=16..236, y=74..750) ====================
   // Evaluation Criteria (Weight)

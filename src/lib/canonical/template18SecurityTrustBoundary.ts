@@ -59,10 +59,10 @@ export function generateTemplate18SecurityTrustBoundaryXml(
   const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:40px;vertical-align:middle;text-align:center;"><span style="font-size:36px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:26px;font-weight:900;color:#0284C7;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:11px;color:#64748B;font-weight:700;font-style:italic;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  const objHtml = `<div style='font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:3px;'>OBJECTIVE</div><div style='font-size:9.5px;line-height:1.4;color:#0F172A;font-weight:600;'>
+  const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:3px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.4;color:#0F172A;font-weight:600;'>
     Enforce defense-in-depth with clear trust boundaries, least privilege access, network segmentation, and data protection across all layers.
   </div>`;
-  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
   // ==================== 2. LEFT: USERS & EXTERNAL + PERIMETER (x=16..290, y=86..560) ====================
   // Users & External Box (w=110, h=470)

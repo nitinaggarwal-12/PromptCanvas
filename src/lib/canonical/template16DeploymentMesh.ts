@@ -53,8 +53,8 @@ export function generateTemplate16DeploymentMeshXml(
   cell("hdr_brand", brandHtml, 1140, 12, 380, 54, "text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
   // Sub-Banner Objective (x=16, y=74, w=760, h=40)
-  const objHtml = `<div style='font-size:10.5px;color:#1E3A8A;font-weight:700;line-height:1.3;'>Highly available, secure, and scalable deployment on Google Cloud across multi-zones in a primary region with DR in a secondary region.</div>`;
-  cell("hdr_obj", objHtml, 16, 74, 760, 40, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+  const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;color:#1E3A8A;font-weight:700;line-height:1.3;'>Highly available, secure, and scalable deployment on Google Cloud across multi-zones in a primary region with DR in a secondary region.</div>`;
+  cell("hdr_obj", objHtml, 16, 74, 760, 40, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
   // Top Legend Pills (x=970, y=74, w=550, h=40)
   const legPillsHtml = `<div style="font-size:10px;display:flex;justify-content:space-around;align-items:center;padding:4px;">
