@@ -254,15 +254,15 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   cell("lbl_dc_re", "DATA CLASSIFICATION & RESIDENCY ENFORCEMENT", 314, 316, 908, 16, "html=1;fontColor:#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const dataClasses = [
-    { t: "Public Data", w: 106, c: "#DBEAFE", tc: "#1E40AF" },
-    { t: "Internal Data", w: 116, c: "#DBEAFE", tc: "#1E40AF" },
-    { t: "Confidential Data", w: 146, c: "#E0E7FF", tc: "#3730A3" },
-    { t: "Restricted Data", w: 136, c: "#FCE7F3", tc: "#9D174D" },
-    { t: "Highly Restricted / Personal Data", w: 236, c: "#FEE2E2", tc: "#991B1B" }
+    { t: "Public Data", w: 106, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
+    { t: "Internal Data", w: 116, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
+    { t: "Confidential Data", w: 146, c: "#EDE9FE", bc: "#C4B5FD", tc: "#4338CA" },
+    { t: "Restricted Data", w: 136, c: "#FCE7F3", bc: "#F472B6", tc: "#9D174D" },
+    { t: "Highly Restricted / Personal Data", w: 236, c: "#FEE2E2", bc: "#F87171", tc: "#991B1B" }
   ];
   let curDcX = 338;
   dataClasses.forEach((dc, idx) => {
-    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 338, dc.w, 28, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;`);
+    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 338, dc.w, 28, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=${dc.bc};html=1;align=center;verticalAlign=middle;`);
     curDcX += dc.w + 20;
   });
   cell("dc_footer", `<div style="font-size:8.5px;font-weight:800;color:#475569;">Tagging &nbsp;•&nbsp; Labeling &nbsp;•&nbsp; Residency Rules &nbsp;•&nbsp; Automated Enforcement</div>`, 314, 372, 908, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
@@ -433,10 +433,11 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Local Data", sub: "Protection Laws", type: "law" }
   ];
   badges.forEach((bg, idx) => {
-    const col = idx < 4 ? idx : idx - 4;
-    const row = idx < 4 ? 0 : 1;
-    const bx = idx < 4 ? 346 + col * 94 : 393 + col * 94;
-    const by = 808 + row * 56;
+    // Top row: 4 badges (col 0..3), Bottom row: 3 badges centered (col 0..2)
+    const isTop = idx < 4;
+    const col = isTop ? idx : idx - 4;
+    const bx = isTop ? 350 + col * 92 : 396 + col * 92;
+    const by = isTop ? 808 : 866;
     const iconSvg = bg.type === "eu" 
       ? `<circle cx="12" cy="12" r="9" fill="#1E3A8A" stroke="none"/><text x="12" y="16" fill="#FBBF24" font-size="12" font-weight="bold" text-anchor="middle">★</text>`
       : bg.type === "shield"
@@ -450,7 +451,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
       `<div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.1;margin-top:2px;">${bg.t}</div>${bg.sub ? `<div style="font-size:7px;color:#64748B;font-weight:600;">${bg.sub}</div>` : ""}</div>`,
       bx,
       by,
-      90,
+      86,
       50,
       "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;padding=1;"
     );
