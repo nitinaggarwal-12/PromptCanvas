@@ -122,6 +122,7 @@ import { generateTemplate36SmartManufacturingIotXml } from "./template36SmartMan
 import { generateTemplate37DedicatedNetworkInfraXml } from "./template37DedicatedNetworkInfra";
 import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZone";
 import { generateTemplate39SovereignCloudPrivacyXml } from "./template39SovereignCloudPrivacy";
+import { generateTemplate40EnterpriseGenAiPlatformXml } from "./template40EnterpriseGenAiPlatform";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -604,6 +605,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/data_residency_sovereign_map.png',
     keyComponents: ['Governance & Sovereign Oversight', 'Stakeholders & Access Gate', 'Sovereign Cloud Environment', 'Data Classification & Residency', 'Privacy & Security Controls', 'Infrastructure Sovereignty', 'Data Exchange & Controls', 'Monitoring & Audit', 'Compliance Frameworks'],
     generateXml: generateTemplate39SovereignCloudPrivacyXml
+  },
+  {
+    id: '40',
+    name: 'Enterprise GenAI & Multi-Agent Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'End-to-end, secure, governed, and observable multi-agent AI platform on Google Cloud',
+    examples: 'Multi-agent system, LLM gateway, enterprise RAG pipeline, MCP tool integration, AI governance & HITL',
+    defaultDomain: 'Enterprise Multi-Agent GenAI Platform',
+    previewImage: '/templates/tech_multi_agent_rag.png',
+    keyComponents: ['User & Channels Layer', 'Experience & Access Layer', 'Agent Orchestration Layer', 'Model & Reasoning Layer', 'Memory & RAG Pipeline', 'Tool / MCP Integration', 'Enterprise Systems & Data Sources', 'Zero-Trust Security Foundation', 'Governance / HITL', 'Observability & FinOps', 'Platform Operations'],
+    generateXml: generateTemplate40EnterpriseGenAiPlatformXml
   }
 ];
 

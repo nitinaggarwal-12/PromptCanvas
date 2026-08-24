@@ -565,5 +565,19 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     sourceImage: '39.png',
     generatorVersion: '1.0',
     certificationStatus: 'certified'
+  },
+  '40': {
+    id: '40',
+    grammar: 'Enterprise GenAI & Multi-Agent Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise-grade multi-agent GenAI platform structured across experience, orchestration, foundation models, memory/RAG, tools/MCP, data sources, and governance?',
+    requiredElements: ['user-channels-layer', 'experience-access-layer', 'agent-orchestration-layer', 'model-reasoning-layer', 'memory-knowledge-context', 'rag-pipeline', 'tool-protocol-integration-mcp', 'enterprise-systems-data-sources', 'network-security-foundation', 'governance-hitl-compliance', 'observability-evaluation-finops', 'platform-operations-delivery'],
+    forbiddenElements: ['unmonitored-autonomous-agent-loops', 'unfiltered-prompt-injection-execution'],
+    edgeTypes: ['user-interaction', 'agent-to-agent-a2a', 'data-flow', 'control-policy', 'async-events-streaming'],
+    iconPolicy: 'hybrid',
+    sourceImage: '40.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
   }
 };
