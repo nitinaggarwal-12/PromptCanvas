@@ -64,7 +64,7 @@ export function generateTemplate36SmartManufacturingIotXml(
   // Helper for 9 horizontal bands (x=16..1240)
   const band = (num: string, title: string, y: number, h: number, col: string) => {
     cell(`band_num_${num}`, num, 16, y, 42, h, `rounded=1;arcSize=4;fillColor=${col};fontColor=#FFFFFF;fontSize=18;fontStyle=1;align=center;verticalAlign=middle;`);
-    cell(`band_lbl_${num}`, title, 62, y, 164, h, `fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=8.5;fontStyle=1;align=left;spacingLeft=6;verticalAlign=middle;`);
+    cell(`band_lbl_${num}`, title, 62, y, 164, h, `html=1;whiteSpace=wrap;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#0F172A;fontSize=8.5;fontStyle=1;align=left;spacingLeft=6;verticalAlign=middle;`);
     cell(`band_box_${num}`, "", 230, y, 1010, h, `rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;`);
   };
 

@@ -74,7 +74,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // ==================== 3. LEFT COLUMN: USERS & STAKEHOLDERS (x=16..240, y=156..580) ====================
   cell("box_users_left", "", 16, 156, 224, 424, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
-  cell("lbl_users_left", "USERS &amp; STAKEHOLDERS", 16, 158, 224, 18, "fillColor=#2563EB;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_users_left", "USERS &amp; STAKEHOLDERS", 16, 158, 224, 18, "html=1;fillColor=#2563EB;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const stakeHolders = [
     { t: "Citizens / Customers", sub: "Portals, Apps, Self-Service", icon: "👤" },
@@ -93,7 +93,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // ==================== 4. CENTER: SOVEREIGN CLOUD ENVIRONMENT (x=320..1270, y=156..580) ====================
   cell("box_sov_env", "", 320, 156, 950, 424, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E40AF;strokeWidth=2;");
-  cell("lbl_sov_env", "🏛️ SOVEREIGN CLOUD ENVIRONMENT (In-Country / In-Region)", 320, 160, 950, 20, "fontColor=#1E40AF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_sov_env", "🏛️ SOVEREIGN CLOUD ENVIRONMENT (In-Country / In-Region)", 320, 160, 950, 20, "html=1;fontColor=#1E40AF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
 
   // 4 Core Pods (y=186..256)
   const sovPods = [
@@ -109,7 +109,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // Data Classification & Residency Enforcement Box (y=264..334)
   cell("box_data_class", "", 332, 264, 926, 70, "rounded=1;arcSize=4;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;");
-  cell("lbl_data_class", "DATA CLASSIFICATION &amp; RESIDENCY ENFORCEMENT", 332, 266, 926, 14, "fontColor=#6D28D9;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_data_class", "DATA CLASSIFICATION &amp; RESIDENCY ENFORCEMENT", 332, 266, 926, 14, "html=1;fontColor=#6D28D9;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const classPills = [
     { t: "Public Data", bg: "#F1F5F9", fg: "#0F172A" },
     { t: "Internal Data", bg: "#EFF6FF", fg: "#1E40AF" },
@@ -125,7 +125,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // Privacy & Security Controls (y=342..450)
   cell("box_priv_sec", "", 332, 342, 926, 108, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;");
-  cell("lbl_priv_sec", "PRIVACY &amp; SECURITY CONTROLS (Built-in)", 332, 344, 926, 16, "fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_priv_sec", "PRIVACY &amp; SECURITY CONTROLS (Built-in)", 332, 344, 926, 16, "html=1;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const privControls = [
     { t: "Encryption", sub: "At Rest, In Transit, In Use (KMS)", icon: "🔐" },
     { t: "Data Masking", sub: "Pseudonymization &amp; Tokenization", icon: "🎭" },
@@ -141,7 +141,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // Infrastructure Sovereignty (y=458..566)
   cell("box_infra_sov", "", 332, 458, 926, 108, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
-  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 332, 460, 926, 16, "fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 332, 460, 926, 16, "html=1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const infraSov = [
     { t: "In-Country / Region DCs", sub: "Dedicated Physical Isolation", icon: "🏢" },
     { t: "Sovereign Network", sub: "Private Backbone (No Public Transit)", icon: "🌐" },
@@ -158,7 +158,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // ==================== 5. RIGHT COLUMN: DATA EXCHANGE & CONTROLS (x=1362..1580, y=156..580) ====================
   cell("box_exchange_right", "", 1362, 156, 218, 424, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
-  cell("lbl_exchange_right", "DATA EXCHANGE &amp; CONTROLS", 1362, 158, 218, 18, "fillColor=#16A34A;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_exchange_right", "DATA EXCHANGE &amp; CONTROLS", 1362, 158, 218, 18, "html=1;fillColor=#16A34A;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const exchangeCards = [
     { t: "Cross-Border Transfers", sub: "Approved Mechanisms (SCCs, BCRs)", icon: "🌐" },
@@ -174,7 +174,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // ==================== 6. MIDDLE-BOTTOM: MONITORING, AUDIT & ASSURANCE (x=16..1580, y=590..660) ====================
   cell("box_mon_audit", "", 16, 590, 1564, 70, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;");
-  cell("lbl_mon_audit", "MONITORING, AUDIT &amp; ASSURANCE", 16, 592, 1564, 16, "fontColor=#0284C7;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_mon_audit", "MONITORING, AUDIT &amp; ASSURANCE", 16, 592, 1564, 16, "html=1;fontColor=#0284C7;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const monAudit = [
     { t: "Continuous Monitoring", sub: "Security, Privacy, Compliance", icon: "⏱️" },
     { t: "Audit Logging", sub: "Immutable Logs, Tamper-Proof", icon: "📋" },
