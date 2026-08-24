@@ -311,8 +311,8 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
   cell("trans_hdr", "<b style=\"font-size:10.5px;color:#1D4ED8;letter-spacing:0.5px;\">TRANSFORMATION BENEFITS</b>", 636, 76, 250, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // Prominent Transition Chevron Arrows connecting AS-IS -> TRANSFORMATION -> TO-BE
-  cell("trans_arrow_left", "", 618, 360, 24, 52, "shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;");
-  cell("trans_arrow_right", "", 878, 360, 24, 52, "shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;");
+  cell("trans_arrow_left", "", 618, 295, 24, 52, "shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;");
+  cell("trans_arrow_right", "", 878, 295, 24, 52, "shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;");
 
   const transBenefits = [
     { title: "Integrated Platform", desc: "Unified data, applications and processes across the value chain", icon: "puzzle" },
@@ -379,10 +379,20 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
     cell(`to_be_ch_${i}`, html, cx, 150, 106, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // TO-BE Connectors: Channels -> Novacura Digital Platform (Green drop flows)
-  [959, 1070, 1181, 1292, 1403, 1514].forEach((x, idx) => {
-    rawEdge(`e_tobe_ch_plat_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+  // TO-BE Connectors: Continuous horizontal distribution bus under Channels with drop arrows
+  rawEdge("e_tobe_ch_bus", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;", [
+    { x: 959, y: 206 },
+    { x: 1461, y: 206 }
+  ]);
+  [959, 1070, 1181, 1292, 1403, 1461].forEach((x, idx) => {
+    rawEdge(`e_tobe_ch_drop_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;", [
       { x, y: 202 },
+      { x, y: 206 }
+    ]);
+  });
+  [959, 1070, 1181, 1292, 1403, 1461].forEach((x, idx) => {
+    rawEdge(`e_tobe_ch_plat_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+      { x, y: 206 },
       { x, y: 210 }
     ]);
   });
@@ -408,11 +418,11 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
     cell(`to_be_da_${i}`, html, dax, 230, 88, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // TO-BE Connectors: Digital Platform <-> Governed Data Platform (Bidirectional Green flows)
-  [958, 1051, 1144, 1237, 1330, 1423, 1516].forEach((x, idx) => {
-    rawEdge(`e_tobe_plat_data_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
-      { x, y: 296 },
-      { x, y: 304 }
+  // TO-BE Connectors: Data Platform -> Digital Platform (Upward green arrows into Apps)
+  [958, 1144, 1330, 1516].forEach((x, idx) => {
+    rawEdge(`e_tobe_plat_data_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+      { x, y: 304 },
+      { x, y: 296 }
     ]);
   });
 
@@ -435,11 +445,11 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
     cell(`to_be_gd_${i}`, html, gdx, 324, 124, 60, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // TO-BE Connectors: Governed Data Platform <-> Integration (Bidirectional Green flows)
+  // TO-BE Connectors: Integration -> Governed Data Platform (Upward green arrows into Data)
   [970, 1105, 1240, 1375, 1510].forEach((x, idx) => {
-    rawEdge(`e_tobe_data_int_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
-      { x, y: 390 },
-      { x, y: 400 }
+    rawEdge(`e_tobe_data_int_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+      { x, y: 400 },
+      { x, y: 390 }
     ]);
   });
 
@@ -460,11 +470,11 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
     cell(`to_be_ti_${i}`, html, tix, 400, 128, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // TO-BE Connectors: Integration <-> Google Cloud Platform (Bidirectional Green flows)
+  // TO-BE Connectors: Google Cloud Platform -> Integration (Upward green arrows into Integration)
   [968, 1077, 1186, 1295, 1404, 1513].forEach((x, idx) => {
-    rawEdge(`e_tobe_int_gcp_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
-      { x, y: 452 },
-      { x, y: 464 }
+    rawEdge(`e_tobe_int_gcp_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+      { x, y: 464 },
+      { x, y: 452 }
     ]);
   });
 
@@ -490,7 +500,7 @@ export function generateTemplate05AsIsToBeXml(domainFlavor = "biopharma", theme:
 
   // TO-BE Connectors: Google Cloud Platform -> Security & Governance (Green drop flows)
   [959, 1070, 1181, 1292, 1403, 1514].forEach((x, idx) => {
-    rawEdge(`e_tobe_gcp_sec_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    rawEdge(`e_tobe_gcp_sec_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;", [
       { x, y: 550 },
       { x, y: 580 }
     ]);
