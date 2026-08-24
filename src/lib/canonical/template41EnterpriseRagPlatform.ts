@@ -44,7 +44,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   };
 
   // ==================== 1. TOP HEADER BANNER (y=12..56) ====================
-  const titleHtml = `<div style="font-size:26px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">41. Enterprise RAG &amp; Knowledge Intelligence Platform</div>` +
+  const titleHtml = `<div style="font-size:26px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">41. Enterprise RAG & Knowledge Intelligence Platform</div>` +
     `<div style="font-size:13px;font-weight:700;color:#1E3A8A;font-style:italic;margin-top:2px;">Trusted enterprise knowledge retrieval, grounding, citations, governance, and observability</div>`;
   cell("hdr_title", titleHtml, 16, 10, 1260, 46, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
@@ -54,7 +54,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // TIER 1: USER & CHANNELS LAYER (y=62..144, h=82)
   // ----------------------------------------------------
   cell("t1_num", "1", 16, 62, 24, 24, "rounded=1;arcSize=14;fillColor=#1D4ED8;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t1_lbl", `<div style="font-size:9px;font-weight:900;color:#1E3A8A;line-height:1.15;">USER &amp;<br/>CHANNELS LAYER</div>`, 44, 62, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t1_lbl", `<div style="font-size:9px;font-weight:900;color:#1E3A8A;line-height:1.15;">USER &<br/>CHANNELS LAYER</div>`, 44, 62, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Tier 1 Container Box
   cell("t1_box", "", 166, 62, 1114, 82, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;");
@@ -110,7 +110,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // TIER 2: ACCESS, IDENTITY & EXPERIENCE LAYER (y=150..222, h=72)
   // ----------------------------------------------------
   cell("t2_num", "2", 16, 150, 24, 24, "rounded=1;arcSize=14;fillColor=#0D9488;strokeColor=#0D9488;fontColor=#FFFFFF;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t2_lbl", `<div style="font-size:9px;font-weight:900;color:#0F766E;line-height:1.15;">ACCESS, IDENTITY &amp;<br/>EXPERIENCE LAYER</div>`, 44, 150, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t2_lbl", `<div style="font-size:9px;font-weight:900;color:#0F766E;line-height:1.15;">ACCESS, IDENTITY &<br/>EXPERIENCE LAYER</div>`, 44, 150, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Tier 2 Container Box
   cell("t2_box", "", 166, 150, 1114, 72, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#5EEAD4;strokeWidth=1.5;");
@@ -143,7 +143,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // TIER 3: KNOWLEDGE EXPERIENCE & ORCHESTRATION LAYER (y=228..306, h=78)
   // ----------------------------------------------------
   cell("t3_num", "3", 16, 228, 24, 24, "rounded=1;arcSize=14;fillColor=#16A34A;strokeColor=#16A34A;fontColor=#FFFFFF;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t3_lbl", `<div style="font-size:9px;font-weight:900;color:#15803D;line-height:1.15;">KNOWLEDGE EXPERIENCE<br/>&amp; ORCHESTRATION LAYER</div>`, 44, 228, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t3_lbl", `<div style="font-size:9px;font-weight:900;color:#15803D;line-height:1.15;">KNOWLEDGE EXPERIENCE<br/>& ORCHESTRATION LAYER</div>`, 44, 228, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Tier 3 Container Box
   cell("t3_box", "", 166, 228, 1114, 78, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.5;");
@@ -151,9 +151,9 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // 5 Process Steps
   const t3Steps = [
     { t: "Query<br/>Understanding", icon: "💬" },
-    { t: "Search &amp; Retrieval<br/>Orchestrator", icon: "📑" },
+    { t: "Search & Retrieval<br/>Orchestrator", icon: "📑" },
     { t: "Prompt Assembly /<br/>Context Builder", icon: "📝" },
-    { t: "Citation &amp; Answer<br/>Composer", icon: "❝❞" },
+    { t: "Citation & Answer<br/>Composer", icon: "❝❞" },
     { t: "Follow-up /<br/>Conversation Manager", icon: "💬" }
   ];
   t3Steps.forEach((st, idx) => {
@@ -229,7 +229,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   // Right Enclave: Guardrails & Safety (Dashed Box)
   cell("t4_safe_box", "", 802, 320, 468, 64, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;");
-  cell("t4_safe_lbl", "Guardrails &amp; Safety", 802, 322, 468, 14, "html=1;fontColor=#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t4_safe_lbl", "Guardrails & Safety", 802, 322, 468, 14, "html=1;fontColor=#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const safetyItems = [
     { t: "Safety Filters", icon: "🛡️" },
@@ -254,7 +254,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // TIER 5: MEMORY, INDEX & KNOWLEDGE LAYER (y=398..496, h=98)
   // ----------------------------------------------------
   cell("t5_num", "5", 16, 398, 24, 24, "rounded=1;arcSize=14;fillColor=#D97706;strokeColor=#D97706;fontColor=#FFFFFF;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t5_lbl", `<div style="font-size:9px;font-weight:900;color:#B45309;line-height:1.15;">MEMORY, INDEX &amp;<br/>KNOWLEDGE LAYER</div>`, 44, 398, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t5_lbl", `<div style="font-size:9px;font-weight:900;color:#B45309;line-height:1.15;">MEMORY, INDEX &<br/>KNOWLEDGE LAYER</div>`, 44, 398, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Tier 5 Container Box
   cell("t5_box", "", 166, 398, 1114, 98, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FCD34D;strokeWidth=1.5;");
@@ -324,7 +324,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // TIER 6: INGESTION, PARSING & CONNECTORS LAYER (y=502..578, h=76)
   // ----------------------------------------------------
   cell("t6_num", "6", 16, 502, 24, 24, "rounded=1;arcSize=14;fillColor=#EA580C;strokeColor=#EA580C;fontColor=#FFFFFF;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t6_lbl", `<div style="font-size:9px;font-weight:900;color:#C2410C;line-height:1.15;">INGESTION, PARSING &amp;<br/>CONNECTORS LAYER</div>`, 44, 502, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t6_lbl", `<div style="font-size:9px;font-weight:900;color:#C2410C;line-height:1.15;">INGESTION, PARSING &<br/>CONNECTORS LAYER</div>`, 44, 502, 118, 26, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Tier 6 Container Box
   cell("t6_box", "", 166, 502, 1114, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FDBA74;strokeWidth=1.5;");
@@ -354,7 +354,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   // Right Enclave: Protocols & Ingestion Modes (Dashed Box)
   cell("t6_proto_box", "", 914, 508, 356, 62, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=4 3;");
-  cell("t6_proto_lbl", "Protocols &amp; Ingestion Modes", 914, 510, 356, 14, "html=1;fontColor:#C2410C;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t6_proto_lbl", "Protocols & Ingestion Modes", 914, 510, 356, 14, "html=1;fontColor:#C2410C;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const protocols = [
     { t: "REST", icon: "🌐" },
@@ -388,7 +388,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   // 6 Knowledge Source Zones:
   // Zone 1: Collaboration & Content (w=176)
   cell("t7_z1", "", 174, 590, 176, 116, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
-  cell("t7_z1_lbl", "Collaboration &amp; Content", 174, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t7_z1_lbl", "Collaboration & Content", 174, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const z1Items = [
     { t: "SharePoint", icon: "📁" },
     { t: "Google Drive", icon: "🔺" },
@@ -424,7 +424,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   // Zone 3: Databases & Warehouses (w=176)
   cell("t7_z3", "", 538, 590, 176, 116, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
-  cell("t7_z3_lbl", "Databases &amp; Warehouses", 538, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t7_z3_lbl", "Databases & Warehouses", 538, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const z3Items = [
     { t: "BigQuery", icon: "📊" },
     { t: "Cloud SQL", icon: "🗄️" },
@@ -442,7 +442,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   // Zone 4: Object & File Stores (w=176)
   cell("t7_z4", "", 720, 590, 176, 116, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
-  cell("t7_z4_lbl", "Object &amp; File Stores", 720, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t7_z4_lbl", "Object & File Stores", 720, 592, 176, 14, "html=1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const z4Items = [
     { t: "Cloud Storage", icon: "🗄️" },
     { t: "PDFs", icon: "📄" },
@@ -538,7 +538,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   const pAItems = [
     { t: "Human Approval Queue", icon: "👤" },
-    { t: "Policy &amp; Prompt Governance", icon: "📑" },
+    { t: "Policy & Prompt Governance", icon: "📑" },
     { t: "Audit Trail / Evidence Logging", icon: "📋" },
     { t: "PII / DLP Checks", icon: "🔒" },
     { t: "Responsible AI", icon: "🌐" }
@@ -563,7 +563,7 @@ export function generateTemplate41EnterpriseRagPlatformXml(
     { t: "Retrieval Metrics", sub: "(recall, precision, hit rate)", icon: "📈" },
     { t: "RAG Evaluation", sub: "(grounding score, citation coverage, answer quality)", icon: "🎯" },
     { t: "Feedback Loop", sub: "(user ratings, corrections, reinforcement signals)", icon: "👍" },
-    { t: "Cost &amp; Token Tracking", sub: "", icon: "💲" },
+    { t: "Cost & Token Tracking", sub: "", icon: "💲" },
     { t: "SLOs / Alerts / Dashboards", sub: "", icon: "🔔" }
   ];
   pBItems.forEach((it, idx) => {
@@ -591,8 +591,8 @@ export function generateTemplate41EnterpriseRagPlatformXml(
     { t: "Prompt / Template Management", sub: "", icon: "💬" },
     { t: "Index Lifecycle Management", sub: "", icon: "⚙️" },
     { t: "Model Registry / Rollout", sub: "", icon: "📦" },
-    { t: "Runtime &amp; Compute", sub: "(GKE / Cloud Run / Cloud Functions)", icon: "☸️" },
-    { t: "Artifacts &amp; Secrets", sub: "(Artifact Registry / Secret Manager / Config)", icon: "🔒" }
+    { t: "Runtime & Compute", sub: "(GKE / Cloud Run / Cloud Functions)", icon: "☸️" },
+    { t: "Artifacts & Secrets", sub: "(Artifact Registry / Secret Manager / Config)", icon: "🔒" }
   ];
   pCItems.forEach((it, idx) => {
     const iy = 576 + idx * 33;
