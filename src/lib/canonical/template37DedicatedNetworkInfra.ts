@@ -2,20 +2,20 @@
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 37: Dedicated Network & Infrastructure Blueprint
  * Matches 100% of images/37.png:
  * - Exact 1536x1024 master canvas resolution.
- * - 9 Complete Architectural Tiers:
- *   1. Users, Partners & External Sources (6 Persona / Source pods)
- *   2. Hybrid Connectivity Edge (On-Prem, Interconnect, HA VPN, Cloud Router, BGP Peering, Partner WAN)
- *   3. Private Ingress Layer (Global External HTTPS LB, Cloud Armor, Cert Mgr, Cloud CDN, External DNS, Ingress to Producer)
- *   4. Hub-and-Spoke Network Foundation (Shared VPC Host Project Hub, Subnets, Firewall Policies, Network Services, Spokes, VPC-SC)
- *   5. Application & Service Layer (Private Workloads, Internal LB, Apigee, GKE, Cloud Run, Service Mesh, Internal Services)
- *   6. Private Service Connect (PSC) Connectivity (PSC Consumers, Service Attachments, Producer Services, PSC Use Cases Checklist)
- *   7. Private Egress & Controlled Outbound Access (Workloads, Cloud NAT, PGA, Secure Web Proxy, DNS Policy, Egress Destinations, No Direct Internet Access)
- *   8. Data, Platform Services & Shared Controls (Cloud SQL/AlloyDB, Memorystore, Pub/Sub, Artifact Registry, Secret Mgr, KMS, GCS, BigQuery)
- *   9. Security, Operations & Reliability Foundation (IAM/ACM, SCC, Logging, Monitoring, Audit Logs, SIEM/SOC, BCDR, Multi-Region, Org Policies)
+ * - 9 Complete Architectural Tiers with High-Density Pods & Vector Icons:
+ *   1. Users, Partners & External Sources (6 Personas with circular icon pods)
+ *   2. Hybrid Connectivity Edge (On-Premises, Interconnect, HA VPN, Cloud Router, BGP Peering, Partner WAN + Overhead BGP Channel)
+ *   3. Private Ingress Layer (Global HTTPS LB -> Cloud Armor -> Cert Mgr -> Cloud CDN -> External DNS -> Ingress to Producer)
+ *   4. Hub-and-Spoke Network Foundation (Shared VPC Hub, 4 Subnet Pods, Security Policies, Network Services, 3 Spokes, VPC-SC)
+ *   5. Application & Service Layer (Internal LB -> Apigee -> GKE -> Cloud Run -> Service Mesh -> Internal Services)
+ *   6. Private Service Connect (PSC) Connectivity (3 Consumer Blue Pods -> 3 Attachment Purple Pods -> 3 Producer Blue Pods + Checklist)
+ *   7. Private Egress & Controlled Outbound (5 Egress Icon Pods -> Controlled Destinations -> 🚫 No Direct Internet Access)
+ *   8. Data, Platform Services & Shared Controls (8 Rich Platform Cards with large vector icons)
+ *   9. Security, Operations & Reliability Foundation (9 Rich Ops/Security Cards with large vector icons)
  * - Complete Right Sidebar:
  *   * LEGEND (5 typed flow lines: Private Data, Control/API, Internet/Public, PSC Connectivity, Hybrid Connectivity)
- *   * SECURITY HIGHLIGHTS (8 Blue Vector items)
- *   * DIAGRAM INFORMATION Table (Title, Version, Date, Cloud, Scope, Audience)
+ *   * SECURITY HIGHLIGHTS (8 distinct security vector items with perfect vertical spacing)
+ *   * DIAGRAM INFORMATION Table (Metadata + Google Cloud brand block)
  * - 100% Native vector SVGs (0 raw emojis).
  */
 
@@ -28,9 +28,9 @@ const E = (v?: string | null) =>
 
 // SVG Vector Icons Helper (100% offline, zero network dependency)
 const SVG = {
-  circleWrap: (innerSvg: string, strokeColor = "#1D4ED8", bgColor = "#EFF6FF", size = 32) =>
-    `<div style="width:${size}px;height:${size}px;min-width:${size}px;border-radius:50%;background:${bgColor};border:1.5px solid ${strokeColor};display:flex;align-items:center;justify-content:center;">` +
-    `<svg width="${size - 12}" height="${size - 12}" viewBox="0 0 24 24" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${innerSvg}</svg>` +
+  circleWrap: (innerSvg: string, strokeColor = "#1D4ED8", bgColor = "#EFF6FF", size = 36) =>
+    `<div style="width:${size}px;height:${size}px;min-width:${size}px;border-radius:50%;background:${bgColor};border:1.5px solid ${strokeColor};display:flex;align-items:center;justify-content:center;margin:0 auto;">` +
+    `<svg width="${size - 14}" height="${size - 14}" viewBox="0 0 24 24" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${innerSvg}</svg>` +
     `</div>`,
 
   user: `<circle cx="12" cy="7" r="4"/><path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>`,
@@ -99,23 +99,21 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   };
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "37.", 12, 12, 54, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1D4ED8;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=28;fontStyle=1;align=center;verticalAlign=middle;");
-
   cell(
     "hdr_title",
-    `<div style='font-size:26px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.15;'>Dedicated Network &amp; Infrastructure Blueprint</div>` +
-    `<div style='font-size:12px;font-weight:700;color:#64748B;margin-top:3px;'>Private Ingress &nbsp;&bull;&nbsp; Private Egress &nbsp;&bull;&nbsp; PSC Connectivity &nbsp;&bull;&nbsp; Secure Hybrid Networking on Google Cloud</div>`,
-    74,
+    `<div style='font-size:30px;font-weight:900;color:#0F172A;letter-spacing:-0.4px;line-height:1.1;'><span style='color:#1D4ED8;'>37.</span> Dedicated Network &amp; Infrastructure Blueprint</div>` +
+    `<div style='font-size:13px;font-weight:700;color:#2563EB;margin-top:4px;'>Private Ingress &nbsp;&bull;&nbsp; Private Egress &nbsp;&bull;&nbsp; PSC Connectivity &nbsp;&bull;&nbsp; Secure Hybrid Networking on Google Cloud</div>`,
     12,
-    880,
+    12,
+    960,
     54,
     "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
   // Google Cloud Brand Logo Block (Top Right)
   const gcpLogoHtml = `<div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">` +
-    `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/></svg>` +
-    `<div style="font-size:22px;font-weight:900;color:#374151;letter-spacing:-0.5px;">Google Cloud</div>` +
+    `<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/></svg>` +
+    `<div style="font-size:24px;font-weight:900;color:#374151;letter-spacing:-0.5px;">Google Cloud</div>` +
     `</div>`;
   cell("hdr_gcp_logo", gcpLogoHtml, 1280, 12, 244, 54, "text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
@@ -123,7 +121,7 @@ export function generateTemplate37DedicatedNetworkInfraXml(
 
   // Box 1: LEGEND (x=1280, y=74, w=244, h=248)
   cell("sb_legend_box", "", 1280, 74, 244, 248, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
-  cell("sb_leg_title", "LEGEND", 1280, 78, 244, 18, "fontColor:#0F172A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("sb_leg_title", "LEGEND", 1280, 78, 244, 18, "fontColor:#0F172A;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
 
   const legItems = [
     { t: "Private Data Flow", color: "#16A34A", style: "solid", y: 112 },
@@ -142,7 +140,7 @@ export function generateTemplate37DedicatedNetworkInfraXml(
 
   // Box 2: SECURITY HIGHLIGHTS (x=1280, y=330, w=244, h=362)
   cell("sb_sec_box", "", 1280, 330, 244, 362, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
-  cell("sb_sec_title", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2">${SVG.shield}</svg><span style="font-size:10px;font-weight:900;color:#1E40AF;">SECURITY HIGHLIGHTS</span></div>`, 1280, 334, 244, 20, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("sb_sec_title", "SECURITY HIGHLIGHTS", 1280, 330, 244, 26, "shape=rectangle;rounded=1;arcSize=4;fillColor=#1E40AF;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const secHighlights = [
     { t: "Zero Trust access", svg: SVG.shield },
@@ -155,33 +153,33 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     { t: "Resilience & high availability", svg: SVG.checkCircle }
   ];
   secHighlights.forEach((sh, idx) => {
-    const shy = 362 + idx * 40;
+    const shy = 366 + idx * 39;
     cell(
       `sh_${idx}`,
-      `<div style="display:flex;align-items:center;gap:8px;padding:0 4px;">` +
+      `<div style="display:flex;align-items:center;gap:8px;padding:0 6px;">` +
       `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2" style="min-width:14px;">${sh.svg}</svg>` +
       `<div style="font-size:8.5px;font-weight:800;color:#0F172A;line-height:1.2;">${sh.t}</div></div>`,
       1284,
       shy,
       236,
-      34,
+      32,
       "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
     );
   });
 
   // Box 3: DIAGRAM INFORMATION (x=1280, y=700, w=244, h=276)
   cell("sb_info_box", "", 1280, 700, 244, 276, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
-  cell("sb_info_title", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2">${SVG.alert}</svg><span style="font-size:10px;font-weight:900;color:#1E40AF;">DIAGRAM INFORMATION</span></div>`, 1280, 704, 244, 20, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("sb_info_title", "DIAGRAM INFORMATION", 1280, 700, 244, 26, "shape=rectangle;rounded=1;arcSize=4;fillColor=#1E40AF;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const infoRows = [
-    { k: "Title:", v: "Dedicated Network &<br/>Infrastructure Blueprint" },
+    { k: "Title:", v: "Dedicated Network & Infrastructure Blueprint" },
     { k: "Version:", v: "1.0" },
     { k: "Date:", v: "May 17, 2025" },
     { k: "Cloud:", v: "Google Cloud" },
     { k: "Scope:", v: "Network & Infrastructure" },
-    { k: "Audience:", v: "Enterprise Architecture /<br/>Platform / Network / Security" }
+    { k: "Audience:", v: "Enterprise Architecture / Platform / Network / Security" }
   ];
-  let curInfoY = 730;
+  let curInfoY = 734;
   infoRows.forEach((ir, idx) => {
     cell(`info_k_${idx}`, `<span style="font-size:8.5px;font-weight:800;color:#475569;">${ir.k}</span>`, 1288, curInfoY, 68, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
     cell(`info_v_${idx}`, `<span style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;">${ir.v}</span>`, 1356, curInfoY, 160, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
@@ -201,10 +199,10 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;html=1;align=center;verticalAlign=middle;"
   );
 
-  // Helper for Left Tier Label Badges
-  const tierBadge = (num: string, title: string, y: number, h: number, col: string) => {
-    cell(`tb_num_${num}`, num, 12, y, 36, h, `shape=rectangle;rounded=1;arcSize=4;fillColor=${col};fontColor=#FFFFFF;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;`);
-    cell(`tb_lbl_${num}`, `<div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;">${title}</div>`, 52, y, 114, h, `shape=rectangle;rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;spacingLeft=6;verticalAlign=middle;`);
+  // Helper for Left Tier Label Badges (Blue circle with white number)
+  const tierBadge = (num: string, title: string, y: number, h: number) => {
+    cell(`tb_num_${num}`, num, 12, y + (h - 32) / 2, 32, 32, `shape=ellipse;fillColor=#1D4ED8;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=15;fontStyle=1;align=center;verticalAlign=middle;`);
+    cell(`tb_lbl_${num}`, `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.2;">${title}</div>`, 50, y, 116, h, `text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;`);
   };
 
   // ==================== TIER 1: USERS, PARTNERS & EXTERNAL SOURCES (y=74..152, h=78) ====================
@@ -224,12 +222,12 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     cell(
       `es_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
-      SVG.circleWrap(es.svg, es.c, "#F8FAFC", 34) +
-      `<div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:4px;">${es.t}</div></div>`,
+      SVG.circleWrap(es.svg, es.c, "#F8FAFC", 38) +
+      `<div style="font-size:8.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:4px;">${es.t}</div></div>`,
       esx,
-      82,
+      78,
       140,
-      64,
+      70,
       "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;padding=2;"
     );
   });
@@ -239,41 +237,41 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   cell("tier2_box", "", 172, 158, 1098, 104, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;dashPattern=4 2;");
 
   const hybridNodes = [
-    { t: "On-Premises<br/>Datacenter", svg: SVG.building, w: 120 },
-    { t: "Cloud Interconnect", svg: SVG.cloud, w: 120 },
-    { t: "HA VPN", svg: SVG.lock, w: 100 },
-    { t: "Cloud Router", svg: SVG.router, w: 110 },
-    { t: "Router Peering /<br/>BGP", svg: SVG.repeat, w: 120 },
-    { t: "Partner / Private<br/>WAN Connectivity", svg: SVG.globe, w: 140 }
+    { t: "On-Premises<br/>Datacenter", svg: SVG.building, w: 124 },
+    { t: "Cloud Interconnect", svg: SVG.cloud, w: 124 },
+    { t: "HA VPN", svg: SVG.lock, w: 104 },
+    { t: "Cloud Router", svg: SVG.router, w: 114 },
+    { t: "Router Peering /<br/>BGP", svg: SVG.repeat, w: 124 },
+    { t: "Partner / Private<br/>WAN Connectivity", svg: SVG.globe, w: 144 }
   ];
   let curHybX = 184;
   hybridNodes.forEach((hn, idx) => {
     cell(
       `hn_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
-      `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${hn.svg}</svg>` +
-      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:4px;">${hn.t}</div></div>`,
+      `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${hn.svg}</svg>` +
+      `<div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:4px;">${hn.t}</div></div>`,
       curHybX,
       176,
       hn.w,
-      72,
+      74,
       "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;"
     );
 
     if (idx < hybridNodes.length - 1) {
       rawEdge(`e_hyb_${idx}`, "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;dashed=1;dashPattern=4 2;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
-        { x: curHybX + hn.w, y: 212 },
-        { x: curHybX + hn.w + 14, y: 212 }
+        { x: curHybX + hn.w, y: 213 },
+        { x: curHybX + hn.w + 14, y: 213 }
       ]);
     }
     curHybX += hn.w + 14;
   });
 
   // BGP Overhead line
-  cell("lbl_bgp", `<span style="font-size:7.5px;font-weight:900;color:#2563EB;">BGP</span>`, 580, 160, 40, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("lbl_bgp", `<span style="font-size:8px;font-weight:900;color:#2563EB;">BGP</span>`, 580, 160, 40, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   rawEdge("e_bgp_overhead", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 2;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
-    { x: 244, y: 176 },
-    { x: 244, y: 164 },
+    { x: 246, y: 176 },
+    { x: 246, y: 164 },
     { x: 740, y: 164 },
     { x: 740, y: 176 }
   ]);
@@ -283,24 +281,24 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   cell("tier3_box", "", 172, 268, 1098, 90, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const ingressNodes = [
-    { t: "Global External<br/>HTTPS Load Balancer<br/><span style='font-size:7px;color:#64748B;'>(Anycast)</span>", svg: SVG.globe, w: 130 },
-    { t: "Cloud Armor<br/><span style='font-size:7px;color:#64748B;'>(WAF, DDoS Protection)</span>", svg: SVG.shield, w: 124 },
-    { t: "Certificate Manager<br/><span style='font-size:7px;color:#64748B;'>(Managed TLS)</span>", svg: SVG.lock, w: 124 },
-    { t: "Cloud CDN<br/><span style='font-size:7px;color:#64748B;'>(Optional)</span>", svg: SVG.server, w: 104 },
-    { t: "External DNS /<br/>Cloud DNS<br/><span style='font-size:7px;color:#64748B;'>(Public Zone)</span>", svg: SVG.globe, w: 110 },
-    { t: "Ingress to Producer<br/>Services via PSC<br/>or Internal LB", svg: SVG.key, w: 130 }
+    { t: "Global External<br/>HTTPS Load Balancer<br/><span style='font-size:7px;color:#64748B;'>(Anycast)</span>", svg: SVG.globe, w: 134 },
+    { t: "Cloud Armor<br/><span style='font-size:7px;color:#64748B;'>(WAF, DDoS Protection)</span>", svg: SVG.shield, w: 128 },
+    { t: "Certificate Manager<br/><span style='font-size:7px;color:#64748B;'>(Managed TLS)</span>", svg: SVG.lock, w: 128 },
+    { t: "Cloud CDN<br/><span style='font-size:7px;color:#64748B;'>(Optional)</span>", svg: SVG.server, w: 108 },
+    { t: "External DNS /<br/>Cloud DNS<br/><span style='font-size:7px;color:#64748B;'>(Public Zone)</span>", svg: SVG.globe, w: 114 },
+    { t: "Ingress to Producer<br/>Services via PSC<br/>or Internal LB", svg: SVG.key, w: 134 }
   ];
   let curIngX = 184;
   ingressNodes.forEach((inNode, idx) => {
     cell(
       `ing_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
-      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${inNode.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:3px;">${inNode.t}</div></div>`,
+      `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${inNode.svg}</svg>` +
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:3px;">${inNode.t}</div></div>`,
       curIngX,
-      278,
+      276,
       inNode.w,
-      70,
+      74,
       "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;"
     );
 
@@ -309,21 +307,21 @@ export function generateTemplate37DedicatedNetworkInfraXml(
       const edgeDash = idx === 0 ? "" : "dashed=1;dashPattern=4 2;";
       rawEdge(`e_ing_${idx}`, `edgeStyle=none;strokeColor=${edgeCol};strokeWidth=1.8;${edgeDash}endArrow=classic;endSize=4;`, [
         { x: curIngX + inNode.w, y: 313 },
-        { x: curIngX + inNode.w + 16, y: 313 }
+        { x: curIngX + inNode.w + 14, y: 313 }
       ]);
     }
-    curIngX += inNode.w + 16;
+    curIngX += inNode.w + 14;
   });
 
   // HTTPS / TLS Annotation
-  cell("lbl_https_tls", `<span style="font-size:7.5px;font-weight:900;color:#1D4ED8;">HTTPS / TLS</span>`, 850, 272, 80, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("lbl_https_tls", `<span style="font-size:8px;font-weight:900;color:#1D4ED8;">HTTPS / TLS</span>`, 850, 272, 80, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // ==================== TIER 4: HUB-AND-SPOKE NETWORK FOUNDATION (y=364..498, h=134) ====================
   tierBadge("4", "Hub-and-Spoke<br/>Network Foundation<br/><span style='font-size:7px;color:#64748B;'>(Shared VPC)</span>", 364, 134, "#1D4ED8");
   cell("tier4_box", "", 172, 364, 1098, 134, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   // Sub-box 1: Shared VPC Host Project (Hub)
-  cell("t4_hub", `<div style="text-align:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.tree}</svg><div style="font-size:8px;font-weight:900;color:#1E40AF;margin-top:4px;">Shared VPC<br/>Host Project (Hub)</div></div>`, 178, 370, 130, 84, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;");
+  cell("t4_hub", `<div style="text-align:center;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.tree}</svg><div style="font-size:8.5px;font-weight:900;color:#1E40AF;margin-top:4px;">Shared VPC<br/>Host Project (Hub)</div></div>`, 178, 370, 130, 84, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;");
 
   // Sub-box 2: VPC Network Segmentation
   cell("t4_seg_box", "", 316, 370, 236, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
@@ -331,57 +329,71 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   const subnets = ["Prod Subnets", "App Subnets", "Data Subnets", "Mgmt Subnets"];
   subnets.forEach((sn, idx) => {
     const snx = 322 + idx * 56;
-    cell(`sn_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${sn}</div>`, snx, 390, 52, 36, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;");
+    cell(`sn_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;">${sn}</div>`, snx, 390, 52, 36, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;");
   });
   cell("t4_reg_subnets", "Regional / Multi-Region Subnets", 322, 430, 224, 20, "rounded=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor:#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // Sub-box 3: Security & Policy
   cell("t4_sec_box", "", 558, 370, 154, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("t4_sec_title", "Security &amp; Policy", 558, 372, 154, 14, "fontColor:#475569;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t4_fw_hier", `<div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.shield}</svg><span style="font-size:7px;font-weight:800;color:#0F172A;">Hierarchical Firewall Policies</span></div>`, 564, 390, 142, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
-  cell("t4_fw_proj", `<div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2">${SVG.shield}</svg><span style="font-size:7px;font-weight:800;color:#0F172A;">Firewall Policies (Per Project)</span></div>`, 564, 422, 142, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
+  cell("t4_sec_title", "Security & Policy", 558, 372, 154, 14, "fontColor:#475569;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("t4_fw_hier", `<div style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.shield}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">Hierarchical Firewall Policies</span></div>`, 564, 390, 142, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
+  cell("t4_fw_proj", `<div style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2">${SVG.shield}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">Firewall Policies (Per Project)</span></div>`, 564, 422, 142, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
 
   // Sub-box 4: Network Services
   cell("t4_ns_box", "", 718, 370, 160, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t4_ns_title", "Network Services", 718, 372, 160, 14, "fontColor:#475569;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t4_dns_priv", `<div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.globe}</svg><span style="font-size:7px;font-weight:800;color:#0F172A;">Cloud DNS (Private Zones)</span></div>`, 724, 390, 148, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
-  cell("t4_ncc_hub", `<div style="display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.cloud}</svg><span style="font-size:7px;font-weight:800;color:#0F172A;">Network Connectivity Center (NCC)</span></div>`, 724, 422, 148, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
+  cell("t4_dns_priv", `<div style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.globe}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">Cloud DNS (Private Zones)</span></div>`, 724, 390, 148, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
+  cell("t4_ncc_hub", `<div style="display:flex;align-items:center;gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${SVG.cloud}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">Network Connectivity Center</span></div>`, 724, 422, 148, 28, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=left;verticalAlign=middle;padding=2;");
 
   // Sub-box 5: Service Projects / Spokes
   cell("t4_spokes_box", "", 884, 370, 230, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t4_spokes_title", "Service Projects / Spokes", 884, 372, 230, 14, "fontColor:#475569;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const spokesList = ["Spoke Project 1", "Spoke Project 2", "...", "Spoke Project N"];
+  const spokesList = [
+    { t: "Spoke<br/>Project 1", w: 50 },
+    { t: "Spoke<br/>Project 2", w: 50 },
+    { t: "...", w: 26 },
+    { t: "Spoke<br/>Project N", w: 50 }
+  ];
+  let curSpkX = 890;
   spokesList.forEach((spk, idx) => {
-    const spkx = 890 + idx * 54;
-    const isMore = spk === "...";
-    cell(`t4_spk_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${spk}</div>`, spkx, 394, 50, 52, `rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;${isMore ? "dashed=1;" : ""}html=1;align=center;verticalAlign=middle;`);
+    const isMore = spk.t === "...";
+    cell(
+      `t4_spk_${idx}`,
+      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.15;">${spk.t}</div>`,
+      curSpkX,
+      390,
+      spk.w,
+      56,
+      `rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;${isMore ? "dashed=1;fontColor=#64748B;fontSize=14;" : ""}html=1;align=center;verticalAlign=middle;padding=2;`
+    );
+    curSpkX += spk.w + 6;
   });
 
   // Sub-box 6: VPC Service Controls Perimeter (Optional)
-  cell("t4_vpc_sc_box", `<div style="text-align:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2">${SVG.shield}</svg><div style="font-size:7.5px;font-weight:900;color:#166534;margin-top:2px;">VPC Service Controls<br/>Perimeter (Optional)</div></div>`, 1120, 370, 144, 84, "rounded=1;arcSize=4;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;dashed=1;dashPattern=3 2;html=1;align=center;verticalAlign=middle;");
+  cell("t4_vpc_sc_box", `<div style="text-align:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2">${SVG.shield}</svg><div style="font-size:8px;font-weight:900;color:#166534;margin-top:2px;">VPC Service Controls<br/>Perimeter (Optional)</div></div>`, 1120, 370, 144, 84, "rounded=1;arcSize=4;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;dashed=1;dashPattern=3 2;html=1;align=center;verticalAlign=middle;");
 
   // East-West Corridor Bar
-  cell("t4_ew_corridor", `<div style="font-size:8px;font-weight:900;color:#2563EB;">&lt;------ East-West Connectivity (Private IP) ------&gt;</div>`, 178, 466, 1086, 24, "rounded=1;arcSize=12;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;");
+  cell("t4_ew_corridor", `<div style="font-size:8.5px;font-weight:900;color:#2563EB;">&lt;------ East-West Connectivity (Private IP) ------&gt;</div>`, 178, 466, 1086, 24, "rounded=1;arcSize=12;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;");
 
   // ==================== TIER 5: APPLICATION & SERVICE LAYER (y=504..574, h=70) ====================
   tierBadge("5", "Application &amp;<br/>Service Layer<br/><span style='font-size:7px;color:#64748B;'>(Private Workloads)</span>", 504, 70, "#1D4ED8");
   cell("tier5_box", "", 172, 504, 1098, 70, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const appNodes = [
-    { t: "Internal HTTP(S)<br/>Load Balancer", svg: SVG.server, w: 120 },
-    { t: "API Gateway /<br/>Apigee", svg: SVG.tree, w: 110 },
-    { t: "GKE / GKE<br/>Autopilot", svg: SVG.repeat, w: 110 },
-    { t: "Cloud Run", svg: SVG.cloud, w: 100 },
-    { t: "Service Mesh /<br/>Microservices", svg: SVG.box, w: 120 },
-    { t: "Internal Services<br/><span style='font-size:7px;color:#64748B;'>(Private Endpoints)</span>", svg: SVG.lock, w: 130 }
+    { t: "Internal HTTP(S)<br/>Load Balancer", svg: SVG.server, w: 124 },
+    { t: "API Gateway /<br/>Apigee", svg: SVG.tree, w: 114 },
+    { t: "GKE / GKE<br/>Autopilot", svg: SVG.repeat, w: 114 },
+    { t: "Cloud Run", svg: SVG.cloud, w: 104 },
+    { t: "Service Mesh /<br/>Microservices", svg: SVG.box, w: 124 },
+    { t: "Internal Services<br/><span style='font-size:7px;color:#64748B;'>(Private Endpoints)</span>", svg: SVG.lock, w: 134 }
   ];
   let curAppX = 184;
   appNodes.forEach((an, idx) => {
     cell(
       `app_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
-      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${an.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${an.t}</div></div>`,
+      `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${an.svg}</svg>` +
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${an.t}</div></div>`,
       curAppX,
       512,
       an.w,
@@ -392,10 +404,10 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     if (idx < appNodes.length - 1) {
       rawEdge(`e_app_${idx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;", [
         { x: curAppX + an.w, y: 539 },
-        { x: curAppX + an.w + 16, y: 539 }
+        { x: curAppX + an.w + 14, y: 539 }
       ]);
     }
-    curAppX += an.w + 16;
+    curAppX += an.w + 14;
   });
 
   // ==================== TIER 6: PRIVATE SERVICE CONNECT (PSC) CONNECTIVITY (y=580..694, h=114) ====================
@@ -405,14 +417,28 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   // Box 1: PSC Consumers
   cell("t6_cons_box", "", 176, 584, 250, 106, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
   cell("t6_cons_title", "PSC Consumers (Consumer Endpoints)", 176, 586, 250, 14, "fontColor:#6B21A8;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const pscCons = ["Consumer VPC<br/>(Spoke Project 1)", "Consumer VPC<br/>(Spoke Project 2)", "On-Prem / Partner<br/>(PSC over Interconnect)"];
+  const pscCons = [
+    { t: "Consumer VPC<br/>(Spoke 1)", svg: SVG.tree },
+    { t: "Consumer VPC<br/>(Spoke 2)", svg: SVG.tree },
+    { t: "On-Prem / Partner<br/>(Interconnect)", svg: SVG.building }
+  ];
   pscCons.forEach((pc, idx) => {
     const pcx = 182 + idx * 78;
-    cell(`psc_c_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${pc}</div>`, pcx, 606, 74, 76, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(
+      `psc_c_${idx}`,
+      `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
+      SVG.circleWrap(pc.svg, "#2563EB", "#EFF6FF", 32) +
+      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:3px;">${pc.t}</div></div>`,
+      pcx,
+      604,
+      74,
+      80,
+      "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;"
+    );
   });
 
   // Arrow from Consumers to Service Attachments
-  cell("lbl_psc_conn", `<span style="font-size:7px;font-weight:900;color:#7C3AED;">PSC<br/>Connections</span>`, 428, 620, 48, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("lbl_psc_conn", `<span style="font-size:7.5px;font-weight:900;color:#7C3AED;">PSC<br/>Connections</span>`, 428, 620, 48, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   rawEdge("e_psc_conn", "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
     { x: 426, y: 644 },
     { x: 476, y: 644 }
@@ -421,14 +447,28 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   // Box 2: PSC Service Attachments
   cell("t6_att_box", "", 478, 584, 220, 106, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
   cell("t6_att_title", "PSC Service Attachments (Producer)", 478, 586, 220, 14, "fontColor:#6B21A8;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const pscAtts = ["Service<br/>Attachment 1", "Service<br/>Attachment 2", "Service<br/>Attachment N"];
+  const pscAtts = [
+    { t: "Service<br/>Attachment 1", svg: SVG.lock },
+    { t: "Service<br/>Attachment 2", svg: SVG.lock },
+    { t: "Service<br/>Attachment N", svg: SVG.lock }
+  ];
   pscAtts.forEach((pa, idx) => {
     const pax = 484 + idx * 70;
-    cell(`psc_a_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${pa}</div>`, pax, 606, 66, 76, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(
+      `psc_a_${idx}`,
+      `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
+      SVG.circleWrap(pa.svg, "#7C3AED", "#FAF5FF", 32) +
+      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:3px;">${pa.t}</div></div>`,
+      pax,
+      604,
+      66,
+      80,
+      "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;"
+    );
   });
 
   // Arrow from Attachments to Producer Services
-  cell("lbl_psc_access", `<span style="font-size:7px;font-weight:900;color:#7C3AED;">Private Service<br/>Access (PSC)</span>`, 700, 620, 58, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("lbl_psc_access", `<span style="font-size:7.5px;font-weight:900;color:#7C3AED;">Private Service<br/>Access (PSC)</span>`, 700, 620, 58, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   rawEdge("e_psc_access", "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
     { x: 698, y: 644 },
     { x: 760, y: 644 }
@@ -437,10 +477,24 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   // Box 3: PSC Producer Services
   cell("t6_prod_box", "", 762, 584, 250, 106, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
   cell("t6_prod_title", "PSC Producer Services (Private Publishing)", 762, 586, 250, 14, "fontColor:#6B21A8;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const pscProds = ["Producer VPC<br/>(Internal APIs)", "Partner / Private<br/>Service Publishing", "Shared Services<br/>(Internal Platforms)"];
+  const pscProds = [
+    { t: "Producer VPC<br/>(Internal APIs)", svg: SVG.database },
+    { t: "Partner / Private<br/>Publishing", svg: SVG.handshake },
+    { t: "Shared Services<br/>(Platforms)", svg: SVG.server }
+  ];
   pscProds.forEach((pp, idx) => {
     const ppx = 768 + idx * 78;
-    cell(`psc_p_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${pp}</div>`, ppx, 606, 74, 76, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(
+      `psc_p_${idx}`,
+      `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
+      SVG.circleWrap(pp.svg, "#2563EB", "#EFF6FF", 32) +
+      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:3px;">${pp.t}</div></div>`,
+      ppx,
+      604,
+      74,
+      80,
+      "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;padding=2;"
+    );
   });
 
   // Box 4: PSC Use Cases Checklist
@@ -458,8 +512,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     cell(
       `puc_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;padding:0 2px;">` +
-      `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` +
-      `<span style="font-size:7px;font-weight:800;color:#0F172A;">${uc}</span></div>`,
+      `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>` +
+      `<span style="font-size:7.5px;font-weight:800;color:#0F172A;">${uc}</span></div>`,
       1024,
       ucy,
       236,
@@ -484,7 +538,7 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     cell(
       `eg_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
-      `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${en.svg}</svg>` +
+      `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${en.svg}</svg>` +
       `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${en.t}</div></div>`,
       curEgX,
       708,
@@ -507,7 +561,7 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   const destinations = ["SaaS APIs<br/>(Allowlisted)", "Partner APIs<br/>(Allowlisted)", "Internet Services<br/>(Allowlisted)"];
   destinations.forEach((dst, idx) => {
     const dstx = 742 + idx * 82;
-    cell(`dst_${idx}`, `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;">${dst}</div>`, dstx, 724, 76, 44, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;");
+    cell(`dst_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;">${dst}</div>`, dstx, 724, 76, 44, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=0.8;html=1;align=center;verticalAlign=middle;");
   });
 
   // Red Prohibited Box: No Direct Internet Access
@@ -518,8 +572,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   cell(
     "t7_no_direct_box",
     `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">` +
-    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>` +
-    `<div style="font-size:7.5px;font-weight:900;color:#DC2626;margin-top:2px;">No Direct<br/>Internet Access<br/>from Workloads</div></div>`,
+    `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>` +
+    `<div style="font-size:8px;font-weight:900;color:#DC2626;margin-top:2px;">No Direct<br/>Internet Access<br/>from Workloads</div></div>`,
     1020,
     706,
     244,
@@ -546,8 +600,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     cell(
       `dp_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;">` +
-      `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2">${dp.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;">${dp.t}</div></div>`,
+      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2">${dp.svg}</svg>` +
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;">${dp.t}</div></div>`,
       curDpX,
       794,
       dp.w,
@@ -577,8 +631,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
     cell(
       `so_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;">` +
-      `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2">${so.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;">${so.t}</div></div>`,
+      `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2">${so.svg}</svg>` +
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;">${so.t}</div></div>`,
       curSoX,
       862,
       so.w,
