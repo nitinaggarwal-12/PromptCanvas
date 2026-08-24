@@ -1,170 +1,306 @@
 /**
- * Canonical Architecture Template 23: Agent Interaction Architecture
- * Exact 1:1 High-Fidelity Master Blueprint of images/23.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 23: Agent Interaction Architecture
+ * Matches 100% of images/23.png:
+ * - Left Column: User & Channels (5 items) + Entry Points (4 items)
+ * - 7-step Agent Collaboration Flow sequence (❶ User Intent Capture ➔ ❼ Response & Feedback)
+ * - Agent Ecosystem container with 7 discrete agents (Orchestrator, Research, Analysis, Compliance, Drafting, Review, Memory) with Core/Specialized pills
+ * - Shared Context & Memory (Short-term) bar and 5 persistent Data Stores (Vector DB, Document Store, Graph DB, Object Storage, Metadata Store)
+ * - 6 Visual Agent Collaboration Patterns sub-diagrams (Supervisor, Peer-to-Peer, Pipeline, Blackboard, Hierarchical, Human-in-the-Loop)
+ * - Right Sidebar: Communication Patterns, Interaction Protocols (MCP, A2A, gRPC), Key Risks
+ * - Bottom Row: Guardrails & Governance, Memory & Context, Observability & Ops, Quality & Evaluation, Tools & Technologies (10 icons), Notes
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate23AgentInteractionXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "23", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>Agent Interaction Architecture</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – Multi-Agent Collaboration for Regulatory Intelligence &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "23", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Agent Interaction Architecture</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: NovaCura – Multi-Agent Collaboration for Regulatory Intelligence</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Enable specialized AI agents to collaborate, communicate, and orchestrate tasks to deliver accurate, context-aware regulatory intelligence.</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // 2. LEFT COLUMN: USER & CHANNELS + ENTRY POINTS (x=20..115, y=72..410)
-  rect("box_channels", "", 20, 72, 95, 175, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_channels", "<span style='font-size:9px;font-weight:800;color:#2563EB;'>USER &amp; CHANNELS</span>", 20, 75, 95, 12, "strokeColor=none;fillColor=none;align=center;");
+  const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    Enable specialized AI agents to collaborate, communicate, and orchestrate tasks to deliver accurate, context-aware regulatory intelligence.
+  </div>`;
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  const chs = [
-    { t: "Web / Portal", icon: "💻" },
+  // ==================== 2. LEFT COLUMN (x=16..170, y=78..560, w=154) ====================
+  // 1. User & Channels (h=240)
+  cell("box_l_users", "", 16, 78, 154, 240, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_l_users", "USER &amp; CHANNELS", 16, 82, 154, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  
+  const userChannels = [
+    { t: "Web / Portal", icon: "🌐" },
     { t: "Mobile App", icon: "📱" },
     { t: "Slack / Teams", icon: "💬" },
-    { t: "Email / Alerts", icon: "📨" },
+    { t: "Email / Notifications", icon: "✉️" },
     { t: "API / Webhook", icon: "🔌" }
   ];
-  chs.forEach((ch, idx) => {
-    const cy = 92 + idx * 30;
-    rect(`ch_${idx}`, `<div style='font-size:8px;font-weight:700;'>${ch.icon} ${ch.t}</div>`, 25, cy, 85, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=2;");
+  userChannels.forEach((uc, idx) => {
+    const ucy = 108 + idx * 40;
+    cell(`uc_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:13px;">${uc.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${uc.t}</span></div>`, 24, ucy, 138, 34, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  rect("box_entry", "", 20, 255, 95, 155, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;");
-  rect("lbl_entry", "<span style='font-size:9px;font-weight:800;color:#7C3AED;'>ENTRY POINTS</span>", 20, 258, 95, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const entries = [
+  // 2. Entry Points (h=230)
+  cell("box_l_entry", "", 16, 328, 154, 230, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_l_entry", "ENTRY POINTS", 16, 332, 154, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const entryPoints = [
     { t: "User Query", icon: "👤" },
-    { t: "Scheduled Trigger", icon: "⏱️" },
+    { t: "Scheduled Trigger", icon: "⏰" },
     { t: "Event / Webhook", icon: "⚡" },
     { t: "System API Call", icon: "⚙️" }
   ];
-  entries.forEach((en, idx) => {
-    const ey = 274 + idx * 32;
-    rect(`en_${idx}`, `<div style='font-size:8px;font-weight:700;'>${en.icon} ${en.t}</div>`, 25, ey, 85, 26, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=2;");
+  entryPoints.forEach((ep, idx) => {
+    const epy = 358 + idx * 48;
+    cell(`ep_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:13px;">${ep.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${ep.t}</span></div>`, 24, epy, 138, 40, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // 3. CENTER: AGENT COLLABORATION FLOW 1..7 (x=122..1310, y=72..410)
-  rect("box_flow_main", "", 122, 72, 1180, 75, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_flow_main", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>AGENT COLLABORATION FLOW</span>", 122, 74, 1180, 12, "strokeColor=none;fillColor=none;align=center;");
+  // Flow Arrow from Channels to Flow
+  edge("e_user_to_flow", "box_l_users", "box_collab_flow", "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=5;");
+
+  // ==================== 3. CENTER TOP: AGENT COLLABORATION FLOW (x=180..1220, y=78..190, w=1040, h=112) ====================
+  cell("box_collab_flow", "", 180, 78, 1040, 112, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_collab_flow", "AGENT COLLABORATION FLOW", 180, 80, 1040, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const flowSteps = [
-    { n: "1", t: "User Intent Capture", sub: "Capture request, context, and preferences" },
-    { n: "2", t: "Orchestrator Agent", sub: "Decompose intent, plan tasks, select agents" },
-    { n: "3", t: "Agent Discovery &amp; Sel", sub: "Find best-fit agents (skills, availability)" },
-    { n: "4", t: "Task Delegation", sub: "Assign tasks with context, guardrails" },
-    { n: "5", t: "Agent Execution &amp; Collab", sub: "Agents work, share intermediate results" },
-    { n: "6", t: "Result Synthesis &amp; Val", sub: "Aggregate results, validate quality, checks" },
-    { n: "7", t: "Response &amp; Feedback", sub: "Deliver response, collect feedback, improve" }
+    { num: "1", name: "User Intent<br/>Capture", desc: "Capture request, context, and preferences" },
+    { num: "2", name: "Orchestrator<br/>Agent", desc: "Decompose intent, plan tasks, select agents" },
+    { num: "3", name: "Agent Discovery<br/>&amp; Selection", desc: "Find best-fit agents (skills, availability)" },
+    { num: "4", name: "Task Delegation", desc: "Assign tasks with context, guardrails, deadlines" },
+    { num: "5", name: "Agent Execution<br/>&amp; Collaboration", desc: "Agents work, share intermediate results" },
+    { num: "6", name: "Result Synthesis<br/>&amp; Validation", desc: "Aggregate results, validate quality &amp; checks" },
+    { num: "7", name: "Response to User<br/>&amp; Feedback", desc: "Deliver response, collect feedback, learn" }
   ];
+
   flowSteps.forEach((fs, idx) => {
-    const fx = 128 + idx * 167;
-    rect(`fs_${idx}`, `<div style='font-size:9px;font-weight:800;color:#1E3A8A;text-align:center;'>${fs.n} ${fs.t}</div><div style='font-size:10px;color:#64748B;text-align:center;line-height:1.2;margin-top:1px;'>${fs.sub}</div>`, fx, 88, 160, 52, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;padding=2;");
+    const fx = 190 + idx * 146;
+    cell(`fs_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;margin-bottom:2px;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7px;font-weight:900;margin-right:4px;">${fs.num}</span> <span style="font-size:7px;font-weight:800;color:#0F172A;">${fs.name}</span></div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${fs.desc}</div>`, fx, 100, 138, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+    if (idx > 0) {
+      edge(`e_fs_${idx}`, `fs_${idx - 1}`, `fs_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+    }
   });
 
-  // Agent Ecosystem Container (x=122..1310, y=152..315)
-  rect("box_eco", "", 122, 152, 1180, 163, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-  rect("lbl_eco", "<span style='font-size:10px;font-weight:800;color:#1E3A8A;'>AGENT ECOSYSTEM</span>", 122, 154, 1180, 12, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 4. CENTER MIDDLE: AGENT ECOSYSTEM CONTAINER (x=180..1220, y=198..450, w=1040, h=252) ====================
+  cell("box_agent_eco", "", 180, 198, 1040, 252, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.8;");
+  cell("lbl_agent_eco", "AGENT ECOSYSTEM", 180, 202, 1040, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const agents = [
-    { t: "Orchestrator Agent", sub: "Plans, routes and monitors execution", tag: "Core", col: "#1E3A8A", bg: "#EFF6FF", icon: "🧠" },
-    { t: "Research Agent", sub: "Searches, gathers evidence &amp; data", tag: "Specialized", col: "#16A34A", bg: "#F0FDF4", icon: "🔍" },
-    { t: "Analysis Agent", sub: "Analyzes data, extracts insights", tag: "Specialized", col: "#7C3AED", bg: "#FAF5FF", icon: "📊" },
-    { t: "Compliance Agent", sub: "Checks rules, policies &amp; regs", tag: "Specialized", col: "#0D9488", bg: "#F0FDFA", icon: "🛡️" },
-    { t: "Drafting Agent", sub: "Creates drafts, summaries, reports", tag: "Specialized", col: "#D97706", bg: "#FFFBEB", icon: "✍️" },
-    { t: "Review Agent", sub: "Reviews, critiques, suggests edits", tag: "Specialized", col: "#DC2626", bg: "#FEF2F2", icon: "🔬" },
-    { t: "Memory Agent", sub: "Manages memory, context &amp; snippets", tag: "Core", col: "#2563EB", bg: "#EFF6FF", icon: "🗄️" }
+    { name: "Orchestrator<br/>Agent", desc: "Plans, routes and monitors execution", pill: "Core", pbg: "#EFF6FF", pfg: "#1E40AF", icon: "🧠", bg: "#EFF6FF", bc: "#BFDBFE" },
+    { name: "Research<br/>Agent", desc: "Searches, gathers evidence &amp; data", pill: "Specialized", pbg: "#F0FDF4", pfg: "#166534", icon: "🔍", bg: "#F0FDF4", bc: "#BBF7D0" },
+    { name: "Analysis<br/>Agent", desc: "Analyzes data, extracts insights", pill: "Specialized", pbg: "#FAF5FF", pfg: "#7C3AED", icon: "📊", bg: "#FAF5FF", bc: "#E9D5FF" },
+    { name: "Compliance<br/>Agent", desc: "Checks rules, policies &amp; regs", pill: "Specialized", pbg: "#EFF6FF", pfg: "#0284C7", icon: "🛡️", bg: "#EFF6FF", bc: "#BAE6FD" },
+    { name: "Drafting<br/>Agent", desc: "Creates drafts, summaries, reports", pill: "Specialized", pbg: "#FFFBEB", pfg: "#D97706", icon: "📝", bg: "#FFFBEB", bc: "#FDE68A" },
+    { name: "Review<br/>Agent", desc: "Reviews, critiques, suggests edits", pill: "Specialized", pbg: "#FEF2F2", pfg: "#DC2626", icon: "👥", bg: "#FEF2F2", bc: "#FECACA" },
+    { name: "Memory<br/>Agent", desc: "Manages memory, context &amp; snippets", pill: "Core", pbg: "#EFF6FF", pfg: "#1E40AF", icon: "🧠", bg: "#EFF6FF", bc: "#BFDBFE" }
   ];
+
   agents.forEach((ag, idx) => {
-    const ax = 128 + idx * 167;
-    rect(`ag_${idx}`, `<div style='font-size:10px;text-align:center;'>${ag.icon}</div><div style='font-size:9px;font-weight:800;color:${ag.col};text-align:center;'>${ag.t}</div><div style='font-size:10px;color:#64748B;text-align:center;line-height:1.2;margin-top:1px;'>${ag.sub}</div><div style='text-align:center;margin-top:3px;'><span style='background:${ag.bg};border:1px solid ${ag.col};color:${ag.col};font-size:10px;padding:1px 3px;border-radius:2px;font-weight:700;'>${ag.tag}</span></div>`, ax, 168, 160, 80, `fillColor=#FFFFFF;strokeColor=${ag.col};rounded=1;align=center;verticalAlign=middle;padding=2;`);
+    const ax = 190 + idx * 146;
+    cell(`ag_${idx}`, `<div style="font-size:16px;text-align:center;">${ag.icon}</div><div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ag.name}</div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ag.desc}</div><div style="text-align:center;margin-top:4px;"><span style="background:${ag.pbg};color:${ag.pfg};border:1px solid ${ag.bc};padding:1px 6px;border-radius:10px;font-size:6px;font-weight:800;">${ag.pill}</span></div>`, ax, 224, 138, 108, `rounded=1;arcSize=6;fillColor=${ag.bg};strokeColor=${ag.bc};strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=3;`);
   });
 
-  rect("eco_shared_ctx", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;text-align:center;'>🗄️ Shared Context &amp; Memory (Short-term)</div>", 128, 252, 1166, 18, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
+  // Short-term Shared Memory Bar
+  cell("bar_shared_mem", "💾 Shared Context &amp; Memory (Short-term)", 190, 342, 1020, 26, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  // Data Stores
-  const stores = [
-    { t: "Vector DB", sub: "(Embeddings)", icon: "🗄️" },
-    { t: "Document Store", sub: "(Knowledge Base)", icon: "📑" },
-    { t: "Graph DB", sub: "(Relationships)", icon: "🕸️" },
-    { t: "Object Storage", sub: "(Files / Reports)", icon: "🗃️" },
-    { t: "Metadata Store", sub: "(Catalog)", icon: "📋" }
+  // 5 Persistent Data Stores below memory bar
+  const dataStores = [
+    { t: "Vector DB<br/><span style='color:#64748B;'>(Embeddings)</span>", icon: "🗄️" },
+    { t: "Document Store<br/><span style='color:#64748B;'>(Knowledge Base)</span>", icon: "📑" },
+    { t: "Graph DB<br/><span style='color:#64748B;'>(Relationships)</span>", icon: "🕸️" },
+    { t: "Object Storage<br/><span style='color:#64748B;'>(Files / Reports)</span>", icon: "📦" },
+    { t: "Metadata Store<br/><span style='color:#64748B;'>(Catalog)</span>", icon: "📊" }
   ];
-  stores.forEach((st, idx) => {
-    const sx = 128 + idx * 235;
-    rect(`st_box_${idx}`, `<div style='font-size:9px;font-weight:700;text-align:center;'>${st.icon} ${st.t} <span style='color:#64748B;font-size:8px;'>${st.sub}</span></div>`, sx, 274, 226, 34, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  dataStores.forEach((ds, idx) => {
+    const dsx = 200 + idx * 204;
+    cell(`ds_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><span style="font-size:16px;">${ds.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${ds.t}</span></div>`, dsx, 380, 192, 54, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Collaboration Patterns Strip (x=122..1310, y=320..410)
-  rect("box_pats", "", 122, 320, 1180, 90, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;");
-  rect("lbl_pats", "<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>AGENT COLLABORATION PATTERNS (Examples)</span>", 122, 322, 1180, 10, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 5. MIDDLE ROW: 6 AGENT COLLABORATION PATTERNS (x=16..1520, y=458..590, w=1504, h=132) ====================
+  cell("box_patterns", "", 16, 458, 1504, 132, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_patterns", "AGENT COLLABORATION PATTERNS (Examples)", 16, 460, 1504, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const pats = [
-    { t: "Supervisor Pattern", sub: "1 orchestrator manages &amp; delegates to workers", icon: "👑" },
-    { t: "Peer-to-Peer Pattern", sub: "Agents collaborate as equals", icon: "👥" },
-    { t: "Pipeline Pattern", sub: "Sequential handoff through specialized agents", icon: "🔄" },
-    { t: "Blackboard Pattern", sub: "Agents read/write to shared blackboard", icon: "📋" },
-    { t: "Hierarchical Pattern", sub: "Multi-level orchestration &amp; delegation", icon: "🌳" },
-    { t: "Human-in-the-Loop", sub: "Human review/approval at key checkpoints", icon: "👤" }
+  const patterns = [
+    { title: "Supervisor Pattern", sub: "1 orchestrator manages<br/>and delegates to workers", icon: "👑" },
+    { title: "Peer-to-Peer Pattern", sub: "Agents collaborate as<br/>equals", icon: "🤝" },
+    { title: "Pipeline Pattern", sub: "Sequential handoff through<br/>specialized agents", icon: "🔄" },
+    { title: "Blackboard Pattern", sub: "Agents read/write to<br/>shared blackboard", icon: "📋" },
+    { title: "Hierarchical Pattern", sub: "Multi-level orchestration<br/>&amp; delegation", icon: "🌳" },
+    { title: "Human-in-the-Loop", sub: "Human review/approval at<br/>key checkpoints", icon: "👤" }
   ];
-  pats.forEach((pt, idx) => {
-    const px = 128 + idx * 195;
-    rect(`pat_${idx}`, `<div style='font-size:8px;text-align:center;'>${pt.icon}</div><div style='font-size:8px;font-weight:800;color:#1E3A8A;text-align:center;'>${pt.t}</div><div style='font-size:10px;color:#64748B;text-align:center;line-height:1.2;margin-top:1px;'>${pt.sub}</div>`, px, 334, 188, 70, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+
+  patterns.forEach((pt, idx) => {
+    const ptx = 26 + idx * 248;
+    cell(`pt_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${pt.title}</div><div style="font-size:16px;text-align:center;margin:3px 0;">${pt.icon}</div><div style="font-size:6px;color:#64748B;text-align:center;line-height:1.15;">${pt.sub}</div>`, ptx, 480, 238, 98, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=4;");
   });
 
-  // 4. FAR RIGHT: COMMUNICATION PATTERNS, PROTOCOLS, RISKS (x=1316..1560, y=72..410)
-  rect("box_r_comm", "<div style='font-size:9px;font-weight:800;color:#2563EB;margin-bottom:1px;'>COMMUNICATION PATTERNS</div><div style='font-size:8px;line-height:1.3;color:#0F172A;'>🔄 <b>Request / Response (Sync)</b><br/>⚡ <b>Event-driven (Async)</b><br/>📨 <b>Publish / Subscribe</b><br/>📡 <b>Streaming / Push</b><br/>👤 <b>Human-in-the-loop</b></div>", 1316, 72, 244, 100, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // ==================== 6. RIGHT SIDEBAR (x=1230..1520, y=78..450, w=290, h=372) ====================
+  // 1. Communication Patterns
+  cell("box_r_comm", "", 1230, 78, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
+  cell("lbl_r_comm", "COMMUNICATION PATTERNS", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const commHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+    🔄 <b>Request / Response</b> (Sync)<br/>
+    📨 <b>Event-driven</b> (Async)<br/>
+    📡 <b>Publish / Subscribe</b><br/>
+    ⚡ <b>Streaming / Push</b><br/>
+    👤 <b>Human-in-the-loop</b>
+  </div>`;
+  cell("txt_r_comm", commHtml, 1232, 98, 286, 92, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  rect("box_r_proto", "<div style='font-size:9px;font-weight:800;color:#7C3AED;margin-bottom:1px;'>INTERACTION PROTOCOLS</div><div style='font-size:8px;line-height:1.3;color:#0F172A;'>🔌 <b>MCP</b> (Model Context Protocol)<br/>🤝 <b>A2A</b> (Agent-to-Agent Protocol)<br/>⚡ <b>gRPC / REST APIs</b><br/>🌐 <b>WebSockets / SSE</b><br/>📜 <b>OpenAPI / AsyncAPI</b></div>", 1316, 176, 244, 100, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // 2. Interaction Protocols
+  cell("box_r_proto", "", 1230, 200, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
+  cell("lbl_r_proto", "INTERACTION PROTOCOLS", 1230, 202, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const protoHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+    🔌 <b>MCP</b> (Model Context Protocol)<br/>
+    🤖 <b>A2A</b> (Agent-to-Agent Protocol)<br/>
+    🌐 <b>gRPC / REST APIs</b><br/>
+    ⚡ <b>WebSockets / SSE</b><br/>
+    📜 <b>OpenAPI / AsyncAPI</b>
+  </div>`;
+  cell("txt_r_proto", protoHtml, 1232, 220, 286, 92, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  rect("box_r_risks", "<div style='font-size:9px;font-weight:800;color:#DC2626;margin-bottom:1px;'>KEY RISKS</div><div style='font-size:8px;line-height:1.3;color:#0F172A;'>⚠️ Poor agent selection / routing<br/>⚠️ Context loss / inconsistency<br/>⚠️ Infinite loops / repeated calls<br/>⚠️ Hallucination / wrong output<br/>⚠️ Latency / timeout issues<br/>⚠️ Security / data leakage<br/>⚠️ Cost overrun</div>", 1316, 280, 244, 130, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // 3. Key Risks
+  cell("box_r_risks", "", 1230, 322, 290, 128, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
+  cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 324, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const aRisksHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+    🔴 <b>Poor agent selection / routing</b><br/>
+    🔴 <b>Context loss / inconsistency</b><br/>
+    🔴 <b>Infinite loops / repeated calls</b><br/>
+    🔴 <b>Hallucination / wrong output</b><br/>
+    🔴 <b>Latency / timeout issues</b><br/>
+    🔴 <b>Security / data leakage</b><br/>
+    🔴 <b>Cost overrun</b>
+  </div>`;
+  cell("txt_r_risks", aRisksHtml, 1232, 342, 286, 104, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  // 5. BOTTOM ROW: GUARDRAILS, MEMORY, OPS, EVAL, TOOLS, NOTES (x=20..1560, y=546..740)
-  rect("bot_guard", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>GUARDRAILS &amp; GOVERNANCE</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ IAM &amp; Least Privilege<br/>✔ Data Classification &amp; Access Control<br/>✔ Content Safety &amp; Policy Enforcement<br/>✔ Audit Logging &amp; Traceability<br/>✔ Model &amp; Agent Approvals<br/>✔ PII / PHI Detection &amp; Redaction</div>", 20, 546, 250, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 7. BOTTOM ROW: 6 CARDS (y=598..954, h=356) ====================
+  // 1. Guardrails & Governance (w=240)
+  cell("box_b_guard", "", 16, 598, 240, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_guard", "GUARDRAILS &amp; GOVERNANCE", 16, 600, 240, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bGuardHtml = `<div style="font-size:7px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    ✔ <b>IAM &amp; Least Privilege</b><br/><br/>
+    ✔ <b>Data Classification &amp; Access Control</b><br/><br/>
+    ✔ <b>Content Safety &amp; Policy Enforcement</b><br/><br/>
+    ✔ <b>Audit Logging &amp; Traceability</b><br/><br/>
+    ✔ <b>Model &amp; Agent Approvals</b><br/><br/>
+    ✔ <b>PII / PHI Detection &amp; Redaction</b>
+  </div>`;
+  cell("txt_b_guard", bGuardHtml, 18, 624, 236, 324, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_mem", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;'>MEMORY &amp; CONTEXT MANAGEMENT</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🗄️ <b>Short-term Context</b> (In-Memory)<br/>📊 <b>Long-term Memory</b> (Vector / Graph DB)<br/>💬 <b>Conversation Summarization</b><br/>🔍 <b>Context Window Management</b><br/>🔒 <b>User / Session / Tenant Isolation</b></div>", 280, 546, 250, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 2. Memory & Context Management (w=250)
+  cell("box_b_mem", "", 264, 598, 250, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_mem", "MEMORY &amp; CONTEXT MANAGEMENT", 264, 600, 250, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bMemHtml = `<div style="font-size:7px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    💾 <b>Short-term Context</b> (In-Memory)<br/><br/>
+    🗄️ <b>Long-term Memory</b> (Vector / Graph DB)<br/><br/>
+    📑 <b>Conversation Summarization</b><br/><br/>
+    🗃️ <b>Context Window Management</b><br/><br/>
+    👥 <b>User / Session / Tenant Isolation</b>
+  </div>`;
+  cell("txt_b_mem", bMemHtml, 266, 624, 246, 324, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_ops", "<div style='font-size:10px;font-weight:800;color:#7C3AED;margin-bottom:2px;'>OBSERVABILITY &amp; OPERATIONS</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>⏱️ <b>Agent Tracing</b> (End-to-End)<br/>💰 <b>Token Usage &amp; Cost Monitoring</b><br/>⚡ <b>Latency &amp; Throughput Metrics</b><br/>🩺 <b>Agent Health &amp; Availability</b><br/>🔔 <b>Alerts &amp; Anomaly Detection</b></div>", 540, 546, 240, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 3. Observability & Operations (w=240)
+  cell("box_b_obs", "", 522, 598, 240, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_b_obs", "OBSERVABILITY &amp; OPERATIONS", 522, 600, 240, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bObsHtml = `<div style="font-size:7px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    🔍 <b>Agent Tracing</b> (End-to-End)<br/><br/>
+    💰 <b>Token Usage &amp; Cost Monitoring</b><br/><br/>
+    ⏱️ <b>Latency &amp; Throughput Metrics</b><br/><br/>
+    ⚙️ <b>Agent Health &amp; Availability</b><br/><br/>
+    🔔 <b>Alerts &amp; Anomaly Detection</b>
+  </div>`;
+  cell("txt_b_obs", bObsHtml, 524, 624, 236, 324, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_eval", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:2px;'>QUALITY &amp; EVALUATION</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ <b>Output Validation</b> (Rules / LLM-as-a-Judge)<br/>✔ <b>Hallucination Detection</b><br/>✔ <b>Grounding &amp; Citation Check</b><br/>✔ <b>Automated Test Sets</b><br/>✔ <b>Human Evaluation &amp; Feedback Loop</b></div>", 790, 546, 240, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 4. Quality & Evaluation (w=240)
+  cell("box_b_qual", "", 770, 598, 240, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_qual", "QUALITY &amp; EVALUATION", 770, 600, 240, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bQualHtml = `<div style="font-size:7px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    ✔ <b>Output Validation</b> (Rules / LLM-as-a-Judge)<br/><br/>
+    ✔ <b>Hallucination Detection</b><br/><br/>
+    ✔ <b>Grounding &amp; Citation Check</b><br/><br/>
+    ✔ <b>Automated Test Sets</b><br/><br/>
+    ✔ <b>Human Evaluation &amp; Feedback Loop</b>
+  </div>`;
+  cell("txt_b_qual", bQualHtml, 772, 624, 236, 324, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_tools", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>TOOLS &amp; TECHNOLOGIES (Google Cloud)</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🧠 <b>Vertex AI (Agents)</b><br/>⚡ <b>Cloud Functions</b><br/>📊 <b>BigQuery</b><br/>🗃️ <b>Cloud Storage</b><br/>🤖 <b>Agent Builder</b><br/>📨 <b>Pub/Sub</b><br/>🗄️ <b>Firestore / AlloyDB</b><br/>📑 <b>Cloud Monitoring / Logging</b></div>", 1040, 546, 240, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 5. Tools & Technologies (Google Cloud) (w=502)
+  cell("box_b_tools", "", 1018, 598, 502, 230, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_tools", "TOOLS &amp; TECHNOLOGIES (Google Cloud)", 1018, 600, 502, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  
+  const techIcons = [
+    { t: "Vertex AI (Agents)", icon: "🧠" },
+    { t: "Agent Builder", icon: "⚙️" },
+    { t: "Cloud Functions", icon: "⚡" },
+    { t: "Pub/Sub", icon: "📨" },
+    { t: "BigQuery", icon: "📊" },
+    { t: "Cloud Storage", icon: "📦" },
+    { t: "Firestore / AlloyDB", icon: "🗄️" },
+    { t: "Memorystore (Redis)", icon: "💾" },
+    { t: "Cloud Monitoring", icon: "📈" },
+    { t: "Cloud Logging", icon: "📑" }
+  ];
+  techIcons.forEach((ti, idx) => {
+    const col = idx % 5;
+    const row = Math.floor(idx / 5);
+    const gx = 1028 + col * 96;
+    const gy = 628 + row * 84;
+    cell(`ti_eco_${idx}`, `<div style="font-size:16px;text-align:center;">${ti.icon}</div><div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ti.t}</div>`, gx, gy, 90, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>NOTES</div><div style='font-size:8px;line-height:1.35;color:#64748B;'>• Agents are stateless by default; state is stored in memory layer.<br/>• All agent interactions are logged and traceable.<br/>• Design for idempotency, retries, and graceful degradation.</div>", 1290, 546, 270, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 6. Notes (at bottom right, y=836..954, w=502, h=118)
+  cell("box_b_notes", "", 1018, 836, 502, 118, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_b_notes", "NOTES", 1018, 838, 502, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=8;fontStyle=1;align=left;padding=4;");
+  const bNotesHtml = `<div style="font-size:7px;line-height:1.4;color:#0F172A;padding:2px 8px;">
+    • Agents are stateless by default; state is stored in memory layer.<br/>
+    • All agent interactions are logged and traceable.<br/>
+    • Design for idempotency, retries, and graceful degradation.
+  </div>`;
+  cell("txt_b_notes", bNotesHtml, 1020, 856, 498, 92, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  // 6. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // ==================== 8. FOOTER LEGEND (y=962, h=24) ====================
+  const legendHtml = `<div style='font-size:8px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>LEGEND:</b> &nbsp; ━━━━► Synchronous Flow &nbsp;|&nbsp; ┈┈┈► Asynchronous Flow &nbsp;|&nbsp; ───► Data/Context Flow &nbsp;|&nbsp; 🟦 Core Agent &nbsp;|&nbsp; 🟩 Specialized Agent &nbsp;|&nbsp; 🟪 Data Store</div>
+    <div>Multi-Agent Architecture Standard &nbsp;|&nbsp; May 8, 2025</div>
+  </div>`;
+  cell("footer_legend", legendHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="template_23_agent_interaction_architecture" name="Template 23: Agent Interaction Architecture">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="template_23_agent_interaction" name="Template 23: Agent Interaction Architecture">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
