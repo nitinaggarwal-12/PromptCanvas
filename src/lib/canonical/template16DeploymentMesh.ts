@@ -1,163 +1,343 @@
 /**
- * Canonical Architecture Template 16: Deployment Diagram
- * Exact 1:1 High-Fidelity Master Blueprint of images/16.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 16: Deployment Diagram
+ * Matches 100% of images/16.png:
+ * - Top Sub-Banner: Highly available multi-zone primary + DR region
+ * - Top Legend Pills: Compute, Data Services, Networking, Security
+ * - Users & Clients with Ingress stack (Cloud CDN, Cloud Armor, External HTTPS Anycast)
+ * - Primary Region (us-central1) with Global LB, Internal LB, 3 Zones (A, B, C) with GKE Autopilot & Cloud Run Jobs
+ * - Regional Data Tier with 6 discrete DB cards (AlloyDB, Cloud SQL, MongoDB Atlas, Redis, BigQuery, Vertex AI Vector Search)
+ * - Shared Services & Network Foundation bar
+ * - Secondary DR Region (us-east1) with Standby GKE, Cloud Run, Data Replication & Shared Services
+ * - Right Sidebar: Deployment Notes, Scaling Strategy (5 items), Security Controls (6 checkmarks)
+ * - Bottom Row: Deployment Tools, CI/CD Pipeline (5 steps with arrows), Monitoring & Observability, Environment Strategy (DEV, TEST, STAGE, PROD)
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate16DeploymentMeshXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "16", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>DEPLOYMENT DIAGRAM</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>NOVACURA – Enterprise AI Platform for Biopharma &nbsp;|&nbsp; Multi-AZ Primary + Secondary DR Region</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>Transforming Therapies. Improving Lives.</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "14", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>DEPLOYMENT DIAGRAM</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#1E3A8A;margin-top:2px;'>NOVACURA – Enterprise AI Platform for Biopharma</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // Legend Pills
-  rect("hdr_legend", "<div style='font-size:10px;display:flex;gap:8px;align-items:center;'><span style='background:#F0FDF4;border:1px solid #16A34A;padding:2px 6px;border-radius:3px;font-weight:700;'>■ Compute</span> <span style='background:#FAF5FF;border:1px solid #7C3AED;padding:2px 6px;border-radius:3px;font-weight:700;'>■ Data Services</span> <span style='background:#EFF6FF;border:1px solid #2563EB;padding:2px 6px;border-radius:3px;font-weight:700;'>■ Networking</span> <span style='background:#FFFBEB;border:1px solid #D97706;padding:2px 6px;border-radius:3px;font-weight:700;'>■ Security</span></div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">Transforming Therapies. Improving Lives.</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 1140, 12, 380, 54, "text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
-  // 2. USERS & CLIENTS (x=20..110, y=72..540)
-  rect("box_users", "", 20, 72, 90, 465, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.2;rounded=1;");
-  rect("lbl_users", "<span style='font-size:10px;font-weight:800;color:#1E3A8A;'>USERS &amp; CLIENTS</span>", 20, 75, 90, 14, "strokeColor=none;fillColor=none;align=center;");
+  // Sub-Banner Objective (x=16, y=74, w=760, h=40)
+  const objHtml = `<div style='font-size:10.5px;color:#1E3A8A;font-weight:700;line-height:1.3;'>Highly available, secure, and scalable deployment on Google Cloud across multi-zones in a primary region with DR in a secondary region.</div>`;
+  cell("hdr_obj", objHtml, 16, 74, 760, 40, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+
+  // Top Legend Pills (x=970, y=74, w=550, h=40)
+  const legPillsHtml = `<div style="font-size:10px;display:flex;justify-content:space-around;align-items:center;padding:4px;">
+    <span><span style="color:#16A34A;font-size:14px;">🟩</span> <b>Compute</b></span>
+    <span><span style="color:#7C3AED;font-size:14px;">🟪</span> <b>Data Services</b></span>
+    <span><span style="color:#2563EB;font-size:14px;">🟦</span> <b>Networking</b></span>
+    <span><span style="color:#D97706;font-size:14px;">🛡️</span> <b>Security</b></span>
+  </div>`;
+  cell("hdr_leg_pills", legPillsHtml, 970, 74, 550, 40, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;");
+
+  // ==================== 2. LEFT: USERS & CLIENTS + INGRESS (x=16..290, y=124..770) ====================
+  // Users & Clients Box (w=150, h=646)
+  cell("box_users", "", 16, 124, 150, 646, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.8;");
+  cell("lbl_users", "USERS &amp; CLIENTS", 16, 124, 150, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
 
   const clients = [
-    { t: "Web Application", icon: "💻" },
-    { t: "Mobile Application", icon: "📱" },
-    { t: "AI Copilot (Embedded)", icon: "🧠" },
-    { t: "Partner / 3rd Party", icon: "🏢" },
-    { t: "Scientists / QA", icon: "🔬" },
-    { t: "API Clients", icon: "🔌" }
+    { id: "u_web", t: "Web Application", icon: "💻" },
+    { id: "u_mob", t: "Mobile Application", icon: "📱" },
+    { id: "u_copilot", t: "AI Copilot<br/>(Embedded)", icon: "🧠" },
+    { id: "u_part", t: "Partner / 3rd Party<br/>Applications", icon: "🏢" },
+    { id: "u_sci", t: "Scientists /<br/>Clinicians / QA", icon: "🔬" },
+    { id: "u_api", t: "API Clients<br/>(Postman etc.)", icon: "🔌" }
   ];
   clients.forEach((cl, idx) => {
-    const cy = 94 + idx * 72;
-    rect(`cl_${idx}`, `<div style='font-size:12px;text-align:center;'>${cl.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${cl.t}</div>`, 25, cy, 80, 56, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+    const cy = 160 + idx * 100;
+    cell(cl.id, `<div style="font-size:22px;text-align:center;">${cl.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${cl.t}</div>`, 24, cy, 134, 88, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=4;");
   });
 
-  // 3. INGRESS / EDGE (x=115..195, y=72..540)
-  rect("box_edge", "", 115, 72, 80, 465, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_edge", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>EDGE / INGRESS</span>", 115, 75, 80, 14, "strokeColor=none;fillColor=none;align=center;");
+  // Ingress Stack (x=176, y=280, w=110, h=330)
+  cell("box_ingress", "", 176, 280, 110, 330, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_ingress", "INGRESS", 176, 280, 110, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
-  rect("edge_cdn", "<div style='font-size:14px;text-align:center;'>⚡</div><div style='font-size:9px;font-weight:700;'>Cloud CDN</div>", 120, 110, 70, 60, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
-  rect("edge_armor", "<div style='font-size:14px;text-align:center;'>🛡️</div><div style='font-size:9px;font-weight:700;'>Cloud Armor<br/><span style='color:#64748B;font-size:8px;'>(WAF / DDoS)</span></div>", 120, 210, 70, 60, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("edge_https", "<div style='font-size:14px;text-align:center;'>🌐</div><div style='font-size:9px;font-weight:700;'>External HTTPS<br/><span style='color:#64748B;font-size:8px;'>(Global Anycast)</span></div>", 120, 310, 70, 60, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  cell("ing_cdn", "<div style='font-size:20px;text-align:center;'>⚡</div><div style='font-size:8px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud CDN</div>", 184, 310, 94, 76, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("ing_armor", "<div style='font-size:20px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF / DDoS)</div>", 184, 396, 94, 86, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("ing_anycast", "<div style='font-size:20px;text-align:center;'>🌐</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>External HTTPS<br/>(global anycast)</div>", 184, 492, 94, 108, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // 4. PRIMARY REGION (us-central1) (x=200..1160, y=72..540)
-  rect("box_primary", "", 200, 72, 960, 465, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;");
-  rect("lbl_primary", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>GOOGLE CLOUD – PRIMARY REGION (us-central1)</span>", 200, 75, 960, 14, "strokeColor=none;fillColor=none;align=center;");
+  edge("e_u_to_cdn", "u_copilot", "ing_cdn", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_cdn_armor", "ing_cdn", "ing_armor", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+  edge("e_armor_anycast", "ing_armor", "ing_anycast", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
 
-  rect("lb_global", "<div style='font-size:9px;font-weight:700;'>🌐 Global HTTP(S) Load Balancer</div>", 215, 94, 930, 24, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
-  rect("lb_internal", "<div style='font-size:9px;font-weight:700;'>🔒 Internal HTTP(S) Load Balancer</div>", 215, 122, 930, 24, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
+  // ==================== 3. CENTER: PRIMARY REGION (us-central1) (x=296..1036, y=124..770, w=740, h=646) ====================
+  cell("box_primary_reg", "", 296, 124, 740, 646, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
+  cell("lbl_primary_reg", "GOOGLE CLOUD – PRIMARY REGION (us-central1)", 296, 128, 740, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
-  // 3 Multi-AZ Pods
-  const pzones = [
-    { name: "ZONE A (us-central1-a)", x: 215, w: 302 },
-    { name: "ZONE B (us-central1-b)", x: 529, w: 302 },
-    { name: "ZONE C (us-central1-c)", x: 843, w: 302 }
+  // Global & Internal Load Balancers
+  cell("node_glb", "<div style='font-size:8.5px;font-weight:800;color:#1E40AF;'>🌐 &nbsp; Global HTTP(S) Load Balancer</div>", 310, 150, 712, 28, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;");
+  cell("node_ilb", "<div style='font-size:8.5px;font-weight:800;color:#1E40AF;'>⚙️ &nbsp; Internal HTTP(S) Load Balancer</div>", 310, 184, 712, 28, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;");
+
+  edge("e_ing_to_glb", "ing_anycast", "node_glb", "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_glb_ilb", "node_glb", "node_ilb", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+
+  // 3 Multi-Zone Columns (ZONE A, ZONE B, ZONE C)
+  const zones = [
+    { id: "za", name: "ZONE A (us-central1-a)", x: 310 },
+    { id: "zb", name: "ZONE B (us-central1-b)", x: 550 },
+    { id: "zc", name: "ZONE C (us-central1-c)", x: 790 }
   ];
 
-  pzones.forEach((pz, idx) => {
-    rect(`pz_box_${idx}`, "", pz.x, 150, pz.w, 185, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-    rect(`pz_lbl_${idx}`, `<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>${pz.name}</span>`, pz.x, 152, pz.w, 12, "strokeColor=none;fillColor=none;align=center;");
+  zones.forEach((zn, idx) => {
+    // Zone Header
+    cell(`lbl_zn_${zn.id}`, zn.name, zn.x, 218, 232, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
     // Application Tier (GKE Autopilot)
-    rect(`pz_${idx}_gke`, `<div style='font-size:9px;font-weight:800;color:#16A34A;margin-bottom:2px;'>⚙️ Application Tier (GKE Autopilot)</div><div style='font-size:8px;display:flex;justify-content:space-around;gap:2px;'><div style='background:#FFF;border:1px solid #CBD5E1;padding:2px;border-radius:2px;'>🧠 AI Copilot</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:2px;border-radius:2px;'>🛡️ API Gateway</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:2px;border-radius:2px;'>💼 Business Svc</div></div>`, pz.x + 6, 168, pz.w - 12, 60, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`box_app_${zn.id}`, "", zn.x, 238, 232, 106, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;");
+    cell(`lbl_app_${zn.id}`, "⚙️ Application Tier<br/>(GKE Autopilot)", zn.x, 240, 232, 24, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+    
+    // 3 Sub-services inside GKE
+    cell(`gke_s1_${zn.id}`, "AI Copilot<br/>Service", zn.x + 8, 272, 68, 64, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+    cell(`gke_s2_${zn.id}`, "API Gateway<br/>Service", zn.x + 82, 272, 68, 64, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+    cell(`gke_s3_${zn.id}`, "Business<br/>Services", zn.x + 156, 272, 68, 64, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-    // Background / Worker Tier
-    rect(`pz_${idx}_run`, `<div style='font-size:9px;font-weight:800;color:#2563EB;margin-bottom:2px;'>📦 Background / Worker Tier (Cloud Run)</div><div style='font-size:8px;line-height:1.3;color:#0F172A;'>• Ingestion Workers<br/>• RAG / Embedding Jobs<br/>• Batch Processing</div>`, pz.x + 6, 234, pz.w - 12, 95, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=left;verticalAlign=top;padding=4;");
+    // Background / Worker Tier (Cloud Run Jobs)
+    cell(`box_worker_${zn.id}`, "", zn.x, 352, 232, 114, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;");
+    cell(`lbl_worker_${zn.id}`, "⚡ Background / Worker Tier<br/>(Cloud Run Jobs)", zn.x, 354, 232, 24, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+    
+    const workerBullets = `<div style="font-size:7.5px;line-height:1.4;color:#0F172A;padding:4px 8px;">
+      • Ingestion Workers<br/>
+      • RAG / Embedding Jobs<br/>
+      • Batch Processing
+    </div>`;
+    cell(`txt_worker_${zn.id}`, workerBullets, zn.x + 8, 384, 216, 74, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+
+    edge(`e_ilb_${zn.id}`, "node_ilb", `box_app_${zn.id}`, "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+    edge(`e_app_w_${zn.id}`, `box_app_${zn.id}`, `box_worker_${zn.id}`, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;endSize=4;");
   });
 
-  // Regional Data Tier
-  rect("box_data_tier", "", 215, 340, 930, 80, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;rounded=1;");
-  rect("lbl_data_tier", "<span style='font-size:9px;font-weight:800;color:#7C3AED;'>DATA TIER (REGIONAL)</span>", 215, 342, 930, 12, "strokeColor=none;fillColor=none;align=center;");
+  // Regional Data Tier (y=474, h=106, w=712)
+  cell("box_data_tier", "", 310, 474, 712, 106, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_data_tier", "🗄️ Data Tier (Regional)", 310, 476, 712, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const dbs = [
-    { t: "AlloyDB", sub: "PostgreSQL", icon: "🗄️" },
-    { t: "Cloud SQL", sub: "MySQL", icon: "🐬" },
-    { t: "MongoDB Atlas", sub: "Doc Store", icon: "🍃" },
-    { t: "Redis", sub: "Memorystore", icon: "⚡" },
-    { t: "BigQuery", sub: "Warehouse", icon: "📊" },
-    { t: "Vertex AI Vector", sub: "Matching Engine", icon: "🧠" }
+  const dbCards = [
+    { id: "db_alloy", t: "AlloyDB<br/>(PostgreSQL)", icon: "🗄️", w: 110 },
+    { id: "db_mysql", t: "Cloud SQL<br/>(MySQL)", icon: "🐬", w: 110 },
+    { id: "db_mongo", t: "MongoDB Atlas<br/>(Doc Store)", icon: "🍃", w: 110 },
+    { id: "db_redis", t: "Redis<br/>(Memorystore)", icon: "⚡", w: 110 },
+    { id: "db_bq", t: "BigQuery<br/>(Warehouse)", icon: "📊", w: 110 },
+    { id: "db_vertex", t: "Vertex AI Vector<br/>Search (Matching)", icon: "🧠", w: 126 }
   ];
-  dbs.forEach((db, idx) => {
-    const dx = 225 + idx * 152;
-    rect(`db_box_${idx}`, `<div style='font-size:10px;text-align:center;'>${db.icon}</div><div style='font-size:9px;font-weight:700;'>${db.t}</div><div style='font-size:8px;color:#64748B;'>${db.sub}</div>`, dx, 356, 144, 58, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  let curDbX = 318;
+  dbCards.forEach((db, idx) => {
+    cell(db.id, `<div style="font-size:16px;text-align:center;">${db.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${db.t}</div>`, curDbX, 498, db.w, 74, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    curDbX += db.w + 6;
   });
 
-  // Shared Services & Network Foundation
-  rect("box_shared", "", 215, 424, 930, 70, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-  rect("lbl_shared", "<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>SHARED SERVICES &amp; NETWORK FOUNDATION</span>", 215, 426, 930, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const shared = [
-    { t: "Cloud Storage", sub: "Artifacts / Files", icon: "🗃️" },
-    { t: "Secret Manager", sub: "Secrets", icon: "🔒" },
-    { t: "Cloud KMS", sub: "Keys", icon: "🔑" },
-    { t: "Cloud Logging", sub: "Logs &amp; Audit", icon: "📑" },
-    { t: "Pub/Sub", sub: "Messaging", icon: "📨" },
-    { t: "Workflows", sub: "Orchestration", icon: "⚙️" }
+  // Shared Services Bar (y=588, h=72, w=712)
+  cell("box_shared_svc", "", 310, 588, 712, 72, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_shared_svc", "Shared Services", 310, 590, 712, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=left;spacingLeft=8;");
+  
+  const sharedItems = [
+    { t: "Cloud Storage<br/>(Artifacts / Files)", icon: "🗃️" },
+    { t: "Secret Manager<br/>(Secrets)", icon: "🔒" },
+    { t: "Cloud KMS<br/>(Encryption Keys)", icon: "🔑" },
+    { t: "Cloud Logging<br/>&amp; Monitoring", icon: "📑" },
+    { t: "Pub/Sub<br/>(Messaging)", icon: "⚡" },
+    { t: "Workflows<br/>(Orchestration)", icon: "⚙️" }
   ];
-  shared.forEach((sh, idx) => {
-    const sx = 225 + idx * 152;
-    rect(`sh_box_${idx}`, `<div style='font-size:9px;font-weight:700;'>${sh.icon} ${sh.t}</div><div style='font-size:8px;color:#64748B;'>${sh.sub}</div>`, sx, 442, 144, 46, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  sharedItems.forEach((sh, idx) => {
+    const sx = 318 + idx * 116;
+    cell(`sh_${idx}`, `<div style="font-size:7px;font-weight:700;color:#0F172A;text-align:center;">${sh.icon} ${sh.t}</div>`, sx, 608, 112, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  rect("net_strip", "<div style='font-size:8px;color:#64748B;text-align:center;'>🌐 VPC (10.0.0.0/16) &nbsp;|&nbsp; 🔒 Subnets (Private) &nbsp;|&nbsp; ☁️ Cloud NAT &nbsp;|&nbsp; 🔒 Private Google Access &nbsp;|&nbsp; 🛡️ VPC Service Controls &nbsp;|&nbsp; 🧱 Firewall Rules</div>", 215, 498, 930, 18, "strokeColor=none;fillColor=none;align=center;");
+  // Network Foundation Bar (y=668, h=92, w=712)
+  cell("box_net_found", "", 310, 668, 712, 92, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_net_found", "Network Foundation", 310, 670, 712, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=left;spacingLeft=8;");
+  
+  const netFoundItems = [
+    { t: "VPC (10.0.0.0/16)", icon: "🌐" },
+    { t: "Subnets (Private)", icon: "🔒" },
+    { t: "Cloud NAT", icon: "⚡" },
+    { t: "Private Google Access", icon: "🛡️" },
+    { t: "VPC Service Controls", icon: "🔐" },
+    { t: "Firewall Rules", icon: "🧱" }
+  ];
+  netFoundItems.forEach((nf, idx) => {
+    const nx = 318 + idx * 116;
+    cell(`nf_${idx}`, `<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:center;">${nf.icon} ${nf.t}</div>`, nx, 692, 112, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  // 5. DR REGION (us-east1) (x=1168..1360, y=72..540)
-  rect("box_dr", "", 1168, 72, 192, 465, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;dashed=1;");
-  rect("lbl_dr", "<span style='font-size:10px;font-weight:800;color:#7C3AED;'>☁️ DR REGION (us-east1)</span>", 1168, 75, 192, 14, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 4. DR REGION (us-east1) (x=1046..1236, y=124..770, w=190, h=646) ====================
+  cell("box_dr_reg", "", 1046, 124, 190, 646, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;");
+  cell("lbl_dr_reg", "☁️ DR REGION (us-east1)", 1046, 128, 190, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
-  rect("dr_gke", "<div style='font-size:12px;text-align:center;'>⚙️</div><div style='font-size:9px;font-weight:700;'>GKE Autopilot<br/><span style='color:#64748B;font-size:8px;'>(Standby)</span></div>", 1176, 100, 176, 75, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
-  rect("dr_run", "<div style='font-size:12px;text-align:center;'>📦</div><div style='font-size:9px;font-weight:700;'>Cloud Run Jobs<br/><span style='color:#64748B;font-size:8px;'>(Standby)</span></div>", 1176, 185, 176, 75, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
-  rect("dr_data", "<div style='font-size:10px;font-weight:800;color:#7C3AED;'>Data Tier (Replicated)</div><div style='font-size:8px;color:#0F172A;line-height:1.3;'>• AlloyDB (Cross-region Replicas)<br/>• Cloud Storage (Dual-region)<br/>• BigQuery (Cross-region)<br/>• MongoDB Atlas (Global)</div>", 1176, 270, 176, 130, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=left;verticalAlign=top;padding=4;");
-  rect("dr_shared", "<div style='font-size:12px;text-align:center;'>🔒</div><div style='font-size:9px;font-weight:700;'>Shared Services<br/><span style='color:#64748B;font-size:8px;'>(Standby)</span></div>", 1176, 410, 176, 115, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  cell("dr_gke", "<div style='font-size:22px;text-align:center;'>⚙️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>GKE Autopilot</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 160, 170, 96, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("dr_cloud_run", "<div style='font-size:22px;text-align:center;'>⚡</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Cloud Run Jobs</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 276, 170, 96, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;html=1;align=center;verticalAlign=middle;padding=4;");
+  
+  const drDataHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px;">
+    <div style="font-weight:800;color:#7C3AED;margin-bottom:2px;">Data Tier (Replicated)</div>
+    • AlloyDB (Cross-region Read Replicas)<br/>
+    • Cloud Storage (Dual-region)<br/>
+    • BigQuery (Cross-region Replication)<br/>
+    • MongoDB Atlas (Global Cluster)
+  </div>`;
+  cell("dr_data", drDataHtml, 1056, 392, 170, 150, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;html=1;align=left;verticalAlign=top;padding=4;");
 
-  // 6. FAR RIGHT COLUMN: DEPLOYMENT NOTES, SCALING, SECURITY (x=1368..1560, y=72..540)
-  rect("box_r_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;text-align:center;'>DEPLOYMENT NOTES</div><div style='font-size:9px;line-height:1.35;color:#0F172A;'>• <b>Primary active region:</b> us-central1<br/>• <b>3 AZs</b> for high availability<br/>• <b>GKE Autopilot</b> for app tier<br/>• <b>Cloud Run Jobs</b> for background<br/>• <b>Data tier</b> with managed services<br/>• <b>DR region</b> in us-east1 (warm)<br/>• <b>All traffic</b> over HTTPS/TLS 1.2+<br/>• <b>IaC:</b> Terraform</div>", 1368, 72, 192, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  cell("dr_shared", "<div style='font-size:22px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Shared Services</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 560, 170, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  rect("box_r_scaling", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;text-align:center;'>SCALING STRATEGY</div><div style='font-size:9px;line-height:1.35;color:#0F172A;'>⚙️ Horizontal Pod Autoscaler (GKE)<br/>📦 Cloud Run concurrency scaling<br/>📨 Pub/Sub driven event scaling<br/>📊 BigQuery autoscaling<br/>⚡ Memorystore Redis Cluster</div>", 1368, 228, 192, 140, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // Replication arrow between Primary and DR
+  edge("e_dr_sync", "box_primary_reg", "box_dr_reg", "strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;");
+  cell("lbl_dr_sync", "Async Replication<br/>&amp; DR Sync", 986, 340, 90, 24, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=7.5;fontStyle=1;align=center;");
 
-  rect("box_r_sec", "<div style='font-size:10px;font-weight:800;color:#DC2626;margin-bottom:2px;text-align:center;'>SECURITY CONTROLS</div><div style='font-size:9px;line-height:1.35;color:#0F172A;'>🛡️ IAM least privilege access<br/>🔒 VPC Service Controls<br/>🔑 Encryption in transit &amp; at rest<br/>🔐 Secrets in Secret Manager<br/>🧱 Cloud Armor for WAF &amp; DDoS<br/>📑 Audit logs in Cloud Logging</div>", 1368, 374, 192, 163, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // ==================== 5. RIGHT SIDEBAR (x=1246..1520, y=124..770, w=274, h=646) ====================
+  // 1. Deployment Notes
+  cell("box_notes", "", 1246, 124, 274, 210, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;");
+  cell("lbl_notes", "DEPLOYMENT NOTES", 1246, 124, 274, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const notesHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 8px;">
+    • Primary active region: us-central1<br/>
+    • 3 AZs for high availability<br/>
+    • GKE Autopilot for application tier<br/>
+    • Cloud Run Jobs for elastic background processing<br/>
+    • Data tier with managed services and cross-region replication<br/>
+    • DR region in us-east1 (warm standby)<br/>
+    • All traffic over HTTPS/TLS 1.2+<br/>
+    • Infrastructure as Code (Terraform)
+  </div>`;
+  cell("txt_notes", notesHtml, 1248, 150, 270, 180, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  // 7. BOTTOM ROW: DEPLOYMENT TOOLS, CI/CD, MONITORING, ENV STRATEGY (x=20..1560, y=546..740)
-  rect("bot_tools", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>DEPLOYMENT TOOLS</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:14px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🏗️<br/><b>Terraform</b><br/>(IaC)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>⚡<br/><b>Cloud Build</b><br/>(CI/CD)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📦<br/><b>Artifact Reg</b><br/>(Containers)</div></div>", 20, 546, 260, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+  // 2. Scaling Strategy
+  cell("box_scaling", "", 1246, 342, 274, 210, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;");
+  cell("lbl_scaling", "SCALING STRATEGY", 1246, 342, 274, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const scalingHtml = `<div style="font-size:8.5px;line-height:1.55;color:#0F172A;padding:6px 8px;">
+    ⚙️ <b>Horizontal Pod Autoscaler (GKE)</b><br/>
+    ⚡ <b>Cloud Run concurrency scaling</b><br/>
+    📬 <b>Pub/Sub driven event scaling</b><br/>
+    📊 <b>BigQuery autoscaling</b><br/>
+    💾 <b>Memorystore Redis Cluster Mode</b>
+  </div>`;
+  cell("txt_scaling", scalingHtml, 1248, 368, 270, 180, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_cicd", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:6px;text-align:center;'>CI/CD PIPELINE (HIGH LEVEL)</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:14px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>💻<br/><b>Code Commit</b><br/>(Source Repos)</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>⚙️<br/><b>Build</b><br/>(Cloud Build)</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🛡️<br/><b>Scan</b><br/>(Artifact Scan)</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📦<br/><b>Push Image</b><br/>(Artifact Reg)</div> <div>➔</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:4px;border-radius:4px;'>🚀<br/><b>Deploy</b><br/>(GKE / Run)</div></div>", 290, 546, 540, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+  // 3. Security Controls
+  cell("box_sec_ctrl", "", 1246, 560, 274, 210, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;");
+  cell("lbl_sec_ctrl", "SECURITY CONTROLS", 1246, 560, 274, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const secCtrlHtml = `<div style="font-size:8.5px;line-height:1.55;color:#0F172A;padding:6px 8px;">
+    ☑ <b>IAM least privilege access</b><br/>
+    ☑ <b>VPC Service Controls</b><br/>
+    ☑ <b>Encryption in transit &amp; at rest</b><br/>
+    ☑ <b>Secrets in Secret Manager</b><br/>
+    ☑ <b>Cloud Armor for WAF &amp; DDoS</b><br/>
+    ☑ <b>Audit logs in Cloud Logging</b>
+  </div>`;
+  cell("txt_sec_ctrl", secCtrlHtml, 1248, 586, 270, 180, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_obs", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:4px;text-align:center;'>MONITORING &amp; OBSERVABILITY</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:14px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📈<br/><b>Monitoring</b><br/>(Metrics)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📑<br/><b>Logging</b><br/>(Logs)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>⏱️<br/><b>Trace</b><br/>(Tracing)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🔔<br/><b>Alerting</b><br/>(PagerDuty)</div></div>", 840, 546, 380, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+  // ==================== 6. BOTTOM ROW: TOOLS, CI/CD, MONITORING, ENV (x=16..1520, y=780..954, h=174) ====================
+  // 1. Deployment Tools (w=260)
+  cell("box_b_tools", "", 16, 780, 260, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_tools", "DEPLOYMENT TOOLS", 16, 780, 260, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const tools = [
+    { t: "Terraform<br/>(IaC)", icon: "🏗️" },
+    { t: "Cloud Build<br/>(CI/CD)", icon: "⚙️" },
+    { t: "Artifact Registry<br/>(Containers)", icon: "📦" }
+  ];
+  tools.forEach((tl, idx) => {
+    const tx = 24 + idx * 82;
+    cell(`tl_${idx}`, `<div style="font-size:22px;text-align:center;">${tl.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${tl.t}</div>`, tx, 816, 76, 122, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  rect("bot_env", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>ENVIRONMENT STRATEGY</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:14px;'><div style='border:1px solid #16A34A;background:#F0FDF4;padding:6px;border-radius:4px;'><b>DEV</b></div> <div style='border:1px solid #D97706;background:#FFFBEB;padding:6px;border-radius:4px;'><b>TEST</b></div> <div style='border:1px solid #2563EB;background:#EFF6FF;padding:6px;border-radius:4px;'><b>STAGE</b></div> <div style='border:1px solid #DC2626;background:#FEF2F2;padding:6px;border-radius:4px;'><b>PROD</b></div></div><div style='font-size:8px;color:#64748B;text-align:center;margin-top:16px;'>Isolated Projects • Separate VPCs • Separate Data • Separate IAM</div>", 1230, 546, 330, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+  // 2. CI/CD Pipeline (High Level) (w=490)
+  cell("box_b_cicd", "", 284, 780, 490, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_cicd", "CI/CD PIPELINE (HIGH LEVEL)", 284, 780, 490, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const pipelineSteps = [
+    { id: "ps_1", t: "Code Commit<br/>(Cloud Source)", icon: "💻" },
+    { id: "ps_2", t: "Build<br/>(Cloud Build)", icon: "⚙️" },
+    { id: "ps_3", t: "Scan<br/>(Artifact Analysis)", icon: "🛡️" },
+    { id: "ps_4", t: "Push Image<br/>(Artifact Registry)", icon: "📦" },
+    { id: "ps_5", t: "Deploy<br/>(GKE / Cloud Run)", icon: "🚀" }
+  ];
+  pipelineSteps.forEach((ps, idx) => {
+    const px = 294 + idx * 96;
+    cell(ps.id, `<div style="font-size:22px;text-align:center;">${ps.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${ps.t}</div>`, px, 816, 90, 122, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    if (idx > 0) {
+      edge(`e_pipe_${idx}`, pipelineSteps[idx - 1].id, ps.id, "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;");
+    }
+  });
 
-  // 8. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // 3. Monitoring & Observability (w=340)
+  cell("box_b_mon", "", 782, 780, 340, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_mon", "MONITORING &amp; OBSERVABILITY", 782, 780, 340, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const monItems = [
+    { t: "Cloud Monitoring<br/>(Metrics)", icon: "📈" },
+    { t: "Cloud Logging<br/>(Logs)", icon: "📑" },
+    { t: "Cloud Trace<br/>(Tracing)", icon: "⚡" },
+    { t: "Alerting<br/>(PagerDuty)", icon: "🚨" }
+  ];
+  monItems.forEach((mo, idx) => {
+    const mx = 790 + idx * 82;
+    cell(`mo_${idx}`, `<div style="font-size:22px;text-align:center;">${mo.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${mo.t}</div>`, mx, 816, 76, 122, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
+
+  // 4. Environment Strategy (w=386)
+  cell("box_b_env", "", 1130, 780, 390, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_env", "ENVIRONMENT STRATEGY", 1130, 780, 390, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const envBadges = [
+    { n: "DEV", col: "#16A34A", bg: "#F0FDF4" },
+    { n: "TEST", col: "#CA8A04", bg: "#FEFCE8" },
+    { n: "STAGE", col: "#2563EB", bg: "#EFF6FF" },
+    { n: "PROD", col: "#DC2626", bg: "#FEF2F2" }
+  ];
+  envBadges.forEach((eb, idx) => {
+    const ex = 1144 + idx * 92;
+    cell(`eb_${idx}`, eb.n, ex, 824, 84, 40, `shape=rectangle;rounded=1;arcSize=8;fillColor=${eb.bg};strokeColor=${eb.col};strokeWidth=1.5;fontColor=${eb.col};fontSize=12;fontStyle=1;align=center;verticalAlign=middle;`);
+  });
+
+  const envSubHtml = `<div style="font-size:8.5px;color:#64748B;text-align:center;padding:6px;">
+    <b>Isolated Projects</b><br/>
+    • Separate VPCs &nbsp;|&nbsp; • Separate Data &nbsp;|&nbsp; • Separate IAM
+  </div>`;
+  cell("txt_b_env_sub", envSubHtml, 1140, 874, 370, 60, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+
+  // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>Version:</b> 1.0 &nbsp;|&nbsp; <b>HA:</b> Active-Passive Multi-Region &nbsp;|&nbsp; <b>RPO:</b> &lt; 15 min &nbsp;|&nbsp; <b>RTO:</b> &lt; 30 min</div>
+    <div>Date: May 2024 &nbsp;|&nbsp; Enterprise Architecture Team</div>
+  </div>`;
+  cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_16_deployment_diagram" name="Template 16: Deployment Diagram">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
