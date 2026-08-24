@@ -106,18 +106,24 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   cell("t7_lbl", `<b style="font-size:7.5px;color:#7C3AED;">ENGAGEMENT &amp; IMPACT<br/>LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Engage • Disclose • Act<br/>Influence • Improve</span>`, 50, 74, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t7Cards = [
-    { title: "Stakeholder Engagement", items: ["Investor Portal", "Customer Portal", "Community Engagement", "Employee Engagement"] },
-    { title: "ESG &amp; Impact Dashboards", items: ["Executive ESG View", "KPI Dashboards", "Geo-spatial Insights", "Scorecards"] },
-    { title: "Disclosures &amp; Reporting", items: ["Sustainability Reports", "Regulatory Filings", "Framework Mapping", "Assurance Packages"] },
-    { title: "Action &amp; Collaboration", items: ["Initiatives Tracker", "Workflow Approvals", "Comments & Notes", "Knowledge Hub"] }
+    { title: "Stakeholder Engagement", items: [["Investor Portal", "Customer Portal"], ["Community Engagement", "Employee Engagement"]] },
+    { title: "ESG &amp; Impact Dashboards", items: [["Executive ESG View", "KPI Dashboards"], ["Geo-spatial Insights", "Scorecards"]] },
+    { title: "Disclosures &amp; Reporting", items: [["Sustainability Reports", "Regulatory Filings"], ["Framework Mapping", "Assurance Packages"]] },
+    { title: "Action &amp; Collaboration", items: [["Initiatives Tracker", "Workflow Approvals"], ["Comments & Notes", "Knowledge Hub"]] }
   ];
 
   t7Cards.forEach((cItem, i) => {
     const cx = 166 + i * 248;
     cell(`t7_c_${i}`, "", cx, 74, 240, 56, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-    cell(`t7_ch_${i}`, `<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b>`, cx + 4, 76, 232, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-    const itemsHtml = cItem.items.map(it => `<span style="font-size:6.5px;background:#FAF5FF;color:#6B21A8;padding:1px 4px;border-radius:3px;border:1px solid #E9D5FF;">${it}</span>`).join(" ");
-    cell(`t7_cb_${i}`, `<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;padding-top:2px;">${itemsHtml}</div>`, cx + 4, 92, 232, 34, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`t7_ch_${i}`, `<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b>`, cx + 4, 76, 232, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cItem.items.forEach((row, rIdx) => {
+      const colW = (240 - 16) / row.length;
+      row.forEach((it, cIdx) => {
+        const ix = cx + 8 + cIdx * colW;
+        const iy = 90 + rIdx * 17;
+        cell(`t7_ci_${i}_${rIdx}_${cIdx}`, `<div style="font-size:6.5px;background:#FAF5FF;color:#6B21A8;padding:1px 2px;border-radius:3px;border:1px solid #E9D5FF;font-weight:700;text-align:center;">${it}</div>`, ix, iy, colW - 4, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+      });
+    });
   });
 
   // Tier 7 Sub-strip

@@ -169,32 +169,52 @@ export function generateTemplate49HealthcareLifeSciencesPlatformXml(
   // Top Section: Data Domains (left), Pipeline (center), AI & Analytics (right)
   // 1. Data Domains (x: 166, w: 280)
   cell("t5_domains_box", "", 166, 288, 280, 48, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-  cell("t5_domains_hdr", `<b style="font-size:7.5px;color:#0F172A;">Data Domains</b>`, 172, 290, 268, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  const domains = ["Clinical", "Imaging", "Genomics", "Labs", "Pharmacy", "Claims", "Social", "Device/IoT"];
-  const domainsHtml = domains.map(d => `<span style="font-size:6.5px;background:#E0F2FE;color:#0369A1;padding:1px 4px;border-radius:3px;font-weight:600;">${d}</span>`).join(" ");
-  cell("t5_domains_pills", `<div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center;padding-top:2px;">${domainsHtml}</div>`, 170, 304, 272, 28, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t5_domains_hdr", `<b style="font-size:7.5px;color:#0F172A;">Data Domains</b>`, 166, 290, 280, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  const domains = [
+    ["Clinical", "Imaging", "Genomics", "Labs"],
+    ["Pharmacy", "Claims", "Social", "Device / IoT"]
+  ];
+  domains.forEach((row, rIdx) => {
+    const colW = (280 - 16) / row.length;
+    row.forEach((d, cIdx) => {
+      const dx = 166 + 8 + cIdx * colW;
+      const dy = 305 + rIdx * 14;
+      cell(`t5_dom_${rIdx}_${cIdx}`, `<div style="font-size:6.5px;background:#E0F2FE;color:#0369A1;padding:1px 2px;border-radius:3px;font-weight:700;text-align:center;">${d}</div>`, dx, dy, colW - 4, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    });
+  });
 
   // 2. Enterprise Data Platform (x: 454, w: 420)
   cell("t5_pipe_box", "", 454, 288, 420, 48, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-  cell("t5_pipe_hdr", `<b style="font-size:7.5px;color:#0F172A;">Enterprise Data Platform</b>`, 460, 290, 408, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t5_pipe_hdr", `<b style="font-size:7.5px;color:#0F172A;">Enterprise Data Platform</b>`, 454, 290, 420, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   const pipeStages = ["Ingestion", "Curate", "Standardize", "Store", "Model", "Serve"];
   pipeStages.forEach((ps, i) => {
-    const px = 460 + i * 68;
-    cell(`t5_ps_${i}`, `<div style="font-size:6.5px;font-weight:700;color:#0369A1;background:#E0F2FE;padding:2px 4px;border-radius:3px;text-align:center;">${ps}</div>`, px, 308, 56, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    const px = 462 + i * 68;
+    cell(`t5_ps_${i}`, `<div style="font-size:6.5px;font-weight:700;color:#0369A1;background:#E0F2FE;padding:2px 4px;border-radius:3px;text-align:center;">${ps}</div>`, px, 308, 62, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
 
   // 3. AI & Analytics (x: 882, w: 268)
   cell("t5_ai_box", "", 882, 288, 268, 48, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-  cell("t5_ai_hdr", `<b style="font-size:7.5px;color:#0F172A;">AI &amp; Analytics</b>`, 888, 290, 256, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  const aiPills = ["ML Ops", "Data Science", "Feature Store", "BI / Dashboards"];
-  const aiHtml = aiPills.map(a => `<span style="font-size:6.5px;background:#F3E8FF;color:#6B21A8;padding:1px 4px;border-radius:3px;font-weight:600;">${a}</span>`).join(" ");
-  cell("t5_ai_pills", `<div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center;padding-top:2px;">${aiHtml}</div>`, 886, 304, 260, 28, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t5_ai_hdr", `<b style="font-size:7.5px;color:#0F172A;">AI &amp; Analytics</b>`, 882, 290, 268, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  const aiPills = [
+    ["MLOps", "Data Science"],
+    ["Feature Store", "BI / Dashboards"]
+  ];
+  aiPills.forEach((row, rIdx) => {
+    const colW = (268 - 16) / row.length;
+    row.forEach((a, cIdx) => {
+      const ax = 882 + 8 + cIdx * colW;
+      const ay = 305 + rIdx * 14;
+      cell(`t5_ai_${rIdx}_${cIdx}`, `<div style="font-size:6.5px;background:#F3E8FF;color:#6B21A8;padding:1px 2px;border-radius:3px;font-weight:700;text-align:center;">${a}</div>`, ax, ay, colW - 4, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    });
+  });
 
   // Middle Section: Standards Row (x: 166, w: 984)
   cell("t5_std_box", "", 166, 340, 984, 28, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   const standards = ["HL7 FHIR", "DICOM", "OMOP", "SNOMED CT", "LOINC", "ICD-10", "RxNorm", "CPT"];
-  const stdHtml = standards.map(s => `<span style="font-size:7.5px;font-weight:700;color:#0F172A;background:#F1F5F9;padding:2px 8px;border-radius:4px;border:1px solid #CBD5E1;">${s}</span>`).join(" ");
-  cell("t5_std_txt", `<div style="display:flex;justify-content:space-around;align-items:center;padding-top:3px;">${stdHtml}</div>`, 166, 340, 984, 28, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  standards.forEach((std, i) => {
+    const sx = 172 + i * 122;
+    cell(`t5_std_item_${i}`, `<div style="font-size:7px;font-weight:700;color:#0F172A;background:#F1F5F9;padding:2px 4px;border-radius:4px;border:1px solid #CBD5E1;text-align:center;">${std}</div>`, sx, 344, 114, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  });
 
   // Bottom Section: Sub-strip
   cell("t5_strip", "", 166, 372, 984, 22, "rounded=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#BAE6FD;strokeWidth=1;");
