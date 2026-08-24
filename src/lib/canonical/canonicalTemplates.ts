@@ -123,6 +123,7 @@ import { generateTemplate37DedicatedNetworkInfraXml } from "./template37Dedicate
 import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZone";
 import { generateTemplate39SovereignCloudPrivacyXml } from "./template39SovereignCloudPrivacy";
 import { generateTemplate40EnterpriseGenAiPlatformXml } from "./template40EnterpriseGenAiPlatform";
+import { generateTemplate41EnterpriseRagPlatformXml } from "./template41EnterpriseRagPlatform";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -617,6 +618,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/tech_multi_agent_rag.png',
     keyComponents: ['User & Channels Layer', 'Experience & Access Layer', 'Agent Orchestration Layer', 'Model & Reasoning Layer', 'Memory & RAG Pipeline', 'Tool / MCP Integration', 'Enterprise Systems & Data Sources', 'Zero-Trust Security Foundation', 'Governance / HITL', 'Observability & FinOps', 'Platform Operations'],
     generateXml: generateTemplate40EnterpriseGenAiPlatformXml
+  },
+  {
+    id: '41',
+    name: 'Enterprise RAG & Knowledge Intelligence Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Trusted enterprise knowledge retrieval, grounding, citations, governance, and observability',
+    examples: 'Enterprise RAG, semantic vector search, knowledge graph, document parsing, grounding & citations, AI safety & compliance',
+    defaultDomain: 'Enterprise Knowledge Intelligence Platform',
+    previewImage: '/templates/rag_knowledge_flow.png',
+    keyComponents: ['User & Channels Layer', 'Access, Identity & Experience Layer', 'Knowledge Experience & Orchestration Layer', 'RAG / Reasoning Layer', 'Memory, Index & Knowledge Layer', '10-Step RAG Pipeline', 'Ingestion, Parsing & Connectors Layer', 'Enterprise Knowledge Sources Layer', 'Security / Privacy Foundation', 'Governance / Compliance', 'Observability & FinOps', 'Platform Operations'],
+    generateXml: generateTemplate41EnterpriseRagPlatformXml
   }
 ];
 

@@ -579,5 +579,19 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     sourceImage: '40.png',
     generatorVersion: '1.0',
     certificationStatus: 'certified'
+  },
+  '41': {
+    id: '41',
+    grammar: 'Enterprise RAG & Knowledge Intelligence Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise-grade RAG and knowledge retrieval system architected across data ingestion, parsing, chunking, indexing, grounding, safety, and governance?',
+    requiredElements: ['user-channels-layer', 'access-identity-experience-layer', 'knowledge-experience-orchestration-layer', 'rag-reasoning-layer', 'memory-index-knowledge-layer', 'rag-pipeline-10-step', 'ingestion-parsing-connectors-layer', 'enterprise-knowledge-sources-layer', 'security-privacy-sovereignty-foundation', 'governance-compliance', 'observability-evaluation-finops', 'platform-operations-delivery', 'end-to-end-flow'],
+    forbiddenElements: ['ungrounded-hallucinated-responses', 'unfiltered-pii-leakage'],
+    edgeTypes: ['user-interaction', 'control-policy', 'data-flow', 'async-events-streaming'],
+    iconPolicy: 'hybrid',
+    sourceImage: '41.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
   }
 };
