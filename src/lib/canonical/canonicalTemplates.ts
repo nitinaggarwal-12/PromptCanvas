@@ -1,9 +1,9 @@
 import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "01", "02" ... "34"
+  id: string; // e.g. "01", "02" ... "39"
   name: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning';
+  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3' | 'L1/L2' | 'L2/L3' | 'L1/L2/L3';
   primaryPurpose: string;
   examples: string;
@@ -28,6 +28,7 @@ export const CANONICAL_FAMILIES = [
   'Security & Governance',
   'Delivery & Operations',
   'Analysis & Planning',
+  'Reference Architectures',
 ] as const;
 
 export const DOMAIN_PRESETS = [
@@ -116,11 +117,16 @@ import { generateTemplate31DependencyMapXml } from "./template31DependencyMap";
 import { generateTemplate32RoadmapEvolutionXml } from "./template32RoadmapEvolution";
 import { generateTemplate33MatrixHeatmapXml } from "./template33MatrixHeatmap";
 import { generateTemplate34GeographicArchitectureXml } from "./template34GeographicArchitecture";
+import { generateTemplate35FintechWealthEngineXml } from "./template35FintechWealthEngine";
+import { generateTemplate36SmartManufacturingIotXml } from "./template36SmartManufacturingIot";
+import { generateTemplate37DedicatedNetworkInfraXml } from "./template37DedicatedNetworkInfra";
+import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZone";
+import { generateTemplate39SovereignCloudPrivacyXml } from "./template39SovereignCloudPrivacy";
 
 interface RawCanonicalTemplate {
   id: string;
   name: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning';
+  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3' | 'L1/L2' | 'L2/L3' | 'L1/L2/L3';
   primaryPurpose: string;
   examples: string;
@@ -538,6 +544,66 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/tech_data_residency.png',
     keyComponents: ['Global User Base', 'Regional Overview', '6 Regional Enclave Pods', 'Global Multi-Region Services'],
     generateXml: generateTemplate34GeographicArchitectureXml
+  },
+  {
+    id: '35',
+    name: 'FinTech & Autonomous Wealth Engine',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Intelligent, autonomous, and compliant wealth management engine on Google Cloud',
+    examples: 'Robo-advisor, wealth tech, algorithmic trading, portfolio rebalancing',
+    defaultDomain: 'FinTech Autonomous Wealth & High-Speed Payments',
+    previewImage: '/templates/tech_fintech_payments.png',
+    keyComponents: ['Channels / Experience', 'Identity & Onboarding', 'Core Wealth Platform', 'Autonomous AI Layer', 'Trading & Market Ecosystem', 'Data & Intelligence', 'Risk & Compliance', 'Platform / MLOps', 'Security Foundation'],
+    generateXml: generateTemplate35FintechWealthEngineXml
+  },
+  {
+    id: '36',
+    name: 'Smart Manufacturing & Industrial IoT',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Plant floor OT integration, edge control, MES/MOM, and cloud AI digital twin',
+    examples: 'Connected factory, predictive maintenance, edge analytics, OEE optimization',
+    defaultDomain: 'Smart Manufacturing & Industrial IoT Digital Twin',
+    previewImage: '/templates/smart_factory_iot.png',
+    keyComponents: ['Shop Floor / OT Channels', 'Edge Control & Site Ops', 'MES / MOM Platform', 'AI / Optimization Layer', 'Enterprise Ecosystem', 'Industrial Intelligence Layer', 'Safety & Governance', 'Platform / DevOps', 'Security Foundation'],
+    generateXml: generateTemplate36SmartManufacturingIotXml
+  },
+  {
+    id: '37',
+    name: 'Dedicated Network & Infrastructure Blueprint',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Private ingress/egress, PSC connectivity, and secure hybrid cloud networking',
+    examples: 'Shared VPC hub-and-spoke, Cloud Interconnect, Private Service Connect, Secure Web Proxy',
+    defaultDomain: 'Enterprise Multi-Region Hybrid Cloud Infrastructure',
+    previewImage: '/templates/tech_multi_region_dr.png',
+    keyComponents: ['Users & External Sources', 'Hybrid Connectivity Edge', 'Private Ingress Layer', 'Shared VPC Hub-and-Spoke', 'Private Workloads Layer', 'Private Service Connect', 'Private Egress Controls', 'Data & Platform Shared Controls', 'Security & Reliability'],
+    generateXml: generateTemplate37DedicatedNetworkInfraXml
+  },
+  {
+    id: '38',
+    name: 'Cloud Landing Zone & Enterprise Shared Services',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Organization hierarchy, shared services platform, governance, and FinOps guardrails',
+    examples: 'Multi-tenant landing zone, organizational units, Golden IaC templates, central logging',
+    defaultDomain: 'Enterprise SaaS Multi-Tenant Cloud Platform',
+    previewImage: '/templates/secure_deployment_map.png',
+    keyComponents: ['Enterprise & Business Units', 'Organization Structure & Hierarchy', 'Identity & Access Admin', 'Core Network Foundation', 'Enterprise Shared Services', 'Security & Compliance', 'Data & AI Shared Services', 'Reliability & SRE', 'FinOps & Billing'],
+    generateXml: generateTemplate38CloudLandingZoneXml
+  },
+  {
+    id: '39',
+    name: 'Sovereign Cloud & Data Privacy Blueprint',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'National/regional data residency, privacy by design, and sovereign cloud operations',
+    examples: 'EU GDPR compliance, sovereign cloud enclaves, automated data classification, local KMS/HSM',
+    defaultDomain: 'Sovereign Healthcare & Public Sector Cloud Platform',
+    previewImage: '/templates/data_residency_sovereign_map.png',
+    keyComponents: ['Governance & Sovereign Oversight', 'Stakeholders & Access Gate', 'Sovereign Cloud Environment', 'Data Classification & Residency', 'Privacy & Security Controls', 'Infrastructure Sovereignty', 'Data Exchange & Controls', 'Monitoring & Audit', 'Compliance Frameworks'],
+    generateXml: generateTemplate39SovereignCloudPrivacyXml
   }
 ];
 

@@ -7,7 +7,7 @@
 export interface CanonicalContract {
   id: string;
   grammar: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning';
+  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: ('L1' | 'L2' | 'L3')[];
   semanticQuestion: string; // What core architecture question does this grammar answer?
   requiredElements: string[];
@@ -493,6 +493,76 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     edgeTypes: ['edge-anycast-routing', 'cross-region-interconnect', 'sovereign-audit-stream'],
     iconPolicy: 'semantic-vector',
     sourceImage: '34.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '35': {
+    id: '35',
+    grammar: 'FinTech & Autonomous Wealth Engine',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How does an autonomous wealth management platform coordinate AI agents, trading execution, and institutional trust?',
+    requiredElements: ['channels-experience', 'identity-onboarding-trust', 'core-wealth-platform', 'autonomous-ai-agents', 'trading-external-market', 'data-intelligence-layer', 'risk-compliance-governance', 'platform-devsecops', 'security-reliability-foundation'],
+    forbiddenElements: ['unregulated-direct-market-access', 'untraceable-rebalancing'],
+    edgeTypes: ['onboarding-flow', 'data-flow', 'ai-decision-flow', 'order-execution-flow', 'compliance-review-flow', 'event-streaming-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '35.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '36': {
+    id: '36',
+    grammar: 'Smart Manufacturing & Industrial IoT',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How does plant floor OT telemetry integrate with cloud AI, MES/MOM, and enterprise ERP for intelligent manufacturing?',
+    requiredElements: ['shop-floor-ot-channels', 'edge-control-site-ops', 'manufacturing-operations-mes', 'ai-optimization-layer', 'enterprise-ecosystem-erp', 'data-industrial-intelligence', 'risk-safety-compliance', 'platform-devops-mlops', 'security-reliability-foundation'],
+    forbiddenElements: ['unbuffered-edge-telemetry', 'uncontrolled-cloud-to-actuator-commands'],
+    edgeTypes: ['telemetry-data-flow', 'command-control-flow', 'ai-optimization-flow', 'enterprise-integration-flow', 'compliance-flow', 'event-streaming-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '36.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '37': {
+    id: '37',
+    grammar: 'Dedicated Network & Infrastructure Blueprint',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is a zero-trust hybrid cloud network architected with Shared VPC, Private Service Connect, and strict egress inspection?',
+    requiredElements: ['external-users-partners', 'hybrid-connectivity-edge', 'private-ingress-layer', 'hub-and-spoke-shared-vpc', 'application-service-layer', 'private-service-connect-psc', 'private-egress-outbound-controls', 'data-platform-shared-controls', 'security-operations-foundation'],
+    forbiddenElements: ['direct-public-ip-workloads', 'unmonitored-egress-channels'],
+    edgeTypes: ['private-data-flow', 'control-mgmt-flow', 'internet-public-flow', 'psc-connectivity-flow', 'hybrid-connectivity-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '37.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '38': {
+    id: '38',
+    grammar: 'Cloud Landing Zone & Enterprise Shared Services',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How does an enterprise structure multi-tenant cloud organization hierarchy, landing zone networking, shared services, and FinOps guardrails?',
+    requiredElements: ['enterprise-business-units', 'organization-structure-hierarchy', 'identity-access-admin', 'core-landing-zone-network', 'enterprise-shared-services-platform', 'security-risk-compliance', 'data-integration-ai-shared', 'reliability-dr-platform-ops', 'finops-billing-chargeback'],
+    forbiddenElements: ['flat-unstructured-cloud-accounts', 'unbounded-admin-privilege'],
+    edgeTypes: ['private-data-flow', 'control-mgmt-flow', 'public-flow', 'hybrid-flow', 'policy-guardrails'],
+    iconPolicy: 'hybrid',
+    sourceImage: '38.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '39': {
+    id: '39',
+    grammar: 'Sovereign Cloud & Data Privacy Blueprint',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is national and regional data sovereignty enforced with in-country isolation, automated residency enforcement, and privacy controls?',
+    requiredElements: ['governance-sovereign-oversight', 'stakeholders-access-gate', 'sovereign-cloud-environment', 'data-classification-residency', 'privacy-security-controls', 'infrastructure-sovereignty', 'data-exchange-controls', 'monitoring-audit-assurance', 'compliance-frameworks', 'key-principles'],
+    forbiddenElements: ['unauthorized-cross-border-copy', 'unclassified-data-stores'],
+    edgeTypes: ['data-flow', 'control-governance-flow', 'audit-monitoring-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '39.png',
     generatorVersion: '1.0',
     certificationStatus: 'certified'
   }
