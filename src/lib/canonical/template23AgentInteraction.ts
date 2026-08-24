@@ -301,8 +301,8 @@ export function generateTemplate23AgentInteractionXml(
     const col = idx % 5;
     const row = Math.floor(idx / 5);
     const gx = 1028 + col * 96;
-    const gy = 628 + row * 84;
-    cell(`ti_eco_${idx}`, `<div style="font-size:16px;text-align:center;">${ti.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ti.t}</div>`, gx, gy, 90, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    const gy = 626 + row * 90;
+    cell(`ti_eco_${idx}`, `<div style="font-size:18px;text-align:center;">${ti.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${ti.t}</div>`, gx, gy, 90, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
   // 6. Notes (at bottom right, y=836..954, w=502, h=118)

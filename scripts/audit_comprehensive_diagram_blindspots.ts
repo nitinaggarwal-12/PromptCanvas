@@ -154,28 +154,50 @@ export function auditDiagramBlindspots(blueprintId: string, xml: string): Blinds
   };
 }
 
-// Self-test runner
+// Self-test runner across all canonical templates
 if (require.main === module) {
-  console.log('🧪 Running Comprehensive Diagram Quality & Blind-Spot Audit Engine...');
-  const xml39 = generateTemplate39SovereignCloudPrivacyXml('sovereignty', 'light');
-  const report = auditDiagramBlindspots('template_39', xml39);
+  const { CANONICAL_TEMPLATES } = require('../src/lib/canonical/canonicalTemplates');
+  
+  console.log(`🧪 Running Comprehensive Diagram Quality & Blind-Spot Audit Engine on ${CANONICAL_TEMPLATES.length} templates...\n`);
 
-  console.log(`\n📊 Audit Summary for ${report.blueprintId}:`);
-  console.log(`  - Stepped Jogs Detected: ${report.steppedJogs.length}`);
-  console.log(`  - Malformed SVGs Detected: ${report.malformedSvgs.length}`);
-  console.log(`  - Typography Size Violations: ${report.typographyViolations.length}`);
-  console.log(`  - Edge-Card Geometric Slicing: ${report.edgeSlicingViolations.length}`);
-  console.log(`  - Container Dead Space Voids: ${report.containerVoids.length}`);
+  let totalPassed = 0;
+  let totalFailed = 0;
+  const failureDetails: { id: string; report: any }[] = [];
 
-  if (!report.passed) {
-    console.error('\n❌ Blind-Spot Audit FAILED:');
-    if (report.steppedJogs.length > 0) report.steppedJogs.forEach(e => console.error('  - [Stepped Jog] ' + e));
-    if (report.malformedSvgs.length > 0) report.malformedSvgs.forEach(e => console.error('  - [Malformed SVG] ' + e));
-    if (report.typographyViolations.length > 0) report.typographyViolations.forEach(e => console.error('  - [Typography] ' + e));
-    if (report.edgeSlicingViolations.length > 0) report.edgeSlicingViolations.forEach(e => console.error('  - [Edge Slicing] ' + e));
-    if (report.containerVoids.length > 0) report.containerVoids.forEach(e => console.error('  - [Dead Void] ' + e));
+  for (const t of CANONICAL_TEMPLATES) {
+    try {
+      const xml = t.generateXml('enterprise', 'light');
+      const report = auditDiagramBlindspots(`template_${t.id}`, xml);
+      if (report.passed) {
+        totalPassed++;
+        console.log(`  ✅ Template ${t.id} (${t.name}): Passed all checks`);
+      } else {
+        totalFailed++;
+        failureDetails.push({ id: t.id, report });
+        console.log(`  ❌ Template ${t.id} (${t.name}): FAILED (${report.totalChecksFailed} violations)`);
+      }
+    } catch (err: any) {
+      totalFailed++;
+      console.error(`  💥 Template ${t.id} (${t.name}): Exception thrown: ${err.message}`);
+    }
+  }
+
+  console.log(`\n========================================`);
+  console.log(`📊 Audit Summary: ${totalPassed} Passed | ${totalFailed} Failed out of ${CANONICAL_TEMPLATES.length} templates`);
+  console.log(`========================================\n`);
+
+  if (totalFailed > 0) {
+    console.error('❌ Detailed Failures:');
+    failureDetails.forEach(({ id, report }) => {
+      console.error(`\n--- Template ${id} ---`);
+      if (report.steppedJogs.length > 0) report.steppedJogs.forEach((e: string) => console.error('  - [Stepped Jog] ' + e));
+      if (report.malformedSvgs.length > 0) report.malformedSvgs.forEach((e: string) => console.error('  - [Malformed SVG] ' + e));
+      if (report.typographyViolations.length > 0) report.typographyViolations.forEach((e: string) => console.error('  - [Typography] ' + e));
+      if (report.edgeSlicingViolations.length > 0) report.edgeSlicingViolations.forEach((e: string) => console.error('  - [Edge Slicing] ' + e));
+      if (report.containerVoids.length > 0) report.containerVoids.forEach((e: string) => console.error('  - [Dead Void] ' + e));
+    });
     process.exit(1);
   } else {
-    console.log('\n🌟 100% CLEAN: ZERO BLIND SPOTS, ZERO STEPPED JOGS, ZERO SLICING, ZERO VOIDS!');
+    console.log('🌟 100% CLEAN ACROSS ENTIRE BLUEPRINT CATALOG: ZERO BLIND SPOTS, ZERO STEPPED JOGS, ZERO SLICING, ZERO VOIDS!');
   }
 }

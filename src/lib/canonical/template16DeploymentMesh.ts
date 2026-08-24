@@ -225,7 +225,8 @@ export function generateTemplate16DeploymentMeshXml(
   </div>`;
   cell("dr_data", drDataHtml, 1056, 392, 170, 150, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;html=1;align=left;verticalAlign=top;padding=4;");
 
-  cell("dr_shared", "<div style='font-size:22px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Shared Services</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 560, 170, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("dr_shared", "<div style='font-size:22px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Shared Services</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 554, 170, 92, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("dr_network", "<div style='font-size:22px;text-align:center;'>🌐</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Network Foundation</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(DR Subnets &amp; NAT)</div>", 1056, 656, 170, 96, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;padding=4;");
 
   // Pure 0° / 180° Horizontal replication arrow between Primary and DR
   edge("e_dr_sync", "box_primary_reg", "box_dr_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;exitX=1;exitY=0.45;entryX=0;entryY=0.45;");

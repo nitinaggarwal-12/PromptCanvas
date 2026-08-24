@@ -229,6 +229,10 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     {
       title: "SECURITY",
       items: ["TLS 1.2+", "OAuth 2.0 / OIDC", "mTLS", "WAF & DDoS Protection"]
+    },
+    {
+      title: "GOVERNANCE & AUDIT",
+      items: ["API Gateways & Rate Limits", "Audit Logging (Immutable)", "Data Lineage & Privacy"]
     }
   ];
 
@@ -241,7 +245,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
       bHtml += `<div style="font-size:8px;color:#334155;line-height:1.2;margin-bottom:2px;">&bull; ${it}</div>`;
     });
     rect(`ps_box_${sIdx}`, `<div style="padding:3px;">${bHtml}</div>`, 1288, pY, 244, ps.items.length * 17 + 10, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
-    pY += ps.items.length * 17 + 18;
+    pY += ps.items.length * 17 + 16;
   });
 
   // =========================================================================

@@ -331,23 +331,25 @@ export function generateTemplate24RagKnowledgeFlowXml(
   cell("lbl_b_flow", "RAG DATA FLOW (HIGH LEVEL)", 254, 728, 480, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   
   const highFlow = [
-    { t: "Sources", icon: "🗄️" },
-    { t: "Ingest", icon: "☁️" },
-    { t: "Parse &amp;<br/>Chunk", icon: "📑" },
-    { t: "Embed<br/>&amp; Index", icon: "🧠" },
-    { t: "Retrieve", icon: "🔍" },
-    { t: "Augment", icon: "📋" },
-    { t: "Generate", icon: "🤖" },
-    { t: "User", icon: "👤" }
+    { t: "Sources", icon: "🗄️", sub: "Enterprise Data" },
+    { t: "Ingest", icon: "☁️", sub: "CDC &amp; ETL" },
+    { t: "Parse &amp; Chunk", icon: "📑", sub: "Document AI" },
+    { t: "Embed &amp; Index", icon: "🧠", sub: "Vector Embeddings" },
+    { t: "Retrieve", icon: "🔍", sub: "Hybrid Search" },
+    { t: "Augment", icon: "📋", sub: "Context Assembly" },
+    { t: "Generate", icon: "🤖", sub: "Gemini LLM" },
+    { t: "User", icon: "👤", sub: "Answer + Citations" }
   ];
   highFlow.forEach((hf, idx) => {
     const hfx = 262 + idx * 58;
-    cell(`hf_${idx}`, `<div style="font-size:14px;text-align:center;">${hf.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${hf.t}</div>`, hfx, 780, 52, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`hf_${idx}`, `<div style="font-size:16px;text-align:center;">${hf.icon}</div><div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.1;margin-top:3px;">${hf.t}</div><div style="font-size:6.5px;color:#64748B;text-align:center;margin-top:3px;line-height:1.1;">${hf.sub}</div>`, hfx, 760, 52, 110, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
       // Pure 0° Horizontal edge between flow nodes
       edge(`e_hf_${idx}`, `hf_${idx - 1}`, `hf_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
+
+  cell("lbl_flow_footer", `<div style="font-size:7.5px;font-weight:700;color:#1E40AF;text-align:center;line-height:1.35;padding:4px 6px;"><b>Production Data Flow SLA:</b> Real-time semantic context retrieval pipeline with continuous relevance evaluation and RAG Triad verification (Faithfulness &gt; 0.98)</div>`, 256, 882, 476, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
 
   // 3. Observability & Monitoring (w=230)
   cell("box_b_obs", "", 742, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");

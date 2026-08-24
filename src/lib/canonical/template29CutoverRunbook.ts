@@ -139,6 +139,8 @@ export function generateTemplate29CutoverRunbookXml(
     rect(`env_svc_${i}`, `<div style="font-size:8px;font-weight:700;">${gs.icon} ${gs.n}</div>`, 1432, gy, 82, 19, "fillColor=#FAF5FF;strokeColor=#E9D5FF;rounded=1;align=left;verticalAlign=middle;padding=2;");
   });
 
+  rect("env_badge_bottom", `<div style="font-size:8px;color:#1E40AF;line-height:1.25;padding:2px 4px;"><b>Ingress:</b> Global Anycast Any-Region Load Balancer<br/><b>Target SLO:</b> &le; 15s traffic propagation &amp; DNS TTL</div>`, 1182, 236, 330, 56, "fillColor=#EFF6FF;strokeColor=#BFDBFE;rounded=1;strokeWidth=1.2;align=center;verticalAlign=middle;");
+
   c.push(`<mxCell id="e_env_1" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1" source="env_users" target="env_lb"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="e_env_2" style="edgeStyle=none;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=block;endFill=1;" edge="1" parent="1" source="env_lb" target="env_prod"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 

@@ -125,8 +125,8 @@ export function generateTemplate32RoadmapEvolutionXml(
     cell(`ti_${idx}`, `<div style="font-size:9px;font-weight:700;color:#0F172A;">${ti.icon} ${ti.t}</div>`, 1242, 106 + idx * 30, 272, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
-  // ==================== 4. CENTER: 4-PHASE EVOLUTION ROADMAP (x=196..1236, y=140..510, h=370) ====================
-  cell("box_road_bg", "", 196, 140, 1032, 370, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  // ==================== 4. CENTER: 4-PHASE EVOLUTION ROADMAP (x=196..1236, y=140..470, h=330) ====================
+  cell("box_road_bg", "", 196, 140, 1032, 330, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_road", "ARCHITECTURE EVOLUTION ROADMAP", 196, 144, 1032, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=12.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const phases = [
@@ -139,7 +139,7 @@ export function generateTemplate32RoadmapEvolutionXml(
   phases.forEach((ph, idx) => {
     const px = 204 + idx * 254;
     // Outer phase container
-    cell(`ph_box_${idx}`, "", px, 164, 248, 338, `rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=${ph.col};strokeWidth=1.8;`);
+    cell(`ph_box_${idx}`, "", px, 164, 248, 298, `rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=${ph.col};strokeWidth=1.8;`);
     
     // Header Chevron (White pill with colored border and round icon)
     const hdrHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:24px;text-align:center;"><span style="font-size:16px;">${ph.icon}</span></td><td style="padding-left:4px;text-align:left;"><div style="font-size:10.5px;font-weight:900;color:${ph.col};">${ph.n}</div><div style="font-size:8px;font-weight:700;color:#64748B;">${ph.subN}</div></td></tr></table>`;
@@ -153,7 +153,7 @@ export function generateTemplate32RoadmapEvolutionXml(
     cell(`ph_out_${idx}`, outContent, px + 6, 228, 236, 52, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=top;padding=4;");
 
     // Microservices Sub-Diagram Box
-    cell(`ph_diag_bg_${idx}`, "", px + 6, 284, 236, 212, `rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=${ph.col};strokeWidth=1;`);
+    cell(`ph_diag_bg_${idx}`, "", px + 6, 284, 236, 172, `rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=${ph.col};strokeWidth=1;`);
     cell(`ph_diag_lbl_${idx}`, "ARCHITECTURE EVOLUTION", px + 6, 286, 236, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
     // Connect phases horizontally (●───►)
@@ -413,7 +413,7 @@ export function generateTemplate32RoadmapEvolutionXml(
   ];
   nextSteps.forEach((ns, idx) => {
     const nx = 1028 + idx * 98;
-    cell(ns.id, `<div style="font-size:24px;text-align:center;">${ns.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${ns.n}</div><div style="font-size:8px;color:#2563EB;font-weight:800;text-align:center;margin-top:4px;">${ns.sub}</div>`, nx, 824, 92, 86, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
+    cell(ns.id, `<div style="font-size:24px;text-align:center;">${ns.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${ns.n}</div><div style="font-size:8px;color:#2563EB;font-weight:800;text-align:center;margin-top:4px;">${ns.sub}</div>`, nx, 820, 92, 114, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
     if (idx > 0) {
       edge(`e_ns_${idx}`, nextSteps[idx - 1].id, ns.id, "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;");
     }

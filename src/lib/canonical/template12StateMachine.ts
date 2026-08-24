@@ -218,9 +218,9 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
   rect("card_transitions", transitionsHtml, 1370, 555, 210, 160, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
   // =========================================================================
-  // 4. MAIN CANVAS CONTAINER (x: 225, y: 120, w: 1130, h: 595)
+  // 4. MAIN CANVAS CONTAINER (x: 225, y: 120, w: 1130, h: 520)
   // =========================================================================
-  rect("main_canvas_frame", "", 225, 120, 1130, 595, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;rounded=1;arcSize=3;");
+  rect("main_canvas_frame", "", 225, 120, 1130, 520, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;rounded=1;arcSize=3;");
 
   // -------------------------------------------------------------------------
   // TOP ROW STATES (y: 155, h: 65)

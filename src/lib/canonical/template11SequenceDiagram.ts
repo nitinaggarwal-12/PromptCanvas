@@ -189,7 +189,7 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // 5. RIGHT-SIDE "ALT" (ALTERNATIVE FLOWS) BOX WITH 100% COLLISION-FREE GEOMETRY
   // =========================================================================
   // Outer Solid Container (fillColor=#FFFFFF blocks background lifelines)
-  rect("alt_container", "", 1220, 275, 310, 260, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;rounded=1;arcSize=4;shadow=0;");
+  rect("alt_container", "", 1220, 275, 310, 240, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=6 4;rounded=1;arcSize=4;shadow=0;");
   
   // Header Badge "ALT"
   rect("alt_badge", "<b style='color:#FFFFFF;font-size:9px;letter-spacing:0.5px;'>ALT</b>", 1226, 281, 38, 18, "fillColor=#0284C7;strokeColor=none;rounded=0;arcSize=0;align=center;verticalAlign=middle;");

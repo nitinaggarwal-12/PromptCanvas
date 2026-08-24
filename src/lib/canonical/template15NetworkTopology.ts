@@ -145,17 +145,17 @@ export function generateTemplate15NetworkTopologyXml(
 
   azs.forEach((az) => {
     // AZ Container
-    cell(`box_${az.id}`, "", az.x, 256, 280, 340, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;dashed=1;");
+    cell(`box_${az.id}`, "", az.x, 256, 280, 280, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;dashed=1;");
     cell(`lbl_${az.id}`, az.name, az.x, 258, 280, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
     // Tier 1: Web Tier
-    cell(`web_${az.id}`, `<div style="font-size:18px;text-align:center;">💻</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Web Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Compute Engine (App Instances)</div>`, az.x + 12, 280, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+    cell(`web_${az.id}`, `<div style="font-size:18px;text-align:center;">💻</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Web Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Compute Engine (App Instances)</div>`, az.x + 12, 278, 256, 72, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
     // Tier 2: App Tier (GKE)
-    cell(`app_${az.id}`, `<div style="font-size:18px;text-align:center;">⚙️</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">App Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">GKE (Microservices)</div>`, az.x + 12, 368, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+    cell(`app_${az.id}`, `<div style="font-size:18px;text-align:center;">⚙️</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">App Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">GKE (Microservices)</div>`, az.x + 12, 360, 256, 72, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
     // Tier 3: Cache Tier (Redis)
-    cell(`cache_${az.id}`, `<div style="font-size:18px;text-align:center;">💾</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Cache Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Redis (Memorystore)</div>`, az.x + 12, 456, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+    cell(`cache_${az.id}`, `<div style="font-size:18px;text-align:center;">💾</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Cache Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Redis (Memorystore)</div>`, az.x + 12, 442, 256, 72, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
     // Pure 90° Vertical Tier connectors down from Public Subnet to Web Tier
     edge(`e_top_${az.id}`, az.topSrc, `web_${az.id}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
@@ -169,13 +169,13 @@ export function generateTemplate15NetworkTopologyXml(
   edge("e_az_ab_app", "app_az_a", "app_az_b", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
   edge("e_az_bc_app", "app_az_b", "app_az_c", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
-  // 3.3. DATA SUBNET (10.10.10.0/24) (y=618, h=136)
-  cell("box_data_sub", "", 350, 618, 892, 136, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;");
-  cell("lbl_data_sub", "DATA SUBNET (10.10.10.0/24)", 350, 620, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
+  // 3.3. DATA SUBNET (10.10.10.0/24) (y=556, h=198)
+  cell("box_data_sub", "", 350, 556, 892, 198, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;");
+  cell("lbl_data_sub", "DATA SUBNET (10.10.10.0/24)", 350, 558, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
 
-  cell("node_db_sql", "<div style='font-size:22px;text-align:center;'>🗄️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Primary Database</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud SQL (PostgreSQL)<br/>HA (Multi-AZ)</div>", 370, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
-  cell("node_obj_store", "<div style='font-size:22px;text-align:center;'>🗃️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Object Storage</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud Storage<br/>(Documents)</div>", 676, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
-  cell("node_search_idx", "<div style='font-size:22px;text-align:center;'>🔍</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Search Index</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>OpenSearch Service<br/>(Managed)</div>", 982, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_db_sql", "<div style='font-size:22px;text-align:center;'>🗄️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Primary Database</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud SQL (PostgreSQL)<br/>HA (Multi-AZ)</div>", 370, 584, 250, 150, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_obj_store", "<div style='font-size:22px;text-align:center;'>🗃️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Object Storage</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud Storage<br/>(Documents)</div>", 676, 584, 250, 150, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_search_idx", "<div style='font-size:22px;text-align:center;'>🔍</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Search Index</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>OpenSearch Service<br/>(Managed)</div>", 982, 584, 250, 150, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
   // Pure 90° Vertical Drop-Lines: Cache Tiers -> Data Subnet Tiers
   edge("e_cache_a_db", "cache_az_a", "node_db_sql", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
@@ -249,11 +249,11 @@ export function generateTemplate15NetworkTopologyXml(
   ];
 
   mgdServices.forEach((mg, idx) => {
-    const my = 124 + idx * 88;
-    cell(mg.id, `<div style="font-size:22px;text-align:center;">${mg.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mg.t}</div>`, 1280, my, 226, 76, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=4;");
+    const my = 120 + idx * 90;
+    cell(mg.id, `<div style="font-size:22px;text-align:center;">${mg.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mg.t}</div>`, 1280, my, 226, 80, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=4;");
     
     // Pure 180° Horizontal edge: Left of Managed Service Card -> Right of VPC outer container
-    const fracY = ((my + 38) - 86) / 680;
+    const fracY = ((my + 40) - 86) / 680;
     edge(`e_mgd_${idx}`, mg.id, "box_vpc_outer", `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0;exitY=0.5;entryX=1;entryY=${fracY.toFixed(4)};`);
   });
 
