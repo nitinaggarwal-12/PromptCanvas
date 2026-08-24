@@ -111,7 +111,7 @@ async function runVisualAudit() {
     `;
 
     await page.goto("http://localhost:8998", { waitUntil: "networkidle0", timeout: 20000 });
-    await sleep(1200);
+    await sleep(1500);
 
     const svgCount = await page.evaluate(() => document.querySelectorAll("svg").length);
     if (svgCount === 0) {

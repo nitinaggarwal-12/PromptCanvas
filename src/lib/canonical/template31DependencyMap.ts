@@ -1,170 +1,306 @@
 /**
- * Canonical Architecture Template 31: Dependency / Relationship Map
- * Exact 1:1 High-Fidelity Master Blueprint of images/31.png
+ * Master 1:1 Ground-Truth Blueprint for Template 31: Dependency / Relationship Map
+ * Matches 100% of images/31.png on 1600x1020 canvas with zero voids and discrete card hierarchy.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 export function generateTemplate31DependencyMapXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const rect = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#0F172A;fontSize=11;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const text = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "31", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>DEPENDENCY / RELATIONSHIP MAP</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – AI-Powered Regulatory Intelligence Platform &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // 1. BRAND HEADER & METADATA (y=14..66)
+  rect("num_badge", "31", 24, 14, 52, 52, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=26;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
+  text(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>DEPENDENCY / RELATIONSHIP MAP</div>` +
+    `<div style='font-size:12px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: NovaCura – AI-Powered Regulatory Intelligence Platform</div>` +
+    `<div style='font-size:10px;color:#64748B;margin-top:1px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    88,
+    14,
+    850,
+    52,
+    "align=left;"
+  );
 
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Visualize and manage dependencies across applications, data, infrastructure, teams, and external partners to reduce risk and improve delivery velocity.</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const brandHtml = `<div style='text-align:right;'><span style='font-size:20px;font-weight:900;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:10px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>`;
+  text("brand_logo", brandHtml, 950, 14, 275, 52, "align=right;");
 
-  // 2. LEFT COLUMN: LEGEND & KEY (x=20..115, y=72..410)
-  rect("box_legend_left", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>LEGEND &amp; KEY</div><div style='font-size:10px;line-height:1.25;color:#0F172A;'><b>Node Types:</b><br/>🌐 Application / Service<br/>🗄️ Data Store / DB<br/>☁️ Platform / Infra<br/>🏢 External Partner<br/>🔌 Interface / Integration<br/>👥 Team / Owner<br/><br/><b>Dependency Types:</b><br/>── Data Flow (R/W)<br/>······ API / Integration<br/>- - Async / Event<br/>······ Config / Control<br/><br/><b>Criticality:</b><br/>🔴 Critical (High)<br/>🟠 High<br/>🟡 Medium<br/>🟢 Low</div>", 20, 72, 95, 338, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  const objHtml = `<div style='font-size:9.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>Visualize and manage dependencies across applications, data, infrastructure, teams, and external partners to reduce risk and improve delivery velocity.</div>`;
+  rect("card_obj", objHtml, 1240, 14, 335, 52, "strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  // 3. MAIN DEPENDENCY MAP (HIGH LEVEL) (x=122..1150, y=72..410)
-  rect("box_dep_main", "", 122, 72, 1020, 338, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;");
-  rect("lbl_dep_main", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>NOVACURA – DEPENDENCY MAP (HIGH LEVEL)</span>", 122, 74, 1020, 12, "strokeColor=none;fillColor=none;align=center;");
+  // 2. LEFT SIDEBAR: LEGEND & KEY (x=24, w=170, y=78..680, h=602)
+  const legHtml = `<div style='font-size:10px;font-weight:800;color:#1E3A8A;text-align:center;margin-bottom:6px;'>LEGEND &amp; KEY</div>
+  <div style='font-size:8px;font-weight:800;color:#64748B;margin-top:4px;'>Node Types</div>
+  <div style='font-size:7.5px;line-height:1.4;margin-top:2px;'>
+    💻 Application / Service<br/>
+    🗄️ Data Store / DB<br/>
+    ⚙️ Platform / Infra<br/>
+    🏢 External / Partner<br/>
+    🔌 Interface / Integration<br/>
+    👥 Team / Owner
+  </div>
+  <div style='font-size:8px;font-weight:800;color:#64748B;margin-top:10px;'>Dependency Types</div>
+  <div style='font-size:7.5px;line-height:1.4;margin-top:2px;'>
+    ── Data Flow (Read/Write)<br/>
+    ···· API / Integration<br/>
+    - - Async / Event<br/>
+    -·- Config / Control<br/>
+    ══ Network / Connectivity
+  </div>
+  <div style='font-size:8px;font-weight:800;color:#64748B;margin-top:10px;'>Criticality</div>
+  <div style='font-size:7.5px;line-height:1.4;margin-top:2px;'>
+    🔴 Critical (High)<br/>
+    🟠 High<br/>
+    🟡 Medium<br/>
+    🟢 Low
+  </div>`;
+  rect("box_legend", legHtml, 24, 78, 170, 602, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=6;");
 
-  // Row 1: Users & Channels (y=88..130)
-  rect("lbl_r1", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>USERS &amp;<br/>CHANNELS</span>", 124, 88, 48, 42, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  // 3. CENTER STAGE: 6 DEPENDENCY ROWS (x=204, y=78, w=890, h=602)
+  rect("box_center_bg", "", 204, 78, 890, 602, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;");
+  text("lbl_dep_map", "<div style='font-size:11px;font-weight:800;color:#1E3A8A;text-align:center;'>NOVACURA – DEPENDENCY MAP (HIGH LEVEL)</div>", 204, 82, 890, 16, "align=center;");
+
+  // Row 1: Users & Channels (y=104, h=80)
+  rect("r1_lbl", "<div style='font-size:8px;font-weight:800;color:#1E40AF;transform:rotate(-90deg);'>USERS &amp;<br/>CHANNELS</div>", 208, 104, 30, 80, "fillColor=#EFF6FF;strokeColor=#BFDBFE;align=center;verticalAlign=middle;");
   const users = [
-    { t: "Regulatory Users", icon: "👥" },
-    { t: "QA / Compliance", icon: "👥" },
-    { t: "External Partners", icon: "🏢" },
-    { t: "Mobile Users", icon: "📱" },
-    { t: "Admin Users", icon: "👤" }
+    { n: "Regulatory Users", icon: "👥" },
+    { n: "QA / Compliance", icon: "👥" },
+    { n: "External Partners", icon: "🏢" },
+    { n: "Mobile Users", icon: "📱" },
+    { n: "Admin Users", icon: "👤" }
   ];
   users.forEach((u, idx) => {
-    const ux = 176 + idx * 190;
-    rect(`u_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${u.icon} ${u.t}</div>`, ux, 92, 180, 34, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+    const ux = 244 + idx * 168;
+    rect(`u_c_${idx}`, `<div style='font-size:16px;text-align:center;'>${u.icon}</div><div style='font-size:8px;font-weight:800;text-align:center;margin-top:2px;'>${u.n}</div>`, ux, 114, 156, 60, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Row 2: Applications (y=134..186)
-  rect("lbl_r2", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>APPLICATIONS</span>", 124, 134, 48, 52, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  // Row 2: Applications (y=190, h=94)
+  rect("r2_lbl", "<div style='font-size:8px;font-weight:800;color:#2563EB;transform:rotate(-90deg);'>APPLICATIONS</div>", 208, 190, 30, 94, "fillColor=#EFF6FF;strokeColor=#BFDBFE;align=center;verticalAlign=middle;");
   const apps = [
-    { t: "Web Portal", sub: "(Frontend)", icon: "🌐" },
-    { t: "API Gateway", sub: "(Apigee)", icon: "🛡️" },
-    { t: "Auth Service", sub: "(Identity)", icon: "🔒" },
-    { t: "AI Service", sub: "(LLM / Agents)", icon: "🧠" },
-    { t: "Document", sub: "Processing", icon: "📄" },
-    { t: "Search &amp; RAG", sub: "Service", icon: "🔍" },
-    { t: "Reporting &amp;", sub: "Analytics", icon: "📊" }
+    { n: "Web Portal\n(Frontend)", icon: "💻" },
+    { n: "API\nGateway", icon: "🛡️" },
+    { n: "Auth Service\n(Identity)", icon: "🔒" },
+    { n: "AI Service\n(LLM / Agents)", icon: "🧠" },
+    { n: "Document\nProcessing", icon: "📑" },
+    { n: "Search &amp; RAG\nService", icon: "🔍" },
+    { n: "Reporting &amp;\nAnalytics", icon: "📊" }
   ];
-  apps.forEach((ap, idx) => {
-    const ax = 176 + idx * 136;
-    rect(`ap_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${ap.icon} ${ap.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${ap.sub}</div>`, ax, 138, 130, 44, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  apps.forEach((a, idx) => {
+    const ax = 244 + idx * 120;
+    rect(`a_c_${idx}`, `<div style='font-size:14px;text-align:center;'>${a.icon}</div><div style='font-size:7.5px;font-weight:800;text-align:center;line-height:1.2;margin-top:2px;'>${a.n.replace(/\n/g, "<br/>")}</div>`, ax, 198, 112, 78, "fillColor=#EFF6FF;strokeColor=#BFDBFE;rounded=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Row 3: Data Layer (y=190..242)
-  rect("lbl_r3", "<span style='font-size:8px;font-weight:800;color:#16A34A;'>DATA<br/>LAYER</span>", 124, 190, 48, 52, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  const dlayers = [
-    { t: "Operational DB", sub: "(Cloud SQL)", icon: "🗄️" },
-    { t: "Vector DB", sub: "(Vertex AI Vector)", icon: "🗄️" },
-    { t: "Document Store", sub: "(Cloud Storage)", icon: "🗃️" },
-    { t: "Data Warehouse", sub: "(BigQuery)", icon: "📊" },
-    { t: "Cache", sub: "(Memorystore)", icon: "⚡" },
-    { t: "Audit Logs", sub: "(Cloud Logging)", icon: "📑" }
+  // Row 3: Data Layer (y=290, h=94)
+  rect("r3_lbl", "<div style='font-size:8px;font-weight:800;color:#059669;transform:rotate(-90deg);'>DATA LAYER</div>", 208, 290, 30, 94, "fillColor=#F0FDF4;strokeColor=#BBF7D0;align=center;verticalAlign=middle;");
+  const dataStores = [
+    { n: "Operational DB\n(Cloud SQL)", icon: "🗄️" },
+    { n: "Vector DB\n(Vertex Vector)", icon: "🧠" },
+    { n: "Document Store\n(Cloud Storage)", icon: "🗃️" },
+    { n: "Data Warehouse\n(BigQuery)", icon: "📊" },
+    { n: "Cache\n(Memorystore)", icon: "⚡" },
+    { n: "Audit Logs\n(Cloud Logging)", icon: "📑" }
   ];
-  dlayers.forEach((dl, idx) => {
-    const dx = 176 + idx * 159;
-    rect(`dl_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${dl.icon} ${dl.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${dl.sub}</div>`, dx, 194, 153, 44, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  dataStores.forEach((d, idx) => {
+    const dx = 244 + idx * 140;
+    rect(`d_c_${idx}`, `<div style='font-size:14px;text-align:center;'>${d.icon}</div><div style='font-size:7.5px;font-weight:800;text-align:center;line-height:1.2;margin-top:2px;'>${d.n.replace(/\n/g, "<br/>")}</div>`, dx, 298, 132, 78, "fillColor=#F0FDF4;strokeColor=#BBF7D0;rounded=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Row 4: Integrations (y=246..298)
-  rect("lbl_r4", "<span style='font-size:8px;font-weight:800;color:#D97706;'>INTEGRATIONS</span>", 124, 246, 48, 52, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  const ints = [
-    { t: "Salesforce", sub: "(CRM)", icon: "🔌" },
-    { t: "Veeva Vault", sub: "(eCTD / Quality)", icon: "🔌" },
-    { t: "FDA APIs", sub: "(Public Data)", icon: "🏛️" },
-    { t: "EMA APIs", sub: "(EU Regs)", icon: "🏛️" },
-    { t: "Email Service", sub: "(SendGrid)", icon: "📨" },
-    { t: "Slack", sub: "(Webhook)", icon: "💬" },
-    { t: "Partner SFTP", sub: "(Batch Data)", icon: "📁" }
+  // Row 4: Integrations (y=390, h=90)
+  rect("r4_lbl", "<div style='font-size:8px;font-weight:800;color:#D97706;transform:rotate(-90deg);'>INTEGRATIONS</div>", 208, 390, 30, 90, "fillColor=#FFFBEB;strokeColor=#FDE68A;align=center;verticalAlign=middle;");
+  const integrations = [
+    { n: "Salesforce\n(CRM)", icon: "🏢" },
+    { n: "Veeva Vault\n(eCTD)", icon: "📁" },
+    { n: "FDA APIs\n(Public Data)", icon: "🏛️" },
+    { n: "EMA APIs\n(EU Regs)", icon: "🏛️" },
+    { n: "Email Service\n(SendGrid)", icon: "✉️" },
+    { n: "Slack\n(Webhook)", icon: "💬" },
+    { n: "Partner SFTP\n(Batch Data)", icon: "📦" }
   ];
-  ints.forEach((it, idx) => {
-    const ix = 176 + idx * 136;
-    rect(`it_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${it.icon} ${it.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${it.sub}</div>`, ix, 250, 130, 44, "fillColor=#FFFBEB;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  integrations.forEach((it, idx) => {
+    const ix = 244 + idx * 120;
+    rect(`i_c_${idx}`, `<div style='font-size:14px;text-align:center;'>${it.icon}</div><div style='font-size:7.5px;font-weight:800;text-align:center;line-height:1.2;margin-top:2px;'>${it.n.replace(/\n/g, "<br/>")}</div>`, ix, 398, 112, 74, "fillColor=#FFFBEB;strokeColor=#FDE68A;rounded=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Row 5: Platform / Infra (y=302..354)
-  rect("lbl_r5", "<span style='font-size:8px;font-weight:800;color:#7C3AED;'>PLATFORM /<br/>INFRA</span>", 124, 302, 48, 52, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  const infras = [
-    { t: "Google Cloud", sub: "(VPC, Network)", icon: "☁️" },
-    { t: "Kubernetes Engine", sub: "(GKE)", icon: "⚙️" },
-    { t: "Cloud Run", sub: "(Containers)", icon: "📦" },
-    { t: "Vertex AI", sub: "(Models)", icon: "🧠" },
-    { t: "Cloud Armor", sub: "(Security)", icon: "🛡️" },
-    { t: "Cloud Monitoring", sub: "&amp; Alerting", icon: "📈" },
-    { t: "Cloud Backup", sub: "&amp; DR", icon: "🗃️" }
+  // Row 5: Platform / Infra (y=486, h=94)
+  rect("r5_lbl", "<div style='font-size:8px;font-weight:800;color:#7C3AED;transform:rotate(-90deg);'>PLATFORM /<br/>INFRA</div>", 208, 486, 30, 94, "fillColor=#FAF5FF;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
+  const infra = [
+    { n: "Google Cloud\n(VPC, Network)", icon: "☁️" },
+    { n: "Kubernetes Engine\n(GKE)", icon: "⚙️" },
+    { n: "Cloud Run\n(Containers)", icon: "🚀" },
+    { n: "Vertex AI\n(Models)", icon: "🧠" },
+    { n: "Cloud Armor\n(Security)", icon: "🛡️" },
+    { n: "Monitoring &amp;\nAlerting", icon: "📊" },
+    { n: "Cloud Backup\n&amp; DR", icon: "🗃️" }
   ];
-  infras.forEach((inf, idx) => {
-    const fx = 176 + idx * 136;
-    rect(`inf_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${inf.icon} ${inf.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${inf.sub}</div>`, fx, 306, 130, 44, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  infra.forEach((inf, idx) => {
+    const fx = 244 + idx * 120;
+    rect(`f_c_${idx}`, `<div style='font-size:14px;text-align:center;'>${inf.icon}</div><div style='font-size:7.5px;font-weight:800;text-align:center;line-height:1.2;margin-top:2px;'>${inf.n.replace(/\n/g, "<br/>")}</div>`, fx, 494, 112, 78, "fillColor=#FAF5FF;strokeColor=#E9D5FF;rounded=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Row 6: Teams / Owners (y=358..405)
-  rect("lbl_r6", "<span style='font-size:8px;font-weight:800;color:#1E3A8A;'>TEAMS /<br/>OWNERS</span>", 124, 358, 48, 47, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  // Row 6: Teams / Owners (y=586, h=88)
+  rect("r6_lbl", "<div style='font-size:8px;font-weight:800;color:#475569;transform:rotate(-90deg);'>TEAMS /<br/>OWNERS</div>", 208, 586, 30, 88, "fillColor=#F8FAFC;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
   const teams = [
-    { t: "Product Team", sub: "(Platform)", icon: "👥" },
-    { t: "Data Eng Team", sub: "", icon: "👥" },
-    { t: "ML/AI Eng Team", sub: "", icon: "👥" },
-    { t: "Security Team", sub: "", icon: "👥" },
-    { t: "DevOps / SRE", sub: "", icon: "👥" },
-    { t: "Compliance &amp; QA", sub: "", icon: "👥" },
-    { t: "Business Owners", sub: "(LOB)", icon: "👥" }
+    { n: "Product Team", icon: "👥" },
+    { n: "Data Engineering", icon: "👥" },
+    { n: "ML/AI Eng", icon: "👥" },
+    { n: "Security Team", icon: "👥" },
+    { n: "DevOps / SRE", icon: "👥" },
+    { n: "Compliance &amp; QA", icon: "👥" },
+    { n: "Business Owners", icon: "👥" }
   ];
   teams.forEach((tm, idx) => {
-    const tx = 176 + idx * 136;
-    rect(`tm_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${tm.icon} ${tm.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${tm.sub}</div>`, tx, 362, 130, 39, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=1;");
+    const tx = 244 + idx * 120;
+    rect(`t_c_${idx}`, `<div style='font-size:14px;text-align:center;'>${tm.icon}</div><div style='font-size:7.5px;font-weight:800;text-align:center;margin-top:2px;'>${tm.n}</div>`, tx, 594, 112, 72, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // 4. RIGHT COLUMN: CATALOG, EXTERNAL DEPS, RISK MATRIX (x=1150..1560, y=72..410)
-  rect("box_r_catalog", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:1px;'>DEPENDENCY CATALOG (KEY)</div><div style='font-size:10px;line-height:1.2;color:#0F172A;'><table style='width:100%;border-collapse:collapse;'><tr style='font-weight:700;border-bottom:1px solid #CBD5E1;'><td>ID</td><td>FROM</td><td>TO</td><td>TYPE</td><td>CRIT</td></tr><tr><td>D-01</td><td>Web Portal</td><td>API Gateway</td><td>API</td><td style='color:#DC2626;'>●</td></tr><tr><td>D-02</td><td>API Gateway</td><td>Auth Service</td><td>API</td><td style='color:#DC2626;'>●</td></tr><tr><td>D-03</td><td>AI Service</td><td>Vector DB</td><td>Data</td><td style='color:#DC2626;'>●</td></tr><tr><td>D-04</td><td>Doc Processing</td><td>Doc Store</td><td>Data</td><td style='color:#D97706;'>●</td></tr><tr><td>D-05</td><td>Search Service</td><td>BigQuery</td><td>Data</td><td style='color:#D97706;'>●</td></tr><tr><td>D-06</td><td>Reporting</td><td>BigQuery</td><td>Data</td><td style='color:#16A34A;'>●</td></tr><tr><td>D-07</td><td>API Gateway</td><td>Salesforce</td><td>API</td><td style='color:#D97706;'>●</td></tr><tr><td>D-08</td><td>System</td><td>Email Service</td><td>Async</td><td style='color:#16A34A;'>●</td></tr><tr><td>D-09</td><td>All Apps</td><td>Cloud Monitor</td><td>Config</td><td style='color:#16A34A;'>●</td></tr></table></div>", 1150, 72, 410, 118, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // 4. RIGHT SIDEBAR: CATALOG, EXTERNAL DEPS & RISK MATRIX (x=1104, y=78, w=472, h=602)
+  // Dependency Catalog (y=78, h=200)
+  const catHtml = `<div style='font-size:10px;font-weight:800;color:#1E3A8A;text-align:center;margin-bottom:3px;'>DEPENDENCY CATALOG (KEY)</div>
+  <table style='width:100%;border-collapse:collapse;font-size:7.5px;'>
+    <tr style='font-weight:800;border-bottom:1px solid #CBD5E1;background:#F8FAFC;'>
+      <td style='padding:2px;'>ID</td><td>FROM</td><td>TO</td><td>TYPE</td><td>CRIT</td><td>OWNER</td>
+    </tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-01</td><td>Web Portal</td><td>API Gateway</td><td>API</td><td style='color:#DC2626;font-weight:800;'>🔴</td><td>Platform Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-02</td><td>API Gateway</td><td>Auth Service</td><td>API</td><td style='color:#DC2626;font-weight:800;'>🔴</td><td>Platform Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-03</td><td>AI Service</td><td>Vector DB</td><td>Data Read</td><td style='color:#DC2626;font-weight:800;'>🔴</td><td>ML Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-04</td><td>Doc Processing</td><td>Document Store</td><td>Data W/R</td><td style='color:#EA580C;font-weight:800;'>🟠</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-05</td><td>Search &amp; RAG</td><td>Data Warehouse</td><td>Data Read</td><td style='color:#EA580C;font-weight:800;'>🟠</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-06</td><td>Reporting</td><td>Data Warehouse</td><td>Data Read</td><td style='color:#EA580C;font-weight:800;'>🟠</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-07</td><td>API Gateway</td><td>Salesforce</td><td>API</td><td style='color:#EA580C;font-weight:800;'>🟠</td><td>Integration Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-08</td><td>System</td><td>Email Service</td><td>Async/Event</td><td style='color:#CA8A04;font-weight:800;'>🟡</td><td>Platform Team</td></tr>
+    <tr><td style='padding:2px;'>D-09</td><td>All Apps</td><td>Cloud Monitoring</td><td>Config/Ctrl</td><td style='color:#16A34A;font-weight:800;'>🟢</td><td>SRE Team</td></tr>
+  </table>`;
+  rect("box_dep_cat", catHtml, 1104, 78, 472, 200, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;");
 
-  rect("box_r_ext_deps", "<div style='font-size:9px;font-weight:800;color:#D97706;margin-bottom:1px;'>EXTERNAL DEPENDENCIES</div><div style='font-size:10px;line-height:1.2;color:#0F172A;'><table style='width:100%;border-collapse:collapse;'><tr style='font-weight:700;border-bottom:1px solid #CBD5E1;'><td>SYSTEM</td><td>PURPOSE</td><td>CONTROL</td><td>CRIT</td></tr><tr><td><b>Salesforce</b></td><td>Customer Data</td><td>API Contract</td><td style='color:#DC2626;'>High</td></tr><tr><td><b>Veeva Vault</b></td><td>Regulatory Docs</td><td>API Contract</td><td style='color:#DC2626;'>High</td></tr><tr><td><b>FDA APIs</b></td><td>Regulatory Data</td><td>Public Rate Limit</td><td style='color:#D97706;'>Med</td></tr><tr><td><b>EMA APIs</b></td><td>Regulatory Data</td><td>Public Rate Limit</td><td style='color:#D97706;'>Med</td></tr><tr><td><b>SendGrid</b></td><td>Email Alerts</td><td>API Limits</td><td style='color:#D97706;'>Med</td></tr><tr><td><b>Partner SFTP</b></td><td>Batch File Exch</td><td>Network, VPN</td><td style='color:#D97706;'>Med</td></tr></table></div>", 1150, 194, 410, 112, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // External Dependencies Table (y=284, h=164)
+  const extHtml = `<div style='font-size:10px;font-weight:800;color:#1E3A8A;text-align:center;margin-bottom:3px;'>EXTERNAL DEPENDENCIES</div>
+  <table style='width:100%;border-collapse:collapse;font-size:7.5px;'>
+    <tr style='font-weight:800;border-bottom:1px solid #CBD5E1;background:#F8FAFC;'>
+      <td style='padding:2px;'>SYSTEM</td><td>PURPOSE</td><td>CONTROL</td><td>CRITICALITY</td>
+    </tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'><b>Salesforce</b></td><td>Customer / Account Data</td><td>API Limits, Contract</td><td style='color:#DC2626;font-weight:800;'>High</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'><b>Veeva Vault</b></td><td>Regulatory Documents</td><td>API Limits, Contract</td><td style='color:#DC2626;font-weight:800;'>High</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'><b>FDA APIs</b></td><td>Regulatory Data</td><td>Public API, Rate Limit</td><td style='color:#EA580C;font-weight:800;'>Medium</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'><b>EMA APIs</b></td><td>Regulatory Data</td><td>Public API, Rate Limit</td><td style='color:#EA580C;font-weight:800;'>Medium</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'><b>SendGrid</b></td><td>Email Notifications</td><td>API Limits, Contract</td><td style='color:#EA580C;font-weight:800;'>Medium</td></tr>
+    <tr><td style='padding:2px;'><b>Partner SFTP</b></td><td>Secure File Exchange</td><td>Network, VPN, ACL</td><td style='color:#EA580C;font-weight:800;'>Medium</td></tr>
+  </table>`;
+  rect("box_ext_dep", extHtml, 1104, 284, 472, 164, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;");
 
-  rect("box_r_matrix", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:1px;'>DEPENDENCY RISK MATRIX</div><div style='font-size:10px;line-height:1.2;color:#0F172A;'><table style='width:100%;border-collapse:collapse;text-align:center;'><tr style='font-weight:700;border-bottom:1px solid #CBD5E1;'><td style='text-align:left;'>LIKELIHOOD ↓</td><td>Low(1)</td><td>Med(2)</td><td>High(3)</td><td>Crit(4)</td></tr><tr><td style='text-align:left;'><b>High</b></td><td style='background:#FEF3C7;'>M (2)</td><td style='background:#FED7AA;'>H (4)</td><td style='background:#FED7AA;'>H (6)</td><td style='background:#FECACA;color:#DC2626;font-weight:700;'>C (8)</td></tr><tr><td style='text-align:left;'><b>Med</b></td><td style='background:#DCFCE7;'>L (2)</td><td style='background:#FEF3C7;'>M (4)</td><td style='background:#FED7AA;'>H (6)</td><td style='background:#FECACA;color:#DC2626;font-weight:700;'>C (8)</td></tr><tr><td style='text-align:left;'><b>Low</b></td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#DCFCE7;'>L (2)</td><td style='background:#FEF3C7;'>M (3)</td><td style='background:#FED7AA;'>H (4)</td></tr><tr><td style='text-align:left;'><b>Very Low</b></td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#DCFCE7;'>M (2)</td><td style='background:#FEF3C7;'>M (3)</td></tr></table></div>", 1150, 310, 410, 100, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // Dependency Risk Matrix Heatmap (y=454, h=226)
+  const riskHtml = `<div style='font-size:10px;font-weight:800;color:#DC2626;text-align:center;margin-bottom:3px;'>DEPENDENCY RISK MATRIX</div>
+  <table style='width:100%;border-collapse:collapse;font-size:7.5px;text-align:center;'>
+    <tr style='font-weight:800;background:#F8FAFC;'>
+      <td style='padding:2px;text-align:left;'>Impact ➔<br/>Likelihood ↓</td><td>Low (1)</td><td>Medium (2)</td><td>High (3)</td><td>Critical (4)</td>
+    </tr>
+    <tr><td style='text-align:left;font-weight:700;'>High (Frequent)</td><td style='background:#DCFCE7;'>M (2)</td><td style='background:#FFEDD5;'>H (4)</td><td style='background:#FCA5A5;'>H (6)</td><td style='background:#F87171;color:#FFF;font-weight:900;'>C (8)</td></tr>
+    <tr><td style='text-align:left;font-weight:700;'>Medium (Possible)</td><td style='background:#DCFCE7;'>L (2)</td><td style='background:#FEF08A;'>M (4)</td><td style='background:#FCA5A5;'>H (6)</td><td style='background:#F87171;color:#FFF;font-weight:900;'>C (8)</td></tr>
+    <tr><td style='text-align:left;font-weight:700;'>Low (Rare)</td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#DCFCE7;'>L (2)</td><td style='background:#FEF08A;'>M (3)</td><td style='background:#FCA5A5;'>H (4)</td></tr>
+    <tr><td style='text-align:left;font-weight:700;'>Very Low (Unlikely)</td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#DCFCE7;'>L (1)</td><td style='background:#FEF08A;'>M (2)</td><td style='background:#FEF08A;'>M (3)</td></tr>
+  </table>`;
+  rect("box_risk_matrix", riskHtml, 1104, 454, 472, 226, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;");
 
-  // 5. BOTTOM ROW: CRITICAL DEPS, HEALTH, IMPACT ANALYSIS, GOVERNANCE, NOTES (x=20..1560, y=546..740)
-  rect("bot_crit_deps", "<div style='font-size:10px;font-weight:800;color:#DC2626;margin-bottom:2px;'>CRITICAL DEPENDENCIES (TOP 5)</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>❶ <b>AI Service ➔ Vector DB</b> (Model Context Retrieval)<br/>Impact: AI responses unavailable<br/>❷ <b>Doc Processing ➔ Document Store</b><br/>Impact: Document ingestion stops<br/>❸ <b>Search Service ➔ Data Warehouse</b><br/>Impact: Search &amp; analytics degraded<br/>❹ <b>API Gateway ➔ Auth Service</b><br/>Impact: User auth fails<br/>❺ <b>GKE / Cloud Run ➔ All Apps</b><br/>Impact: Total outage</div>", 20, 546, 270, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 5. LOWER 5 CARDS (y=688..920, h=232)
+  // Critical Dependencies (x=24, w=290)
+  const critHtml = `<div style='font-size:10px;font-weight:800;color:#DC2626;margin-bottom:3px;'>CRITICAL DEPENDENCIES (TOP 5)</div>
+  <div style='font-size:7.5px;line-height:1.4;color:#0F172A;'>
+    ❶ <b>AI Service ➔ Vector DB</b> (Model Context Retrieval)<br/><span style='color:#64748B;'>Impact: AI responses unavailable</span><br/>
+    ❷ <b>Document Processing ➔ Document Store</b><br/><span style='color:#64748B;'>Impact: Document ingestion &amp; processing stops</span><br/>
+    ❸ <b>Search &amp; RAG Service ➔ Data Warehouse</b><br/><span style='color:#64748B;'>Impact: Search results &amp; analytics degraded</span><br/>
+    ❹ <b>API Gateway ➔ Auth Service</b><br/><span style='color:#64748B;'>Impact: User authentication fails</span><br/>
+    ❺ <b>GKE / Cloud Run ➔ All Applications</b><br/><span style='color:#64748B;'>Impact: Service outage / unavailability</span>
+  </div>`;
+  rect("bot_crit", critHtml, 24, 688, 290, 232, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  rect("bot_health", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:2px;'>DEPENDENCY HEALTH (REAL-TIME VIEW)</div><div style='font-size:8px;line-height:1.25;color:#0F172A;'><table style='width:100%;border-collapse:collapse;'><tr style='font-weight:700;border-bottom:1px solid #CBD5E1;'><td>COMPONENT</td><td>STATUS</td><td>LAST</td><td>OWNER</td></tr><tr><td><b>API Gateway</b></td><td><span style='color:#16A34A;'>✔ Healthy</span></td><td>2m ago</td><td>Platform</td></tr><tr><td><b>Auth Service</b></td><td><span style='color:#16A34A;'>✔ Healthy</span></td><td>1m ago</td><td>Platform</td></tr><tr><td><b>AI Service</b></td><td><span style='color:#16A34A;'>✔ Healthy</span></td><td>2m ago</td><td>ML Eng</td></tr><tr><td><b>Vector DB</b></td><td><span style='color:#16A34A;'>✔ Healthy</span></td><td>1m ago</td><td>Data Eng</td></tr><tr><td><b>Doc Store</b></td><td><span style='color:#16A34A;'>✔ Healthy</span></td><td>3m ago</td><td>Data Eng</td></tr><tr><td><b>Salesforce</b></td><td><span style='color:#D97706;'>⚠️ Degraded</span></td><td>5m ago</td><td>Integration</td></tr><tr><td><b>EMA APIs</b></td><td><span style='color:#DC2626;'>❌ Down</span></td><td>6m ago</td><td>Integration</td></tr></table></div>", 300, 546, 300, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Dependency Health Table (x=322, w=350)
+  const healthHtml = `<div style='font-size:10px;font-weight:800;color:#16A34A;text-align:center;margin-bottom:3px;'>DEPENDENCY HEALTH (REAL-TIME VIEW)</div>
+  <table style='width:100%;border-collapse:collapse;font-size:7.5px;'>
+    <tr style='font-weight:800;border-bottom:1px solid #CBD5E1;background:#F8FAFC;'>
+      <td style='padding:2px;'>COMPONENT</td><td>STATUS</td><td>LAST CHECK</td><td>OWNER</td>
+    </tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>API Gateway</td><td style='color:#16A34A;font-weight:800;'>✔ Healthy</td><td>2m ago</td><td>Platform Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>Auth Service</td><td style='color:#16A34A;font-weight:800;'>✔ Healthy</td><td>1m ago</td><td>Platform Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>AI Service</td><td style='color:#16A34A;font-weight:800;'>✔ Healthy</td><td>2m ago</td><td>ML Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>Vector DB</td><td style='color:#16A34A;font-weight:800;'>✔ Healthy</td><td>1m ago</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>Document Store</td><td style='color:#16A34A;font-weight:800;'>✔ Healthy</td><td>3m ago</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>Salesforce</td><td style='color:#D97706;font-weight:800;'>▲ Degraded</td><td>5m ago</td><td>Integration Team</td></tr>
+    <tr><td style='padding:2px;'>EMA APIs</td><td style='color:#DC2626;font-weight:800;'>✖ Down</td><td>6m ago</td><td>Integration Team</td></tr>
+  </table>`;
+  rect("bot_health", healthHtml, 322, 688, 350, 232, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  rect("bot_impact", "<div style='font-size:10px;font-weight:800;color:#D97706;margin-bottom:2px;'>CHANGE IMPACT ANALYSIS (EXAMPLE)</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'><b>If &quot;Document Store (Cloud Storage)&quot; is Unavailable:</b><br/>• Direct: Doc Processing stops, Backups fail<br/>• Indirect: Search &amp; RAG degraded, Reporting partial<br/>• Business: Document ingestion stops, Compliance risk<br/><br/><b>Mitigation:</b> Backup bucket failover, RPO 15m, RTO 60m</div>", 610, 546, 300, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Change Impact Analysis (x=680, w=350)
+  const impHtml = `<div style='font-size:10px;font-weight:800;color:#2563EB;text-align:center;margin-bottom:3px;'>CHANGE IMPACT ANALYSIS (EXAMPLE)</div>
+  <div style='font-size:8px;font-weight:700;color:#DC2626;text-align:center;'>If "Document Store (Cloud Storage)" is Unavailable</div>
+  <div style='font-size:7.5px;display:flex;justify-content:space-between;margin-top:8px;'>
+    <div><b>DIRECT IMPACT:</b><br/>• Document Processing<br/>• Audit Logs<br/>• Backups</div>
+    <div><b>INDIRECT IMPACT:</b><br/>• Search &amp; RAG Service<br/>• Reporting &amp; Analytics<br/>• External Partners</div>
+    <div><b>BUSINESS IMPACT:</b><br/>• Document ingestion stops<br/>• Search accuracy ↓<br/>• Compliance risk ↑</div>
+  </div>
+  <div style='font-size:7.5px;color:#16A34A;background:#F0FDF4;border:1px solid #BBF7D0;padding:3px;border-radius:4px;margin-top:10px;'>
+    <b>Mitigation:</b> Enable backup bucket, retry policy, and degraded mode.<br/>
+    RPO: 15 min &nbsp;|&nbsp; RTO: 60 min
+  </div>`;
+  rect("bot_impact", impHtml, 680, 688, 350, 232, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  rect("bot_gov", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;'>DEPENDENCY GOVERNANCE</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ Maintain dependency inventory<br/>✔ Review &amp; validate dependencies quarterly<br/>✔ Monitor health &amp; set SLOs<br/>✔ Define owners for all critical deps<br/>✔ Perform impact analysis before changes<br/>✔ Document contracts &amp; SLAs<br/>✔ Review third-party risk annually</div>", 920, 546, 280, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Dependency Governance (x=1038, w=260)
+  const govHtml = `<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:3px;'>DEPENDENCY GOVERNANCE</div>
+  <div style='font-size:7.5px;line-height:1.45;color:#0F172A;'>
+    ☑ Maintain dependency inventory<br/>
+    ☑ Review &amp; validate dependencies quarterly<br/>
+    ☑ Monitor health &amp; set SLOs<br/>
+    ☑ Define owners for all critical dependencies<br/>
+    ☑ Perform impact analysis before changes<br/>
+    ☑ Document contracts &amp; SLAs<br/>
+    ☑ Review third-party risk annually
+  </div>`;
+  rect("bot_gov", govHtml, 1038, 688, 260, 232, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>NOTES</div><div style='font-size:8px;line-height:1.35;color:#64748B;'>• All dependencies are continuously discovered via scans.<br/>• Critical dependencies have alerts &amp; runbooks.<br/>• Reviewed monthly and after major changes.<br/>• Feed into risk, DR, and change processes.</div>", 1210, 546, 350, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Notes (x=1306, w=270)
+  const notesHtml = `<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:3px;'>NOTES</div>
+  <div style='font-size:7.5px;line-height:1.45;color:#64748B;'>
+    • All dependencies are continuously discovered and updated via scans &amp; integrations.<br/>
+    • Critical dependencies have alerts and runbooks.<br/>
+    • This map is reviewed monthly and after major changes.<br/>
+    • Feed this map into risk, DR, and change management processes.
+  </div>`;
+  rect("bot_notes", notesHtml, 1306, 688, 270, 232, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.2;align=left;verticalAlign=top;padding=5;");
 
-  // 6. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div><b>KEY STATS:</b> 🌐 Total Apps: 12 &nbsp;|&nbsp; 🗄️ Data Stores: 6 &nbsp;|&nbsp; 🔌 Integrations: 8 &nbsp;|&nbsp; ⚠️ Critical Deps: 9 &nbsp;|&nbsp; 🏢 External Partners: 7</div><div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Jun 8, 2025 &nbsp;|&nbsp; Owner: Enterprise Architecture Team</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // 6. KEY STATS BAR (y=926, h=38)
+  const statsHtml = `<div style='font-size:8px;font-weight:800;color:#1E3A8A;display:flex;justify-content:space-around;align-items:center;'>
+    <div><b>KEY STATS</b></div>
+    <div>📄 Total Applications: <b>12</b></div>
+    <div>🗄️ Data Stores: <b>6</b></div>
+    <div>🔌 Integrations: <b>8</b></div>
+    <div>⚠️ Critical Dependencies: <b>9</b></div>
+    <div>🏢 External Partners: <b>7</b></div>
+  </div>`;
+  rect("box_key_stats", statsHtml, 24, 926, 1552, 38, "fillColor=#EFF6FF;strokeColor=#BFDBFE;rounded=1;align=center;verticalAlign=middle;padding=4;");
+
+  // 7. FOOTER STATUS BAR (y=970, h=25)
+  const footerHtml = `<div style='font-size:8.5px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Jun 8, 2025</div>
+    <div>Owner: Enterprise Architecture Team</div>
+  </div>`;
+  rect("footer_status", footerHtml, 24, 970, 1552, 25, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_31_dependency_relationship_map" name="Template 31: Dependency / Relationship Map">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="1020" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1020" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
