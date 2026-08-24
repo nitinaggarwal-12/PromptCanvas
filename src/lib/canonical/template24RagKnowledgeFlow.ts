@@ -1,134 +1,391 @@
 /**
- * Canonical Architecture Template 24: RAG / Knowledge Flow Architecture
- * Exact 1:1 High-Fidelity Master Blueprint of images/24.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 24: RAG / Knowledge Flow Architecture
+ * Matches 100% of images/24.png:
+ * - Knowledge Sources (Internal + External)
+ * - 7-stage RAG Pipeline (Ingest, Preprocess, Embed, Retrieve, Augment, Generate, Feedback)
+ * - 6 Knowledge Stores & Indexes (Raw, Processed, Vector DB, Search Index, Graph DB, Relational DB)
+ * - Cross-Cutting Capabilities bar (7 controls)
+ * - 6 RAG Patterns (Naive, Advanced, Multi-Query, Sub-Question, Graph, Agentic) + RAG Response Example
+ * - Right Sidebar: RAG Principles, Retrieval Strategies, Guardrails, Key Risks
+ * - Tools & Technologies (12 Google Cloud tools)
+ * - Bottom Row: Metrics, High-Level Flow (8 connected nodes), Observability, Compliance, Notes
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate24RagKnowledgeFlowXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "24", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>RAG / Knowledge Flow Architecture</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: NovaCura – Regulatory Q&amp;A with Internal &amp; External Knowledge</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
+
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+
+  const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    Provide accurate, traceable, and context-aware answers by combining LLMs with enterprise and external knowledge using Retrieval-Augmented Generation (RAG).
+  </div>`;
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+
+  // ==================== 2. LEFT COLUMN: 1. KNOWLEDGE SOURCES (x=16..170, y=78..504, w=154) ====================
+  cell("box_sources", "", 16, 78, 154, 426, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_sources", "1. KNOWLEDGE SOURCES", 16, 80, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // Internal Sources Box
+  cell("box_src_int", "", 22, 102, 142, 186, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;");
+  cell("lbl_src_int", "Internal Sources", 22, 104, 142, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=left;padding=2;");
+  const intSources = [
+    { t: "Regulatory Documents<br/><span style='color:#64748B;'>(PDF, Word, eCTD)</span>", icon: "📑" },
+    { t: "SOPs &amp; Policies<br/><span style='color:#64748B;'>(Confluence, SharePoint)</span>", icon: "📜" },
+    { t: "Research Reports<br/><span style='color:#64748B;'>&amp; Whitepapers</span>", icon: "🔬" },
+    { t: "Email / Tickets / Notes", icon: "✉️" },
+    { t: "Databases<br/><span style='color:#64748B;'>(SQL, Oracle, BQ)</span>", icon: "🗄️" }
+  ];
+  intSources.forEach((is, idx) => {
+    const isy = 120 + idx * 32;
+    cell(`is_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${is.icon}</span><span style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;">${is.t}</span></div>`, 26, isy, 134, 28, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+  });
+
+  // External Sources Box
+  cell("box_src_ext", "", 22, 296, 142, 200, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;");
+  cell("lbl_src_ext", "External Sources", 22, 298, 142, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=7.5;fontStyle=1;align=left;padding=2;");
+  const extSources = [
+    { t: "Public Regulations<br/><span style='color:#64748B;'>(FDA, EMA, PMDA)</span>", icon: "🏛️" },
+    { t: "Standards &amp; Guidelines<br/><span style='color:#64748B;'>(ICH, ISO, GxP)</span>", icon: "⚖️" },
+    { t: "Public Websites &amp; Portals", icon: "🌐" },
+    { t: "Clinical Trial Registries", icon: "🏥" },
+    { t: "Scientific Literature<br/><span style='color:#64748B;'>(PubMed, arXiv)</span>", icon: "📚" }
+  ];
+  extSources.forEach((es, idx) => {
+    const esy = 314 + idx * 34;
+    cell(`es_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${es.icon}</span><span style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;">${es.t}</span></div>`, 26, esy, 134, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+  });
+
+  // Arrow from Sources to Pipeline
+  edge("e_src_to_pipe", "box_sources", "box_rag_pipe", "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=5;");
+
+  // ==================== 3. CENTER: RAG PIPELINE (7 STAGES: 2..8) (x=180..1220, y=78..390, w=1040) ====================
+  cell("box_rag_pipe", "", 180, 78, 1040, 312, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
+  cell("lbl_rag_pipe", "RAG / KNOWLEDGE FLOW PIPELINE", 180, 80, 1040, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+
+  const ragStages = [
+    {
+      num: "2", name: "INGEST &amp; CONNECT",
+      cards: [
+        { t: "Connectors<br/><span style='color:#64748B;'>(APIs, DB, Web)</span>", icon: "🔌" },
+        { t: "Batch / Streaming<br/>Ingestion", icon: "🔄" },
+        { t: "Change Data<br/>Capture (CDC)", icon: "⚡" }
+      ]
+    },
+    {
+      num: "3", name: "PREPROCESS &amp; PARSE",
+      cards: [
+        { t: "Document Parsing<br/><span style='color:#64748B;'>(OCR, Layout)</span>", icon: "📑" },
+        { t: "Text Chunking<br/><span style='color:#64748B;'>(Semantic / Token)</span>", icon: "✂️" },
+        { t: "Metadata Extraction<br/><span style='color:#64748B;'>(Entities, Tags)</span>", icon: "🏷️" },
+        { t: "PII Detection &amp; Redaction", icon: "🔒" }
+      ]
+    },
+    {
+      num: "4", name: "EMBED &amp; INDEX",
+      cards: [
+        { t: "Embedding Model<br/><span style='color:#64748B;'>(Vertex Embeddings)</span>", icon: "🧠" },
+        { t: "Vectorization", icon: "⚙️" },
+        { t: "Indexing &amp; Upsert<br/><span style='color:#64748B;'>(Vector DB)</span>", icon: "🗄️" },
+        { t: "Metadata Index<br/><span style='color:#64748B;'>(Search Index)</span>", icon: "📊" }
+      ]
+    },
+    {
+      num: "5", name: "RETRIEVE",
+      cards: [
+        { t: "User Query", icon: "🔍" },
+        { t: "Query Understanding<br/><span style='color:#64748B;'>(Rewrite, Expand)</span>", icon: "✨" },
+        { t: "Hybrid Search<br/><span style='color:#64748B;'>(Vector + Keyword)</span>", icon: "🔄" },
+        { t: "Top-K Retrieval<br/><span style='color:#64748B;'>(Re-rank)</span>", icon: "🎯" }
+      ]
+    },
+    {
+      num: "6", name: "AUGMENT",
+      cards: [
+        { t: "Context Assembly<br/><span style='color:#64748B;'>(Chunks + Metadata)</span>", icon: "📋" },
+        { t: "Deduplication &amp;<br/>Filtering", icon: "🧹" },
+        { t: "Citations &amp; Source<br/>Attribution", icon: "📑" },
+        { t: "Prompt Construction<br/><span style='color:#64748B;'>(System + Context)</span>", icon: "✍️" }
+      ]
+    },
+    {
+      num: "7", name: "GENERATE",
+      cards: [
+        { t: "LLM (Gemini)<br/><span style='color:#64748B;'>(Answer Generation)</span>", icon: "🧠" },
+        { t: "Tool / Function Calls<br/><span style='color:#64748B;'>(If needed)</span>", icon: "🛠️" },
+        { t: "Guardrails &amp; Safety<br/>Checks", icon: "🛡️" },
+        { t: "Answer with Citations<br/>&amp; Confidence", icon: "✔" }
+      ]
+    },
+    {
+      num: "8", name: "FEEDBACK &amp; LEARN",
+      cards: [
+        { t: "User Feedback<br/><span style='color:#64748B;'>(Helpful / Not)</span>", icon: "👍" },
+        { t: "Answer Evaluation<br/><span style='color:#64748B;'>(LLM-as-a-Judge)</span>", icon: "⚖️" },
+        { t: "Logs &amp; Analytics", icon: "📊" },
+        { t: "Continuous Improve<br/><span style='color:#64748B;'>(Prompts / Retr)</span>", icon: "🔄" }
+      ]
     }
-    c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
-    );
-  };
-
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "24", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>RAG / Knowledge Flow Architecture</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – Regulatory Q&amp;A with Internal &amp; External Knowledge &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
-
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Provide accurate, traceable, and context-aware answers by combining LLMs with enterprise and external knowledge using Retrieval-Augmented Generation (RAG).</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
-
-  // 2. LEFT COLUMN: 1. KNOWLEDGE SOURCES (x=20..115, y=72..410)
-  rect("box_sources", "", 20, 72, 95, 338, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_sources", "<span style='font-size:9px;font-weight:800;color:#2563EB;'>1. KNOWLEDGE<br/>SOURCES</span>", 20, 75, 95, 18, "strokeColor=none;fillColor=none;align=center;");
-
-  rect("src_int", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;'>Internal Sources</div><div style='font-size:10px;line-height:1.3;color:#0F172A;margin-top:2px;'>📑 Regulatory Documents<br/>📜 SOPs &amp; Policies<br/>🔬 Research Reports<br/>📨 Email / Tickets<br/>🗄️ Databases (SQL, BQ)</div>", 25, 96, 85, 140, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
-
-  rect("src_ext", "<div style='font-size:9px;font-weight:800;color:#7C3AED;'>External Sources</div><div style='font-size:10px;line-height:1.3;color:#0F172A;margin-top:2px;'>🏛️ Public Regs (FDA, EMA)<br/>📋 Standards (ICH, ISO)<br/>🌐 Public Websites<br/>🩺 Clinical Registries<br/>📚 Scientific Literature</div>", 25, 242, 85, 160, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=left;verticalAlign=top;padding=3;");
-
-  // 3. MAIN RAG / KNOWLEDGE FLOW PIPELINE (x=122..1310, y=72..410)
-  rect("box_pipeline_main", "", 122, 72, 1180, 338, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;");
-  rect("lbl_pipeline_main", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>RAG / KNOWLEDGE FLOW PIPELINE</span>", 122, 74, 1180, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  // 7 Stages (2..8)
-  const stages = [
-    { n: "2. INGEST & CONNECT", items: ["🔌 Connectors (APIs, DB)", "⚡ Batch / Streaming", "🔄 Change Data Capture"] },
-    { n: "3. PREPROCESS & PARSE", items: ["📑 Document Parsing", "✂️ Text Chunking", "🏷️ Metadata Extraction", "🔒 PII Detection"] },
-    { n: "4. EMBED & INDEX", items: ["🧠 Embedding Model", "🔢 Vectorization", "🗄️ Indexing & Upsert", "📋 Metadata Index"] },
-    { n: "5. RETRIEVE", items: ["👤 User Query", "🔍 Query Understanding", "⚡ Hybrid Search", "🔝 Top-K Retrieval"] },
-    { n: "6. AUGMENT", items: ["🧩 Context Assembly", "✂️ Deduplication", "📑 Citations & Source", "✍️ Prompt Construction"] },
-    { n: "7. GENERATE", items: ["🧠 LLM (Gemini)", "🛠️ Tool / Function Calls", "🛡️ Guardrails & Safety", "💬 Answer + Citations"] },
-    { n: "8. FEEDBACK & LEARN", items: ["👍 User Feedback", "📊 Answer Evaluation", "📑 Logs & Analytics", "🔄 Continuous Impr"] }
   ];
 
-  stages.forEach((st, idx) => {
-    const sx = 128 + idx * 167;
-    rect(`st_p_${idx}`, "", sx, 88, 160, 118, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-    rect(`st_plbl_${idx}`, `<div style='font-size:8px;font-weight:800;color:#1E3A8A;'>${st.n}</div>`, sx, 90, 160, 10, "strokeColor=none;fillColor=none;align=center;");
+  ragStages.forEach((stg, sIdx) => {
+    const sx = 190 + sIdx * 146;
+    cell(`stg_box_${sIdx}`, "", sx, 100, 138, 280, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
+    cell(`stg_hdr_${sIdx}`, `<div style="font-size:7px;font-weight:900;color:#1E40AF;text-align:center;">${stg.num}. ${stg.name}</div>`, sx, 104, 138, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-    st.items.forEach((it, itIdx) => {
-      const iy = 102 + itIdx * 25;
-      rect(`st_pit_${idx}_${itIdx}`, `<div style='font-size:8px;color:#0F172A;'>${it}</div>`, sx + 4, iy, 152, 22, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=2;");
+    stg.cards.forEach((cd, cIdx) => {
+      const cy = 124 + cIdx * 62;
+      cell(`stg_${sIdx}_c_${cIdx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.15;">${cd.t}</span></div>`, sx + 4, cy, 130, 56, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
     });
+
+    if (sIdx > 0) {
+      edge(`e_stg_${sIdx}`, `stg_box_${sIdx - 1}`, `stg_box_${sIdx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+    }
   });
 
-  // Knowledge Stores & Indexes Strip (y=210..260)
-  rect("box_stores", "", 128, 210, 1168, 50, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;");
-  rect("lbl_stores", "<span style='font-size:9px;font-weight:800;color:#7C3AED;'>KNOWLEDGE STORES &amp; INDEXES</span>", 128, 212, 1168, 10, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 4. CENTER: KNOWLEDGE STORES & INDEXES (x=180..1220, y=398..470, w=1040) ====================
+  cell("box_k_stores", "", 180, 398, 1040, 72, "rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_k_stores", "KNOWLEDGE STORES &amp; INDEXES", 180, 400, 1040, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  const kstores = [
-    { t: "Raw Document Store", sub: "(Cloud Storage)", icon: "🗃️" },
-    { t: "Processed Text Store", sub: "(Cloud Storage)", icon: "📑" },
-    { t: "Vector Database", sub: "(Vertex Matching Engine)", icon: "🧠" },
-    { t: "Search Index", sub: "(Elastic / OpenSearch)", icon: "🔍" },
-    { t: "Graph Database", sub: "(Neo4j / AlloyDB)", icon: "🕸️" },
-    { t: "Relational DB", sub: "(Metadata &amp; Lineage)", icon: "🗄️" }
+  const kStores = [
+    { t: "Raw Document Store<br/><span style='color:#64748B;'>(Cloud Storage)</span>", icon: "🗄️" },
+    { t: "Processed Text Store<br/><span style='color:#64748B;'>(Cloud Storage)</span>", icon: "📑" },
+    { t: "Vector Database<br/><span style='color:#64748B;'>(Vertex Matching Engine)</span>", icon: "🧠" },
+    { t: "Search Index<br/><span style='color:#64748B;'>(Elastic / OpenSearch)</span>", icon: "🔍" },
+    { t: "Graph Database<br/><span style='color:#64748B;'>(Neo4j / AlloyDB)</span>", icon: "🕸️" },
+    { t: "Relational DB<br/><span style='color:#64748B;'>(Metadata &amp; Lineage)</span>", icon: "📊" }
   ];
-  kstores.forEach((ks, idx) => {
-    const kx = 134 + idx * 193;
-    rect(`ks_${idx}`, `<div style='font-size:8px;font-weight:700;text-align:center;'>${ks.icon} ${ks.t}</div><div style='font-size:10px;color:#64748B;text-align:center;'>${ks.sub}</div>`, kx, 224, 186, 32, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=1;");
+  kStores.forEach((ks, idx) => {
+    const kx = 190 + idx * 170;
+    cell(`ks_${idx}`, `<div style="display:flex;align-items:center;gap:4px;padding:0 2px;"><span style="font-size:14px;">${ks.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${ks.t}</span></div>`, kx, 418, 162, 46, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Cross-Cutting Capabilities
-  rect("box_cross_rag", "<div style='font-size:9px;font-weight:800;color:#2563EB;text-align:center;'>🛡️ Security &amp; IAM &nbsp;|&nbsp; 📋 Data Governance &nbsp;|&nbsp; 🔒 PII &amp; Masking &nbsp;|&nbsp; 📑 Audit Logging &nbsp;|&nbsp; 🩺 Quality Monitoring &nbsp;|&nbsp; 💰 Cost &amp; Performance &nbsp;|&nbsp; 🏢 Multi-tenancy</div>", 128, 263, 1168, 16, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
+  // Cross-Cutting Capabilities bar (y=476..504, h=28)
+  const crossCaps = ["🔒 Security &amp; IAM (Least Privilege)", "📑 Data Governance", "🛡️ PII &amp; Confidentiality", "📜 Audit Logging", "⚖️ Quality Monitoring", "💰 Cost &amp; Perf", "👥 Multi-tenancy"];
+  cell("bar_cross_caps", crossCaps.join(" &nbsp;|&nbsp; "), 180, 476, 1040, 26, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1E40AF;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  // RAG Patterns & Response Example (y=282..405)
-  rect("box_patterns", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:2px;text-align:center;'>RAG ARCHITECTURE PATTERNS</div><div style='font-size:8px;display:flex;justify-content:space-around;text-align:center;align-items:center;'><div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Naive RAG</b><br/><span style='color:#64748B;'>Simple retrieve + gen</span></div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Advanced RAG</b><br/><span style='color:#64748B;'>Re-rank for relevance</span></div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Multi-Query</b><br/><span style='color:#64748B;'>Query expansion</span></div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Sub-Question</b><br/><span style='color:#64748B;'>Break complex queries</span></div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Graph RAG</b><br/><span style='color:#64748B;'>Use graph context</span></div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:3px;border-radius:3px;'><b>Agentic RAG</b><br/><span style='color:#64748B;'>Multi-step agent plan</span></div></div>", 128, 282, 700, 120, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=3;");
+  // ==================== 5. MIDDLE ROW: 6 RAG ARCHITECTURES + RESPONSE CARD (x=16..1220, y=510..634, h=124) ====================
+  // 6 Patterns (w=850)
+  cell("box_rag_patts", "", 16, 510, 850, 124, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  
+  const ragPatterns = [
+    { title: "Naive RAG", flow: "🔍 ➔ 📑 ➔ 🧠", sub: "Simple retrieval + gen" },
+    { title: "Advanced RAG", flow: "🔍 ➔ 📑 ➔ 🎯 ➔ 🧠", sub: "Rerank for relevance" },
+    { title: "Multi-Query RAG", flow: "🔍 ➔ 🔀 ➔ 📑 ➔ 🧠", sub: "Query expansion" },
+    { title: "Sub-Question RAG", flow: "🔍 ➔ ✂️ ➔ 📑 ➔ 🧠", sub: "Break complex Qs" },
+    { title: "Graph RAG", flow: "🔍 ➔ 🕸️ ➔ 🧠", sub: "Relationship context" },
+    { title: "Agentic RAG", flow: "🔍 ➔ 🤖 ➔ 🛠️ ➔ 🧠", sub: "Agents &amp; tools" }
+  ];
+  ragPatterns.forEach((rp, idx) => {
+    const rpx = 26 + idx * 138;
+    cell(`rp_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#1E40AF;text-align:center;">${rp.title}</div><div style="font-size:12px;text-align:center;margin:4px 0;">${rp.flow}</div><div style="font-size:6px;color:#64748B;text-align:center;">${rp.sub}</div>`, rpx, 526, 128, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+  });
 
-  rect("box_example", "<div style='font-size:9px;font-weight:800;color:#16A34A;margin-bottom:2px;'>RAG RESPONSE EXAMPLE</div><div style='font-size:8px;line-height:1.25;color:#0F172A;'><b>Q:</b> What are the requirements for eCTD submissions?<br/><b>A:</b> eCTD submissions must follow ICH M4 guidelines and include Module 1 (Regional), Module 2 (CTD Summaries), Module 3 (Quality), Module 4 (Nonclinical), and Module 5 (Clinical)...<br/><b>Sources:</b><br/>❶ ICH M4 Guideline v2.0 (2023) – Section 2.1<br/>❷ SOP-REG-017 eCTD Submissions – Rev 4.1<br/>❸ FDA eCTD Technical Conformance Guide – v1.0</div>", 834, 282, 462, 120, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // RAG Response Example (w=346, x=874)
+  cell("box_resp_ex", "", 874, 510, 346, 124, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_resp_ex", "RAG RESPONSE EXAMPLE", 874, 512, 346, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const respExHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+    <b>Q:</b> What are the requirements for eCTD submissions?<br/>
+    <b>A:</b> eCTD submissions must follow ICH M4 guidelines and include Module 1 (Regional), Module 2 (CTD Summaries), Module 3 (Quality)...<br/>
+    <b style="color:#1E40AF;">Sources:</b><br/>
+    ❶ ICH M4 Guideline v2.0 (2023) – Section 2.1<br/>
+    ❷ SOP-REG-017 eCTD Submissions – Rev 4.1<br/>
+    ❸ FDA eCTD Technical Conformance Guide
+  </div>`;
+  cell("txt_resp_ex", respExHtml, 876, 528, 342, 102, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  // 4. FAR RIGHT: DESIGN PRINCIPLES, RETRIEVAL, GUARDRAILS, RISKS (x=1316..1560, y=72..410)
-  rect("box_r_prin", "<div style='font-size:9px;font-weight:800;color:#16A34A;margin-bottom:1px;'>RAG DESIGN PRINCIPLES</div><div style='font-size:10px;line-height:1.25;color:#0F172A;'>✔ Retrieve only relevant context<br/>✔ Maximize answer accuracy &amp; traceability<br/>✔ Minimize hallucinations with grounding<br/>✔ Citations for every factual claim<br/>✔ Optimize latency &amp; cost</div>", 1316, 72, 244, 76, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // ==================== 6. RIGHT SIDEBAR (x=1230..1520, y=78..634, w=290, h=556) ====================
+  // 1. RAG Design Principles
+  cell("box_r_princ", "", 1230, 78, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
+  cell("lbl_r_princ", "RAG DESIGN PRINCIPLES", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const rPrincHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+    ✔ <b>Retrieve only relevant context</b><br/>
+    ✔ <b>Maximize accuracy &amp; traceability</b><br/>
+    ✔ <b>Minimize hallucinations</b> with grounding<br/>
+    ✔ <b>Citations for every factual claim</b><br/>
+    ✔ <b>Optimize latency &amp; cost</b>
+  </div>`;
+  cell("txt_r_princ", rPrincHtml, 1232, 98, 286, 110, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  rect("box_r_ret_strat", "<div style='font-size:9px;font-weight:800;color:#2563EB;margin-bottom:1px;'>RETRIEVAL STRATEGIES</div><div style='font-size:10px;line-height:1.25;color:#0F172A;'>🔢 <b>Vector Similarity Search</b> (Semantic)<br/>🔤 <b>Keyword / BM25 Search</b> (Lexical)<br/>⚡ <b>Hybrid Search</b> (Vector + Lexical)<br/>🔝 <b>Reranking</b> (Cross-Encoder / LLM)<br/>🏷️ <b>Metadata Filters</b> (Date, Source, Type)</div>", 1316, 152, 244, 82, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // 2. Retrieval Strategies
+  cell("box_r_strat", "", 1230, 218, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
+  cell("lbl_r_strat", "RETRIEVAL STRATEGIES", 1230, 220, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const rStratHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+    🧠 <b>Vector Similarity Search</b> (Semantic)<br/>
+    📑 <b>Keyword / BM25 Search</b> (Lexical)<br/>
+    🔄 <b>Hybrid Search</b> (Vector + Lexical)<br/>
+    🎯 <b>Reranking</b> (Cross-Encoder / LLM)<br/>
+    🏷️ <b>Metadata Filters</b> (Date, Source, Type)
+  </div>`;
+  cell("txt_r_strat", rStratHtml, 1232, 238, 286, 110, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  rect("box_r_guard", "<div style='font-size:9px;font-weight:800;color:#7C3AED;margin-bottom:1px;'>GUARDRAILS &amp; CONTROLS</div><div style='font-size:10px;line-height:1.25;color:#0F172A;'>🛡️ <b>Prompt Injection Detection</b><br/>☣️ <b>Toxicity &amp; Safety Filters</b><br/>🩺 <b>Groundness Check</b> (Answer vs Context)<br/>📑 <b>Citation Validation</b><br/>🔒 <b>Data Access Policy Enforcement</b></div>", 1316, 238, 244, 82, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // 3. Guardrails & Controls
+  cell("box_r_guards", "", 1230, 358, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
+  cell("lbl_r_guards", "GUARDRAILS &amp; CONTROLS", 1230, 360, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const rGuardsHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+    🛡️ <b>Prompt Injection Detection</b><br/>
+    🛡️ <b>Toxicity &amp; Safety Filters</b><br/>
+    ✔ <b>Groundedness Check</b> (Answer vs Context)<br/>
+    📑 <b>Citation Validation</b><br/>
+    🔒 <b>Data Access Policy Enforcement</b>
+  </div>`;
+  cell("txt_r_guards", rGuardsHtml, 1232, 378, 286, 110, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  rect("box_r_risks", "<div style='font-size:9px;font-weight:800;color:#DC2626;margin-bottom:1px;'>KEY RISKS</div><div style='font-size:10px;line-height:1.25;color:#0F172A;'>⚠️ Irrelevant or outdated context<br/>⚠️ Hallucinations / Incorrect answers<br/>⚠️ Sensitive data leakage<br/>⚠️ Poor chunking / embedding quality<br/>⚠️ High latency / cost<br/>⚠️ Missing citations / low traceability</div>", 1316, 324, 244, 86, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=2;");
+  // 4. Key Risks
+  cell("box_r_risks", "", 1230, 498, 290, 136, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
+  cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 500, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const rRisksHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+    🔴 <b>Irrelevant or outdated context</b><br/>
+    🔴 <b>Hallucinations / Incorrect answers</b><br/>
+    🔴 <b>Sensitive data leakage</b><br/>
+    🔴 <b>Poor chunking / embedding quality</b><br/>
+    🔴 <b>High latency / cost</b><br/>
+    🔴 <b>Missing citations / low traceability</b>
+  </div>`;
+  cell("txt_r_risks", rRisksHtml, 1232, 518, 286, 112, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  // 5. LOWER TOOLS & TECHNOLOGIES STRIP (x=20..1560, y=416..470)
-  rect("box_tools_rag", "<div style='font-size:9px;font-weight:800;color:#1E3A8A;margin-bottom:2px;text-align:center;'>TOOLS &amp; TECHNOLOGIES (Google Cloud)</div><div style='font-size:8px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;'><div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>🗃️ Cloud Storage</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📊 Dataflow</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📑 Document AI</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>🧠 Vertex AI Embeddings</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>⚡ Matching Engine</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>🗄️ AlloyDB</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📊 BigQuery</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>⚡ Cloud Functions</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📦 Cloud Run</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>🔗 LangChain / LlamaIndex</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>🧠 Vertex AI (Gemini)</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📊 Looker Studio</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:2px 6px;border-radius:3px;'>📑 Cloud Logging</div></div>", 20, 416, 1540, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  // ==================== 7. TOOLS & TECHNOLOGIES BAR (y=642..718, h=76) ====================
+  cell("box_tools_row", "", 16, 642, 1504, 76, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_tools_row", "TOOLS &amp; TECHNOLOGIES (Google Cloud)", 20, 646, 150, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=left;verticalAlign=middle;");
 
-  // 6. BOTTOM ROW: EVAL, DATA FLOW, OBS, GOV, LEGEND, NOTES (x=20..1560, y=470..740)
-  rect("bot_eval", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:2px;'>QUALITY &amp; EVALUATION METRICS</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ Answer Relevance (Precision@K)<br/>✔ Context Precision &amp; Recall<br/>✔ Groundedness Score<br/>✔ Hallucination Rate<br/>✔ User Satisfaction (Thumbs Up / Down)<br/>⏱️ Latency (P50 / P95 / P99)</div>", 20, 470, 280, 266, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const ragTechs = [
+    { t: "Cloud Storage", icon: "📦" },
+    { t: "Dataflow", icon: "🔄" },
+    { t: "Document AI", icon: "📑" },
+    { t: "Vertex AI<br/>(Embeddings)", icon: "🧠" },
+    { t: "Vertex Matching<br/>Engine", icon: "🗄️" },
+    { t: "AlloyDB / PG", icon: "🗄️" },
+    { t: "BigQuery", icon: "📊" },
+    { t: "Cloud Functions", icon: "⚡" },
+    { t: "Cloud Run", icon: "🚀" },
+    { t: "LangChain", icon: "🦜" },
+    { t: "Vertex AI<br/>(Gemini)", icon: "🧠" },
+    { t: "Looker Studio", icon: "📈" }
+  ];
+  ragTechs.forEach((rt, idx) => {
+    const rtx = 180 + idx * 110;
+    cell(`rt_${idx}`, `<div style="text-align:center;"><span style="font-size:14px;">${rt.icon}</span><div style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;margin-top:1px;">${rt.t}</div></div>`, rtx, 650, 104, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  rect("bot_dataflow", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:6px;text-align:center;'>RAG DATA FLOW (HIGH LEVEL)</div><div style='font-size:8px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:20px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📚<br/>Sources</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📥<br/>Ingest</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>✂️<br/>Parse &amp; Chunk</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🧠<br/>Embed &amp; Index</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🔍<br/>Retrieve</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🧩<br/>Augment</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>✨<br/>Generate</div> <div>➔</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:4px;border-radius:4px;'>👤<br/>User</div></div>", 310, 470, 480, 266, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=4;");
+  // ==================== 8. BOTTOM ROW: 5 CARDS (y=726..954, h=228) ====================
+  // 1. Quality & Evaluation Metrics (w=230)
+  cell("box_b_metrics", "", 16, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_metrics", "QUALITY &amp; EVALUATION", 16, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bMetricsHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+    ✔ <b>Answer Relevance (Precision@K)</b><br/>
+    ✔ <b>Context Precision &amp; Recall</b><br/>
+    ✔ <b>Groundedness Score</b><br/>
+    ✔ <b>Hallucination Rate</b><br/>
+    ✔ <b>User Satisfaction (Thumbs Up)</b><br/>
+    ✔ <b>Latency (P50 / P95 / P99)</b>
+  </div>`;
+  cell("txt_b_metrics", bMetricsHtml, 18, 748, 226, 202, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_obs", "<div style='font-size:10px;font-weight:800;color:#7C3AED;margin-bottom:2px;'>OBSERVABILITY &amp; MONITORING</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>⏱️ <b>Query Logs &amp; Traces</b><br/>📊 <b>Retriever Performance</b><br/>💰 <b>LLM Usage &amp; Costs</b><br/>🩺 <b>Quality Drift Alerts</b><br/>🚨 <b>Error &amp; Timeout Tracking</b></div>", 800, 470, 240, 266, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 2. RAG Data Flow (High Level) (w=480)
+  cell("box_b_flow", "", 254, 726, 480, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_flow", "RAG DATA FLOW (HIGH LEVEL)", 254, 728, 480, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const highFlow = [
+    { t: "Sources", icon: "🗄️" },
+    { t: "Ingest", icon: "☁️" },
+    { t: "Parse &amp;<br/>Chunk", icon: "📑" },
+    { t: "Embed<br/>&amp; Index", icon: "🧠" },
+    { t: "Retrieve", icon: "🔍" },
+    { t: "Augment", icon: "📋" },
+    { t: "Generate", icon: "🤖" },
+    { t: "User", icon: "👤" }
+  ];
+  highFlow.forEach((hf, idx) => {
+    const hfx = 262 + idx * 58;
+    cell(`hf_${idx}`, `<div style="font-size:14px;text-align:center;">${hf.icon}</div><div style="font-size:5.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${hf.t}</div>`, hfx, 780, 52, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    if (idx > 0) {
+      edge(`e_hf_${idx}`, `hf_${idx - 1}`, `hf_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+    }
+  });
 
-  rect("bot_gov", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>GOVERNANCE &amp; COMPLIANCE</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🏷️ <b>Data Classification &amp; Handling</b><br/>📑 <b>Retention &amp; Deletion Policies</b><br/>🔒 <b>Access Control &amp; Audit</b><br/>🩺 <b>Regulatory Compliance (GxP, HIPAA)</b><br/>📋 <b>Model Cards &amp; Documentation</b></div>", 1050, 470, 240, 266, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 3. Observability & Monitoring (w=230)
+  cell("box_b_obs", "", 742, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_b_obs", "OBSERVABILITY &amp; MONITORING", 742, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bObsHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+    🔍 <b>Query Logs &amp; Traces</b><br/>
+    ⚙️ <b>Retriever Performance</b><br/>
+    💰 <b>LLM Usage &amp; Costs</b><br/>
+    🔔 <b>Quality Drift Alerts</b><br/>
+    🚨 <b>Error &amp; Timeout Tracking</b>
+  </div>`;
+  cell("txt_b_obs", bObsHtml, 744, 748, 226, 202, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>NOTES</div><div style='font-size:8px;line-height:1.4;color:#64748B;'>• All data encrypted at rest and in transit.<br/>• Access controlled via IAM and least privilege.<br/>• Design for idempotency, retries, and resilience.<br/>• Citations are mandatory for all factual claims.<br/>• Continuously improve retriever, prompts, and evaluation.</div>", 1300, 470, 260, 266, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 4. Governance & Compliance (w=230)
+  cell("box_b_gov", "", 980, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_gov", "GOVERNANCE &amp; COMPLIANCE", 980, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bGovHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+    📑 <b>Data Classification &amp; Handling</b><br/>
+    🔒 <b>Retention &amp; Deletion Policies</b><br/>
+    🛡️ <b>Access Control &amp; Audit</b><br/>
+    ⚖️ <b>Regulatory Compliance (GxP, GDPR)</b><br/>
+    📜 <b>Model Cards &amp; Documentation</b>
+  </div>`;
+  cell("txt_b_gov", bGovHtml, 982, 748, 226, 202, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  // 7. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // 5. Notes (w=302)
+  cell("box_b_notes", "", 1218, 726, 302, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_notes", "NOTES", 1218, 728, 302, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bNotesHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 8px;">
+    • All data encrypted at rest and in transit.<br/>
+    • Access controlled via IAM and least privilege.<br/>
+    • Design for idempotency, retries, and resilience.<br/>
+    • Citations are mandatory for all factual claims.<br/>
+    • Continuously improve retriever, prompts, and evaluation.
+  </div>`;
+  cell("txt_b_notes", bNotesHtml, 1220, 748, 298, 202, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // ==================== 9. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:8px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>RAG PIPELINE:</b> Vertex AI + Embeddings + Gemini &nbsp;|&nbsp; <b>GROUNDING:</b> Citations Required &nbsp;|&nbsp; <b>SECURITY:</b> Least Privilege IAM</div>
+    <div>Enterprise Knowledge &amp; GenAI Architecture &nbsp;|&nbsp; May 8, 2025</div>
+  </div>`;
+  cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="template_24_rag_knowledge_flow_architecture" name="Template 24: RAG / Knowledge Flow Architecture">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="template_24_rag_knowledge_flow" name="Template 24: RAG / Knowledge Flow Architecture">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
