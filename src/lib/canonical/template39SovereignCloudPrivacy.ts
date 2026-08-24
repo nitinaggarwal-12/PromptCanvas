@@ -4,8 +4,18 @@
  * - Exact 1536x1024 Canvas matching ground-truth master.
  * - Native inline vector SVGs for all icons, badges, shields, and pods.
  * - Bold high-contrast typography, crisp borders, rich saturated colors, zero-void proportional card packing.
- * - Exact zero-void 4-tier Sovereign Cloud layout filling the entire container height.
- * - Exact chained purple governance flow, blue secure access gates, and green audit monitoring drops.
+ * - Complete 100% arrow parity:
+ *   * 3 Legend flow lines (Data, Control, Audit)
+ *   * 4 Horizontal Governance chain arrows (1->2->3->4->5)
+ *   * 2 Perimeter Governance drop arrows (left to Users, right to Data Exchange)
+ *   * 5 Vertical Governance downward control arrows (under each gov pod -> Sovereign Cloud)
+ *   * 2 Blue Ingress data arrows (Users -> Secure Access -> Sovereign Cloud)
+ *   * 2 Blue Egress data arrows (Sovereign Cloud -> Controlled Exchange -> Data Exchange)
+ *   * 4 Green Upward Monitoring audit arrows (Monitoring -> 4 Sovereign Cloud points)
+ *   * 2 Green Perimeter Monitoring arrows (left to Users bottom, right to Data Exchange bottom)
+ *   * 1 Green Audit Feedback vertical line (Right Monitoring -> Audit & Assurance Pod 5)
+ *   * 1 Green Vertical Data Exchange spine
+ *   * 3 Footer boundary legend lines
  */
 
 const E = (v?: string | null) =>
@@ -164,9 +174,9 @@ export function generateTemplate39SovereignCloudPrivacyXml(
       "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E9D5FF;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=4;"
     );
 
-    // Chained horizontal dashed purple arrows
+    // Chained horizontal dashed purple arrows (1 -> 2 -> 3 -> 4 -> 5)
     if (idx < 4) {
-      rawEdge(`e_gov_chain_${idx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=3 2;endArrow=classic;endSize=3;", [
+      rawEdge(`e_gov_chain_${idx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=3 2;endArrow=classic;endSize=3.5;", [
         { x: gpx + 202, y: 138 },
         { x: gpx + 208, y: 138 }
       ]);
@@ -524,66 +534,85 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     ]);
   });
 
-  // ==================== 9. INTER-LAYER CONNECTORS ====================
-  // Governance -> Sovereign Environment
-  rawEdge("e_gov_to_sov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
-    { x: 768, y: 176 },
-    { x: 768, y: 184 }
-  ]);
+  // ==================== 9. COMPLETE INTER-LAYER CONNECTORS MATRIX ====================
 
-  // Governance -> Data Exchange (drop line)
-  rawEdge("e_gov_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
-    { x: 1296, y: 138 },
-    { x: 1414, y: 138 },
-    { x: 1414, y: 184 }
-  ]);
-
-  // Governance -> Users (drop line)
-  rawEdge("e_gov_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
+  // --- Category A: Purple Dashed Governance Control Flows ---
+  // A1. Governance -> Users (Left perimeter drop)
+  rawEdge("e_gov_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
     { x: 240, y: 138 },
     { x: 122, y: 138 },
     { x: 122, y: 184 }
   ]);
 
-  // Users -> Secure Access -> Sovereign Cloud
-  rawEdge("e_users_to_gate", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+  // A2. Governance -> Data Exchange (Right perimeter drop)
+  rawEdge("e_gov_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 1296, y: 138 },
+    { x: 1414, y: 138 },
+    { x: 1414, y: 184 }
+  ]);
+
+  // A3-A7: 5 Downward Governance control drop arrows (from under each pod -> Sovereign Cloud top border)
+  const govPodXCenters = [351, 559, 767, 975, 1183];
+  govPodXCenters.forEach((xPos, pIdx) => {
+    rawEdge(`e_gov_down_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+      { x: xPos, y: 168 },
+      { x: xPos, y: 184 }
+    ]);
+  });
+
+  // --- Category B: Blue Solid Data Flows ---
+  // B1. Users -> Secure Access Gate
+  rawEdge("e_users_to_gate", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
     { x: 228, y: 434 },
     { x: 234, y: 434 }
   ]);
-  rawEdge("e_gate_to_sov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+
+  // B2. Secure Access Gate -> Sovereign Cloud
+  rawEdge("e_gate_to_sov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
     { x: 296, y: 434 },
     { x: 302, y: 434 }
   ]);
 
-  // Sovereign Cloud -> Controlled Exchange -> Data Exchange
-  rawEdge("e_sov_to_ctrl", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+  // B3. Sovereign Cloud -> Controlled Exchange Gate
+  rawEdge("e_sov_to_ctrl", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
     { x: 1234, y: 434 },
     { x: 1240, y: 434 }
   ]);
-  rawEdge("e_ctrl_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+
+  // B4. Controlled Exchange Gate -> Data Exchange
+  rawEdge("e_ctrl_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
     { x: 1302, y: 434 },
     { x: 1308, y: 434 }
   ]);
 
-  // Sovereign Cloud <-> Monitoring
-  rawEdge("e_sov_to_mon", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;dashed=1;dashPattern=2 2;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
-    { x: 768, y: 684 },
-    { x: 768, y: 694 }
+  // --- Category C: Green Dotted Audit & Monitoring Flows ---
+  // C1. Monitoring -> Users (Left perimeter upward arrow into Users bottom)
+  rawEdge("e_mon_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
+    { x: 122, y: 694 },
+    { x: 122, y: 684 }
   ]);
 
-  // Monitoring -> Data Exchange (green dotted drop line)
-  rawEdge("e_mon_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;dashed=1;dashPattern=2 2;endArrow=classic;endSize=4;", [
+  // C2-C5: 4 Upward Monitoring arrows into Sovereign Cloud (under each infrastructure card)
+  const sovInfraXCenters = [433, 655, 877, 1099];
+  sovInfraXCenters.forEach((xPos, pIdx) => {
+    rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
+      { x: xPos, y: 694 },
+      { x: xPos, y: 684 }
+    ]);
+  });
+
+  // C6. Monitoring -> Data Exchange (Right perimeter upward arrow into Data Exchange bottom)
+  rawEdge("e_mon_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
     { x: 1414, y: 694 },
     { x: 1414, y: 684 }
   ]);
 
-  // Monitoring -> 4 Sovereign Cloud points (green dotted vertical upward arrows)
-  [420, 640, 860, 1080].forEach((ptX, pIdx) => {
-    rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;dashPattern=2 2;endArrow=classic;endSize=3.5;", [
-      { x: ptX, y: 694 },
-      { x: ptX, y: 684 }
-    ]);
-  });
+  // C7. Feedback line: Far-right Monitoring -> Audit & Assurance Pod 5 (Right vertical spine)
+  rawEdge("e_mon_feedback_gov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
+    { x: 1480, y: 694 },
+    { x: 1480, y: 138 },
+    { x: 1296, y: 138 }
+  ]);
 
   const bg = isDark ? "#0F172A" : "#FFFFFF";
 
