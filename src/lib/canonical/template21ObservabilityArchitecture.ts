@@ -1,210 +1,339 @@
 /**
- * Canonical Architecture Template 21: Observability Architecture
- * Exact 1:1 High-Fidelity Master Blueprint of images/21.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 21: Observability Architecture
+ * Matches 100% of images/21.png:
+ * - Top Telemetry Sources bar (11 source categories)
+ * - Left Sidebar: 6 Observability Pillars (Reliability, Performance, Availability, Security, Business, Cost)
+ * - Center 5-stage Google Cloud Observability Pipeline (Collection, Ingestion & Processing, Storage & Indexing, Analysis & Correlation, Visualization & Alerting)
+ * - Observability Foundation cross-cutting bar (6 foundational controls)
+ * - Right Sidebar: 6 Consumers & Outcomes role pods (SRE, Security, Data/AI, Product, Compliance, Leadership)
+ * - Bottom Row: Key Benefits, Key Signals & KPIs (9 items), SLO Example (4 items), Alerting Examples (5 items), Data Retention table, Technologies Matrix (10 icons)
+ * - Bottom Legend bar
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate21ObservabilityArchitectureXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "21", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>Observability Architecture</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – Full-Stack Observability &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "21", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Observability Architecture</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: NovaCura – Full-Stack Observability</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Provide end-to-end visibility across infrastructure, applications, data, and AI workloads to ensure reliability, performance, security, and business outcomes.</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // 2. TOP TELEMETRY SOURCES BAR (x=20..1560, y=72..135)
-  rect("box_sources_top", "", 20, 72, 1540, 62, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-  rect("lbl_sources_top", "<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>TELEMETRY<br/>SOURCES<br/><span style='color:#64748B;font-size:8px;'>(What we collect)</span></span>", 24, 76, 70, 52, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    Provide end-to-end visibility across infrastructure, applications, data, and AI workloads to ensure reliability, performance, security, and business outcomes.
+  </div>`;
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
+
+  // ==================== 2. TOP TELEMETRY SOURCES BAR (x=16..1520, y=78..140, w=1504, h=62) ====================
+  cell("box_sources", "", 16, 78, 1504, 62, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_sources_tag", "TELEMETRY<br/>SOURCES<br/><span style='font-size:7px;color:#64748B;font-weight:normal;'>(What we collect)</span>", 20, 84, 90, 50, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=left;verticalAlign=middle;");
 
   const sources = [
-    { t: "Users", sub: "Web / Mobile", icon: "👤" },
-    { t: "API Gateway", sub: "Cloud Endpoints", icon: "🛡️" },
-    { t: "Microservices", sub: "GKE / Cloud Run", icon: "⚙️" },
-    { t: "Databases", sub: "Cloud SQL / BQ", icon: "🗄️" },
-    { t: "Caching", sub: "Memorystore Redis", icon: "⚡" },
-    { t: "Messaging", sub: "Pub/Sub", icon: "📨" },
-    { t: "AI / ML Services", sub: "Vertex AI", icon: "🧠" },
-    { t: "Data Pipeline", sub: "Dataflow / Dataproc", icon: "📊" },
-    { t: "Infrastructure", sub: "GCE / GKE / Net", icon: "🖥️" },
-    { t: "Security", sub: "IAM / KMS / SCC", icon: "🔒" },
-    { t: "Third-Party", sub: "APIs / SaaS", icon: "🏢" }
+    { t: "Users<br/><span style='color:#64748B;'>Web / Mobile</span>", icon: "👥" },
+    { t: "API Gateway<br/><span style='color:#64748B;'>(Cloud Endpoints)</span>", icon: "🛡️" },
+    { t: "Microservices<br/><span style='color:#64748B;'>(GKE / Cloud Run)</span>", icon: "⚙️" },
+    { t: "Databases<br/><span style='color:#64748B;'>(Cloud SQL / BQ)</span>", icon: "🗄️" },
+    { t: "Caching<br/><span style='color:#64748B;'>(Memorystore)</span>", icon: "💾" },
+    { t: "Messaging<br/><span style='color:#64748B;'>(Pub/Sub)</span>", icon: "📨" },
+    { t: "AI / ML Services<br/><span style='color:#64748B;'>(Vertex AI)</span>", icon: "🧠" },
+    { t: "Data Pipeline<br/><span style='color:#64748B;'>(Dataflow)</span>", icon: "🔄" },
+    { t: "Infrastructure<br/><span style='color:#64748B;'>(GCE / GKE)</span>", icon: "🏗️" },
+    { t: "Security<br/><span style='color:#64748B;'>(IAM / KMS / SCC)</span>", icon: "🔒" },
+    { t: "Third-Party<br/><span style='color:#64748B;'>APIs / SaaS</span>", icon: "☁️" }
   ];
 
-  sources.forEach((src, idx) => {
-    const sx = 96 + idx * 131;
-    rect(`src_${idx}`, `<div style='font-size:10px;text-align:center;'>${src.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${src.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>(${src.sub})</div>`, sx, 78, 126, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  sources.forEach((s, idx) => {
+    const sx = 120 + idx * 125;
+    cell(`src_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:14px;">${s.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${s.t}</span></div>`, sx, 86, 120, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // 3. LEFT COLUMN: OBSERVABILITY PILLARS (x=20..115, y=142..540)
-  rect("box_pillars", "", 20, 142, 95, 395, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;");
-  rect("lbl_pillars", "<span style='font-size:10px;font-weight:800;color:#7C3AED;'>OBSERVABILITY PILLARS</span>", 20, 144, 95, 14, "strokeColor=none;fillColor=none;align=center;");
+  // Telemetry Flow Dropline
+  cell("lbl_flow_top", "Logs, Metrics, Traces, Events, Audit Logs", 600, 142, 340, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // ==================== 3. LEFT SIDEBAR: OBSERVABILITY PILLARS (x=16..170, y=162..610, w=154, h=448) ====================
+  cell("box_pillars", "", 16, 162, 154, 448, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_pillars", "OBSERVABILITY PILLARS", 16, 164, 154, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const pillars = [
-    { t: "Reliability", sub: "Uptime, SLOs, Error budgets", icon: "🛡️" },
-    { t: "Performance", sub: "Latency, Throughput, Saturation", icon: "⚡" },
-    { t: "Availability", sub: "Health, Failover, Capacity", icon: "📈" },
-    { t: "Security", sub: "Threats, Vulns, Audit", icon: "🔒" },
-    { t: "Business", sub: "User Journeys, Adoption", icon: "📊" },
-    { t: "Cost", sub: "Resource usage, Optimization", icon: "💰" }
+    { name: "Reliability", desc: "Uptime, SLOs,<br/>Error budgets", icon: "🛡️" },
+    { name: "Performance", desc: "Latency, Throughput,<br/>Saturation", icon: "⏱️" },
+    { name: "Availability", desc: "Health, Failover,<br/>Capacity", icon: "📈" },
+    { name: "Security", desc: "Threats, Vulnerabilities,<br/>Audit", icon: "🔒" },
+    { name: "Business", desc: "User Journeys,<br/>Adoption, Outcomes", icon: "📊" },
+    { name: "Cost", desc: "Resource usage,<br/>Optimization", icon: "💰" }
   ];
-  pillars.forEach((pil, idx) => {
-    const py = 162 + idx * 62;
-    rect(`pil_${idx}`, `<div style='font-size:10px;text-align:center;'>${pil.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${pil.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${pil.sub}</div>`, 25, py, 85, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=center;verticalAlign=middle;padding=2;");
+
+  pillars.forEach((p, idx) => {
+    const py = 190 + idx * 68;
+    cell(`pil_${idx}`, `<div style="font-size:16px;text-align:center;">${p.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${p.name}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${p.desc}</div>`, 24, py, 138, 62, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // 4. MAIN GCP OBSERVABILITY PIPELINE (x=122..1410, y=142..540)
-  rect("box_pipeline_main", "", 122, 142, 1284, 395, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;");
-  rect("lbl_pipeline_main", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>GOOGLE CLOUD OBSERVABILITY PIPELINE</span>", 122, 144, 1284, 14, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 4. CENTER: GOOGLE CLOUD OBSERVABILITY PIPELINE (x=180..1330, y=162..610, w=1150, h=448) ====================
+  cell("box_pipeline", "", 180, 162, 1150, 448, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
+  cell("lbl_pipe_hdr", "GOOGLE CLOUD OBSERVABILITY PIPELINE", 180, 164, 1150, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
-  // 5 Pipeline Columns
-  // Col 1: COLLECTION (x=130..370)
-  rect("col_box_1", "", 130, 162, 240, 310, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;");
-  rect("col_lbl_1", "<span style='font-size:9px;font-weight:800;color:#2563EB;'>COLLECTION</span>", 130, 164, 240, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const colItems = [
-    { t: "Cloud Operations", sub: "(Ops Agent)", icon: "☁️" },
-    { t: "OpenTelemetry", sub: "Collector", icon: "🔭" },
-    { t: "Cloud Audit Logs", sub: "", icon: "📑" },
-    { t: "VPC Flow Logs", sub: "", icon: "🌐" },
-    { t: "Application Logs", sub: "(Structured)", icon: "💻" },
-    { t: "Custom Metrics", sub: "", icon: "📈" }
+  // Stage 1: COLLECTION (x=190..394, w=204)
+  cell("box_p1", "", 190, 190, 204, 340, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
+  cell("lbl_p1", "COLLECTION", 190, 194, 204, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const p1Items = [
+    { t: "Cloud Operations<br/><span style='color:#64748B;'>(Ops Agent)</span>", icon: "⚙️" },
+    { t: "OpenTelemetry<br/>Collector", icon: "📡" },
+    { t: "Cloud Audit Logs", icon: "📑" },
+    { t: "VPC Flow Logs", icon: "🌐" },
+    { t: "Application Logs<br/><span style='color:#64748B;'>(Structured)</span>", icon: "📜" },
+    { t: "Custom Metrics", icon: "📈" }
   ];
-  colItems.forEach((it, idx) => {
-    const iy = 180 + idx * 48;
-    rect(`col1_it_${idx}`, `<div style='font-size:9px;font-weight:700;'>${it.icon} ${it.t}</div><div style='font-size:8px;color:#64748B;'>${it.sub}</div>`, 138, iy, 224, 42, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  p1Items.forEach((it, idx) => {
+    const iy = 216 + idx * 51;
+    cell(`p1_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 4px;"><span style="font-size:14px;">${it.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${it.t}</span></div>`, 198, iy, 188, 45, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Col 2: INGESTION & PROCESSING (x=380..620)
-  rect("col_box_2", "", 380, 162, 240, 310, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;");
-  rect("col_lbl_2", "<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>INGESTION &amp; PROCESSING</span>", 380, 164, 240, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const ingItems = [
+  // Stage 2: INGESTION & PROCESSING (x=404..608, w=204)
+  cell("box_p2", "", 404, 190, 204, 340, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;");
+  cell("lbl_p2", "INGESTION &amp; PROCESSING", 404, 194, 204, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const p2Items = [
     { t: "Cloud Logging", icon: "📑" },
     { t: "Cloud Monitoring", icon: "📈" },
-    { t: "Cloud Trace", icon: "⏱️" },
+    { t: "Cloud Trace", icon: "🔍" },
     { t: "Eventarc", icon: "⚡" },
     { t: "Pub/Sub", icon: "📨" }
   ];
-  ingItems.forEach((it, idx) => {
-    const iy = 184 + idx * 56;
-    rect(`col2_it_${idx}`, `<div style='font-size:12px;text-align:center;'>${it.icon}</div><div style='font-size:9px;font-weight:700;text-align:center;'>${it.t}</div>`, 390, iy, 220, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  p2Items.forEach((it, idx) => {
+    const iy = 222 + idx * 62;
+    cell(`p2_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:16px;">${it.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${it.t}</span></div>`, 412, iy, 188, 54, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Col 3: STORAGE & INDEXING (x=630..880)
-  rect("col_box_3", "", 630, 162, 240, 310, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;");
-  rect("col_lbl_3", "<span style='font-size:9px;font-weight:800;color:#7C3AED;'>STORAGE &amp; INDEXING</span>", 630, 164, 240, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const stItems = [
-    { t: "Log Buckets", sub: "(Regional / CMEK)", icon: "🗄️" },
-    { t: "Time Series DB", sub: "(Monitoring Backend)", icon: "📈" },
-    { t: "Trace Storage", sub: "(Cloud Trace)", icon: "⏱️" },
-    { t: "BigQuery", sub: "(Long-term Analytics)", icon: "📊" }
+  // Stage 3: STORAGE & INDEXING (x=618..822, w=204)
+  cell("box_p3", "", 618, 190, 204, 340, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.2;");
+  cell("lbl_p3", "STORAGE &amp; INDEXING", 618, 194, 204, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const p3Items = [
+    { t: "Log Buckets<br/><span style='color:#64748B;'>(Regional / CMEK)</span>", icon: "🗄️" },
+    { t: "Time Series DB<br/><span style='color:#64748B;'>(Monitoring Backend)</span>", icon: "📊" },
+    { t: "Trace Storage<br/><span style='color:#64748B;'>(Cloud Trace)</span>", icon: "💾" },
+    { t: "BigQuery<br/><span style='color:#64748B;'>(Long-term Analytics)</span>", icon: "📈" }
   ];
-  stItems.forEach((it, idx) => {
-    const iy = 184 + idx * 70;
-    rect(`col3_it_${idx}`, `<div style='font-size:12px;text-align:center;'>${it.icon}</div><div style='font-size:9px;font-weight:700;text-align:center;'>${it.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${it.sub}</div>`, 640, iy, 220, 60, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  p3Items.forEach((it, idx) => {
+    const iy = 228 + idx * 76;
+    cell(`p3_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:16px;">${it.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 626, iy, 188, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Col 4: ANALYSIS & CORRELATION (x=880..1130)
-  rect("col_box_4", "", 880, 162, 240, 310, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;");
-  rect("col_lbl_4", "<span style='font-size:9px;font-weight:800;color:#16A34A;'>ANALYSIS &amp; CORRELATION</span>", 880, 164, 240, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const anItems = [
-    { t: "Monitoring Dashboards", sub: "(Metrics Explorer)", icon: "📊" },
-    { t: "Log Analytics", sub: "(Logs Explorer)", icon: "📑" },
-    { t: "Trace Analysis", sub: "(Trace Explorer)", icon: "⏱️" },
-    { t: "Security Command Center", sub: "(Threat &amp; Vuln Mgmt)", icon: "🛡️" },
-    { t: "BigQuery Analytics", sub: "(Custom Queries)", icon: "📈" }
+  // Stage 4: ANALYSIS & CORRELATION (x=832..1036, w=204)
+  cell("box_p4", "", 832, 190, 204, 340, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
+  cell("lbl_p4", "ANALYSIS &amp; CORRELATION", 832, 194, 204, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const p4Items = [
+    { t: "Monitoring Dashboards<br/><span style='color:#64748B;'>(Metrics Explorer)</span>", icon: "📈" },
+    { t: "Log Analytics<br/><span style='color:#64748B;'>(Logs Explorer)</span>", icon: "📑" },
+    { t: "Trace Analysis<br/><span style='color:#64748B;'>(Trace Explorer)</span>", icon: "🔍" },
+    { t: "Security Command Center<br/><span style='color:#64748B;'>(Threat &amp; Vuln Mgmt)</span>", icon: "🛡️" },
+    { t: "BigQuery Analytics<br/><span style='color:#64748B;'>(Custom Queries)</span>", icon: "📊" }
   ];
-  anItems.forEach((it, idx) => {
-    const iy = 180 + idx * 56;
-    rect(`col4_it_${idx}`, `<div style='font-size:9px;font-weight:700;'>${it.icon} ${it.t}</div><div style='font-size:8px;color:#64748B;'>${it.sub}</div>`, 890, iy, 220, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  p4Items.forEach((it, idx) => {
+    const iy = 222 + idx * 62;
+    cell(`p4_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:16px;">${it.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 840, iy, 188, 54, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Col 5: VISUALIZATION & ALERTING (x=1140..1396)
-  rect("col_box_5", "", 1140, 162, 256, 310, "fillColor=#FFFBEB;strokeColor=#D97706;rounded=1;");
-  rect("col_lbl_5", "<span style='font-size:9px;font-weight:800;color:#D97706;'>VISUALIZATION &amp; ALERTING</span>", 1140, 164, 256, 12, "strokeColor=none;fillColor=none;align=center;");
-
-  const vizItems = [
-    { t: "Dashboards", sub: "(Looker Studio / Cloud Monitoring)", icon: "📊" },
-    { t: "Alert Policies", sub: "(Threshold / Anomaly)", icon: "🔔" },
-    { t: "Notification Channels", sub: "(Email / Slack / PagerDuty)", icon: "📨" },
-    { t: "SLO / Error Budget", sub: "(SLOs &amp; Uptime Checks)", icon: "⏱️" },
-    { t: "Incident Management", sub: "(PagerDuty / Jira)", icon: "🚨" }
+  // Stage 5: VISUALIZATION & ALERTING (x=1046..1250, w=204)
+  cell("box_p5", "", 1046, 190, 274, 340, "rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1.2;");
+  cell("lbl_p5", "VISUALIZATION &amp; ALERTING", 1046, 194, 274, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#D97706;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const p5Items = [
+    { t: "Dashboards<br/><span style='color:#64748B;'>(Looker Studio / Cloud Monitoring)</span>", icon: "📊" },
+    { t: "Alert Policies<br/><span style='color:#64748B;'>(Threshold / Anomaly)</span>", icon: "🔔" },
+    { t: "Notification Channels<br/><span style='color:#64748B;'>(Email / Slack / PagerDuty)</span>", icon: "📨" },
+    { t: "SLO / Error Budget<br/><span style='color:#64748B;'>(SLOs &amp; Uptime Checks)</span>", icon: "🎯" },
+    { t: "Incident Management<br/><span style='color:#64748B;'>(PagerDuty / Jira)</span>", icon: "🚨" }
   ];
-  vizItems.forEach((it, idx) => {
-    const iy = 180 + idx * 56;
-    rect(`col5_it_${idx}`, `<div style='font-size:9px;font-weight:700;'>${it.icon} ${it.t}</div><div style='font-size:8px;color:#64748B;'>${it.sub}</div>`, 1150, iy, 236, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  p5Items.forEach((it, idx) => {
+    const iy = 222 + idx * 62;
+    cell(`p5_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:16px;">${it.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 1054, iy, 258, 54, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Observability Foundation
-  rect("box_foundation", "<div style='font-size:10px;font-weight:800;color:#D97706;margin-bottom:3px;text-align:center;'>OBSERVABILITY FOUNDATION</div><div style='font-size:8px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;'><div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>👤 <b>IAM &amp; Least Privilege</b></div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🔑 <b>CMEK Encryption</b><br/>(At Rest)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>📑 <b>Retention Policies</b><br/>(Per Data Type)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🔒 <b>Data Access Controls</b><br/>(RBAC / ABAC)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>📊 <b>Sampling Policies</b><br/>(Traces / Logs)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>💰 <b>Cost Controls</b><br/>(Quotas / Budgets)</div></div>", 130, 478, 1266, 50, "fillColor=#FFFBEB;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  // Pipeline Inter-Stage Connectors
+  edge("e_p1_p2", "box_p1", "box_p2", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_p2_p3", "box_p2", "box_p3", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_p3_p4", "box_p3", "box_p4", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_p4_p5", "box_p4", "box_p5", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
-  // 5. FAR RIGHT: CONSUMERS & OUTCOMES (x=1416..1560, y=142..540)
-  rect("box_consumers", "", 1416, 142, 144, 395, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
-  rect("lbl_consumers", "<span style='font-size:9px;font-weight:800;color:#16A34A;'>CONSUMERS &amp;<br/>OUTCOMES</span>", 1416, 144, 144, 18, "strokeColor=none;fillColor=none;align=center;");
+  // Observability Foundation (Bottom of Pipeline box)
+  cell("box_found", "", 190, 540, 1130, 60, "rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;");
+  cell("lbl_found", "OBSERVABILITY FOUNDATION", 190, 542, 1130, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#D97706;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  const foundationItems = [
+    { t: "IAM &amp; Least Privilege", icon: "👥" },
+    { t: "CMEK Encryption<br/><span style='color:#64748B;'>(At Rest)</span>", icon: "🔒" },
+    { t: "Retention Policies<br/><span style='color:#64748B;'>(Per Data Type)</span>", icon: "📅" },
+    { t: "Data Access Controls<br/><span style='color:#64748B;'>(RBAC / ABAC)</span>", icon: "🛡️" },
+    { t: "Sampling Policies<br/><span style='color:#64748B;'>(Traces / Logs)</span>", icon: "📊" },
+    { t: "Cost Controls<br/><span style='color:#64748B;'>(Quotas / Budgets)</span>", icon: "💰" }
+  ];
+  foundationItems.forEach((fi, idx) => {
+    const fx = 196 + idx * 186;
+    cell(`fi_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fi.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${fi.t}</span></div>`, fx, 558, 180, 36, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+  });
+
+  // ==================== 5. RIGHT SIDEBAR: CONSUMERS & OUTCOMES (x=1340..1520, y=162..610, w=180, h=448) ====================
+  cell("box_consumers", "", 1340, 162, 180, 448, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_consumers", "CONSUMERS &amp; OUTCOMES", 1340, 164, 180, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const consumers = [
-    { t: "SRE / DevOps", sub: "Operate &amp; Improve", icon: "⚙️" },
-    { t: "Security Team", sub: "Detect &amp; Respond", icon: "🛡️" },
-    { t: "Data / AI Team", sub: "Monitor Pipelines &amp; Models", icon: "🧠" },
-    { t: "Product / Business", sub: "Understand Impact", icon: "💼" },
-    { t: "Compliance / Audit", sub: "Reports &amp; Evidence", icon: "📑" },
-    { t: "Leadership", sub: "KPIs &amp; Health", icon: "📊" }
+    { role: "SRE / DevOps", outcome: "Operate &amp; Improve", icon: "⚙️" },
+    { role: "Security Team", outcome: "Detect &amp; Respond", icon: "🛡️" },
+    { role: "Data / AI Team", outcome: "Monitor Pipelines<br/>&amp; Models", icon: "🧠" },
+    { role: "Product / Business", outcome: "Understand Impact", icon: "📈" },
+    { role: "Compliance / Audit", outcome: "Reports &amp; Evidence", icon: "📑" },
+    { role: "Leadership", outcome: "KPIs &amp; Health", icon: "👥" }
   ];
+
   consumers.forEach((cs, idx) => {
-    const cy = 168 + idx * 61;
-    rect(`cs_${idx}`, `<div style='font-size:10px;text-align:center;'>${cs.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${cs.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${cs.sub}</div>`, 1422, cy, 132, 54, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;padding=2;");
+    const cy = 190 + idx * 68;
+    cell(`con_${idx}`, `<div style="font-size:16px;text-align:center;">${cs.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${cs.role}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${cs.outcome}</div>`, 1348, cy, 164, 62, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // 6. BOTTOM ROW: BENEFITS, SIGNALS, SLO, ALERTS, RETENTION, TECHS (x=20..1560, y=546..740)
-  rect("bot_benefits", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>KEY BENEFITS</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ Full-stack visibility across applications, data, AI, and infra<br/>✔ Proactive issue detection with correlation across signals<br/>✔ Faster MTTR with actionable insights<br/>✔ SLO-driven reliability and error budget management<br/>✔ Security, compliance, and audit readiness<br/>✔ Cost visibility and optimization</div>", 20, 546, 260, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  edge("e_pipe_to_cons", "box_p5", "box_consumers", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
-  rect("bot_signals", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;'>KEY SIGNALS &amp; KPIs</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>📈 <b>Availability</b> (SLA / SLO Compliance %)<br/>⏱️ <b>Latency</b> (P50 / P95 / P99)<br/>❌ <b>Error Rate</b> (4xx / 5xx %)<br/>🔄 <b>Throughput</b> (RPS / TPS)<br/>💻 <b>CPU / Memory / Disk Utilization</b><br/>📦 <b>Queue Depth / Backlog</b><br/>🧠 <b>AI Model Latency / Token Usage</b><br/>📊 <b>Data Freshness / Pipeline Lag</b></div>", 290, 546, 260, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 6. BOTTOM ROW: 6 CARDS (y=618..954, h=336) ====================
+  // 1. Key Benefits (w=240)
+  cell("box_b_benefits", "", 16, 618, 240, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_benefits", "KEY BENEFITS", 16, 618, 240, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+  const bBenefitsHtml = `<div style="font-size:7.5px;line-height:1.6;color:#0F172A;padding:4px 6px;">
+    ✔ <b>Full-stack visibility</b> across apps, data, AI, and infra<br/><br/>
+    ✔ <b>Proactive issue detection</b> with signal correlation<br/><br/>
+    ✔ <b>Faster MTTR</b> with actionable deep insights<br/><br/>
+    ✔ <b>SLO-driven reliability</b> and error budget management<br/><br/>
+    ✔ <b>Security, compliance</b>, and audit readiness<br/><br/>
+    ✔ <b>Cost visibility</b> and resource optimization
+  </div>`;
+  cell("txt_b_benefits", bBenefitsHtml, 18, 642, 236, 306, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_slo", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:2px;'>SLO EXAMPLE (User API Service)</div><div style='font-size:8px;line-height:1.4;color:#0F172A;'>✔ <b>Availability SLO:</b> 99.95% (Monthly)<br/>⏱️ <b>Latency SLO:</b> P95 &lt; 500 ms<br/>🛡️ <b>Error Budget:</b> 21.6 minutes / month<br/>🔔 <b>Burn Rate Alerts:</b> 2x (14m), 14x (2m)</div>", 560, 546, 240, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 2. Key Signals & KPIs (w=240)
+  cell("box_b_kpis", "", 264, 618, 240, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_kpis", "KEY SIGNALS &amp; KPIs (Examples)", 264, 618, 240, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const bKpisHtml = `<div style="font-size:7.5px;line-height:1.48;color:#0F172A;padding:4px 6px;">
+    📊 <b>Availability</b> (SLA / SLO Compliance %)<br/>
+    ⏱️ <b>Latency</b> (P50 / P95 / P99)<br/>
+    🎯 <b>Error Rate</b> (4xx / 5xx %)<br/>
+    🔄 <b>Throughput</b> (RPS / TPS)<br/>
+    ⚙️ <b>CPU / Memory / Disk</b> Utilization<br/>
+    📦 <b>Queue Depth / Backlog</b><br/>
+    🧠 <b>AI Model Latency / Token Usage</b><br/>
+    🗄️ <b>Data Freshness / Pipeline Lag</b><br/>
+    🔒 <b>Security Findings / Incidents</b><br/>
+    💰 <b>Cost per Service / per User</b>
+  </div>`;
+  cell("txt_b_kpis", bKpisHtml, 266, 642, 236, 306, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_alerts", "<div style='font-size:10px;font-weight:800;color:#DC2626;margin-bottom:2px;'>ALERTING EXAMPLES</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🔺 <b>High Error Rate:</b> 5xx &gt; 1% for 5 min<br/>🔺 <b>High Latency:</b> P95 &gt; 1s for 5 min<br/>🔺 <b>SLO Burn Rate:</b> &gt; 2x for 14 min<br/>🔺 <b>Pipeline Delay:</b> Data lag &gt; 15 min<br/>🔺 <b>Security Finding:</b> Critical severity<br/>❌ <b>Instance Down:</b> Uptime &lt; 99.9%</div>", 810, 546, 240, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 3. SLO Example (w=220)
+  cell("box_b_slo", "", 512, 618, 220, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_b_slo", "SLO EXAMPLE (User API Service)", 512, 618, 220, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bSloHtml = `<div style="font-size:7.5px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    🛡️ <b>Availability SLO</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;99.95% (Monthly)<br/><br/>
+    ⏱️ <b>Latency SLO</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;P95 &lt; 500 ms<br/><br/>
+    ⚙️ <b>Error Budget</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;21.6 minutes / month<br/><br/>
+    🔔 <b>Burn Rate Alerts</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;2x (14m), 14x (2m)
+  </div>`;
+  cell("txt_b_slo", bSloHtml, 514, 642, 216, 306, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_ret", "<div style='font-size:10px;font-weight:800;color:#D97706;margin-bottom:2px;'>DATA RETENTION (Defaults)</div><div style='font-size:8px;line-height:1.4;color:#0F172A;'>📑 <b>Logs (Hot):</b> 30 Days<br/>🗄️ <b>Logs (Archive):</b> 1 Year<br/>📈 <b>Metrics (High Res):</b> 6 Weeks<br/>📊 <b>Metrics (Standard):</b> 24 Months<br/>⏱️ <b>Traces:</b> 30 Days<br/>🔒 <b>Audit Logs:</b> 1 Year</div>", 1060, 546, 230, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 4. Alerting Examples (w=220)
+  cell("box_b_alerts", "", 740, 618, 220, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.5;");
+  cell("lbl_b_alerts", "ALERTING EXAMPLES", 740, 618, 220, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FEF2F2;strokeColor=#CBD5E1;fontColor=#DC2626;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+  const bAlertsHtml = `<div style="font-size:7.5px;line-height:1.55;color:#0F172A;padding:4px 6px;">
+    🚨 <b>High Error Rate</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;5xx &gt; 1% for 5 min<br/><br/>
+    ⏱️ <b>High Latency</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;P95 &gt; 1s for 5 min<br/><br/>
+    🔥 <b>SLO Burn Rate</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&gt; 2x for 14 min<br/><br/>
+    🔄 <b>Pipeline Delay</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;Data lag &gt; 15 min<br/><br/>
+    🛡️ <b>Security Finding</b><br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;Critical severity
+  </div>`;
+  cell("txt_b_alerts", bAlertsHtml, 742, 642, 216, 306, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  rect("bot_techs", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>TECHNOLOGIES</div><div style='font-size:8px;line-height:1.4;color:#0F172A;display:grid;grid-template-columns:repeat(2, 1fr);gap:2px;'><div>📑 Cloud Logging</div> <div>📊 BigQuery</div> <div>📈 Cloud Monitoring</div> <div>🛡️ SCC</div> <div>⏱️ Cloud Trace</div> <div>☁️ Ops Agent</div> <div>⚡ Eventarc</div> <div>📊 Looker Studio</div> <div>📨 Pub/Sub</div> <div>🚨 PagerDuty</div></div>", 1300, 546, 260, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // 5. Data Retention (Defaults) (w=220)
+  cell("box_b_ret", "", 968, 618, 220, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;");
+  cell("lbl_b_ret", "DATA RETENTION (Defaults)", 968, 618, 220, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bRetHtml = `<table style="width:100%;border-collapse:collapse;font-size:7.5px;line-height:1.5;padding:2px 4px;">
+    <tr><td>📑 <b>Logs (Hot)</b></td><td style="text-align:right;font-weight:800;">30 Days</td></tr>
+    <tr><td>📦 <b>Logs (Archive)</b></td><td style="text-align:right;font-weight:800;">1 Year</td></tr>
+    <tr><td>📈 <b>Metrics (High Res)</b></td><td style="text-align:right;font-weight:800;">6 Weeks</td></tr>
+    <tr><td>📊 <b>Metrics (Standard)</b></td><td style="text-align:right;font-weight:800;">24 Months</td></tr>
+    <tr><td>💾 <b>Traces</b></td><td style="text-align:right;font-weight:800;">30 Days</td></tr>
+    <tr><td>📜 <b>Audit Logs</b></td><td style="text-align:right;font-weight:800;">1 Year</td></tr>
+  </table>`;
+  cell("txt_b_ret", bRetHtml, 970, 642, 216, 306, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  // 7. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // 6. Technologies Matrix (w=324)
+  cell("box_b_tech", "", 1196, 618, 324, 336, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_tech", "TECHNOLOGIES", 1196, 618, 324, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const techGrid = [
+    { t: "Cloud Logging", icon: "📑" },
+    { t: "BigQuery", icon: "📊" },
+    { t: "Cloud Monitoring", icon: "📈" },
+    { t: "Security Command Center", icon: "🛡️" },
+    { t: "Cloud Trace", icon: "🔍" },
+    { t: "Cloud Operations", icon: "⚙️" },
+    { t: "Eventarc", icon: "⚡" },
+    { t: "Looker Studio", icon: "📊" },
+    { t: "Pub/Sub", icon: "📨" },
+    { t: "PagerDuty / Slack", icon: "🔔" }
+  ];
+  techGrid.forEach((tg, idx) => {
+    const col = idx % 2;
+    const row = Math.floor(idx / 2);
+    const gx = 1206 + col * 154;
+    const gy = 648 + row * 56;
+    cell(`tg_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 4px;"><span style="font-size:16px;">${tg.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${tg.t}</span></div>`, gx, gy, 146, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
+  });
+
+  // ==================== 7. FOOTER LEGEND (y=962, h=24) ====================
+  const legendHtml = `<div style='font-size:8px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>LEGEND:</b> &nbsp; ━━━━► Telemetry Flow &nbsp;|&nbsp; ┈┈┈► Data/Control &nbsp;|&nbsp; ───► Alert &nbsp;|&nbsp; 🟦 Google Cloud Service &nbsp;|&nbsp; 🟪 Storage &nbsp;|&nbsp; 🟨 Visual/Alert &nbsp;|&nbsp; 🟩 Consumers</div>
+    <div>Enterprise Observability &amp; SRE Foundation &nbsp;|&nbsp; May 8, 2025</div>
+  </div>`;
+  cell("footer_legend", legendHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_21_observability_architecture" name="Template 21: Observability Architecture">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
