@@ -364,11 +364,15 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     );
   });
 
-  // Vertical green connector line traversing Data Exchange items
-  rawEdge("e_exch_vertical", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.8;endArrow=none;", [
-    { x: 1348, y: 296 },
-    { x: 1348, y: 570 }
-  ]);
+  // Discrete green connector segments between Data Exchange icon badges
+  for (let s = 0; s < 4; s++) {
+    const fromY = 260 + s * 86;
+    const toY = 306 + s * 86;
+    rawEdge(`e_exch_seg_${s}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.8;endArrow=none;", [
+      { x: 1348, y: fromY },
+      { x: 1348, y: toY }
+    ]);
+  }
 
   // ==================== 6. MIDDLE-BOTTOM: MONITORING, AUDIT & ASSURANCE (x=16..1520, y=694..774, h=80) ====================
   cell("box_mon_audit", "", 16, 694, 1504, 80, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;");
