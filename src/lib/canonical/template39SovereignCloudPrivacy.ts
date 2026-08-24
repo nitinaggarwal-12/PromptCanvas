@@ -4,6 +4,7 @@
  * - Exact 1536x1024 Canvas matching ground-truth master.
  * - Native inline vector SVGs for all icons, badges, shields, and pods.
  * - Bold high-contrast typography, crisp borders, rich saturated colors, zero-void proportional card packing.
+ * - Exact zero-void 4-tier Sovereign Cloud layout filling the entire container height.
  * - Exact chained purple governance flow, blue secure access gates, and green audit monitoring drops.
  */
 
@@ -16,7 +17,7 @@ const E = (v?: string | null) =>
 
 // SVG Vector Icons Helper (100% offline, zero network dependency)
 const SVG = {
-  circleWrap: (innerSvg: string, strokeColor = "#1D4ED8", bgColor = "#EFF6FF", size = 36) =>
+  circleWrap: (innerSvg: string, strokeColor = "#1D4ED8", bgColor = "#EFF6FF", size = 38) =>
     `<div style="width:${size}px;height:${size}px;min-width:${size}px;border-radius:50%;background:${bgColor};border:1.8px solid ${strokeColor};display:flex;align-items:center;justify-content:center;">` +
     `<svg width="${size - 14}" height="${size - 14}" viewBox="0 0 24 24" fill="none" stroke="${strokeColor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${innerSvg}</svg>` +
     `</div>`,
@@ -174,7 +175,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
 
   // ==================== 3. LEFT COLUMN: USERS & STAKEHOLDERS (x=16..228, y=184..684) ====================
   cell("box_users_left", "", 16, 184, 212, 500, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
-  cell("lbl_users_left", "USERS & STAKEHOLDERS", 16, 186, 212, 24, "html=1;fontColor:#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_users_left", "USERS & STAKEHOLDERS", 16, 186, 212, 24, "html=1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const stakeHolders = [
     { t: "Citizens / Customers", sub: "Portals, Apps,<br/>Self-Service", svg: SVG.user },
@@ -215,7 +216,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   cell("box_sov_env", "", 302, 184, 932, 500, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#1E40AF;strokeWidth=2.2;");
   cell("lbl_sov_env", `<div style="display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2.2">${SVG.bank}</svg><span style="font-size:12.5px;font-weight:900;color:#1E3A8A;letter-spacing:0.5px;">SOVEREIGN CLOUD ENVIRONMENT (In-Country / In-Region)</span></div>`, 302, 188, 932, 26, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // 4 Top Core Pods (x=312..1224, y=218..298)
+  // Tier 1: Core Workload Pods (x=312..1224, y=218..308, h=90)
   const sovPods = [
     { t: "Workloads", sub: "Sovereign Compute<br/>(VMs, Containers, Serverless)", svg: SVG.compute, w: 218 },
     { t: "Data Services", sub: "Sovereign Storage,<br/>Databases, Analytics, AI/ML", svg: SVG.database, w: 224 },
@@ -232,15 +233,15 @@ export function generateTemplate39SovereignCloudPrivacyXml(
       curSovX,
       218,
       sp.w,
-      76,
+      86,
       "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;"
     );
     curSovX += sp.w + 10;
   });
 
-  // Data Classification & Residency Enforcement (y=304..380, h=76)
-  cell("box_dc_re", "", 314, 304, 908, 76, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.2;");
-  cell("lbl_dc_re", "DATA CLASSIFICATION & RESIDENCY ENFORCEMENT", 314, 306, 908, 16, "html=1;fontColor:#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 2: Data Classification & Residency Enforcement (y=314..398, h=84)
+  cell("box_dc_re", "", 314, 314, 908, 84, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.2;");
+  cell("lbl_dc_re", "DATA CLASSIFICATION & RESIDENCY ENFORCEMENT", 314, 316, 908, 16, "html=1;fontColor:#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const dataClasses = [
     { t: "Public Data", w: 106, c: "#DBEAFE", tc: "#1E40AF" },
@@ -251,14 +252,14 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   ];
   let curDcX = 338;
   dataClasses.forEach((dc, idx) => {
-    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 326, dc.w, 26, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;`);
+    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 338, dc.w, 28, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;`);
     curDcX += dc.w + 20;
   });
-  cell("dc_footer", `<div style="font-size:8.5px;font-weight:800;color:#475569;">Tagging &nbsp;•&nbsp; Labeling &nbsp;•&nbsp; Residency Rules &nbsp;•&nbsp; Automated Enforcement</div>`, 314, 356, 908, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("dc_footer", `<div style="font-size:8.5px;font-weight:800;color:#475569;">Tagging &nbsp;•&nbsp; Labeling &nbsp;•&nbsp; Residency Rules &nbsp;•&nbsp; Automated Enforcement</div>`, 314, 372, 908, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // Privacy & Security Controls (Built-in) (y=388..484, h=96)
-  cell("box_priv_sec", "", 314, 388, 908, 96, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;");
-  cell("lbl_priv_sec", "PRIVACY & SECURITY CONTROLS (Built-in)", 314, 390, 908, 16, "html=1;fontColor:#15803D;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 3: Privacy & Security Controls (Built-in) (y=406..526, h=120)
+  cell("box_priv_sec", "", 314, 406, 908, 120, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;");
+  cell("lbl_priv_sec", "PRIVACY & SECURITY CONTROLS (Built-in)", 314, 408, 908, 16, "html=1;fontColor:#15803D;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const privControls = [
     { t: "Encryption", sub: "At Rest, In Transit,<br/>In Use (KMS)", svg: SVG.lock, w: 134 },
@@ -272,21 +273,21 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   privControls.forEach((pc, idx) => {
     cell(
       `pc_${idx}`,
-      `<div style="display:flex;align-items:center;gap:6px;">` +
-      SVG.circleWrap(pc.svg, "#15803D", "#F0FDF4", 34) +
-      `<div><div style="font-size:9px;font-weight:900;color:#0F172A;line-height:1.15;">${pc.t}</div>${pc.sub ? `<div style="font-size:7.5px;color:#64748B;font-weight:600;margin-top:2px;line-height:1.1;">${pc.sub}</div>` : ""}</div></div>`,
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      SVG.circleWrap(pc.svg, "#15803D", "#F0FDF4", 36) +
+      `<div><div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;">${pc.t}</div>${pc.sub ? `<div style="font-size:8px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.15;">${pc.sub}</div>` : ""}</div></div>`,
       curPcX,
-      410,
+      432,
       pc.w,
-      64,
+      82,
       "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=2;"
     );
     curPcX += pc.w + 12;
   });
 
-  // Infrastructure Sovereignty (y=492..576, h=84)
-  cell("box_infra_sov", "", 314, 492, 908, 84, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;");
-  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 314, 494, 908, 16, "html=1;fontColor:#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 4: Infrastructure Sovereignty (y=534..668, h=134)
+  cell("box_infra_sov", "", 314, 534, 908, 134, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;");
+  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 314, 536, 908, 16, "html=1;fontColor:#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const infraItems = [
     { t: "In-Country / In-Region<br/>Data Centers", svg: SVG.building },
@@ -298,14 +299,14 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     const iix = 326 + idx * 222;
     cell(
       `ii_${idx}`,
-      `<div style="display:flex;align-items:center;gap:8px;">` +
-      SVG.circleWrap(ii.svg, "#1D4ED8", "#EFF6FF", 38) +
-      `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.2;">${ii.t}</div></div>`,
+      `<div style="display:flex;align-items:center;gap:10px;">` +
+      SVG.circleWrap(ii.svg, "#1D4ED8", "#EFF6FF", 42) +
+      `<div style="font-size:10px;font-weight:900;color:#0F172A;line-height:1.25;">${ii.t}</div></div>`,
       iix,
-      514,
+      562,
       214,
-      54,
-      "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=4;"
+      92,
+      "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;"
     );
   });
 
@@ -422,9 +423,9 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Local Data", sub: "Protection Laws", type: "law" }
   ];
   badges.forEach((bg, idx) => {
-    const col = idx % 4;
-    const row = Math.floor(idx / 4);
-    const bx = 346 + col * 94;
+    const col = idx < 4 ? idx : idx - 4;
+    const row = idx < 4 ? 0 : 1;
+    const bx = idx < 4 ? 346 + col * 94 : 393 + col * 94;
     const by = 808 + row * 56;
     const iconSvg = bg.type === "eu" 
       ? `<circle cx="12" cy="12" r="9" fill="#1E3A8A" stroke="none"/><text x="12" y="16" fill="#FBBF24" font-size="12" font-weight="bold" text-anchor="middle">★</text>`
@@ -575,6 +576,14 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { x: 1414, y: 694 },
     { x: 1414, y: 684 }
   ]);
+
+  // Monitoring -> 4 Sovereign Cloud points (green dotted vertical upward arrows)
+  [420, 640, 860, 1080].forEach((ptX, pIdx) => {
+    rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;dashPattern=2 2;endArrow=classic;endSize=3.5;", [
+      { x: ptX, y: 694 },
+      { x: ptX, y: 684 }
+    ]);
+  });
 
   const bg = isDark ? "#0F172A" : "#FFFFFF";
 
