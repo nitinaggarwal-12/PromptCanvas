@@ -35,7 +35,7 @@ export function generateTemplate22MigrationTransitionXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "22", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "22", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -69,7 +69,7 @@ export function generateTemplate22MigrationTransitionXml(
   ];
   curItems.forEach((ci, idx) => {
     const cy = 118 + idx * 114;
-    cell(`ci_${idx}`, `<div style="font-size:14px;text-align:center;">${ci.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${ci.t}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.2;margin-top:2px;">${ci.sub}</div>`, 24, cy, 138, 102, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`ci_${idx}`, `<div style="font-size:14px;text-align:center;">${ci.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${ci.t}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.2;margin-top:2px;">${ci.sub}</div>`, 24, cy, 138, 102, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Pure 0° Horizontal edge from Current State to Migration Phases
@@ -139,12 +139,12 @@ export function generateTemplate22MigrationTransitionXml(
 
     ph.cards.forEach((cd, cIdx) => {
       const cy = 132 + cIdx * 58;
-      cell(`ph_${pIdx}_cd_${cIdx}`, `<div style="display:flex;align-items:flex-start;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><div style="text-align:left;"><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${cd.t}</div><div style="font-size:6px;color:#64748B;line-height:1.15;margin-top:1px;">${cd.sub}</div></div></div>`, px + 4, cy, 158, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=top;padding=3;");
+      cell(`ph_${pIdx}_cd_${cIdx}`, `<div style="display:flex;align-items:flex-start;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><div style="text-align:left;"><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${cd.t}</div><div style="font-size:8px;color:#64748B;line-height:1.15;margin-top:1px;">${cd.sub}</div></div></div>`, px + 4, cy, 158, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=top;padding=3;");
     });
 
     cell(`ph_deliv_box_${pIdx}`, "", px, 474, 166, 106, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;");
     cell(`ph_deliv_lbl_${pIdx}`, "Key Deliverables", px, 476, 166, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-    cell(`ph_deliv_txt_${pIdx}`, `<div style="font-size:6px;line-height:1.35;color:#0F172A;padding:2px 4px;">${ph.deliv}</div>`, px, 492, 166, 84, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`ph_deliv_txt_${pIdx}`, `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 4px;">${ph.deliv}</div>`, px, 492, 166, 84, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
     if (pIdx > 0) {
       // Pure 0° Horizontal arrow between adjacent phase boxes
@@ -168,14 +168,14 @@ export function generateTemplate22MigrationTransitionXml(
   ];
   targetItems.forEach((ti, idx) => {
     const ty = 118 + idx * 92;
-    cell(`ti_${idx}`, `<div style="font-size:14px;text-align:center;">${ti.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${ti.t}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.2;margin-top:2px;">${ti.sub}</div>`, 1078, ty, 138, 84, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`ti_${idx}`, `<div style="font-size:14px;text-align:center;">${ti.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${ti.t}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.2;margin-top:2px;">${ti.sub}</div>`, 1078, ty, 138, 84, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // ==================== 5. FAR RIGHT SIDEBAR (x=1234..1520, y=78..590, w=286, h=512) ====================
   // 1. Migration Principles
   cell("box_m_princ", "", 1234, 78, 286, 126, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_m_princ", "MIGRATION PRINCIPLES", 1234, 80, 286, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const princHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const princHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     ✔ <b>Business value driven</b><br/>
     ✔ <b>Security &amp; compliance by design</b><br/>
     ✔ <b>Data integrity &amp; zero data loss</b><br/>
@@ -188,7 +188,7 @@ export function generateTemplate22MigrationTransitionXml(
   // 2. Migration Patterns (6Rs)
   cell("box_m_patt", "", 1234, 210, 286, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_m_patt", "MIGRATION PATTERNS", 1234, 212, 286, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const pattHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const pattHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     📦 <b>Rehost</b> (Lift &amp; Shift)<br/>
     ⚙️ <b>Refactor / Replatform</b><br/>
     🧠 <b>Rearchitect</b> (Cloud Native)<br/>
@@ -200,7 +200,7 @@ export function generateTemplate22MigrationTransitionXml(
   // 3. Key Risks
   cell("box_m_risks", "", 1234, 332, 286, 130, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
   cell("lbl_m_risks", "⚠️ KEY RISKS", 1234, 334, 286, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const risksHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const risksHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     🔴 <b>Data migration complexity</b><br/>
     🔴 <b>Application compatibility</b><br/>
     🔴 <b>Downtime / SLA impact</b><br/>
@@ -213,7 +213,7 @@ export function generateTemplate22MigrationTransitionXml(
   // 4. Mitigation Strategies
   cell("box_m_mitig", "", 1234, 468, 286, 122, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_m_mitig", "MITIGATION STRATEGIES", 1234, 470, 286, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const mitigHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const mitigHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     ✔ <b>Wave-based approach</b><br/>
     ✔ <b>Thorough testing &amp; validation</b><br/>
     ✔ <b>Rollback &amp; fallback plans</b><br/>
@@ -257,9 +257,9 @@ export function generateTemplate22MigrationTransitionXml(
   ];
   waves.forEach((wv, idx) => {
     const wx = 888 + idx * 156;
-    cell(`wv_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${wv.name}</div><div style="font-size:6.5px;color:#0F172A;text-align:center;margin-top:2px;">${wv.desc}</div><div style="font-size:12px;text-align:center;margin-top:2px;">${wv.icon}</div>`, wx, 622, 146, 52, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`wv_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${wv.name}</div><div style="font-size:8px;color:#0F172A;text-align:center;margin-top:2px;">${wv.desc}</div><div style="font-size:12px;text-align:center;margin-top:2px;">${wv.icon}</div>`, wx, 622, 146, 52, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=2;");
   });
-  cell("lbl_wave_sub", "Iterative waves with feedback &amp; continuous improvement", 876, 680, 644, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=6.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_wave_sub", "Iterative waves with feedback &amp; continuous improvement", 876, 680, 644, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // ==================== 7. BOTTOM ROW: 6 CARDS (y=706..954, h=248) ====================
   // 1. Key Benefits (w=230)

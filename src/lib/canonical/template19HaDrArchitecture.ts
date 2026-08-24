@@ -38,7 +38,7 @@ export function generateTemplate19HaDrArchitectureXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "19", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "19", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -201,12 +201,12 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("lbl_m_repl", "CROSS-REGION DATA REPLICATION &amp; BACKUP", 16, 650, 850, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const replNodes = [
-    { id: "rn_1", t: "Cloud SQL<br/><span style='color:#64748B;font-size:6.5px;'>Cross-Region<br/>Async Replication</span>", icon: "🗄️" },
-    { id: "rn_2", t: "BigQuery<br/><span style='color:#64748B;font-size:6.5px;'>Cross-Region<br/>Replication</span>", icon: "📊" },
-    { id: "rn_3", t: "Cloud Storage<br/><span style='color:#64748B;font-size:6.5px;'>Dual-Region<br/>(US)</span>", icon: "🗃️" },
-    { id: "rn_4", t: "Memorystore<br/><span style='color:#64748B;font-size:6.5px;'>Data Persistence<br/>&amp; Snapshots</span>", icon: "💾" },
-    { id: "rn_5", t: "Backups<br/><span style='color:#64748B;font-size:6.5px;'>(GCS DR Bucket)<br/>+ Retention</span>", icon: "📦" },
-    { id: "rn_6", t: "Archive (Optional)<br/><span style='color:#64748B;font-size:6.5px;'>Coldline / Archive<br/>for Long-Term</span>", icon: "📑" }
+    { id: "rn_1", t: "Cloud SQL<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Async Replication</span>", icon: "🗄️" },
+    { id: "rn_2", t: "BigQuery<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Replication</span>", icon: "📊" },
+    { id: "rn_3", t: "Cloud Storage<br/><span style='color:#64748B;font-size:8px;'>Dual-Region<br/>(US)</span>", icon: "🗃️" },
+    { id: "rn_4", t: "Memorystore<br/><span style='color:#64748B;font-size:8px;'>Data Persistence<br/>&amp; Snapshots</span>", icon: "💾" },
+    { id: "rn_5", t: "Backups<br/><span style='color:#64748B;font-size:8px;'>(GCS DR Bucket)<br/>+ Retention</span>", icon: "📦" },
+    { id: "rn_6", t: "Archive (Optional)<br/><span style='color:#64748B;font-size:8px;'>Coldline / Archive<br/>for Long-Term</span>", icon: "📑" }
   ];
   replNodes.forEach((rn, idx) => {
     const rx = 26 + idx * 138;

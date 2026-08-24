@@ -85,7 +85,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   sources.forEach((sc, i) => {
     const sy = 160 + i * 100;
     let bHtml = "";
-    sc.items.forEach(it => { bHtml += `<div style="font-size:6.5px;color:#475569;line-height:1.15;">&bull; ${it}</div>`; });
+    sc.items.forEach(it => { bHtml += `<div style="font-size:8px;color:#475569;line-height:1.15;">&bull; ${it}</div>`; });
     const html = `<div style="padding:2px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:12px;">${sc.icon}</span><b style="font-size:7.5px;color:#0F2A4A;">${sc.title}</b></div><div style="margin-top:3px;padding-left:2px;">${bHtml}</div></div>`;
     rect(`src_pod_${i}`, html, 24, sy, 152, 94, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
@@ -105,7 +105,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   ];
   ingestPods.forEach((ip, i) => {
     const ipy = 160 + i * 100;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ip.icon}</span><div style="font-size:7.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;">${ip.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6px;color:#64748B;margin-top:2px;">${ip.sub.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ip.icon}</span><div style="font-size:7.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;">${ip.title.replace(/\n/g, "<br/>")}</div><div style="font-size:8px;color:#64748B;margin-top:2px;">${ip.sub.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`ing_pod_${i}`, html, 192, ipy, 92, 94, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
   });
 
@@ -163,13 +163,13 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("curated_frame", "", 548, 158, 150, 502, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   text("curated_title", "<b>CURATED DATA LAYER</b>", 548, 160, 150, 20, "fontSize=7.5;fontColor=#6D28D9;align=center;");
 
-  const cur1Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🗄️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Curated Storage (Silver / Gold)</div><div style="font-size:6.5px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Optimized<br/>&bull; ACID Tables (Delta)<br/>&bull; Time Travel<br/>&bull; Z-Order / Partitioned</div></td></tr></table>`;
+  const cur1Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🗄️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Curated Storage (Silver / Gold)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Optimized<br/>&bull; ACID Tables (Delta)<br/>&bull; Time Travel<br/>&bull; Z-Order / Partitioned</div></td></tr></table>`;
   rect("cur_pod_1", cur1Html, 554, 186, 138, 134, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
-  const cur2Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">📑</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Master Data (MDM)</div><div style="font-size:6.5px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Reference Data<br/>&bull; Hierarchies</div></td></tr></table>`;
+  const cur2Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">📑</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Master Data (MDM)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Reference Data<br/>&bull; Hierarchies</div></td></tr></table>`;
   rect("cur_pod_2", cur2Html, 554, 328, 138, 134, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
-  const cur3Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🕸️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Semantic Layer</div><div style="font-size:6.5px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Business Models<br/>&bull; Metrics &amp; KPIs<br/>&bull; Data Marts</div></td></tr></table>`;
+  const cur3Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🕸️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Semantic Layer</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Business Models<br/>&bull; Metrics &amp; KPIs<br/>&bull; Data Marts</div></td></tr></table>`;
   rect("cur_pod_3", cur3Html, 554, 470, 138, 182, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
   // 4. Serving Layer (x: 704 to 930)
@@ -185,7 +185,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   ];
   servItems.forEach((sv, i) => {
     const svy = 188 + i * 92;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:26px;text-align:center;"><span style="font-size:16px;">${sv.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0369A1;">${sv.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.15;">${sv.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:26px;text-align:center;"><span style="font-size:16px;">${sv.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0369A1;">${sv.title}</div><div style="font-size:8px;color:#64748B;line-height:1.15;">${sv.sub}</div></td></tr></table>`;
     rect(`serv_pod_${i}`, html, 712, svy, 210, 84, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
@@ -242,7 +242,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   ];
   crossServices.forEach((cs, i) => {
     const csx = 28 + i * 252;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${cs.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${cs.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${cs.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${cs.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${cs.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${cs.sub}</div></td></tr></table>`;
     rect(`cs_cross_${i}`, html, csx, 700, 244, 38, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
@@ -274,7 +274,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
     const col = i % 2;
     const dtx = 618 + col * 154;
     const dty = 778 + row * 44;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${dt.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${dt.title}</div><div style="font-size:6.5px;color:#64748B;">${dt.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${dt.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${dt.title}</div><div style="font-size:8px;color:#64748B;">${dt.sub}</div></td></tr></table>`;
     rect(`dt_type_${i}`, html, dtx, dty, 148, 40, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 

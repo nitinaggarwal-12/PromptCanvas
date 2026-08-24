@@ -314,15 +314,15 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   const flowHintHtml = `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">DATA FLOW HINT</div>
     <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:7.5px;font-weight:700;margin-top:8px;">
-      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataSource<br><span style="font-size:6.5px;color:#64748B;">(External)</span></div>
+      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataSource<br><span style="font-size:8px;color:#64748B;">(External)</span></div>
       <span>➔</span>
-      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">Ingestion<br><span style="font-size:6.5px;color:#64748B;">(Job)</span></div>
+      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">Ingestion<br><span style="font-size:8px;color:#64748B;">(Job)</span></div>
       <span>➔</span>
-      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataAsset<br><span style="font-size:6.5px;color:#64748B;">(Storage)</span></div>
+      <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataAsset<br><span style="font-size:8px;color:#64748B;">(Storage)</span></div>
       <span>➔</span>
-      <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Indexed in<br><span style="font-size:6.5px;color:#64748B;">KB / Embedding</span></div>
+      <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Indexed in<br><span style="font-size:8px;color:#64748B;">KB / Embedding</span></div>
       <span>➔</span>
-      <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Used by<br><span style="font-size:6.5px;color:#64748B;">AI Models</span></div>
+      <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Used by<br><span style="font-size:8px;color:#64748B;">AI Models</span></div>
     </div>
     <div style="font-size:7.5px;color:#475569;text-align:center;margin-top:8px;font-style:italic;">Feedback loop from Response ➔ Audit / Metrics ➔ Improvement</div>
   </div>`;

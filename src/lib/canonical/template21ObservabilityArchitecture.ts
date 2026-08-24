@@ -37,7 +37,7 @@ export function generateTemplate21ObservabilityArchitectureXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "21", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "21", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -103,7 +103,7 @@ export function generateTemplate21ObservabilityArchitectureXml(
 
   pillars.forEach((p, idx) => {
     const py = 190 + idx * 68;
-    cell(`pil_${idx}`, `<div style="font-size:16px;text-align:center;">${p.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${p.name}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${p.desc}</div>`, 24, py, 138, 62, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`pil_${idx}`, `<div style="font-size:16px;text-align:center;">${p.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${p.name}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${p.desc}</div>`, 24, py, 138, 62, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // ==================== 4. CENTER: GOOGLE CLOUD OBSERVABILITY PIPELINE (x=180..1330, y=162..610, w=1150, h=448) ====================
@@ -205,7 +205,7 @@ export function generateTemplate21ObservabilityArchitectureXml(
   ];
   foundationItems.forEach((fi, idx) => {
     const fx = 196 + idx * 186;
-    cell(`fi_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fi.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${fi.t}</span></div>`, fx, 558, 180, 36, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`fi_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fi.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.1;">${fi.t}</span></div>`, fx, 558, 180, 36, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // Pure 270° Vertical dashed lines from Foundation up to the 5 Pipeline Stages
@@ -230,7 +230,7 @@ export function generateTemplate21ObservabilityArchitectureXml(
 
   consumers.forEach((cs, idx) => {
     const cy = 190 + idx * 68;
-    cell(`con_${idx}`, `<div style="font-size:16px;text-align:center;">${cs.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${cs.role}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${cs.outcome}</div>`, 1348, cy, 164, 62, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`con_${idx}`, `<div style="font-size:16px;text-align:center;">${cs.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${cs.role}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${cs.outcome}</div>`, 1348, cy, 164, 62, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Pure 0° Horizontal edge: Pipeline Visualization -> Consumers

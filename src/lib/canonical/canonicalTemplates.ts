@@ -1,3 +1,5 @@
+import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
+
 export interface CanonicalTemplate {
   id: string; // e.g. "01", "02" ... "34"
   name: string;
@@ -7,6 +9,11 @@ export interface CanonicalTemplate {
   examples: string;
   defaultDomain: string;
   previewImage?: string;
+  sourceImageId: string;
+  generatorVersion: string;
+  fidelityScore: number;
+  certificationStatus: 'certified' | 'in_review' | 'pending';
+  contract?: CanonicalContract;
   keyComponents: string[];
   generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => string;
 }
@@ -110,7 +117,20 @@ import { generateTemplate32RoadmapEvolutionXml } from "./template32RoadmapEvolut
 import { generateTemplate33MatrixHeatmapXml } from "./template33MatrixHeatmap";
 import { generateTemplate34GeographicArchitectureXml } from "./template34GeographicArchitecture";
 
-export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
+interface RawCanonicalTemplate {
+  id: string;
+  name: string;
+  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning';
+  level: 'L1' | 'L2' | 'L3' | 'L1/L2' | 'L2/L3' | 'L1/L2/L3';
+  primaryPurpose: string;
+  examples: string;
+  defaultDomain: string;
+  previewImage?: string;
+  keyComponents: string[];
+  generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => string;
+}
+
+const RAW_TEMPLATES: RawCanonicalTemplate[] = [
   {
     id: '01',
     name: 'System Context',
@@ -520,3 +540,15 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = [
     generateXml: generateTemplate34GeographicArchitectureXml
   }
 ];
+
+export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
+  const contract = CANONICAL_CONTRACTS[t.id];
+  return {
+    ...t,
+    sourceImageId: `images/${t.id}.png`,
+    generatorVersion: contract ? contract.generatorVersion : "1.0",
+    fidelityScore: contract && contract.certificationStatus === "certified" ? 0.98 : 0.90,
+    certificationStatus: contract ? contract.certificationStatus : "in_review",
+    contract
+  };
+});

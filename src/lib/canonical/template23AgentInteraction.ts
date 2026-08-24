@@ -38,7 +38,7 @@ export function generateTemplate23AgentInteractionXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "23", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "23", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -113,7 +113,7 @@ export function generateTemplate23AgentInteractionXml(
 
   flowSteps.forEach((fs, idx) => {
     const fx = 190 + idx * 146;
-    cell(`fs_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;margin-bottom:2px;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7px;font-weight:900;margin-right:4px;">${fs.num}</span> <span style="font-size:7px;font-weight:800;color:#0F172A;">${fs.name}</span></div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${fs.desc}</div>`, fx, 100, 138, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+    cell(`fs_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;margin-bottom:2px;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7px;font-weight:900;margin-right:4px;">${fs.num}</span> <span style="font-size:7px;font-weight:800;color:#0F172A;">${fs.name}</span></div><div style="font-size:7.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${fs.desc}</div>`, fx, 100, 138, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
     if (idx > 0) {
       // Pure 0° Horizontal edge between flow steps
       edge(`e_fs_${idx}`, `fs_${idx - 1}`, `fs_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
@@ -139,7 +139,7 @@ export function generateTemplate23AgentInteractionXml(
 
   agents.forEach((ag, idx) => {
     const ax = 190 + idx * 146;
-    cell(`ag_${idx}`, `<div style="font-size:16px;text-align:center;">${ag.icon}</div><div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ag.name}</div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ag.desc}</div><div style="text-align:center;margin-top:4px;"><span style="background:${ag.pbg};color:${ag.pfg};border:1px solid ${ag.bc};padding:1px 6px;border-radius:10px;font-size:6px;font-weight:800;">${ag.pill}</span></div>`, ax, 224, 138, 108, `rounded=1;arcSize=6;fillColor=${ag.bg};strokeColor=${ag.bc};strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=3;`);
+    cell(`ag_${idx}`, `<div style="font-size:16px;text-align:center;">${ag.icon}</div><div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ag.name}</div><div style="font-size:7.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ag.desc}</div><div style="text-align:center;margin-top:4px;"><span style="background:${ag.pbg};color:${ag.pfg};border:1px solid ${ag.bc};padding:1px 6px;border-radius:10px;font-size:8px;font-weight:800;">${ag.pill}</span></div>`, ax, 224, 138, 108, `rounded=1;arcSize=6;fillColor=${ag.bg};strokeColor=${ag.bc};strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=3;`);
     
     if (idx > 0) {
       // Pure 0° Horizontal bidirectional edge between adjacent agents
@@ -189,14 +189,14 @@ export function generateTemplate23AgentInteractionXml(
 
   patterns.forEach((pt, idx) => {
     const ptx = 26 + idx * 248;
-    cell(`pt_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${pt.title}</div><div style="font-size:16px;text-align:center;margin:3px 0;">${pt.icon}</div><div style="font-size:6px;color:#64748B;text-align:center;line-height:1.15;">${pt.sub}</div>`, ptx, 480, 238, 98, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=4;");
+    cell(`pt_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${pt.title}</div><div style="font-size:16px;text-align:center;margin:3px 0;">${pt.icon}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.15;">${pt.sub}</div>`, ptx, 480, 238, 98, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=4;");
   });
 
   // ==================== 6. RIGHT SIDEBAR (x=1230..1520, y=78..450, w=290, h=372) ====================
   // 1. Communication Patterns
   cell("box_r_comm", "", 1230, 78, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_r_comm", "COMMUNICATION PATTERNS", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const commHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const commHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     🔄 <b>Request / Response</b> (Sync)<br/>
     📨 <b>Event-driven</b> (Async)<br/>
     📡 <b>Publish / Subscribe</b><br/>
@@ -208,7 +208,7 @@ export function generateTemplate23AgentInteractionXml(
   // 2. Interaction Protocols
   cell("box_r_proto", "", 1230, 200, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_r_proto", "INTERACTION PROTOCOLS", 1230, 202, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const protoHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const protoHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     🔌 <b>MCP</b> (Model Context Protocol)<br/>
     🤖 <b>A2A</b> (Agent-to-Agent Protocol)<br/>
     🌐 <b>gRPC / REST APIs</b><br/>
@@ -220,7 +220,7 @@ export function generateTemplate23AgentInteractionXml(
   // 3. Key Risks
   cell("box_r_risks", "", 1230, 322, 290, 128, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
   cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 324, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const aRisksHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+  const aRisksHtml = `<div style="font-size:8px;line-height:1.3;color:#0F172A;padding:2px 6px;">
     🔴 <b>Poor agent selection / routing</b><br/>
     🔴 <b>Context loss / inconsistency</b><br/>
     🔴 <b>Infinite loops / repeated calls</b><br/>
@@ -302,7 +302,7 @@ export function generateTemplate23AgentInteractionXml(
     const row = Math.floor(idx / 5);
     const gx = 1028 + col * 96;
     const gy = 628 + row * 84;
-    cell(`ti_eco_${idx}`, `<div style="font-size:16px;text-align:center;">${ti.icon}</div><div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ti.t}</div>`, gx, gy, 90, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`ti_eco_${idx}`, `<div style="font-size:16px;text-align:center;">${ti.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ti.t}</div>`, gx, gy, 90, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // 6. Notes (at bottom right, y=836..954, w=502, h=118)

@@ -69,7 +69,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
         <td style="width:26px;vertical-align:top;padding-top:2px;text-align:center;"><span style="font-size:14px;">${u.icon}</span></td>
         <td style="vertical-align:top;padding-left:4px;text-align:left;">
           <div style="font-size:8px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title}</div>
-          <div style="font-size:6.5px;color:#64748B;line-height:1.15;margin-top:1px;">${u.desc.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:8px;color:#64748B;line-height:1.15;margin-top:1px;">${u.desc.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
@@ -187,7 +187,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   entSystems.forEach((es, i) => {
     const esx = 28 + i * 88;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${es.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;">${es.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6px;color:#64748B;line-height:1.1;margin-top:1px;">${es.desc.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${es.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;">${es.title.replace(/\n/g, "<br/>")}</div><div style="font-size:8px;color:#64748B;line-height:1.1;margin-top:1px;">${es.desc.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`ent_sys_${i}`, html, esx, 698, 82, 114, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
@@ -201,7 +201,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   aiServices.forEach((ai, i) => {
     const aix = 758 + i * 115;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ai.icon}</span><div style="font-size:7.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;">${ai.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;margin-top:2px;">${ai.desc.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ai.icon}</span><div style="font-size:7.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;">${ai.title.replace(/\n/g, "<br/>")}</div><div style="font-size:8px;color:#64748B;line-height:1.1;margin-top:2px;">${ai.desc.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`ai_svc_${i}`, html, aix, 698, 110, 114, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
   });
 
@@ -216,7 +216,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   platServices.forEach((ps, i) => {
     const psx = 1128 + i * 101;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ps.icon}</span><div style="font-size:7.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;">${ps.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;margin-top:2px;">${ps.desc.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${ps.icon}</span><div style="font-size:7.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;">${ps.title.replace(/\n/g, "<br/>")}</div><div style="font-size:8px;color:#64748B;line-height:1.1;margin-top:2px;">${ps.desc.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`plat_svc_${i}`, html, psx, 698, 96, 114, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 
@@ -236,7 +236,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   controls.forEach((ct, i) => {
     const cx = 30 + i * 251;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ct.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${ct.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${ct.desc}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ct.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${ct.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${ct.desc}</div></td></tr></table>`;
     rect(`ct_pod_${i}`, html, cx, 852, 242, 36, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 

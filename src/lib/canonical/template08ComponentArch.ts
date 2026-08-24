@@ -63,7 +63,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
   primaryUsers.forEach((u, i) => {
     const ux = 218 + i * 138;
-    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:11px;">${u.icon}</span><div style="font-size:6.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:11px;">${u.icon}</span><div style="font-size:8px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`user_pod_${i}`, html, ux, 86, 130, 28, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
@@ -89,7 +89,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
         <td style="width:22px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:13px;">${s.icon}</span></td>
         <td style="text-align:left;vertical-align:top;padding-left:4px;">
           <div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;">${s.title}</div>
-          <div style="font-size:6px;color:#64748B;line-height:1.1;margin-top:1px;">${s.sub.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:8px;color:#64748B;line-height:1.1;margin-top:1px;">${s.sub.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
@@ -220,7 +220,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
       const html = `<table style="width:100%;height:100%;text-align:center;">
         <tr>
           <td style="width:18px;"><span style="font-size:11px;">${it.icon}</span></td>
-          <td style="text-align:left;font-size:6.5px;font-weight:700;color:#0F2A4A;line-height:1.15;">${it.title.replace(/\n/g, "<br/>")}</td>
+          <td style="text-align:left;font-size:8px;font-weight:700;color:#0F2A4A;line-height:1.15;">${it.title.replace(/\n/g, "<br/>")}</td>
         </tr>
       </table>`;
       rect(`it_${ly.code}_${i}`, html, ix, ly.y + 14, itemW - 6, ly.h - 18, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
@@ -247,7 +247,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
         <td style="width:26px;text-align:center;vertical-align:top;padding-top:4px;"><span style="font-size:15px;">${ep.icon}</span></td>
         <td style="text-align:left;vertical-align:top;padding-left:4px;">
           <div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.2;">${ep.title}</div>
-          <div style="font-size:6px;color:#64748B;line-height:1.15;margin-top:2px;">${ep.sub.replace(/\n/g, "<br/>")}</div>
+          <div style="font-size:8px;color:#64748B;line-height:1.15;margin-top:2px;">${ep.sub.replace(/\n/g, "<br/>")}</div>
         </td>
       </tr>
     </table>`;
@@ -294,7 +294,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
   gcpTech.forEach((gt, i) => {
     const gtx = 26 + i * 86;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${gt.icon}</span><div style="font-size:6.5px;font-weight:800;color:#0F2A4A;margin-top:2px;">${gt.name}</div><div style="font-size:5.5px;color:#64748B;">${gt.tech}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${gt.icon}</span><div style="font-size:8px;font-weight:800;color:#0F2A4A;margin-top:2px;">${gt.name}</div><div style="font-size:7.5px;color:#64748B;">${gt.tech}</div></div>`;
     rect(`gcp_tech_${i}`, html, gtx, 708, 80, 98, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
@@ -330,7 +330,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   ];
   chars.forEach((ch, i) => {
     const chx = 28 + i * 252;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:12px;">${ch.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7px;font-weight:800;color:#14532D;">${ch.title}</div><div style="font-size:6px;color:#64748B;line-height:1.1;">${ch.desc}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:12px;">${ch.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7px;font-weight:800;color:#14532D;">${ch.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${ch.desc}</div></td></tr></table>`;
     rect(`ch_pod_${i}`, html, chx, 842, 244, 32, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 

@@ -36,7 +36,7 @@ export function generateTemplate20CiCdPipelineXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "20", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "20", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -274,7 +274,7 @@ export function generateTemplate20CiCdPipelineXml(
     const row = Math.floor(idx / 5);
     const gx = 282 + col * 74;
     const gy = 694 + row * 60;
-    cell(`tg_${idx}`, `<div style="font-size:16px;text-align:center;">${tg.icon}</div><div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${tg.t}</div>`, gx, gy, 70, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`tg_${idx}`, `<div style="font-size:16px;text-align:center;">${tg.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${tg.t}</div>`, gx, gy, 70, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // 3. Notes (w=260)

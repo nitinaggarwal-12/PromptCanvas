@@ -20,8 +20,8 @@ export function generateTemplate01ExactXml(): string {
   };
 
   // Header
-  rect('badge01', '01', 15, 12, 80, 78, 'fillColor=#0D47B5;strokeColor=#0D47B5;fontColor=#FFFFFF;fontSize=44;fontStyle=1;align=center;verticalAlign=middle;rounded=1;');
-  text('title', 'System Context Diagram', 108, 14, 430, 42, 'fontSize=30;fontStyle=1;align=left;');
+  rect('badge01', '01', 15, 12, 80, 78, 'fillColor=#0D47B5;strokeColor=#0D47B5;fontColor=#FFFFFF;fontSize=84;fontStyle=1;align=center;verticalAlign=middle;rounded=1;');
+  text('title', 'System Context Diagram', 108, 14, 430, 42, 'fontSize=80;fontStyle=1;align=left;');
   text('subtitle', 'NovaCura Integrated Healthcare Platform', 108, 53, 440, 34, 'fontSize=22;fontStyle=1;align=left;');
   rect('titleRule', '', 557, 22, 2, 64, 'fillColor=#7D8AA6;strokeColor=none;rounded=0;');
   text('description', 'This diagram shows NovaCura in its environment, the external\nactors and systems it interacts with, and the key flows.', 571, 22, 505, 62, 'fontSize=15;align=left;verticalAlign=top;');
@@ -44,14 +44,14 @@ export function generateTemplate01ExactXml(): string {
     ['actor4','📱','Mobile Users','On-the-go access\nvia mobile app\nfor patients and\nproviders',588],
   ] as const;
   actorRows.forEach(([id, icon, name, desc, y]) => {
-    text(`${id}_icon`, icon, 28, y, 54, 58, 'fontSize=38;align=center;');
+    text(`${id}_icon`, icon, 28, y, 54, 58, 'fontSize=88;align=center;');
     text(`${id}_name`, name, 108, y - 4, 105, 38, 'fontSize=14;fontStyle=1;align=left;verticalAlign=top;');
     text(`${id}_desc`, desc, 108, y + 29, 105, 85, 'fontSize=11;align=left;verticalAlign=top;');
   });
 
   // Main platform boundary
   rect('platform', '', 370, 120, 698, 614, 'strokeColor=#0647B8;strokeWidth=2;rounded=1;');
-  text('platformIcon', '♥', 455, 138, 70, 66, 'fontSize=46;fontColor=#0752B4;align=center;');
+  text('platformIcon', '♥', 455, 138, 70, 66, 'fontSize=86;fontColor=#0752B4;align=center;');
   text('platformTitle', 'NovaCura Integrated Healthcare Platform', 545, 150, 460, 44, 'fontSize=24;fontStyle=1;fontColor=#0647B8;align=left;');
 
   const caps = [
@@ -71,12 +71,12 @@ export function generateTemplate01ExactXml(): string {
   });
 
   rect('integration', '', 385, 556, 662, 70, 'strokeColor=#7EA0D2;');
-  text('integrationIcon', '🧩', 423, 566, 50, 44, 'fontSize=31;align=center;');
+  text('integrationIcon', '🧩', 423, 566, 50, 44, 'fontSize=81;align=center;');
   text('integrationTitle', 'Integration & API Layer', 500, 571, 220, 22, 'fontSize=15;fontStyle=1;fontColor=#0647B8;align=left;');
   text('integrationBody', 'REST / FHIR APIs  |  GraphQL  |  Webhooks  |  API Gateway  |  Service Orchestration', 500, 596, 500, 20, 'fontSize=11;align=left;');
 
   rect('dataPlatform', '', 385, 637, 662, 79, 'strokeColor=#7EA0D2;');
-  text('dataIcon', '▰', 423, 646, 50, 50, 'fontSize=38;fontColor=#0647B8;align=center;');
+  text('dataIcon', '▰', 423, 646, 50, 50, 'fontSize=88;fontColor=#0647B8;align=center;');
   text('dataTitle', 'Data Platform', 500, 653, 180, 22, 'fontSize=15;fontStyle=1;fontColor=#0647B8;align=left;');
   text('dataBody', 'Operational DBs  |  Data Lake  |  Data Warehouse  |  Master Data Mgmt', 500, 682, 500, 20, 'fontSize=11;align=left;');
 

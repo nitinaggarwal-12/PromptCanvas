@@ -34,7 +34,7 @@ export function generateTemplate28FailureExceptionFlowXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "28", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "28", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -73,7 +73,7 @@ export function generateTemplate28FailureExceptionFlowXml(
 
   failSources.forEach((fs, idx) => {
     const fsy = 102 + idx * 60;
-    cell(`fs_src_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fs.icon}</span><div><div style="font-size:6.5px;font-weight:800;color:#0F172A;">${fs.t}</div><div style="font-size:5px;color:#64748B;line-height:1.1;margin-top:1px;">${fs.sub}</div></div></div>`, 22, fsy, 142, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`fs_src_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fs.icon}</span><div><div style="font-size:8px;font-weight:800;color:#0F172A;">${fs.t}</div><div style="font-size:7.5px;color:#64748B;line-height:1.1;margin-top:1px;">${fs.sub}</div></div></div>`, 22, fsy, 142, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // ==================== 3. TOP CENTER: END-TO-END FLOW (x=180..1090, y=78..200, w=910) ====================
@@ -92,8 +92,8 @@ export function generateTemplate28FailureExceptionFlowXml(
   e2eSteps.forEach((es, idx) => {
     const esx = 188 + idx * 148;
     cell(`es_box_${idx}`, "", esx, 98, 142, 94, `rounded=1;arcSize=4;fillColor=${es.bg};strokeColor=${es.stroke};strokeWidth=1.2;`);
-    cell(`es_hdr_${idx}`, `<div style="font-size:6.5px;font-weight:900;color:${es.fg};text-align:center;">${es.num}. ${es.name}</div>`, esx, 100, 142, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-    cell(`es_desc_${idx}`, `<div style="font-size:5.5px;color:#0F172A;line-height:1.2;padding:2px 4px;">${es.desc}</div>`, esx, 116, 142, 74, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`es_hdr_${idx}`, `<div style="font-size:8px;font-weight:900;color:${es.fg};text-align:center;">${es.num}. ${es.name}</div>`, esx, 100, 142, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`es_desc_${idx}`, `<div style="font-size:7.5px;color:#0F172A;line-height:1.2;padding:2px 4px;">${es.desc}</div>`, esx, 116, 142, 74, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
     if (idx > 0) {
       edge(`e_es_${idx}`, `es_box_${idx - 1}`, `es_box_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
@@ -169,14 +169,14 @@ export function generateTemplate28FailureExceptionFlowXml(
 
   scenCols.forEach((sc, colIdx) => {
     const scx = 188 + colIdx * 148;
-    cell(`sc_hdr_${colIdx}`, `<div style="font-size:6px;font-weight:900;color:#1E40AF;text-align:center;line-height:1.1;">${sc.title}</div>`, scx, 226, 142, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`sc_hdr_${colIdx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;line-height:1.1;">${sc.title}</div>`, scx, 226, 142, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
     sc.steps.forEach((st, stIdx) => {
       const sty = 254 + stIdx * 64;
       if (st.diamond) {
-        cell(`st_${colIdx}_${stIdx}`, `<div style="font-size:5.5px;font-weight:800;color:#0F172A;text-align:center;">${st.t}</div>`, scx + 30, sty, 82, 48, "rhombus;fillColor=#FFFBEB;strokeColor=#FDE68A;html=1;align=center;verticalAlign=middle;");
+        cell(`st_${colIdx}_${stIdx}`, `<div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;">${st.t}</div>`, scx + 30, sty, 82, 48, "rhombus;fillColor=#FFFBEB;strokeColor=#FDE68A;html=1;align=center;verticalAlign=middle;");
       } else {
-        cell(`st_${colIdx}_${stIdx}`, `<div style="display:flex;align-items:center;justify-content:center;gap:3px;"><span style="font-size:10px;">${st.icon}</span><span style="font-size:5.5px;font-weight:800;color:${st.fg};text-align:center;line-height:1.1;">${st.t}</span></div>`, scx + 4, sty, 134, 48, `rounded=1;arcSize=4;fillColor=${st.bg};strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;`);
+        cell(`st_${colIdx}_${stIdx}`, `<div style="display:flex;align-items:center;justify-content:center;gap:3px;"><span style="font-size:10px;">${st.icon}</span><span style="font-size:7.5px;font-weight:800;color:${st.fg};text-align:center;line-height:1.1;">${st.t}</span></div>`, scx + 4, sty, 134, 48, `rounded=1;arcSize=4;fillColor=${st.bg};strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;`);
       }
 
       if (stIdx > 0) {
@@ -191,9 +191,9 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("lbl_r_cat", "EXCEPTION CATEGORIES", 1100, 80, 420, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // Headers
-  cell("ch_cat", "CATEGORY", 1104, 96, 76, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=5.5;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
-  cell("ch_desc", "DESCRIPTION", 1182, 96, 114, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=5.5;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
-  cell("ch_ex", "EXAMPLES", 1298, 96, 218, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=5.5;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
+  cell("ch_cat", "CATEGORY", 1104, 96, 76, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=8;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
+  cell("ch_desc", "DESCRIPTION", 1182, 96, 114, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=8;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
+  cell("ch_ex", "EXAMPLES", 1298, 96, 218, 14, "fillColor=#FAF5FF;fontColor=#7C3AED;fontSize=8;fontStyle=1;strokeColor=#E9D5FF;align=center;verticalAlign=middle;");
 
   const excCats = [
     { cat: "Transient", bg: "#1D4ED8", desc: "Temporary, self-resolving", ex: "Timeouts, 5xx, Network blips" },
@@ -206,15 +206,15 @@ export function generateTemplate28FailureExceptionFlowXml(
 
   excCats.forEach((ec, idx) => {
     const ecy = 112 + idx * 19;
-    cell(`ec_c_${idx}`, ec.cat, 1104, ecy, 76, 17, `shape=rectangle;rounded=1;arcSize=4;fillColor=${ec.bg};fontColor=#FFFFFF;fontSize=5px;fontStyle=1;align=center;verticalAlign=middle;`);
-    cell(`ec_d_${idx}`, `<div style="font-size:5px;line-height:1.1;color:#0F172A;padding:1px 3px;">${ec.desc}</div>`, 1182, ecy, 114, 17, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
-    cell(`ec_e_${idx}`, `<div style="font-size:5px;line-height:1.1;color:#0F172A;padding:1px 3px;">${ec.ex}</div>`, 1298, ecy, 218, 17, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
+    cell(`ec_c_${idx}`, ec.cat, 1104, ecy, 76, 17, `shape=rectangle;rounded=1;arcSize=4;fillColor=${ec.bg};fontColor=#FFFFFF;fontSize=8px;fontStyle=1;align=center;verticalAlign=middle;`);
+    cell(`ec_d_${idx}`, `<div style="font-size:7.5px;line-height:1.1;color:#0F172A;padding:1px 3px;">${ec.desc}</div>`, 1182, ecy, 114, 17, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
+    cell(`ec_e_${idx}`, `<div style="font-size:7.5px;line-height:1.1;color:#0F172A;padding:1px 3px;">${ec.ex}</div>`, 1298, ecy, 218, 17, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
   });
 
   // 2. Response Patterns (y=238..330, h=92)
   cell("box_r_patt", "", 1100, 238, 420, 92, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_r_patt", "RESPONSE PATTERNS (TOOLS &amp; TECHNIQUES)", 1100, 240, 420, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;");
-  const rPattHtml = `<div style="font-size:5.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
+  const rPattHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
     <div>🔄 <b>Retry</b> (Backoff + Jitter)</div>
     <div>🛡️ <b>Fallback / Degradation</b></div>
     <div>⚡ <b>Circuit Breaker</b> (Open/Closed)</div>
@@ -229,7 +229,7 @@ export function generateTemplate28FailureExceptionFlowXml(
   // 3. Key Artifacts (y=334..424, h=90)
   cell("box_r_art", "", 1100, 334, 420, 90, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_art", "KEY ARTIFACTS", 1100, 336, 420, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;");
-  const rArtHtml = `<div style="font-size:5.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
+  const rArtHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
     <div>📑 <b>Runbooks</b> (Per Scenario)</div>
     <div>🔔 <b>Alerts &amp; Notifications</b></div>
     <div>🎫 <b>Incident Tickets</b> (P1..P3)</div>
@@ -252,19 +252,19 @@ export function generateTemplate28FailureExceptionFlowXml(
   ];
 
   // Header Row
-  cell("sm_h_urg", "URGENCY ➔", 1106, 448, 70, 18, "fillColor=#F8FAFC;fontColor=#64748B;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  cell("sm_h_l", "Low", 1178, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  cell("sm_h_m", "Medium", 1260, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  cell("sm_h_h", "High", 1342, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-  cell("sm_h_c", "Critical", 1424, 448, 88, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_urg", "URGENCY ➔", 1106, 448, 70, 18, "fillColor=#F8FAFC;fontColor=#64748B;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_l", "Low", 1178, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_m", "Medium", 1260, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_h", "High", 1342, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_c", "Critical", 1424, 448, 88, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
 
   sevMatrix.forEach((sm, idx) => {
     const smy = 468 + idx * 28;
-    cell(`sm_r_${idx}`, sm.imp, 1106, smy, 70, 26, "fillColor=#F8FAFC;fontColor=#0F172A;fontSize=5.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-    cell(`sm_l_${idx}`, sm.l, 1178, smy, 80, 26, "fillColor=#DCFCE7;fontColor=#166534;fontSize=6;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-    cell(`sm_m_${idx}`, sm.m, 1260, smy, 80, 26, "fillColor=#FEF08A;fontColor=#854D0E;fontSize=6;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-    cell(`sm_h_${idx}`, sm.h, 1342, smy, 80, 26, "fillColor=#FED7AA;fontColor=#9A3412;fontSize=6;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
-    cell(`sm_c_${idx}`, sm.c ?? sm.h2, 1424, smy, 88, 26, "fillColor=#FECACA;fontColor=#991B1B;fontSize=6;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+    cell(`sm_r_${idx}`, sm.imp, 1106, smy, 70, 26, "fillColor=#F8FAFC;fontColor=#0F172A;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+    cell(`sm_l_${idx}`, sm.l, 1178, smy, 80, 26, "fillColor=#DCFCE7;fontColor=#166534;fontSize=8.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+    cell(`sm_m_${idx}`, sm.m, 1260, smy, 80, 26, "fillColor=#FEF08A;fontColor=#854D0E;fontSize=8.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+    cell(`sm_h_${idx}`, sm.h, 1342, smy, 80, 26, "fillColor=#FED7AA;fontColor=#9A3412;fontSize=8.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+    cell(`sm_c_${idx}`, sm.c ?? sm.h2, 1424, smy, 88, 26, "fillColor=#FECACA;fontColor=#991B1B;fontSize=8.5;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
   });
 
   // ==================== 6. BOTTOM ROW: MONITORING, ESCALATION, RECOVERY, PIR, NOTES (y=598..954, h=356) ====================
@@ -284,10 +284,10 @@ export function generateTemplate28FailureExceptionFlowXml(
     const row = Math.floor(idx / 2);
     const mx = 26 + col * 150;
     const my = 630 + row * 78;
-    cell(`mt_${idx}`, `<div style="font-size:14px;text-align:center;">${mt.icon}</div><div style="font-size:5.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${mt.t}</div>`, mx, my, 140, 68, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`mt_${idx}`, `<div style="font-size:14px;text-align:center;">${mt.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${mt.t}</div>`, mx, my, 140, 68, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  cell("bar_mon_sigs", "<b>Key Signals:</b> Error Rate, Latency, Saturation, Availability, Anomalies", 26, 912, 300, 30, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1E40AF;fontSize=5.5;html=1;align=center;verticalAlign=middle;");
+  cell("bar_mon_sigs", "<b>Key Signals:</b> Error Rate, Latency, Saturation, Availability, Anomalies", 26, 912, 300, 30, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1E40AF;fontSize=8;html=1;align=center;verticalAlign=middle;");
 
   // 2. Escalation Paths (w=340, x=344)
   cell("box_b_escl", "", 344, 598, 340, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
@@ -302,13 +302,13 @@ export function generateTemplate28FailureExceptionFlowXml(
   ];
   esclNodes.forEach((en, idx) => {
     const enx = 352 + idx * 64;
-    cell(`en_${idx}`, `<div style="font-size:14px;text-align:center;">${en.icon}</div><div style="font-size:5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${en.t}</div>`, enx, 630, 58, 78, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`en_${idx}`, `<div style="font-size:14px;text-align:center;">${en.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${en.t}</div>`, enx, 630, 58, 78, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
       edge(`e_en_${idx}`, `en_${idx - 1}`, `en_${idx}`, "strokeColor=#7C3AED;strokeWidth=1.2;endArrow=classic;endSize=3;");
     }
   });
 
-  const esclDetailHtml = `<div style="font-size:6px;line-height:1.45;color:#0F172A;padding:4px 8px;margin-top:90px;">
+  const esclDetailHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 8px;margin-top:90px;">
     <b>Escalation Timeouts:</b> L1 (5m) ➔ L2 (15m) ➔ L3 (30m) ➔ IC (30m)<br/>
     <b>Channels:</b> PagerDuty • Slack • Email • Phone • War Room
   </div>`;
@@ -317,7 +317,7 @@ export function generateTemplate28FailureExceptionFlowXml(
   // 3. Recovery & Validation (w=270, x=692)
   cell("box_b_recov", "", 692, 598, 270, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_recov", "RECOVERY &amp; VALIDATION", 692, 600, 270, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const recovHtml = `<div style="font-size:6px;line-height:1.55;color:#0F172A;padding:6px 8px;">
+  const recovHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:6px 8px;">
     ✔ <b>Restore Service / Failover Complete</b><br/><br/>
     ✔ <b>Validate Functionality (Smoke Tests)</b><br/><br/>
     ✔ <b>Check SLOs &amp; Error Rates Stabilize</b><br/><br/>
@@ -326,12 +326,12 @@ export function generateTemplate28FailureExceptionFlowXml(
   </div>`;
   cell("txt_b_recov", recovHtml, 694, 624, 266, 260, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  cell("btn_recov", "✔ Declare Resolved ➔ PIR Scheduled", 702, 894, 250, 36, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#166534;fontSize=6.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("btn_recov", "✔ Declare Resolved ➔ PIR Scheduled", 702, 894, 250, 36, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // 4. Post-Incident Activities (w=260, x=970)
   cell("box_b_pir", "", 970, 598, 260, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_b_pir", "POST-INCIDENT ACTIVITIES", 970, 600, 260, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const pirHtml = `<div style="font-size:6px;line-height:1.55;color:#0F172A;padding:6px 8px;">
+  const pirHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:6px 8px;">
     📑 <b>Root Cause Analysis (RCA)</b><br/><br/>
     📜 <b>Blameless Post-Incident Review</b><br/><br/>
     👥 <b>Action Items &amp; Owners</b><br/><br/>
@@ -340,12 +340,12 @@ export function generateTemplate28FailureExceptionFlowXml(
   </div>`;
   cell("txt_b_pir", pirHtml, 972, 624, 256, 260, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  cell("btn_pir", "Track to Closure &amp; Validate", 980, 894, 240, 36, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;fontColor=#1E40AF;fontSize=6.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("btn_pir", "Track to Closure &amp; Validate", 980, 894, 240, 36, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // 5. Notes & Legend (w=280, x=1238)
   cell("box_b_notes", "", 1238, 598, 282, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_b_notes", "NOTES &amp; RESILIENCE", 1238, 600, 282, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const notesFailHtml = `<div style="font-size:6px;line-height:1.5;color:#0F172A;padding:6px 10px;">
+  const notesFailHtml = `<div style="font-size:8px;line-height:1.5;color:#0F172A;padding:6px 10px;">
     • <b>Failure Anticipation:</b> All failures are expected. Fast recovery is the goal.<br/><br/>
     • <b>Automation:</b> Automate detection and response where safe.<br/><br/>
     • <b>AI Safeguards:</b> Guardrails + HITL for AI / model failures.<br/><br/>

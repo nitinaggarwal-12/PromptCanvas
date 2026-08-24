@@ -81,7 +81,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   extSysGroups.forEach((es, i) => {
     const esy = 158 + i * 124;
     let bHtml = "";
-    es.items.forEach(it => { bHtml += `<div style="font-size:6.5px;color:#475569;line-height:1.15;">&bull; ${it}</div>`; });
+    es.items.forEach(it => { bHtml += `<div style="font-size:8px;color:#475569;line-height:1.15;">&bull; ${it}</div>`; });
     const html = `<div style="padding:2px;"><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${es.icon}</span><b style="font-size:7.5px;color:#0F2A4A;">${es.title}</b></div><div style="margin-top:4px;padding-left:2px;">${bHtml}</div></div>`;
     rect(`ext_sys_grp_${i}`, html, 24, esy, 192, 116, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
@@ -167,7 +167,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   crossInt.forEach((ci, i) => {
     const cix = 251 + i * 92;
-    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;margin-top:1px;">${ci.title}</div><div style="font-size:6px;color:#64748B;">${ci.sub}</div></div>`;
+    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;margin-top:1px;">${ci.title}</div><div style="font-size:8px;color:#64748B;">${ci.sub}</div></div>`;
     rect(`ci_pod_${i}`, html, cix, 600, 88, 46, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
   });
 
@@ -238,7 +238,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     pY += 15;
     let bHtml = "";
     ps.items.forEach(it => {
-      bHtml += `<div style="font-size:6.5px;color:#334155;line-height:1.2;margin-bottom:2px;">&bull; ${it}</div>`;
+      bHtml += `<div style="font-size:8px;color:#334155;line-height:1.2;margin-bottom:2px;">&bull; ${it}</div>`;
     });
     rect(`ps_box_${sIdx}`, `<div style="padding:3px;">${bHtml}</div>`, 1288, pY, 244, ps.items.length * 17 + 10, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
     pY += ps.items.length * 17 + 18;
@@ -261,7 +261,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   flowSteps.forEach((fs, i) => {
     const fsx = 28 + i * 106;
-    const html = `<div style="text-align:center;padding:2px;"><div style="width:18px;height:18px;border-radius:9px;background:#15803D;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto;">${fs.num}</div><div style="font-size:6.5px;color:#334155;line-height:1.2;margin-top:3px;">${fs.title.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><div style="width:18px;height:18px;border-radius:9px;background:#15803D;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto;">${fs.num}</div><div style="font-size:8px;color:#334155;line-height:1.2;margin-top:3px;">${fs.title.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`fs_pod_${i}`, html, fsx, 696, 98, 86, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
@@ -282,7 +282,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
     const col = i % 2;
     const ptx = 698 + col * 238;
     const pty = 698 + row * 34;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:18px;text-align:center;"><span style="font-size:12px;">${pt.icon}</span></td><td style="text-align:left;padding-left:2px;"><div style="font-size:7px;font-weight:800;color:#0F2A4A;">${pt.title}</div><div style="font-size:6px;color:#64748B;">${pt.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:18px;text-align:center;"><span style="font-size:12px;">${pt.icon}</span></td><td style="text-align:left;padding-left:2px;"><div style="font-size:7px;font-weight:800;color:#0F2A4A;">${pt.title}</div><div style="font-size:8px;color:#64748B;">${pt.sub}</div></td></tr></table>`;
     rect(`pat_pod_${i}`, html, ptx, pty, 230, 30, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   });
 

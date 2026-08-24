@@ -69,37 +69,37 @@ export function generateTemplate13DecisionFlowXml(
   rect("who_qual", "<div style='font-size:7.5px;font-weight:700;color:#0F172A;'>✔ Quality</div>", 26, 236, 153, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=8;");
 
   rect("box_sources", "", 20, 288, 165, 320, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;rounded=1;");
-  rect("lbl_sources", "<div style='font-size:8px;font-weight:900;color:#FFFFFF;line-height:1.1;letter-spacing:0.3px;'>ENTERPRISE SOURCE SYSTEMS<br/><span style='font-size:6.5px;font-weight:600;opacity:0.9;'>(Controlled &amp; Governed)</span></div>", 20, 288, 165, 28, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
-  rect("src_veeva", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🟧 Veeva (Vault)<br/><span style='font-size:5.8px;color:#64748B;'>Documents</span></div>", 26, 322, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_qms", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📋 QMS / SOP<br/><span style='font-size:5.8px;color:#64748B;'>Repository</span></div>", 26, 362, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_ctms", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🩺 Clinical Trial Data<br/><span style='font-size:5.8px;color:#64748B;'>(CTMS / EDC)</span></div>", 26, 402, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_lims", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🧪 LIMS<br/><span style='font-size:5.8px;color:#64748B;'>Laboratory Data</span></div>", 26, 442, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_sap", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🏢 SAP<br/><span style='font-size:5.8px;color:#64748B;'>Enterprise Data</span></div>", 26, 482, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_etmf", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📑 eTMF<br/><span style='font-size:5.8px;color:#64748B;'>Trial Master File</span></div>", 26, 522, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
-  rect("src_lake", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🗄️ Data Lake<br/><span style='font-size:5.8px;color:#64748B;'>(Unstructured &amp; Raw)</span></div>", 26, 562, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("lbl_sources", "<div style='font-size:8px;font-weight:900;color:#FFFFFF;line-height:1.1;letter-spacing:0.3px;'>ENTERPRISE SOURCE SYSTEMS<br/><span style='font-size:8px;font-weight:600;opacity:0.9;'>(Controlled &amp; Governed)</span></div>", 20, 288, 165, 28, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
+  rect("src_veeva", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🟧 Veeva (Vault)<br/><span style='font-size:7.5px;color:#64748B;'>Documents</span></div>", 26, 322, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_qms", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📋 QMS / SOP<br/><span style='font-size:7.5px;color:#64748B;'>Repository</span></div>", 26, 362, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_ctms", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🩺 Clinical Trial Data<br/><span style='font-size:7.5px;color:#64748B;'>(CTMS / EDC)</span></div>", 26, 402, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_lims", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🧪 LIMS<br/><span style='font-size:7.5px;color:#64748B;'>Laboratory Data</span></div>", 26, 442, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_sap", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🏢 SAP<br/><span style='font-size:7.5px;color:#64748B;'>Enterprise Data</span></div>", 26, 482, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_etmf", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📑 eTMF<br/><span style='font-size:7.5px;color:#64748B;'>Trial Master File</span></div>", 26, 522, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
+  rect("src_lake", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🗄️ Data Lake<br/><span style='font-size:7.5px;color:#64748B;'>(Unstructured &amp; Raw)</span></div>", 26, 562, 153, 34, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=center;verticalAlign=middle;");
 
   // =========================================================================
   // 3. RIGHT SIDEBAR (x=1385..1580, w=195)
   // =========================================================================
   rect("box_gov", "", 1385, 72, 195, 203, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;rounded=1;");
   rect("lbl_gov", "<span style='font-size:9px;font-weight:900;color:#FFFFFF;letter-spacing:0.5px;'>GOVERNANCE RULES</span>", 1385, 72, 195, 22, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
-  rect("gov_r1", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🛡️ Data Classification<br/><span style='font-size:5.8px;color:#64748B;'>&amp; Handling</span></div>", 1391, 100, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("gov_r2", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🔒 Least Privilege<br/><span style='font-size:5.8px;color:#64748B;'>Access</span></div>", 1391, 134, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("gov_r3", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🛡️ Prompt Guardrails<br/><span style='font-size:5.8px;color:#64748B;'>&amp; Safety Filters</span></div>", 1391, 168, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("gov_r4", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🎯 Grounded Answers<br/><span style='font-size:5.8px;color:#64748B;'>Only</span></div>", 1391, 202, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("gov_r5", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📑 Full Auditability<br/><span style='font-size:5.8px;color:#64748B;'>&amp; Traceability</span></div>", 1391, 236, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("gov_r1", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🛡️ Data Classification<br/><span style='font-size:7.5px;color:#64748B;'>&amp; Handling</span></div>", 1391, 100, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("gov_r2", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🔒 Least Privilege<br/><span style='font-size:7.5px;color:#64748B;'>Access</span></div>", 1391, 134, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("gov_r3", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🛡️ Prompt Guardrails<br/><span style='font-size:7.5px;color:#64748B;'>&amp; Safety Filters</span></div>", 1391, 168, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("gov_r4", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>🎯 Grounded Answers<br/><span style='font-size:7.5px;color:#64748B;'>Only</span></div>", 1391, 202, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("gov_r5", "<div style='font-size:7.2px;font-weight:700;color:#0F172A;'>📑 Full Auditability<br/><span style='font-size:7.5px;color:#64748B;'>&amp; Traceability</span></div>", 1391, 236, 183, 28, "fillColor=#F8FAFC;strokeColor=#E2E8F0;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
 
   rect("box_outcomes", "", 1385, 286, 195, 190, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;rounded=1;");
   rect("lbl_outcomes", "<span style='font-size:9px;font-weight:900;color:#FFFFFF;letter-spacing:0.5px;'>DECISION OUTCOMES</span>", 1385, 286, 195, 22, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
-  rect("out_o1", "<div style='font-size:7px;font-weight:700;color:#16A34A;'>✔ Auto-Approve<br/><span style='font-size:5.6px;color:#64748B;'>(Automated Response)</span></div>", 1391, 313, 183, 28, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("out_o2", "<div style='font-size:7px;font-weight:700;color:#D97706;'>⭐ Manual Review<br/><span style='font-size:5.6px;color:#64748B;'>(Secondary Check)</span></div>", 1391, 345, 183, 28, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("out_o3", "<div style='font-size:7px;font-weight:700;color:#DC2626;'>🛑 Escalation<br/><span style='font-size:5.6px;color:#64748B;'>(Expert / Safety)</span></div>", 1391, 377, 183, 28, "fillColor=#FEE2E2;strokeColor=#DC2626;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("out_o4", "<div style='font-size:7px;font-weight:700;color:#0284C7;'>🔗 Workflow Trigger<br/><span style='font-size:5.6px;color:#64748B;'>(System Execution)</span></div>", 1391, 409, 183, 28, "fillColor=#E0F2FE;strokeColor=#0284C7;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
-  rect("out_o5", "<div style='font-size:7px;font-weight:700;color:#7C3AED;'>📑 Evidence Generation<br/><span style='font-size:5.6px;color:#64748B;'>(Audit / Reports)</span></div>", 1391, 441, 183, 28, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("out_o1", "<div style='font-size:7px;font-weight:700;color:#16A34A;'>✔ Auto-Approve<br/><span style='font-size:7.5px;color:#64748B;'>(Automated Response)</span></div>", 1391, 313, 183, 28, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("out_o2", "<div style='font-size:7px;font-weight:700;color:#D97706;'>⭐ Manual Review<br/><span style='font-size:7.5px;color:#64748B;'>(Secondary Check)</span></div>", 1391, 345, 183, 28, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("out_o3", "<div style='font-size:7px;font-weight:700;color:#DC2626;'>🛑 Escalation<br/><span style='font-size:7.5px;color:#64748B;'>(Expert / Safety)</span></div>", 1391, 377, 183, 28, "fillColor=#FEE2E2;strokeColor=#DC2626;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("out_o4", "<div style='font-size:7px;font-weight:700;color:#0284C7;'>🔗 Workflow Trigger<br/><span style='font-size:7.5px;color:#64748B;'>(System Execution)</span></div>", 1391, 409, 183, 28, "fillColor=#E0F2FE;strokeColor=#0284C7;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("out_o5", "<div style='font-size:7px;font-weight:700;color:#7C3AED;'>📑 Evidence Generation<br/><span style='font-size:7.5px;color:#64748B;'>(Audit / Reports)</span></div>", 1391, 441, 183, 28, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=left;verticalAlign=middle;spacingLeft=6;");
 
   rect("box_kpis", "", 1385, 484, 195, 124, "fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;rounded=1;");
   rect("lbl_kpis", "<span style='font-size:9px;font-weight:900;color:#FFFFFF;letter-spacing:0.5px;'>KPIs</span>", 1385, 484, 195, 20, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
-  rect("kpi_1", "<div style='font-size:7px;font-weight:700;color:#0F172A;'>⏱️ Decision Latency<br/><span style='font-size:5.6px;color:#64748B;'>(P50 / P95)</span></div>", 1391, 508, 183, 22, "fillColor=#F8FAFC;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=6;");
+  rect("kpi_1", "<div style='font-size:7px;font-weight:700;color:#0F172A;'>⏱️ Decision Latency<br/><span style='font-size:7.5px;color:#64748B;'>(P50 / P95)</span></div>", 1391, 508, 183, 22, "fillColor=#F8FAFC;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=6;");
   rect("kpi_2", "<div style='font-size:7px;font-weight:700;color:#0F172A;'>👤 Approval Rate (%)</div>", 1391, 532, 183, 20, "fillColor=#F8FAFC;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=6;");
   rect("kpi_3", "<div style='font-size:7px;font-weight:700;color:#0F172A;'>🎯 Grounding Score (Avg.)</div>", 1391, 554, 183, 20, "fillColor=#F8FAFC;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=6;");
   rect("kpi_4", "<div style='font-size:7px;font-weight:700;color:#0F172A;'>⚠️ Exception Rate (%)</div>", 1391, 576, 183, 20, "fillColor=#F8FAFC;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=6;");
@@ -173,8 +173,8 @@ export function generateTemplate13DecisionFlowXml(
   rect("box_rag_pipe", "", 380, 248, 980, 74, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=4 4;rounded=1;");
   rect("lbl_rag_pipe", "<span style='font-size:7.5px;font-weight:800;color:#0284C7;'>RAG &amp; KNOWLEDGE RETRIEVAL PIPELINE</span>", 680, 250, 380, 14, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   
-  rect("rag_sources", "<div style='font-size:6.8px;font-weight:700;color:#0F172A;'>Controlled Knowledge Sources<br/>" +
-    "<span style='font-size:5.8px;color:#64748B;'>Veeva Docs | QMS/SOP | Clinical Trial Data | LIMS | SAP | Data Lake</span></div>", 395, 268, 300, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("rag_sources", "<div style='font-size:8px;font-weight:700;color:#0F172A;'>Controlled Knowledge Sources<br/>" +
+    "<span style='font-size:7.5px;color:#64748B;'>Veeva Docs | QMS/SOP | Clinical Trial Data | LIMS | SAP | Data Lake</span></div>", 395, 268, 300, 44, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
   
   // Enterprise Sources feeder line into RAG
   line(nid(), 185, 305, 200, 305, "strokeColor=#0284C7;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;");
@@ -185,7 +185,7 @@ export function generateTemplate13DecisionFlowXml(
   rect("rag_gcs", "<div style='font-size:7.2px;font-weight:700;'>🗃️ Cloud<br/>Storage</div>", 725, 270, 95, 40, "fillColor=#F8FAFC;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
   rect("rag_bq", "<div style='font-size:7.2px;font-weight:700;'>📊 BigQuery</div>", 840, 270, 95, 40, "fillColor=#F8FAFC;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
   rect("rag_vec", "<div style='font-size:7.2px;font-weight:700;'>🔍 Vector<br/>Index / Search</div>", 955, 270, 110, 40, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
-  rect("rag_vertex", "<div style='font-size:7.2px;font-weight:700;'>🧠 Vertex AI<br/><span style='font-size:5.8px;color:#64748B;'>(LLM / RAG)</span></div>", 1085, 270, 110, 40, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
+  rect("rag_vertex", "<div style='font-size:7.2px;font-weight:700;'>🧠 Vertex AI<br/><span style='font-size:7.5px;color:#64748B;'>(LLM / RAG)</span></div>", 1085, 270, 110, 40, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
 
   line(nid(), 370, 285, 395, 285, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=4;", "YES");
   line(nid(), 695, 290, 725, 290, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
@@ -225,9 +225,9 @@ export function generateTemplate13DecisionFlowXml(
   line(nid(), 305, 394, 305, 418, "strokeColor=#0F172A;strokeWidth=1.5;endArrow=block;endSize=4;");
 
   // Step 5 Risk Tiers (3 wide cards)
-  rect("risk_low", "<div style='font-size:7.5px;font-weight:700;color:#16A34A;'>✔ Low<br/><span style='font-size:6px;color:#64748B;'>(Automated)</span></div>", 380, 424, 180, 36, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
-  rect("risk_med", "<div style='font-size:7.5px;font-weight:700;color:#D97706;'>👤 Medium<br/><span style='font-size:6px;color:#64748B;'>(Business Reviewer)</span></div>", 580, 424, 260, 36, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
-  rect("risk_high", "<div style='font-size:7.5px;font-weight:700;color:#DC2626;'>🛑 High<br/><span style='font-size:6px;color:#64748B;'>(Human Approval + Evidence Pack)</span></div>", 860, 424, 320, 36, "fillColor=#FEE2E2;strokeColor=#DC2626;rounded=1;align=center;verticalAlign=middle;");
+  rect("risk_low", "<div style='font-size:7.5px;font-weight:700;color:#16A34A;'>✔ Low<br/><span style='font-size:8px;color:#64748B;'>(Automated)</span></div>", 380, 424, 180, 36, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
+  rect("risk_med", "<div style='font-size:7.5px;font-weight:700;color:#D97706;'>👤 Medium<br/><span style='font-size:8px;color:#64748B;'>(Business Reviewer)</span></div>", 580, 424, 260, 36, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
+  rect("risk_high", "<div style='font-size:7.5px;font-weight:700;color:#DC2626;'>🛑 High<br/><span style='font-size:8px;color:#64748B;'>(Human Approval + Evidence Pack)</span></div>", 860, 424, 320, 36, "fillColor=#FEE2E2;strokeColor=#DC2626;rounded=1;align=center;verticalAlign=middle;");
 
   line(nid(), 370, 442, 380, 442, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
   line(nid(), 560, 442, 580, 442, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=block;endSize=3;");
@@ -340,29 +340,29 @@ export function generateTemplate13DecisionFlowXml(
   rect("box_gcp_svcs", "", 20, 770, 1560, 78, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;");
   rect("lbl_gcp_svcs", "<span style='font-size:8.5px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>NOVACURA PLATFORM SERVICES (Google Cloud)</span>", 580, 774, 440, 16, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   
-  rect("gcp_vtx", "<div style='font-size:7.2px;font-weight:700;'>🧠 Vertex AI<br/><span style='font-size:5.8px;color:#64748B;'>(LLM / RAG)</span></div>", 35, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_run", "<div style='font-size:7.2px;font-weight:700;'>🚀 Cloud Run<br/><span style='font-size:5.8px;color:#64748B;'>(Applications)</span></div>", 205, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_bq", "<div style='font-size:7.2px;font-weight:700;'>📊 BigQuery<br/><span style='font-size:5.8px;color:#64748B;'>(Analytics)</span></div>", 375, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_gcs", "<div style='font-size:7.2px;font-weight:700;'>🗃️ Cloud Storage<br/><span style='font-size:5.8px;color:#64748B;'>(Objects)</span></div>", 545, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_pub", "<div style='font-size:7.2px;font-weight:700;'>📬 Pub/Sub<br/><span style='font-size:5.8px;color:#64748B;'>(Events)</span></div>", 715, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_log", "<div style='font-size:7.2px;font-weight:700;'>📊 Cloud Logging<br/><span style='font-size:5.8px;color:#64748B;'>&amp; Monitoring</span></div>", 885, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_sec", "<div style='font-size:7.2px;font-weight:700;'>🔒 Secret Manager<br/><span style='font-size:5.8px;color:#64748B;'>(Secrets)</span></div>", 1055, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_iam", "<div style='font-size:7.2px;font-weight:700;'>🛡️ IAM<br/><span style='font-size:5.8px;color:#64748B;'>(Identity &amp; Access)</span></div>", 1225, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("gcp_dlp", "<div style='font-size:7.2px;font-weight:700;'>🛡️ Cloud DLP<br/><span style='font-size:5.8px;color:#64748B;'>(Data Protection)</span></div>", 1395, 796, 170, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_vtx", "<div style='font-size:7.2px;font-weight:700;'>🧠 Vertex AI<br/><span style='font-size:7.5px;color:#64748B;'>(LLM / RAG)</span></div>", 35, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_run", "<div style='font-size:7.2px;font-weight:700;'>🚀 Cloud Run<br/><span style='font-size:7.5px;color:#64748B;'>(Applications)</span></div>", 205, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_bq", "<div style='font-size:7.2px;font-weight:700;'>📊 BigQuery<br/><span style='font-size:7.5px;color:#64748B;'>(Analytics)</span></div>", 375, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_gcs", "<div style='font-size:7.2px;font-weight:700;'>🗃️ Cloud Storage<br/><span style='font-size:7.5px;color:#64748B;'>(Objects)</span></div>", 545, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_pub", "<div style='font-size:7.2px;font-weight:700;'>📬 Pub/Sub<br/><span style='font-size:7.5px;color:#64748B;'>(Events)</span></div>", 715, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_log", "<div style='font-size:7.2px;font-weight:700;'>📊 Cloud Logging<br/><span style='font-size:7.5px;color:#64748B;'>&amp; Monitoring</span></div>", 885, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_sec", "<div style='font-size:7.2px;font-weight:700;'>🔒 Secret Manager<br/><span style='font-size:7.5px;color:#64748B;'>(Secrets)</span></div>", 1055, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_iam", "<div style='font-size:7.2px;font-weight:700;'>🛡️ IAM<br/><span style='font-size:7.5px;color:#64748B;'>(Identity &amp; Access)</span></div>", 1225, 796, 155, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  rect("gcp_dlp", "<div style='font-size:7.2px;font-weight:700;'>🛡️ Cloud DLP<br/><span style='font-size:7.5px;color:#64748B;'>(Data Protection)</span></div>", 1395, 796, 170, 42, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
 
   // Legend Bar
   rect("box_legend", "", 20, 860, 1560, 46, "fillColor=#FFFFFF;strokeColor=#0F2A4A;strokeWidth=1.5;rounded=1;");
   rect("lbl_leg", "<span style='font-size:9px;font-weight:900;color:#FFFFFF;letter-spacing:0.5px;'>LEGEND</span>", 20, 860, 90, 46, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;align=center;verticalAlign=middle;");
 
-  rect("leg_start", "<div style='font-size:6.5px;font-weight:700;color:#166534;'>Start / End Node</div>", 125, 871, 105, 24, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
-  rect("leg_dec", "<div style='font-size:6.5px;font-weight:700;'>Decision Point</div>", 245, 871, 100, 24, "shape=rhombus;fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
-  rect("leg_proc", "<div style='font-size:6.5px;font-weight:700;'>Process / Action</div>", 360, 871, 105, 24, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
-  rect("leg_hitl", "<div style='font-size:6.5px;font-weight:700;color:#D97706;'>Human Approval / Review</div>", 480, 871, 135, 24, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
-  rect("leg_sys", "<div style='font-size:6.5px;font-weight:700;color:#0284C7;'>System / Tool Integration</div>", 630, 871, 135, 24, "fillColor=#FFFFFF;strokeColor=#0284C7;dashed=1;dashPattern=3 3;rounded=1;align=center;verticalAlign=middle;");
+  rect("leg_start", "<div style='font-size:8px;font-weight:700;color:#166534;'>Start / End Node</div>", 125, 871, 105, 24, "fillColor=#DCFCE7;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=middle;");
+  rect("leg_dec", "<div style='font-size:8px;font-weight:700;'>Decision Point</div>", 245, 871, 100, 24, "shape=rhombus;fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
+  rect("leg_proc", "<div style='font-size:8px;font-weight:700;'>Process / Action</div>", 360, 871, 105, 24, "fillColor=#FFFFFF;strokeColor=#0284C7;rounded=1;align=center;verticalAlign=middle;");
+  rect("leg_hitl", "<div style='font-size:8px;font-weight:700;color:#D97706;'>Human Approval / Review</div>", 480, 871, 135, 24, "fillColor=#FEF3C7;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
+  rect("leg_sys", "<div style='font-size:8px;font-weight:700;color:#0284C7;'>System / Tool Integration</div>", 630, 871, 135, 24, "fillColor=#FFFFFF;strokeColor=#0284C7;dashed=1;dashPattern=3 3;rounded=1;align=center;verticalAlign=middle;");
 
-  rect("leg_flow1", "<div style='font-size:6.8px;font-weight:700;color:#0F172A;'>➔ Primary Flow</div>", 780, 871, 120, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  rect("leg_flow2", "<div style='font-size:6.8px;font-weight:700;color:#0F172A;'>⇢ Conditional / Escalation</div>", 915, 871, 160, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-  rect("leg_flow3", "<div style='font-size:6.8px;font-weight:700;color:#0284C7;'>⇢ Data / Knowledge Flow</div>", 1090, 871, 160, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  rect("leg_flow1", "<div style='font-size:8px;font-weight:700;color:#0F172A;'>➔ Primary Flow</div>", 780, 871, 120, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  rect("leg_flow2", "<div style='font-size:8px;font-weight:700;color:#0F172A;'>⇢ Conditional / Escalation</div>", 915, 871, 160, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  rect("leg_flow3", "<div style='font-size:8px;font-weight:700;color:#0284C7;'>⇢ Data / Knowledge Flow</div>", 1090, 871, 160, 24, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // Footer Metadata
   rect("footer_version", "<span style='font-size:9px;color:#64748B;font-weight:600;'>Version: 1.0</span>", 20, 920, 200, 18, "strokeColor=none;fillColor=none;align=left;");

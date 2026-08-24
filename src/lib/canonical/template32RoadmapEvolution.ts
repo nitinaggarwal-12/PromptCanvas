@@ -38,7 +38,7 @@ export function generateTemplate32RoadmapEvolutionXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "32", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "32", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -201,10 +201,10 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p1_wf", "Workflow Engine", px + 126, 370, 108, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=7;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
 
       // Tier 3: Data Lake, Data WH, Vector DB, Cache
-      cell("p1_d1", "Data Lake", px + 10, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=6.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
-      cell("p1_d2", "Data<br/>Warehouse", px + 66, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=6;fontStyle=1;fontColor=#2563EB;html=1;align=center;verticalAlign=middle;");
-      cell("p1_d3", "Vector DB", px + 122, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=6.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
-      cell("p1_d4", "Cache", px + 178, 400, 56, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=6.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
+      cell("p1_d1", "Data Lake", px + 10, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=8.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
+      cell("p1_d2", "Data<br/>Warehouse", px + 66, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=8.5;fontStyle=1;fontColor=#2563EB;html=1;align=center;verticalAlign=middle;");
+      cell("p1_d3", "Vector DB", px + 122, 400, 50, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=8.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
+      cell("p1_d4", "Cache", px + 178, 400, 56, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=8.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
 
       // Tier 4: Cloud Infrastructure with Cloud icon
       cell("p1_infra", "☁️  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=7;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
@@ -218,7 +218,7 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p2_n1", "Web App", px + 10, 304, 50, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
       cell("p2_n2", "API", px + 66, 304, 50, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
       cell("p2_n3", "AI Copilot", px + 122, 304, 52, 24, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
-      cell("p2_n4", "Self-Service<br/>Analytics", px + 180, 304, 54, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=6;fontStyle=1;fontColor=#7C3AED;html=1;align=center;verticalAlign=middle;");
+      cell("p2_n4", "Self-Service<br/>Analytics", px + 180, 304, 54, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;html=1;align=center;verticalAlign=middle;");
 
       // Tier 2: Microservices & AI/ML Services
       cell("p2_ms", "Microservices", px + 10, 338, 108, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
@@ -229,9 +229,9 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p2_wa", "Workflow Automation", px + 126, 370, 108, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
 
       // Tier 3: Data Lakehouse, Vector DB, Feature Store
-      cell("p2_d1", "Data Lakehouse", px + 10, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=6.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
-      cell("p2_d2", "Vector DB", px + 88, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=6.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
-      cell("p2_d3", "Feature Store", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=6.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
+      cell("p2_d1", "Data Lakehouse", px + 10, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
+      cell("p2_d2", "Vector DB", px + 88, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
+      cell("p2_d3", "Feature Store", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
 
       // Tier 4: Cloud Infrastructure with Cloud icon
       cell("p2_infra", "☁️  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
@@ -253,9 +253,9 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p3_de", "Decision Engine", px + 126, 370, 108, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=7;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
 
       // Tier 3: Data Mesh, Real-time Analytics, AutoML Platform
-      cell("p3_d1", "Data Mesh", px + 10, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=6.5;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
-      cell("p3_d2", "Real-time<br/>Analytics", px + 88, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=6;fontStyle=1;fontColor=#EA580C;html=1;align=center;verticalAlign=middle;");
-      cell("p3_d3", "AutoML Platform", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=6.5;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
+      cell("p3_d1", "Data Mesh", px + 10, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=8.5;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
+      cell("p3_d2", "Real-time<br/>Analytics", px + 88, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=8.5;fontStyle=1;fontColor=#EA580C;html=1;align=center;verticalAlign=middle;");
+      cell("p3_d3", "AutoML Platform", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=8.5;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
 
       // Tier 4: Multi-Cloud / Hybrid with Cloud icon
       cell("p3_infra", "☁️  Multi-Cloud / Hybrid", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=7;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
@@ -344,7 +344,7 @@ export function generateTemplate32RoadmapEvolutionXml(
   ];
   matLevels.forEach((ml, idx) => {
     const mx = 24 + idx * 68;
-    cell(`mat_card_${idx}`, `<div style="font-size:8px;font-weight:900;color:#0F172A;text-align:center;">${ml.l}</div><div style="font-size:7.5px;font-weight:700;color:#1E3A8A;text-align:center;">${ml.n}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ml.d}</div>`, mx, 818, 64, 76, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;");
+    cell(`mat_card_${idx}`, `<div style="font-size:8px;font-weight:900;color:#0F172A;text-align:center;">${ml.l}</div><div style="font-size:7.5px;font-weight:700;color:#1E3A8A;text-align:center;">${ml.n}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ml.d}</div>`, mx, 818, 64, 76, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;");
     // colored dot
     cell(`mat_dot_${idx}`, "", mx + 24, 912, 16, 16, `ellipse;fillColor=${ml.col};strokeColor=${ml.col};`);
   });

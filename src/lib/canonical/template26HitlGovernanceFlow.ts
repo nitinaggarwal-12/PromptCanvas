@@ -37,7 +37,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "26", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "26", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -74,7 +74,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   ];
   inputTriggers.forEach((it, idx) => {
     const ity = 104 + idx * 58;
-    cell(`it_trig_${idx}`, `<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">${it.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 24, ity, 138, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=3;");
+    cell(`it_trig_${idx}`, `<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">${it.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 24, ity, 138, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=3;");
   });
 
   // ==================== 3. CENTER: HITL WORKFLOW & RACI (x=180..1220, y=78..450, w=1040) ====================
@@ -120,10 +120,10 @@ export function generateTemplate26HitlGovernanceFlowXml(
     cell(`ws_box_${idx}`, "", wsx, 100, 162, 142, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
     cell(`ws_hdr_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7px;font-weight:900;margin-right:4px;">${ws.num}</span> <span style="font-size:7px;font-weight:800;color:#0F172A;">${ws.name}</span></div>`, wsx, 104, 162, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-    cell(`ws_desc_${idx}`, `<div style="font-size:5.5px;color:#0F172A;line-height:1.2;padding:2px 4px;">${ws.desc}</div>`, wsx, 122, 162, 86, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`ws_desc_${idx}`, `<div style="font-size:7.5px;color:#0F172A;line-height:1.2;padding:2px 4px;">${ws.desc}</div>`, wsx, 122, 162, 86, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
     // Tag
-    cell(`ws_tag_${idx}`, ws.tag, wsx + 20, 214, 122, 20, `rounded=1;arcSize=4;fillColor=${ws.tbg};strokeColor=#CBD5E1;fontColor=${ws.tfg};fontSize=6.5;fontStyle=1;align=center;verticalAlign=middle;`);
+    cell(`ws_tag_${idx}`, ws.tag, wsx + 20, 214, 122, 20, `rounded=1;arcSize=4;fillColor=${ws.tbg};strokeColor=#CBD5E1;fontColor=${ws.tfg};fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;`);
 
     if (idx > 0) {
       edge(`e_ws_${idx}`, `ws_box_${idx - 1}`, `ws_box_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
@@ -147,8 +147,8 @@ export function generateTemplate26HitlGovernanceFlowXml(
   raciRoles.forEach((rr, idx) => {
     const rrx = 188 + idx * 132;
     cell(`rr_box_${idx}`, "", rrx, 276, 126, 112, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
-    cell(`rr_hdr_${idx}`, `<div style="font-size:6.5px;font-weight:900;color:#0F172A;text-align:center;">${rr.name}</div>`, rrx, 278, 126, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-    cell(`rr_desc_${idx}`, `<div style="font-size:5.5px;color:#0F172A;line-height:1.2;padding:2px;">${rr.desc}</div>`, rrx, 304, 126, 52, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`rr_hdr_${idx}`, `<div style="font-size:8px;font-weight:900;color:#0F172A;text-align:center;">${rr.name}</div>`, rrx, 278, 126, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`rr_desc_${idx}`, `<div style="font-size:7.5px;color:#0F172A;line-height:1.2;padding:2px;">${rr.desc}</div>`, rrx, 304, 126, 52, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
     
     // RACI Badge
     cell(`rr_badge_${idx}`, rr.raci, rrx + 44, 360, 38, 20, `shape=ellipse;fillColor=${rr.rbg};strokeColor=#FFFFFF;fontColor=#FFFFFF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;`);
@@ -156,8 +156,8 @@ export function generateTemplate26HitlGovernanceFlowXml(
 
   // RACI Legend Box (Right side of RACI row)
   cell("box_raci_leg", "", 1114, 276, 100, 112, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("lbl_raci_leg", "RACI LEGEND", 1114, 278, 100, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor:#64748B;fontSize=6.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const raciLegHtml = `<div style="font-size:6px;line-height:1.4;color:#0F172A;padding:2px 6px;">
+  cell("lbl_raci_leg", "RACI LEGEND", 1114, 278, 100, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor:#64748B;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const raciLegHtml = `<div style="font-size:8px;line-height:1.4;color:#0F172A;padding:2px 6px;">
     <b>R</b> Responsible<br/>
     <b>A</b> Accountable<br/>
     <b>C</b> Consulted<br/>
@@ -181,7 +181,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   ];
   govControls.forEach((gc, idx) => {
     const gcx = 186 + idx * 128;
-    cell(`gc_${idx}`, `<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">${gc.icon}</span><span style="font-size:5.5px;font-weight:800;color:#0F172A;line-height:1.1;">${gc.t}</span></div>`, gcx, 418, 124, 22, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`gc_${idx}`, `<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">${gc.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;line-height:1.1;">${gc.t}</span></div>`, gcx, 418, 124, 22, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // ==================== 4. MIDDLE ROW: 7 CHECKPOINTS, AUDIT TRAIL, STANDARDS (y=450..588, h=138) ====================
@@ -201,13 +201,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
 
   checkpoints.forEach((ck, idx) => {
     const ckx = 24 + idx * 126;
-    cell(`ck_${idx}`, `<div style="font-size:6px;font-weight:900;color:#1E40AF;text-align:center;line-height:1.15;">${ck.t}</div><div style="font-size:5.5px;color:#0F172A;text-align:center;line-height:1.15;margin:3px 0;">${ck.sub}</div><div style="text-align:center;"><span style="background:${ck.rbg};color:${ck.rfg};padding:1px 5px;border-radius:6px;font-size:5.5px;font-weight:800;">${ck.risk}</span></div>`, ckx, 470, 120, 110, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+    cell(`ck_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;line-height:1.15;">${ck.t}</div><div style="font-size:7.5px;color:#0F172A;text-align:center;line-height:1.15;margin:3px 0;">${ck.sub}</div><div style="text-align:center;"><span style="background:${ck.rbg};color:${ck.rfg};padding:1px 5px;border-radius:6px;font-size:7.5px;font-weight:800;">${ck.risk}</span></div>`, ckx, 470, 120, 110, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
   });
 
   // 2. Audit Trail (What We Capture) (w=290, x=922)
   cell("box_m_audit", "", 922, 450, 290, 138, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_m_audit", "AUDIT TRAIL (WHAT WE CAPTURE)", 922, 452, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const auditHtml = `<div style="font-size:6px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const auditHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     📑 <b>Request ID &amp; Context</b><br/>
     🤖 <b>AI Output / Artifacts</b><br/>
     👤 <b>Human Decisions &amp; Comments</b><br/>
@@ -221,7 +221,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   // 3. Standards & Compliance (w=296, x=1220)
   cell("box_m_std", "", 1220, 450, 300, 138, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_m_std", "STANDARDS &amp; COMPLIANCE", 1220, 452, 300, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const stdHtml = `<div style="font-size:5.5px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+  const stdHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;padding:2px 6px;">
     ✔ <b>EU AI Act</b> (Risk Management &amp; Oversight)<br/>
     ✔ <b>ISO/IEC 42001</b> (AI Management System)<br/>
     ✔ <b>NIST AI RMF</b> (Govern, Map, Measure, Manage)<br/>
@@ -236,7 +236,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   // 1. Principles
   cell("box_r_princ", "", 1230, 78, 290, 130, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_princ", "HITL / GOVERNANCE PRINCIPLES", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const hPrincHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+  const hPrincHtml = `<div style="font-size:8px;line-height:1.3;color:#0F172A;padding:2px 6px;">
     ✔ <b>Human oversight for high-risk decisions</b><br/>
     ✔ <b>Clear roles, responsibilities &amp; escalation paths</b><br/>
     ✔ <b>Explainability &amp; transparency</b><br/>
@@ -250,7 +250,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   // 2. Escalation Paths
   cell("box_r_escl", "", 1230, 214, 290, 110, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_r_escl", "ESCALATION PATHS", 1230, 216, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const esclHtml = `<div style="font-size:6px;line-height:1.35;color:#0F172A;padding:2px 6px;text-align:center;">
+  const esclHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;text-align:center;">
     👤 <b>Level 1: Reviewer / SME</b><br/>⬇<br/>
     👥 <b>Level 2: Approver / Manager</b><br/>⬇<br/>
     ⚖️ <b>Level 3: Compliance / Legal</b><br/>⬇<br/>
@@ -261,7 +261,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
   // 3. Key Risks
   cell("box_r_risks", "", 1230, 328, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
   cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 330, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const hRisksHtml = `<div style="font-size:5.5px;line-height:1.25;color:#0F172A;padding:2px 6px;">
+  const hRisksHtml = `<div style="font-size:7.5px;line-height:1.25;color:#0F172A;padding:2px 6px;">
     🔴 <b>Incorrect / biased AI output</b><br/>
     🔴 <b>Inadequate human review</b><br/>
     🔴 <b>Policy non-compliance</b><br/>
@@ -294,13 +294,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
     const row = Math.floor(idx / 5);
     const gx = 26 + col * 132;
     const gy = 626 + row * 92;
-    cell(`gt_${idx}`, `<div style="font-size:14px;text-align:center;">${gt.icon}</div><div style="font-size:6px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${gt.t}</div>`, gx, gy, 124, 82, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`gt_${idx}`, `<div style="font-size:14px;text-align:center;">${gt.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${gt.t}</div>`, gx, gy, 124, 82, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Notes below Tech (y=836..954, h=118)
   cell("box_b_notes", "", 16, 836, 680, 118, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("lbl_b_notes", "NOTES", 16, 838, 680, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=7.5;fontStyle=1;align=left;padding=4;");
-  const hNotesHtml = `<div style="font-size:6.5px;line-height:1.4;color:#0F172A;padding:2px 8px;">
+  const hNotesHtml = `<div style="font-size:8px;line-height:1.4;color:#0F172A;padding:2px 8px;">
     • All high-risk interactions require human oversight.<br/>
     • Design for idempotency, retries and graceful degradation.<br/>
     • Maintain end-to-end traceability for all decisions.
@@ -320,10 +320,10 @@ export function generateTemplate26HitlGovernanceFlowXml(
   ];
   obsIcons.forEach((ob, idx) => {
     const obx = 716 + idx * 82;
-    cell(`ob_${idx}`, `<div style="font-size:16px;text-align:center;">${ob.icon}</div><div style="font-size:6px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ob.t}</div>`, obx, 628, 76, 78, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`ob_${idx}`, `<div style="font-size:16px;text-align:center;">${ob.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ob.t}</div>`, obx, 628, 76, 78, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  const obsDetailsHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:6px 12px;margin-top:90px;">
+  const obsDetailsHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:6px 12px;margin-top:90px;">
     ✔ <b>Audit Log Retention:</b> Immutable 7-year storage for FDA 21 CFR Part 11.<br/>
     ✔ <b>Reviewer SLA Tracking:</b> Alert when review queue latency exceeds 15 minutes.<br/>
     ✔ <b>Drift &amp; Anomaly Monitoring:</b> Real-time detection of model confidence degradation.

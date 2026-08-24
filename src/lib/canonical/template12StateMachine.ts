@@ -325,7 +325,7 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
   const s6Html = `<div style="text-align:center;">
     <div style="font-size:8.5px;font-weight:900;color:#C2410C;">S6</div>
     <div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.05;">REVIEW DECISION</div>
-    <div style="font-size:6.5px;color:#64748B;">Approved?</div>
+    <div style="font-size:8px;color:#64748B;">Approved?</div>
   </div>`;
   c.push(`<mxCell id="state_s6" value="${E(s6Html)}" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="515" y="320" width="110" height="65" as="geometry"/></mxCell>`);
 

@@ -38,7 +38,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "24", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "24", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=82;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
@@ -76,7 +76,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   intSources.forEach((is, idx) => {
     const isy = 120 + idx * 32;
-    cell(`is_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${is.icon}</span><span style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;">${is.t}</span></div>`, 26, isy, 134, 28, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`is_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${is.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.1;">${is.t}</span></div>`, 26, isy, 134, 28, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // External Sources Box
@@ -91,7 +91,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   extSources.forEach((es, idx) => {
     const esy = 314 + idx * 34;
-    cell(`es_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${es.icon}</span><span style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;">${es.t}</span></div>`, 26, esy, 134, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`es_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${es.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.1;">${es.t}</span></div>`, 26, esy, 134, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // Pure 0° Horizontal edge from Sources to Pipeline
@@ -173,7 +173,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
 
     stg.cards.forEach((cd, cIdx) => {
       const cy = 124 + cIdx * 62;
-      cell(`stg_${sIdx}_c_${cIdx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.15;">${cd.t}</span></div>`, sx + 4, cy, 130, 56, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
+      cell(`stg_${sIdx}_c_${cIdx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.15;">${cd.t}</span></div>`, sx + 4, cy, 130, 56, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
     });
 
     if (sIdx > 0) {
@@ -196,7 +196,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   kStores.forEach((ks, idx) => {
     const kx = 190 + idx * 170;
-    cell(`ks_${idx}`, `<div style="display:flex;align-items:center;gap:4px;padding:0 2px;"><span style="font-size:14px;">${ks.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${ks.t}</span></div>`, kx, 418, 162, 46, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`ks_${idx}`, `<div style="display:flex;align-items:center;gap:4px;padding:0 2px;"><span style="font-size:14px;">${ks.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.1;">${ks.t}</span></div>`, kx, 418, 162, 46, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // Pure 90° Vertical dashed droplines from Pipeline Stages down to Knowledge Stores
@@ -223,13 +223,13 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   ragPatterns.forEach((rp, idx) => {
     const rpx = 26 + idx * 138;
-    cell(`rp_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#1E40AF;text-align:center;">${rp.title}</div><div style="font-size:12px;text-align:center;margin:4px 0;">${rp.flow}</div><div style="font-size:6px;color:#64748B;text-align:center;">${rp.sub}</div>`, rpx, 526, 128, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+    cell(`rp_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#1E40AF;text-align:center;">${rp.title}</div><div style="font-size:12px;text-align:center;margin:4px 0;">${rp.flow}</div><div style="font-size:8px;color:#64748B;text-align:center;">${rp.sub}</div>`, rpx, 526, 128, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
   });
 
   // RAG Response Example (w=346, x=874)
   cell("box_resp_ex", "", 874, 510, 346, 124, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_resp_ex", "RAG RESPONSE EXAMPLE", 874, 512, 346, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const respExHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+  const respExHtml = `<div style="font-size:8px;line-height:1.3;color:#0F172A;padding:2px 6px;">
     <b>Q:</b> What are the requirements for eCTD submissions?<br/>
     <b>A:</b> eCTD submissions must follow ICH M4 guidelines and include Module 1 (Regional), Module 2 (CTD Summaries), Module 3 (Quality)...<br/>
     <b style="color:#1E40AF;">Sources:</b><br/>
@@ -243,7 +243,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 1. RAG Design Principles
   cell("box_r_princ", "", 1230, 78, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_princ", "RAG DESIGN PRINCIPLES", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const rPrincHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const rPrincHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     ✔ <b>Retrieve only relevant context</b><br/>
     ✔ <b>Maximize accuracy &amp; traceability</b><br/>
     ✔ <b>Minimize hallucinations</b> with grounding<br/>
@@ -255,7 +255,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 2. Retrieval Strategies
   cell("box_r_strat", "", 1230, 218, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_r_strat", "RETRIEVAL STRATEGIES", 1230, 220, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const rStratHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const rStratHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     🧠 <b>Vector Similarity Search</b> (Semantic)<br/>
     📑 <b>Keyword / BM25 Search</b> (Lexical)<br/>
     🔄 <b>Hybrid Search</b> (Vector + Lexical)<br/>
@@ -267,7 +267,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 3. Guardrails & Controls
   cell("box_r_guards", "", 1230, 358, 290, 134, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_r_guards", "GUARDRAILS &amp; CONTROLS", 1230, 360, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
-  const rGuardsHtml = `<div style="font-size:6.5px;line-height:1.35;color:#0F172A;padding:2px 6px;">
+  const rGuardsHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
     🛡️ <b>Prompt Injection Detection</b><br/>
     🛡️ <b>Toxicity &amp; Safety Filters</b><br/>
     ✔ <b>Groundedness Check</b> (Answer vs Context)<br/>
@@ -279,7 +279,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 4. Key Risks
   cell("box_r_risks", "", 1230, 498, 290, 136, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
   cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 500, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  const rRisksHtml = `<div style="font-size:6px;line-height:1.3;color:#0F172A;padding:2px 6px;">
+  const rRisksHtml = `<div style="font-size:8px;line-height:1.3;color:#0F172A;padding:2px 6px;">
     🔴 <b>Irrelevant or outdated context</b><br/>
     🔴 <b>Hallucinations / Incorrect answers</b><br/>
     🔴 <b>Sensitive data leakage</b><br/>
@@ -309,14 +309,14 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   ragTechs.forEach((rt, idx) => {
     const rtx = 180 + idx * 110;
-    cell(`rt_${idx}`, `<div style="text-align:center;"><span style="font-size:14px;">${rt.icon}</span><div style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;margin-top:1px;">${rt.t}</div></div>`, rtx, 650, 104, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`rt_${idx}`, `<div style="text-align:center;"><span style="font-size:14px;">${rt.icon}</span><div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.1;margin-top:1px;">${rt.t}</div></div>`, rtx, 650, 104, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // ==================== 8. BOTTOM ROW: 5 CARDS (y=726..954, h=228) ====================
   // 1. Quality & Evaluation Metrics (w=230)
   cell("box_b_metrics", "", 16, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_metrics", "QUALITY &amp; EVALUATION", 16, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const bMetricsHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+  const bMetricsHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 6px;">
     ✔ <b>Answer Relevance (Precision@K)</b><br/>
     ✔ <b>Context Precision &amp; Recall</b><br/>
     ✔ <b>Groundedness Score</b><br/>
@@ -342,7 +342,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   ];
   highFlow.forEach((hf, idx) => {
     const hfx = 262 + idx * 58;
-    cell(`hf_${idx}`, `<div style="font-size:14px;text-align:center;">${hf.icon}</div><div style="font-size:5.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${hf.t}</div>`, hfx, 780, 52, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`hf_${idx}`, `<div style="font-size:14px;text-align:center;">${hf.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${hf.t}</div>`, hfx, 780, 52, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
       // Pure 0° Horizontal edge between flow nodes
       edge(`e_hf_${idx}`, `hf_${idx - 1}`, `hf_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
@@ -352,7 +352,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 3. Observability & Monitoring (w=230)
   cell("box_b_obs", "", 742, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
   cell("lbl_b_obs", "OBSERVABILITY &amp; MONITORING", 742, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
-  const bObsHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+  const bObsHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 6px;">
     🔍 <b>Query Logs &amp; Traces</b><br/>
     ⚙️ <b>Retriever Performance</b><br/>
     💰 <b>LLM Usage &amp; Costs</b><br/>
@@ -364,7 +364,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 4. Governance & Compliance (w=230)
   cell("box_b_gov", "", 980, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_gov", "GOVERNANCE &amp; COMPLIANCE", 980, 728, 230, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const bGovHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 6px;">
+  const bGovHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 6px;">
     📑 <b>Data Classification &amp; Handling</b><br/>
     🔒 <b>Retention &amp; Deletion Policies</b><br/>
     🛡️ <b>Access Control &amp; Audit</b><br/>
@@ -376,7 +376,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
   // 5. Notes (w=302)
   cell("box_b_notes", "", 1218, 726, 302, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_b_notes", "NOTES", 1218, 728, 302, 18, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const bNotesHtml = `<div style="font-size:6.5px;line-height:1.45;color:#0F172A;padding:4px 8px;">
+  const bNotesHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 8px;">
     • All data encrypted at rest and in transit.<br/>
     • Access controlled via IAM and least privilege.<br/>
     • Design for idempotency, retries, and resilience.<br/>
