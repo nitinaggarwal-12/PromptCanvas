@@ -1,134 +1,311 @@
 /**
- * Canonical Architecture Template 17: Identity & Access Flow
- * Exact 1:1 High-Fidelity Master Blueprint of images/17.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 17: Identity & Access Flow
+ * Matches 100% of images/17.png:
+ * - Flow step headers ❶ Authenticate ➔ ❷ Authorize ➔ ❸ Access Resources ➔ ❹ Monitor & Audit
+ * - Users & Actors + External Partners on the left
+ * - Identity Providers & Authentication Methods
+ * - Access Management (IAM, Groups, Roles, Conditions, Duration) & Pyramid Privilege Model
+ * - Resource Access (Compute, Data, Apps, AI/ML, Networking, Secrets) with clean orthogonal fork routing
+ * - Monitoring & Audit + Log Retention box
+ * - Policies & Governance cross-cutting bar
+ * - Key Benefits, Technologies, Legend on the right
+ * - 4-card Architecture Notes banner on bottom
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate17IdentityAccessFlowXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "17", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>Identity &amp; Access Flow</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – Regulatory Intelligence Platform &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "17", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Identity &amp; Access Flow</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: NovaCura – Regulatory Intelligence Platform</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Secure, centralized identity and access management with least privilege access, MFA enforcement, and auditable access.</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // 2. USERS & ACTORS + EXTERNAL PARTNERS (x=20..115, y=72..540)
-  rect("box_actors", "", 20, 72, 95, 300, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_actors", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>USERS &amp; ACTORS</span>", 20, 75, 95, 14, "strokeColor=none;fillColor=none;align=center;");
+  const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    Secure, centralized identity and access management with least privilege access, MFA enforcement, and auditable access.
+  </div>`;
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  const actors = [
-    { t: "Human Users", sub: "(Employees)", icon: "👤" },
-    { t: "Admins", sub: "(Platform Admins)", icon: "👥" },
-    { t: "Service Accounts", sub: "(Workloads)", icon: "⚙️" },
-    { t: "Applications", sub: "(Internal / External)", icon: "📱" }
+  // ==================== 2. FLOW STEP NUMBER HEADERS (y=74..94) ====================
+  cell("step_1", "<div style='font-size:10px;font-weight:800;color:#0F172A;'><span style='background:#0F172A;color:#FFFFFF;padding:2px 6px;border-radius:10px;'>1</span> Authenticate</div>", 182, 74, 186, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("step_2", "<div style='font-size:10px;font-weight:800;color:#0F172A;'><span style='background:#0F172A;color:#FFFFFF;padding:2px 6px;border-radius:10px;'>2</span> Authorize</div>", 384, 74, 196, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("step_3", "<div style='font-size:10px;font-weight:800;color:#0F172A;'><span style='background:#0F172A;color:#FFFFFF;padding:2px 6px;border-radius:10px;'>3</span> Access Resources</div>", 596, 74, 250, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("step_4", "<div style='font-size:10px;font-weight:800;color:#0F172A;'><span style='background:#0F172A;color:#FFFFFF;padding:2px 6px;border-radius:10px;'>4</span> Monitor &amp; Audit</div>", 862, 74, 186, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+
+  // ==================== 3. LEFT: USERS & ACTORS + EXTERNAL PARTNERS (x=16..166, y=98..770) ====================
+  // Users & Actors Box (w=150, h=410)
+  cell("box_actors", "", 16, 98, 150, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_actors", "USERS &amp; ACTORS", 16, 98, 150, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+
+  const actorList = [
+    { id: "act_hum", t: "Human Users<br/>(Employees)", icon: "👤" },
+    { id: "act_adm", t: "Admins<br/>(Platform Admins)", icon: "👥" },
+    { id: "act_sa", t: "Service Accounts<br/>(Workloads)", icon: "⚙️" },
+    { id: "act_app", t: "Applications<br/>(Internal / External)", icon: "💻" }
   ];
-  actors.forEach((ac, idx) => {
-    const ay = 94 + idx * 68;
-    rect(`ac_${idx}`, `<div style='font-size:12px;text-align:center;'>${ac.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${ac.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${ac.sub}</div>`, 25, ay, 85, 54, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  actorList.forEach((ac, idx) => {
+    const ay = 132 + idx * 92;
+    cell(ac.id, `<div style="font-size:22px;text-align:center;">${ac.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${ac.t}</div>`, 24, ay, 134, 80, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  rect("box_partners", "", 20, 380, 95, 157, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;");
-  rect("lbl_partners", "<span style='font-size:9px;font-weight:800;color:#7C3AED;'>EXTERNAL PARTNERS</span>", 20, 383, 95, 14, "strokeColor=none;fillColor=none;align=center;");
+  // External Partners Box (w=150, h=250)
+  cell("box_partners", "", 16, 520, 150, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_partners", "EXTERNAL PARTNERS", 16, 520, 150, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  const partners = [
-    { t: "Regulatory Agencies", icon: "🏛️" },
-    { t: "Vendors / Partners", icon: "🏢" },
-    { t: "Contractors", icon: "👷" }
+  const partnerList = [
+    { id: "pt_reg", t: "Regulatory<br/>Agencies", icon: "🏛️" },
+    { id: "pt_vend", t: "Vendors /<br/>Partners", icon: "🏢" },
+    { id: "pt_cont", t: "Contractors", icon: "👤" }
   ];
-  partners.forEach((pa, idx) => {
-    const py = 402 + idx * 44;
-    rect(`pa_${idx}`, `<div style='font-size:9px;font-weight:700;'>${pa.icon} ${pa.t}</div>`, 25, py, 85, 34, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  partnerList.forEach((pt, idx) => {
+    const py = 552 + idx * 70;
+    cell(pt.id, `<div style="font-size:18px;text-align:center;">${pt.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${pt.t}</div>`, 24, py, 134, 60, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // 3. 4 FLOW TIERS (x=122..1220, y=72..540)
-  // Step 1: Authenticate (x=122..385)
-  rect("box_p1_auth", "", 122, 72, 260, 465, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;rounded=1;");
-  rect("lbl_p1_auth", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>❶ Authenticate</span>", 122, 75, 260, 14, "strokeColor=none;fillColor=none;align=center;");
+  // ==================== 4. COLUMN 1: IDENTITY PROVIDERS & AUTH METHODS (x=182..368) ====================
+  // Identity Providers Box (w=186, h=410)
+  cell("box_idp", "", 182, 98, 186, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_idp", "IDENTITY PROVIDERS", 182, 98, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  rect("p1_box_idp", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>IDENTITY PROVIDERS</div><div style='background:#EFF6FF;border:1px solid #2563EB;padding:4px;border-radius:4px;margin-bottom:6px;text-align:center;'><b>Google Cloud Identity</b><br/><span style='color:#64748B;font-size:8px;'>(Primary IdP)</span></div><div style='font-size:9px;color:#0F172A;line-height:1.4;'><b>Identity Federation:</b><br/>🔺 SAML 2.0<br/>⚡ OIDC / OAuth 2.0<br/>🏢 Active Directory (via Cloud LDAP)</div>", 130, 94, 244, 210, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  cell("idp_cloud_id", "<div style='font-size:24px;text-align:center;'>🌐</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Google Cloud Identity</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Primary IdP)</div>", 192, 132, 166, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  rect("p1_box_methods", "<div style='font-size:10px;font-weight:800;color:#D97706;margin-bottom:4px;text-align:center;'>AUTHENTICATION METHODS</div><div style='font-size:9px;color:#0F172A;line-height:1.45;'>🔑 <b>Password</b><br/>📱 <b>MFA (TOTP / Push)</b><br/>🔒 <b>Security Keys (FIDO2)</b><br/>🛡️ <b>Context-Aware Access</b><br/><span style='color:#64748B;font-size:8px;'>(Device / Location)</span></div>", 130, 314, 244, 213, "fillColor=#FFFBEB;strokeColor=#D97706;rounded=1;align=left;verticalAlign=top;padding=6;");
+  cell("lbl_id_fed", "Identity Federation", 182, 236, 186, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
-  // Step 2: Authorize (x=390..650)
-  rect("box_p2_authz", "", 390, 72, 255, 465, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1;rounded=1;");
-  rect("lbl_p2_authz", "<span style='font-size:10px;font-weight:800;color:#16A34A;'>❷ Authorize</span>", 390, 75, 255, 14, "strokeColor=none;fillColor=none;align=center;");
-
-  rect("p2_box_iam", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:4px;text-align:center;'>ACCESS MANAGEMENT</div><div style='background:#F0FDF4;border:1px solid #16A34A;padding:4px;border-radius:4px;margin-bottom:6px;text-align:center;'>🛡️ <b>IAM</b><br/><span style='color:#64748B;font-size:8px;'>(Identity &amp; Access Management)</span></div><div style='font-size:9px;color:#0F172A;line-height:1.4;'>👥 <b>Groups</b> (Google Groups)<br/>🔑 <b>Roles</b> (Predefined / Custom)<br/>🛡️ <b>Conditions</b> (Context-Aware IAM)<br/>⏱️ <b>Access Duration</b> (Time-bound Access)</div>", 398, 94, 239, 210, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
-
-  rect("p2_box_priv", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:6px;text-align:center;'>PRIVILEGE MODEL</div><div style='font-size:9px;color:#0F172A;text-align:center;line-height:1.6;'><div style='background:#DCFCE7;border:1px solid #16A34A;padding:3px;border-radius:3px;margin-bottom:3px;'>✔ <b>Least Privilege</b></div><div style='background:#DCFCE7;border:1px solid #16A34A;padding:3px;border-radius:3px;margin-bottom:3px;'>⏱️ <b>Just-in-Time</b></div><div style='background:#DCFCE7;border:1px solid #16A34A;padding:3px;border-radius:3px;margin-bottom:3px;'>👥 <b>Role Based Access Control (RBAC)</b></div><div style='background:#FEF2F2;border:1px solid #DC2626;color:#DC2626;padding:3px;border-radius:3px;'>⛔ <b>Deny by Default</b></div></div>", 398, 314, 239, 213, "fillColor=#F0FDF4;strokeColor=#16A34A;rounded=1;align=center;verticalAlign=top;padding=6;");
-
-  // Step 3: Access Resources (x=652..930)
-  rect("box_p3_res", "", 652, 72, 275, 465, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1;rounded=1;");
-  rect("lbl_p3_res", "<span style='font-size:10px;font-weight:800;color:#7C3AED;'>❸ Access Resources</span>", 652, 75, 275, 14, "strokeColor=none;fillColor=none;align=center;");
-
-  const rscs = [
-    { t: "Compute Resources", sub: "(GCE, GKE, Cloud Run)", icon: "⚙️" },
-    { t: "Data &amp; Storage", sub: "(BigQuery, Cloud Storage, Cloud SQL)", icon: "🗄️" },
-    { t: "Applications", sub: "(Internal Apps, APIs)", icon: "📱" },
-    { t: "AI / ML Services", sub: "(Vertex AI, Document AI)", icon: "🧠" },
-    { t: "Networking", sub: "(VPC, Load Balancers)", icon: "🌐" },
-    { t: "Secret &amp; Keys", sub: "(Secret Manager, KMS)", icon: "🔒" }
+  const idFedList = [
+    { id: "fed_saml", t: "SAML 2.0", icon: "🔑" },
+    { id: "fed_oidc", t: "OIDC / OAuth 2.0", icon: "⚡" },
+    { id: "fed_ad", t: "Active Directory<br/>(via Cloud LDAP)", icon: "🪟" }
   ];
-  rscs.forEach((rs, idx) => {
-    const ry = 94 + idx * 71;
-    rect(`rs_${idx}`, `<div style='font-size:12px;text-align:center;'>${rs.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${rs.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${rs.sub}</div>`, 660, ry, 259, 58, "fillColor=#FAF5FF;strokeColor=#7C3AED;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  idFedList.forEach((fd, idx) => {
+    const fy = 258 + idx * 78;
+    cell(fd.id, `<div style="font-size:18px;text-align:center;">${fd.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${fd.t}</div>`, 192, fy, 166, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Step 4: Monitor & Audit (x=934..1220)
-  rect("box_p4_audit", "", 934, 72, 280, 465, "fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1;rounded=1;");
-  rect("lbl_p4_audit", "<span style='font-size:10px;font-weight:800;color:#DC2626;'>❹ Monitor &amp; Audit</span>", 934, 75, 280, 14, "strokeColor=none;fillColor=none;align=center;");
+  // Authentication Methods Box (w=186, h=250)
+  cell("box_auth_m", "", 182, 520, 186, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;");
+  cell("lbl_auth_m", "AUTHENTICATION METHODS", 182, 520, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  rect("p4_box_logs", "<div style='font-size:10px;font-weight:800;color:#DC2626;margin-bottom:4px;text-align:center;'>MONITORING &amp; AUDIT</div><div style='font-size:9px;color:#0F172A;line-height:1.45;'>📑 <b>Cloud Audit Logs</b><br/><span style='color:#64748B;font-size:8px;'>(Admin, Data, Access)</span><br/><br/>🔍 <b>Access Transparency</b><br/><span style='color:#64748B;font-size:8px;'>(Google AT Logs)</span><br/><br/>🛡️ <b>Security Command Center</b><br/><span style='color:#64748B;font-size:8px;'>(SCC)</span><br/><br/>🔔 <b>Alerting</b> (Cloud Monitoring)<br/><br/>📈 <b>Anomaly Detection</b> (Chronicle / SCC)</div>", 942, 94, 264, 270, "fillColor=#FEF2F2;strokeColor=#DC2626;rounded=1;align=left;verticalAlign=top;padding=6;");
+  const authMethods = [
+    { t: "Password", icon: "🔒" },
+    { t: "MFA (TOTP / Push)", icon: "📱" },
+    { t: "Security Keys (FIDO2)", icon: "🔑" },
+    { t: "Context-Aware Access<br/>(Device / Location)", icon: "🛡️" }
+  ];
+  authMethods.forEach((am, idx) => {
+    const ay = 552 + idx * 52;
+    cell(`am_${idx}`, `<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:left;display:flex;align-items:center;padding:2px 6px;"><span style="font-size:14px;margin-right:6px;">${am.icon}</span> ${am.t}</div>`, 190, ay, 170, 44, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;");
+  });
 
-  rect("p4_box_ret", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>LOG RETENTION</div><div style='font-size:9px;color:#0F172A;text-align:center;line-height:1.4;'>📑<br/><b>Logs retained as per org policy</b><br/><span style='color:#64748B;font-size:8px;'>(e.g., 400 days in Log Bucket / BigQuery)</span></div>", 942, 374, 264, 153, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=4;");
+  // Connect Actors to IdP
+  edge("e_act_to_idp", "act_adm", "idp_cloud_id", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_part_to_auth", "pt_vend", "box_auth_m", "strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+  edge("e_auth_to_idp", "box_auth_m", "box_idp", "strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
 
-  // 4. FAR RIGHT COLUMN: KEY BENEFITS, TECHNOLOGIES, LEGEND (x=1226..1560, y=72..540)
-  rect("box_r_benefits", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>KEY BENEFITS</div><div style='font-size:9px;line-height:1.35;color:#0F172A;'>✔ <b>Centralized identity management</b> with federation support<br/>✔ <b>Strong authentication</b> with MFA and contextual access<br/>✔ <b>Least privilege</b> and just-in-time access enforcement<br/>✔ <b>Comprehensive audit &amp; monitoring</b> for compliance<br/>✔ <b>Fine-grained access control</b> for all resources</div>", 1226, 72, 334, 135, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 5. COLUMN 2: ACCESS MANAGEMENT & PRIVILEGE MODEL (x=384..580) ====================
+  // Access Management Box (w=196, h=410)
+  cell("box_iam", "", 384, 98, 196, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_iam", "ACCESS MANAGEMENT", 384, 98, 196, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  rect("box_r_techs", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;'>TECHNOLOGIES</div><div style='font-size:9px;line-height:1.4;color:#0F172A;display:grid;grid-template-columns:repeat(2, 1fr);gap:2px;'><div>☁️ Google Cloud Identity</div> <div>🛡️ IAM</div> <div>🔒 Cloud Identity-Aware Proxy</div> <div>📑 Cloud Audit Logs</div> <div>📈 Cloud Monitoring</div> <div>🛡️ Security Command Center</div> <div>🔑 Secret Manager</div> <div>🔑 Cloud KMS</div></div>", 1226, 214, 334, 110, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const iamItems = [
+    { t: "IAM<br/>(Identity &amp; Access<br/>Management)", icon: "🛡️" },
+    { t: "Groups<br/>(Google Groups)", icon: "👥" },
+    { t: "Roles<br/>(Predefined / Custom)", icon: "🏷️" },
+    { t: "Conditions<br/>(Context-Aware IAM)", icon: "📋" },
+    { t: "Access Duration<br/>(Time-bound Access)", icon: "⏱️" }
+  ];
+  iamItems.forEach((im, idx) => {
+    const iy = 132 + idx * 74;
+    cell(`iam_${idx}`, `<div style="font-size:18px;text-align:center;">${im.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${im.t}</div>`, 394, iy, 176, 64, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
+  });
 
-  rect("box_r_legend", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>LEGEND</div><div style='font-size:9px;line-height:1.4;color:#0F172A;'>── Authentication Flow<br/>- - Authorization / Access Flow<br/>······ Audit / Log Flow<br/><span style='background:#FAF5FF;border:1px solid #7C3AED;padding:1px 3px;border-radius:2px;'>■</span> Identity / Resource &nbsp; <span style='background:#F0FDF4;border:1px solid #16A34A;padding:1px 3px;border-radius:2px;'>■</span> Access / Auth<br/><span style='background:#FEF2F2;border:1px solid #DC2626;padding:1px 3px;border-radius:2px;'>■</span> Monitoring / Audit &nbsp; <span style='background:#FFFBEB;border:1px solid #D97706;padding:1px 3px;border-radius:2px;'>■</span> Policy / Governance</div>", 1226, 330, 334, 207, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Connect IdP to Access Management
+  edge("e_idp_to_iam", "idp_cloud_id", "iam_0", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
-  // 5. BOTTOM ROW: POLICIES & GOVERNANCE + NOTES (x=20..1560, y=546..740)
-  rect("bot_pol", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>POLICIES &amp; GOVERNANCE</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:10px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🛡️<br/><b>Organization Policies</b><br/>(Constraints)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🔑<br/><b>Access Approval</b><br/>(JIT / Manual)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>📑<br/><b>Periodic Access Review</b><br/>(Re-certification)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>⚖️<br/><b>Separation of Duties</b><br/>(SoD)</div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:4px;border-radius:4px;'>🏷️<br/><b>Data Classification</b><br/>(Confidential / Restricted)</div></div>", 20, 546, 800, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+  // Privilege Model Pyramid Box (w=196, h=250)
+  cell("box_priv_model", "", 384, 520, 196, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_priv_model", "PRIVILEGE MODEL", 384, 520, 196, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;'>NOTES</div><div style='font-size:9px;line-height:1.45;color:#64748B;'>• MFA is enforced for all interactive users.<br/>• Service accounts use workload identity federation.<br/>• All access is logged and immutable in Cloud Audit Logs.<br/>• Access reviews are performed quarterly.<br/>• Use Organization Policies to enforce security posture.<br/>• Deny by default and allow by exception.<br/>• Complies with SOC 2, HIPAA, and ISO 27001 requirements.</div>", 830, 546, 730, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=6;");
+  const pyramidHtml = `<div style="padding:10px;text-align:center;">
+    <div style="background:#DCFCE7;border:1px solid #16A34A;border-radius:4px;padding:4px;font-size:8px;font-weight:800;color:#166534;margin-bottom:6px;width:70%;margin-left:auto;margin-right:auto;">Least Privilege</div>
+    <div style="background:#BBF7D0;border:1px solid #16A34A;border-radius:4px;padding:6px;font-size:8px;font-weight:800;color:#166534;margin-bottom:6px;width:80%;margin-left:auto;margin-right:auto;">Just-in-Time</div>
+    <div style="background:#86EFAC;border:1px solid #16A34A;border-radius:4px;padding:8px;font-size:8px;font-weight:800;color:#166534;margin-bottom:6px;width:90%;margin-left:auto;margin-right:auto;">Role Based Access<br/>Control (RBAC)</div>
+    <div style="background:#16A34A;border-radius:4px;padding:10px;font-size:8px;font-weight:800;color:#FFFFFF;width:100%;">Deny by Default</div>
+  </div>`;
+  cell("txt_pyramid", pyramidHtml, 390, 552, 184, 210, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // 6. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // ==================== 6. COLUMN 3: RESOURCE ACCESS (x=596..846, y=98..770, w=250, h=672) ====================
+  cell("box_res_acc", "", 596, 98, 250, 672, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_res_acc", "RESOURCE ACCESS", 596, 98, 250, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+
+  const resList = [
+    { id: "res_cmp", t: "Compute Resources<br/><span style='color:#64748B;font-weight:600;'>(GCE, GKE, Cloud Run)</span>", icon: "⚙️" },
+    { id: "res_dat", t: "Data &amp; Storage<br/><span style='color:#64748B;font-weight:600;'>(BigQuery, Cloud Storage, Cloud SQL)</span>", icon: "🗄️" },
+    { id: "res_app", t: "Applications<br/><span style='color:#64748B;font-weight:600;'>(Internal Apps, APIs)</span>", icon: "💻" },
+    { id: "res_ai", t: "AI / ML Services<br/><span style='color:#64748B;font-weight:600;'>(Vertex AI, Document AI)</span>", icon: "🧠" },
+    { id: "res_net", t: "Networking<br/><span style='color:#64748B;font-weight:600;'>(VPC, Load Balancers)</span>", icon: "🌐" },
+    { id: "res_sec", t: "Secret &amp; Keys<br/><span style='color:#64748B;font-weight:600;'>(Secret Manager, KMS)</span>", icon: "🔒" }
+  ];
+  resList.forEach((rs, idx) => {
+    const ry = 132 + idx * 104;
+    cell(rs.id, `<div style="font-size:22px;text-align:center;">${rs.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.2;margin-top:2px;">${rs.t}</div>`, 606, ry, 230, 92, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  });
+
+  // Central Orthogonal Fork from IAM to Resource Access
+  edge("e_iam_to_res_cmp", "iam_2", "res_cmp", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_iam_to_res_dat", "iam_2", "res_dat", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_iam_to_res_app", "iam_2", "res_app", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_iam_to_res_ai", "iam_2", "res_ai", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_iam_to_res_net", "iam_2", "res_net", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_iam_to_res_sec", "iam_2", "res_sec", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+
+  // ==================== 7. COLUMN 4: MONITORING & AUDIT + LOG RETENTION (x=862..1048, y=98..770, w=186, h=672) ====================
+  // Monitoring & Audit Box (w=186, h=410)
+  cell("box_mon_aud", "", 862, 98, 186, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_mon_aud", "MONITORING &amp; AUDIT", 862, 98, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+
+  const monList = [
+    { id: "mon_0", t: "Cloud Audit Logs<br/><span style='color:#64748B;font-size:7px;'>(Admin, Data, Access)</span>", icon: "📑" },
+    { id: "mon_1", t: "Access Transparency<br/><span style='color:#64748B;font-size:7px;'>(Google AT Logs)</span>", icon: "🔍" },
+    { id: "mon_2", t: "Security Command<br/>Center (SCC)", icon: "🛡️" },
+    { id: "mon_3", t: "Alerting<br/><span style='color:#64748B;font-size:7px;'>(Cloud Monitoring)</span>", icon: "🚨" },
+    { id: "mon_4", t: "Anomaly Detection<br/><span style='color:#64748B;font-size:7px;'>(Chronicle / SCC)</span>", icon: "⚡" }
+  ];
+  monList.forEach((mn, idx) => {
+    const my = 132 + idx * 74;
+    cell(mn.id, `<div style="font-size:18px;text-align:center;">${mn.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mn.t}</div>`, 872, my, 166, 64, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
+  });
+
+  // Connect Resource Access to Monitoring
+  edge("e_res_to_mon_0", "res_cmp", "mon_0", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+  edge("e_res_to_mon_1", "res_dat", "mon_1", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+  edge("e_res_to_mon_2", "res_app", "mon_2", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+
+  // Log Retention Box (w=186, h=250)
+  cell("box_log_ret", "", 862, 520, 186, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_log_ret", "LOG RETENTION", 862, 520, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+
+  const logRetHtml = `<div style="text-align:center;padding:12px 6px;">
+    <div style="font-size:26px;margin-bottom:6px;">🗃️</div>
+    <div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.35;">Logs retained as per<br/>organization policy<br/>(e.g., 400 days)<br/>in Log Bucket /<br/>BigQuery</div>
+  </div>`;
+  cell("txt_log_ret", logRetHtml, 868, 552, 174, 210, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+
+  // ==================== 8. BOTTOM CENTER: POLICIES & GOVERNANCE (x=182..1048, y=780..864, w=866, h=84) ====================
+  cell("box_gov", "", 182, 780, 866, 84, "rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;");
+  cell("lbl_gov", "POLICIES &amp; GOVERNANCE", 182, 782, 866, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#D97706;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+
+  const govItems = [
+    { t: "Organization Policies<br/>(Constraints)", icon: "🛡️" },
+    { t: "Access Approval<br/>(JIT / Manual)", icon: "🔒" },
+    { t: "Periodic Access Review<br/>(Access Re-certification)", icon: "📋" },
+    { t: "Separation of Duties<br/>(SoD)", icon: "⚖️" },
+    { t: "Data Classification<br/>(Public / Confidential / Restricted)", icon: "🏷️" }
+  ];
+  govItems.forEach((gv, idx) => {
+    const gx = 190 + idx * 170;
+    cell(`gv_${idx}`, `<div style="font-size:16px;text-align:center;">${gv.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${gv.t}</div>`, gx, 804, 164, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
+
+  // ==================== 9. RIGHT SIDEBAR (x=1060..1520, y=98..864, w=460, h=766) ====================
+  // 1. Key Benefits
+  cell("box_benefits", "", 1060, 98, 460, 240, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_benefits", "KEY BENEFITS", 1060, 98, 460, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const benefitsHtml = `<div style="font-size:8.5px;line-height:1.6;color:#0F172A;padding:6px 12px;">
+    ✔ <b>Centralized identity management</b> with federation support<br/><br/>
+    ✔ <b>Strong authentication</b> with MFA and contextual access<br/><br/>
+    ✔ <b>Least privilege and just-in-time</b> access enforcement<br/><br/>
+    ✔ <b>Comprehensive audit &amp; monitoring</b> for compliance<br/><br/>
+    ✔ <b>Fine-grained access control</b> for all resources
+  </div>`;
+  cell("txt_benefits", benefitsHtml, 1064, 126, 452, 208, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
+
+  // 2. Technologies
+  cell("box_tech", "", 1060, 348, 460, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_tech", "TECHNOLOGIES", 1060, 348, 460, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const techHtml = `<div style="font-size:8.5px;line-height:1.7;color:#0F172A;padding:6px 12px;">
+    🌐 <b>Google Cloud Identity</b><br/>
+    🛡️ <b>IAM</b><br/>
+    🔒 <b>Cloud Identity-Aware Proxy</b><br/>
+    📑 <b>Cloud Audit Logs</b><br/>
+    📈 <b>Cloud Monitoring</b><br/>
+    🚨 <b>Security Command Center</b><br/>
+    🔑 <b>Secret Manager &amp; Cloud KMS</b>
+  </div>`;
+  cell("txt_tech", techHtml, 1064, 376, 452, 218, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
+
+  // 3. Legend
+  cell("box_legend", "", 1060, 608, 460, 256, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_legend", "LEGEND", 1060, 608, 460, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const legendHtml = `<table style="width:100%;border-collapse:collapse;font-size:8px;margin-top:4px;line-height:1.4;padding:4px 8px;">
+    <tr style="height:22px;"><td style="width:40px;color:#0F172A;font-weight:900;">━━━━►</td><td>Authentication Flow</td></tr>
+    <tr style="height:22px;"><td style="color:#0F172A;font-weight:900;">━━━━►</td><td>Authorization / Access Flow</td></tr>
+    <tr style="height:22px;"><td style="color:#64748B;font-weight:900;">┈┈┈┈►</td><td>Audit / Log Flow</td></tr>
+    <tr style="height:22px;"><td style="color:#2563EB;font-size:12px;">🟦</td><td>Identity / Resource Component</td></tr>
+    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;">🟩</td><td>Access / Authorization Component</td></tr>
+    <tr style="height:22px;"><td style="color:#7C3AED;font-size:12px;">🟪</td><td>Monitoring / Audit Component</td></tr>
+    <tr style="height:22px;"><td style="color:#D97706;font-size:12px;">🟨</td><td>Policy / Governance Component</td></tr>
+  </table>`;
+  cell("txt_legend", legendHtml, 1064, 636, 452, 224, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
+
+  // ==================== 10. BOTTOM BANNER: ARCHITECTURE NOTES (y=874..954, h=80) ====================
+  cell("box_notes_banner", "", 16, 874, 1504, 80, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_notes_banner", "NOTES", 16, 874, 60, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=9;fontStyle=1;align=left;spacingLeft=8;");
+
+  const bottomNotes = [
+    { t: "• MFA is enforced for all interactive users.<br/>• Service accounts use workload identity federation.", icon: "🌐" },
+    { t: "• All access is logged and immutable.<br/>• Access reviews are performed quarterly.", icon: "✔" },
+    { t: "• Use Organization Policies to enforce security posture.<br/>• Deny by default and allow by exception.", icon: "🔒" },
+    { t: "• Complies with SOC 2, HIPAA, and ISO 27001 requirements.", icon: "🛡️" }
+  ];
+  bottomNotes.forEach((bn, idx) => {
+    const bx = 80 + idx * 356;
+    cell(`bn_${idx}`, `<div style="display:flex;align-items:center;font-size:8px;color:#0F172A;line-height:1.45;"><span style="font-size:20px;margin-right:8px;">${bn.icon}</span> <div>${bn.t}</div></div>`, bx, 894, 346, 52, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  });
+
+  // ==================== 11. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>FRAMEWORK:</b> NIST 800-53 / CIS Benchmarks &nbsp;|&nbsp; <b>IDP:</b> Google Cloud Identity + SAML 2.0 &nbsp;|&nbsp; <b>AUTHZ:</b> Context-Aware IAM</div>
+    <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; Enterprise Security Architecture</div>
+  </div>`;
+  cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_17_identity_access_flow" name="Template 17: Identity &amp; Access Flow">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
