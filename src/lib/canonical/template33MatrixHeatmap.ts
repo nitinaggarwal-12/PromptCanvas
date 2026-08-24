@@ -1,124 +1,317 @@
 /**
- * Canonical Architecture Template 33: Architecture Matrix Heatmap
- * Exact 1:1 High-Fidelity Master Blueprint of images/33.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 33: Architecture Matrix Heatmap
+ * Matches 100% of images/33.png (Evaluate & Prioritize Architectural Options for NovaCura)
+ * 5 architectural options (A..E) across 9 weighted criteria, weighted score/rank rows,
+ * recommended migration path, key considerations, and top recommendation trophy card on 1536x1024.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+
 export function generateTemplate33MatrixHeatmapXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const rect = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;fontColor=#0F172A;fontSize=12;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA (Strictly non-overlapping coordinates)
-  rect("num_badge", "33", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>ARCHITECTURE MATRIX HEATMAP</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Evaluate &amp; Prioritize Architectural Options for NovaCura &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  const text = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
+    c.push(
+      `<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=12;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
 
-  // How to Read Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>HOW TO READ</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Scores: 1 (Low / Poor) to 5 (High / Excellent)<br/>Colors: <span style='color:#16A34A;font-weight:700;'>Green = Strong</span> &nbsp; <span style='color:#D97706;font-weight:700;'>Yellow = Moderate</span> &nbsp; <span style='color:#DC2626;font-weight:700;'>Red = Weak</span><br/>Higher score is better for all criteria</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  rect("hdr_num", `<span style="font-size:32px;font-weight:900;color:#FFFFFF;">33</span>`, 16, 12, 68, 54, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=1;arcSize=12;align=center;verticalAlign=middle;");
+  text(
+    "hdr_title",
+    `<div style='font-size:25px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>ARCHITECTURE MATRIX HEATMAP</div>` +
+    `<div style='font-size:13px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Evaluate &amp; Prioritize Architectural Options for NovaCura</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "align=left;"
+  );
 
-  // 2. LEFT COLUMN (x=20..160, y=72..540)
-  rect("box_l_crit", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:3px;'>EVALUATION CRITERIA (WEIGHT)</div><div style='font-size:10px;line-height:1.45;color:#0F172A;'>💼 Business Value (15%)<br/>📈 Scalability (10%)<br/>⏱️ Performance (10%)<br/>🛡️ Security (15%)<br/>⚖️ Compliance Fit (10%)<br/>💰 Cost Efficiency (10%)<br/>🛠️ Implementation (10%)<br/>⚙️ Complexity (5%)<br/>⏱️ Time to Value (5%)</div>", 20, 72, 140, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  rect("hdr_brand", brandHtml, 860, 12, 270, 54, "fillColor=none;strokeColor=none;align=left;");
 
-  rect("box_l_score", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:3px;'>SCORING GUIDE</div><div style='font-size:10px;line-height:1.4;color:#0F172A;'><b>5</b> &nbsp; Excellent – Best in class<br/><b>4</b> &nbsp; Good – Strong capability<br/><b>3</b> &nbsp; Moderate – Acceptable / Avg<br/><b>2</b> &nbsp; Low – Below average<br/><b>1</b> &nbsp; Poor – Not recommended</div>", 20, 228, 140, 95, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const howToReadHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>HOW TO READ</div><div style='font-size:8.5px;line-height:1.3;color:#0F172A;'><b>Scores:</b> 1 (Low / Poor) to 5 (High / Excellent)<br/><span style='color:#16A34A;'>● Green = Strong</span> &nbsp;|&nbsp; <span style='color:#CA8A04;'>● Yellow = Moderate</span> &nbsp;|&nbsp; <span style='color:#DC2626;'>● Red = Weak</span><br/><b>Higher score is better for all criteria</b></div>`;
+  rect("hdr_obj", howToReadHtml, 1140, 12, 380, 54, "strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;padding=6;");
 
-  rect("box_l_weight", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>WEIGHTAGE SUMMARY</div><div style='font-size:10px;color:#0F172A;'>Total Weight: <b>100%</b><br/>Higher Score = Better Fit</div>", 20, 329, 140, 52, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 2. LEFT SIDEBAR: EVALUATION CRITERIA & LEGEND (x=16..196, y=74..694) ====================
+  rect("box_l_crit", "", 16, 74, 180, 620, "strokeColor=#1E3A8A;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
+  rect("lbl_l_crit", `<b style="font-size:10.5px;color:#FFFFFF;letter-spacing:0.5px;">EVALUATION CRITERIA (WEIGHT)</b>`, 16, 74, 180, 24, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=0;align=center;");
 
-  rect("box_l_opts", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:3px;'>OPTIONS LEGEND</div><div style='font-size:10px;line-height:1.4;color:#0F172A;'><span style='background:#1E3A8A;color:#FFF;padding:1px 3px;border-radius:2px;font-weight:800;'>A</span> Current State (As-Is)<br/><span style='background:#0D9488;color:#FFF;padding:1px 3px;border-radius:2px;font-weight:800;'>B</span> Lift &amp; Shift<br/><span style='background:#7C3AED;color:#FFF;padding:1px 3px;border-radius:2px;font-weight:800;'>C</span> Modernize (Incremental)<br/><span style='background:#D97706;color:#FFF;padding:1px 3px;border-radius:2px;font-weight:800;'>D</span> Cloud Native (Target)<br/><span style='background:#2563EB;color:#FFF;padding:1px 3px;border-radius:2px;font-weight:800;'>E</span> Future State (AI-Native)</div>", 20, 387, 140, 150, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
-
-  // 3. CENTER LARGE MATRIX HEATMAP (x=168..1560, y=72..540)
-  rect("box_matrix", "", 168, 72, 1392, 465, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;rounded=1;");
-  rect("lbl_matrix", "<span style='font-size:9.5px;font-weight:800;color:#2563EB;'>ARCHITECTURE OPTIONS</span>", 168, 76, 1392, 16, "strokeColor=none;fillColor=none;align=center;");
-
-  // Option Headers with Architecture Diagram Illustrations
-  const optCols = [
-    { opt: "A", t: "CURRENT STATE (AS-IS)", sub: "On-Prem Monolith", diag: "🏢 ➔ 🗄️ Monolith", col: "#1E3A8A", x: 330, w: 180 },
-    { opt: "B", t: "LIFT &amp; SHIFT", sub: "Rehost to Cloud (IaaS)", diag: "☁️ ➔ 💻 VMs", col: "#0D9488", x: 515, w: 180 },
-    { opt: "C", t: "MODERNIZE", sub: "Incremental Modernization", diag: "☁️ ➔ 📦 Microservices", col: "#7C3AED", x: 700, w: 180 },
-    { opt: "D", t: "CLOUD NATIVE", sub: "Microservices + Managed Svcs", diag: "☁️ ➔ ⚙️ GKE + BQ", col: "#D97706", x: 885, w: 180 },
-    { opt: "E", t: "FUTURE STATE (AI-NATIVE)", sub: "AI-Native, Autonomous Platform", diag: "☁️ ➔ 🧠 Vertex + Agents", col: "#2563EB", x: 1070, w: 195 }
+  const critItems = [
+    { t: "Business Value (15%)", icon: "👤" },
+    { t: "Scalability (10%)", icon: "📈" },
+    { t: "Performance (10%)", icon: "⚡" },
+    { t: "Security (15%)", icon: "🛡️" },
+    { t: "Compliance Fit (10%)", icon: "✔" },
+    { t: "Cost Efficiency (10%)", icon: "💰" },
+    { t: "Implementation Effort (10%)", icon: "⚙️" },
+    { t: "Operational Complexity (5%)", icon: "🔄" },
+    { t: "Time to Value (5%)", icon: "⏱️" }
   ];
+  const lHtml = `<div style="font-size:7.5px;line-height:1.45;color:#0F172A;padding:4px;">
+    ${critItems.map(ci => `<div style="margin-bottom:4px;">${ci.icon} <b>${ci.t}</b></div>`).join("")}
+    <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
+    <div style="font-weight:800;color:#1E3A8A;">SCORING GUIDE</div>
+    <b>5</b> &nbsp; Excellent &nbsp;– Best in class<br/>
+    <b>4</b> &nbsp; Good &nbsp;– Strong capability<br/>
+    <b>3</b> &nbsp; Moderate &nbsp;– Acceptable / Avg<br/>
+    <b>2</b> &nbsp; Low &nbsp;– Below average<br/>
+    <b>1</b> &nbsp; Poor &nbsp;– Not recommended<br/>
+    <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
+    <div style="font-weight:800;color:#1E3A8A;">WEIGHTAGE SUMMARY</div>
+    Total Weight: <b>100%</b><br/>
+    Higher Total Score = Better Overall Fit
+  </div>`;
+  text("txt_l_crit", lHtml, 18, 100, 176, 590, "align=left;verticalAlign=top;");
 
-  optCols.forEach(oc => {
-    rect(`oc_box_${oc.opt}`, `<div style='font-size:10px;font-weight:800;color:#FFFFFF;background:${oc.col};padding:3px;border-radius:3px;margin-bottom:2px;'>${oc.opt} &nbsp; ${oc.t}</div><div style='font-size:9px;color:#0F172A;font-weight:700;'>${oc.sub}</div><div style='font-size:9px;color:#64748B;margin-top:2px;'>${oc.diag}</div>`, oc.x, 94, oc.w, 46, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
-  });
+  // ==================== 3. CENTER MATRIX: 5 OPTIONS x 9 CRITERIA (x=204..1520, y=74..694) ====================
+  rect("box_matrix_bg", "", 204, 74, 1316, 620, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
+  text("lbl_opts", "<div style='font-size:12px;font-weight:900;color:#1E3A8A;text-align:center;'>ARCHITECTURE OPTIONS</div>", 204, 78, 1316, 16, "align=center;");
 
-  rect("hdr_weight", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;'>WEIGHT<br/>(%)</div>", 1270, 94, 90, 46, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_best", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;'>BEST OPTION<br/>(BY CRITERIA)</div>", 1365, 94, 185, 46, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  const matrixTableHtml = `<table style='width:100%;border-collapse:collapse;font-size:8px;text-align:center;'>
+    <!-- Option Headers -->
+    <tr style='height:70px;'>
+      <td style='width:140px;border:none;'></td>
+      <!-- Option A -->
+      <td style='width:210px;padding:3px;vertical-align:top;'>
+        <div style='background:#1E40AF;color:#FFF;padding:3px;font-weight:900;font-size:8.5px;border-radius:3px;'>A &nbsp; CURRENT STATE (AS-IS)</div>
+        <div style='font-size:7px;color:#64748B;margin:2px 0;'>On-Prem Monolith</div>
+        <div style='font-size:14px;'>🗄️ ➔ 💻</div>
+      </td>
+      <!-- Option B -->
+      <td style='width:210px;padding:3px;vertical-align:top;'>
+        <div style='background:#0D9488;color:#FFF;padding:3px;font-weight:900;font-size:8.5px;border-radius:3px;'>B &nbsp; LIFT &amp; SHIFT</div>
+        <div style='font-size:7px;color:#64748B;margin:2px 0;'>Rehost to Cloud (IaaS)</div>
+        <div style='font-size:14px;'>☁️ ➔ 🖥️</div>
+      </td>
+      <!-- Option C -->
+      <td style='width:210px;padding:3px;vertical-align:top;'>
+        <div style='background:#7C3AED;color:#FFF;padding:3px;font-weight:900;font-size:8.5px;border-radius:3px;'>C &nbsp; MODERNIZE</div>
+        <div style='font-size:7px;color:#64748B;margin:2px 0;'>Incremental Modernization</div>
+        <div style='font-size:14px;'>📦 ➔ ⚡</div>
+      </td>
+      <!-- Option D -->
+      <td style='width:210px;padding:3px;vertical-align:top;'>
+        <div style='background:#EA580C;color:#FFF;padding:3px;font-weight:900;font-size:8.5px;border-radius:3px;'>D &nbsp; CLOUD NATIVE</div>
+        <div style='font-size:7px;color:#64748B;margin:2px 0;'>Microservices + Managed Svcs</div>
+        <div style='font-size:14px;'>☸️ ➔ 🚀</div>
+      </td>
+      <!-- Option E -->
+      <td style='width:210px;padding:3px;vertical-align:top;'>
+        <div style='background:#2563EB;color:#FFF;padding:3px;font-weight:900;font-size:8.5px;border-radius:3px;'>E &nbsp; FUTURE STATE (AI-NATIVE)</div>
+        <div style='font-size:7px;color:#64748B;margin:2px 0;'>AI-Native, Autonomous Platform</div>
+        <div style='font-size:14px;'>🧠 ➔ 🧬</div>
+      </td>
+      <td style='width:65px;font-weight:900;color:#1E3A8A;font-size:8px;'>WEIGHT<br/>(%)</td>
+      <td style='width:75px;font-weight:900;color:#1E3A8A;font-size:8px;'>BEST OPTION<br/>(BY CRITERIA)</td>
+    </tr>
 
-  // Matrix Rows
-  const mRows = [
-    { t: "💼 Business Value", a: 2, b: 3, c: 4, d: 5, e: 5, w: "15%", best: "E", aBg: "#FED7AA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#86EFAC", eBg: "#86EFAC", bestCol: "#2563EB" },
-    { t: "📈 Scalability", a: 1, b: 3, c: 4, d: 5, e: 5, w: "10%", best: "D / E", aBg: "#FECACA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#86EFAC", eBg: "#86EFAC", bestCol: "#D97706" },
-    { t: "⏱️ Performance", a: 2, b: 3, c: 4, d: 5, e: 5, w: "10%", best: "D / E", aBg: "#FED7AA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#86EFAC", eBg: "#86EFAC", bestCol: "#D97706" },
-    { t: "🛡️ Security", a: 2, b: 3, c: 4, d: 5, e: 5, w: "15%", best: "D / E", aBg: "#FED7AA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#86EFAC", eBg: "#86EFAC", bestCol: "#D97706" },
-    { t: "⚖️ Compliance Fit", a: 2, b: 3, c: 4, d: 5, e: 5, w: "10%", best: "D / E", aBg: "#FED7AA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#86EFAC", eBg: "#86EFAC", bestCol: "#D97706" },
-    { t: "💰 Cost Efficiency", a: 2, b: 4, c: 3, d: 4, e: 4, w: "10%", best: "B / D / E", aBg: "#FED7AA", bBg: "#DCFCE7", cBg: "#FEF9C3", dBg: "#DCFCE7", eBg: "#DCFCE7", bestCol: "#0D9488" },
-    { t: "🛠️ Impl Effort", a: 5, b: 4, c: 3, d: 2, e: 1, w: "10%", best: "A", aBg: "#86EFAC", bBg: "#DCFCE7", cBg: "#FEF9C3", dBg: "#FED7AA", eBg: "#FECACA", bestCol: "#1E3A8A" },
-    { t: "⚙️ Complexity", a: 2, b: 3, c: 4, d: 4, e: 3, w: "5%", best: "C / D", aBg: "#FED7AA", bBg: "#FEF9C3", cBg: "#DCFCE7", dBg: "#DCFCE7", eBg: "#FEF9C3", bestCol: "#7C3AED" },
-    { t: "⏱️ Time to Value", a: 5, b: 4, c: 3, d: 2, e: 2, w: "5%", best: "A / B", aBg: "#86EFAC", bBg: "#DCFCE7", cBg: "#FEF9C3", dBg: "#FED7AA", eBg: "#FED7AA", bestCol: "#1E3A8A" }
-  ];
+    <!-- Criteria Row 1 -->
+    <tr style='height:36px;border-top:1.5px solid #CBD5E1;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>👤 Business Value</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:13px;'>5</td>
+      <td style='font-weight:800;'>15%</td>
+      <td><span style='background:#2563EB;color:#FFF;padding:2px 6px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  mRows.forEach((mr, idx) => {
-    const y = 144 + idx * 34;
-    rect(`mr_lbl_${idx}`, `<div style='font-size:10px;font-weight:700;'>${mr.t}</div>`, 176, y, 150, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
-    rect(`mr_a_${idx}`, `<div style='font-size:9.5px;font-weight:800;'>${mr.a}</div>`, 330, y, 180, 30, `fillColor=${mr.aBg};strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;`);
-    rect(`mr_b_${idx}`, `<div style='font-size:9.5px;font-weight:800;'>${mr.b}</div>`, 515, y, 180, 30, `fillColor=${mr.bBg};strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;`);
-    rect(`mr_c_${idx}`, `<div style='font-size:9.5px;font-weight:800;'>${mr.c}</div>`, 700, y, 180, 30, `fillColor=${mr.cBg};strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;`);
-    rect(`mr_d_${idx}`, `<div style='font-size:9.5px;font-weight:800;'>${mr.d}</div>`, 885, y, 180, 30, `fillColor=${mr.dBg};strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;`);
-    rect(`mr_e_${idx}`, `<div style='font-size:9.5px;font-weight:800;'>${mr.e}</div>`, 1070, y, 195, 30, `fillColor=${mr.eBg};strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;`);
-    rect(`mr_w_${idx}`, `<div style='font-size:8px;font-weight:700;'>${mr.w}</div>`, 1270, y, 90, 30, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-    rect(`mr_best_${idx}`, `<div style='font-size:8px;font-weight:800;color:#FFFFFF;background:${mr.bestCol};padding:2px 8px;border-radius:4px;'>${mr.best}</div>`, 1365, y, 185, 30, "fillColor=#EFF6FF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  });
+    <!-- Criteria Row 2 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>📈 Scalability</td>
+      <td style='background:#FCA5A5;font-weight:900;font-size:13px;'>1</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:13px;'>5</td>
+      <td style='font-weight:800;'>10%</td>
+      <td><span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span> / <span style='background:#2563EB;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  // Summary Row: Weighted Score & Rank
-  const yScore = 144 + mRows.length * 34;
-  rect("mr_score_lbl", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;'>WEIGHTED SCORE<br/>(OUT OF 5)</div>", 176, yScore, 150, 32, "fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_sc_a", "<div style='font-size:11px;font-weight:800;color:#DC2626;'>2.40</div>", 330, yScore, 180, 32, "fillColor=#FED7AA;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_sc_b", "<div style='font-size:11px;font-weight:800;color:#D97706;'>3.25</div>", 515, yScore, 180, 32, "fillColor=#FEF9C3;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_sc_c", "<div style='font-size:11px;font-weight:800;color:#16A34A;'>3.85</div>", 700, yScore, 180, 32, "fillColor=#DCFCE7;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_sc_d", "<div style='font-size:11px;font-weight:800;color:#16A34A;'>4.45</div>", 885, yScore, 180, 32, "fillColor=#86EFAC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_sc_e", "<div style='font-size:11px;font-weight:800;color:#16A34A;'>4.50</div>", 1070, yScore, 195, 32, "fillColor=#86EFAC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+    <!-- Criteria Row 3 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>⚡ Performance</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:13px;'>5</td>
+      <td style='font-weight:800;'>10%</td>
+      <td><span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span> / <span style='background:#2563EB;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  const yRank = yScore + 34;
-  rect("mr_rank_lbl", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;'>RANK (1 = BEST)</div>", 176, yRank, 150, 26, "fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_rk_a", "<div style='font-size:9.5px;font-weight:800;'>5</div>", 330, yRank, 180, 26, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_rk_b", "<div style='font-size:9.5px;font-weight:800;'>4</div>", 515, yRank, 180, 26, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_rk_c", "<div style='font-size:9.5px;font-weight:800;'>3</div>", 700, yRank, 180, 26, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_rk_d", "<div style='font-size:9.5px;font-weight:800;'>2</div>", 885, yRank, 180, 26, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("mr_rk_e", "<div style='font-size:9.5px;font-weight:800;color:#16A34A;'>🥇 1</div>", 1070, yRank, 195, 26, "fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
+    <!-- Criteria Row 4 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>🛡️ Security</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:13px;'>5</td>
+      <td style='font-weight:800;'>15%</td>
+      <td><span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span> / <span style='background:#2563EB;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  // 4. BOTTOM ROW: FULL-WIDTH BALANCED PANELS (x=20..1560, y=546..740)
-  rect("bot_p1", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:3px;'>SUMMARY INSIGHTS</div><div style='font-size:10px;line-height:1.4;color:#0F172A;'>⭐ <b>Option E (AI-Native)</b> scores highest overall, delivering best long-term value, scalability &amp; security.<br/>⭐ <b>Option D (Cloud Native)</b> is a strong near-term target with balanced cost, performance &amp; ops.<br/>⭐ <b>Option C (Modernize)</b> offers a practical stepping stone.<br/>⭐ <b>Option B (Lift &amp; Shift)</b> provides quick relocation but limited value realization.</div>", 20, 546, 380, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=6;");
+    <!-- Criteria Row 5 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>✔ Compliance Fit</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:13px;'>5</td>
+      <td style='font-weight:800;'>10%</td>
+      <td><span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span> / <span style='background:#2563EB;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  rect("bot_p2", "<div style='font-size:8px;font-weight:800;color:#2563EB;margin-bottom:6px;text-align:center;'>RECOMMENDED PATH</div><div style='font-size:10px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:12px;'>" +
-    "<div style='border:1px solid #7C3AED;background:#F5F3FF;padding:6px;border-radius:4px;'><b>Now (Q2 2025)</b><br/><span style='color:#7C3AED;font-weight:800;'>Option C</span><br/>Modernize</div> <div>➔</div> " +
-    "<div style='border:1px solid #D97706;background:#FFFBEB;padding:6px;border-radius:4px;'><b>Next 12–18 Mos</b><br/><span style='color:#D97706;font-weight:800;'>Option D</span><br/>Cloud Native</div> <div>➔</div> " +
-    "<div style='border:1px solid #16A34A;background:#F0FDF4;padding:6px;border-radius:4px;'><b>18–36 Mos</b><br/><span style='color:#16A34A;font-weight:800;'>Option E</span><br/>AI-Native</div></div>" +
-    "<div style='font-size:9px;color:#64748B;text-align:center;margin-top:16px;'>Continuous Evolution, Observability &amp; FinOps Guardrails</div>", 410, 546, 440, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
+    <!-- Criteria Row 6 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>💰 Cost Efficiency</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='font-weight:800;'>10%</td>
+      <td><span style='background:#0D9488;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>B</span> / <span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span> / <span style='background:#2563EB;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>E</span></td>
+    </tr>
 
-  rect("bot_p3", "<div style='font-size:8px;font-weight:800;color:#16A34A;margin-bottom:3px;'>KEY CONSIDERATIONS</div><div style='font-size:10px;line-height:1.45;color:#0F172A;'>✔ Business priorities &amp; risk appetite<br/>✔ Regulatory &amp; data residency needs<br/>✔ Skill sets &amp; organizational readiness<br/>✔ Change management &amp; training<br/>✔ TCO &amp; ROI over 3–5 years</div>", 860, 546, 360, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=6;");
+    <!-- Criteria Row 7 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>⚙️ Implementation Effort</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FCA5A5;font-weight:900;font-size:13px;'>1</td>
+      <td style='font-weight:800;'>10%</td>
+      <td><span style='background:#1E40AF;color:#FFF;padding:2px 6px;border-radius:3px;font-weight:900;'>A</span></td>
+    </tr>
 
-  rect("bot_p4", "<div style='font-size:8px;font-weight:800;color:#1E3A8A;margin-bottom:3px;text-align:center;'>TOP RECOMMENDATION</div><div style='font-size:18px;text-align:center;margin-top:8px;'>🏆</div><div style='font-size:8.5px;font-weight:800;color:#16A34A;text-align:center;margin-top:4px;'>Option E: AI-Native Platform</div><div style='font-size:10px;color:#64748B;text-align:center;margin-top:4px;'>Best long-term strategic fit for NovaCura</div>", 1230, 546, 330, 190, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;rounded=1;align=center;verticalAlign=top;padding=6;");
+    <!-- Criteria Row 8 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>🔄 Operational Complexity</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='font-weight:800;'>5%</td>
+      <td><span style='background:#7C3AED;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>C</span> / <span style='background:#EA580C;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>D</span></td>
+    </tr>
 
-  // 5. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div><b>LEGEND:</b> 🟥 1 Poor &nbsp;|&nbsp; 🟧 2 Low &nbsp;|&nbsp; 🟨 3 Moderate &nbsp;|&nbsp; 🟩 4 Good &nbsp;|&nbsp; 🟩 5 Excellent</div><div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; Owner: Enterprise Architecture Team</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+    <!-- Criteria Row 9 -->
+    <tr style='height:36px;border-top:1px solid #E2E8F0;'>
+      <td style='text-align:left;padding-left:6px;font-weight:800;'>⏱️ Time to Value</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:13px;'>5</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:13px;'>4</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:13px;'>3</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='background:#FED7AA;font-weight:900;font-size:13px;'>2</td>
+      <td style='font-weight:800;'>5%</td>
+      <td><span style='background:#1E40AF;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>A</span> / <span style='background:#0D9488;color:#FFF;padding:2px 4px;border-radius:3px;font-weight:900;'>B</span></td>
+    </tr>
+
+    <!-- Weighted Score Row -->
+    <tr style='height:44px;border-top:2px solid #CBD5E1;background:#F8FAFC;'>
+      <td style='text-align:left;padding-left:6px;font-weight:900;color:#1E3A8A;'>WEIGHTED SCORE<br/>(OUT OF 5)</td>
+      <td style='background:#FCA5A5;font-weight:900;font-size:16px;'>2.40</td>
+      <td style='background:#FEF08A;font-weight:900;font-size:16px;'>3.25</td>
+      <td style='background:#BBF7D0;font-weight:900;font-size:16px;'>3.85</td>
+      <td style='background:#4ADE80;font-weight:900;font-size:16px;'>4.45</td>
+      <td style='background:#22C55E;color:#FFF;font-weight:900;font-size:16px;'>4.50</td>
+      <td colspan='2' style='font-weight:800;color:#1E3A8A;'>OVERALL RANK</td>
+    </tr>
+
+    <!-- Rank Row -->
+    <tr style='height:36px;border-top:1px solid #CBD5E1;background:#F8FAFC;'>
+      <td style='text-align:left;padding-left:6px;font-weight:900;color:#1E3A8A;'>RANK (1 = BEST)</td>
+      <td style='font-weight:900;font-size:15px;color:#DC2626;'>5</td>
+      <td style='font-weight:900;font-size:15px;color:#CA8A04;'>4</td>
+      <td style='font-weight:900;font-size:15px;color:#16A34A;'>3</td>
+      <td style='font-weight:900;font-size:15px;color:#16A34A;'>2</td>
+      <td style='font-weight:900;font-size:16px;color:#2563EB;'>1</td>
+      <td colspan='2' style='font-weight:900;color:#2563EB;'>Option E Recommended</td>
+    </tr>
+  </table>`;
+  text("txt_matrix_table", matrixTableHtml, 208, 98, 1308, 590, "align=left;verticalAlign=top;padding=4;");
+
+  // ==================== 4. BOTTOM SECTION: 4 PANELS (y=704..954, h=242) ====================
+  // Summary Insights (x=16, w=380)
+  rect("box_b_sum", "", 16, 704, 380, 242, "strokeColor=#2563EB;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
+  rect("lbl_b_sum", `<b style="font-size:10.5px;color:#2563EB;">SUMMARY INSIGHTS</b>`, 16, 704, 380, 24, "fillColor=#EFF6FF;strokeColor=#CBD5E1;rounded=0;align=center;");
+  const sumHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:6px;">
+    ⭐ <b>Option E (AI-Native)</b> scores highest overall, delivering best long-term value, scalability, security &amp; compliance.<br/><br/>
+    ⭐ <b>Option D (Cloud Native)</b> is a strong near-term target with balanced cost, performance &amp; operational efficiency.<br/><br/>
+    ⭐ <b>Option C (Modernize)</b> offers a practical stepping stone with lower risk and incremental benefits.<br/><br/>
+    ⭐ <b>Option A (As-Is)</b> has lowest strategic value and scalability; not future-ready.
+  </div>`;
+  text("txt_b_sum", sumHtml, 18, 732, 376, 210, "align=left;verticalAlign=top;padding=4;");
+
+  // Recommended Path (x=406, w=350)
+  rect("box_b_path", "", 406, 704, 350, 242, "strokeColor=#7C3AED;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
+  rect("lbl_b_path", `<b style="font-size:10.5px;color:#7C3AED;">RECOMMENDED PATH</b>`, 406, 704, 350, 24, "fillColor=#FAF5FF;strokeColor=#CBD5E1;rounded=0;align=center;");
+  const pathHtml = `<div style="font-size:8px;text-align:center;padding:6px;">
+    <div style="display:flex;justify-content:space-around;margin-top:10px;">
+      <div><span style="font-size:7px;color:#64748B;">Now (Q2 2025)</span><br/><div style="background:#7C3AED;color:#FFF;padding:4px 8px;border-radius:4px;font-weight:900;margin-top:2px;">C<br/><span style="font-size:7px;font-weight:400;">Modernize</span></div></div>
+      <div style="font-size:18px;align-self:center;">➔</div>
+      <div><span style="font-size:7px;color:#64748B;">Next 12–18 Mo</span><br/><div style="background:#EA580C;color:#FFF;padding:4px 8px;border-radius:4px;font-weight:900;margin-top:2px;">D<br/><span style="font-size:7px;font-weight:400;">Cloud Native</span></div></div>
+      <div style="font-size:18px;align-self:center;">➔</div>
+      <div><span style="font-size:7px;color:#64748B;">18–36 Months</span><br/><div style="background:#2563EB;color:#FFF;padding:4px 8px;border-radius:4px;font-weight:900;margin-top:2px;">E<br/><span style="font-size:7px;font-weight:400;">AI-Native</span></div></div>
+    </div>
+    <div style="font-size:7.5px;color:#64748B;margin-top:14px;line-height:1.4;">
+      Quick wins, carve out high value services ➔ Refactor, adopt managed services ➔ Autonomous ops &amp; ecosystem.
+    </div>
+  </div>`;
+  text("txt_b_path", pathHtml, 408, 732, 346, 210, "align=center;verticalAlign=top;padding=4;");
+
+  // Key Considerations (x=766, w=350)
+  rect("box_b_cons", "", 766, 704, 350, 242, "strokeColor=#16A34A;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
+  rect("lbl_b_cons", `<b style="font-size:10.5px;color:#16A34A;">KEY CONSIDERATIONS</b>`, 766, 704, 350, 24, "fillColor=#F0FDF4;strokeColor=#CBD5E1;rounded=0;align=center;");
+  const consHtml = `<div style="font-size:8px;line-height:1.6;color:#0F172A;padding:6px;">
+    ☑ <b>Business priorities &amp; risk appetite</b><br/>
+    ☑ <b>Regulatory &amp; data residency needs</b><br/>
+    ☑ <b>Skill sets &amp; organizational readiness</b><br/>
+    ☑ <b>Change management &amp; training</b><br/>
+    ☑ <b>TCO &amp; ROI over 3–5 years</b>
+  </div>`;
+  text("txt_b_cons", consHtml, 768, 732, 346, 210, "align=left;verticalAlign=top;padding=6;");
+
+  // Top Recommendation Trophy Card (x=1126, w=394)
+  rect("box_b_trophy", "", 1126, 704, 394, 242, "strokeColor=#2563EB;fillColor=#EFF6FF;strokeWidth=1.8;align=center;verticalAlign=top;");
+  rect("lbl_b_trophy", `<b style="font-size:10.5px;color:#1E40AF;">TOP RECOMMENDATION</b>`, 1126, 704, 394, 24, "fillColor=#DBEAFE;strokeColor=#CBD5E1;rounded=0;align=center;");
+  const trophyHtml = `<div style="text-align:center;padding:12px;">
+    <div style="font-size:36px;">🏆</div>
+    <div style="font-size:16px;font-weight:900;color:#1E40AF;margin-top:4px;">Option E</div>
+    <div style="font-size:12px;font-weight:800;color:#0F172A;margin-top:2px;">AI-Native Platform</div>
+    <div style="font-size:9.5px;color:#64748B;margin-top:8px;font-weight:600;">Best long-term strategic fit for NovaCura</div>
+  </div>`;
+  text("txt_b_trophy", trophyHtml, 1128, 732, 390, 210, "align=center;verticalAlign=middle;padding=6;");
+
+  // ==================== 5. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>LEGEND:</b> 1 Poor &nbsp;|&nbsp; 2 Low &nbsp;|&nbsp; 3 Moderate &nbsp;|&nbsp; 4 Good &nbsp;|&nbsp; 5 Excellent</div>
+    <div>Review Cadence: Annual &nbsp;|&nbsp; Enterprise Architecture Team</div>
+  </div>`;
+  rect("footer_status", footerHtml, 16, 962, 1504, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="template_33_matrix_heatmap" name="Template 33: Architecture Matrix Heatmap">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="template_33_architecture_matrix_heatmap" name="Template 33: Architecture Matrix Heatmap">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
