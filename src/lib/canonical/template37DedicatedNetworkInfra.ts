@@ -200,8 +200,8 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   );
 
   // Helper for Left Tier Label Badges (Blue circle with white number)
-  const tierBadge = (num: string, title: string, y: number, h: number) => {
-    cell(`tb_num_${num}`, num, 12, y + (h - 32) / 2, 32, 32, `shape=ellipse;fillColor=#1D4ED8;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=15;fontStyle=1;align=center;verticalAlign=middle;`);
+  const tierBadge = (num: string, title: string, y: number, h: number, color = "#1D4ED8") => {
+    cell(`tb_num_${num}`, num, 12, y + (h - 32) / 2, 32, 32, `shape=ellipse;fillColor=${color};strokeColor=${color};fontColor=#FFFFFF;fontSize=15;fontStyle=1;align=center;verticalAlign=middle;`);
     cell(`tb_lbl_${num}`, `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.2;">${title}</div>`, 50, y, 116, h, `text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;`);
   };
 
