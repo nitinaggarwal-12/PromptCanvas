@@ -2,20 +2,10 @@
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 39: Sovereign Cloud & Data Privacy Blueprint
  * Matches 100% of images/39.png:
  * - Exact 1536x1024 Canvas matching ground-truth master.
+ * - Spacious 24px-32px routing channels so all 29 arrows are bold, prominent, and clearly visible.
+ * - Precision clean edge XML syntax without duplicate point arrays.
  * - Native inline vector SVGs for all icons, badges, shields, and pods.
  * - Bold high-contrast typography, crisp borders, rich saturated colors, zero-void proportional card packing.
- * - Complete 100% arrow parity:
- *   * 3 Legend flow lines (Data, Control, Audit)
- *   * 4 Horizontal Governance chain arrows (1->2->3->4->5)
- *   * 2 Perimeter Governance drop arrows (left to Users, right to Data Exchange)
- *   * 5 Vertical Governance downward control arrows (under each gov pod -> Sovereign Cloud)
- *   * 2 Blue Ingress data arrows (Users -> Secure Access -> Sovereign Cloud)
- *   * 2 Blue Egress data arrows (Sovereign Cloud -> Controlled Exchange -> Data Exchange)
- *   * 4 Green Upward Monitoring audit arrows (Monitoring -> 4 Sovereign Cloud points)
- *   * 2 Green Perimeter Monitoring arrows (left to Users bottom, right to Data Exchange bottom)
- *   * 1 Green Audit Feedback vertical line (Right Monitoring -> Audit & Assurance Pod 5)
- *   * 1 Green Vertical Data Exchange spine
- *   * 3 Footer boundary legend lines
  */
 
 const E = (v?: string | null) =>
@@ -84,22 +74,32 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     style: string,
     pts: { x: number; y: number }[]
   ) => {
-    const pStr = pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
-    c.push(
-      `<mxCell id="${id}" edge="1" parent="1" style="${style}">
-        <mxGeometry relative="1" as="geometry">
-          <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
-          <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
-          <Array as="points">
-            ${pStr}
-          </Array>
-        </mxGeometry>
-      </mxCell>`
-    );
+    if (pts.length === 2) {
+      c.push(
+        `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
+            <mxPoint x="${pts[1].x}" y="${pts[1].y}" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>`
+      );
+    } else {
+      const midPts = pts.slice(1, -1).map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
+      c.push(
+        `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
+            <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
+            <Array as="points">
+              ${midPts}
+            </Array>
+          </mxGeometry>
+        </mxCell>`
+      );
+    }
   };
 
   // ==================== 1. TOP HEADER BANNER (y=16..76) ====================
-  // Header Badge (Rounded Rectangle)
   cell("hdr_num", "39", 16, 16, 60, 60, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
 
   cell(
@@ -125,7 +125,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   ];
   legLines.forEach((li, idx) => {
     cell(`leg_txt_${idx}`, `<span style="font-size:8.5px;font-weight:800;color:#0F172A;">${li.t}</span>`, 970, li.y - 7, 170, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    rawEdge(`leg_e_${idx}`, `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${li.color};strokeWidth=2;${li.style === "dashed" ? "dashed=1;dashPattern=4 2;" : li.style === "dotted" ? "dashed=1;dashPattern=1 2;" : ""}endArrow=classic;endSize=3;`, [
+    rawEdge(`leg_e_${idx}`, `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${li.color};strokeWidth=2;${li.style === "dashed" ? "dashed=1;dashPattern=4 2;" : li.style === "dotted" ? "dashed=1;dashPattern=1 2;" : ""}endArrow=classic;endSize=4;`, [
       { x: 914, y: li.y },
       { x: 962, y: li.y }
     ]);
@@ -149,9 +149,9 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     );
   });
 
-  // ==================== 2. TOP ENCLAVE: GOVERNANCE & SOVEREIGN OVERSIGHT (x=240..1296, y=86..176) ====================
-  cell("box_gov_top", "", 240, 86, 1056, 90, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;dashed=1;dashPattern=4 3;");
-  cell("lbl_gov_top", "GOVERNANCE & SOVEREIGN OVERSIGHT", 240, 88, 1056, 18, "fontColor=#6D28D9;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // ==================== 2. TOP ENCLAVE: GOVERNANCE & SOVEREIGN OVERSIGHT (x=240..1296, y=86..162, h=76) ====================
+  cell("box_gov_top", "", 240, 86, 1056, 76, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;dashed=1;dashPattern=4 3;");
+  cell("lbl_gov_top", "GOVERNANCE & SOVEREIGN OVERSIGHT", 240, 88, 1056, 16, "fontColor=#6D28D9;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const govPods = [
     { t: "Sovereignty Governance Board", sub: "Policy, Oversight, Accountability", svg: SVG.scales },
@@ -165,27 +165,27 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     cell(
       `gp_${idx}`,
       `<div style="display:flex;align-items:center;gap:8px;padding:2px 4px;">` +
-      SVG.circleWrap(gp.svg, "#7C3AED", "#FAF5FF", 38) +
+      SVG.circleWrap(gp.svg, "#7C3AED", "#FAF5FF", 36) +
       `<div><div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;">${gp.t}</div><div style="font-size:7.5px;font-weight:600;color:#64748B;margin-top:2px;line-height:1.15;">${gp.sub}</div></div></div>`,
       gpx,
-      108,
-      202,
-      60,
+      104,
+      182,
+      52,
       "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E9D5FF;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=4;"
     );
 
-    // Chained horizontal dashed purple arrows (1 -> 2 -> 3 -> 4 -> 5)
+    // Chained horizontal dashed purple arrows (1 -> 2 -> 3 -> 4 -> 5) with generous 26px gap
     if (idx < 4) {
-      rawEdge(`e_gov_chain_${idx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=3 2;endArrow=classic;endSize=3.5;", [
-        { x: gpx + 202, y: 138 },
-        { x: gpx + 208, y: 138 }
+      rawEdge(`e_gov_chain_${idx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 2;endArrow=classic;endSize=5;", [
+        { x: gpx + 182, y: 130 },
+        { x: gpx + 208, y: 130 }
       ]);
     }
   });
 
-  // ==================== 3. LEFT COLUMN: USERS & STAKEHOLDERS (x=16..228, y=184..684) ====================
-  cell("box_users_left", "", 16, 184, 212, 500, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
-  cell("lbl_users_left", "USERS & STAKEHOLDERS", 16, 186, 212, 24, "html=1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // ==================== 3. LEFT COLUMN: USERS & STAKEHOLDERS (x=16..212, y=190..664, w=196, h=474) ====================
+  cell("box_users_left", "", 16, 190, 196, 474, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
+  cell("lbl_users_left", "USERS & STAKEHOLDERS", 16, 192, 196, 24, "html=1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const stakeHolders = [
     { t: "Citizens / Customers", sub: "Portals, Apps,<br/>Self-Service", svg: SVG.user },
@@ -195,109 +195,109 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Support / Operations", sub: "IT Support,<br/>Operations Teams", svg: SVG.headset }
   ];
   stakeHolders.forEach((sh, idx) => {
-    const shy = 216 + idx * 92;
+    const shy = 220 + idx * 86;
     cell(
       `sh_${idx}`,
-      `<div style="display:flex;align-items:center;gap:10px;">` +
-      SVG.circleWrap(sh.svg, "#1D4ED8", "#EFF6FF", 42) +
-      `<div><div style="font-size:10.5px;font-weight:900;color:#0F172A;">${sh.t}</div><div style="font-size:8.5px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.2;">${sh.sub}</div></div></div>`,
-      22,
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      SVG.circleWrap(sh.svg, "#1D4ED8", "#EFF6FF", 40) +
+      `<div><div style="font-size:10px;font-weight:900;color:#0F172A;">${sh.t}</div><div style="font-size:8px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.2;">${sh.sub}</div></div></div>`,
+      20,
       shy,
-      200,
-      82,
-      "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=4;"
+      188,
+      76,
+      "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=2;"
     );
   });
 
-  // Secure Access Gate (x=234..296, y=390..478)
+  // Secure Access Gate (x=238..298, y=384..470, w=60, h=86)
   cell(
     "gate_mfa",
     `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">` +
     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2">${SVG.lock}</svg>` +
     `<div style="font-size:9px;font-weight:900;color:#1E40AF;line-height:1.15;margin-top:4px;">Secure<br/>Access<br/><span style="font-size:7.5px;color:#64748B;">(MFA, SSO)</span></div></div>`,
-    234,
-    390,
-    62,
-    88,
+    238,
+    384,
+    60,
+    86,
     "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=2;"
   );
 
-  // ==================== 4. CENTER: SOVEREIGN CLOUD ENVIRONMENT (x=302..1234, y=184..684) ====================
-  cell("box_sov_env", "", 302, 184, 932, 500, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#1E40AF;strokeWidth=2.2;");
-  cell("lbl_sov_env", `<div style="display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2.2">${SVG.bank}</svg><span style="font-size:12.5px;font-weight:900;color:#1E3A8A;letter-spacing:0.5px;">SOVEREIGN CLOUD ENVIRONMENT (In-Country / In-Region)</span></div>`, 302, 188, 932, 26, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  // ==================== 4. CENTER: SOVEREIGN CLOUD ENVIRONMENT (x=324..1212, y=190..664, w=888, h=474) ====================
+  cell("box_sov_env", "", 324, 190, 888, 474, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#1E40AF;strokeWidth=2.2;");
+  cell("lbl_sov_env", `<div style="display:flex;align-items:center;justify-content:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E3A8A" stroke-width="2.2">${SVG.bank}</svg><span style="font-size:12px;font-weight:900;color:#1E3A8A;letter-spacing:0.5px;">SOVEREIGN CLOUD ENVIRONMENT (In-Country / In-Region)</span></div>`, 324, 194, 888, 24, "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // Tier 1: Core Workload Pods (x=312..1224, y=218..308, h=90)
+  // Tier 1: Core Workload Pods (x=334..1202, y=222..306, h=84)
   const sovPods = [
-    { t: "Workloads", sub: "Sovereign Compute<br/>(VMs, Containers, Serverless)", svg: SVG.compute, w: 218 },
-    { t: "Data Services", sub: "Sovereign Storage,<br/>Databases, Analytics, AI/ML", svg: SVG.database, w: 224 },
-    { t: "Application Services", sub: "Integration, API,<br/>Messaging, Workflow", svg: SVG.network, w: 224 },
-    { t: "Identity & Access", sub: "Federated IAM,<br/>RBAC, PAM, CIEM", svg: SVG.idCard, w: 218 }
+    { t: "Workloads", sub: "Sovereign Compute<br/>(VMs, Containers, Serverless)", svg: SVG.compute, w: 206 },
+    { t: "Data Services", sub: "Sovereign Storage,<br/>Databases, Analytics, AI/ML", svg: SVG.database, w: 214 },
+    { t: "Application Services", sub: "Integration, API,<br/>Messaging, Workflow", svg: SVG.network, w: 214 },
+    { t: "Identity & Access", sub: "Federated IAM,<br/>RBAC, PAM, CIEM", svg: SVG.idCard, w: 206 }
   ];
-  let curSovX = 314;
+  let curSovX = 336;
   sovPods.forEach((sp, idx) => {
     cell(
       `sp_${idx}`,
-      `<div style="display:flex;align-items:center;gap:10px;">` +
-      SVG.circleWrap(sp.svg, "#1E40AF", "#EFF6FF", 42) +
-      `<div><div style="font-size:10.5px;font-weight:900;color:#0F172A;">${sp.t}</div><div style="font-size:8px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.2;">${sp.sub}</div></div></div>`,
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      SVG.circleWrap(sp.svg, "#1E40AF", "#EFF6FF", 40) +
+      `<div><div style="font-size:10px;font-weight:900;color:#0F172A;">${sp.t}</div><div style="font-size:7.5px;color:#64748B;font-weight:600;margin-top:2px;line-height:1.2;">${sp.sub}</div></div></div>`,
       curSovX,
-      218,
+      222,
       sp.w,
-      86,
-      "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;"
+      82,
+      "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=4;"
     );
     curSovX += sp.w + 10;
   });
 
-  // Tier 2: Data Classification & Residency Enforcement (y=314..398, h=84)
-  cell("box_dc_re", "", 314, 314, 908, 84, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.2;");
-  cell("lbl_dc_re", "DATA CLASSIFICATION & RESIDENCY ENFORCEMENT", 314, 316, 908, 16, "html=1;fontColor:#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 2: Data Classification & Residency Enforcement (y=312..390, h=78)
+  cell("box_dc_re", "", 336, 312, 864, 78, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.2;");
+  cell("lbl_dc_re", "DATA CLASSIFICATION & RESIDENCY ENFORCEMENT", 336, 314, 864, 16, "html=1;fontColor:#6D28D9;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const dataClasses = [
-    { t: "Public Data", w: 106, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
-    { t: "Internal Data", w: 116, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
-    { t: "Confidential Data", w: 146, c: "#EDE9FE", bc: "#C4B5FD", tc: "#4338CA" },
-    { t: "Restricted Data", w: 136, c: "#FCE7F3", bc: "#F472B6", tc: "#9D174D" },
-    { t: "Highly Restricted / Personal Data", w: 236, c: "#FEE2E2", bc: "#F87171", tc: "#991B1B" }
+    { t: "Public Data", w: 100, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
+    { t: "Internal Data", w: 110, c: "#DBEAFE", bc: "#93C5FD", tc: "#1E40AF" },
+    { t: "Confidential Data", w: 138, c: "#EDE9FE", bc: "#C4B5FD", tc: "#4338CA" },
+    { t: "Restricted Data", w: 128, c: "#FCE7F3", bc: "#F472B6", tc: "#9D174D" },
+    { t: "Highly Restricted / Personal Data", w: 220, c: "#FEE2E2", bc: "#F87171", tc: "#991B1B" }
   ];
-  let curDcX = 338;
+  let curDcX = 356;
   dataClasses.forEach((dc, idx) => {
-    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 338, dc.w, 28, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=${dc.bc};html=1;align=center;verticalAlign=middle;`);
-    curDcX += dc.w + 20;
+    cell(`dc_${idx}`, `<div style="font-size:9px;font-weight:900;color:${dc.tc};">${dc.t}</div>`, curDcX, 334, dc.w, 26, `rounded=1;arcSize=24;fillColor=${dc.c};strokeColor=${dc.bc};html=1;align=center;verticalAlign=middle;`);
+    curDcX += dc.w + 16;
   });
-  cell("dc_footer", `<div style="font-size:8.5px;font-weight:800;color:#475569;">Tagging &nbsp;•&nbsp; Labeling &nbsp;•&nbsp; Residency Rules &nbsp;•&nbsp; Automated Enforcement</div>`, 314, 372, 908, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("dc_footer", `<div style="font-size:8.5px;font-weight:800;color:#475569;">Tagging &nbsp;•&nbsp; Labeling &nbsp;•&nbsp; Residency Rules &nbsp;•&nbsp; Automated Enforcement</div>`, 336, 366, 864, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // Tier 3: Privacy & Security Controls (Built-in) (y=406..526, h=120)
-  cell("box_priv_sec", "", 314, 406, 908, 120, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;");
-  cell("lbl_priv_sec", "PRIVACY & SECURITY CONTROLS (Built-in)", 314, 408, 908, 16, "html=1;fontColor:#15803D;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 3: Privacy & Security Controls (Built-in) (y=396..506, h=110)
+  cell("box_priv_sec", "", 336, 396, 864, 110, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;");
+  cell("lbl_priv_sec", "PRIVACY & SECURITY CONTROLS (Built-in)", 336, 398, 864, 16, "html=1;fontColor:#15803D;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const privControls = [
-    { t: "Encryption", sub: "At Rest, In Transit,<br/>In Use (KMS)", svg: SVG.lock, w: 134 },
-    { t: "Data Masking &<br/>Pseudonymization", sub: "", svg: SVG.mask, w: 144 },
-    { t: "DLP & Data<br/>Discovery", sub: "", svg: SVG.search, w: 134 },
-    { t: "Consent & Preference<br/>Management", sub: "", svg: SVG.consent, w: 154 },
-    { t: "Key Management", sub: "(Sovereign KMS/HSM)", svg: SVG.key, w: 146 },
-    { t: "Zero Trust", sub: "Network Access", svg: SVG.shield, w: 134 }
+    { t: "Encryption", sub: "At Rest, In Transit,<br/>In Use (KMS)", svg: SVG.lock, w: 128 },
+    { t: "Data Masking &<br/>Pseudonymization", sub: "", svg: SVG.mask, w: 136 },
+    { t: "DLP & Data<br/>Discovery", sub: "", svg: SVG.search, w: 128 },
+    { t: "Consent & Preference<br/>Management", sub: "", svg: SVG.consent, w: 146 },
+    { t: "Key Management", sub: "(Sovereign KMS/HSM)", svg: SVG.key, w: 138 },
+    { t: "Zero Trust", sub: "Network Access", svg: SVG.shield, w: 128 }
   ];
-  let curPcX = 326;
+  let curPcX = 346;
   privControls.forEach((pc, idx) => {
     cell(
       `pc_${idx}`,
-      `<div style="display:flex;align-items:center;gap:8px;">` +
-      SVG.circleWrap(pc.svg, "#15803D", "#F0FDF4", 36) +
-      `<div><div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;">${pc.t}</div>${pc.sub ? `<div style="font-size:8px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.15;">${pc.sub}</div>` : ""}</div></div>`,
+      `<div style="display:flex;align-items:center;gap:6px;">` +
+      SVG.circleWrap(pc.svg, "#15803D", "#F0FDF4", 34) +
+      `<div><div style="font-size:9px;font-weight:900;color:#0F172A;line-height:1.15;">${pc.t}</div>${pc.sub ? `<div style="font-size:7.5px;color:#64748B;font-weight:600;margin-top:2px;line-height:1.1;">${pc.sub}</div>` : ""}</div></div>`,
       curPcX,
-      432,
+      420,
       pc.w,
-      82,
+      76,
       "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=2;"
     );
-    curPcX += pc.w + 12;
+    curPcX += pc.w + 10;
   });
 
-  // Tier 4: Infrastructure Sovereignty (y=534..668, h=134)
-  cell("box_infra_sov", "", 314, 534, 908, 134, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;");
-  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 314, 536, 908, 16, "html=1;fontColor:#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // Tier 4: Infrastructure Sovereignty (y=512..648, h=136)
+  cell("box_infra_sov", "", 336, 512, 864, 136, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;");
+  cell("lbl_infra_sov", "INFRASTRUCTURE SOVEREIGNTY", 336, 514, 864, 16, "html=1;fontColor:#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const infraItems = [
     { t: "In-Country / In-Region<br/>Data Centers", svg: SVG.building },
@@ -306,36 +306,36 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Sovereign Backups<br/>& DR", svg: SVG.cloud }
   ];
   infraItems.forEach((ii, idx) => {
-    const iix = 326 + idx * 222;
+    const iix = 348 + idx * 212;
     cell(
       `ii_${idx}`,
-      `<div style="display:flex;align-items:center;gap:10px;">` +
-      SVG.circleWrap(ii.svg, "#1D4ED8", "#EFF6FF", 42) +
-      `<div style="font-size:10px;font-weight:900;color:#0F172A;line-height:1.25;">${ii.t}</div></div>`,
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      SVG.circleWrap(ii.svg, "#1D4ED8", "#EFF6FF", 40) +
+      `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.25;">${ii.t}</div></div>`,
       iix,
-      562,
-      214,
-      92,
-      "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;"
+      538,
+      204,
+      94,
+      "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=4;"
     );
   });
 
-  // Controlled Exchange Gate (x=1240..1302, y=390..478)
+  // Controlled Exchange Gate (x=1238..1298, y=384..470, w=60, h=86)
   cell(
     "gate_ctrl",
     `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">` +
     `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.2">${SVG.lock}</svg>` +
     `<div style="font-size:9px;font-weight:900;color:#1E40AF;line-height:1.15;margin-top:4px;">Controlled<br/>Exchange<br/><span style="font-size:7.5px;color:#64748B;">(Policy Engine)</span></div></div>`,
-    1240,
-    390,
-    62,
-    88,
+    1238,
+    384,
+    60,
+    86,
     "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=2;"
   );
 
-  // ==================== 5. RIGHT COLUMN: DATA EXCHANGE & CONTROLS (x=1308..1520, y=184..684) ====================
-  cell("box_exchange_right", "", 1308, 184, 212, 500, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.8;");
-  cell("lbl_exchange_right", "DATA EXCHANGE & CONTROLS", 1308, 186, 212, 24, "html=1;fontColor:#15803D;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // ==================== 5. RIGHT COLUMN: DATA EXCHANGE & CONTROLS (x=1324..1520, y=190..664, w=196, h=474) ====================
+  cell("box_exchange_right", "", 1324, 190, 196, 474, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.8;");
+  cell("lbl_exchange_right", "DATA EXCHANGE & CONTROLS", 1324, 192, 196, 24, "html=1;fontColor:#15803D;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const exchangeItems = [
     { t: "Cross-Border Transfers", sub: "Approved Mechanisms<br/>(SCCs, BCRs, Adequacy)", svg: SVG.globe },
@@ -345,27 +345,27 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Data Localization", sub: "Enforced Residency,<br/>No Unauthorized Copy", svg: SVG.shield }
   ];
   exchangeItems.forEach((ei, idx) => {
-    const eiy = 216 + idx * 92;
+    const eiy = 220 + idx * 86;
     cell(
       `ei_${idx}`,
-      `<div style="display:flex;align-items:center;gap:10px;">` +
-      SVG.circleWrap(ei.svg, "#16A34A", "#F0FDF4", 42) +
-      `<div><div style="font-size:10.5px;font-weight:900;color:#0F172A;">${ei.t}</div><div style="font-size:8.5px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.2;">${ei.sub}</div></div></div>`,
-      1314,
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      SVG.circleWrap(ei.svg, "#16A34A", "#F0FDF4", 40) +
+      `<div><div style="font-size:10px;font-weight:900;color:#0F172A;">${ei.t}</div><div style="font-size:8px;color:#64748B;font-weight:600;margin-top:3px;line-height:1.2;">${ei.sub}</div></div></div>`,
+      1328,
       eiy,
-      200,
-      82,
-      "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=4;"
+      188,
+      76,
+      "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;padding=2;"
     );
   });
 
   // Vertical green connector line traversing Data Exchange items
   rawEdge("e_exch_vertical", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.8;endArrow=none;", [
-    { x: 1335, y: 298 },
-    { x: 1335, y: 584 }
+    { x: 1348, y: 296 },
+    { x: 1348, y: 570 }
   ]);
 
-  // ==================== 6. MIDDLE-BOTTOM: MONITORING, AUDIT & ASSURANCE (x=16..1520, y=694..774) ====================
+  // ==================== 6. MIDDLE-BOTTOM: MONITORING, AUDIT & ASSURANCE (x=16..1520, y=694..774, h=80) ====================
   cell("box_mon_audit", "", 16, 694, 1504, 80, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;");
   cell("lbl_mon_audit", "MONITORING, AUDIT & ASSURANCE", 16, 696, 1504, 16, "html=1;fontColor:#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
@@ -433,7 +433,6 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     { t: "Local Data", sub: "Protection Laws", type: "law" }
   ];
   badges.forEach((bg, idx) => {
-    // Top row: 4 badges (col 0..3), Bottom row: 3 badges centered (col 0..2)
     const isTop = idx < 4;
     const col = isTop ? idx : idx - 4;
     const bx = isTop ? 350 + col * 92 : 396 + col * 92;
@@ -529,90 +528,90 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   ];
   bLegs.forEach((bl, idx) => {
     cell(`bl_txt_${idx}`, `<span style="font-size:9px;font-weight:800;color:#0F172A;">${bl.t}</span>`, 910, bl.y - 7, 400, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    rawEdge(`bl_e_${idx}`, `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${bl.color};strokeWidth=2.2;${bl.style === "dashed" ? "dashed=1;dashPattern=4 2;" : bl.style === "dotted" ? "dashed=1;dashPattern=1 2;" : ""}endArrow=none;`, [
+    rawEdge(`bl_e_${idx}`, `edgeStyle=none;strokeColor=${bl.color};strokeWidth=2.2;${bl.style === "dashed" ? "dashed=1;dashPattern=4 2;" : bl.style === "dotted" ? "dashed=1;dashPattern=1 2;" : ""}endArrow=none;`, [
       { x: 850, y: bl.y },
       { x: 900, y: bl.y }
     ]);
   });
 
-  // ==================== 9. COMPLETE INTER-LAYER CONNECTORS MATRIX ====================
+  // ==================== 9. COMPLETE INTER-LAYER CONNECTORS MATRIX (29 ARROWS) ====================
 
   // --- Category A: Purple Dashed Governance Control Flows ---
   // A1. Governance -> Users (Left perimeter drop)
-  rawEdge("e_gov_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
-    { x: 240, y: 138 },
-    { x: 122, y: 138 },
-    { x: 122, y: 184 }
+  rawEdge("e_gov_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
+    { x: 240, y: 124 },
+    { x: 114, y: 124 },
+    { x: 114, y: 190 }
   ]);
 
   // A2. Governance -> Data Exchange (Right perimeter drop)
-  rawEdge("e_gov_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
-    { x: 1296, y: 138 },
-    { x: 1414, y: 138 },
-    { x: 1414, y: 184 }
+  rawEdge("e_gov_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
+    { x: 1296, y: 124 },
+    { x: 1422, y: 124 },
+    { x: 1422, y: 190 }
   ]);
 
-  // A3-A7: 5 Downward Governance control drop arrows (from under each pod -> Sovereign Cloud top border)
-  const govPodXCenters = [351, 559, 767, 975, 1183];
+  // A3-A7: 5 Downward Governance control drop arrows (from bottom of Gov box y=162 -> Sovereign Cloud top border y=190, 28px drop)
+  const govPodXCenters = [341, 549, 768, 976, 1184];
   govPodXCenters.forEach((xPos, pIdx) => {
-    rawEdge(`e_gov_down_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
-      { x: xPos, y: 168 },
-      { x: xPos, y: 184 }
+    rawEdge(`e_gov_down_${pIdx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
+      { x: xPos, y: 162 },
+      { x: xPos, y: 190 }
     ]);
   });
 
   // --- Category B: Blue Solid Data Flows ---
-  // B1. Users -> Secure Access Gate
-  rawEdge("e_users_to_gate", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
-    { x: 228, y: 434 },
-    { x: 234, y: 434 }
+  // B1. Users -> Secure Access Gate (x=212 -> x=238, 26px solid blue arrow)
+  rawEdge("e_users_to_gate", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
+    { x: 212, y: 427 },
+    { x: 238, y: 427 }
   ]);
 
-  // B2. Secure Access Gate -> Sovereign Cloud
-  rawEdge("e_gate_to_sov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
-    { x: 296, y: 434 },
-    { x: 302, y: 434 }
+  // B2. Secure Access Gate -> Sovereign Cloud (x=298 -> x=324, 26px solid blue arrow)
+  rawEdge("e_gate_to_sov", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
+    { x: 298, y: 427 },
+    { x: 324, y: 427 }
   ]);
 
-  // B3. Sovereign Cloud -> Controlled Exchange Gate
-  rawEdge("e_sov_to_ctrl", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
-    { x: 1234, y: 434 },
-    { x: 1240, y: 434 }
+  // B3. Sovereign Cloud -> Controlled Exchange Gate (x=1212 -> x=1238, 26px solid blue arrow)
+  rawEdge("e_sov_to_ctrl", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
+    { x: 1212, y: 427 },
+    { x: 1238, y: 427 }
   ]);
 
-  // B4. Controlled Exchange Gate -> Data Exchange
-  rawEdge("e_ctrl_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=4;", [
-    { x: 1302, y: 434 },
-    { x: 1308, y: 434 }
+  // B4. Controlled Exchange Gate -> Data Exchange (x=1298 -> x=1324, 26px solid blue arrow)
+  rawEdge("e_ctrl_to_exch", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
+    { x: 1298, y: 427 },
+    { x: 1324, y: 427 }
   ]);
 
   // --- Category C: Green Dotted Audit & Monitoring Flows ---
-  // C1. Monitoring -> Users (Left perimeter upward arrow into Users bottom)
-  rawEdge("e_mon_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
-    { x: 122, y: 694 },
-    { x: 122, y: 684 }
+  // C1. Monitoring -> Users (Left perimeter upward arrow into Users bottom, y=694 -> y=664, 30px upward)
+  rawEdge("e_mon_to_users", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
+    { x: 114, y: 694 },
+    { x: 114, y: 664 }
   ]);
 
-  // C2-C5: 4 Upward Monitoring arrows into Sovereign Cloud (under each infrastructure card)
-  const sovInfraXCenters = [433, 655, 877, 1099];
+  // C2-C5: 4 Upward Monitoring arrows into Sovereign Cloud (from Monitoring top y=694 -> Sovereign Cloud bottom y=664, 30px upward)
+  const sovInfraXCenters = [450, 662, 874, 1086];
   sovInfraXCenters.forEach((xPos, pIdx) => {
-    rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
+    rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
       { x: xPos, y: 694 },
-      { x: xPos, y: 684 }
+      { x: xPos, y: 664 }
     ]);
   });
 
-  // C6. Monitoring -> Data Exchange (Right perimeter upward arrow into Data Exchange bottom)
-  rawEdge("e_mon_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
-    { x: 1414, y: 694 },
-    { x: 1414, y: 684 }
+  // C6. Monitoring -> Data Exchange (Right perimeter upward arrow into Data Exchange bottom, y=694 -> y=664, 30px upward)
+  rawEdge("e_mon_to_exch", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
+    { x: 1422, y: 694 },
+    { x: 1422, y: 664 }
   ]);
 
   // C7. Feedback line: Far-right Monitoring -> Audit & Assurance Pod 5 (Right vertical spine)
-  rawEdge("e_mon_feedback_gov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.6;dashed=1;dashPattern=2 3;endArrow=classic;endSize=4;", [
-    { x: 1480, y: 694 },
-    { x: 1480, y: 138 },
-    { x: 1296, y: 138 }
+  rawEdge("e_mon_feedback_gov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
+    { x: 1496, y: 694 },
+    { x: 1496, y: 124 },
+    { x: 1296, y: 124 }
   ]);
 
   const bg = isDark ? "#0F172A" : "#FFFFFF";
