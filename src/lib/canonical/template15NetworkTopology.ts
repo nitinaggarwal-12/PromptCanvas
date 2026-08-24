@@ -1,144 +1,254 @@
 /**
- * Canonical Architecture Template 15: Network Topology Diagram
- * Exact 1:1 High-Fidelity Master Blueprint of images/15.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 15: Network Topology Diagram
+ * Matches 100% of images/15.png:
+ * - GCP Project VPC with Public Subnet (10.10.0.0/24), 3 AZ Private Subnets (10.10.1.0/24 - 10.10.3.0/24), and Data Subnet (10.10.10.0/24)
+ * - Users & Clients with Internet Gateway and External Connectivity (Cloud Armor, CDN, DNS)
+ * - 3 AZ columns (us-central1-a, b, c) with discrete Web, App (GKE), and Cache (Redis) tiers
+ * - Managed Services column (BigQuery, Pub/Sub, Cloud Tasks, Vertex AI, Secret Manager, Logging, Monitoring)
+ * - On-Premises / Customer Network with VPN / Interconnect
+ * - Network Security Controls (VPC Firewall, Private Google Access, Flow Logs, IDS/IPS)
+ * - Legend and Architecture Notes on 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate15NetworkTopologyXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "15", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>Network Topology Diagram</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: Regulatory Intelligence Platform (NOVA CURA) &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  // ==================== 1. TOP HEADER BANNER (y=12..70) ====================
+  cell("hdr_num", "15", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Network Topology Diagram</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: Regulatory Intelligence Platform (NOVA CURA)</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // Overview Card
-  rect("card_ov", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>NETWORK OVERVIEW</div><div style='font-size:9px;line-height:1.3;color:#0F172A;'><b>Cloud Provider:</b> Google Cloud Platform (GCP)<br/><b>Region:</b> us-central1 (Iowa)<br/><b>VPC:</b> novacura-prod-vpc (10.10.0.0/16)<br/><b>Multi-AZ:</b> Enabled &nbsp;|&nbsp; <b>HA:</b> Enabled<br/><b>Connectivity:</b> Internet, VPN, Private Service Connect</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=3;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // 2. USERS & CLIENTS (x=20..115, y=72..540)
-  rect("box_users", "", 20, 72, 95, 465, "fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;rounded=1;");
-  rect("lbl_users", "<span style='font-size:10px;font-weight:800;color:#16A34A;'>USERS &amp; CLIENTS</span>", 20, 75, 95, 14, "strokeColor=none;fillColor=none;align=center;");
+  const netOverviewHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>NETWORK OVERVIEW</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    <b>Cloud Provider:</b> Google Cloud Platform (GCP)<br/>
+    <b>Region:</b> us-central1 (Iowa) &nbsp;|&nbsp; <b>VPC:</b> novacura-prod-vpc (10.10.0.0/16)<br/>
+    <b>Multi-AZ:</b> Enabled &nbsp;|&nbsp; <b>HA:</b> Enabled<br/>
+    <b>Connectivity:</b> Internet, VPN, Private Service Connect
+  </div>`;
+  cell("hdr_overview", netOverviewHtml, 1140, 12, 380, 68, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;html=1;align=left;verticalAlign=top;padding=6;");
 
-  const clients = [
-    { t: "Regulatory Analysts", icon: "👤" },
-    { t: "Business Users", icon: "👥" },
-    { t: "Mobile App Users", icon: "📱" },
-    { t: "Partner Systems", icon: "🏢" },
-    { t: "Public APIs / Integrations", icon: "🌐" }
+  // ==================== 2. LEFT: USERS & CLIENTS + CONNECTIVITY (x=16..330, y=86..766) ====================
+  // Users & Clients Box (w=150, h=410)
+  cell("box_users", "", 16, 86, 150, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.8;");
+  cell("lbl_users", "USERS &amp; CLIENTS", 16, 86, 150, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const userList = [
+    { id: "u_reg", t: "Regulatory Analysts", icon: "👤" },
+    { id: "u_biz", t: "Business Users", icon: "💻" },
+    { id: "u_mob", t: "Mobile App Users", icon: "📱" },
+    { id: "u_part", t: "Partner Systems", icon: "⚙️" },
+    { id: "u_api", t: "Public APIs /<br/>Integrations", icon: "🌐" }
   ];
-  clients.forEach((cl, idx) => {
-    const cy = 96 + idx * 86;
-    rect(`cl_${idx}`, `<div style='font-size:14px;text-align:center;'>${cl.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;margin-top:2px;'>${cl.t}</div>`, 26, cy, 83, 62, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  userList.forEach((u, idx) => {
+    const uy = 120 + idx * 74;
+    cell(u.id, `<div style="font-size:20px;text-align:center;">${u.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${u.t}</div>`, 24, uy, 134, 62, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // 3. EXTERNAL CONNECTIVITY (x=122..205, y=72..540)
-  rect("box_ext", "", 122, 72, 85, 465, "fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;rounded=1;");
-  rect("lbl_ext", "<span style='font-size:10px;font-weight:800;color:#7C3AED;'>EXTERNAL<br/>CONNECTIVITY</span>", 122, 75, 85, 20, "strokeColor=none;fillColor=none;align=center;");
+  // Internet Cloud Node (x=182, y=260, w=110, h=60)
+  cell("node_internet", `<div style="font-size:24px;text-align:center;">☁️</div><div style="font-size:9.5px;font-weight:800;color:#0F172A;text-align:center;">Internet</div>`, 182, 260, 110, 60, "ellipse;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;");
 
-  rect("ext_internet", "<div style='font-size:16px;text-align:center;'>🌐</div><div style='font-size:10px;font-weight:800;color:#2563EB;'>Internet</div>", 128, 106, 73, 56, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
-  rect("ext_armor", "<div style='font-size:14px;text-align:center;'>🛡️</div><div style='font-size:9px;font-weight:700;'>Cloud Armor<br/><span style='color:#64748B;font-size:8px;'>(DDoS Protection)</span></div>", 128, 195, 73, 56, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("ext_cdn", "<div style='font-size:14px;text-align:center;'>⚡</div><div style='font-size:9px;font-weight:700;'>Cloud CDN</div>", 128, 285, 73, 56, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("ext_dns", "<div style='font-size:14px;text-align:center;'>🔍</div><div style='font-size:9px;font-weight:700;'>Cloud DNS</div>", 128, 375, 73, 56, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  // External Connectivity Box (x=182, y=340, w=138, h=250)
+  cell("box_ext_conn", "", 182, 340, 138, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_ext_conn", "EXTERNAL<br/>CONNECTIVITY", 182, 340, 138, 30, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  // 4. GCP MAIN PROJECT CONTAINER (x=214..1380, y=72..540)
-  rect("box_gcp", "", 214, 72, 1166, 465, "fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;rounded=1;");
-  rect("lbl_gcp", "<span style='font-size:8px;font-weight:800;color:#2563EB;'>GCP PROJECT: novacura-prod &nbsp;|&nbsp; VPC: novacura-prod-vpc (10.10.0.0/16)</span>", 214, 75, 1166, 14, "strokeColor=none;fillColor=none;align=center;");
+  const extItems = [
+    { id: "ext_armor", t: "Cloud Armor<br/>(DDoS Protection)", icon: "🛡️" },
+    { id: "ext_cdn", t: "Cloud CDN", icon: "⚡" },
+    { id: "ext_dns", t: "Cloud DNS", icon: "🌐" }
+  ];
+  extItems.forEach((ex, idx) => {
+    const ey = 378 + idx * 68;
+    cell(ex.id, `<div style="font-size:18px;text-align:center;">${ex.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${ex.t}</div>`, 190, ey, 122, 58, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  // Public Subnet (10.10.0.0/24)
-  rect("box_pub_sub", "", 224, 94, 1146, 75, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1;rounded=1;");
-  rect("lbl_pub_sub", "<span style='font-size:10px;font-weight:800;color:#16A34A;'>PUBLIC SUBNET (10.10.0.0/24)</span>", 224, 96, 1146, 12, "strokeColor=none;fillColor=none;align=center;");
+  // Connect Users to Internet and External Connectivity
+  edge("e_u_net", "u_biz", "node_internet", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_net_ext", "node_internet", "box_ext_conn", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
-  rect("pub_lb", "<div style='font-size:14px;text-align:center;'>⚖️</div><div style='font-size:9px;font-weight:700;'>External HTTP(S) Load Balancer</div>", 240, 112, 230, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("pub_gw", "<div style='font-size:14px;text-align:center;'>🛡️</div><div style='font-size:9px;font-weight:700;'>API Gateway (Apigee X)</div>", 680, 112, 230, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-  rect("pub_waf", "<div style='font-size:14px;text-align:center;'>🧱</div><div style='font-size:9px;font-weight:700;'>Web Application Firewall (WAF)</div>", 1120, 112, 230, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
+  // On-Premises / Customer Network Box (x=16, y=780, w=304, h=160)
+  cell("box_onprem", "", 16, 780, 304, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_onprem", "ON-PREMISES / CUSTOMER NETWORK", 16, 780, 304, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
-  // Private Subnets (10.10.1.0/24 - 10.10.3.0/24)
-  rect("box_priv_sub", "", 224, 175, 1146, 215, "fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1;rounded=1;dashed=1;");
-  rect("lbl_priv_sub", "<span style='font-size:10px;font-weight:800;color:#2563EB;'>PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)</span>", 224, 177, 1146, 12, "strokeColor=none;fillColor=none;align=center;");
+  cell("node_dc", "<div style='font-size:24px;text-align:center;'>🗄️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Datacenter /<br/>On-Prem Systems</div>", 30, 820, 120, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_vpn", "<div style='font-size:24px;text-align:center;'>🔒</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>VPN / Interconnect</div>", 180, 820, 120, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  edge("e_dc_vpn", "node_dc", "node_vpn", "strokeColor=#0F172A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+
+  // ==================== 3. CENTER: GCP PROJECT & VPC (x=336..1256, y=86..766, w=920, h=680) ====================
+  cell("box_vpc_outer", "", 336, 86, 920, 680, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;");
+  cell("lbl_vpc_outer", "GCP PROJECT: novacura-prod &nbsp;|&nbsp; VPC: novacura-prod-vpc (10.10.0.0/16)", 336, 90, 920, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // 3.1. PUBLIC SUBNET (10.10.0.0/24) (y=116, h=106)
+  cell("box_pub_sub", "", 350, 116, 892, 106, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;dashed=1;");
+  cell("lbl_pub_sub", "PUBLIC SUBNET (10.10.0.0/24)", 350, 118, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  cell("node_ext_lb", "<div style='font-size:20px;text-align:center;'>🌐</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>External<br/>HTTP(S) Load Balancer</div>", 370, 140, 240, 66, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_api_gw", "<div style='font-size:20px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>API Gateway<br/>(Apigee X)</div>", 676, 140, 240, 66, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_waf", "<div style='font-size:20px;text-align:center;'>🔒</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Web Application<br/>Firewall (WAF)</div>", 982, 140, 240, 66, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+
+  edge("e_lb_apigw", "node_ext_lb", "node_api_gw", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_apigw_waf", "node_api_gw", "node_waf", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+
+  // Connect External Connectivity to External LB
+  edge("e_ext_to_lb", "ext_cdn", "node_ext_lb", "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+
+  // 3.2. PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24) (y=232, h=376)
+  cell("box_priv_sub", "", 350, 232, 892, 376, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_priv_sub", "PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)", 350, 234, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
 
   const azs = [
-    { name: "us-central1-a", x: 236, w: 360 },
-    { name: "us-central1-b", x: 616, w: 360 },
-    { name: "us-central1-c", x: 996, w: 360 }
+    { id: "az_a", name: "us-central1-a", x: 362 },
+    { id: "az_b", name: "us-central1-b", x: 652 },
+    { id: "az_c", name: "us-central1-c", x: 942 }
   ];
 
   azs.forEach((az, idx) => {
-    rect(`az_box_${idx}`, "", az.x, 192, az.w, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;");
-    rect(`az_lbl_${idx}`, `<span style='font-size:9px;font-weight:800;color:#1E3A8A;'>${az.name}</span>`, az.x, 194, az.w, 12, "strokeColor=none;fillColor=none;align=center;");
+    // AZ Container
+    cell(`box_${az.id}`, "", az.x, 256, 280, 340, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;dashed=1;");
+    cell(`lbl_${az.id}`, az.name, az.x, 258, 280, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
-    rect(`az_${idx}_web`, "<div style='font-size:9px;font-weight:700;'>🖥️ Web Tier<br/><span style='color:#64748B;font-size:8px;'>Compute Engine (App Instances)</span></div>", az.x + 8, 210, az.w - 16, 46, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;");
-    rect(`az_${idx}_app`, "<div style='font-size:9px;font-weight:700;'>⚙️ App Tier<br/><span style='color:#64748B;font-size:8px;'>GKE (Microservices)</span></div>", az.x + 8, 266, az.w - 16, 48, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;");
-    rect(`az_${idx}_cache`, "<div style='font-size:9px;font-weight:700;'>⚡ Cache Tier<br/><span style='color:#64748B;font-size:8px;'>Redis (Memorystore)</span></div>", az.x + 8, 324, az.w - 16, 48, "fillColor=#FFFBEB;strokeColor=#D97706;rounded=1;align=center;verticalAlign=middle;");
+    // Tier 1: Web Tier
+    cell(`web_${az.id}`, `<div style="font-size:18px;text-align:center;">💻</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Web Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Compute Engine (App Instances)</div>`, az.x + 12, 280, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+
+    // Tier 2: App Tier (GKE)
+    cell(`app_${az.id}`, `<div style="font-size:18px;text-align:center;">⚙️</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">App Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">GKE (Microservices)</div>`, az.x + 12, 368, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+
+    // Tier 3: Cache Tier (Redis)
+    cell(`cache_${az.id}`, `<div style="font-size:18px;text-align:center;">💾</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Cache Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Redis (Memorystore)</div>`, az.x + 12, 456, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+
+    // Vertical Tier connectors inside AZ
+    edge(`e_w_a_${az.id}`, `web_${az.id}`, `app_${az.id}`, "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+    edge(`e_a_c_${az.id}`, `app_${az.id}`, `cache_${az.id}`, "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
   });
 
-  // Data Subnet (10.10.10.0/24)
-  rect("box_data_sub", "", 224, 396, 1146, 132, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;rounded=1;");
-  rect("lbl_data_sub", "<span style='font-size:10px;font-weight:800;color:#7C3AED;'>DATA SUBNET (10.10.10.0/24)</span>", 224, 398, 1146, 12, "strokeColor=none;fillColor=none;align=center;");
+  // Cross-AZ replication arrows
+  edge("e_az_ab_app", "app_az_a", "app_az_b", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+  edge("e_az_bc_app", "app_az_b", "app_az_c", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
 
-  rect("db_sql", "<div style='font-size:16px;text-align:center;'>🗄️</div><div style='font-size:10px;font-weight:800;color:#0F172A;'>Primary Database</div><div style='font-size:9px;color:#64748B;'>Cloud SQL (PostgreSQL) • HA (Multi-AZ)</div>", 250, 420, 320, 96, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=4;");
-  rect("db_gcs", "<div style='font-size:16px;text-align:center;'>🗃️</div><div style='font-size:10px;font-weight:800;color:#0F172A;'>Object Storage</div><div style='font-size:9px;color:#64748B;'>Cloud Storage (Documents)</div>", 636, 420, 320, 96, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=4;");
-  rect("db_search", "<div style='font-size:16px;text-align:center;'>🔍</div><div style='font-size:10px;font-weight:800;color:#0F172A;'>Search Index</div><div style='font-size:9px;color:#64748B;'>OpenSearch Service (Managed)</div>", 1022, 420, 320, 96, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=4;");
+  // Connect Public Subnet (API GW / WAF) to Private Subnets Web Tier
+  edge("e_waf_to_web", "node_api_gw", "web_az_b", "strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
 
-  // 5. MANAGED SERVICES (x=1388..1560, y=72..540)
-  rect("box_mgd", "", 1388, 72, 172, 465, "fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;rounded=1;");
-  rect("lbl_mgd", "<span style='font-size:10px;font-weight:800;color:#D97706;'>MANAGED SERVICES</span>", 1388, 75, 172, 14, "strokeColor=none;fillColor=none;align=center;");
+  // 3.3. DATA SUBNET (10.10.10.0/24) (y=618, h=136)
+  cell("box_data_sub", "", 350, 618, 892, 136, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;");
+  cell("lbl_data_sub", "DATA SUBNET (10.10.10.0/24)", 350, 620, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const mgdSvcs = [
-    { t: "BigQuery", sub: "(Analytics &amp; BI)", icon: "📊" },
-    { t: "Pub/Sub", sub: "(Event Streaming)", icon: "📨" },
-    { t: "Cloud Tasks", sub: "(Background Jobs)", icon: "📋" },
-    { t: "Vertex AI", sub: "(AI/ML Services)", icon: "🧠" },
-    { t: "Secret Manager", sub: "(Secrets &amp; Keys)", icon: "🔒" },
-    { t: "Cloud Logging", sub: "(Logs)", icon: "📑" },
-    { t: "Cloud Monitoring", sub: "(Metrics &amp; Alerts)", icon: "📈" }
+  cell("node_db_sql", "<div style='font-size:22px;text-align:center;'>🗄️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Primary Database</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud SQL (PostgreSQL)<br/>HA (Multi-AZ)</div>", 370, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_obj_store", "<div style='font-size:22px;text-align:center;'>🗃️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Object Storage</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud Storage<br/>(Documents)</div>", 676, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("node_search_idx", "<div style='font-size:22px;text-align:center;'>🔍</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Search Index</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>OpenSearch Service<br/>(Managed)</div>", 982, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+
+  // Connect App Tier to Data Subnet
+  edge("e_app_to_db", "cache_az_b", "node_obj_store", "strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_db_to_store", "node_db_sql", "node_obj_store", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+  edge("e_store_to_search", "node_obj_store", "node_search_idx", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+
+  // ==================== 4. BOTTOM CENTER: NETWORK SECURITY (x=336..850, y=780..940, w=514, h=160) ====================
+  cell("box_net_sec", "", 336, 780, 514, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_net_sec", "NETWORK SECURITY", 336, 780, 514, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  const secControls = [
+    { id: "sec_fw", t: "VPC Firewall<br/>(Ingress/Egress Rules)", icon: "🛡️" },
+    { id: "sec_pga", t: "Private Google<br/>Access", icon: "🔒" },
+    { id: "sec_flow", t: "VPC<br/>Flow Logs", icon: "📊" },
+    { id: "sec_ids", t: "IDS/IPS<br/>(Threat Detection)", icon: "🚨" }
+  ];
+  secControls.forEach((sc, idx) => {
+    const sx = 348 + idx * 122;
+    cell(sc.id, `<div style="font-size:20px;text-align:center;">${sc.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${sc.t}</div>`, sx, 820, 114, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
+  });
+
+  // Connect On-Prem to Network Security / VPC
+  edge("e_vpn_to_sec", "node_vpn", "sec_pga", "strokeColor=#16A34A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+
+  // ==================== 5. BOTTOM RIGHT: LEGEND & NOTES (x=860..1520, y=780..940) ====================
+  // Legend Box (x=860, y=780, w=320, h=160)
+  cell("box_legend", "", 860, 780, 320, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_legend", "LEGEND", 860, 780, 320, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const legendHtml = `<table style="width:100%;border-collapse:collapse;font-size:8.5px;margin-top:4px;">
+    <tr style="height:20px;"><td style="width:50px;color:#0F172A;font-weight:900;">━━━━</td><td>Internet Traffic</td></tr>
+    <tr style="height:20px;"><td style="color:#2563EB;font-weight:900;">┈┈┈┈</td><td>Private / Internal Traffic</td></tr>
+    <tr style="height:20px;"><td style="color:#64748B;font-weight:900;">┈┈┈┈</td><td>Service Integration</td></tr>
+    <tr style="height:20px;"><td style="color:#16A34A;font-size:12px;">🟩</td><td>Public Network</td></tr>
+    <tr style="height:20px;"><td style="color:#2563EB;font-size:12px;">🟦</td><td>Private Network</td></tr>
+    <tr style="height:20px;"><td style="color:#7C3AED;font-size:12px;">🟪</td><td>Data Network</td></tr>
+  </table>`;
+  cell("txt_legend", legendHtml, 866, 808, 308, 126, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // Notes Box (x=1190, y=780, w=330, h=160)
+  cell("box_notes", "", 1190, 780, 330, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_notes", "NOTES", 1190, 780, 330, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const notesHtml = `<div style="font-size:8.5px;line-height:1.6;color:#0F172A;padding:4px 8px;">
+    • All subnets are in us-central1 (Iowa)<br/>
+    • Private Google Access enabled<br/>
+    • VPC-native controls for segmentation<br/>
+    • Multi-AZ for high availability<br/>
+    • Encrypted in transit (TLS 1.2+)<br/>
+    • Encrypted at rest (Google-managed keys)
+  </div>`;
+  cell("txt_notes", notesHtml, 1194, 808, 322, 126, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // ==================== 6. RIGHT: MANAGED SERVICES (x=1266..1520, y=86..766, w=254, h=680) ====================
+  cell("box_mgd_svc", "", 1266, 86, 254, 680, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=1.8;");
+  cell("lbl_mgd_svc", "MANAGED SERVICES", 1266, 86, 254, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#EA580C;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
+
+  const mgdServices = [
+    { id: "mgd_bq", t: "BigQuery<br/>(Analytics &amp; BI)", icon: "📊" },
+    { id: "mgd_ps", t: "Pub/Sub<br/>(Event Streaming)", icon: "⚡" },
+    { id: "mgd_ct", t: "Cloud Tasks<br/>(Background Jobs)", icon: "📋" },
+    { id: "mgd_vx", t: "Vertex AI<br/>(AI/ML Services)", icon: "🧠" },
+    { id: "mgd_sm", t: "Secret Manager<br/>(Secrets &amp; Keys)", icon: "🔒" },
+    { id: "mgd_log", t: "Cloud Logging<br/>(Logs)", icon: "📑" },
+    { id: "mgd_mon", t: "Cloud Monitoring<br/>(Metrics &amp; Alerts)", icon: "📈" }
   ];
 
-  mgdSvcs.forEach((ms, idx) => {
-    const my = 96 + idx * 62;
-    rect(`ms_${idx}`, `<div style='font-size:11px;text-align:center;'>${ms.icon}</div><div style='font-size:9px;font-weight:700;color:#0F172A;text-align:center;'>${ms.t}</div><div style='font-size:8px;color:#64748B;text-align:center;'>${ms.sub}</div>`, 1396, my, 156, 52, "fillColor=#FFFBEB;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  mgdServices.forEach((mg, idx) => {
+    const my = 124 + idx * 88;
+    cell(mg.id, `<div style="font-size:22px;text-align:center;">${mg.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mg.t}</div>`, 1280, my, 226, 76, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=4;");
+    // Connect Managed Services to VPC with dashed lines
+    edge(`e_mgd_${idx}`, mg.id, "box_vpc_outer", "strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
   });
 
-  // 6. BOTTOM ROW: ON-PREMISES, NETWORK SECURITY, LEGEND & NOTES (x=20..1560, y=546..740)
-  rect("bot_onprem", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;text-align:center;'>🏢 ON-PREMISES / CUSTOMER NETWORK</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:12px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:6px;border-radius:4px;'>🏢<br/><b>Datacenter /<br/>On-Prem Systems</b></div> <div>➔</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:6px;border-radius:4px;'>🔒<br/><b>VPN / Interconnect</b></div></div>", 20, 546, 250, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
-
-  rect("bot_sec", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:4px;text-align:center;'>NETWORK SECURITY</div><div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:14px;'><div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:6px;border-radius:4px;'>🧱<br/><b>VPC Firewall</b><br/><span style='color:#64748B;font-size:8px;'>(Ingress/Egress Rules)</span></div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:6px;border-radius:4px;'>🔒<br/><b>Private Google<br/>Access</b></div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:6px;border-radius:4px;'>📊<br/><b>VPC<br/>Flow Logs</b></div> <div style='border:1px solid #CBD5E1;background:#F8FAFC;padding:6px;border-radius:4px;'>🛡️<br/><b>IDS/IPS</b><br/><span style='color:#64748B;font-size:8px;'>(Threat Detection)</span></div></div>", 280, 546, 480, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=6;");
-
-  rect("bot_legend", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;'>LEGEND</div><div style='font-size:9px;line-height:1.5;color:#0F172A;'>── Internet Traffic<br/>- - Private/Internal Traffic<br/>······ Service Integration<br/><span style='background:#F0FDF4;border:1px solid #16A34A;padding:1px 4px;border-radius:2px;'>■</span> Public Network &nbsp; <span style='background:#EFF6FF;border:1px solid #2563EB;padding:1px 4px;border-radius:2px;'>■</span> Private Network &nbsp; <span style='background:#FAF5FF;border:1px solid #7C3AED;padding:1px 4px;border-radius:2px;'>■</span> Data Network</div>", 770, 546, 380, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=6;");
-
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:4px;'>NOTES</div><div style='font-size:9px;line-height:1.45;color:#64748B;'>• All subnets are in us-central1 (Iowa)<br/>• Private Google Access enabled<br/>• VPC-native controls for segmentation<br/>• Multi-AZ for high availability<br/>• Encrypted in transit (TLS 1.2+)<br/>• Encrypted at rest (Google-managed keys)</div>", 1160, 546, 400, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=6;");
-
-  // 7. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>STATUS:</b> Operational &nbsp;|&nbsp; <b>CIDR:</b> 10.10.0.0/16 &nbsp;|&nbsp; <b>GATEWAYS:</b> Apigee X, Cloud NAT, Cloud Interconnect</div>
+    <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; Enterprise Architecture Team</div>
+  </div>`;
+  cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_15_network_topology" name="Template 15: Network Topology Diagram">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
