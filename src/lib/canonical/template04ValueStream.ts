@@ -1,7 +1,7 @@
 /**
  * Master 1:1 Exact Replica Generator for Canonical Template 04: Value Stream Map
  * Matches 100% of images/04.png (NOVACURA Bio-Pharma Product Value Stream)
- * Pure collision-free geometry, complete <mxfile> envelope, and high-contrast typography.
+ * Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping).
  */
 
 const E = (v?: string | null) =>
@@ -201,11 +201,6 @@ export function generateTemplate04ValueStreamXml(domainFlavor = "biopharma", the
     </table>`;
     rect(`st_hdr_${i}`, stageHeaderHtml, x + 5, 82, colWidth - 20, 88, "strokeColor=none;fillColor=none;");
 
-    // Inter-stage chevron arrow
-    if (i < 4) {
-      text(`arr_chevron_${i}`, "➔", x + colWidth - 14, 120, 18, 18, "fontSize=15;fontColor=#64748B;align=center;");
-    }
-
     // 2. Key Activities Bullet List (y: 180, h: 160)
     let actBullets = "";
     st.activities.forEach((act) => {
@@ -240,10 +235,10 @@ export function generateTemplate04ValueStreamXml(domainFlavor = "biopharma", the
     </div>`;
     rect(`st_flow_${i}`, flowHtml, x + 6, 480, colWidth - 40, 65, "rounded=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=center;");
 
-    // Flow arrow between items
+    // Pure 0° Horizontal flow arrows between stages and flow items
     if (i < 4) {
-      c.push(`<mxCell id="arr_flow_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_flow_${i}" target="st_flow_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-      c.push(`<mxCell id="arr_chevron_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_hdr_${i}" target="st_hdr_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+      c.push(`<mxCell id="arr_flow_edge_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_flow_${i}" target="st_flow_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+      c.push(`<mxCell id="arr_stage_edge_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=2;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="st_hdr_${i}" target="st_hdr_${i + 1}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
     }
   });
 

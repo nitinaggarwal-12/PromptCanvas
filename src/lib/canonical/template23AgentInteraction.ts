@@ -4,10 +4,12 @@
  * - Left Column: User & Channels (5 items) + Entry Points (4 items)
  * - 7-step Agent Collaboration Flow sequence (❶ User Intent Capture ➔ ❼ Response & Feedback)
  * - Agent Ecosystem container with 7 discrete agents (Orchestrator, Research, Analysis, Compliance, Drafting, Review, Memory) with Core/Specialized pills
- * - Shared Context & Memory (Short-term) bar and 5 persistent Data Stores (Vector DB, Document Store, Graph DB, Object Storage, Metadata Store)
+ * - Horizontal bidirectional communication between adjacent agents
+ * - Vertical bidirectional links to Shared Context & Memory (Short-term) bar and 5 persistent Data Stores
  * - 6 Visual Agent Collaboration Patterns sub-diagrams (Supervisor, Peer-to-Peer, Pipeline, Blackboard, Hierarchical, Human-in-the-Loop)
  * - Right Sidebar: Communication Patterns, Interaction Protocols (MCP, A2A, gRPC), Key Risks
  * - Bottom Row: Guardrails & Governance, Memory & Context, Observability & Ops, Quality & Evaluation, Tools & Technologies (10 icons), Notes
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -30,7 +32,7 @@ export function generateTemplate23AgentInteractionXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -90,8 +92,10 @@ export function generateTemplate23AgentInteractionXml(
     cell(`ep_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:13px;">${ep.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${ep.t}</span></div>`, 24, epy, 138, 40, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Flow Arrow from Channels to Flow
-  edge("e_user_to_flow", "box_l_users", "box_collab_flow", "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=5;");
+  // Pure 0° Horizontal flow edge from Channels to Flow
+  edge("e_user_to_flow", "box_l_users", "box_collab_flow", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  // Pure 0° Horizontal flow edge from Entry Points to Ecosystem
+  edge("e_entry_to_eco", "box_l_entry", "box_agent_eco", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 3. CENTER TOP: AGENT COLLABORATION FLOW (x=180..1220, y=78..190, w=1040, h=112) ====================
   cell("box_collab_flow", "", 180, 78, 1040, 112, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
@@ -111,9 +115,13 @@ export function generateTemplate23AgentInteractionXml(
     const fx = 190 + idx * 146;
     cell(`fs_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;margin-bottom:2px;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7px;font-weight:900;margin-right:4px;">${fs.num}</span> <span style="font-size:7px;font-weight:800;color:#0F172A;">${fs.name}</span></div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${fs.desc}</div>`, fx, 100, 138, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
     if (idx > 0) {
-      edge(`e_fs_${idx}`, `fs_${idx - 1}`, `fs_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal edge between flow steps
+      edge(`e_fs_${idx}`, `fs_${idx - 1}`, `fs_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
+
+  // Pure 90° Vertical dropline from Flow down to Ecosystem
+  edge("e_flow_to_eco", "box_collab_flow", "box_agent_eco", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 4. CENTER MIDDLE: AGENT ECOSYSTEM CONTAINER (x=180..1220, y=198..450, w=1040, h=252) ====================
   cell("box_agent_eco", "", 180, 198, 1040, 252, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.8;");
@@ -132,10 +140,20 @@ export function generateTemplate23AgentInteractionXml(
   agents.forEach((ag, idx) => {
     const ax = 190 + idx * 146;
     cell(`ag_${idx}`, `<div style="font-size:16px;text-align:center;">${ag.icon}</div><div style="font-size:7.5px;font-weight:900;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ag.name}</div><div style="font-size:5.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:2px;">${ag.desc}</div><div style="text-align:center;margin-top:4px;"><span style="background:${ag.pbg};color:${ag.pfg};border:1px solid ${ag.bc};padding:1px 6px;border-radius:10px;font-size:6px;font-weight:800;">${ag.pill}</span></div>`, ax, 224, 138, 108, `rounded=1;arcSize=6;fillColor=${ag.bg};strokeColor=${ag.bc};strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=3;`);
+    
+    if (idx > 0) {
+      // Pure 0° Horizontal bidirectional edge between adjacent agents
+      edge(`e_ag_peer_${idx}`, `ag_${idx - 1}`, `ag_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+    }
   });
 
   // Short-term Shared Memory Bar
   cell("bar_shared_mem", "💾 Shared Context &amp; Memory (Short-term)", 190, 342, 1020, 26, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+
+  // Pure 90° Vertical bidirectional edge from Orchestrator down to Memory bar
+  edge("e_orch_mem", "ag_0", "bar_shared_mem", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;exitX=0.5;exitY=1;entryX=0.08;entryY=0;");
+  // Pure 90° Vertical bidirectional edge from Memory Agent down to Memory bar
+  edge("e_mem_ag_bar", "ag_6", "bar_shared_mem", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;exitX=0.5;exitY=1;entryX=0.92;entryY=0;");
 
   // 5 Persistent Data Stores below memory bar
   const dataStores = [
@@ -148,7 +166,13 @@ export function generateTemplate23AgentInteractionXml(
   dataStores.forEach((ds, idx) => {
     const dsx = 200 + idx * 204;
     cell(`ds_${idx}`, `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><span style="font-size:16px;">${ds.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${ds.t}</span></div>`, dsx, 380, 192, 54, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    
+    // Pure 90° Vertical edge from Shared Memory bar to Data Store
+    edge(`e_mem_ds_${idx}`, "bar_shared_mem", `ds_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;exitX=0.1 + 0.2 * idx;exitY=1;entryX=0.5;entryY=0;");
   });
+
+  // Pure 0° Horizontal edge from Agent Ecosystem to Protocols
+  edge("e_eco_to_proto", "box_agent_eco", "box_r_proto", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 5. MIDDLE ROW: 6 AGENT COLLABORATION PATTERNS (x=16..1520, y=458..590, w=1504, h=132) ====================
   cell("box_patterns", "", 16, 458, 1504, 132, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");

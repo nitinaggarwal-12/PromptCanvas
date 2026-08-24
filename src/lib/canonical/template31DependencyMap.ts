@@ -1,7 +1,8 @@
 /**
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 31: Dependency / Relationship Map
  * Matches 100% of images/31.png with 6 horizontal tier rows, 3 right tables (including 4x4 Risk Matrix),
- * top 5 critical dependencies with red circles, and 0 voids on 1536x1024 master resolution.
+ * top 5 critical dependencies with red circles, and complete 0°, 90°, 180°, 270° orthogonal dependency edges.
+ * 1536x1024 master resolution.
  */
 
 const E = (v?: string | null) =>
@@ -27,6 +28,11 @@ export function generateTemplate31DependencyMapXml(
   const circle = (id: string, v: string, x: number, y: number, d: number, fill: string, stroke: string, fontCol = "#FFFFFF", fontSz = 11) =>
     c.push(
       `<mxCell id="${id}" value="${E(v)}" style="ellipse;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.5;fontColor=${fontCol};fontSize=${fontSz};fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${d}" height="${d}" as="geometry"/></mxCell>`
+    );
+
+  const edge = (id: string, src: string, trg: string, style: string) =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
@@ -152,6 +158,42 @@ export function generateTemplate31DependencyMapXml(
       rect(`rc_${idx}_${cIdx}`, `<div style="font-size:16px;text-align:center;">${cd.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.2;margin-top:2px;">${cd.t.replace(/\n/g, "<br/>")}</div>`, cx, cy, cardW, ch, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=center;verticalAlign=middle;padding=2;");
     });
   });
+
+  // ==================== DEPENDENCY EDGES (Strict 0°, 90°, 180°, 270° Orthogonal) ====================
+  // 1. Users to Applications (90° Vertical Drop)
+  edge("e_u0_app", "rc_0_0", "rc_1_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_u1_app", "rc_0_1", "rc_1_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.8;entryY=0;");
+  edge("e_u2_app", "rc_0_2", "rc_1_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_u3_app", "rc_0_3", "rc_1_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.8;entryY=0;");
+
+  // 2. Application Layer Horizontal Calls (0° Horizontal)
+  edge("e_app_portal_gw", "rc_1_0", "rc_1_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_app_gw_auth", "rc_1_1", "rc_1_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_app_auth_ai", "rc_1_2", "rc_1_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_app_ai_doc", "rc_1_3", "rc_1_4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_app_doc_rag", "rc_1_4", "rc_1_5", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_app_rag_rep", "rc_1_5", "rc_1_6", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // 3. Applications to Data Layer (90° Vertical Drop)
+  edge("e_gw_to_db", "rc_1_1", "rc_2_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_ai_to_vector", "rc_1_3", "rc_2_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_doc_to_store", "rc_1_4", "rc_2_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_rag_to_dw", "rc_1_5", "rc_2_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_rep_to_dw", "rc_1_6", "rc_2_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.8;entryY=0;");
+  edge("e_auth_to_cache", "rc_1_2", "rc_2_4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // 4. Data Layer to Integrations (90° Vertical Drop)
+  edge("e_db_to_crm", "rc_2_0", "rc_3_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_store_to_veeva", "rc_2_2", "rc_3_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_dw_to_fda", "rc_2_3", "rc_3_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_dw_to_ema", "rc_2_3", "rc_3_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.8;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_cache_to_sendgrid", "rc_2_4", "rc_3_4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_log_to_slack", "rc_2_5", "rc_3_5", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // 5. Platform Infrastructure to Integrations / Data (270° Vertical upward backing)
+  edge("e_gcp_to_crm", "rc_4_0", "rc_3_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_gke_to_apps", "rc_4_1", "rc_3_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_vertex_to_fda", "rc_4_3", "rc_3_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=0;entryX=0.5;entryY=1;");
 
   // ==================== 4. RIGHT SIDEBAR: 3 TABLES (x=1224..1520, y=74..694) ====================
   // 1. Dependency Catalog (y=74, h=250)

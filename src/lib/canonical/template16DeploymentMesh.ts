@@ -1,15 +1,13 @@
 /**
- * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 16: Deployment Diagram
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 16: Deployment Architecture
  * Matches 100% of images/16.png:
- * - Top Sub-Banner: Highly available multi-zone primary + DR region
- * - Top Legend Pills: Compute, Data Services, Networking, Security
- * - Users & Clients with Ingress stack (Cloud CDN, Cloud Armor, External HTTPS Anycast)
- * - Primary Region (us-central1) with Global LB, Internal LB, 3 Zones (A, B, C) with GKE Autopilot & Cloud Run Jobs
- * - Regional Data Tier with 6 discrete DB cards (AlloyDB, Cloud SQL, MongoDB Atlas, Redis, BigQuery, Vertex AI Vector Search)
- * - Shared Services & Network Foundation bar
- * - Secondary DR Region (us-east1) with Standby GKE, Cloud Run, Data Replication & Shared Services
- * - Right Sidebar: Deployment Notes, Scaling Strategy (5 items), Security Controls (6 checkmarks)
- * - Bottom Row: Deployment Tools, CI/CD Pipeline (5 steps with arrows), Monitoring & Observability, Environment Strategy (DEV, TEST, STAGE, PROD)
+ * - Header with Badge "16" and Title "DEPLOYMENT ARCHITECTURE"
+ * - Left: Users & Clients (6 categories) + Ingress Stack (Cloud CDN, Cloud Armor, External HTTPS Anycast)
+ * - Center: Primary Region (us-central1) with Global & Internal LB, 3 Multi-Zone columns (GKE Autopilot, Cloud Run Jobs), Regional Data Tier, Shared Services, Network Foundation
+ * - Right: DR Region (us-east1) with Standby GKE, Cloud Run, Replicated Data Tier, Shared Services
+ * - Right Sidebar: Deployment Notes, Scaling Strategy, Security Controls
+ * - Bottom Row: Deployment Tools, CI/CD Pipeline (5 connected steps), Monitoring & Observability, Environment Strategy
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -38,11 +36,11 @@ export function generateTemplate16DeploymentMeshXml(
     );
 
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
-  cell("hdr_num", "14", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("hdr_num", "16", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
     "hdr_title",
-    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>DEPLOYMENT DIAGRAM</div>` +
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>DEPLOYMENT ARCHITECTURE</div>` +
     `<div style='font-size:12.5px;font-weight:700;color:#1E3A8A;margin-top:2px;'>NOVACURA – Enterprise AI Platform for Biopharma</div>`,
     94,
     12,
@@ -93,9 +91,11 @@ export function generateTemplate16DeploymentMeshXml(
   cell("ing_armor", "<div style='font-size:20px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF / DDoS)</div>", 184, 396, 94, 86, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   cell("ing_anycast", "<div style='font-size:20px;text-align:center;'>🌐</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>External HTTPS<br/>(global anycast)</div>", 184, 492, 94, 108, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  edge("e_u_to_cdn", "u_copilot", "ing_cdn", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_cdn_armor", "ing_cdn", "ing_armor", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
-  edge("e_armor_anycast", "ing_armor", "ing_anycast", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+  // Pure 0° Horizontal edge: AI Copilot -> Cloud CDN
+  edge("e_u_to_cdn", "u_copilot", "ing_cdn", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  // Pure 90° Vertical edges inside Ingress
+  edge("e_cdn_armor", "ing_cdn", "ing_armor", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_armor_anycast", "ing_armor", "ing_anycast", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 3. CENTER: PRIMARY REGION (us-central1) (x=296..1036, y=124..770, w=740, h=646) ====================
   cell("box_primary_reg", "", 296, 124, 740, 646, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
@@ -105,14 +105,16 @@ export function generateTemplate16DeploymentMeshXml(
   cell("node_glb", "<div style='font-size:8.5px;font-weight:800;color:#1E40AF;'>🌐 &nbsp; Global HTTP(S) Load Balancer</div>", 310, 150, 712, 28, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;");
   cell("node_ilb", "<div style='font-size:8.5px;font-weight:800;color:#1E40AF;'>⚙️ &nbsp; Internal HTTP(S) Load Balancer</div>", 310, 184, 712, 28, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;");
 
-  edge("e_ing_to_glb", "ing_anycast", "node_glb", "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_glb_ilb", "node_glb", "node_ilb", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 0° / 90° Orthogonal edge from Ingress Anycast up to Global LB (zero diagonal)
+  edge("e_ing_to_glb", "ing_anycast", "node_glb", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  // Pure 90° Vertical edge: Global LB -> Internal LB
+  edge("e_glb_ilb", "node_glb", "node_ilb", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // 3 Multi-Zone Columns (ZONE A, ZONE B, ZONE C)
   const zones = [
-    { id: "za", name: "ZONE A (us-central1-a)", x: 310 },
-    { id: "zb", name: "ZONE B (us-central1-b)", x: 550 },
-    { id: "zc", name: "ZONE C (us-central1-c)", x: 790 }
+    { id: "za", name: "ZONE A (us-central1-a)", x: 310, entryFrac: 0.16 },
+    { id: "zb", name: "ZONE B (us-central1-b)", x: 550, entryFrac: 0.50 },
+    { id: "zc", name: "ZONE C (us-central1-c)", x: 790, entryFrac: 0.84 }
   ];
 
   zones.forEach((zn, idx) => {
@@ -139,8 +141,9 @@ export function generateTemplate16DeploymentMeshXml(
     </div>`;
     cell(`txt_worker_${zn.id}`, workerBullets, zn.x + 8, 384, 216, 74, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-    edge(`e_ilb_${zn.id}`, "node_ilb", `box_app_${zn.id}`, "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
-    edge(`e_app_w_${zn.id}`, `box_app_${zn.id}`, `box_worker_${zn.id}`, "strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;endSize=4;");
+    // Pure 90° Vertical edges: ILB -> App Tier -> Worker Tier
+    edge(`e_ilb_${zn.id}`, "node_ilb", `box_app_${zn.id}`, `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=${zn.entryFrac};exitY=1;entryX=0.5;entryY=0;`);
+    edge(`e_app_w_${zn.id}`, `box_app_${zn.id}`, `box_worker_${zn.id}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
   });
 
   // Regional Data Tier (y=474, h=106, w=712)
@@ -161,6 +164,11 @@ export function generateTemplate16DeploymentMeshXml(
     curDbX += db.w + 6;
   });
 
+  // Pure 90° Vertical Drop-Lines: Worker Tiers -> Data Tier
+  zones.forEach((zn) => {
+    edge(`e_w_data_${zn.id}`, `box_worker_${zn.id}`, "box_data_tier", `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=${zn.entryFrac};entryY=0;`);
+  });
+
   // Shared Services Bar (y=588, h=72, w=712)
   cell("box_shared_svc", "", 310, 588, 712, 72, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("lbl_shared_svc", "Shared Services", 310, 590, 712, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=left;spacingLeft=8;");
@@ -178,6 +186,9 @@ export function generateTemplate16DeploymentMeshXml(
     cell(`sh_${idx}`, `<div style="font-size:7px;font-weight:700;color:#0F172A;text-align:center;">${sh.icon} ${sh.t}</div>`, sx, 608, 112, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
+  // Pure 90° Vertical edge: Data Tier <-> Shared Services
+  edge("e_data_shared", "box_data_tier", "box_shared_svc", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
   // Network Foundation Bar (y=668, h=92, w=712)
   cell("box_net_found", "", 310, 668, 712, 92, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("lbl_net_found", "Network Foundation", 310, 670, 712, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=left;spacingLeft=8;");
@@ -194,6 +205,9 @@ export function generateTemplate16DeploymentMeshXml(
     const nx = 318 + idx * 116;
     cell(`nf_${idx}`, `<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:center;">${nf.icon} ${nf.t}</div>`, nx, 692, 112, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
+
+  // Pure 90° Vertical edge: Shared Services <-> Network Foundation
+  edge("e_shared_net", "box_shared_svc", "box_net_found", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 4. DR REGION (us-east1) (x=1046..1236, y=124..770, w=190, h=646) ====================
   cell("box_dr_reg", "", 1046, 124, 190, 646, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;");
@@ -213,9 +227,8 @@ export function generateTemplate16DeploymentMeshXml(
 
   cell("dr_shared", "<div style='font-size:22px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:4px;'>Shared Services</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Standby)</div>", 1056, 560, 170, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  // Replication arrow between Primary and DR
-  edge("e_dr_sync", "box_primary_reg", "box_dr_reg", "strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;");
-  cell("lbl_dr_sync", "Async Replication<br/>&amp; DR Sync", 986, 340, 90, 24, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=7.5;fontStyle=1;align=center;");
+  // Pure 0° / 180° Horizontal replication arrow between Primary and DR
+  edge("e_dr_sync", "box_primary_reg", "box_dr_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;exitX=1;exitY=0.45;entryX=0;entryY=0.45;");
 
   // ==================== 5. RIGHT SIDEBAR (x=1246..1520, y=124..770, w=274, h=646) ====================
   // 1. Deployment Notes
@@ -288,7 +301,8 @@ export function generateTemplate16DeploymentMeshXml(
     const px = 294 + idx * 96;
     cell(ps.id, `<div style="font-size:22px;text-align:center;">${ps.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:4px;">${ps.t}</div>`, px, 816, 90, 122, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_pipe_${idx}`, pipelineSteps[idx - 1].id, ps.id, "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;");
+      // Pure 0° Horizontal edge between CI/CD steps
+      edge(`e_pipe_${idx}`, pipelineSteps[idx - 1].id, ps.id, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

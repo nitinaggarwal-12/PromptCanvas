@@ -10,6 +10,7 @@
  * - Policies & Governance cross-cutting bar
  * - Key Benefits, Technologies, Legend on the right
  * - 4-card Architecture Notes banner on bottom
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -32,7 +33,7 @@ export function generateTemplate17IdentityAccessFlowXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -130,10 +131,16 @@ export function generateTemplate17IdentityAccessFlowXml(
     cell(`am_${idx}`, `<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:left;display:flex;align-items:center;padding:2px 6px;"><span style="font-size:14px;margin-right:6px;">${am.icon}</span> ${am.t}</div>`, 190, ay, 170, 44, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;");
   });
 
-  // Connect Actors to IdP
-  edge("e_act_to_idp", "act_adm", "idp_cloud_id", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_part_to_auth", "pt_vend", "box_auth_m", "strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
-  edge("e_auth_to_idp", "box_auth_m", "box_idp", "strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edges: Users & Actors -> Identity Providers
+  edge("e_act_to_idp_1", "act_hum", "idp_cloud_id", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_act_to_idp_2", "act_sa", "fed_saml", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_act_to_idp_3", "act_app", "fed_ad", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 0° Horizontal edge: External Partners -> Authentication Methods
+  edge("e_part_to_auth", "pt_vend", "box_auth_m", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 270° Vertical edge: Authentication Methods -> Identity Providers
+  edge("e_auth_to_idp", "box_auth_m", "box_idp", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=0;entryX=0.5;entryY=1;");
 
   // ==================== 5. COLUMN 2: ACCESS MANAGEMENT & PRIVILEGE MODEL (x=384..580) ====================
   // Access Management Box (w=196, h=410)
@@ -141,19 +148,19 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_iam", "ACCESS MANAGEMENT", 384, 98, 196, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const iamItems = [
-    { t: "IAM<br/>(Identity &amp; Access<br/>Management)", icon: "🛡️" },
-    { t: "Groups<br/>(Google Groups)", icon: "👥" },
-    { t: "Roles<br/>(Predefined / Custom)", icon: "🏷️" },
-    { t: "Conditions<br/>(Context-Aware IAM)", icon: "📋" },
-    { t: "Access Duration<br/>(Time-bound Access)", icon: "⏱️" }
+    { id: "iam_0", t: "IAM<br/>(Identity &amp; Access<br/>Management)", icon: "🛡️" },
+    { id: "iam_1", t: "Groups<br/>(Google Groups)", icon: "👥" },
+    { id: "iam_2", t: "Roles<br/>(Predefined / Custom)", icon: "🏷️" },
+    { id: "iam_3", t: "Conditions<br/>(Context-Aware IAM)", icon: "📋" },
+    { id: "iam_4", t: "Access Duration<br/>(Time-bound Access)", icon: "⏱️" }
   ];
   iamItems.forEach((im, idx) => {
     const iy = 132 + idx * 74;
-    cell(`iam_${idx}`, `<div style="font-size:18px;text-align:center;">${im.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${im.t}</div>`, 394, iy, 176, 64, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
+    cell(im.id, `<div style="font-size:18px;text-align:center;">${im.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${im.t}</div>`, 394, iy, 176, 64, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Connect IdP to Access Management
-  edge("e_idp_to_iam", "idp_cloud_id", "iam_0", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Identity Providers -> Access Management
+  edge("e_idp_to_iam", "box_idp", "box_iam", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.66;entryX=0;entryY=0.66;");
 
   // Privilege Model Pyramid Box (w=196, h=250)
   cell("box_priv_model", "", 384, 520, 196, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
@@ -166,6 +173,9 @@ export function generateTemplate17IdentityAccessFlowXml(
     <div style="background:#16A34A;border-radius:4px;padding:10px;font-size:8px;font-weight:800;color:#FFFFFF;width:100%;">Deny by Default</div>
   </div>`;
   cell("txt_pyramid", pyramidHtml, 390, 552, 184, 210, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+
+  // Pure 90° Vertical edge: Access Management -> Privilege Model
+  edge("e_iam_to_priv", "box_iam", "box_priv_model", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 6. COLUMN 3: RESOURCE ACCESS (x=596..846, y=98..770, w=250, h=672) ====================
   cell("box_res_acc", "", 596, 98, 250, 672, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
@@ -184,13 +194,13 @@ export function generateTemplate17IdentityAccessFlowXml(
     cell(rs.id, `<div style="font-size:22px;text-align:center;">${rs.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.2;margin-top:2px;">${rs.t}</div>`, 606, ry, 230, 92, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
   });
 
-  // Central Orthogonal Fork from IAM to Resource Access
-  edge("e_iam_to_res_cmp", "iam_2", "res_cmp", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_iam_to_res_dat", "iam_2", "res_dat", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_iam_to_res_app", "iam_2", "res_app", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_iam_to_res_ai", "iam_2", "res_ai", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_iam_to_res_net", "iam_2", "res_net", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_iam_to_res_sec", "iam_2", "res_sec", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Strict 0° / 90° Orthogonal fork routing from IAM Roles to Resource Access Cards (zero diagonals)
+  edge("e_iam_to_res_0", "iam_2", "res_cmp", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_iam_to_res_1", "iam_2", "res_dat", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_iam_to_res_2", "iam_2", "res_app", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_iam_to_res_3", "iam_2", "res_ai", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_iam_to_res_4", "iam_2", "res_net", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_iam_to_res_5", "iam_2", "res_sec", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 7. COLUMN 4: MONITORING & AUDIT + LOG RETENTION (x=862..1048, y=98..770, w=186, h=672) ====================
   // Monitoring & Audit Box (w=186, h=410)
@@ -209,10 +219,10 @@ export function generateTemplate17IdentityAccessFlowXml(
     cell(mn.id, `<div style="font-size:18px;text-align:center;">${mn.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mn.t}</div>`, 872, my, 166, 64, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Connect Resource Access to Monitoring
-  edge("e_res_to_mon_0", "res_cmp", "mon_0", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
-  edge("e_res_to_mon_1", "res_dat", "mon_1", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
-  edge("e_res_to_mon_2", "res_app", "mon_2", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+  // Pure 0° Horizontal edges: Resource Access -> Monitoring
+  edge("e_res_to_mon_0", "res_cmp", "mon_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_res_to_mon_1", "res_app", "mon_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_res_to_mon_2", "res_net", "mon_4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // Log Retention Box (w=186, h=250)
   cell("box_log_ret", "", 862, 520, 186, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
@@ -223,6 +233,9 @@ export function generateTemplate17IdentityAccessFlowXml(
     <div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.35;">Logs retained as per<br/>organization policy<br/>(e.g., 400 days)<br/>in Log Bucket /<br/>BigQuery</div>
   </div>`;
   cell("txt_log_ret", logRetHtml, 868, 552, 174, 210, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+
+  // Pure 90° Vertical edge: Monitoring & Audit -> Log Retention
+  edge("e_mon_to_ret", "box_mon_aud", "box_log_ret", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 8. BOTTOM CENTER: POLICIES & GOVERNANCE (x=182..1048, y=780..864, w=866, h=84) ====================
   cell("box_gov", "", 182, 780, 866, 84, "rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;");
@@ -239,6 +252,10 @@ export function generateTemplate17IdentityAccessFlowXml(
     const gx = 190 + idx * 170;
     cell(`gv_${idx}`, `<div style="font-size:16px;text-align:center;">${gv.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${gv.t}</div>`, gx, 804, 164, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
+
+  // Pure 270° Vertical edges: Policies & Governance -> Authentication & IAM
+  edge("e_gov_to_auth", "box_gov", "box_auth_m", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.1;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_gov_to_priv", "box_gov", "box_priv_model", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.35;exitY=0;entryX=0.5;entryY=1;");
 
   // ==================== 9. RIGHT SIDEBAR (x=1060..1520, y=98..864, w=460, h=766) ====================
   // 1. Key Benefits

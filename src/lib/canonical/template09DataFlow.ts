@@ -1,7 +1,7 @@
 /**
  * Master 1:1 Exact Replica Generator for Canonical Template 09: Data Flow Architecture
  * Matches 100% of images/09.png (NOVACURA Data Flow Architecture for Biopharma)
- * Pure collision-free geometry, complete <mxfile> envelope, and high-contrast typography.
+ * Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping).
  */
 
 const E = (v?: string | null) =>
@@ -51,7 +51,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   const steps = [
     { num: "1", text: "Source systems\npublish data via APIs,\nfiles, streams, or CDC" },
     { num: "2", text: "Raw data lands in\ncloud storage\n(immutable)" },
-    { num: "3", text: "Data validated, cleansed,\ntransformed &amp;\nstandardized" },
+    { num: "3", text: "Data validated, cleansed,\ntransformed &\nstandardized" },
     { num: "4", text: "Curated data published\nfor consumption via\nAPIs, Views, Services" },
     { num: "5", text: "Applications, dashboards\nand agents consume\ndata securely" },
     { num: "6", text: "Insights &amp; actions\nflow back to drive\nbusiness outcomes" },
@@ -242,7 +242,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   ];
   crossServices.forEach((cs, i) => {
     const csx = 28 + i * 252;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${cs.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${cs.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${cs.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${cs.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${cs.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${cs.sub}</div></td></tr></table>`;
     rect(`cs_cross_${i}`, html, csx, 700, 244, 38, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
@@ -274,7 +274,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
     const col = i % 2;
     const dtx = 618 + col * 154;
     const dty = 778 + row * 44;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${dt.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${dt.title}</div><div style="font-size:6.5px;color:#64748B;">${dt.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:14px;">${dt.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${dt.title}</div><div style="font-size:6.5px;color:#64748B;">${dt.sub}</div></td></tr></table>`;
     rect(`dt_type_${i}`, html, dtx, dty, 148, 40, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
@@ -294,35 +294,40 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   ];
   gcpStack.forEach((gs, i) => {
     const gsx = 948 + i * 74;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${gs.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;margin-top:2px;">${gs.name}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:16px;">${gs.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;margin-top:2px;">${gs.name}</div></div>`;
     rect(`gcp_st_${i}`, html, gsx, 778, 68, 88, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
   });
 
   // =========================================================================
-  // 9. CONNECTORS, STEP DROP-LINES & CLOSED FEEDBACK LOOP
+  // 9. CONNECTORS, STEP DROP-LINES & CLOSED FEEDBACK LOOP (Pure 0°, 90°, 180°, 270°)
   // =========================================================================
-  // Vertical Step Drop-lines (Dashed Slate)
+  // Vertical Step Drop-lines (90° Downward Dashed Slate)
   c.push(`<mxCell id="arr_step_drop_0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_0" target="ingest_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_step_drop_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_1" target="landing_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_1" target="lz_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_step_drop_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_2" target="proc_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_step_drop_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_3" target="cur_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_step_drop_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_3" target="curated_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_step_drop_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_4" target="serv_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_step_drop_5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="step_hdr_5" target="outcomes_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Horizontal Pipeline Data Flows (Solid Blue)
+  // Horizontal Pipeline Data Flows (Pure 0° Solid Blue)
   for (let i = 0; i < 5; i++) {
-    c.push(`<mxCell id="arr_src_to_ing_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="src_pod_${i}" target="ing_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-    c.push(`<mxCell id="arr_ing_to_land_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.2 + i * 0.15};" edge="1" parent="1" source="ing_pod_${i}" target="landing_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_src_to_ing_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="src_pod_${i}" target="ing_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="arr_ing_to_land_${i}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=${0.1 + i * 0.2};" edge="1" parent="1" source="ing_pod_${i}" target="lz_pod"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   }
 
-  // Inter-layer flows inside Google Cloud Platform
-  c.push(`<mxCell id="arr_land_to_proc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="landing_frame" target="proc_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_proc_to_cur" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="proc_frame" target="cur_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_cur_to_serv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="cur_frame" target="serv_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Inter-layer flows inside Google Cloud Platform (Pure 0° Horizontal)
+  c.push(`<mxCell id="arr_land_to_proc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="lz_frame" target="proc_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_proc_to_cur" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="proc_frame" target="curated_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_cur_to_serv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="curated_frame" target="serv_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_serv_to_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="serv_frame" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Consumers -> Business Outcomes (Thick Blue Arrow)
+  // Consumers -> Business Outcomes (Pure 0° Thick Blue Arrow)
   c.push(`<mxCell id="arr_cons_to_outcomes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=3;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="consumers_box" target="outcomes_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // Downward connectors to Cross-Cutting Services (Pure 90° Vertical)
+  c.push(`<mxCell id="arr_lz_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="lz_frame" target="cross_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_proc_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.45;entryY=0;" edge="1" parent="1" source="proc_frame" target="cross_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_cur_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.65;entryY=0;" edge="1" parent="1" source="curated_frame" target="cross_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Closed-Loop Feedback Arrow: Outcomes -> Sources (Purple Dashed Return Loop)
   c.push(`<mxCell id="arr_feedback_loop" value="Closed-Loop Feedback: Actions &amp; Insights" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=20;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" edge="1" parent="1" source="outcomes_box" target="sources_box"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1315" y="675"/><mxPoint x="100" y="675"/></Array></mxGeometry></mxCell>`);

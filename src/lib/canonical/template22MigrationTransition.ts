@@ -6,6 +6,7 @@
  * - Migration Principles, Migration Patterns (6Rs), Key Risks, Mitigation Strategies
  * - Migration Approach Overview (7 connected steps) + Wave Example progression
  * - Bottom Row: Key Benefits, Data Migration Strategy, Cutover Strategies, Success Metrics, Stakeholders, Tools & Technologies
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -28,7 +29,7 @@ export function generateTemplate22MigrationTransitionXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -71,8 +72,8 @@ export function generateTemplate22MigrationTransitionXml(
     cell(`ci_${idx}`, `<div style="font-size:14px;text-align:center;">${ci.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${ci.t}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.2;margin-top:2px;">${ci.sub}</div>`, 24, cy, 138, 102, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Current State to Phases Arrow
-  edge("e_cur_to_phases", "box_cur_state", "box_phases", "strokeColor=#64748B;strokeWidth=2;endArrow=classic;endSize=5;");
+  // Pure 0° Horizontal edge from Current State to Migration Phases
+  edge("e_cur_to_phases", "box_cur_state", "box_phases", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=3;endArrow=classic;endSize=6;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 3. MIGRATION PHASES (CENTER) (x=180..1060, y=78..590, w=880, h=512) ====================
   cell("box_phases", "", 180, 78, 880, 512, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
@@ -133,26 +134,26 @@ export function generateTemplate22MigrationTransitionXml(
 
   phases.forEach((ph, pIdx) => {
     const px = 190 + pIdx * 172;
-    // Phase Sub-Container
     cell(`ph_box_${pIdx}`, "", px, 108, 166, 360, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
-    
-    // Header
     cell(`ph_hdr_${pIdx}`, `<div style="display:flex;align-items:center;justify-content:center;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:7.5px;font-weight:900;margin-right:4px;">${ph.num}</span> <span style="font-size:8px;font-weight:800;color:#0F172A;">${ph.name}</span></div>`, px, 112, 166, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-    // 4 Phase Cards
     ph.cards.forEach((cd, cIdx) => {
       const cy = 132 + cIdx * 58;
       cell(`ph_${pIdx}_cd_${cIdx}`, `<div style="display:flex;align-items:flex-start;gap:4px;"><span style="font-size:13px;">${cd.icon}</span><div style="text-align:left;"><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.1;">${cd.t}</div><div style="font-size:6px;color:#64748B;line-height:1.15;margin-top:1px;">${cd.sub}</div></div></div>`, px + 4, cy, 158, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=top;padding=3;");
     });
 
-    // Key Deliverables Box at bottom of phase
     cell(`ph_deliv_box_${pIdx}`, "", px, 474, 166, 106, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;");
     cell(`ph_deliv_lbl_${pIdx}`, "Key Deliverables", px, 476, 166, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
     cell(`ph_deliv_txt_${pIdx}`, `<div style="font-size:6px;line-height:1.35;color:#0F172A;padding:2px 4px;">${ph.deliv}</div>`, px, 492, 166, 84, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+
+    if (pIdx > 0) {
+      // Pure 0° Horizontal arrow between adjacent phase boxes
+      edge(`e_ph_${pIdx}`, `ph_box_${pIdx - 1}`, `ph_box_${pIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+    }
   });
 
-  // Phases to Target State Arrow
-  edge("e_phases_to_target", "box_phases", "box_target_state", "strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endSize=5;");
+  // Pure 0° Horizontal edge from Phases to Target State
+  edge("e_phases_to_target", "box_phases", "box_target_state", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=3;endArrow=classic;endSize=6;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 4. TARGET STATE (RIGHT) (x=1070..1224, y=78..590, w=154, h=512) ====================
   cell("box_target_state", "", 1070, 78, 154, 512, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
@@ -239,7 +240,8 @@ export function generateTemplate22MigrationTransitionXml(
     const ax = 26 + idx * 118;
     cell(`as_${idx}`, `<div style="font-size:16px;text-align:center;">${as.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${as.t}</div>`, ax, 624, 108, 64, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_as_${idx}`, `as_${idx - 1}`, `as_${idx}`, "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+      // Pure 0° Horizontal arrow between approach steps
+      edge(`e_as_${idx}`, `as_${idx - 1}`, `as_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

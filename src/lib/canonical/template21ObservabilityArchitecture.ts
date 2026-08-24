@@ -8,6 +8,7 @@
  * - Right Sidebar: 6 Consumers & Outcomes role pods (SRE, Security, Data/AI, Product, Compliance, Leadership)
  * - Bottom Row: Key Benefits, Key Signals & KPIs (9 items), SLO Example (4 items), Alerting Examples (5 items), Data Retention table, Technologies Matrix (10 icons)
  * - Bottom Legend bar
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -30,7 +31,7 @@ export function generateTemplate21ObservabilityArchitectureXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -83,6 +84,9 @@ export function generateTemplate21ObservabilityArchitectureXml(
 
   // Telemetry Flow Dropline
   cell("lbl_flow_top", "Logs, Metrics, Traces, Events, Audit Logs", 600, 142, 340, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // Pure 90° Vertical edge from Sources down to Pipeline
+  edge("e_src_to_pipe", "box_sources", "box_pipeline", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // ==================== 3. LEFT SIDEBAR: OBSERVABILITY PILLARS (x=16..170, y=162..610, w=154, h=448) ====================
   cell("box_pillars", "", 16, 162, 154, 448, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
@@ -181,11 +185,11 @@ export function generateTemplate21ObservabilityArchitectureXml(
     cell(`p5_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:16px;">${it.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 1054, iy, 258, 54, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Pipeline Inter-Stage Connectors
-  edge("e_p1_p2", "box_p1", "box_p2", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_p2_p3", "box_p2", "box_p3", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_p3_p4", "box_p3", "box_p4", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_p4_p5", "box_p4", "box_p5", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal Pipeline Inter-Stage Connectors
+  edge("e_p1_p2", "box_p1", "box_p2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_p2_p3", "box_p2", "box_p3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_p3_p4", "box_p3", "box_p4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_p4_p5", "box_p4", "box_p5", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // Observability Foundation (Bottom of Pipeline box)
   cell("box_found", "", 190, 540, 1130, 60, "rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.2;");
@@ -203,6 +207,13 @@ export function generateTemplate21ObservabilityArchitectureXml(
     const fx = 196 + idx * 186;
     cell(`fi_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;">${fi.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${fi.t}</span></div>`, fx, 558, 180, 36, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
+
+  // Pure 270° Vertical dashed lines from Foundation up to the 5 Pipeline Stages
+  edge("e_f_to_p1", "box_found", "box_p1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.08;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_f_to_p2", "box_found", "box_p2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.28;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_f_to_p3", "box_found", "box_p3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.48;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_f_to_p4", "box_found", "box_p4", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.68;exitY=0;entryX=0.5;entryY=1;");
+  edge("e_f_to_p5", "box_found", "box_p5", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.88;exitY=0;entryX=0.5;entryY=1;");
 
   // ==================== 5. RIGHT SIDEBAR: CONSUMERS & OUTCOMES (x=1340..1520, y=162..610, w=180, h=448) ====================
   cell("box_consumers", "", 1340, 162, 180, 448, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
@@ -222,7 +233,8 @@ export function generateTemplate21ObservabilityArchitectureXml(
     cell(`con_${idx}`, `<div style="font-size:16px;text-align:center;">${cs.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;">${cs.role}</div><div style="font-size:6.5px;color:#64748B;text-align:center;line-height:1.15;margin-top:1px;">${cs.outcome}</div>`, 1348, cy, 164, 62, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  edge("e_pipe_to_cons", "box_p5", "box_consumers", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Pipeline Visualization -> Consumers
+  edge("e_pipe_to_cons", "box_p5", "box_consumers", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 6. BOTTOM ROW: 6 CARDS (y=618..954, h=336) ====================
   // 1. Key Benefits (w=240)

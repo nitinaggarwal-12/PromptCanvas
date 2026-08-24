@@ -8,6 +8,7 @@
  * - Protocol Mapping & Translation Examples (4 sub-diagrams: MCP->REST, A2A->gRPC, REST->SQL, Event->Tool Call)
  * - Right Sidebar: Common Protocols & When to Use (10 items), Interaction Patterns (6 items), Key Risks, Tool Examples by Category
  * - Bottom Row: Security & Governance, Reliability & Resilience, Observability, Tools & Technologies (10 icons), Use Case Examples, Legend, Notes & Abbreviations
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -30,7 +31,7 @@ export function generateTemplate25ToolProtocolInteractionXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -119,7 +120,6 @@ export function generateTemplate25ToolProtocolInteractionXml(
 
   protoLayers.forEach((pl, idx) => {
     const plx = 200 + idx * 160;
-    // Layer Box
     cell(`pl_box_${idx}`, "", plx, 100, 152, 216, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
     cell(`pl_hdr_${idx}`, `<div style="font-size:6.5px;font-weight:900;color:#1E40AF;text-align:center;">${pl.num}. ${pl.name}</div>`, plx, 102, 152, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
@@ -132,7 +132,8 @@ export function generateTemplate25ToolProtocolInteractionXml(
     cell(`pl_format_${idx}`, `<div style="font-size:6px;color:#166534;font-weight:900;text-align:center;">Format</div><div style="font-size:5.5px;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${pl.format}</div>`, plx + 4, 214, 144, 40, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=center;verticalAlign=middle;padding=2;");
 
     if (idx > 0) {
-      edge(`e_pl_${idx}`, `pl_box_${idx - 1}`, `pl_box_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° / 180° Horizontal bidirectional dashed edge between adjacent layers
+      edge(`e_pl_${idx}`, `pl_box_${idx - 1}`, `pl_box_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;startArrow=classic;endArrow=classic;startSize=3;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 
@@ -154,7 +155,7 @@ export function generateTemplate25ToolProtocolInteractionXml(
     cell(`ci_caps_${idx}`, `<div style="text-align:center;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:5.5px;font-weight:800;color:#0F172A;line-height:1.1;margin-top:1px;">${ci.t}</div></div>`, cx, 340, 106, 38, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // ==================== 4. MIDDLE ROW: PROTOCOL FLOW & EXAMPLES (x=16..1010, y=478..660, h=182) ====================
+  // ==================== 4. MIDDLE ROW: PROTOCOL FLOW & EXAMPLES (x=16..1010, y=400..588) ====================
   // 1. Protocol Interaction Flow (Example) (y=400..472, h=72)
   cell("box_flow_ex", "", 16, 400, 994, 72, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_flow_ex", "PROTOCOL INTERACTION FLOW (EXAMPLE)", 16, 402, 994, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
@@ -173,7 +174,8 @@ export function generateTemplate25ToolProtocolInteractionXml(
     const fx = 24 + idx * 122;
     cell(`fs_p_${idx}`, `<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:12px;">${fs.icon}</span><span style="font-size:6px;font-weight:900;color:#1E40AF;">${fs.num}. ${fs.t}</span></div><div style="font-size:5px;color:#64748B;line-height:1.1;margin-top:1px;">${fs.sub}</div>`, fx, 418, 116, 48, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_fs_p_${idx}`, `fs_p_${idx - 1}`, `fs_p_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal edge between flow steps
+      edge(`e_fs_p_${idx}`, `fs_p_${idx - 1}`, `fs_p_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

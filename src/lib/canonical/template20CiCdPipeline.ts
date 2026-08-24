@@ -7,6 +7,7 @@
  * - 3 Deployment Patterns sub-diagrams: Blue/Green, Canary Deployment, Rolling Deployment
  * - Right Sidebar: Quality Gates checklist (7 items), Deployment Strategies, Compliance & Governance
  * - Bottom Row: Key Benefits, Technologies Matrix (10 icons in 2 rows), Notes, Legend, Pipeline Triggers
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -29,7 +30,7 @@ export function generateTemplate20CiCdPipelineXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -71,13 +72,9 @@ export function generateTemplate20CiCdPipelineXml(
   ];
 
   let curStgX = 16;
-  stages.forEach((stg, idx) => {
-    // Stage Container Box
+  stages.forEach((stg) => {
     cell(`box_${stg.id}`, "", curStgX, 78, stg.w, 312, `rounded=1;arcSize=6;fillColor=${stg.bg};strokeColor=${stg.bc};strokeWidth=1.5;`);
-    
-    // Stage Number + Header
     cell(`lbl_${stg.id}`, `<div style="display:flex;align-items:center;justify-content:center;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:8px;font-weight:900;margin-right:4px;">${stg.num}</span> <span style="font-size:9px;font-weight:800;color:#0F172A;">${stg.name}</span></div>`, curStgX, 82, stg.w, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-
     curStgX += stg.w + 6;
   });
 
@@ -107,19 +104,20 @@ export function generateTemplate20CiCdPipelineXml(
   cell("c_s5_gate", "<div style='font-size:18px;text-align:center;'>✔</div><div style='font-size:7.5px;font-weight:800;color:#166534;text-align:center;'>All Quality Gates<br/>Passed?</div>", 534, 150, 102, 102, "rhombus;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=2;");
   cell("c_s5_fail", "<div style='font-size:16px;text-align:center;'>🔔</div><div style='font-size:7px;font-weight:800;color:#DC2626;text-align:center;'>Notify &amp; Fail<br/><span style='color:#64748B;'>(Dev / Slack / Email)</span></div>", 530, 290, 110, 84, "rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#DC2626;html=1;align=center;verticalAlign=middle;padding=2;");
   
-  edge("e_gate_fail", "c_s5_gate", "c_s5_fail", "strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 90° Vertical edge: Quality Gate -> Fail
+  edge("e_gate_fail", "c_s5_gate", "c_s5_fail", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
   cell("lbl_gate_no", "No", 590, 260, 20, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=left;");
 
-  // Loop back from Fail to Code
-  edge("e_fail_to_code", "c_s5_fail", "box_stg_1", "strokeColor=#DC2626;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;edgeStyle=orthogonalEdgeStyle;");
+  // Pure 180° / 90° Orthogonal loop-back from Fail to Code
+  edge("e_fail_to_code", "c_s5_fail", "c_s1_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0;exitY=0.5;entryX=1;entryY=0.5;");
 
   // Stage 6 Content: Deploy to Staging
   cell("c_s6_1", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Deploy to<br/>Staging (GKE)</div>", 664, 108, 118, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   cell("c_s6_2", "<div style='font-size:18px;text-align:center;'>🩺</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Smoke Tests<br/>&amp; Health Checks</div>", 664, 196, 118, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   cell("c_s6_3", "<div style='font-size:18px;text-align:center;'>⏱️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Performance Tests<br/><span style='color:#64748B;'>(k6 / Locust)</span></div>", 664, 284, 118, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // Connect Gate to Staging
-  edge("e_gate_pass", "c_s5_gate", "c_s6_1", "strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Quality Gate -> Staging
+  edge("e_gate_pass", "c_s5_gate", "c_s6_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
   cell("lbl_gate_yes", "Yes", 640, 182, 20, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=left;");
 
   // Stage 7 Content: Approval
@@ -137,14 +135,14 @@ export function generateTemplate20CiCdPipelineXml(
   cell("c_s9_2", "<div style='font-size:18px;text-align:center;'>📑</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Logging<br/><span style='color:#64748B;'>(Cloud Logging)</span></div>", 1056, 196, 106, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   cell("c_s9_3", "<div style='font-size:18px;text-align:center;'>🎯</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>SLO / Error<br/>Tracking</div>", 1056, 284, 106, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // Pipeline Flow Arrows connecting stages
-  edge("e_s1_s2", "c_s1_1", "c_s2_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s2_s3", "c_s2_1", "c_s3_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s3_s4", "c_s3_1", "c_s4_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s4_s5", "c_s4_1", "c_s5_gate", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s6_s7", "c_s6_1", "c_s7_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s7_s8", "c_s7_1", "c_s8_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_s8_s9", "c_s8_1", "c_s9_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal Pipeline Flow Arrows
+  edge("e_s1_s2", "c_s1_1", "c_s2_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s2_s3", "c_s2_1", "c_s3_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s3_s4", "c_s3_1", "c_s4_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s4_s5", "c_s4_1", "c_s5_gate", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s6_s7", "c_s6_1", "c_s7_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s7_s8", "c_s7_1", "c_s8_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_s8_s9", "c_s8_1", "c_s9_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 3. MIDDLE: PIPELINE ENABLERS (x=16..1180, y=398..484, w=1164, h=86) ====================
   cell("box_enablers", "", 16, 398, 1164, 86, "rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;");
@@ -174,8 +172,8 @@ export function generateTemplate20CiCdPipelineXml(
   cell("p_bg_blue", "Version N<br/>(Blue)", 36, 546, 80, 50, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   cell("p_bg_switch", "Traffic<br/>Switch", 156, 546, 70, 50, "rhombus;fillColor=#FFFFFF;strokeColor=#64748B;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   cell("p_bg_green", "Version N+1<br/>(Green)", 266, 546, 90, 50, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.2;fontColor=#166534;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
-  edge("e_bg_1", "p_bg_blue", "p_bg_switch", "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
-  edge("e_bg_2", "p_bg_switch", "p_bg_green", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_bg_1", "p_bg_blue", "p_bg_switch", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_bg_2", "p_bg_switch", "p_bg_green", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // Pattern 2: Canary Deployment (w=390)
   cell("box_p_canary", "", 376, 516, 390, 128, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
@@ -184,9 +182,9 @@ export function generateTemplate20CiCdPipelineXml(
   cell("p_can_lb", "⚙️<br/>Load Balancer", 462, 546, 80, 50, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   cell("p_can_v1", "Version N (90%)", 582, 536, 110, 32, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   cell("p_can_v2", "Version N+1 (10%)", 582, 580, 110, 32, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
-  edge("e_can_1", "p_can_users", "p_can_lb", "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
-  edge("e_can_2", "p_can_lb", "p_can_v1", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
-  edge("e_can_3", "p_can_lb", "p_can_v2", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_can_1", "p_can_users", "p_can_lb", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_can_2", "p_can_lb", "p_can_v1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.35;entryX=0;entryY=0.5;");
+  edge("e_can_3", "p_can_lb", "p_can_v2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.65;entryX=0;entryY=0.5;");
 
   // Pattern 3: Rolling Deployment (w=394)
   cell("box_p_rolling", "", 776, 516, 394, 128, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
@@ -197,7 +195,7 @@ export function generateTemplate20CiCdPipelineXml(
     const rx = 796 + idx * 90;
     cell(`rp_${idx}`, rp, rx, 546, 50, 44, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontSize=16;align=center;verticalAlign=middle;");
     if (idx > 0) {
-      edge(`e_rp_${idx}`, `rp_${idx - 1}`, `rp_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      edge(`e_rp_${idx}`, `rp_${idx - 1}`, `rp_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
   cell("lbl_roll_sub", "Update Pods / Instances in Batches", 776, 608, 394, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");

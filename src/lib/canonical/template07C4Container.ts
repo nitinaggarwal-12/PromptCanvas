@@ -1,7 +1,7 @@
 /**
  * Master 1:1 Exact Replica Generator for Canonical Template 07: C4 Container Architecture
  * Matches 100% of images/07.png (NOVACURA Bio-Pharma Platform C4 Container)
- * Pure collision-free geometry, complete <mxfile> envelope, and high-contrast typography.
+ * Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping).
  */
 
 const E = (v?: string | null) =>
@@ -105,10 +105,10 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
 
   containers.forEach((ct, i) => {
-    const row = Math.floor(i / 4);
-    const col = i % 4;
-    const cx = 246 + col * 262;
-    const cy = 118 + row * 140;
+    const row = Math.floor(i / 3);
+    const col = i % 3;
+    const cx = 250 + col * 346;
+    const cy = 120 + row * 104;
 
     const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
       <tr>
@@ -120,11 +120,11 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
             <span style="font-size:14px;">${ct.icon}</span>
             <div style="font-size:8.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${ct.title}</div>
           </div>
-          <div style="font-size:7px;color:#64748B;line-height:1.2;margin-top:4px;">${ct.desc}</div>
+          <div style="font-size:7px;color:#64748B;line-height:1.2;margin-top:3px;">${ct.desc}</div>
         </td>
       </tr>
     </table>`;
-    rect(`c4_cont_${i}`, html, cx, cy, 252, 130, "rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;");
+    rect(`c4_cont_${i}`, html, cx, cy, 334, 96, "rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;");
   });
 
   // 13. Wide Bottom Container: Audit, Monitoring & Compliance Service
@@ -139,7 +139,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
       </td>
     </tr>
   </table>`;
-  rect("c4_cont_13", cont13Html, 246, 546, 1048, 102, "rounded=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;");
+  rect("c4_cont_12", cont13Html, 250, 546, 1040, 102, "rounded=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;");
 
   // =========================================================================
   // 4. RIGHT PANEL: EXTERNAL PARTICIPANTS (x: 1320 to 1540, y: 78 to 660)
@@ -187,7 +187,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   entSystems.forEach((es, i) => {
     const esx = 28 + i * 88;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${es.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;margin-top:2px;">${es.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6px;color:#64748B;line-height:1.1;margin-top:1px;">${es.desc.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:14px;">${es.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;">${es.title.replace(/\n/g, "<br/>")}</div><div style="font-size:6px;color:#64748B;line-height:1.1;margin-top:1px;">${es.desc.replace(/\n/g, "<br/>")}</div></div>`;
     rect(`ent_sys_${i}`, html, esx, 698, 82, 114, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
@@ -236,7 +236,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   ];
   controls.forEach((ct, i) => {
     const cx = 30 + i * 251;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ct.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${ct.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${ct.desc}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ct.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${ct.title}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${ct.desc}</div></td></tr></table>`;
     rect(`ct_pod_${i}`, html, cx, 852, 242, 36, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
@@ -263,32 +263,36 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   text("legend_footer", legendHtml, 20, 902, 1520, 32, "align=left;");
 
   // =========================================================================
-  // 8. CONTAINER-TO-CONTAINER WORKFLOW EDGES & PROTOCOL CONNECTORS
+  // 8. CONTAINER-TO-CONTAINER WORKFLOW EDGES & PROTOCOL CONNECTORS (Pure 0°, 90°, 180°, 270°)
   // =========================================================================
-  // User Access to Container 1 (User Portal)
-  c.push(`<mxCell id="e_users_to_c1" value="Access via Secure Web Portal (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.25;entryX=0;entryY=0.5;" edge="1" parent="1" source="users_box" target="c_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_users_notifications" value="Notifications, tasks &amp; insights" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.75;entryX=0;entryY=0.5;" edge="1" parent="1" source="users_box" target="c_pod_10"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // User Access to Container 1 (User Experience Portal) - Pure 0° Horizontal
+  c.push(`<mxCell id="e_users_to_c1" value="Access via Secure Web Portal (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="1" source="internal_users_box" target="c4_cont_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  
+  // Notifications from AI Copilot (Container 10 / index 9) back to Internal Users - Pure 180° Horizontal
+  c.push(`<mxCell id="e_users_notifications" value="Notifications, tasks &amp; insights" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0;exitY=0.5;entryX=1;entryY=0.75;" edge="1" parent="1" source="c4_cont_9" target="internal_users_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Row 1 Container Flow: 1 -> 2 -> 3
-  c.push(`<mxCell id="e_c1_to_c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_1" target="c_pod_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c2_to_c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_2" target="c_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Row 1 Container Flow: 1 -> 2 -> 3 (Pure 0° Horizontal)
+  c.push(`<mxCell id="e_c1_to_c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_0" target="c4_cont_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c2_to_c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_1" target="c4_cont_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Row 2 Container Flow: 1 -> 4 -> 5 -> 6
-  c.push(`<mxCell id="e_c1_to_c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c_pod_1" target="c_pod_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c4_to_c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_4" target="c_pod_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c5_to_c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_5" target="c_pod_6"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Row 2 Container Flow: 4 -> 5 -> 6 (Pure 0° Horizontal)
+  c.push(`<mxCell id="e_c4_to_c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_3" target="c4_cont_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c5_to_c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_4" target="c4_cont_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // Row 3 Container Flow: 4 -> 7 -> 8 -> 9
-  c.push(`<mxCell id="e_c4_to_c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c_pod_4" target="c_pod_7"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c7_to_c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_7" target="c_pod_8"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c8_to_c9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_8" target="c_pod_9"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Row 3 Container Flow: 7 -> 8 -> 9 (Pure 0° Horizontal)
+  c.push(`<mxCell id="e_c7_to_c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_6" target="c4_cont_7"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c8_to_c9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_7" target="c4_cont_8"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // AI & Integration Mesh: 10 <-> 8, 10 <-> 11, 11 <-> 12
-  c.push(`<mxCell id="e_c10_to_c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" edge="1" parent="1" source="c_pod_10" target="c_pod_8"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c10_to_c11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_10" target="c_pod_11"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_c11_to_c12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c_pod_11" target="c_pod_12"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // Row 4 Container Flow: 10 -> 11 -> 12 (Pure 0° Horizontal)
+  c.push(`<mxCell id="e_c10_to_c11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_9" target="c4_cont_10"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c11_to_c12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_10" target="c4_cont_11"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // External Partners Connections (Right, Green)
+  // Vertical flows between rows: 1 -> 4, 4 -> 7, 7 -> 10 (Pure 90° Vertical)
+  c.push(`<mxCell id="e_c1_to_c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4_cont_0" target="c4_cont_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c4_to_c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4_cont_3" target="c4_cont_6"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_c7_to_c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4_cont_6" target="c4_cont_9"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+
+  // External Partners Connections (Right, Green - Pure 0° Horizontal)
   const extLabels = [
     "APIs &amp; Secure Data Exchange (SFTP / API)",
     "Submissions &amp; Responses (HTTPS / APIs)",
@@ -297,7 +301,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
     "Insights, answers &amp; recommendations",
   ];
   extLabels.forEach((lbl, i) => {
-    c.push(`<mxCell id="e_ext_cnt_${i}" value="${lbl}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=${0.15 + i * 0.2};entryX=0;entryY=0.5;" edge="1" parent="1" source="platform_box" target="ext_part_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="e_ext_cnt_${i}" value="${lbl}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_${Math.min(i * 3 + 2, 11)}" target="ext_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   });
 
   return `<mxfile host="embed.diagrams.net">

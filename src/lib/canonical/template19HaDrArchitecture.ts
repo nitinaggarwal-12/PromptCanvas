@@ -9,6 +9,7 @@
  * - Cross-Region Data Replication & Backup pipeline (6 connected nodes)
  * - Failover Flow sequence (6 numbered steps with arrows)
  * - Bottom Row: Key Benefits, Technologies Matrix (10 native icons), Backup & Retention Policy, Notes
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -31,7 +32,7 @@ export function generateTemplate19HaDrArchitectureXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -105,11 +106,16 @@ export function generateTemplate19HaDrArchitectureXml(
   
   cell("node_failover_lbl", "<div style='font-size:7.5px;font-weight:800;color:#DC2626;text-align:center;'>Failover via<br/>Traffic Director /<br/>DNS</div>", 552, 480, 110, 54, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  edge("e_glb_dns", "node_glb", "node_dns", "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_glb_to_pri", "node_glb", "pri_lb", "strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;");
-  edge("e_glb_to_dr", "node_glb", "dr_lb", "strokeColor=#EA580C;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
-  edge("e_dns_to_pri", "node_dns", "pri_gke_b", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
-  edge("e_dns_to_dr", "node_dns", "dr_gke_b", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+  // Pure 90° Vertical edge: Global LB -> Cloud DNS
+  edge("e_glb_dns", "node_glb", "node_dns", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // Pure 180° / 0° Horizontal edge: Global LB -> Primary LB & DR LB
+  edge("e_glb_to_pri", "node_glb", "box_pri_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;exitX=0;exitY=0.5;entryX=1;entryY=0.22;");
+  edge("e_glb_to_dr", "node_glb", "box_dr_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.22;");
+
+  // Pure 180° / 0° Horizontal edge: Failover Director -> Primary & DR
+  edge("e_fo_to_pri", "node_failover_lbl", "box_pri_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=0;exitY=0.5;entryX=1;entryY=0.75;");
+  edge("e_fo_to_dr", "node_failover_lbl", "box_dr_reg", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.75;");
 
   // ==================== 4. DR REGION (STANDBY) (x=674..1198, y=86..640, w=524, h=554) ====================
   cell("lbl_reg_dr", "DR REGION (us-east1)", 800, 86, 190, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
@@ -206,7 +212,8 @@ export function generateTemplate19HaDrArchitectureXml(
     const rx = 26 + idx * 138;
     cell(rn.id, `<div style="font-size:16px;text-align:center;">${rn.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${rn.t}</div>`, rx, 678, 128, 82, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_repl_${idx}`, replNodes[idx - 1].id, rn.id, "strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+      // Pure 0° Horizontal edge between replication stages
+      edge(`e_repl_${idx}`, replNodes[idx - 1].id, rn.id, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 
@@ -226,7 +233,8 @@ export function generateTemplate19HaDrArchitectureXml(
     const fx = 886 + idx * 104;
     cell(fs.id, `<div style="font-size:16px;text-align:center;">${fs.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;"><b>${fs.num}.</b> ${fs.t}</div>`, fx, 678, 96, 82, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_fail_${idx}`, failSteps[idx - 1].id, fs.id, "strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;");
+      // Pure 0° Horizontal edge between failover steps
+      edge(`e_fail_${idx}`, failSteps[idx - 1].id, fs.id, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

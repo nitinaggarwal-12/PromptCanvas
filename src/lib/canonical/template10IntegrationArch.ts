@@ -1,7 +1,7 @@
 /**
  * Master 1:1 Exact Replica Generator for Canonical Template 10: Integration Architecture
  * Matches 100% of images/10.png (NOVACURA Integration Architecture for Biopharma)
- * Pure collision-free geometry, complete <mxfile> envelope, and high-contrast typography.
+ * Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping).
  */
 
 const E = (v?: string | null) =>
@@ -106,7 +106,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   apiIntCards.forEach((ac, i) => {
     const acy = 180 + i * 64;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;text-align:center;"><span style="font-size:16px;">${ac.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0F2A4A;">${ac.title}</div><div style="font-size:7px;color:#0284C7;font-weight:600;">${ac.sub}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;text-align:center;"><span style="font-size:16px;">${ac.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0F172A;">${ac.title}</div><div style="font-size:7px;color:#0284C7;font-weight:600;">${ac.sub}</div></td></tr></table>`;
     rect(`api_card_${i}`, html, 251, acy, 223, 58, "rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;");
   });
 
@@ -167,7 +167,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   crossInt.forEach((ci, i) => {
     const cix = 251 + i * 92;
-    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;margin-top:1px;">${ci.title}</div><div style="font-size:6px;color:#64748B;">${ci.sub}</div></div>`;
+    const html = `<div style="text-align:center;padding:1px;"><span style="font-size:12px;">${ci.icon}</span><div style="font-size:7px;font-weight:800;color:#0F172A;margin-top:1px;">${ci.title}</div><div style="font-size:6px;color:#64748B;">${ci.sub}</div></div>`;
     rect(`ci_pod_${i}`, html, cix, 600, 88, 46, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;");
   });
 
@@ -188,7 +188,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   platCons.forEach((pc, i) => {
     const pcy = 178 + i * 48;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${pc.title}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${pc.title}</div></td></tr></table>`;
     rect(`pc_pod_${i}`, html, 1033, pcy, 229, 42, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
@@ -203,7 +203,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   ];
   extCons.forEach((ec, i) => {
     const ecy = 452 + i * 40;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ec.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;">${ec.title}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ec.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${ec.title}</div></td></tr></table>`;
     rect(`ec_pod_${i}`, html, 1033, ecy, 229, 36, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
   });
 
@@ -299,32 +299,29 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   rect("legend_content", `<div style="padding:4px;">${legendItemsHtml}</div>`, 1194, 696, 342, 104, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;");
 
   // =========================================================================
-  // 8. CONNECTORS & STEP FLOW OVERVIEW (Exact match to images/10.png)
+  // 8. CONNECTORS & STEP FLOW OVERVIEW (Pure 0°, 90°, 180°, 270° Orthogonal)
   // =========================================================================
 
-  // 1. External Systems -> Integration Backbone (4 bidirectional blue arrows)
+  // 1. External Systems -> API & Service Integration (4 pure 0° horizontal blue bidirectional arrows)
   c.push(`<mxCell id="arr_ext0_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_0" target="api_card_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ext1_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_1" target="api_card_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ext1_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_1" target="api_card_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ext2_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_2" target="api_card_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ext3_to_ev" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_3" target="ev_stream_pod"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ext3_to_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ext_sys_grp_3" target="api_card_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // 2. Inter-Pillar Connections inside Backbone (API <-> Event <-> Data)
+  // 2. Inter-Pillar Connections inside Backbone (API <-> Event <-> Data: Pure 0° / 180° Horizontal)
   c.push(`<mxCell id="arr_api_to_event" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="api_int_frame" target="ev_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_event_to_data" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.6;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ev_int_frame" target="dt_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // 3. Three Pillars down to Cross-Cutting Services (3 vertical blue double-headed arrows)
-  c.push(`<mxCell id="arr_api_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="api_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 3. Three Pillars down to Cross-Cutting Services (3 pure 90° vertical double-headed arrows)
+  c.push(`<mxCell id="arr_api_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.15;entryY=0;" edge="1" parent="1" source="api_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ev_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="ev_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_dt_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.8;entryY=0;" edge="1" parent="1" source="dt_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt_to_cross" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.85;entryY=0;" edge="1" parent="1" source="dt_int_frame" target="cross_int_frame"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // 4. Data Integration -> Consumers (Right)
-  c.push(`<mxCell id="arr_dt0_to_pc0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_0" target="pc_pod_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_dt1_to_pc1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_1" target="pc_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_dt2_to_ec0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_2" target="ec_pod_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_dt3_to_ec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_3" target="ec_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_dt4_to_ec3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="dt_card_4" target="ec_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  // 4. Data Integration -> Consumers (Right: 2 pure 0° horizontal dashed blue arrows)
+  c.push(`<mxCell id="arr_dt_to_plat_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.25;entryX=0;entryY=0.25;" edge="1" parent="1" source="dt_int_frame" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_dt_to_ext_cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.75;entryX=0;entryY=0.75;" edge="1" parent="1" source="dt_int_frame" target="consumers_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // 5. Step Flow Sequence: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+  // 5. Step Flow Sequence: 1 -> 2 -> 3 -> 4 -> 5 -> 6 (Pure 0° Horizontal)
   c.push(`<mxCell id="arr_fs_0_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_0" target="fs_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_1_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_1" target="fs_pod_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_fs_2_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="fs_pod_2" target="fs_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);

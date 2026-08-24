@@ -13,6 +13,7 @@
  * - Cross-Cutting Security Controls (8 discrete control cards)
  * - Legend & Technologies on right
  * - Bottom Row: Key Benefits, Trust Boundary Legend, Security Principles, Compliance Alignment, Notes
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -86,12 +87,13 @@ export function generateTemplate18SecurityTrustBoundaryXml(
   cell("node_net_ddos", "<div style='font-size:22px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>DDoS Protection<br/>(Cloud Armor)</div>", 172, 272, 106, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
   cell("node_net_waf", "<div style='font-size:22px;text-align:center;'>🔒</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>WAF<br/>(Cloud Armor)</div>", 172, 412, 106, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  // Ingress connectors with locks
-  edge("e_u_to_net", "u_hum", "node_net_cloud", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  cell("lbl_lock_https", "🔒<br/>HTTPS<br/>TLS 1.2+", 120, 146, 36, 40, "text;html=1;strokeColor=none;fillColor=none;fontColor=#0F172A;fontSize=6.5;fontStyle=1;align=center;");
+  // Pure 0° Horizontal edge: Human Users <-> Internet with Lock
+  edge("e_u_to_net", "u_hum", "node_net_cloud", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;endSize=4;startSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  cell("lbl_lock_https", "🔒<br/>HTTPS<br/>TLS 1.2+", 118, 160, 42, 38, "text;html=1;strokeColor=none;fillColor=none;fontColor=#0F172A;fontSize=6.5;fontStyle=1;align=center;");
 
-  edge("e_app_to_waf", "u_ext_app", "node_net_waf", "strokeColor=#0F172A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
-  cell("lbl_lock_vpn", "🔒<br/>Admin Access<br/>(VPN)", 116, 426, 42, 40, "text;html=1;strokeColor=none;fillColor=none;fontColor=#0F172A;fontSize=6.5;fontStyle=1;align=center;");
+  // Pure 0° Horizontal edge: External Apps <-> WAF with Lock
+  edge("e_app_to_waf", "u_ext_app", "node_net_waf", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;dashed=1;endArrow=classic;startArrow=classic;endSize=4;startSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  cell("lbl_lock_vpn", "🔒<br/>Admin Access<br/>(VPN)", 116, 440, 44, 38, "text;html=1;strokeColor=none;fillColor=none;fontColor=#0F172A;fontSize=6.5;fontStyle=1;align=center;");
 
   // Network Boundary line (x=306)
   cell("lbl_net_boundary", "🛡️ NETWORK<br/>BOUNDARY", 286, 68, 64, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#2563EB;fontSize=7;fontStyle=1;align=center;");
@@ -109,7 +111,12 @@ export function generateTemplate18SecurityTrustBoundaryXml(
   cell("edge_armor", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;'>Cloud Armor<br/><span style='font-size:6.5px;color:#64748B;'>(WAF, Rate Limiting,<br/>IP Reputation)</span></div>", 344, 252, 132, 126, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   cell("edge_cdn", "<div style='font-size:18px;text-align:center;'>⚡</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Cloud CDN</div>", 344, 390, 132, 138, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
 
-  edge("e_net_to_edge", "node_net_ddos", "edge_armor", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: DDoS Protection -> Cloud Armor
+  edge("e_net_to_edge", "node_net_ddos", "edge_armor", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 90° Vertical edges inside Edge / Perimeter
+  edge("e_lb_to_armor", "edge_lb", "edge_armor", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_armor_to_cdn", "edge_armor", "edge_cdn", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // 2. Application Zone (Private Subnets) (w=156)
   cell("box_z_app", "", 492, 116, 156, 428, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;dashed=1;");
@@ -119,7 +126,12 @@ export function generateTemplate18SecurityTrustBoundaryXml(
   cell("app_gw", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>API Gateway<br/><span style='color:#64748B;'>(Cloud Endpoints)</span></div>", 502, 262, 136, 116, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   cell("app_back", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Backend Services<br/><span style='color:#64748B;'>(GKE / Cloud Run)</span></div>", 502, 390, 136, 138, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
 
-  edge("e_edge_to_app", "edge_armor", "app_gw", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Cloud Armor -> API Gateway
+  edge("e_edge_to_app", "edge_armor", "app_gw", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 90° Vertical edges inside Application Zone
+  edge("e_front_to_gw", "app_front", "app_gw", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_gw_to_back", "app_gw", "app_back", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // 3. Data Zone (Private Subnets) (w=156)
   cell("box_z_data", "", 656, 116, 156, 428, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.2;dashed=1;");
@@ -129,9 +141,14 @@ export function generateTemplate18SecurityTrustBoundaryXml(
   cell("dat_gcs", "<div style='font-size:18px;text-align:center;'>🗃️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Object Storage<br/><span style='color:#64748B;'>(Cloud Storage)</span></div>", 666, 262, 136, 116, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   cell("dat_cache", "<div style='font-size:18px;text-align:center;'>💾</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Cache<br/><span style='color:#64748B;'>(Memorystore Redis)</span></div>", 666, 390, 136, 138, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
 
-  edge("e_app_to_dat", "app_gw", "dat_gcs", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;endSize=4;startSize=4;");
+  // Pure 0° / 180° Horizontal edge: API Gateway <-> Object Storage
+  edge("e_app_to_dat", "app_gw", "dat_gcs", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;startArrow=classic;endSize=4;startSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
-  // 4. Management Zone (w=176)
+  // Pure 90° Vertical edges inside Data Zone
+  edge("e_db_to_gcs", "dat_db", "dat_gcs", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_gcs_to_cache", "dat_gcs", "dat_cache", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // 4. Management Zone (w=170)
   cell("box_z_mgmt", "", 820, 116, 170, 428, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
   cell("lbl_z_mgmt", "MANAGEMENT ZONE", 820, 118, 170, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
@@ -161,7 +178,8 @@ export function generateTemplate18SecurityTrustBoundaryXml(
     cell(`dc_${idx}`, `<div style="font-size:16px;text-align:center;">${dc.icon}</div><div style="font-size:7.5px;font-weight:800;color:${dc.col};text-align:center;line-height:1.15;margin-top:2px;">${dc.t}</div>`, 1024, dy, 108, 96, `rounded=1;arcSize=6;fillColor=${dc.bg};strokeColor=${dc.col};strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=3;`);
   });
 
-  edge("e_data_to_class", "box_z_data", "box_data_class", "strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Data Zone -> Data Classification
+  edge("e_data_to_class", "dat_gcs", "dc_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 5. CROSS-CUTTING SECURITY CONTROLS (x=16..1140, y=570..670, w=1124, h=100) ====================
   cell("box_cross_sec", "", 16, 570, 1124, 100, "rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;");

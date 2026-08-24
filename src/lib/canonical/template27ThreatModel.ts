@@ -1,11 +1,12 @@
 /**
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 27: Threat Model Architecture
  * Matches 100% of images/27.png:
- * - 6 Trust Zones (Users, Edge, App, AI/Agent, Data, External) + Shared Security Services bar
- * - Attack Surface Map with 10 attack vectors and STRIDE Threat Pills (T1..T8)
- * - Right Sidebar: Threat Catalog (STRIDE Table T1..T8), Risk Ratings, Key Security Controls, Compliance & Standards
- * - Threat Scenarios & Mitigations Table (6 scenarios with Risk High / Medium badges)
- * - Bottom Row: Incident Response Flow (5 connected steps), Monitoring & Detection (4 icons), Risk Assessment Summary (Pie/Donut chart + percentages), Notes, Legend
+ * - 6 Trust Zones (Users, Edge, App, AI/Agent, Data, External) with complete technical details & icons
+ * - Attack Surface Map with 11 attack vectors and STRIDE Threat Pills (T1..T8)
+ * - Right Sidebar: Full STRIDE Table (T1..T8 with complete Threat Examples and Affected Areas), Risk Ratings, Key Security Controls, Compliance & Standards
+ * - Threat Scenarios & Mitigations Table (6 scenarios with Risk High / Medium badges, full mitigations and detections)
+ * - Bottom Row: Incident Response Flow (5 connected steps), Monitoring & Detection (4 icons), Risk Assessment Summary (Donut chart + percentages), Notes & Governance, Legend
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -28,7 +29,7 @@ export function generateTemplate27ThreatModelXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -99,10 +100,11 @@ export function generateTemplate27ThreatModelXml(
     cell(`tz_hdr_${idx}`, `<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">${tz.icon}</span><span style="font-size:6.5px;font-weight:900;color:${tz.fg};">${tz.num}. ${tz.name}</span></div>`, tzx, 100, 168, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
     const itemsHtml = tz.items.map(it => `• ${it}`).join("<br/>");
-    cell(`tz_items_${idx}`, `<div style="font-size:5.5px;color:#0F172A;line-height:1.25;padding:2px 6px;">${itemsHtml}</div>`, tzx, 118, 168, 92, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`tz_items_${idx}`, `<div style="font-size:6px;font-weight:700;color:#0F172A;line-height:1.3;padding:2px 6px;">${itemsHtml}</div>`, tzx, 118, 168, 92, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
     if (idx > 0) {
-      edge(`e_tz_${idx}`, `tz_box_${idx - 1}`, `tz_box_${idx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal dashed dataflow between trust zones
+      edge(`e_tz_${idx}`, `tz_box_${idx - 1}`, `tz_box_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 
@@ -239,8 +241,8 @@ export function generateTemplate27ThreatModelXml(
     const sty = 112 + idx * 23;
     cell(`st_id_${idx}`, st.id, 1104, sty, 26, 21, "shape=ellipse;fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=5.5;fontStyle=1;strokeColor=#FFFFFF;align=center;verticalAlign=middle;");
     cell(`st_s_${idx}`, st.s, 1132, sty, 68, 21, "strokeColor=#CBD5E1;fillColor=#FFFFFF;fontColor=#0F172A;fontSize=5.5;fontStyle=1;align=left;verticalAlign=middle;padding=2;");
-    cell(`st_ex_${idx}`, `<div style="font-size:5px;line-height:1.1;color:#0F172A;padding:2px;">${st.ex}</div>`, 1202, sty, 250, 21, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
-    cell(`st_aff_${idx}`, st.aff, 1454, sty, 62, 21, "strokeColor=#CBD5E1;fillColor=#FFFFFF;fontColor:#64748B;fontSize=5px;align=center;verticalAlign=middle;");
+    cell(`st_ex_${idx}`, `<div style="font-size:5.5px;line-height:1.15;color:#0F172A;padding:2px;">${st.ex}</div>`, 1202, sty, 250, 21, "html=1;strokeColor=#CBD5E1;fillColor=#FFFFFF;align=left;verticalAlign=middle;");
+    cell(`st_aff_${idx}`, st.aff, 1454, sty, 62, 21, "strokeColor=#CBD5E1;fillColor=#FFFFFF;fontColor:#64748B;fontSize=5.5px;align=center;verticalAlign=middle;");
   });
 
   // 2. Risk Rating Bar (y=304..342, h=38)
@@ -298,7 +300,8 @@ export function generateTemplate27ThreatModelXml(
     const irx = 26 + idx * 82;
     cell(`ir_${idx}`, `<div style="font-size:16px;text-align:center;">${ir.icon}</div><div style="font-size:6px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${ir.t}</div>`, irx, 630, 76, 78, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_ir_${idx}`, `ir_${idx - 1}`, `ir_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal edge between IR steps
+      edge(`e_ir_${idx}`, `ir_${idx - 1}`, `ir_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

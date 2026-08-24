@@ -9,6 +9,7 @@
  * - Right Sidebar: RAG Principles, Retrieval Strategies, Guardrails, Key Risks
  * - Tools & Technologies (12 Google Cloud tools)
  * - Bottom Row: Metrics, High-Level Flow (8 connected nodes), Observability, Compliance, Notes
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
  * - 1536x1024 master canvas resolution.
  */
 
@@ -31,7 +32,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
@@ -93,8 +94,8 @@ export function generateTemplate24RagKnowledgeFlowXml(
     cell(`es_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:11px;">${es.icon}</span><span style="font-size:6px;font-weight:800;color:#0F172A;line-height:1.1;">${es.t}</span></div>`, 26, esy, 134, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // Arrow from Sources to Pipeline
-  edge("e_src_to_pipe", "box_sources", "box_rag_pipe", "strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=5;");
+  // Pure 0° Horizontal edge from Sources to Pipeline
+  edge("e_src_to_pipe", "box_sources", "box_rag_pipe", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 3. CENTER: RAG PIPELINE (7 STAGES: 2..8) (x=180..1220, y=78..390, w=1040) ====================
   cell("box_rag_pipe", "", 180, 78, 1040, 312, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;");
@@ -176,7 +177,8 @@ export function generateTemplate24RagKnowledgeFlowXml(
     });
 
     if (sIdx > 0) {
-      edge(`e_stg_${sIdx}`, `stg_box_${sIdx - 1}`, `stg_box_${sIdx}`, "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal edge between adjacent stages
+      edge(`e_stg_${sIdx}`, `stg_box_${sIdx - 1}`, `stg_box_${sIdx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 
@@ -196,6 +198,12 @@ export function generateTemplate24RagKnowledgeFlowXml(
     const kx = 190 + idx * 170;
     cell(`ks_${idx}`, `<div style="display:flex;align-items:center;gap:4px;padding:0 2px;"><span style="font-size:14px;">${ks.icon}</span><span style="font-size:6.5px;font-weight:800;color:#0F172A;line-height:1.1;">${ks.t}</span></div>`, kx, 418, 162, 46, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
+
+  // Pure 90° Vertical dashed droplines from Pipeline Stages down to Knowledge Stores
+  edge("e_p_to_k1", "stg_box_0", "ks_0", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_p_to_k2", "stg_box_1", "ks_1", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_p_to_k3", "stg_box_2", "ks_2", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_p_to_k4", "stg_box_3", "ks_3", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
 
   // Cross-Cutting Capabilities bar (y=476..504, h=28)
   const crossCaps = ["🔒 Security &amp; IAM (Least Privilege)", "📑 Data Governance", "🛡️ PII &amp; Confidentiality", "📜 Audit Logging", "⚖️ Quality Monitoring", "💰 Cost &amp; Perf", "👥 Multi-tenancy"];
@@ -336,7 +344,8 @@ export function generateTemplate24RagKnowledgeFlowXml(
     const hfx = 262 + idx * 58;
     cell(`hf_${idx}`, `<div style="font-size:14px;text-align:center;">${hf.icon}</div><div style="font-size:5.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${hf.t}</div>`, hfx, 780, 52, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
     if (idx > 0) {
-      edge(`e_hf_${idx}`, `hf_${idx - 1}`, `hf_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+      // Pure 0° Horizontal edge between flow nodes
+      edge(`e_hf_${idx}`, `hf_${idx - 1}`, `hf_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
     }
   });
 

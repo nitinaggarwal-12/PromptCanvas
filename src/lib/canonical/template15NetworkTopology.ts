@@ -1,13 +1,16 @@
 /**
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 15: Network Topology Diagram
  * Matches 100% of images/15.png:
- * - GCP Project VPC with Public Subnet (10.10.0.0/24), 3 AZ Private Subnets (10.10.1.0/24 - 10.10.3.0/24), and Data Subnet (10.10.10.0/24)
- * - Users & Clients with Internet Gateway and External Connectivity (Cloud Armor, CDN, DNS)
- * - 3 AZ columns (us-central1-a, b, c) with discrete Web, App (GKE), and Cache (Redis) tiers
- * - Managed Services column (BigQuery, Pub/Sub, Cloud Tasks, Vertex AI, Secret Manager, Logging, Monitoring)
- * - On-Premises / Customer Network with VPN / Interconnect
- * - Network Security Controls (VPC Firewall, Private Google Access, Flow Logs, IDS/IPS)
- * - Legend and Architecture Notes on 1536x1024 master canvas resolution.
+ * - Users & Clients on the left (5 user types)
+ * - Internet Cloud Node and External Connectivity (Cloud Armor, Cloud CDN, Cloud DNS)
+ * - GCP Project: novacura-prod with VPC 10.10.0.0/16
+ * - Public Subnet (10.10.0.0/24) with External LB, Apigee X API Gateway, WAF
+ * - Private Subnets (10.10.1.0/24 – 10.10.3.0/24) across 3 AZs (us-central1-a, b, c) with Web Tier, App Tier (GKE), Cache Tier (Redis)
+ * - Data Subnet (10.10.10.0/24) with Primary DB (Cloud SQL), Object Storage (GCS), Search Index (OpenSearch)
+ * - Managed Services on the right (BigQuery, Pub/Sub, Cloud Tasks, Vertex AI, Secret Manager, Cloud Logging, Cloud Monitoring)
+ * - Bottom: On-Premises Customer Network (Datacenter, VPN/Interconnect), Network Security (Firewall, PGA, Flow Logs, IDS/IPS), Legend, Notes
+ * - Pure 0°, 90°, 180°, 270° Geometrical Orthogonal Arrow Routing (Zero diagonals, Zero overlapping)
+ * - 1536x1024 master canvas resolution.
  */
 
 const E = (v?: string | null) =>
@@ -29,12 +32,12 @@ export function generateTemplate15NetworkTopologyXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
+  const edge = (id: string, src: string, trg: string, style: string) =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
 
-  // ==================== 1. TOP HEADER BANNER (y=12..70) ====================
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
   cell("hdr_num", "15", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
   
   cell(
@@ -52,9 +55,10 @@ export function generateTemplate15NetworkTopologyXml(
   const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  const netOverviewHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>NETWORK OVERVIEW</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+  const netOverviewHtml = `<div style='font-size:9.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>NETWORK OVERVIEW</div><div style='font-size:7.5px;line-height:1.35;color:#0F172A;'>
     <b>Cloud Provider:</b> Google Cloud Platform (GCP)<br/>
-    <b>Region:</b> us-central1 (Iowa) &nbsp;|&nbsp; <b>VPC:</b> novacura-prod-vpc (10.10.0.0/16)<br/>
+    <b>Region:</b> us-central1 (Iowa)<br/>
+    <b>VPC:</b> novacura-prod-vpc (10.10.0.0/16)<br/>
     <b>Multi-AZ:</b> Enabled &nbsp;|&nbsp; <b>HA:</b> Enabled<br/>
     <b>Connectivity:</b> Internet, VPN, Private Service Connect
   </div>`;
@@ -77,8 +81,8 @@ export function generateTemplate15NetworkTopologyXml(
     cell(u.id, `<div style="font-size:20px;text-align:center;">${u.icon}</div><div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${u.t}</div>`, 24, uy, 134, 62, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Internet Cloud Node (x=182, y=260, w=110, h=60)
-  cell("node_internet", `<div style="font-size:24px;text-align:center;">☁️</div><div style="font-size:9.5px;font-weight:800;color:#0F172A;text-align:center;">Internet</div>`, 182, 260, 110, 60, "ellipse;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;");
+  // Internet Cloud Node (x=182, y=240, w=110, h=60)
+  cell("node_internet", `<div style="font-size:24px;text-align:center;">☁️</div><div style="font-size:9.5px;font-weight:800;color:#0F172A;text-align:center;">Internet</div>`, 182, 240, 110, 60, "ellipse;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;");
 
   // External Connectivity Box (x=182, y=340, w=138, h=250)
   cell("box_ext_conn", "", 182, 340, 138, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
@@ -94,9 +98,8 @@ export function generateTemplate15NetworkTopologyXml(
     cell(ex.id, `<div style="font-size:18px;text-align:center;">${ex.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${ex.t}</div>`, 190, ey, 122, 58, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // Connect Users to Internet and External Connectivity
-  edge("e_u_net", "u_biz", "node_internet", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_net_ext", "node_internet", "box_ext_conn", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: Users & Clients -> Internet
+  edge("e_u_net", "box_users", "node_internet", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;exitX=1;exitY=0.45;entryX=0;entryY=0.5;");
 
   // On-Premises / Customer Network Box (x=16, y=780, w=304, h=160)
   cell("box_onprem", "", 16, 780, 304, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
@@ -104,7 +107,9 @@ export function generateTemplate15NetworkTopologyXml(
 
   cell("node_dc", "<div style='font-size:24px;text-align:center;'>🗄️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Datacenter /<br/>On-Prem Systems</div>", 30, 820, 120, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
   cell("node_vpn", "<div style='font-size:24px;text-align:center;'>🔒</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>VPN / Interconnect</div>", 180, 820, 120, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
-  edge("e_dc_vpn", "node_dc", "node_vpn", "strokeColor=#0F172A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  
+  // Pure 0° Horizontal edge: Datacenter -> VPN
+  edge("e_dc_vpn", "node_dc", "node_vpn", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 3. CENTER: GCP PROJECT & VPC (x=336..1256, y=86..766, w=920, h=680) ====================
   cell("box_vpc_outer", "", 336, 86, 920, 680, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;");
@@ -118,23 +123,27 @@ export function generateTemplate15NetworkTopologyXml(
   cell("node_api_gw", "<div style='font-size:20px;text-align:center;'>🛡️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>API Gateway<br/>(Apigee X)</div>", 676, 140, 240, 66, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
   cell("node_waf", "<div style='font-size:20px;text-align:center;'>🔒</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Web Application<br/>Firewall (WAF)</div>", 982, 140, 240, 66, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  edge("e_lb_apigw", "node_ext_lb", "node_api_gw", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_apigw_waf", "node_api_gw", "node_waf", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge between Public Subnet components
+  edge("e_lb_apigw", "node_ext_lb", "node_api_gw", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_apigw_waf", "node_api_gw", "node_waf", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
-  // Connect External Connectivity to External LB
-  edge("e_ext_to_lb", "ext_cdn", "node_ext_lb", "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  // Pure 0° / 90° Orthogonal Edge: Internet -> External LB
+  edge("e_net_lb", "node_internet", "node_ext_lb", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 0° Horizontal edge: External Connectivity -> VPC
+  edge("e_ext_priv", "box_ext_conn", "box_priv_sub", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=5;exitX=1;exitY=0.38;entryX=0;entryY=0.55;");
 
   // 3.2. PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24) (y=232, h=376)
   cell("box_priv_sub", "", 350, 232, 892, 376, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_priv_sub", "PRIVATE SUBNETS (10.10.1.0/24 – 10.10.3.0/24)", 350, 234, 892, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
 
   const azs = [
-    { id: "az_a", name: "us-central1-a", x: 362 },
-    { id: "az_b", name: "us-central1-b", x: 652 },
-    { id: "az_c", name: "us-central1-c", x: 942 }
+    { id: "az_a", name: "us-central1-a", x: 362, topSrc: "node_ext_lb" },
+    { id: "az_b", name: "us-central1-b", x: 652, topSrc: "node_api_gw" },
+    { id: "az_c", name: "us-central1-c", x: 942, topSrc: "node_waf" }
   ];
 
-  azs.forEach((az, idx) => {
+  azs.forEach((az) => {
     // AZ Container
     cell(`box_${az.id}`, "", az.x, 256, 280, 340, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;dashed=1;");
     cell(`lbl_${az.id}`, az.name, az.x, 258, 280, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
@@ -148,17 +157,17 @@ export function generateTemplate15NetworkTopologyXml(
     // Tier 3: Cache Tier (Redis)
     cell(`cache_${az.id}`, `<div style="font-size:18px;text-align:center;">💾</div><div style="font-size:8.5px;font-weight:800;color:#1E40AF;text-align:center;">Cache Tier</div><div style="font-size:7.5px;color:#64748B;text-align:center;">Redis (Memorystore)</div>`, az.x + 12, 456, 256, 68, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-    // Vertical Tier connectors inside AZ
-    edge(`e_w_a_${az.id}`, `web_${az.id}`, `app_${az.id}`, "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
-    edge(`e_a_c_${az.id}`, `app_${az.id}`, `cache_${az.id}`, "strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;");
+    // Pure 90° Vertical Tier connectors down from Public Subnet to Web Tier
+    edge(`e_top_${az.id}`, az.topSrc, `web_${az.id}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+    // Pure 90° Vertical Tier connectors inside AZ
+    edge(`e_w_a_${az.id}`, `web_${az.id}`, `app_${az.id}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+    edge(`e_a_c_${az.id}`, `app_${az.id}`, `cache_${az.id}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
   });
 
-  // Cross-AZ replication arrows
-  edge("e_az_ab_app", "app_az_a", "app_az_b", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
-  edge("e_az_bc_app", "app_az_b", "app_az_c", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
-
-  // Connect Public Subnet (API GW / WAF) to Private Subnets Web Tier
-  edge("e_waf_to_web", "node_api_gw", "web_az_b", "strokeColor=#2563EB;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 0° / 180° Cross-AZ horizontal replication arrows
+  edge("e_az_ab_app", "app_az_a", "app_az_b", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_az_bc_app", "app_az_b", "app_az_c", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // 3.3. DATA SUBNET (10.10.10.0/24) (y=618, h=136)
   cell("box_data_sub", "", 350, 618, 892, 136, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;");
@@ -168,10 +177,14 @@ export function generateTemplate15NetworkTopologyXml(
   cell("node_obj_store", "<div style='font-size:22px;text-align:center;'>🗃️</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Object Storage</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>Cloud Storage<br/>(Documents)</div>", 676, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
   cell("node_search_idx", "<div style='font-size:22px;text-align:center;'>🔍</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;'>Search Index</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>OpenSearch Service<br/>(Managed)</div>", 982, 644, 250, 96, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
-  // Connect App Tier to Data Subnet
-  edge("e_app_to_db", "cache_az_b", "node_obj_store", "strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;");
-  edge("e_db_to_store", "node_db_sql", "node_obj_store", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
-  edge("e_store_to_search", "node_obj_store", "node_search_idx", "strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
+  // Pure 90° Vertical Drop-Lines: Cache Tiers -> Data Subnet Tiers
+  edge("e_cache_a_db", "cache_az_a", "node_db_sql", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_cache_b_store", "cache_az_b", "node_obj_store", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+  edge("e_cache_c_search", "cache_az_c", "node_search_idx", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
+
+  // Pure 0° / 180° Horizontal connectors inside Data Subnet
+  edge("e_db_to_store", "node_db_sql", "node_obj_store", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+  edge("e_store_to_search", "node_obj_store", "node_search_idx", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#64748B;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
 
   // ==================== 4. BOTTOM CENTER: NETWORK SECURITY (x=336..850, y=780..940, w=514, h=160) ====================
   cell("box_net_sec", "", 336, 780, 514, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
@@ -188,8 +201,11 @@ export function generateTemplate15NetworkTopologyXml(
     cell(sc.id, `<div style="font-size:20px;text-align:center;">${sc.icon}</div><div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${sc.t}</div>`, sx, 820, 114, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
-  // Connect On-Prem to Network Security / VPC
-  edge("e_vpn_to_sec", "node_vpn", "sec_pga", "strokeColor=#16A34A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  // Pure 0° Horizontal edge: VPN -> Network Security
+  edge("e_vpn_to_sec", "node_vpn", "box_net_sec", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
+
+  // Pure 90° Vertical edge: Data Subnet <-> Network Security
+  edge("e_data_to_sec", "box_data_sub", "box_net_sec", "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;exitX=0.5;exitY=1;entryX=0.75;entryY=0;");
 
   // ==================== 5. BOTTOM RIGHT: LEGEND & NOTES (x=860..1520, y=780..940) ====================
   // Legend Box (x=860, y=780, w=320, h=160)
@@ -235,8 +251,10 @@ export function generateTemplate15NetworkTopologyXml(
   mgdServices.forEach((mg, idx) => {
     const my = 124 + idx * 88;
     cell(mg.id, `<div style="font-size:22px;text-align:center;">${mg.icon}</div><div style="font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${mg.t}</div>`, 1280, my, 226, 76, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=4;");
-    // Connect Managed Services to VPC with dashed lines
-    edge(`e_mgd_${idx}`, mg.id, "box_vpc_outer", "strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;");
+    
+    // Pure 180° Horizontal edge: Left of Managed Service Card -> Right of VPC outer container
+    const fracY = ((my + 38) - 86) / 680;
+    edge(`e_mgd_${idx}`, mg.id, "box_vpc_outer", `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;exitX=0;exitY=0.5;entryX=1;entryY=${fracY.toFixed(4)};`);
   });
 
   // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
