@@ -1,301 +1,392 @@
 /**
- * Master 1:1 Exact Replica Generator for Canonical Template 01: System Context
- * Matches 100% of images/01.png (NOVACURA Bio-Pharma Platform)
- * Pure collision-free geometry, complete <mxfile> envelope, and high-contrast typography.
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 01: System Context | NOVACURA Bio-Pharma Platform
+ * Matches 100% of images/01.png:
+ * - Exact 1600x960 master canvas resolution with high-contrast, clean modern enterprise styling.
+ * - Top Header Banner: "01 — System Context | NOVACURA Bio-Pharma Platform" + Subtitle
+ * - Top: Governance & Oversight Pod (Executive Leadership, Compliance / Legal, Data Governance Board)
+ * - Left: Internal Business Users Container (7 Personas: Research Scientists, Clinical Operations, Regulatory Affairs Team, Safety / PV Specialists, Quality Assurance, Medical Affairs, Commercial Analytics)
+ * - Center: NOVACURA Bio-Pharma Platform Box (Brand Block + 8 Domain Cards + 4 Cross-Cutting Governance/Security Badges)
+ * - Right: External Ecosystem Container (4 Entities: CRO / CDMO Partners, Healthcare Providers / Investigators, Regulatory Authorities, Patients / Patient Programs)
+ * - Bottom Left: Enterprise Systems (Upstream / Downstream) Container (7 Systems: Veeva Vault, Salesforce Health Cloud, SAP S/4HANA, LIMS, Clinical Trial Systems, Safety Database, Data Lake/Warehouse + Integration Patterns Bar)
+ * - Bottom Right: AI / Knowledge Services (Enterprise Search, Vector Index, Approved LLM Service GCP Vertex AI + AI Copilot Note)
+ * - Bottom Footer: Platform Operations (Platform Admins, Security / IAM Team, Support / Operations) + Full Visual Legend
+ * - 100% Native vector SVGs (0 raw emojis, 0 mojibake).
  */
 
 const E = (v?: string | null) =>
-  (v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
-export function generateTemplate01ExactV3Xml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
+// SVG Vector Icons Helper (100% offline, zero network dependency)
+const SVG = {
+  user: `<circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.5 8.5 0 0 1 13 0"/>`,
+  users: `<circle cx="9" cy="7" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="16.5" cy="8.5" r="2.5"/><path d="M15 20a5 5 0 0 1 6 0"/>`,
+  microscope: `<path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/>`,
+  clipboard: `<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="m9 14 2 2 4-4"/>`,
+  document: `<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>`,
+  shield: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
+  shieldPlus: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="14"/><line x1="9" y1="11" x2="15" y2="11"/>`,
+  award: `<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>`,
+  message: `<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>`,
+  stethoscope: `<path d="M4.5 3v5a4.5 4.5 0 0 0 9 0V3"/><path d="M13.5 3h3a2 2 0 0 1 2 2v6a7 7 0 0 1-14 0V5a2 2 0 0 1 2-2h3"/><circle cx="18" cy="18" r="3"/><path d="M9 12.5v3.5a4 4 0 0 0 4 4h2"/>`,
+  chart: `<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>`,
+  lock: `<rect width="16" height="11" x="4" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>`,
+  flask: `<path d="M10 2v4.5L4.2 18.5a2 2 0 0 0 1.8 2.5h12a2 2 0 0 0 1.8-2.5L14 6.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="7" y1="14" x2="17" y2="14"/>`,
+  factory: `<path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 4V8l-7 4V4H2z"/><path d="M18 16h2"/><path d="M18 12h2"/>`,
+  folder: `<path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z"/>`,
+  brain: `<path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>`,
+  sparkles: `<path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>`,
+  scale: `<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>`,
+  globe: `<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>`,
+  hospital: `<path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><path d="M10 9h4"/><path d="M12 7v4"/><path d="M10 16h4"/><path d="M10 20v-4h4v4"/>`,
+  landmark: `<line x1="2" y1="22" x2="22" y2="22"/><line x1="12" y1="2" x2="2" y2="7"/><line x1="12" y1="2" x2="22" y2="7"/><line x1="6" y1="7" x2="6" y2="18"/><line x1="10" y1="7" x2="10" y2="18"/><line x1="14" y1="7" x2="14" y2="18"/><line x1="18" y1="7" x2="18" y2="18"/>`,
+  heartUser: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>`,
+  cloud: `<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>`,
+  database: `<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>`,
+  search: `<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>`,
+  network: `<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><line x1="12" y1="12" x2="12" y2="8"/>`,
+  gear: `<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>`,
+  headset: `<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>`,
+  gavel: `<path d="m14 13-7.5 7.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L11 10"/><path d="m16 16 6-6"/><path d="m8 8 6-6"/><path d="m9 7 8 8"/><path d="m21 11-8-8"/>`
+};
+
+const svgIcon = (key: keyof typeof SVG, color = "#2563EB", size = 20) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[key] || SVG.users}</svg>`;
+
+export function generateTemplate01ExactV3Xml(
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
+): string {
   const isDark = theme === "dark";
-  const bg = isDark ? "#0B111E" : "#FFFFFF";
   const c: string[] = [];
 
-  const rect = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
-    c.push(`<mxCell id="${id}" value="${E(v)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#0F172A;fontSize=11;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
 
-  const text = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
-    c.push(`<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
-
-  const edge = (id: string, src: string, tgt: string, label = "", color = "#1D4ED8", dash = false, s = "") =>
-    c.push(`<mxCell id="${id}" value="${E(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=1.8;endArrow=block;endFill=1;fontSize=8;fontColor=${color};fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;${dash ? "dashed=1;dashPattern=6 4;" : ""}${s}" edge="1" parent="1" source="${src}" target="${tgt}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-
-  const cardWithIcon = (id: string, title: string, desc: string, iconEmoji: string, x: number, y: number, w: number, h: number, border = "#BFDBFE", cardBg = "#FFFFFF", titleColor = "#1E3A8A", iconBg = "#EFF6FF", iconBorder = "#DBEAFE") => {
-    const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
-      <tr>
-        <td style="width:38px;vertical-align:middle;padding:2px;text-align:center;">
-          <div style="width:32px;height:32px;border-radius:8px;background:${iconBg};border:1px solid ${iconBorder};display:flex;align-items:center;justify-content:center;margin:0 auto;">
-            <span style="font-size:16px;">${iconEmoji}</span>
-          </div>
-        </td>
-        <td style="vertical-align:middle;padding-left:6px;text-align:left;">
-          <div style="font-size:9.5px;font-weight:700;color:${titleColor};line-height:1.2;">${title}</div>
-          <div style="font-size:7.5px;color:#475569;margin-top:1px;line-height:1.15;">${desc.replace(/\n/g, "<br/>")}</div>
-        </td>
-      </tr>
-    </table>`;
-    c.push(`<mxCell id="${id}" value="${E(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cardBg};strokeColor=${border};strokeWidth=1.2;shadow=0;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+  const rawEdge = (
+    id: string,
+    style: string,
+    pts: { x: number; y: number }[],
+    label = ""
+  ) => {
+    const pStr = pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
+    c.push(
+      `<mxCell id="${id}" value="${E(label)}" edge="1" parent="1" style="${style}">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
+          <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
+          <Array as="points">
+            ${pStr}
+          </Array>
+        </mxGeometry>
+      </mxCell>`
+    );
   };
 
-  // =========================================================================
-  // 1. TOP HEADER BANNER
-  // =========================================================================
-  text("t1", "01 — System Context | NOVACURA Bio-Pharma Platform", 24, 16, 950, 32, "fontSize=24;fontStyle=1;align=left;fontColor=#0F172A;");
-  text("t2", "Core Architecture Family | Bio-Pharma Product", 24, 48, 600, 20, "fontSize=13;fontStyle=1;fontColor=#64748B;align=left;");
+  // ==================== 1. TOP HEADER BANNER ====================
+  const titleHtml = `<div style="font-size:24px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">01 — System Context | NOVACURA Bio-Pharma Platform</div>` +
+    `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">Core Architecture Family | Bio-Pharma Product</div>`;
+  cell("hdr_title", titleHtml, 16, 12, 1000, 44, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // =========================================================================
-  // 2. TOP GOVERNANCE & OVERSIGHT POD (Purple #7C3AED, y: 70 to 160)
-  // =========================================================================
-  rect("gov_container", "", 445, 68, 625, 96, "strokeColor=#8B5CF6;strokeWidth=1.5;fillColor=#FAF5FF;shadow=0;");
-  text("gov_title", "Governance & Oversight", 632, 70, 250, 18, "fontSize=12;fontStyle=1;fontColor=#6D28D9;align=center;");
+  // ==================== 2. TOP GOVERNANCE & OVERSIGHT POD (x=480..1100, y=55..160) ====================
+  cell("gov_box", "", 480, 58, 620, 102, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;");
+  cell("gov_title", "Governance & Oversight", 480, 60, 620, 18, "html=1;fontColor=#6D28D9;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const govItems = [
-    { title: "Executive Leadership", sub: "• Strategic Direction\n• Portfolio Oversight", icon: "👤" },
-    { title: "Compliance / Legal", sub: "• Policy & Compliance\n• Risk Management\n• Audit & eDiscovery", icon: "⚖️" },
-    { title: "Data Governance Board", sub: "• Data Standards\n• Quality & Lineage\n• Access & Ethics", icon: "👥" },
+  const govCards: { t: string; items: string[]; icon: keyof typeof SVG; color: string }[] = [
+    { t: "Executive Leadership", items: ["Strategic Direction", "Portfolio Oversight", "Value Realization"], icon: "user", color: "#6D28D9" },
+    { t: "Compliance / Legal", items: ["Policy & Compliance", "Risk Management", "Audit & eDiscovery"], icon: "scale", color: "#6D28D9" },
+    { t: "Data Governance Board", items: ["Data Standards", "Quality & Lineage", "Access & Ethics"], icon: "users", color: "#6D28D9" }
   ];
-
-  govItems.forEach((item, i) => {
-    const x = 460 + i * 200;
-    cardWithIcon(`gov_card_${i}`, item.title, item.sub, item.icon, x, 92, 190, 62, "#DDD6FE", "#FFFFFF", "#6D28D9", "#F5F3FF", "#DDD6FE");
+  govCards.forEach((gc, idx) => {
+    const gx = 494 + idx * 200;
+    const itemsHtml = gc.items.map(it => `<div style="font-size:7.5px;color:#475569;font-weight:600;line-height:1.2;">• ${it}</div>`).join("");
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;"><div style="padding-top:2px;">${svgIcon(gc.icon, gc.color, 20)}</div><div><div style="font-size:9px;font-weight:800;color:#0F172A;line-height:1.15;margin-bottom:2px;">${gc.t}</div>${itemsHtml}</div></div>`;
+    cell(`gov_c_${idx}`, html, gx, 82, 190, 70, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E9D5FF;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
-  // =========================================================================
-  // 3. LEFT COLUMN: INTERNAL BUSINESS USERS (x: 24 to 280, y: 140 to 650)
-  // =========================================================================
-  rect("users_container", "", 24, 140, 256, 500, "strokeColor=#3B82F6;strokeWidth=1.5;fillColor=#EFF6FF;shadow=0;");
-  text("users_title", "Internal Business Users", 40, 144, 224, 22, "fontSize=12.5;fontStyle=1;fontColor=#1E40AF;align=center;");
+  // ==================== 3. LEFT COLUMN: INTERNAL BUSINESS USERS (x=16..286, y=140..650) ====================
+  cell("users_box", "", 16, 140, 270, 510, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;");
+  cell("users_title", "Internal Business Users", 16, 144, 270, 22, "html=1;fontColor:#1E3A8A;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const users = [
-    { title: "Research Scientists", sub: "Design studies, manage laboratory\n& preclinical data, insights", icon: "🔬" },
-    { title: "Clinical Operations", sub: "Run trials, monitor sites, manage\nparticipants and activities", icon: "🩺" },
-    { title: "Regulatory Affairs Team", sub: "Prepare submissions, track\ncommitments, manage variations", icon: "📋" },
-    { title: "Safety / PV Specialists", sub: "Detect, evaluate, report adverse\nevents and safety signals", icon: "🛡️" },
-    { title: "Quality Assurance", sub: "Manage quality events, CAPA,\naudits, deviations", icon: "🏅" },
-    { title: "Medical Affairs", sub: "Respond to inquiries, medical\ncontent and evidence", icon: "💬" },
-    { title: "Commercial Analytics", sub: "Market insights, forecasting,\nperformance & customer analytics", icon: "📊" },
+  const personas: { t: string; desc: string; icon: keyof typeof SVG; color: string }[] = [
+    { t: "Research Scientists", desc: "Design studies, manage laboratory & preclinical data, experiment insights", icon: "microscope", color: "#1E3A8A" },
+    { t: "Clinical Operations", desc: "Run trials, monitor sites, manage participants and activities", icon: "clipboard", color: "#1E3A8A" },
+    { t: "Regulatory Affairs Team", desc: "Prepare submissions, track commitments, manage variations", icon: "document", color: "#1E3A8A" },
+    { t: "Safety / PV Specialists", desc: "Detect, evaluate, report adverse events and safety signals", icon: "shieldPlus", color: "#1E3A8A" },
+    { t: "Quality Assurance", desc: "Manage quality events, CAPA, audits, deviations", icon: "award", color: "#1E3A8A" },
+    { t: "Medical Affairs", desc: "Respond to inquiries, medical content and evidence", icon: "stethoscope", color: "#1E3A8A" },
+    { t: "Commercial Analytics", desc: "Market insights, forecasting, performance & customer analytics", icon: "chart", color: "#1E3A8A" }
   ];
-
-  users.forEach((u, i) => {
-    const y = 170 + i * 66;
-    cardWithIcon(`user_card_${i}`, u.title, u.sub, u.icon, 34, y, 236, 58, "#BFDBFE", "#FFFFFF", "#1E3A8A", "#EFF6FF", "#BFDBFE");
+  personas.forEach((p, idx) => {
+    const py = 172 + idx * 67;
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(p.icon, p.color, 20)}</div><div><div style="font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;">${p.t}</div><div style="font-size:7.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${p.desc}</div></div></div>`;
+    cell(`user_p_${idx}`, html, 24, py, 254, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
-  // =========================================================================
-  // 4. CENTRAL PLATFORM CONTAINER: NOVACURA Bio-Pharma Platform (x: 400 to 1080, y: 180 to 650)
-  // =========================================================================
-  rect("platform_container", "", 400, 180, 680, 460, "strokeColor=#2563EB;strokeWidth=2;fillColor=#FFFFFF;shadow=1;");
+  // Access Lock pod on the bracket connection
+  const lockHtml = `<div style="text-align:center;padding:4px 2px;"><div style="display:flex;justify-content:center;margin-bottom:2px;">${svgIcon("lock", "#1D4ED8", 18)}</div><div style="font-size:8px;font-weight:800;color:#1E3A8A;line-height:1.15;">Secure Web Portal<br/><span style="font-weight:600;color:#64748B;">(Single Experience)</span></div><div style="font-size:7px;color:#475569;font-weight:600;margin-top:2px;">Role-Based Access &amp; Workflows</div></div>`;
+  cell("portal_lock_pod", lockHtml, 302, 360, 114, 70, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;");
 
-  // Platform Header Banner
-  const platLogoHtml = `<table style="margin:0 auto;text-align:center;">
-    <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:24px;">🧬</span></td>
-      <td style="vertical-align:middle;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0F2A4A;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
-        <div style="font-size:11px;font-weight:700;color:#2563EB;line-height:1;margin-top:2px;">Bio-Pharma Platform</div>
-      </td>
-    </tr>
-  </table>`;
-  text("plat_logo", platLogoHtml, 530, 186, 420, 42, "align=center;");
+  // ==================== 4. CENTER CONTAINER: NOVACURA Bio-Pharma Platform (x=436..1090, y=190..635) ====================
+  cell("plat_box", "", 436, 190, 654, 445, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=2.2;");
 
-  // Middle Web Portal Lock
-  rect("portal_box", `<div style="text-align:center;padding:4px;"><span style="font-size:16px;">🔒</span><div style="font-size:8.5px;font-weight:700;color:#1E3A8A;margin-top:2px;">Secure Web Portal<br/>(Single Experience)</div><div style="font-size:7px;color:#64748B;margin-top:2px;">Role-Based Access &amp; Workflows</div></div>`, 295, 360, 95, 76, "strokeColor=#3B82F6;strokeWidth=1.2;fillColor=#EFF6FF;align=center;rounded=1;shadow=0;");
+  // Brand Header
+  const brandLogoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 32 32" fill="none"><path d="M4 26L12 6L16 16L20 6L28 26H22L18 16L16 21L14 16L10 26H4Z" fill="#1D4ED8"/></svg>`;
+  const brandHtml = `<div style="display:flex;align-items:center;justify-content:center;gap:12px;padding:4px 0;"><div style="flex-shrink:0;">${brandLogoSvg}</div><div style="text-align:left;"><div style="font-size:24px;font-weight:900;color:#1E3A8A;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:13px;font-weight:800;color:#0284C7;line-height:1;margin-top:2px;">Bio-Pharma Platform</div></div></div>`;
+  cell("plat_brand", brandHtml, 450, 196, 626, 42, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-  // Core Capabilities Grid (8 modules: 2 columns x 4 rows)
-  const coreModules = [
-    { title: "R&D & Clinical", sub: "• Program Mgmt\n• Protocols & Studies\n• Trial Oversight", icon: "🧪", col: 0, row: 0 },
-    { title: "Regulatory Affairs", sub: "• Submissions\n• Commitments\n• Variations", icon: "📋", col: 1, row: 0 },
-    { title: "Pharmacovigilance", sub: "• Case Mgmt\n• Signal Detection\n• Risk Mgmt", icon: "🛡️", col: 0, row: 1 },
-    { title: "Quality & Manufacturing", sub: "• Quality Events\n• CAPA & Change\n• Batch & Release", icon: "🏭", col: 1, row: 1 },
-    { title: "Medical Information", sub: "• Inquiry Mgmt\n• Medical Content\n• Evidence Library", icon: "💬", col: 0, row: 2 },
-    { title: "Commercial Insights", sub: "• Market Analytics\n• Forecasting\n• Performance KPIs", icon: "📊", col: 1, row: 2 },
-    { title: "Document & Knowledge Hub", sub: "• Document Mgmt\n• Version Control\n• Collaboration", icon: "📁", col: 0, row: 3 },
-    { title: "AI Copilot & Automation", sub: "• Intelligent Assist\n• Workflow Orchestration\n• Decision Support", icon: "✨", col: 1, row: 3 },
+  // 8 Domain Capability Cards (2 cols x 4 rows)
+  const domainCards: { t: string; items: string[]; icon: keyof typeof SVG; color: string; col: number; row: number }[] = [
+    { t: "R&D & Clinical", items: ["Program Mgmt", "Protocols & Studies", "Trial Oversight"], icon: "flask", color: "#1D4ED8", col: 0, row: 0 },
+    { t: "Regulatory Affairs", items: ["Submissions", "Commitments", "Variations"], icon: "document", color: "#1D4ED8", col: 1, row: 0 },
+    { t: "Pharmacovigilance", items: ["Case Mgmt", "Signal Detection", "Risk Mgmt"], icon: "shieldPlus", color: "#1D4ED8", col: 0, row: 1 },
+    { t: "Quality & Manufacturing", items: ["Quality Events", "CAPA & Change", "Batch & Release"], icon: "factory", color: "#1D4ED8", col: 1, row: 1 },
+    { t: "Medical Information", items: ["Inquiry Mgmt", "Medical Content", "Evidence Library"], icon: "message", color: "#1D4ED8", col: 0, row: 2 },
+    { t: "Commercial Insights", items: ["Market Analytics", "Forecasting", "Performance KPIs"], icon: "chart", color: "#1D4ED8", col: 1, row: 2 },
+    { t: "Document & Knowledge Hub", items: ["Document Mgmt", "Version Control", "Collaboration"], icon: "folder", color: "#1D4ED8", col: 0, row: 3 },
+    { t: "AI Copilot &\nWorkflow Automation", items: ["Intelligent Assistance", "Workflow Orchestration", "Decision Support"], icon: "brain", color: "#7C3AED", col: 1, row: 3 }
   ];
-
-  coreModules.forEach((m, i) => {
-    const x = 420 + m.col * 320;
-    const y = 236 + m.row * 82;
-    cardWithIcon(`mod_${i}`, m.title, m.sub, m.icon, x, y, 300, 72, "#DBEAFE", "#F8FAFC", "#1E3A8A", "#EFF6FF", "#DBEAFE");
+  domainCards.forEach((dc, idx) => {
+    const cx = 450 + dc.col * 314;
+    const cy = 246 + dc.row * 76;
+    const itemsHtml = dc.items.map(it => `<div style="font-size:7.5px;color:#475569;font-weight:600;line-height:1.2;">• ${it}</div>`).join("");
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;"><div style="padding-top:2px;">${svgIcon(dc.icon, dc.color, 22)}</div><div><div style="font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-bottom:2px;">${dc.t.replace("\n", "<br/>")}</div>${itemsHtml}</div></div>`;
+    cell(`plat_dc_${idx}`, html, cx, cy, 304, 68, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#DBEAFE;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
-  // Cross-Cutting Governance Bar (4 badges)
-  const crossCutting = [
-    { title: "Security & Privacy", sub: "Zero Trust • CMEK", icon: "🛡️" },
-    { title: "Audit & Compliance", sub: "21 CFR Part 11 • GxP", icon: "⚖️" },
-    { title: "Data Lineage & Quality", sub: "Dataplex Mesh", icon: "🕸️" },
-    { title: "Interoperability", sub: "OpenAPI 3.1 • FHIR", icon: "🌐" },
+  // 4 Bottom Cross-Cutting Badges inside NOVACURA
+  const platBadges: { t: string; sub: string; icon: keyof typeof SVG }[] = [
+    { t: "Security & Privacy", sub: "(Zero Trust)", icon: "shield" },
+    { t: "Audit & Compliance", sub: "(21 CFR Part 11)", icon: "gavel" },
+    { t: "Data Lineage & Quality", sub: "(End-to-End)", icon: "chart" },
+    { t: "Interoperability", sub: "(Standards & APIs)", icon: "network" }
   ];
-  crossCutting.forEach((cc, i) => {
-    const x = 420 + i * 160;
-    rect(`cc_box_${i}`, `<div style="text-align:center;padding:4px;"><span style="font-size:12px;">${cc.icon}</span><div style="font-size:8px;font-weight:700;color:#1E3A8A;">${cc.title}</div><div style="font-size:7px;color:#64748B;">${cc.sub}</div></div>`, x, 575, 152, 48, "strokeColor=#93C5FD;fillColor=#EFF6FF;rounded=1;shadow=0;");
+  platBadges.forEach((pb, idx) => {
+    const bx = 450 + idx * 157;
+    const html = `<div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:2px;"><div style="flex-shrink:0;">${svgIcon(pb.icon, "#1E3A8A", 14)}</div><div style="text-align:center;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;line-height:1.1;">${pb.t}</div><div style="font-size:6.5px;font-weight:600;color:#64748B;line-height:1.1;">${pb.sub}</div></div></div>`;
+    cell(`plat_pb_${idx}`, html, bx, 584, 150, 42, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
-  // =========================================================================
-  // 5. RIGHT COLUMN: EXTERNAL ECOSYSTEM (x: 1210 to 1490, y: 180 to 650)
-  // =========================================================================
-  rect("ext_container", "", 1210, 180, 270, 460, "strokeColor=#16A34A;strokeWidth=1.5;fillColor=#F0FDF4;shadow=0;");
-  text("ext_title", "External Ecosystem", 1230, 186, 230, 22, "fontSize=12.5;fontStyle=1;fontColor=#15803D;align=center;");
+  // ==================== 5. RIGHT COLUMN: EXTERNAL ECOSYSTEM (x=1240..1580, y=165..590) ====================
+  cell("ext_box", "", 1240, 165, 344, 430, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.5;");
+  cell("ext_title", "External Ecosystem", 1240, 168, 344, 22, "html=1;fontColor:#15803D;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const extPartners = [
-    { title: "CRO / CDMO Partners", sub: "Study execution, data management,\nmanufacturing & supply partners", icon: "🤝" },
-    { title: "Healthcare Providers / Investigators", sub: "Site collaboration, patient enrollment,\nstudy conduct, clinical data", icon: "🏥" },
-    { title: "Regulatory Authorities (FDA, EMA)", sub: "eSubmissions, queries, safety\nreports, compliance status", icon: "🏛️" },
-    { title: "Patients / Patient Programs", sub: "Study participation, PROs,\nsupport programs, communications", icon: "👥" },
+  const extEntities: { t: string; desc: string; icon: keyof typeof SVG; color: string }[] = [
+    { t: "CRO / CDMO Partners", desc: "Study execution, data management, manufacturing & supply partners", icon: "users", color: "#16A34A" },
+    { t: "Healthcare Providers / Investigators", desc: "Site collaboration, patient enrollment, study conduct, clinical data", icon: "hospital", color: "#16A34A" },
+    { t: "Regulatory Authorities", desc: "eSubmissions, responses, queries, safety reports, compliance status", icon: "landmark", color: "#16A34A" },
+    { t: "Patients / Patient Programs", desc: "Study participation, PROs, support programs, communications", icon: "heartUser", color: "#16A34A" }
   ];
-
-  extPartners.forEach((ep, i) => {
-    const y = 224 + i * 102;
-    cardWithIcon(`ext_card_${i}`, ep.title, ep.sub, ep.icon, 1225, y, 240, 88, "#BBF7D0", "#FFFFFF", "#15803D", "#DCFCE7", "#BBF7D0");
+  extEntities.forEach((ee, idx) => {
+    const ey = 198 + idx * 96;
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:4px 6px;"><div style="padding-top:2px;">${svgIcon(ee.icon, ee.color, 24)}</div><div><div style="font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;">${ee.t}</div><div style="font-size:7.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${ee.desc}</div></div></div>`;
+    cell(`ext_e_${idx}`, html, 1250, ey, 324, 86, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
-  // =========================================================================
-  // 6. CONNECTOR ARROWS ACROSS DOMAINS
-  // =========================================================================
-  // Users -> Portal -> Platform
-  edge("e_users_to_portal", "users_container", "portal_box", "", "#2563EB");
-  edge("e_portal_to_plat", "portal_box", "platform_container", "", "#2563EB");
+  // ==================== 6. LOWER MID TIER: ENTERPRISE SYSTEMS & AI SERVICES (y=665..850) ====================
 
-  // Governance -> Domains
-  c.push(`<mxCell id="e_gov_left" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="gov_container" target="users_container"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="152" y="116"/></Array></mxGeometry></mxCell>`);
-  c.push(`<mxCell id="e_gov_mid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="gov_container" target="platform_container"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="e_gov_right" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="gov_container" target="ext_container"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1345" y="116"/></Array></mxGeometry></mxCell>`);
+  // ----------------------------------------------------
+  // Left: Enterprise Systems (Upstream / Downstream) (x=16..910, w=894, h=182)
+  // ----------------------------------------------------
+  cell("ent_box", "", 16, 665, 894, 182, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;");
 
-  // Platform -> External Ecosystem (4 Dedicated Collision-Free Connectors)
-  edge("e_plat_ext_0", "platform_container", "ext_card_0", "Collaboration Packages & Data Exchange (APIs / SFTP)", "#15803D", false, ";exitX=1;exitY=0.2;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;");
-  edge("e_plat_ext_1", "platform_container", "ext_card_1", "Clinical Data & Documents (HTTPS / APIs)", "#15803D", false, ";exitX=1;exitY=0.45;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;");
-  edge("e_plat_ext_2", "platform_container", "ext_card_2", "Submissions & Responses (IDMP / eCTD)", "#15803D", false, ";exitX=1;exitY=0.7;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;");
-  edge("e_plat_ext_3", "platform_container", "ext_card_3", "Programs & Communications (Secure Portal / APIs)", "#15803D", false, ";exitX=1;exitY=0.9;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;");
-
-  // =========================================================================
-  // 7. BOTTOM ENTERPRISE SYSTEMS (UPSTREAM / DOWNSTREAM) (x: 24 to 960, y: 700 to 910)
-  // =========================================================================
-  rect("ent_container", "", 24, 700, 950, 210, "strokeColor=#2563EB;strokeWidth=1.5;fillColor=#EFF6FF;shadow=0;");
-  text("ent_title", "Enterprise Systems (Upstream / Downstream)", 330, 704, 340, 18, "fontSize=11.5;fontStyle=1;fontColor=#1E40AF;align=center;");
-
-  const entSystems = [
-    { title: "Veeva Vault", sub: "Regulatory / Quality Documents", vendor: "Veeva", color: "#EA580C", icon: "📁" },
-    { title: "Salesforce Health Cloud", sub: "CRM / HCP / Patient Engagement", vendor: "Salesforce", color: "#0284C7", icon: "☁️" },
-    { title: "SAP S/4HANA", sub: "ERP / Supply Chain / Finance", vendor: "SAP", color: "#0F172A", icon: "🏢" },
-    { title: "Laboratory / LIMS", sub: "Lab Data, Results, Samples", vendor: "LIMS", color: "#2563EB", icon: "🧪" },
-    { title: "Clinical Trial (EDC/CTMS)", sub: "Study Data, Sites, Subjects", vendor: "Medidata", color: "#0284C7", icon: "👥" },
-    { title: "Safety Database (Argus)", sub: "Safety Cases, Reports, Signals", vendor: "Argus", color: "#1E3A8A", icon: "🛡️" },
-    { title: "Data Lakehouse", sub: "Analytics, Reporting, Data Sharing", vendor: "BigQuery", color: "#0284C7", icon: "🗄️" },
+  const entSystems: { t: string; sub: string; logo: string; icon: keyof typeof SVG; color: string }[] = [
+    { t: "Veeva Vault", sub: "Regulatory / Quality<br/>Documents", logo: `<span style="font-size:16px;font-weight:900;color:#EA580C;">Veeva</span>`, icon: "folder", color: "#EA580C" },
+    { t: "Salesforce<br/>Health Cloud", sub: "CRM / HCP / Patient<br/>Engagement", logo: `<div style="background:#0284C7;color:#FFFFFF;border-radius:10px;padding:1px 6px;font-size:8px;font-weight:900;display:inline-block;">salesforce</div>`, icon: "cloud", color: "#0284C7" },
+    { t: "SAP S/4HANA", sub: "ERP / Supply Chain /<br/>Finance", logo: `<div style="background:#0F172A;color:#FFFFFF;padding:1px 6px;font-size:10px;font-weight:900;display:inline-block;">SAP</div>`, icon: "database", color: "#0F172A" },
+    { t: "Laboratory /<br/>LIMS Systems", sub: "Lab Data, Results,<br/>Samples", logo: svgIcon("flask", "#2563EB", 18), icon: "flask", color: "#2563EB" },
+    { t: "Clinical Trial Systems<br/>(EDC / CTMS)", sub: "Study Data, Sites,<br/>Subjects", logo: svgIcon("users", "#0284C7", 18), icon: "users", color: "#0284C7" },
+    { t: "Safety Database<br/>(Argus-like)", sub: "Safety Cases,<br/>Reports, Signals", logo: svgIcon("shieldPlus", "#1E3A8A", 18), icon: "shieldPlus", color: "#1E3A8A" },
+    { t: "Data Lake /<br/>Warehouse", sub: "Analytics, Reporting,<br/>Data Sharing", logo: svgIcon("chart", "#0284C7", 18), icon: "chart", color: "#0284C7" }
   ];
-
-  entSystems.forEach((es, i) => {
-    const x = 38 + i * 132;
-    const cardHtml = `<table style="width:100%;height:100%;border-collapse:collapse;text-align:center;">
-      <tr><td style="vertical-align:top;padding-top:4px;"><span style="font-size:20px;">${es.icon}</span></td></tr>
-      <tr><td style="vertical-align:middle;padding:2px 4px;"><div style="font-size:9.5px;font-weight:700;color:#0F172A;line-height:1.2;">${es.title}</div><div style="font-size:7.5px;color:#64748B;margin-top:2px;line-height:1.15;">${es.sub}</div></td></tr>
-      <tr><td style="vertical-align:bottom;padding-bottom:4px;"><span style="font-size:8px;font-weight:900;color:${es.color};">${es.vendor}</span></td></tr>
-    </table>`;
-    c.push(`<mxCell id="ent_card_${i}" value="${E(cardHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1"><mxGeometry x="${x}" y="${728}" width="${124}" height="${135}" as="geometry"/></mxCell>`);
+  entSystems.forEach((es, idx) => {
+    const ex = 26 + idx * 125;
+    const html = `<div style="text-align:center;padding:4px 2px;"><div style="font-size:8.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-bottom:2px;">${es.t}</div><div style="font-size:7px;color:#64748B;font-weight:500;line-height:1.15;margin-bottom:6px;">${es.sub}</div><div style="display:flex;justify-content:center;align-items:center;height:24px;">${es.logo}</div></div>`;
+    cell(`ent_s_${idx}`, html, ex, 718, 120, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=2;");
   });
 
-  // Integration Patterns Footer Bar
-  rect("int_patterns_bar", `<div style="font-size:8px;color:#334155;text-align:center;"><b>Integration Patterns:</b> APIs | Events | Batch | File Exchange &nbsp;&nbsp;&bull;&nbsp;&nbsp; <b>Standards:</b> HL7 FHIR | IDMP | CDISC | ICH | ISO IDMP / GS1 &nbsp;&nbsp;&bull;&nbsp;&nbsp; <b>Connectivity:</b> Private Endpoints / VPN / SFTP / MQ / Pub/Sub</div>`, 36, 868, 925, 26, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;shadow=0;align=center;");
+  // Footer bar inside Enterprise Systems
+  cell("ent_footer_bar", `<div style="font-size:7.5px;color:#334155;font-weight:700;text-align:center;">Integration Patterns: APIs | Events | Batch | File Exchange &nbsp;&nbsp;•&nbsp;&nbsp; Standards: HL7 FHIR | IDMP | CDISC | ICH | ISO IDMP / GS1 &nbsp;&nbsp;•&nbsp;&nbsp; Connectivity: Private Endpoints / VPN / SFTP / MQ / Pub/Sub</div>`, 26, 818, 874, 22, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;align=center;verticalAlign=middle;");
 
-  // =========================================================================
-  // 8. AI & KNOWLEDGE SERVICES (GOOGLE CLOUD) (x: 1000 to 1490, y: 700 to 910)
-  // =========================================================================
-  rect("ai_container", "", 1000, 700, 480, 210, "strokeColor=#8B5CF6;strokeWidth=1.5;fillColor=#FAF5FF;shadow=0;");
-  text("ai_title", "AI / Knowledge Services (Google Cloud)", 1090, 704, 300, 18, "fontSize=11.5;fontStyle=1;fontColor=#6D28D9;align=center;");
+  // ----------------------------------------------------
+  // Right: AI / Knowledge Services (x=926..1580, w=654, h=182)
+  // ----------------------------------------------------
+  cell("ai_box", "", 926, 665, 654, 182, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;");
 
-  const aiServices = [
-    { title: "Enterprise Search", sub: "Taxonomy, Knowledge Articles", icon: "🔍", badge: "Google Search" },
-    { title: "Vector Index / Semantic", sub: "Embeddings Store, Retrieval", icon: "🕸️", badge: "Vertex Vector" },
-    { title: "Approved LLM Service", sub: "Secure, Governed GenAI Service", icon: "✨", badge: "Vertex AI Gemini 2.5 Pro" },
+  const aiCards: { t: string; sub: string; logo: string }[] = [
+    { t: "Enterprise Search /<br/>Knowledge Base", sub: "Search, Taxonomy,<br/>Knowledge Articles", logo: svgIcon("search", "#7C3AED", 24) },
+    { t: "Vector Index /<br/>Semantic Search", sub: "Embeddings Store,<br/>Semantic Retrieval", logo: svgIcon("network", "#7C3AED", 24) },
+    { t: "Approved LLM Service<br/>(GCP Vertex AI)", sub: "Secure, Governed<br/>GenAI Service", logo: `<div style="display:flex;align-items:center;justify-content:center;gap:6px;"><svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg><span style="font-size:8px;font-weight:900;color:#0F172A;">Google<br/>Vertex AI</span></div>` }
   ];
-
-  aiServices.forEach((asItem, i) => {
-    const x = 1020 + i * 150;
-    const aiHtml = `<table style="width:100%;height:100%;border-collapse:collapse;text-align:center;">
-      <tr><td style="vertical-align:top;padding-top:4px;"><span style="font-size:22px;">${asItem.icon}</span></td></tr>
-      <tr><td style="vertical-align:middle;padding:2px 4px;"><div style="font-size:9.5px;font-weight:700;color:#581C87;line-height:1.2;">${asItem.title}</div><div style="font-size:8px;color:#64748B;margin-top:2px;line-height:1.2;">${asItem.sub}</div></td></tr>
-      <tr><td style="vertical-align:bottom;padding-bottom:4px;"><span style="font-size:8px;font-weight:800;color:#7C3AED;">${asItem.badge}</span></td></tr>
-    </table>`;
-    c.push(`<mxCell id="ai_card_${i}" value="${E(aiHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.2;" vertex="1" parent="1"><mxGeometry x="${x}" y="${728}" width="${140}" height="${135}" as="geometry"/></mxCell>`);
+  aiCards.forEach((ac, idx) => {
+    const ax = 940 + idx * 150;
+    const html = `<div style="text-align:center;padding:4px 2px;"><div style="font-size:8.5px;font-weight:800;color:#581C87;line-height:1.15;margin-bottom:2px;">${ac.t}</div><div style="font-size:7px;color:#64748B;font-weight:500;line-height:1.15;margin-bottom:6px;">${ac.sub}</div><div style="display:flex;justify-content:center;align-items:center;height:24px;">${ac.logo}</div></div>`;
+    cell(`ai_c_${idx}`, html, ax, 718, 142, 94, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=2;");
   });
 
-  // AI Annotation banner
-  rect("ai_annotation", `<div style="font-size:8.5px;color:#6B21A8;font-style:italic;text-align:center;padding:4px;">AI Copilot uses enterprise content and governed LLM to deliver grounded, compliant assistance within workflows.</div>`, 1020, 868, 440, 26, "strokeColor=#C084FC;fillColor=#FFFFFF;rounded=1;shadow=0;");
+  // Callout banner inside AI services
+  cell("ai_note_banner", `<div style="font-size:8.5px;color:#6B21A8;font-style:italic;font-weight:700;line-height:1.2;text-align:left;">AI Copilot uses enterprise content and governed LLM to deliver grounded, compliant assistance within workflows.</div>`, 1398, 718, 172, 94, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=none;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  // =========================================================================
-  // 9. BOTTOM PLATFORM OPERATIONS & LEGEND (y: 925 to 995)
-  // =========================================================================
-  const ops = [
-    { title: "Platform Admins", sub: "• Tenant & Config Mgmt\n• Release & Change Mgmt", icon: "⚙️" },
-    { title: "Security / IAM Team", sub: "• Identity & Access Mgmt\n• Threat Detection & CMEK", icon: "🛡️" },
-    { title: "Support / Operations", sub: "• Incident & Problem Mgmt\n• Availability & SRE", icon: "🎧" },
+  // Section Headers for Bottom Tier
+  cell("ent_sec_title", "Enterprise Systems (Upstream / Downstream)", 16, 850, 894, 16, "html=1;fontColor:#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("ai_sec_title", "AI / Knowledge Services", 926, 850, 654, 16, "html=1;fontColor:#6D28D9;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // ==================== 7. BOTTOM ROW: OPERATIONS & LEGEND (y=876..946) ====================
+
+  // Platform Operations Box (x=16..770, w=754, h=70)
+  cell("ops_box", "", 16, 876, 754, 70, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+
+  const opsCards: { t: string; items: string[]; icon: keyof typeof SVG }[] = [
+    { t: "Platform Admins", items: ["Tenant & Configuration Mgmt", "Release & Change Management", "Monitoring & Health"], icon: "gear" },
+    { t: "Security / IAM Team", items: ["Identity & Access Mgmt", "Privileged Access", "Threat Detection & Response"], icon: "lock" },
+    { t: "Support / Operations", items: ["Helpdesk & Support", "Incident & Problem Mgmt", "Availability & Performance"], icon: "headset" }
   ];
-  rect("ops_container", "", 24, 925, 640, 70, "strokeColor=#94A3B8;strokeWidth=1.2;fillColor=#F8FAFC;shadow=0;");
-  ops.forEach((op, i) => {
-    const x = 36 + i * 208;
-    cardWithIcon(`op_card_${i}`, op.title, op.sub, op.icon, x, 931, 196, 58, "#CBD5E1", "#FFFFFF", "#1E293B", "#F1F5F9", "#CBD5E1");
+  opsCards.forEach((op, idx) => {
+    const ox = 26 + idx * 248;
+    const itemsHtml = op.items.map(it => `<div style="font-size:7px;color:#475569;font-weight:600;line-height:1.15;">• ${it}</div>`).join("");
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(op.icon, "#1E3A8A", 20)}</div><div><div style="font-size:9px;font-weight:800;color:#0F172A;line-height:1.15;margin-bottom:2px;">${op.t}</div>${itemsHtml}</div></div>`;
+    cell(`op_c_${idx}`, html, ox, 882, 240, 58, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
-  // Legend Box
-  rect("legend_box", "", 680, 925, 800, 70, "strokeColor=#94A3B8;strokeWidth=1.2;fillColor=#F8FAFC;");
-  text("legend_title", "<b>Legend</b>", 695, 930, 80, 16, "fontSize=9.5;align=left;");
-  text("legend_symbols", "👤 User / Actor  &nbsp;&bull;&nbsp; ⚙️ Application / Service  &nbsp;&bull;&nbsp; 🗄️ Data Source / System  &nbsp;&bull;&nbsp; ✨ AI Service  &nbsp;&bull;&nbsp; 🤝 External Partner  &nbsp;&bull;&nbsp; ⚖️ Governance / Control", 695, 948, 770, 18, "fontSize=8.5;fontColor=#475569;align=left;");
-  text("legend_lines", "—→ Data Flow &nbsp;&nbsp;&bull;&nbsp;&nbsp; - - -> Control Flow &nbsp;&nbsp;&bull;&nbsp;&nbsp; ←→ External Exchange", 695, 968, 500, 16, "fontSize=8.5;fontColor=#475569;fontStyle=1;align=left;");
+  // Legend Box (x=782..1580, w=798, h=70)
+  cell("leg_box", "", 782, 876, 798, 70, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("leg_title", "<b>Legend</b>", 790, 880, 50, 14, "html=1;fontColor:#0F172A;fontSize=8.5;fontStyle=1;align=left;verticalAlign=middle;");
 
-  text("footer_note", "ⓘ Conceptual context view — not deployment topology", 24, 1002, 400, 16, "fontSize=8.5;fontStyle=2;fontColor=#64748B;align=left;");
-
-  // =========================================================================
-  // 10. CONNECTORS & PROTOCOL EDGES (Typed, Color-Coded, Collision-Free)
-  // =========================================================================
-  // User Portal Single Sign-on / Lock Flow
-  rect("user_lock_badge", "<div style='font-size:16px;'>🔒</div><div style='font-size:7.5px;font-weight:bold;color:#1E40AF;margin-top:2px;'>Role-Based Access<br/>&amp; Workflows</div>", 298, 360, 84, 52, "strokeColor=#3B82F6;fillColor=#FFFFFF;rounded=1;align=center;verticalAlign=middle;shadow=1;");
-  edge("e_user_to_lock", "users_container", "user_lock_badge", "", "#1D4ED8", false, "exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
-  edge("e_lock_to_plat", "user_lock_badge", "platform_container", "Secure Web Portal\n(Single Experience)", "#1D4ED8", false, "exitX=1;exitY=0.5;entryX=0;entryY=0.5;");
-
-  // Governance Oversight (Dashed Purple)
-  edge("e_gov_to_plat", "gov_container", "platform_container", "Policy, Standards & Risk Oversight", "#7C3AED", true, "exitX=0.5;exitY=1;entryX=0.5;entryY=0;");
-
-  // External Partner Connections (Green, Protocol Labels)
-  const extEdges = [
-    { target: "ext_card_0", label: "Collaboration Packages & Data Exchange (APIs / SFTP)", y: 220 },
-    { target: "ext_card_1", label: "Clinical Data & Documents (HTTPS / APIs)", y: 340 },
-    { target: "ext_card_2", label: "Submissions & Responses (IDMP / eCTD)", y: 460 },
-    { target: "ext_card_3", label: "Programs & Communications (Secure Portal / APIs)", y: 580 },
+  const legIcons: { t: string; icon: keyof typeof SVG }[] = [
+    { t: "User / Actor", icon: "user" },
+    { t: "Application / Service", icon: "document" },
+    { t: "Data Source / System", icon: "database" },
+    { t: "AI Service", icon: "brain" },
+    { t: "External Partner", icon: "users" },
+    { t: "Governance / Control", icon: "network" }
   ];
-  extEdges.forEach((ee, i) => {
-    edge(`e_ext_${i}`, "platform_container", ee.target, ee.label, "#16A34A", false, `exitX=1;exitY=${(i + 1) * 0.2};entryX=0;entryY=0.5;`);
+  legIcons.forEach((li, idx) => {
+    const lx = 848 + idx * 86;
+    const html = `<div style="text-align:center;"><div style="display:flex;justify-content:center;margin-bottom:1px;">${svgIcon(li.icon, "#0F172A", 14)}</div><div style="font-size:6.5px;font-weight:700;color:#475569;line-height:1.1;">${li.t}</div></div>`;
+    cell(`leg_i_${idx}`, html, lx, 884, 82, 34, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;padding=1;");
   });
 
-  // Enterprise Systems Connections (Blue, Bidirectional Sync Labels)
-  const entEdges = [
-    { target: "ent_card_0", label: "Documents Sync\n(REST / Bulk API)" },
-    { target: "ent_card_1", label: "Customer & HCP Data\n(REST / APIs)" },
-    { target: "ent_card_2", label: "Product & Mfg Data\n(IDoc / OData)" },
-    { target: "ent_card_3", label: "Lab Results & LIMS\n(HL7 / FHIR / APIs)" },
-    { target: "ent_card_4", label: "Trial Data Ingestion\n(EDC / CTMS APIs)" },
-    { target: "ent_card_5", label: "Safety Cases Exchange\n(REST / ICH E2B)" },
-    { target: "ent_card_6", label: "Curated Analytics\n(SQL / APIs)" },
+  // Line Styles in Legend (Right Side)
+  const lineStyles = [
+    { t: "Data / Information Flow", color: "#1D4ED8", dashed: false },
+    { t: "Control / Governance Flow", color: "#7C3AED", dashed: true },
+    { t: "External Exchange / Collaboration", color: "#16A34A", dashed: true }
   ];
-  entEdges.forEach((ee, i) => {
-    edge(`e_ent_${i}`, "platform_container", ee.target, ee.label, "#2563EB", false, `exitX=${0.1 + i * 0.12};exitY=1;entryX=0.5;entryY=0;`);
+  lineStyles.forEach((ls, idx) => {
+    const ly = 884 + idx * 18;
+    cell(`leg_ls_lbl_${idx}`, `<div style="font-size:7.5px;font-weight:700;color:#475569;">${ls.t}</div>`, 1400, ly - 4, 170, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    rawEdge(`leg_ls_edge_${idx}`, `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${ls.color};strokeWidth=1.8;${ls.dashed ? "dashed=1;dashPattern=4 3;" : ""}endArrow=classic;endSize=3;`, [
+      { x: 1364, y: ly + 4 },
+      { x: 1394, y: ly + 4 }
+    ]);
   });
 
-  // AI Services Connections (Purple Dashed Grounding Lines)
-  const aiEdges = [
-    { target: "ai_card_0", label: "Enterprise Content Indexing & Sync (APIs)" },
-    { target: "ai_card_1", label: "Semantic Search Queries & Results (REST / Graph)" },
-    { target: "ai_card_2", label: "Grounded AI Requests / Responses (Private Endpoint)" },
+  // Watermark Note
+  cell("watermark_note", "ⓘ Conceptual context view — not deployment topology", 16, 952, 400, 14, "html=1;fontColor:#64748B;fontSize=8;fontStyle=2;align=left;verticalAlign=middle;");
+
+  // ==================== 8. CONNECTORS & FLOW ARROWS ====================
+
+  // Users -> Portal Lock -> Platform
+  rawEdge("e_users_bracket", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=none;", [
+    { x: 286, y: 202 },
+    { x: 302, y: 395 },
+    { x: 286, y: 588 }
+  ]);
+  rawEdge("e_portal_to_plat", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endSize=4;", [
+    { x: 416, y: 395 },
+    { x: 436, y: 395 }
+  ]);
+
+  // Governance -> NOVACURA Box (Dashed Purple Line)
+  rawEdge("e_gov_down", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 763, y: 160 },
+    { x: 763, y: 190 }
+  ]);
+
+  // Governance -> Side Connectors (Dashed Purple)
+  rawEdge("e_gov_left_loop", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 480, y: 110 },
+    { x: 300, y: 110 },
+    { x: 300, y: 220 }
+  ]);
+  rawEdge("e_gov_right_loop", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 1100, y: 110 },
+    { x: 1210, y: 110 },
+    { x: 1210, y: 220 }
+  ]);
+
+  // Platform -> External Ecosystem (4 Green Chained Connectors with Protocol Badges)
+  const extConnectors = [
+    { y: 241, label: "Collaboration<br/>Packages &amp; Data<br/>Exchange (APIs / SFTP)" },
+    { y: 337, label: "Clinical Data &amp;<br/>Documents<br/>(HTTPS / APIs)" },
+    { y: 433, label: "Submissions &amp;<br/>Responses<br/>(IDMP / eCTD)" },
+    { y: 529, label: "Programs &amp;<br/>Communications<br/>(Secure Portal / APIs)" }
   ];
-  aiEdges.forEach((ae, i) => {
-    edge(`e_ai_${i}`, "platform_container", ae.target, ae.label, "#7C3AED", true, `exitX=${0.85 + i * 0.05};exitY=1;entryX=0.5;entryY=0;`);
+  extConnectors.forEach((ec, idx) => {
+    // Protocol Pill Badge
+    cell(`ext_badge_${idx}`, `<div style="font-size:7.5px;font-weight:800;color:#15803D;text-align:center;line-height:1.15;">${ec.label}</div>`, 1106, ec.y - 20, 118, 40, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
+    // Edge left to badge
+    rawEdge(`e_ext_l_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
+      { x: 1090, y: ec.y },
+      { x: 1106, y: ec.y }
+    ]);
+    // Edge badge to right entity
+    rawEdge(`e_ext_r_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
+      { x: 1224, y: ec.y },
+      { x: 1240, y: ec.y }
+    ]);
   });
 
-  // Operations to Enterprise line
-  edge("e_ops_to_ent", "ops_container", "ent_container", "Infrastructure & Tenant Operations", "#64748B", true, "exitX=0.5;exitY=0;entryX=0.35;entryY=1;");
+  // Enterprise Systems Drop-Line Connectors (7 Blue Connectors with Protocol Badges)
+  const entProtocols = [
+    { x: 86, label: "Documents Sync<br/>(REST / Bulk API)" },
+    { x: 211, label: "Customer &amp; HCP<br/>Data Exchange<br/>(REST / APIs)" },
+    { x: 336, label: "Product, Finance &amp;<br/>Manufacturing Data<br/>(IDoc / OData)" },
+    { x: 461, label: "Lab Results &amp;<br/>Data Ingestion<br/>(HL7 / FHIR / APIs)" },
+    { x: 586, label: "Trial Data Ingestion<br/>(EDC / CTMS APIs)<br/>&amp; Exports" },
+    { x: 711, label: "Safety Cases &amp;<br/>Reports Exchange<br/>(REST / ICH E2B)" },
+    { x: 836, label: "Curated Analytics<br/>&amp; Reporting<br/>(SQL / APIs)" }
+  ];
+  entProtocols.forEach((ep, idx) => {
+    cell(`ent_proto_${idx}`, `<div style="font-size:6.5px;font-weight:800;color:#1D4ED8;text-align:center;line-height:1.1;">${ep.label}</div>`, ep.x - 48, 674, 96, 32, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=1;");
+    rawEdge(`e_ent_drop_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;startArrow=classic;endSize=3;startSize=3;", [
+      { x: ep.x, y: 642 },
+      { x: ep.x, y: 674 }
+    ]);
+    rawEdge(`e_ent_card_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=3;", [
+      { x: ep.x, y: 706 },
+      { x: ep.x, y: 718 }
+    ]);
+  });
+
+  // AI / Knowledge Services Drop-Line Connectors (3 Purple Dashed Connectors with Protocol Badges)
+  const aiProtocols = [
+    { x: 1011, label: "Enterprise Content<br/>Indexing &amp; Sync<br/>(APIs)" },
+    { x: 1161, label: "Semantic Search<br/>Queries &amp; Results<br/>(REST / Graph)" },
+    { x: 1311, label: "Grounded AI<br/>Requests / Responses<br/>(Private Endpoint)" }
+  ];
+  aiProtocols.forEach((ap, idx) => {
+    cell(`ai_proto_${idx}`, `<div style="font-size:6.5px;font-weight:800;color:#6D28D9;text-align:center;line-height:1.1;">${ap.label}</div>`, ap.x - 52, 674, 104, 32, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#C4B5FD;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=1;");
+    rawEdge(`e_ai_drop_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;startArrow=classic;endSize=3;startSize=3;", [
+      { x: ap.x, y: 642 },
+      { x: ap.x, y: 674 }
+    ]);
+    rawEdge(`e_ai_card_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=3;", [
+      { x: ap.x, y: 706 },
+      { x: ap.x, y: 718 }
+    ]);
+  });
+
+  const bg = isDark ? "#0F172A" : "#FFFFFF";
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_01_system_context" name="01 — System Context">
-    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1050" background="${bg}" math="0" shadow="0">
+    <mxGraphModel dx="1600" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="960" background="${bg}" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -305,3 +396,4 @@ export function generateTemplate01ExactV3Xml(domainFlavor = "biopharma", theme: 
   </diagram>
 </mxfile>`;
 }
+
