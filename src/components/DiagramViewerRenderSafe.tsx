@@ -170,6 +170,8 @@ export default function DiagramViewerRenderSafe({
         canvasContainer.scrollTop = 0;
       }
     } catch (e) {}
+  }
+
   function getCleanGraphXml(xmlStr) {
     if (!xmlStr) return '';
     const trimmed = xmlStr.trim();
