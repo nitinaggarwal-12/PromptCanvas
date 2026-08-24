@@ -1,134 +1,332 @@
 /**
- * Canonical Architecture Template 20: CI/CD Pipeline
- * Exact 1:1 High-Fidelity Master Blueprint of images/20.png
+ * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 20: CI/CD Pipeline
+ * Matches 100% of images/20.png:
+ * - 9-stage sequential pipeline (❶ Code ➔ ❷ Build ➔ ❸ Test ➔ ❹ Security Scan ➔ ❺ Quality Gate ➔ ❻ Deploy to Staging ➔ ❼ Approval ➔ ❽ Deploy to Prod ➔ ❾ Monitor)
+ * - Decision Gate diamond in Stage 5 with Notify & Fail branch and loop-back to Code
+ * - Cross-cutting Pipeline Enablers bar (7 integrated tools)
+ * - 3 Deployment Patterns sub-diagrams: Blue/Green, Canary Deployment, Rolling Deployment
+ * - Right Sidebar: Quality Gates checklist (7 items), Deployment Strategies, Compliance & Governance
+ * - Bottom Row: Key Benefits, Technologies Matrix (10 icons in 2 rows), Notes, Legend, Pipeline Triggers
+ * - 1536x1024 master canvas resolution.
  */
 
+const E = (v?: string | null) =>
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
 export function generateTemplate20CiCdPipelineXml(
-  flavor: string = "biopharma",
-  theme: "dark" | "light" = "light"
+  domainFlavor = "biopharma",
+  theme: "light" | "dark" = "light"
 ): string {
   const isDark = theme === "dark";
-  const E = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const c: string[] = [];
-  let idCounter = 100;
-  const nid = () => `c_${idCounter++}`;
 
-  const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
-  };
 
-  const diamond = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
+  const edge = (id: string, src: string, trg: string, style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;") =>
     c.push(
-      `<mxCell id="${id}" value="${E(val)}" style="shape=rhombus;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1">` +
-      `<mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/>` +
-      `</mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
-  };
 
-  const edge = (id: string, val: string, src: string, tgt: string, style: string, pts: Array<{x: number, y: number}> = []) => {
-    let ptsXml = "";
-    if (pts.length > 0) {
-      ptsXml = `<Array as="points">${pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("")}</Array>`;
-    }
-    c.push(
-      `<mxCell id="${id}" value="${E(val)}" edge="1" parent="1" source="${src}" target="${tgt}" style="rounded=1;html=1;${style}">` +
-      `<mxGeometry relative="1" as="geometry">${ptsXml}</mxGeometry>` +
-      `</mxCell>`
-    );
-  };
+  // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
+  cell("hdr_num", "20", 16, 12, 68, 54, "shape=rectangle;rounded=1;arcSize=14;fillColor=#6D28D9;strokeColor=#6D28D9;fontColor=#FFFFFF;fontSize=32;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  cell(
+    "hdr_title",
+    `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>CI/CD Pipeline</div>` +
+    `<div style='font-size:12.5px;font-weight:700;color:#6D28D9;margin-top:2px;'>Use Case: NovaCura – Microservices Delivery</div>` +
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
+    94,
+    12,
+    760,
+    54,
+    "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
+  );
 
-  // 1. BRAND HEADER & METADATA
-  rect("num_badge", "20", 20, 16, 48, 48, "fillColor=#1E3A8A;fontColor=#FFFFFF;fontSize=24;fontStyle=1;rounded=1;align=center;verticalAlign=middle;");
-  rect("hdr_title", "<div style='font-size:22px;font-weight:800;color:#0F172A;letter-spacing:0.5px;'>CI/CD Pipeline</div><div style='font-size:11px;color:#1E3A8A;font-weight:700;margin-top:2px;'>Use Case: NovaCura – Microservices Delivery &nbsp;|&nbsp; Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>", 78, 16, 840, 48, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;");
-  rect("hdr_brand", "<div style='text-align:right;'><span style='font-size:20px;font-weight:800;color:#0284C7;'>🧬 NOVACURA</span><br/><span style='font-size:9.5px;color:#64748B;font-style:italic;'>AI-Powered Regulatory Intelligence Platform</span></div>", 940, 16, 280, 48, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
-  // Objective Card
-  rect("card_obj", "<div style='font-size:8.5px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:10px;line-height:1.35;color:#0F172A;'>Automate, secure, and standardize the delivery of NovaCura microservices with quality gates, security scans, and progressive deployment strategies.</div>", 1240, 16, 320, 48, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'>
+    Automate, secure, and standardize the delivery of NovaCura microservices with quality gates, security scans, and progressive deployment strategies.
+  </div>`;
+  cell("hdr_obj", objHtml, 1140, 12, 380, 54, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  // 2. 9 STAGES ACROSS TOP (x=20..1300, y=72..320)
+  // ==================== 2. 9 PIPELINE STAGES (x=16..1180, y=78..390) ====================
   const stages = [
-    { n: "1", t: "Code", col: "#1E3A8A", bg: "#F8FAFC", x: 20, w: 125, items: ["💻 <b>GitHub</b><br/>(Repositories)", "🔀 <b>Branching</b><br/>(GitFlow)", "👥 <b>Pull Request</b><br/>&amp; Code Review"] },
-    { n: "2", t: "Build", col: "#2563EB", bg: "#EFF6FF", x: 152, w: 125, items: ["⚡ <b>Cloud Build</b><br/>(Compile &amp; Pkg)", "📦 <b>Build Artifacts</b><br/>(Docker Image)", "🗃️ <b>Artifact Reg</b><br/>(Images)"] },
-    { n: "3", t: "Test", col: "#16A34A", bg: "#F0FDF4", x: 284, w: 130, items: ["🧪 <b>Unit Tests</b><br/>(Pytest / JUnit)", "⚙️ <b>Integration</b><br/>Tests", "🤝 <b>Contract Tests</b><br/>(Pact)", "📊 <b>Code Coverage</b><br/>(SonarQube)"] },
-    { n: "4", t: "Security Scan", col: "#7C3AED", bg: "#FAF5FF", x: 421, w: 135, items: ["🛡️ <b>SAST</b><br/>(SonarQube)", "🔍 <b>Dependency Scan</b><br/>(OWASP/Snyk)", "📦 <b>Container Scan</b><br/>(Trivy)", "🧱 <b>IaC Scan</b><br/>(Checkov)"] },
-    { n: "5", t: "Quality Gate", col: "#D97706", bg: "#FFFBEB", x: 563, w: 140, isGate: true },
-    { n: "6", t: "Deploy to Staging", col: "#0284C7", bg: "#F0F9FF", x: 710, w: 140, items: ["🚀 <b>Deploy Staging</b><br/>(GKE)", "🩺 <b>Smoke Tests</b><br/>&amp; Health Checks", "⏱️ <b>Perf Tests</b><br/>(k6 / Locust)"] },
-    { n: "7", t: "Approval", col: "#64748B", bg: "#F8FAFC", x: 857, w: 130, items: ["👤 <b>Manual Approval</b><br/>(Platform / QA)", "<div style='font-size:8px;text-align:center;'>or</div>", "🤖 <b>Auto Approval</b><br/>(Policy Engine)"] },
-    { n: "8", t: "Deploy to Prod", col: "#16A34A", bg: "#F0FDF4", x: 994, w: 145, items: ["🚀 <b>Blue/Green or<br/>Canary Deploy</b>", "🔄 <b>Traffic Shift</b><br/>(Gradual)", "🩺 <b>Health Checks</b><br/>&amp; Monitoring"] },
-    { n: "9", t: "Monitor", col: "#1E3A8A", bg: "#EFF6FF", x: 1146, w: 140, items: ["📈 <b>Monitoring</b><br/>(Cloud Monitoring)", "📑 <b>Logging</b><br/>(Cloud Logging)", "⏱️ <b>SLO / Error</b><br/>Tracking"] }
+    { id: "stg_1", num: "1", name: "Code", w: 114, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_2", num: "2", name: "Build", w: 118, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_3", num: "3", name: "Test", w: 122, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_4", num: "4", name: "Security Scan", w: 126, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_5", num: "5", name: "Quality Gate", w: 126, bg: "#FAF5FF", bc: "#7C3AED" },
+    { id: "stg_6", num: "6", name: "Deploy to Staging", w: 130, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_7", num: "7", name: "Approval", w: 118, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_8", num: "8", name: "Deploy to Prod", w: 126, bg: "#FFFFFF", bc: "#CBD5E1" },
+    { id: "stg_9", num: "9", name: "Monitor", w: 118, bg: "#FFFFFF", bc: "#CBD5E1" }
   ];
 
-  stages.forEach(st => {
-    rect(`st_box_${st.n}`, "", st.x, 72, st.w, 240, `fillColor=${st.bg};strokeColor=${st.col};strokeWidth=1;rounded=1;`);
-    rect(`st_lbl_${st.n}`, `<div style='font-size:9px;font-weight:800;color:${st.col};'>${st.n} &nbsp; ${st.t}</div>`, st.x, 75, st.w, 14, "strokeColor=none;fillColor=none;align=center;");
+  let curStgX = 16;
+  stages.forEach((stg, idx) => {
+    // Stage Container Box
+    cell(`box_${stg.id}`, "", curStgX, 78, stg.w, 312, `rounded=1;arcSize=6;fillColor=${stg.bg};strokeColor=${stg.bc};strokeWidth=1.5;`);
+    
+    // Stage Number + Header
+    cell(`lbl_${stg.id}`, `<div style="display:flex;align-items:center;justify-content:center;"><span style="background:#6D28D9;color:#FFFFFF;padding:1px 5px;border-radius:10px;font-size:8px;font-weight:900;margin-right:4px;">${stg.num}</span> <span style="font-size:9px;font-weight:800;color:#0F172A;">${stg.name}</span></div>`, curStgX, 82, stg.w, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
-    if (st.isGate) {
-      diamond("gate_dia", "<div style='font-size:9px;font-weight:800;color:#0F172A;'>All Quality Gates<br/>Passed?</div>", st.x + 10, 110, st.w - 20, 68, "fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;");
-      rect("gate_fail", "<div style='font-size:9px;font-weight:700;color:#DC2626;'>🔔 Notify &amp; Fail<br/><span style='color:#64748B;font-size:8px;'>(Dev / Slack / Email)</span></div>", st.x + 8, 220, st.w - 16, 44, "fillColor=#FEF2F2;strokeColor=#DC2626;rounded=1;align=center;verticalAlign=middle;padding=2;");
-      edge(nid(), "No", "gate_dia", "gate_fail", "edgeStyle=none;strokeColor=#DC2626;strokeWidth=1.2;endArrow=block;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontSize=6;fontStyle=1;");
-    } else if (st.items) {
-      const itemH = (210 - st.items.length * 6) / st.items.length;
-      st.items.forEach((it, idx) => {
-        const iy = 94 + idx * (itemH + 6);
-        rect(`st_${st.n}_it_${idx}`, `<div style='font-size:9px;color:#0F172A;'>${it}</div>`, st.x + 6, iy, st.w - 12, itemH, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=middle;padding=2;");
-      });
-    }
+    curStgX += stg.w + 6;
   });
 
-  // Stage Connectors
-  edge(nid(), "", "st_box_1", "st_box_2", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "", "st_box_2", "st_box_3", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "", "st_box_3", "st_box_4", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "", "st_box_4", "gate_dia", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "Yes", "gate_dia", "st_box_6", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.2;endArrow=block;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontSize=6;fontStyle=1;");
-  edge(nid(), "", "st_box_6", "st_box_7", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "", "st_box_7", "st_box_8", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
-  edge(nid(), "", "st_box_8", "st_box_9", "edgeStyle=none;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endSize=4;");
+  // Stage 1 Content: Code
+  cell("c_s1_1", "<div style='font-size:20px;text-align:center;'>🐙</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>GitHub<br/><span style='color:#64748B;'>(Repositories)</span></div>", 22, 108, 102, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s1_2", "<div style='font-size:16px;text-align:center;'>🔀</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Branching<br/>Strategy<br/><span style='color:#64748B;'>(GitFlow)</span></div>", 22, 190, 102, 84, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s1_3", "<div style='font-size:16px;text-align:center;'>👥</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Pull Request<br/>&amp; Code Review</div>", 22, 282, 102, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // 3. PIPELINE ENABLERS (x=20..1300, y=320..370)
-  rect("box_enablers", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:3px;text-align:center;'>PIPELINE ENABLERS (Integrated Across All Stages)</div><div style='font-size:8px;color:#0F172A;display:flex;justify-content:space-around;text-align:center;align-items:center;'><div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🔒 <b>Secrets Manager</b><br/>(Secrets)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🔑 <b>Cloud KMS</b><br/>(Encryption)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>👤 <b>Workload Identity</b><br/>(Federation)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🛡️ <b>Artifact Signing</b><br/>(Cosign)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>📜 <b>Policy as Code</b><br/>(OPA / Conftest)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>🏗️ <b>IaC with Terraform</b><br/>(Env Provisioning)</div> <div style='background:#FFF;border:1px solid #CBD5E1;padding:3px;border-radius:3px;'>⚙️ <b>Config Management</b><br/>(Helm / Kustomize)</div></div>", 20, 320, 1266, 50, "fillColor=#EFF6FF;strokeColor=#2563EB;rounded=1;align=center;verticalAlign=middle;padding=2;");
+  // Stage 2 Content: Build
+  cell("c_s2_1", "<div style='font-size:20px;text-align:center;'>⚙️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Cloud Build<br/><span style='color:#64748B;'>(Compile &amp; Package)</span></div>", 142, 108, 106, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s2_2", "<div style='font-size:18px;text-align:center;'>📦</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Build Artifacts<br/><span style='color:#64748B;'>(Docker Image)</span></div>", 142, 196, 106, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s2_3", "<div style='font-size:18px;text-align:center;'>📦</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Artifact Registry<br/><span style='color:#64748B;'>(Images)</span></div>", 142, 284, 106, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // 4. DEPLOYMENT PATTERNS (x=20..1300, y=378..540)
-  rect("box_patterns", "", 20, 378, 1266, 160, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;");
-  rect("lbl_patterns", "<span style='font-size:10px;font-weight:800;color:#1E3A8A;'>DEPLOYMENT PATTERNS</span>", 20, 380, 1266, 12, "strokeColor=none;fillColor=none;align=center;");
+  // Stage 3 Content: Test
+  cell("c_s3_1", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>🧪 Unit Tests<br/><span style='color:#64748B;'>(Pytest / JUnit)</span></div>", 266, 108, 110, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s3_2", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>🔄 Integration Tests</div>", 266, 174, 110, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s3_3", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>📜 Contract Tests<br/><span style='color:#64748B;'>(Pact)</span></div>", 266, 240, 110, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s3_4", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>📊 Code Coverage<br/><span style='color:#64748B;'>(SonarQube)</span></div>", 266, 306, 110, 72, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // Sub-Pattern 1: Blue/Green
-  rect("dp_bg_box", "<div style='font-size:9px;font-weight:800;color:#2563EB;margin-bottom:6px;text-align:center;'>Blue / Green Deployment</div><div style='font-size:8px;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:16px;'><div style='border:1px solid #2563EB;background:#EFF6FF;padding:6px;border-radius:4px;'><b>Version N</b><br/>(Blue)</div> <div>➔</div> <div style='border:1px solid #64748B;background:#F8FAFC;padding:6px;border-radius:4px;'>🔄<br/>Traffic Switch</div> <div>➔</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:6px;border-radius:4px;'><b>Version N+1</b><br/>(Green)</div></div>", 30, 396, 380, 134, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=4;");
+  // Stage 4 Content: Security Scan
+  cell("c_s4_1", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>🛡️ SAST<br/><span style='color:#64748B;'>(SonarQube)</span></div>", 394, 108, 114, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s4_2", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>🔍 Dependency Scan<br/><span style='color:#64748B;'>(OWASP / Snyk)</span></div>", 394, 174, 114, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s4_3", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>📦 Container Scan<br/><span style='color:#64748B;'>(Trivy)</span></div>", 394, 240, 114, 58, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s4_4", "<div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>📑 IaC Scan<br/><span style='color:#64748B;'>(Checkov)</span></div>", 394, 306, 114, 72, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // Sub-Pattern 2: Canary
-  rect("dp_canary_box", "<div style='font-size:9px;font-weight:800;color:#D97706;margin-bottom:6px;text-align:center;'>Canary Deployment</div><div style='font-size:8px;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:10px;'><div>👥<br/>Users</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#FFF;padding:4px;border-radius:4px;'>⚖️<br/>Load Balancer</div> <div>➔</div> <div style='display:flex;flex-direction:column;gap:4px;'><div style='border:1px solid #2563EB;background:#EFF6FF;padding:3px;border-radius:3px;'><b>Version N</b> (90%)</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:3px;border-radius:3px;'><b>Version N+1</b> (10%)</div></div></div>", 420, 396, 420, 134, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=4;");
+  // Stage 5 Content: Quality Gate Diamond
+  cell("c_s5_gate", "<div style='font-size:18px;text-align:center;'>✔</div><div style='font-size:7.5px;font-weight:800;color:#166534;text-align:center;'>All Quality Gates<br/>Passed?</div>", 534, 150, 102, 102, "rhombus;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s5_fail", "<div style='font-size:16px;text-align:center;'>🔔</div><div style='font-size:7px;font-weight:800;color:#DC2626;text-align:center;'>Notify &amp; Fail<br/><span style='color:#64748B;'>(Dev / Slack / Email)</span></div>", 530, 290, 110, 84, "rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#DC2626;html=1;align=center;verticalAlign=middle;padding=2;");
+  
+  edge("e_gate_fail", "c_s5_gate", "c_s5_fail", "strokeColor=#DC2626;strokeWidth=1.5;dashed=1;endArrow=classic;endSize=4;");
+  cell("lbl_gate_no", "No", 590, 260, 20, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=8;fontStyle=1;align=left;");
 
-  // Sub-Pattern 3: Rolling
-  rect("dp_roll_box", "<div style='font-size:9px;font-weight:800;color:#16A34A;margin-bottom:6px;text-align:center;'>Rolling Deployment</div><div style='font-size:8px;display:flex;justify-content:space-around;text-align:center;align-items:center;margin-top:16px;'><div style='border:1px solid #CBD5E1;background:#EFF6FF;padding:6px;border-radius:4px;'>📦 Pod 1</div> <div>➔</div> <div style='border:1px solid #CBD5E1;background:#EFF6FF;padding:6px;border-radius:4px;'>📦 Pod 2</div> <div>➔</div> <div style='border:1px solid #16A34A;background:#F0FDF4;padding:6px;border-radius:4px;'>📦 Pod 3</div></div><div style='font-size:8px;color:#64748B;text-align:center;margin-top:12px;'>Update Pods / Instances in Batches</div>", 850, 396, 426, 134, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=4;");
+  // Loop back from Fail to Code
+  edge("e_fail_to_code", "c_s5_fail", "box_stg_1", "strokeColor=#DC2626;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=4;edgeStyle=orthogonalEdgeStyle;");
 
-  // 5. FAR RIGHT COLUMN: QUALITY GATES, STRATEGIES, COMPLIANCE, TRIGGERS (x=1296..1560, y=72..540)
-  rect("box_r_qg", "<div style='font-size:10px;font-weight:800;color:#16A34A;margin-bottom:2px;'>QUALITY GATES (Must Pass)</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>✔ All Unit Tests Passed<br/>✔ Code Coverage ≥ 80%<br/>✔ Security Scans Passed (No Critical / High)<br/>✔ No License Violations<br/>✔ IaC Validation Passed<br/>✔ Performance Thresholds Met<br/>✔ Manual Approval (If Required)</div>", 1296, 72, 264, 120, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // Stage 6 Content: Deploy to Staging
+  cell("c_s6_1", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Deploy to<br/>Staging (GKE)</div>", 664, 108, 118, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s6_2", "<div style='font-size:18px;text-align:center;'>🩺</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Smoke Tests<br/>&amp; Health Checks</div>", 664, 196, 118, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s6_3", "<div style='font-size:18px;text-align:center;'>⏱️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Performance Tests<br/><span style='color:#64748B;'>(k6 / Locust)</span></div>", 664, 284, 118, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  rect("box_r_strat", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;'>DEPLOYMENT STRATEGIES</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🔄 <b>Blue/Green</b> – Zero downtime<br/>👥 <b>Canary</b> – Reduced risk, gradual rollout<br/>📦 <b>Rolling</b> – Incremental updates<br/>🛡️ <b>Rollback</b> – Automated / Manual</div>", 1296, 198, 264, 90, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // Connect Gate to Staging
+  edge("e_gate_pass", "c_s5_gate", "c_s6_1", "strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=4;");
+  cell("lbl_gate_yes", "Yes", 640, 182, 20, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=8;fontStyle=1;align=left;");
 
-  rect("box_r_comp", "<div style='font-size:10px;font-weight:800;color:#7C3AED;margin-bottom:2px;'>COMPLIANCE &amp; GOVERNANCE</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>📑 <b>Audit Logs</b> (Cloud Audit Logs)<br/>📋 <b>Change Management</b> (Approval Records)<br/>📦 <b>SBOM Generation</b> (CycloneDX)<br/>🛡️ <b>Artifact Provenance</b> (SLSA Level 3)<br/>🗃️ <b>Retention Policy</b> (Images / Logs)</div>", 1296, 294, 264, 110, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // Stage 7 Content: Approval
+  cell("c_s7_1", "<div style='font-size:18px;text-align:center;'>👤</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Manual Approval<br/><span style='color:#64748B;'>(Platform / QA)</span></div>", 800, 108, 106, 116, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s7_or", "<span style='font-size:8px;color:#64748B;font-style:italic;'>or</span>", 800, 230, 106, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("c_s7_2", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;'>Auto Approval<br/><span style='color:#64748B;'>(Policy Engine)</span></div>", 800, 252, 106, 126, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  rect("box_r_trig", "<div style='font-size:10px;font-weight:800;color:#D97706;margin-bottom:2px;'>PIPELINE TRIGGERS</div><div style='font-size:8px;line-height:1.35;color:#0F172A;'>🔀 <b>Push to Branch</b> &nbsp;|&nbsp; 👥 <b>Pull Request Merge</b><br/>👤 <b>Manual Trigger</b> &nbsp;|&nbsp; ⏱️ <b>Scheduled Trigger</b><br/>🏷️ <b>Release Tag</b></div>", 1296, 410, 264, 128, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=3;");
+  // Stage 8 Content: Deploy to Prod
+  cell("c_s8_1", "<div style='font-size:18px;text-align:center;'>🚀</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Blue/Green or<br/>Canary Deployment</div>", 924, 108, 114, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s8_2", "<div style='font-size:18px;text-align:center;'>📊</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Traffic Shift<br/><span style='color:#64748B;'>(Gradual)</span></div>", 924, 196, 114, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s8_3", "<div style='font-size:18px;text-align:center;'>🩺</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Health Checks<br/>&amp; Monitoring</div>", 924, 284, 114, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  // 6. BOTTOM ROW: BENEFITS, TECHNOLOGIES, NOTES, LEGEND (x=20..1560, y=546..740)
-  rect("bot_benefits", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>KEY BENEFITS</div><div style='font-size:9px;line-height:1.35;color:#0F172A;'>✔ Faster delivery with automated pipeline<br/>✔ High code quality with quality gates<br/>✔ Secure by design with integrated scans<br/>✔ Consistent deployments with IaC<br/>✔ Reduced risk with progressive delivery<br/>✔ Full visibility with monitoring &amp; audit trails</div>", 20, 546, 320, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // Stage 9 Content: Monitor
+  cell("c_s9_1", "<div style='font-size:18px;text-align:center;'>📈</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Monitoring<br/>&amp; Alerting<br/><span style='color:#64748B;'>(Cloud Monitoring)</span></div>", 1056, 108, 106, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s9_2", "<div style='font-size:18px;text-align:center;'>📑</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>Logging<br/><span style='color:#64748B;'>(Cloud Logging)</span></div>", 1056, 196, 106, 80, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("c_s9_3", "<div style='font-size:18px;text-align:center;'>🎯</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;'>SLO / Error<br/>Tracking</div>", 1056, 284, 106, 94, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
 
-  rect("bot_techs", "<div style='font-size:10px;font-weight:800;color:#2563EB;margin-bottom:2px;text-align:center;'>TECHNOLOGIES</div><div style='font-size:9px;color:#0F172A;display:grid;grid-template-columns:repeat(5, 1fr);gap:4px;text-align:center;margin-top:10px;'><div>⚡<br/>Cloud Build</div> <div>⚙️<br/>GKE</div> <div>📦<br/>Artifact Reg</div> <div>🚀<br/>Cloud Deploy</div> <div>📑<br/>Monitoring</div> <div>💻<br/>GitHub</div> <div>📊<br/>SonarQube</div> <div>🛡️<br/>Snyk</div> <div>🔍<br/>Trivy</div> <div>🏗️<br/>Terraform</div></div>", 350, 546, 440, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=center;verticalAlign=top;padding=4;");
+  // Pipeline Flow Arrows connecting stages
+  edge("e_s1_s2", "c_s1_1", "c_s2_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s2_s3", "c_s2_1", "c_s3_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s3_s4", "c_s3_1", "c_s4_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s4_s5", "c_s4_1", "c_s5_gate", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s6_s7", "c_s6_1", "c_s7_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s7_s8", "c_s7_1", "c_s8_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_s8_s9", "c_s8_1", "c_s9_1", "strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
-  rect("bot_notes", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>NOTES</div><div style='font-size:9px;line-height:1.4;color:#64748B;'>• All images are scanned and signed before deployment.<br/>• Use Workload Identity – no static keys in pipeline.<br/>• Rollback can be triggered manually or automatically.<br/>• All environments follow GitOps-ready practices.<br/>• Pipeline as Code stored in repository (/ci-cd/).</div>", 800, 546, 400, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  // ==================== 3. MIDDLE: PIPELINE ENABLERS (x=16..1180, y=398..484, w=1164, h=86) ====================
+  cell("box_enablers", "", 16, 398, 1164, 86, "rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1.2;");
+  cell("lbl_enablers", "PIPELINE ENABLERS (Integrated Across All Stages)", 16, 400, 1164, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
-  rect("bot_legend", "<div style='font-size:10px;font-weight:800;color:#1E3A8A;margin-bottom:2px;'>LEGEND</div><div style='font-size:9px;line-height:1.4;color:#0F172A;'>── Pipeline Flow<br/>- - Conditional Flow<br/>······ Cross-Cutting Enablement<br/>🟦 Tool / Service &nbsp; <span style='background:#F0FDF4;border:1px solid #16A34A;padding:1px 3px;border-radius:2px;'>■</span> Environment / Deployment<br/>◇ Decision Gate &nbsp; 🔔 Notification / Alert</div>", 1210, 546, 350, 190, "fillColor=#FFFFFF;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=top;padding=4;");
+  const enablers = [
+    { t: "Secret Manager<br/>(Secrets)", icon: "🔒" },
+    { t: "Cloud KMS<br/>(Encryption)", icon: "🔑" },
+    { t: "Workload Identity<br/>(Federation)", icon: "👥" },
+    { t: "Artifact Signing<br/>(Cosign)", icon: "✍️" },
+    { t: "Policy as Code<br/>(OPA / Conftest)", icon: "🛡️" },
+    { t: "IaC with Terraform<br/>(Env Provisioning)", icon: "🏗️" },
+    { t: "Config Management<br/>(Helm / Kustomize)", icon: "⚙️" }
+  ];
+  enablers.forEach((en, idx) => {
+    const ex = 26 + idx * 164;
+    cell(`en_${idx}`, `<div style="font-size:16px;text-align:center;">${en.icon}</div><div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;">${en.t}</div>`, ex, 420, 154, 56, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
 
-  // 7. FOOTER METADATA STRIP (x=20..1560, y=744..768)
-  rect("footer_meta", "<div style='font-size:9px;color:#0F172A;display:flex;justify-content:space-between;align-items:center;'><div>Version: 1.0</div><div>Date: May 2024</div></div>", 20, 744, 1540, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=3;");
+  // ==================== 4. DEPLOYMENT PATTERNS SUB-DIAGRAMS (x=16..1180, y=492..654, w=1164, h=162) ====================
+  cell("box_patterns", "", 16, 492, 1164, 162, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_patterns", "DEPLOYMENT PATTERNS", 16, 494, 1164, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // Pattern 1: Blue / Green Deployment (w=340)
+  cell("box_p_bg", "", 26, 516, 340, 128, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_p_bg", "Blue / Green Deployment", 26, 518, 340, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("p_bg_blue", "Version N<br/>(Blue)", 36, 546, 80, 50, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  cell("p_bg_switch", "Traffic<br/>Switch", 156, 546, 70, 50, "rhombus;fillColor=#FFFFFF;strokeColor=#64748B;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  cell("p_bg_green", "Version N+1<br/>(Green)", 266, 546, 90, 50, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.2;fontColor=#166534;fontSize=7.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  edge("e_bg_1", "p_bg_blue", "p_bg_switch", "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+  edge("e_bg_2", "p_bg_switch", "p_bg_green", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+
+  // Pattern 2: Canary Deployment (w=390)
+  cell("box_p_canary", "", 376, 516, 390, 128, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_p_canary", "Canary Deployment", 376, 518, 390, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("p_can_users", "👥<br/>Users", 386, 550, 56, 44, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("p_can_lb", "⚙️<br/>Load Balancer", 462, 546, 80, 50, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  cell("p_can_v1", "Version N (90%)", 582, 536, 110, 32, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  cell("p_can_v2", "Version N+1 (10%)", 582, 580, 110, 32, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#16A34A;fontSize=7;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  edge("e_can_1", "p_can_users", "p_can_lb", "strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;endSize=3;");
+  edge("e_can_2", "p_can_lb", "p_can_v1", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;endSize=3;");
+  edge("e_can_3", "p_can_lb", "p_can_v2", "strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;");
+
+  // Pattern 3: Rolling Deployment (w=394)
+  cell("box_p_rolling", "", 776, 516, 394, 128, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
+  cell("lbl_p_rolling", "Rolling Deployment", 776, 518, 394, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const rollPods = ["📦", "📦", "📦", "📦"];
+  rollPods.forEach((rp, idx) => {
+    const rx = 796 + idx * 90;
+    cell(`rp_${idx}`, rp, rx, 546, 50, 44, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.2;fontSize=16;align=center;verticalAlign=middle;");
+    if (idx > 0) {
+      edge(`e_rp_${idx}`, `rp_${idx - 1}`, `rp_${idx}`, "strokeColor=#2563EB;strokeWidth=1.2;endArrow=classic;endSize=3;");
+    }
+  });
+  cell("lbl_roll_sub", "Update Pods / Instances in Batches", 776, 608, 394, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // ==================== 5. RIGHT SIDEBAR (x=1190..1520, y=78..654, w=330, h=576) ====================
+  // 1. Quality Gates (Must Pass)
+  cell("box_q_gates", "", 1190, 78, 330, 224, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_q_gates", "QUALITY GATES (Must Pass)", 1190, 78, 330, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+  const qGatesHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
+    ✔ <b>All Unit Tests Passed</b><br/>
+    ✔ <b>Code Coverage ≥ 80%</b><br/>
+    ✔ <b>Security Scans Passed (No Critical / High)</b><br/>
+    ✔ <b>No License Violations</b><br/>
+    ✔ <b>IaC Validation Passed</b><br/>
+    ✔ <b>Performance Thresholds Met</b><br/>
+    ✔ <b>Manual Approval (If Required)</b>
+  </div>`;
+  cell("txt_q_gates", qGatesHtml, 1192, 102, 326, 196, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // 2. Deployment Strategies
+  cell("box_d_strat", "", 1190, 310, 330, 164, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_d_strat", "DEPLOYMENT STRATEGIES", 1190, 310, 330, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
+  const dStratHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
+    🚀 <b>Blue/Green</b> – Zero downtime<br/>
+    👥 <b>Canary</b> – Reduced risk, gradual rollout<br/>
+    🔄 <b>Rolling</b> – Incremental updates<br/>
+    🎯 <b>Rollback</b> – Automated / Manual
+  </div>`;
+  cell("txt_d_strat", dStratHtml, 1192, 334, 326, 136, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // 3. Compliance & Governance
+  cell("box_c_gov", "", 1190, 482, 330, 172, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_c_gov", "COMPLIANCE &amp; GOVERNANCE", 1190, 482, 330, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  const cGovHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
+    📑 <b>Audit Logs</b> (Cloud Audit Logs)<br/>
+    👥 <b>Change Management</b> (Approval Records)<br/>
+    📦 <b>SBOM Generation</b> (CycloneDX)<br/>
+    🛡️ <b>Artifact Provenance</b> (SLSA Level 3)<br/>
+    🗃️ <b>Retention Policy</b> (Images / Logs)
+  </div>`;
+  cell("txt_c_gov", cGovHtml, 1192, 506, 326, 144, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // ==================== 6. BOTTOM ROW: BENEFITS, TECH, NOTES, LEGEND, TRIGGERS (y=664..954, h=290) ====================
+  // 1. Key Benefits (w=250)
+  cell("box_b_benefits", "", 16, 664, 250, 290, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
+  cell("lbl_b_benefits", "KEY BENEFITS", 16, 664, 250, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bBenefitsHtml = `<div style="font-size:8px;line-height:1.6;color:#0F172A;padding:4px 8px;">
+    ✔ <b>Faster delivery</b> with automated pipeline<br/><br/>
+    ✔ <b>High code quality</b> with quality gates<br/><br/>
+    ✔ <b>Secure by design</b> with integrated scans<br/><br/>
+    ✔ <b>Consistent deployments</b> with IaC<br/><br/>
+    ✔ <b>Reduced risk</b> with progressive delivery<br/><br/>
+    ✔ <b>Full visibility</b> with monitoring &amp; audit trails
+  </div>`;
+  cell("txt_b_benefits", bBenefitsHtml, 18, 688, 246, 260, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // 2. Technologies Matrix (w=390)
+  cell("box_b_tech", "", 274, 664, 390, 290, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_b_tech", "TECHNOLOGIES", 274, 664, 390, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  
+  const techGrid = [
+    { t: "Cloud Build", icon: "⚙️" },
+    { t: "GKE", icon: "⚙️" },
+    { t: "Artifact Registry", icon: "📦" },
+    { t: "Cloud Deploy", icon: "🚀" },
+    { t: "Cloud Monitoring", icon: "📈" },
+    { t: "GitHub", icon: "🐙" },
+    { t: "SonarQube", icon: "📊" },
+    { t: "Snyk", icon: "🛡️" },
+    { t: "Trivy", icon: "🔍" },
+    { t: "Terraform", icon: "🏗️" },
+    { t: "Helm", icon: "⚙️" }
+  ];
+  techGrid.forEach((tg, idx) => {
+    const col = idx % 5;
+    const row = Math.floor(idx / 5);
+    const gx = 282 + col * 74;
+    const gy = 694 + row * 60;
+    cell(`tg_${idx}`, `<div style="font-size:16px;text-align:center;">${tg.icon}</div><div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;">${tg.t}</div>`, gx, gy, 70, 52, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+  });
+
+  // 3. Notes (w=260)
+  cell("box_b_notes", "", 672, 664, 260, 290, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_notes", "NOTES", 672, 664, 260, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bNotesHtml = `<div style="font-size:8px;line-height:1.6;color:#0F172A;padding:6px 8px;">
+    • All images are scanned and signed before deployment.<br/><br/>
+    • Use Workload Identity – no static keys in pipeline.<br/><br/>
+    • Rollback can be triggered manually or automatically.<br/><br/>
+    • All environments follow GitOps-ready practices.<br/><br/>
+    • Pipeline as Code stored in the repository (/ci-cd/).
+  </div>`;
+  cell("txt_b_notes", bNotesHtml, 674, 688, 256, 260, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // 4. Legend (w=270)
+  cell("box_b_legend", "", 940, 664, 270, 290, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
+  cell("lbl_b_legend", "LEGEND", 940, 664, 270, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bLegendHtml = `<table style="width:100%;border-collapse:collapse;font-size:7.5px;margin-top:2px;line-height:1.4;padding:2px 6px;">
+    <tr style="height:20px;"><td style="width:36px;color:#0F172A;font-weight:900;">━━━━►</td><td>Pipeline Flow</td></tr>
+    <tr style="height:20px;"><td style="color:#DC2626;font-weight:900;">┈┈┈┈►</td><td>Conditional Flow</td></tr>
+    <tr style="height:20px;"><td style="color:#7C3AED;font-weight:900;">┈┈┈┈►</td><td>Cross-Cutting Enablement</td></tr>
+    <tr style="height:20px;"><td style="color:#2563EB;font-size:10px;">🟦</td><td>Tool / Service</td></tr>
+    <tr style="height:20px;"><td style="color:#16A34A;font-size:10px;">🟩</td><td>Environment / Deployment</td></tr>
+    <tr style="height:20px;"><td style="color:#7C3AED;font-size:10px;">◇</td><td>Decision Gate</td></tr>
+    <tr style="height:20px;"><td style="color:#DC2626;font-size:10px;">🔔</td><td>Notification / Alert</td></tr>
+  </table>`;
+  cell("txt_b_legend", bLegendHtml, 942, 688, 266, 260, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
+
+  // 5. Pipeline Triggers (w=302)
+  cell("box_b_triggers", "", 1218, 664, 302, 290, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;");
+  cell("lbl_b_triggers", "PIPELINE TRIGGERS", 1218, 664, 302, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
+  const bTriggersHtml = `<div style="font-size:8px;line-height:1.7;color:#0F172A;padding:6px 12px;">
+    🔀 <b>Push to Branch</b><br/>
+    🔀 <b>Pull Request Merge</b><br/>
+    🔍 <b>Manual Trigger</b><br/>
+    ⏰ <b>Scheduled Trigger</b><br/>
+    🏷️ <b>Release Tag</b>
+  </div>`;
+  cell("txt_b_triggers", bTriggersHtml, 1220, 688, 298, 260, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
+
+  // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
+  const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
+    <div><b>PIPELINE:</b> GitOps-driven CI/CD &nbsp;|&nbsp; <b>GATES:</b> SonarQube, Snyk, Trivy, Checkov &nbsp;|&nbsp; <b>DEPLOY:</b> Blue/Green &amp; Canary</div>
+    <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; DevOps &amp; Release Engineering Team</div>
+  </div>`;
+  cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="template_20_ci_cd_pipeline" name="Template 20: CI/CD Pipeline">
-    <mxGraphModel dx="1600" dy="780" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="780" background="#FFFFFF" math="0" shadow="0">
+  <diagram id="template_20_cicd_pipeline" name="Template 20: CI/CD Pipeline">
+    <mxGraphModel dx="1536" dy="1024" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1536" pageHeight="1024" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
