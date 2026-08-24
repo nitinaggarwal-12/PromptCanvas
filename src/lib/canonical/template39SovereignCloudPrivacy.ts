@@ -3,9 +3,14 @@
  * Matches 100% of images/39.png:
  * - Exact 1536x1024 Canvas matching ground-truth master.
  * - Spacious 24px-32px routing channels so all 29 arrows are bold, prominent, and clearly visible.
- * - Precision clean edge XML syntax without duplicate point arrays.
- * - Native inline vector SVGs for all icons, badges, shields, and pods.
- * - Bold high-contrast typography, crisp borders, rich saturated colors, zero-void proportional card packing.
+ * - Exact arrow direction parity:
+ *   * 5 Upward Governance control/evidence arrows (^ |) from Sovereign Cloud UP into the 5 Governance Pods.
+ *   * 2 Downward Perimeter Governance policy arrows (| v) from Governance into Users and Data Exchange.
+ *   * 4 Horizontal Governance chain arrows (1 -> 2 -> 3 -> 4 -> 5).
+ *   * 4 Horizontal Blue Ingress & Egress data arrows (Users -> Gate -> Sov Cloud -> Gate -> Data Exchange).
+ *   * 4 Upward Green Monitoring telemetry arrows (^ |) from Monitoring into the 4 Infrastructure pods.
+ *   * 2 Upward Green Monitoring perimeter arrows (^ |) from Monitoring into Users and Data Exchange.
+ *   * 1 Upward Green Audit Feedback line on far right into Audit & Assurance (Pod 5).
  */
 
 const E = (v?: string | null) =>
@@ -174,7 +179,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
       "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E9D5FF;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=4;"
     );
 
-    // Chained horizontal dashed purple arrows (1 -> 2 -> 3 -> 4 -> 5) with generous 26px gap
+    // Chained horizontal dashed purple arrows (1 -> 2 -> 3 -> 4 -> 5)
     if (idx < 4) {
       rawEdge(`e_gov_chain_${idx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 2;endArrow=classic;endSize=5;", [
         { x: gpx + 182, y: 130 },
@@ -537,62 +542,62 @@ export function generateTemplate39SovereignCloudPrivacyXml(
   // ==================== 9. COMPLETE INTER-LAYER CONNECTORS MATRIX (29 ARROWS) ====================
 
   // --- Category A: Purple Dashed Governance Control Flows ---
-  // A1. Governance -> Users (Left perimeter drop)
+  // A1. Governance -> Users (Left perimeter drop, points DOWN into Users)
   rawEdge("e_gov_to_users", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
     { x: 240, y: 124 },
     { x: 114, y: 124 },
     { x: 114, y: 190 }
   ]);
 
-  // A2. Governance -> Data Exchange (Right perimeter drop)
+  // A2. Governance -> Data Exchange (Right perimeter drop, points DOWN into Data Exchange)
   rawEdge("e_gov_to_exch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
     { x: 1296, y: 124 },
     { x: 1422, y: 124 },
     { x: 1422, y: 190 }
   ]);
 
-  // A3-A7: 5 Downward Governance control drop arrows (from bottom of Gov box y=162 -> Sovereign Cloud top border y=190, 28px drop)
+  // A3-A7: 5 UPWARD Governance control/reporting arrows (^ |) from Sovereign Cloud top border (y=190) UP into the bottom of the 5 Governance Pods (y=162)
   const govPodXCenters = [341, 549, 768, 976, 1184];
   govPodXCenters.forEach((xPos, pIdx) => {
-    rawEdge(`e_gov_down_${pIdx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
-      { x: xPos, y: 162 },
-      { x: xPos, y: 190 }
+    rawEdge(`e_gov_up_${pIdx}`, "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 3;endArrow=classic;endSize=6;", [
+      { x: xPos, y: 190 },
+      { x: xPos, y: 162 }
     ]);
   });
 
   // --- Category B: Blue Solid Data Flows ---
-  // B1. Users -> Secure Access Gate (x=212 -> x=238, 26px solid blue arrow)
+  // B1. Users -> Secure Access Gate (points RIGHT ->)
   rawEdge("e_users_to_gate", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
     { x: 212, y: 427 },
     { x: 238, y: 427 }
   ]);
 
-  // B2. Secure Access Gate -> Sovereign Cloud (x=298 -> x=324, 26px solid blue arrow)
+  // B2. Secure Access Gate -> Sovereign Cloud (points RIGHT ->)
   rawEdge("e_gate_to_sov", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
     { x: 298, y: 427 },
     { x: 324, y: 427 }
   ]);
 
-  // B3. Sovereign Cloud -> Controlled Exchange Gate (x=1212 -> x=1238, 26px solid blue arrow)
+  // B3. Sovereign Cloud -> Controlled Exchange Gate (points RIGHT ->)
   rawEdge("e_sov_to_ctrl", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
     { x: 1212, y: 427 },
     { x: 1238, y: 427 }
   ]);
 
-  // B4. Controlled Exchange Gate -> Data Exchange (x=1298 -> x=1324, 26px solid blue arrow)
+  // B4. Controlled Exchange Gate -> Data Exchange (points RIGHT ->)
   rawEdge("e_ctrl_to_exch", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=2.5;endArrow=classic;endSize=6;", [
     { x: 1298, y: 427 },
     { x: 1324, y: 427 }
   ]);
 
   // --- Category C: Green Dotted Audit & Monitoring Flows ---
-  // C1. Monitoring -> Users (Left perimeter upward arrow into Users bottom, y=694 -> y=664, 30px upward)
+  // C1. Monitoring -> Users (Left perimeter UPWARD arrow into Users bottom, y=694 -> y=664, points UP ^)
   rawEdge("e_mon_to_users", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
     { x: 114, y: 694 },
     { x: 114, y: 664 }
   ]);
 
-  // C2-C5: 4 Upward Monitoring arrows into Sovereign Cloud (from Monitoring top y=694 -> Sovereign Cloud bottom y=664, 30px upward)
+  // C2-C5: 4 UPWARD Monitoring arrows (^ |) from Monitoring top y=694 -> Sovereign Cloud bottom y=664, points UP ^
   const sovInfraXCenters = [450, 662, 874, 1086];
   sovInfraXCenters.forEach((xPos, pIdx) => {
     rawEdge(`e_mon_up_${pIdx}`, "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
@@ -601,13 +606,13 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     ]);
   });
 
-  // C6. Monitoring -> Data Exchange (Right perimeter upward arrow into Data Exchange bottom, y=694 -> y=664, 30px upward)
+  // C6. Monitoring -> Data Exchange (Right perimeter UPWARD arrow into Data Exchange bottom, y=694 -> y=664, points UP ^)
   rawEdge("e_mon_to_exch", "edgeStyle=none;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
     { x: 1422, y: 694 },
     { x: 1422, y: 664 }
   ]);
 
-  // C7. Feedback line: Far-right Monitoring -> Audit & Assurance Pod 5 (Right vertical spine)
+  // C7. Feedback line: Far-right Monitoring -> Audit & Assurance Pod 5 (Right vertical spine, points UP ^ and LEFT <- into Pod 5)
   rawEdge("e_mon_feedback_gov", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=2 3;endArrow=classic;endSize=6;", [
     { x: 1496, y: 694 },
     { x: 1496, y: 124 },
