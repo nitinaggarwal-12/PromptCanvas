@@ -124,6 +124,15 @@ import { generateTemplate38CloudLandingZoneXml } from "./template38CloudLandingZ
 import { generateTemplate39SovereignCloudPrivacyXml } from "./template39SovereignCloudPrivacy";
 import { generateTemplate40EnterpriseGenAiPlatformXml } from "./template40EnterpriseGenAiPlatform";
 import { generateTemplate41EnterpriseRagPlatformXml } from "./template41EnterpriseRagPlatform";
+import { generateTemplate42ModernDataLakehouseDataMeshXml } from "./template42ModernDataLakehouseDataMesh";
+import { generateTemplate43RealTimeStreamingEventEnterpriseXml } from "./template43RealTimeStreamingEventEnterprise";
+import { generateTemplate44ZeroTrustCybersecuritySocPlatformXml } from "./template44ZeroTrustCybersecuritySocPlatform";
+import { generateTemplate45EnterpriseApiIntegrationMcpGatewayXml } from "./template45EnterpriseApiIntegrationMcpGateway";
+import { generateTemplate46EnterpriseKubernetesPlatformEngineeringXml } from "./template46EnterpriseKubernetesPlatformEngineering";
+import { generateTemplate47MlopsAiLifecyclePlatformXml } from "./template47MlopsAiLifecyclePlatform";
+import { generateTemplate48BcdrCyberRecoveryResilienceXml } from "./template48BcdrCyberRecoveryResilience";
+import { generateTemplate49HealthcareLifeSciencesPlatformXml } from "./template49HealthcareLifeSciencesPlatform";
+import { generateTemplate50SustainabilityEsgPlatformXml } from "./template50SustainabilityEsgPlatform";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -630,8 +639,121 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/rag_knowledge_flow.png',
     keyComponents: ['User & Channels Layer', 'Access, Identity & Experience Layer', 'Knowledge Experience & Orchestration Layer', 'RAG / Reasoning Layer', 'Memory, Index & Knowledge Layer', '10-Step RAG Pipeline', 'Ingestion, Parsing & Connectors Layer', 'Enterprise Knowledge Sources Layer', 'Security / Privacy Foundation', 'Governance / Compliance', 'Observability & FinOps', 'Platform Operations'],
     generateXml: generateTemplate41EnterpriseRagPlatformXml
+  },
+  {
+    id: '42',
+    name: 'Modern Data Lakehouse & Data Mesh',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Unified, governed, scalable, secure, and AI-ready modern data lakehouse and decentralized data mesh architecture',
+    examples: 'Enterprise data lakehouse, BigLake, Dataplex mesh governance, domain data products, real-time ingestion, BigQuery analytics',
+    defaultDomain: 'Modern Data Lakehouse & Data Mesh Platform',
+    previewImage: '/templates/data_flow_architecture.png',
+    keyComponents: ['Data Sources Layer', 'Data Ingestion Layer (Steps 1..7)', 'Data Processing & Compute Layer', 'Lakehouse Storage Layer', 'Data Mesh Governance Layer', 'Data Product Layer', 'Consumption Layer', 'Governance & Data Management', 'Observability & Operations', 'Platform Operations'],
+    generateXml: generateTemplate42ModernDataLakehouseDataMeshXml
+  },
+  {
+    id: '43',
+    name: 'Real-Time Streaming & Event-Driven Enterprise',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Scalable, event-driven, low-latency, resilient, and governed enterprise real-time streaming platform',
+    examples: 'Real-time streaming, Pub/Sub, Dataflow Beam, Eventarc, Kafka/Confluent compatibility, event mesh, Spanner/Bigtable stores',
+    defaultDomain: 'Real-Time Streaming & Event-Driven Enterprise Platform',
+    previewImage: '/templates/event_driven_pipeline.png',
+    keyComponents: ['Event Sources Layer', 'Event Ingestion Layer', 'Event Routing & Mesh Layer', 'Stream Processing & Enrichment Layer', 'State, Storage & Analytics Layer', 'Event Consumer & Application Layer', 'Enterprise Business Domains Layer', 'Security & Network Foundation', 'Governance & Event Management', 'Observability & Reliability', 'Platform Operations'],
+    generateXml: generateTemplate43RealTimeStreamingEventEnterpriseXml
+  },
+  {
+    id: '44',
+    name: 'Zero-Trust Cybersecurity & SOC Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Comprehensive enterprise zero-trust cybersecurity and SecOps platform across continuous identity verification, threat detection, security controls, and 24x7 SOC operations',
+    examples: 'Zero-trust architecture, BeyondCorp, Cloud Identity, IAM PDP, Chronicle SIEM, SOAR automation, Cloud Armor, SCC, Mandiant threat intelligence',
+    defaultDomain: 'Zero-Trust Cybersecurity & SOC Operations Platform',
+    previewImage: '/templates/security_threat_matrix.png',
+    keyComponents: ['Consumption Layer', 'Zero-Trust Access Layer', 'Threat Detection & Response Layer', 'Security Controls Layer', 'Visibility & Telemetry Layer', 'Secure Connectivity Layer', 'Asset & Infrastructure Layer', 'Google Cloud Security Foundation', 'Governance, Risk & Compliance', 'Security Operations (SOC)', 'Platform Operations'],
+    generateXml: generateTemplate44ZeroTrustCybersecuritySocPlatformXml
+  },
+  {
+    id: '45',
+    name: 'Enterprise API, Integration & MCP Gateway',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Unified enterprise API management, event integration, SaaS connectivity, Model Context Protocol (MCP) tool exposure, and end-to-end policy enforcement',
+    examples: 'API Gateway, Ingress/Mesh, ESB/iPaaS, MCP Gateway & Tool Discovery, Kafka/PubSub event backbone, SaaS connectors, Zero Trust & PEP, Observability',
+    defaultDomain: 'Enterprise API, Integration & MCP Gateway Platform',
+    previewImage: '/templates/api_gateway_architecture.png',
+    keyComponents: ['Consumer & Channel Layer', 'API Experience & Access Layer', 'Gateway & Traffic Management Layer', 'Integration & Mediation Layer', 'MCP & Tool Exposure Layer', 'Messaging & Event Backbone Layer', 'Enterprise Systems & SaaS Layer', 'Security & Governance Layer', 'Foundational Platform Layer', 'Observability & Operations', 'Operations & Delivery'],
+    generateXml: generateTemplate45EnterpriseApiIntegrationMcpGatewayXml
+  },
+  {
+    id: '46',
+    name: 'Enterprise Kubernetes & Platform Engineering',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Standardized enterprise Kubernetes platform engineering, multi-cluster management, Golden Paths, GKE runtime, infrastructure, governance, and platform operations',
+    examples: 'GKE Fleet, Backstage IDP, Port, ArgoCD GitOps, Kyverno/OPA, Helm/KubeVela, Kubeflow/KServe, Istio Mesh, VPC-native GKE, Cloud Armor, Prometheus/Grafana',
+    defaultDomain: 'Enterprise Kubernetes & Platform Engineering Ecosystem',
+    previewImage: '/templates/enterprise_k8s_platform.png',
+    keyComponents: ['Consumer Layer', 'Platform Services Layer', 'Platform Engineering Layer', 'Cluster Management Layer', 'Kubernetes Runtime Layer', 'Infrastructure Layer', 'Google Cloud Foundation', 'Governance & Compliance', 'Observability & Operations', 'Platform Operations', 'Platform Principles'],
+    generateXml: generateTemplate46EnterpriseKubernetesPlatformEngineeringXml
+  },
+  {
+    id: '47',
+    name: 'MLOps & AI Model Lifecycle Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Governed, scalable, reproducible, secure, and responsible MLOps & AI model lifecycle platform on Google Cloud',
+    examples: 'Model serving & inference, training & tuning, feature store, Vertex AI pipelines, model registry & cards, AI governance & compliance, model observability & drift',
+    defaultDomain: 'MLOps & AI Model Lifecycle Platform',
+    previewImage: '/templates/mlops_lifecycle_platform.png',
+    keyComponents: ['Consumption & Business Value Layer', 'Model Serving & Inference Layer', 'Model Training & Tuning Layer', 'Data & Feature Engineering Layer', 'ML Pipeline Orchestration Layer', 'Model Registry & Lifecycle Layer', 'Infrastructure & ML Foundation Layer', 'Governance, Risk & Compliance', 'Observability & Reliability', 'Platform Operations', 'ML Lifecycle Flow', 'Serving Patterns', 'Model Types'],
+    generateXml: generateTemplate47MlopsAiLifecyclePlatformXml
+  },
+  {
+    id: '48',
+    name: 'BCDR, Cyber Recovery & Operational Resilience',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Resilient by design, recover with confidence, and continuity assured enterprise disaster recovery and cyber resilience architecture on Google Cloud',
+    examples: 'BCDR orchestration & runbooks, recovery workflows & automated failover, BIA, data protection & immutable storage, multi-region infrastructure, cyber incident recovery',
+    defaultDomain: 'BCDR & Cyber Recovery Resilience Ecosystem',
+    previewImage: '/templates/bcdr_resilience_platform.png',
+    keyComponents: ['Resilience Consumers & Business Value', 'Resilience Orchestration & Automation Layer', 'Business Continuity & Disaster Recovery Layer', 'Data Protection Layer', 'Infrastructure Resilience Layer', 'Foundation Services Layer', 'Foundation Infrastructure Layer', 'Resilience Foundation', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Resilience Outcomes', 'Resilience Principles', 'Recovery Strategies', 'Disaster Types'],
+    generateXml: generateTemplate48BcdrCyberRecoveryResilienceXml
+  },
+  {
+    id: '49',
+    name: 'Healthcare & Life Sciences Digital Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Patient-centric, data-driven, interoperable, secure, and AI-enabled healthcare and life sciences digital platform on Google Cloud',
+    examples: 'FHIR APIs, DICOM, OMOP, SNOMED CT, clinical operations, patient 360, population health, life sciences R&D, commercial & market access, imaging AI, healthcare compliance',
+    defaultDomain: 'Healthcare & Life Sciences Digital Platform',
+    previewImage: '/templates/healthcare_digital_platform.png',
+    keyComponents: ['Consumer Experience Layer', 'Application & Solution Layer', 'Data & Intelligence Layer', 'Integration & Interoperability Layer', 'Platform & Services Layer', 'Data Sources Layer', 'Infrastructure Layer', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Key Standards', 'Healthcare Use Cases', 'Life Sciences Use Cases', 'Outcomes'],
+    generateXml: generateTemplate49HealthcareLifeSciencesPlatformXml
+  },
+  {
+    id: '50',
+    name: 'Sustainability & ESG Intelligence Platform',
+    family: 'Reference Architectures',
+    level: 'L1/L2/L3',
+    primaryPurpose: 'Measure, report, reduce, comply, and innovate enterprise sustainability and ESG intelligence platform on Google Cloud',
+    examples: 'Stakeholder ESG portals, carbon intelligence & emissions analytics, GHG Scope 1/2/3 calculations, ESG data models (GRI, SASB, TCFD, CDP, ISSB, EU Taxonomy), double materiality, net zero planning',
+    defaultDomain: 'Sustainability & ESG Intelligence Platform',
+    previewImage: '/templates/sustainability_esg_platform.png',
+    keyComponents: ['Engagement & Impact Layer', 'Analytics & Intelligence Layer', 'Data Integration & Processing Layer', 'ESG Data Model & Governance Layer', 'Sustainability Domain Layer', 'Data Sources & Connectivity Layer', 'Infrastructure Layer', 'Google Cloud Foundation', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Business Outcomes', 'ESG Domains', 'Frameworks & Standards', 'Sustainability by Design'],
+    generateXml: generateTemplate50SustainabilityEsgPlatformXml
   }
 ];
+
+
+
+
+
 
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];

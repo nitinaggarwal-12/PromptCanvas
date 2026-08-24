@@ -593,5 +593,136 @@ export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
     sourceImage: '41.png',
     generatorVersion: '1.0',
     certificationStatus: 'certified'
+  },
+  '42': {
+    id: '42',
+    grammar: 'Modern Data Lakehouse & Data Mesh',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise modern data lakehouse and decentralized data mesh architected across ingestion, compute, storage, governance, data products, and consumption?',
+    requiredElements: ['data-sources-layer', 'data-ingestion-layer', 'data-processing-compute-layer', 'lakehouse-storage-layer', 'data-mesh-governance-layer', 'data-product-layer', 'consumption-layer', 'governance-data-management', 'observability-operations', 'platform-operations', 'data-flow-legend'],
+    forbiddenElements: ['unmanaged-shadow-data-silos', 'unauthenticated-data-egress'],
+    edgeTypes: ['data-flow', 'metadata-control-flow', 'governance-security'],
+    iconPolicy: 'hybrid',
+    sourceImage: '42.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '43': {
+    id: '43',
+    grammar: 'Real-Time Streaming & Event-Driven Enterprise',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise real-time streaming and event-driven architecture structured across ingestion, mesh routing, stream processing, storage, consumption, and governance?',
+    requiredElements: ['event-sources-layer', 'event-ingestion-layer', 'event-routing-mesh-layer', 'stream-processing-enrichment-layer', 'state-storage-analytics-layer', 'event-consumer-application-layer', 'enterprise-business-domains-layer', 'security-network-foundation', 'governance-event-management', 'observability-reliability', 'platform-operations', 'end-to-end-flow', 'arrow-legend', 'icon-legend'],
+    forbiddenElements: ['unbuffered-event-loss', 'unvalidated-schema-drift'],
+    edgeTypes: ['data-flow', 'event-flow', 'control-governance-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '43.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '44': {
+    id: '44',
+    grammar: 'Zero-Trust Cybersecurity & SOC Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise zero-trust cybersecurity and SecOps platform architected across consumption, access verification, threat detection, security controls, telemetry, connectivity, infrastructure, and SOC operations?',
+    requiredElements: ['consumption-layer', 'zero-trust-access-layer', 'threat-detection-response-layer', 'security-controls-layer', 'visibility-telemetry-layer', 'secure-connectivity-layer', 'asset-infrastructure-layer', 'google-cloud-security-foundation', 'governance-risk-compliance', 'security-operations-soc', 'platform-operations', 'data-flow-legend', 'zero-trust-principles', 'numbered-legend'],
+    forbiddenElements: ['implicit-trust-zones', 'unencrypted-data-transit'],
+    edgeTypes: ['telemetry-logs-events', 'control-policy-config', 'response-action'],
+    iconPolicy: 'hybrid',
+    sourceImage: '44.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '45': {
+    id: '45',
+    grammar: 'Enterprise API, Integration & MCP Gateway',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise API, event integration, SaaS connectivity, agent tool exposure (MCP), and governance platform architected across all layers?',
+    requiredElements: ['consumer-channel-layer', 'api-experience-access-layer', 'gateway-traffic-management-layer', 'integration-mediation-layer', 'mcp-tool-exposure-layer', 'messaging-event-backbone-layer', 'enterprise-systems-saas-layer', 'security-governance-layer', 'foundational-platform-layer', 'observability-operations', 'operations-delivery', 'integration-patterns-sidebar', 'flow-legend', 'end-to-end-flows', 'key-interactions-subdiagram', 'architecture-principles', 'outcomes'],
+    forbiddenElements: ['unauthenticated-api-exposure', 'uncontrolled-mcp-access'],
+    edgeTypes: ['api-data-flow-sync', 'control-policy-flow', 'event-message-flow-async', 'agent-tool-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '45.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '46': {
+    id: '46',
+    grammar: 'Enterprise Kubernetes & Platform Engineering',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise Kubernetes platform engineering ecosystem architected across consumer portals, platform services, platform engineering, cluster management, GKE runtime, infrastructure, Google Cloud foundation, governance, observability, and operations?',
+    requiredElements: ['consumer-layer', 'platform-services-layer', 'platform-engineering-layer', 'cluster-management-layer', 'kubernetes-runtime-layer', 'infrastructure-layer', 'google-cloud-foundation', 'governance-compliance', 'observability-operations', 'platform-operations', 'data-flow-legend', 'platform-principles', 'layer-legend'],
+    forbiddenElements: ['unmanaged-cluster-sprawl', 'unauthenticated-workloads'],
+    edgeTypes: ['request-traffic', 'control-management', 'data-event'],
+    iconPolicy: 'hybrid',
+    sourceImage: '46.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '47': {
+    id: '47',
+    grammar: 'MLOps & AI Model Lifecycle Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise MLOps and AI model lifecycle platform architected across consumption, model serving, training, feature engineering, orchestration, model registry, foundation infrastructure, governance, observability, and platform operations?',
+    requiredElements: ['consumption-business-value-layer', 'model-serving-inference-layer', 'model-training-tuning-layer', 'data-feature-engineering-layer', 'ml-pipeline-orchestration-layer', 'model-registry-lifecycle-layer', 'infrastructure-ml-foundation-layer', 'governance-risk-compliance', 'observability-reliability', 'platform-operations', 'ml-lifecycle-flow', 'flow-legend', 'serving-patterns', 'model-types'],
+    forbiddenElements: ['unversioned-models', 'unmonitored-production-inference'],
+    edgeTypes: ['data-flow', 'metadata-control-flow', 'feedback-loop'],
+    iconPolicy: 'hybrid',
+    sourceImage: '47.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '48': {
+    id: '48',
+    grammar: 'BCDR, Cyber Recovery & Operational Resilience',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is enterprise business continuity, disaster recovery, cyber incident recovery, data protection, infrastructure resilience, and operational assurance architected on Google Cloud?',
+    requiredElements: ['resilience-consumers-business-value', 'resilience-orchestration-automation-layer', 'business-continuity-disaster-recovery-layer', 'data-protection-layer', 'infrastructure-resilience-layer', 'foundation-services-layer', 'foundation-infrastructure-layer', 'resilience-foundation', 'governance-risk-compliance', 'observability-assurance', 'platform-operations', 'resilience-outcomes', 'resilience-principles', 'recovery-strategies', 'disaster-types', 'data-benefits'],
+    forbiddenElements: ['single-point-of-failure', 'untested-disaster-recovery'],
+    edgeTypes: ['data-flow', 'control-policy-flow', 'failover-recovery-flow'],
+    iconPolicy: 'hybrid',
+    sourceImage: '48.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '49': {
+    id: '49',
+    grammar: 'Healthcare & Life Sciences Digital Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise healthcare and life sciences digital platform architected across consumer experience, clinical/operational applications, data & intelligence, integration/interoperability (FHIR/DICOM), GCP platform services, data sources, and governance?',
+    requiredElements: ['consumer-experience-layer', 'application-solution-layer', 'data-intelligence-layer', 'integration-interoperability-layer', 'platform-services-layer', 'data-sources-layer', 'infrastructure-layer', 'governance-risk-compliance', 'observability-assurance', 'platform-operations', 'data-flow-legend', 'key-standards', 'healthcare-use-cases', 'life-sciences-use-cases', 'outcomes'],
+    forbiddenElements: ['unencrypted-phi-egress', 'non-compliant-data-silos'],
+    edgeTypes: ['data-flow-batch', 'data-flow-realtime', 'control-metadata-flow', 'external-exchange'],
+    iconPolicy: 'hybrid',
+    sourceImage: '49.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
+  },
+  '50': {
+    id: '50',
+    grammar: 'Sustainability & ESG Intelligence Platform',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2', 'L3'],
+    semanticQuestion: 'How is an enterprise sustainability and ESG intelligence platform architected across stakeholder engagement, analytics & carbon intelligence, data integration, ESG data models (GRI/SASB/TCFD), sustainability domains, and Google Cloud foundation?',
+    requiredElements: ['engagement-impact-layer', 'analytics-intelligence-layer', 'data-integration-processing-layer', 'esg-data-model-governance-layer', 'sustainability-domain-layer', 'data-sources-connectivity-layer', 'infrastructure-layer', 'google-cloud-foundation', 'governance-risk-compliance', 'observability-assurance', 'platform-operations', 'business-outcomes', 'data-flow-legend', 'esg-domains', 'frameworks-standards', 'deployment-patterns', 'sustainability-by-design'],
+    forbiddenElements: ['unaudited-esg-metrics', 'untraceable-carbon-accounting'],
+    edgeTypes: ['data-flow-batch', 'data-flow-realtime', 'external-data-exchange', 'insights-actions'],
+    iconPolicy: 'hybrid',
+    sourceImage: '50.png',
+    generatorVersion: '1.0',
+    certificationStatus: 'certified'
   }
 };
+
+
+
+
+

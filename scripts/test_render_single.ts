@@ -11,18 +11,19 @@ async function main() {
   let currentHtml = '';
   const server = http.createServer((req, res) => {
     if (req.url === '/viewer-static.min.js') {
-      const viewerPath = path.join(process.cwd(), 'node_modules/drawio-renderer/viewer-static.min.js');
+      const viewerPath = path.join(process.cwd(), 'public/viewer-static.min.js');
       if (fs.existsSync(viewerPath)) {
         res.writeHead(200, { 'Content-Type': 'application/javascript' });
         res.end(fs.readFileSync(viewerPath));
         return;
       }
     }
-    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(currentHtml);
   });
   
-  await new Promise<void>((resolve) => server.listen(8767, () => resolve()));
+  const port = 8997;
+  await new Promise<void>((resolve) => server.listen(port, () => resolve()));
   
   const browser = await puppeteer.launch({
     headless: true,
@@ -50,43 +51,50 @@ async function main() {
       fit: true,
       'max-scale': 2.5
     };
-    const configJson = JSON.stringify(configObj).replace(/"/g, '&quot;');
     
     currentHtml = `<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8"/>
   <style>
-    body { margin: 0; padding: 24px; background: #0b101b; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .banner { color: #f8fafc; font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; }
-    .canvas-container { background: #FFFFFF; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; padding: 12px; }
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #F8FAFC; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; overflow: hidden; }
+    .header-banner { background: #0B111E; padding: 12px 24px; border-bottom: 2px solid #3B82F6; display: flex; justify-content: space-between; align-items: center; }
+    .header-title { color: #FFFFFF; font-size: 15px; font-weight: 800; }
+    .header-tag { background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; }
+    .canvas-frame { flex: 1; margin: 12px; background: #FFFFFF; border-radius: 8px; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 10px; }
+    .mxgraph { width: 100%; height: 100%; min-height: 850px; display: flex; align-items: center; justify-content: center; }
+    .mxgraph > svg { width: 100% !important; max-width: 1720px !important; height: auto !important; margin: 0 auto; }
   </style>
-  <script src="http://localhost:8767/viewer-static.min.js"></script>
 </head>
 <body>
-  <div class="banner">
-    <div>Template ${tmpl.id}: ${tmpl.name}</div>
-    <div style="font-size: 12px; color: #38bdf8; font-weight: 600;">100% Collision-Free Geometry • Canonical Ground-Truth Blueprint</div>
+  <div class="header-banner">
+    <div class="header-title">Template ${tmpl.id}: ${tmpl.name}</div>
+    <div class="header-tag">100% Collision-Free Geometry • Canonical Ground-Truth Blueprint</div>
   </div>
-  <div class="canvas-container">
-    <div class="mxgraph" style="max-width: 100%; border: 1px solid #cbd5e1; border-radius: 8px;" data-mxgraph="${configJson}"></div>
+  <div class="canvas-frame">
+    <div class="mxgraph" id="diagram-container"></div>
   </div>
+  <script src="/viewer-static.min.js"></script>
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.GraphViewer) {
-        GraphViewer.processElements();
-      }
-    });
+    const cfg = ${JSON.stringify(configObj)};
+    const cont = document.getElementById('diagram-container');
+    cont.setAttribute('data-mxgraph', JSON.stringify(cfg));
+    if (window.GraphViewer && window.GraphViewer.processElements) {
+      window.GraphViewer.processElements();
+    }
   </script>
 </body>
 </html>`;
 
-    await page.goto('http://localhost:8767', { waitUntil: 'networkidle0' });
-    await new Promise(r => setTimeout(r, 1200));
+    await page.goto(`http://localhost:${port}`, { waitUntil: 'networkidle0' });
+    await new Promise(r => setTimeout(r, 1500));
     
+    const svgCount = await page.evaluate(() => document.querySelectorAll('svg').length);
+    console.log(`Template ${tmpl.id} rendered with ${svgCount} SVG elements.`);
+
     const filename = `${tmpl.id}_${tmpl.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}.png`;
     const targetFile = path.join(outDir, filename);
-    await page.screenshot({ path: targetFile, fullPage: false });
+    await page.screenshot({ path: targetFile, fullPage: true });
     console.log(`Captured ${filename}`);
   }
   
