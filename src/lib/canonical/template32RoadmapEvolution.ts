@@ -1,12 +1,16 @@
 /**
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 32: Architecture Evolution & Roadmap
- * Built with discrete mxCells for 100% vector sharpness, 4 detailed microservices tier diagrams with vector arrows,
- * 7 discrete key enabler cards, 5 sequential next step cards with connector arrows,
- * bold high-DPI typography (10px-14px), and zero empty margins on 1536x1024.
+ * Fully valid XML attribute escaping (all HTML labels have html=1 and &lt; &gt; escaping),
+ * 4 detailed microservice tier sub-diagrams with native connectors, 7 discrete key enabler cards,
+ * 5 sequential next step cards with blue vector arrows, and edge-to-edge balanced layout on 1536x1024.
  */
 
 const E = (v?: string | null) =>
-  (v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  (v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
 export function generateTemplate32RoadmapEvolutionXml(
   domainFlavor = "biopharma",
@@ -128,7 +132,7 @@ export function generateTemplate32RoadmapEvolutionXml(
     const px = 204 + idx * 254;
     // Outer phase container
     cell(`ph_box_${idx}`, "", px, 164, 248, 338, `rounded=1;arcSize=8;fillColor=${ph.bg};strokeColor=${ph.col};strokeWidth=1.5;`);
-    // Header Chevron
+    // Header Chevron with html=1
     cell(`ph_hdr_${idx}`, ph.n, px, 164, 248, 34, `shape=rectangle;rounded=1;arcSize=8;fillColor=${ph.col};strokeColor=${ph.col};fontColor=#FFFFFF;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;`);
     
     // Sub-title
