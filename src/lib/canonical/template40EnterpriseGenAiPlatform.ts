@@ -14,6 +14,7 @@
  *   - Tier 8: Governance / HITL / Compliance (Human Approval, Prompt Governance, Audit Trail, DLP, Responsible AI, Compliance)
  *   - Observability / Evaluation / FinOps (Logs/Metrics/Traces, Model Mon, Agent Eval, Feedback Loop, Cost/Token Tracking, SLOs)
  *   - Platform Operations / Delivery (CI/CD GitOps, Prompt Mgmt, Model Registry, Runtime Compute, Artifacts & Secrets)
+ * - Complete Inter-Tier Connectors, Agent-to-Agent (A2A) loops, RAG pipeline chaining, and Step Flow Badges (❶..❿)
  * - Bottom Footer: Legend (Arrow Types) + End-to-End Flow Example (1..6) + Google Cloud brand
  * - 1600x1180 master canvas resolution.
  */
@@ -37,15 +38,24 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (
+  const rawEdge = (
     id: string,
-    src: string,
-    trg: string,
-    style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;"
-  ) =>
+    style: string,
+    pts: { x: number; y: number }[]
+  ) => {
+    const pStr = pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
     c.push(
-      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+      `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
+          <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
+          <Array as="points">
+            ${pStr}
+          </Array>
+        </mxGeometry>
+      </mxCell>`
     );
+  };
 
   // ==================== 1. TOP HEADER BANNER (y=12..48) ====================
   cell(
@@ -93,6 +103,19 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     );
   };
 
+  // Flow Step Badge helper (Purple/Blue circles with white numbers)
+  const flowBadge = (id: string, num: string, x: number, y: number, col = "#7C3AED") => {
+    cell(
+      `fl_badge_${id}`,
+      num,
+      x,
+      y,
+      20,
+      20,
+      `shape=ellipse;fillColor=${col};strokeColor=${col};fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;`
+    );
+  };
+
   // ==================== TIER 1: USER & CHANNELS LAYER (y=54..124, h=70) ====================
   tierBadge("1", 54, 26, "#1D4ED8");
   tierLabel("1", "USER &amp;<br/>CHANNELS<br/>LAYER", 54, 68);
@@ -129,6 +152,29 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
 
   // Enterprise Copilots Pod (Right inside Channels)
   cell("copilot_chat", `<div style="text-align:center;"><div style="font-size:8.5px;font-weight:900;color:#6D28D9;">Enterprise Copilots /<br/>Chat UI / Portal</div><div style="font-size:7px;color:#64748B;margin-top:2px;background:#FAF5FF;padding:2px 4px;border-radius:4px;border:1px dashed #DDD6FE;">Hello! How can I help you?</div></div>`, 1080, 60, 252, 58, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;html=1;align=center;verticalAlign=middle;padding=2;");
+
+  // Connectors: Users -> Channels
+  rawEdge("e_u_ch", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 478, y: 88 },
+    { x: 484, y: 88 }
+  ]);
+
+  // Flow Step 1 Badge between Channels & Edge
+  flowBadge("step_1", "1", 396, 118, "#7C3AED");
+
+  // Connector: Channels -> Edge Gateway / Load Balancing through Step 1
+  rawEdge("e_ch_edge", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 546, y: 122 },
+    { x: 546, y: 148 }
+  ]);
+  rawEdge("e_ch_lb", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 622, y: 122 },
+    { x: 622, y: 148 }
+  ]);
+  rawEdge("e_ch_armor", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 700, y: 122 },
+    { x: 700, y: 148 }
+  ]);
 
   // ==================== TIER 2: EXPERIENCE & ACCESS LAYER (y=130..202, h=72) ====================
   tierBadge("2", 130, 26, "#0D9488");
@@ -177,9 +223,26 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   });
   cell("lbl_tenant_iso", "Isolation: Projects • Folders • VPC SC • Namespaces", 826, 186, 514, 14, "fontColor=#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
 
+  // Connectors within Tier 2
+  rawEdge("e_iam_edge", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 424, y: 166 },
+    { x: 430, y: 166 }
+  ]);
+  rawEdge("e_edge_tenant", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 820, y: 166 },
+    { x: 826, y: 166 }
+  ]);
+
   // ==================== TIER 3: AGENT EXPERIENCE & ORCHESTRATION LAYER (y=210..388, h=178) ====================
   tierBadge("3", 210, 26, "#7C3AED");
   tierLabel("3", "AGENT<br/>EXPERIENCE &amp;<br/>ORCHESTRATION<br/>LAYER", 210, 80);
+
+  // Left Step 2 Ingress Badge
+  flowBadge("step_2", "2", 84, 324, "#7C3AED");
+  rawEdge("e_step2_in", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 104, y: 334 },
+    { x: 142, y: 334 }
+  ]);
 
   cell("box_t3_main", "", 134, 210, 1206, 178, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;");
 
@@ -233,9 +296,59 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     cell(`gi_${i}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:12px;">${gi.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${gi.t}</span></div>`, 1044, giy, 282, 26, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
+  // Connectors inside Tier 3
+  // Platform Services <--> Supervisor / Router
+  rawEdge("e_plat_sup", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
+    { x: 286, y: 260 },
+    { x: 294, y: 260 }
+  ]);
+  // Supervisor -> Router
+  rawEdge("e_sup_router", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 662, y: 248 },
+    { x: 662, y: 252 }
+  ]);
+  // Router -> 7 Agents drop arrows
+  agentList.forEach((_, i) => {
+    const ax = 345 + i * 105;
+    rawEdge(`e_r_ag_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+      { x: ax, y: 274 },
+      { x: ax, y: 278 }
+    ]);
+  });
+  // Agent-to-Agent (A2A) horizontal bidirectional arrows between adjacent agents
+  for (let i = 0; i < 6; i++) {
+    const startX = 396 + i * 105;
+    const endX = startX + 3;
+    rawEdge(`e_a2a_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+      { x: startX, y: 330 },
+      { x: endX, y: 330 }
+    ]);
+  }
+  // Governance <--> Router / Supervisor
+  rawEdge("e_gov_sup", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 3;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
+    { x: 1038, y: 260 },
+    { x: 1030, y: 260 }
+  ]);
+
+  // Flow Step 5 Badge to Right Sidebar Governance
+  flowBadge("step_5", "5", 1344, 168, "#7C3AED");
+  rawEdge("e_sup_gov_sb", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=5 3;endArrow=classic;endSize=4;", [
+    { x: 1030, y: 232 },
+    { x: 1340, y: 232 },
+    { x: 1340, y: 178 },
+    { x: 1354, y: 178 }
+  ]);
+
   // ==================== TIER 4: MODEL & REASONING LAYER (y=394..490, h=96) ====================
   tierBadge("4", 394, 26, "#0284C7");
   tierLabel("4", "MODEL &amp;<br/>REASONING<br/>LAYER", 394, 60);
+
+  // Left Step 4 Ingress Badge
+  flowBadge("step_4", "4", 84, 468, "#0284C7");
+  rawEdge("e_step4_in", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 104, y: 478 },
+    { x: 134, y: 478 }
+  ]);
 
   // Safety & Grounding Controls
   cell("box_t4_safety", "", 134, 394, 160, 96, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
@@ -267,6 +380,11 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   modelCards.forEach((mc, i) => {
     const mcx = 308 + i * 130;
     cell(`mc_${i}`, `<div style="text-align:center;"><span style="font-size:14px;">${mc.icon}</span><div style="font-size:8px;font-weight:900;color:#0F172A;">${mc.t}</div><div style="font-size:6.5px;color:#64748B;">${mc.sub}</div></div>`, mcx, 426, 124, 58, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    // Drop arrow from router bar to model card
+    rawEdge(`e_router_mc_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.2;endArrow=classic;endSize=3;", [
+      { x: mcx + 62, y: 422 },
+      { x: mcx + 62, y: 426 }
+    ]);
   });
 
   // Smaller Models Pod
@@ -278,6 +396,10 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     const spy = 442 + Math.floor(i / 2) * 18;
     cell(`spill_${i}`, `<div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;">${sp}</div>`, spx, spy, 106, 16, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
+  rawEdge("e_router_small", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.2;endArrow=classic;endSize=3;", [
+    { x: 944, y: 422 },
+    { x: 944, y: 426 }
+  ]);
 
   // Model Ops
   cell("box_t4_ops", "", 1070, 394, 270, 96, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
@@ -296,9 +418,40 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     cell(`mo_${i}`, `<div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;">${mo.icon}</span><span style="font-size:7px;font-weight:800;color:#0F172A;">${mo.t}</span></div>`, mox, moy, mow, 22, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
+  // Connectors inside Tier 4
+  rawEdge("e_safety_router", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 294, y: 442 },
+    { x: 300, y: 442 }
+  ]);
+  rawEdge("e_ops_router", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;startArrow=classic;endArrow=classic;startSize=4;endSize=4;", [
+    { x: 1064, y: 442 },
+    { x: 1070, y: 442 }
+  ]);
+  // Tier 3 Agents down into Model Router
+  rawEdge("e_ag_router_down", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+    { x: 682, y: 382 },
+    { x: 682, y: 394 }
+  ]);
+
+  // Flow Step 6 Badge to Observability Sidebar
+  flowBadge("step_6", "6", 1344, 452, "#0284C7");
+  rawEdge("e_ops_obs_sb", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 1340, y: 462 },
+    { x: 1354, y: 462 }
+  ]);
+
   // ==================== TIER 5: MEMORY, KNOWLEDGE & CONTEXT LAYER (y=496..590, h=94) ====================
   tierBadge("5", 496, 26, "#1D4ED8");
   tierLabel("5", "MEMORY, KNOWLEDGE<br/>&amp; CONTEXT LAYER", 496, 60);
+
+  // Left Step 3 Ingress Badge
+  flowBadge("step_3", "3", 84, 580, "#1D4ED8");
+  rawEdge("e_step3_in", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 104, y: 590 },
+    { x: 134, y: 590 },
+    { x: 134, y: 577 },
+    { x: 198, y: 577 }
+  ]);
 
   const memCards = [
     { t: "Short-Term / Conversation Memory", sub: "Recent turns, session state, user intent, working context", icon: "💬" },
@@ -311,6 +464,16 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     const mcx = 134 + i * 242;
     cell(`mem_${i}`, `<div style="text-align:center;"><span style="font-size:14px;">${mc.icon}</span><div style="font-size:8px;font-weight:900;color:#0F172A;margin-top:1px;">${mc.t}</div><div style="font-size:6.5px;color:#64748B;line-height:1.15;margin-top:1px;">${mc.sub}</div></div>`, mcx, 496, 236, 52, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;padding=2;");
   });
+
+  // Memory Inter-card bidirectional connectors
+  for (let i = 0; i < 4; i++) {
+    const startX = 370 + i * 242;
+    const endX = startX + 6;
+    rawEdge(`e_mem_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+      { x: startX, y: 522 },
+      { x: endX, y: 522 }
+    ]);
+  }
 
   // RAG Pipeline Steps (y=552..584)
   cell("lbl_rag_pipe", "— RAG Pipeline —", 134, 552, 1206, 12, "fontColor=#2563EB;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
@@ -325,6 +488,22 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     const rsx = 200 + i * 210;
     cell(`rs_${i}`, `<div style="display:flex;align-items:center;gap:4px;justify-content:center;"><span style="color:#2563EB;font-weight:900;font-size:10px;">${rs.n}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${rs.t}</span><span style="font-size:6.5px;color:#64748B;">${rs.sub}</span></div>`, rsx, 566, 180, 22, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
+
+  // Chained arrows between RAG Pipeline steps
+  for (let i = 0; i < 4; i++) {
+    const startX = 380 + i * 210;
+    const endX = 400 + i * 210;
+    rawEdge(`e_rag_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
+      { x: startX, y: 577 },
+      { x: endX, y: 577 }
+    ]);
+  }
+
+  // RAG Step 5 looping up into Tier 4 Model Gateway
+  rawEdge("e_rag_to_model", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 1130, y: 566 },
+    { x: 1130, y: 490 }
+  ]);
 
   // ==================== TIER 6: TOOL / PROTOCOL INTEGRATION LAYER (y=596..662, h=66) ====================
   tierBadge("6", 596, 26, "#0D9488");
@@ -344,6 +523,24 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
 
   // Integration & Protocols
   cell("box_t6_proto", `<div style="text-align:center;"><div style="font-size:7.5px;font-weight:900;color:#0D9488;">Integration &amp; Protocols</div><div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;font-size:6.5px;color:#0F172A;margin-top:2px;"><span>🔌 MCP</span><span>🌐 REST</span><span>🗄️ SQL</span><span>📬 Events (Pub/Sub)</span><span>⚡ gRPC</span><span>📁 SFTP</span><span>🔗 Webhooks</span></div></div>`, 1058, 596, 282, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+
+  // Tier 6 Horizontal Connectors
+  rawEdge("e_t6_mcp_reg", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 304, y: 628 },
+    { x: 310, y: 628 }
+  ]);
+  rawEdge("e_t6_reg_conn", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 480, y: 628 },
+    { x: 486, y: 628 }
+  ]);
+  rawEdge("e_t6_conn_exec", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 666, y: 628 },
+    { x: 672, y: 628 }
+  ]);
+  rawEdge("e_t6_exec_proto", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 1052, y: 628 },
+    { x: 1058, y: 628 }
+  ]);
 
   // ==================== TIER 7: ENTERPRISE SYSTEMS & DATA SOURCES LAYER (y=668..774, h=106) ====================
   tierBadge("7", 668, 26, "#1E40AF");
@@ -386,6 +583,20 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     cell(`an_${i}`, `<div style="font-size:6.5px;font-weight:800;color:#0F172A;text-align:center;">📊 ${an}</div>`, anx, 684, 80, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
 
+  // Connectors from Tier 6 down into Tier 7
+  rawEdge("e_t6_t7_conn1", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 576, y: 662 },
+    { x: 576, y: 668 }
+  ]);
+  rawEdge("e_t6_t7_conn2", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 862, y: 662 },
+    { x: 862, y: 668 }
+  ]);
+  rawEdge("e_t6_t7_conn3", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 1200, y: 662 },
+    { x: 1200, y: 668 }
+  ]);
+
   // Bottom Row: Data Types, Platforms, Formats (y=724..770)
   // Data & Content Types (w=380)
   cell("box_t7_types", "", 134, 724, 380, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
@@ -398,6 +609,27 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   // Data Formats (w=394)
   cell("box_t7_formats", "", 946, 724, 394, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
   cell("lbl_t7_formats", "Data Formats: Structured (Transactional) • Unstructured (Docs/Media) • Semi-structured (JSON/XML) • Streaming", 946, 726, 394, 42, "fontColor:#0F172A;fontSize=6.5;align=center;verticalAlign=middle;whiteSpace=wrap;");
+
+  // Up/Down connectors between Tier 7 top & bottom
+  rawEdge("e_t7_updown1", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+    { x: 320, y: 720 },
+    { x: 320, y: 724 }
+  ]);
+  rawEdge("e_t7_updown2", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+    { x: 730, y: 720 },
+    { x: 730, y: 724 }
+  ]);
+  rawEdge("e_t7_updown3", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+    { x: 1140, y: 720 },
+    { x: 1140, y: 724 }
+  ]);
+
+  // Flow Step 10 Badge to Platform Operations Sidebar
+  flowBadge("step_10", "10", 1344, 732, "#1E40AF");
+  rawEdge("e_data_ops_sb", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=classic;endSize=4;", [
+    { x: 1340, y: 742 },
+    { x: 1354, y: 742 }
+  ]);
 
   // ==================== TIER 8: NETWORK / SECURITY FOUNDATION (y=780..846, h=66) ====================
   tierBadge("8", 780, 26, "#0F172A");
@@ -418,6 +650,16 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     const spx = 134 + i * 134;
     cell(`sec_${i}`, `<div style="text-align:center;"><span style="font-size:12px;">${sp.icon}</span><div style="font-size:7px;font-weight:900;color:#0F172A;">${sp.t}</div><div style="font-size:6px;color:#64748B;">${sp.sub}</div></div>`, spx, 780, 130, 66, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
+
+  // Horizontal connectors between security foundation pods
+  for (let i = 0; i < 8; i++) {
+    const startX = 264 + i * 134;
+    const endX = startX + 4;
+    rawEdge(`e_sec_${i}`, "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0F172A;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
+      { x: startX, y: 813 },
+      { x: endX, y: 813 }
+    ]);
+  }
 
   // ==================== RIGHT SIDEBAR (x=1354..1584, y=54..846) ====================
   // 8) GOVERNANCE / HITL / COMPLIANCE (y=54..320, h=266)
@@ -503,7 +745,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   flowSteps.forEach((fs, i) => {
     const fsx = 292 + i * 158;
-    cell(`fs_${i}`, `<div style="display:flex;align-items:center;gap:4px;"><div style="width:16px;height:16px;border-radius:50%;background:#1D4ED8;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${fs.n}</div><div><div style="font-size:7px;font-weight:900;color:#0F172A;">${fs.t}</div><div style="font-size:6px;color:#64748B;line-height:1.1;">${fs.sub}</div></div></div>`, fsx, 874, 152, 50, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
+    cell(`fs_${i}`, `<div style="display:flex;align-items:center;gap:4px;"><div style="width:16px;height:16px;border-radius:50%;background:#1D4ED8;color:#FFFFFF;font-size:8px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${fs.n}</div><div><div style="font-size:7px;font-weight:900;color:#0F172A;">${fs.t}</div><div style="font-size:6.5px;color:#64748B;line-height:1.1;">${fs.sub}</div></div></div>`, fsx, 874, 152, 50, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // Right: Google Cloud Brand
