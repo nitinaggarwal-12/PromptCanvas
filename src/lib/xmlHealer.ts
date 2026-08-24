@@ -107,7 +107,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('PromptCanvas') ||
     inputXml.includes('canonical') ||
     inputXml.includes('NOVACURA') ||
-    inputXml.includes('template_0') ||
+    inputXml.includes('template_') ||
+    inputXml.includes('Template ') ||
     inputXml.includes('02 — Capability Map') ||
     inputXml.includes('03 — Business Process') ||
     inputXml.includes('01 — System Context') ||
