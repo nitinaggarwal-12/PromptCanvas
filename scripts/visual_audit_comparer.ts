@@ -160,25 +160,21 @@ async function runVisualAudit() {
       ctx.fillRect(10, bannerH + 5, targetW + 5, targetH + 10);
       ctx.drawImage(imgRef, 10, bannerH + 10, targetW, targetH);
 
-      // Label Left
-      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-      ctx.fillRect(20, bannerH + 20, 260, 32);
+      const rightX = targetW + 20;
+
+      // Clean Sub-Headers above diagrams (no overlay on diagram itself)
       ctx.fillStyle = "#F87171";
-      ctx.font = "bold 14px -apple-system, sans-serif";
-      ctx.fillText(`📷 GROUND TRUTH: images/${idStr}.png`, 30, bannerH + 42);
+      ctx.font = "bold 15px -apple-system, sans-serif";
+      ctx.fillText(`📷 GROUND TRUTH: images/${idStr}.png`, 15, bannerH - 8);
+
+      ctx.fillStyle = "#4ADE80";
+      ctx.font = "bold 15px -apple-system, sans-serif";
+      ctx.fillText(`⚡ GENERATED BLUEPRINT: Template ${tmpl.id}`, rightX + 5, bannerH - 8);
 
       // Draw Right Image (Generated)
-      const rightX = targetW + 20;
       ctx.fillStyle = "#1E293B";
       ctx.fillRect(rightX - 5, bannerH + 5, targetW + 5, targetH + 10);
       ctx.drawImage(imgGen, rightX, bannerH + 10, targetW, targetH);
-
-      // Label Right
-      ctx.fillStyle = "rgba(15, 23, 42, 0.85)";
-      ctx.fillRect(rightX + 10, bannerH + 20, 320, 32);
-      ctx.fillStyle = "#4ADE80";
-      ctx.font = "bold 14px -apple-system, sans-serif";
-      ctx.fillText(`⚡ GENERATED: Template ${tmpl.id} Generator`, rightX + 20, bannerH + 42);
 
       const compFilename = `comparison_${idStr}_${tmpl.name.toLowerCase().replace(/[^a-z0-9]+/g, "_")}.png`;
       const compPath = path.resolve(outDir, compFilename);
