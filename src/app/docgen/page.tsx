@@ -312,45 +312,30 @@ function DocGenContent() {
 
     try {
       // Step 1: Synthesizing Multi-Blueprint System Graph
-      await new Promise((r) => setTimeout(r, 600));
+      await new Promise((r) => setTimeout(r, 400));
       setGenerationStep(2);
 
-      // Collect primary XML from first blueprint slot
-      const primarySlot = activeMeta.blueprintPack[0];
-      const selectedTplId = slotCustomizations[0]?.templateId || primarySlot.recommendedTemplateId;
-      const primaryTpl = CANONICAL_TEMPLATES.find((t) => t.id === selectedTplId) || CANONICAL_TEMPLATES[0];
-      const primaryXml = primaryTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
-
-      // Step 2: Running Deterministic AST & Semantic Synthesis
-      await new Promise((r) => setTimeout(r, 600));
+      // Step 2: Mapping AST Component Inventories & Slot Attachments
+      await new Promise((r) => setTimeout(r, 400));
       setGenerationStep(3);
 
-      const res = await fetch('/api/compose', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          archetypeId: selectedArchetypeId,
-          format: 'md',
-          xml: primaryXml,
-          title: projectTitle,
-          domain: DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain,
-          userPrompt: projectScopePrompt,
-        }),
-      });
+      // Step 3: Synthesizing Production Document from Master Archetype + Custom Scope
+      const synthesizedContent = synthesizeCustomExecutiveDocument(
+        selectedArchetypeId,
+        activeMeta,
+        projectTitle,
+        selectedDomain,
+        projectScopePrompt,
+        slotCustomizations
+      );
 
-      if (!res.ok) {
-        throw new Error(`Generation failed with status ${res.status}`);
-      }
-
-      const data = await res.json();
       setGenerationStep(4);
-      await new Promise((r) => setTimeout(r, 400));
+      await new Promise((r) => setTimeout(r, 300));
 
-      setGeneratedDocContent(data.content);
+      setGeneratedDocContent(synthesizedContent);
       setActiveTab('studio');
     } catch (err: any) {
       console.error('DocGen generation error:', err);
-      // Fallback: Generate robust structured preview from master documents
       const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, selectedDomain, projectScopePrompt);
       setGeneratedDocContent(fallbackContent);
     } finally {
@@ -599,6 +584,7 @@ function DocGenContent() {
 
       // Code blocks / diagrams
       if (line.trim().startsWith('```')) {
+        const lang = line.trim().replace(/^```/, '').trim().toLowerCase();
         const codeLines: string[] = [];
         i++;
         while (i < lines.length && !lines[i].trim().startsWith('```')) {
@@ -607,7 +593,44 @@ function DocGenContent() {
         }
         i++; // skip closing ```
 
-        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08)
+        const isDiagram =
+          lang === 'mermaid' ||
+          lang === 'diagram' ||
+          codeLines.some(
+            (l) =>
+              l.includes('graph TD') ||
+              l.includes('graph LR') ||
+              l.includes('flowchart') ||
+              l.includes('sequenceDiagram') ||
+              l.includes('erDiagram')
+          );
+
+        if (!isDiagram) {
+          // Render standard clean code block (for SQL, JSON, YAML, TypeScript, Shell, etc.)
+          elements.push(
+            <div
+              key={`code-block-${i}`}
+              className={`my-5 rounded-2xl border overflow-hidden shadow-sm ${
+                isLight ? 'bg-[#0F172A] border-slate-700 text-slate-100' : 'bg-slate-950 border-slate-800 text-slate-200'
+              }`}
+            >
+              <div className="px-4 py-2 border-b border-slate-800 bg-[#0B111E] flex items-center justify-between text-xs font-mono">
+                <span className="uppercase font-bold text-[11px] text-sky-400">
+                  {lang || 'code'} Specification
+                </span>
+                <span className="text-[10px] text-slate-500 font-sans">
+                  {codeLines.length} lines
+                </span>
+              </div>
+              <pre className="p-4 font-mono text-xs overflow-x-auto leading-relaxed text-teal-300">
+                {codeLines.join('\n')}
+              </pre>
+            </div>
+          );
+          continue;
+        }
+
+        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08, Template 11)
         let precedingHeading = '';
         for (let back = i - 2; back >= Math.max(0, i - 6); back--) {
           if (lines[back] && lines[back].startsWith('#')) {
@@ -632,7 +655,7 @@ function DocGenContent() {
             if (label.includes('🌐') || label.includes('Client') || label.includes('Portal') || label.includes('USERS')) tier = 'Client & Ingress Tier';
             else if (label.includes('🛡️') || label.includes('WAF') || label.includes('Gateway') || label.includes('VPC')) tier = 'Security & Perimeter Tier';
             else if (label.includes('⚙️') || label.includes('Orchestrator') || label.includes('Compute') || label.includes('Pod')) tier = 'Compute & Runtime Tier';
-            else if (label.includes('🤖') || label.includes('Model') || label.includes('LLM') || label.includes('AI')) tier = 'AI & Cognitive Model Tier';
+            else if (label.includes('🤖') || label.includes('Model') || label.includes('LLM') || label.includes('AI') || label.includes('Gemini')) tier = 'AI & Cognitive Model Tier';
             else if (label.includes('🗄️') || label.includes('Spanner') || label.includes('Lake') || label.includes('DB') || label.includes('Data')) tier = 'Enterprise Data & Knowledge Tier';
             else if (label.includes('⚖️') || label.includes('Audit') || label.includes('Governance') || label.includes('SAFETY') || label.includes('HITL')) tier = 'Governance & Audit Tier';
             else if (label.includes('☁️') || label.includes('Systems') || label.includes('External') || label.includes('API')) tier = 'External Ecosystem Tier';
@@ -1683,6 +1706,51 @@ function DocGenContent() {
       )}
     </div>
   );
+}
+
+// Synthesis Helper Function
+function synthesizeCustomExecutiveDocument(
+  archetypeId: ArchetypeId,
+  meta: DocArchetypeMeta,
+  title: string,
+  domainId: string,
+  scope: string,
+  slotCustomizations: Record<number, { templateId: string }>
+): string {
+  const baseTemplate = MASTER_DOCUMENTS[archetypeId] || '';
+  if (!baseTemplate) {
+    return generateProductionFallbackDoc(meta, title, domainId, scope);
+  }
+
+  const domainObj = DOMAIN_PRESETS.find((d) => d.id === domainId);
+  const domainName = domainObj ? domainObj.name : domainId;
+
+  let doc = baseTemplate;
+
+  // Replace Title & Domain metadata
+  doc = doc.replace(/^#\s+[^\n]+/m, `# ${meta.name}\n\n## ${title} — Comprehensive Specification Baseline`);
+  doc = doc.replace(/\*\*Executive Sponsor:\*\*[^\n]+/g, `**Executive Sponsor:** Dr. Marcus Vance (${domainName} Lead)`);
+  doc = doc.replace(/\*\*Document ID:\*\*[^\n]+/g, `**Document ID:** ${archetypeId.toUpperCase()}-${domainId.toUpperCase()}-2026-001`);
+
+  // If user provided a custom scope, inject it into Chapter 1 Executive Summary / Problem Statement
+  if (scope && scope.trim().length > 10) {
+    doc = doc.replace(
+      /### 1\.1 Business Problem Statement\n[\s\S]*?(?=### 1\.2|$)/,
+      `### 1.1 Business Problem Statement\n${scope.trim()}\n\n`
+    );
+  }
+
+  // Update Slot Diagram Chapter References based on slotCustomizations
+  meta.blueprintPack.forEach((slot, sIdx) => {
+    const assignedTplId = slotCustomizations[sIdx]?.templateId || slot.recommendedTemplateId;
+    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === assignedTplId);
+    if (tpl) {
+      const pattern = new RegExp(`### 📐 Visual Diagram ${sIdx + 1}:[^\n]+`, 'g');
+      doc = doc.replace(pattern, `### 📐 Visual Diagram ${sIdx + 1}: ${slot.slotTitle} (Template ${tpl.id})`);
+    }
+  });
+
+  return doc;
 }
 
 // Fallback Document Generator Helper

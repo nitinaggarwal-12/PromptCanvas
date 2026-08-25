@@ -376,6 +376,7 @@ function DocDetailPageContent() {
       }
 
       if (line.trim().startsWith('```')) {
+        const lang = line.trim().replace(/^```/, '').trim().toLowerCase();
         const codeLines: string[] = [];
         i++;
         while (i < lines.length && !lines[i].trim().startsWith('```')) {
@@ -383,6 +384,43 @@ function DocDetailPageContent() {
           i++;
         }
         i++;
+
+        const isDiagram =
+          lang === 'mermaid' ||
+          lang === 'diagram' ||
+          codeLines.some(
+            (l) =>
+              l.includes('graph TD') ||
+              l.includes('graph LR') ||
+              l.includes('flowchart') ||
+              l.includes('sequenceDiagram') ||
+              l.includes('erDiagram')
+          );
+
+        if (!isDiagram) {
+          // Render standard clean code block (for SQL, JSON, YAML, TypeScript, Shell, etc.)
+          elements.push(
+            <div
+              key={`code-block-${i}`}
+              className={`my-5 rounded-2xl border overflow-hidden shadow-sm ${
+                isLight ? 'bg-[#0F172A] border-slate-700 text-slate-100' : 'bg-slate-950 border-slate-800 text-slate-200'
+              }`}
+            >
+              <div className="px-4 py-2 border-b border-slate-800 bg-[#0B111E] flex items-center justify-between text-xs font-mono">
+                <span className="uppercase font-bold text-[11px] text-sky-400">
+                  {lang || 'code'} Specification
+                </span>
+                <span className="text-[10px] text-slate-500 font-sans">
+                  {codeLines.length} lines
+                </span>
+              </div>
+              <pre className="p-4 font-mono text-xs overflow-x-auto leading-relaxed text-teal-300">
+                {codeLines.join('\n')}
+              </pre>
+            </div>
+          );
+          continue;
+        }
 
         // Extract preceding heading for title / template matching (e.g. Template 01, Template 08)
         let precedingHeading = '';
@@ -409,7 +447,7 @@ function DocDetailPageContent() {
             if (label.includes('🌐') || label.includes('Client') || label.includes('Portal') || label.includes('USERS')) tier = 'Client & Ingress Tier';
             else if (label.includes('🛡️') || label.includes('WAF') || label.includes('Gateway') || label.includes('VPC')) tier = 'Security & Perimeter Tier';
             else if (label.includes('⚙️') || label.includes('Orchestrator') || label.includes('Compute') || label.includes('Pod')) tier = 'Compute & Runtime Tier';
-            else if (label.includes('🤖') || label.includes('Model') || label.includes('LLM') || label.includes('AI')) tier = 'AI & Cognitive Model Tier';
+            else if (label.includes('🤖') || label.includes('Model') || label.includes('LLM') || label.includes('AI') || label.includes('Gemini')) tier = 'AI & Cognitive Model Tier';
             else if (label.includes('🗄️') || label.includes('Spanner') || label.includes('Lake') || label.includes('DB') || label.includes('Data')) tier = 'Enterprise Data & Knowledge Tier';
             else if (label.includes('⚖️') || label.includes('Audit') || label.includes('Governance') || label.includes('SAFETY') || label.includes('HITL')) tier = 'Governance & Audit Tier';
             else if (label.includes('☁️') || label.includes('Systems') || label.includes('External') || label.includes('API')) tier = 'External Ecosystem Tier';
