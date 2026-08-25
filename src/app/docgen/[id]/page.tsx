@@ -30,6 +30,8 @@ import { CANONICAL_TEMPLATES, DOMAIN_PRESETS } from '@/lib/canonical/canonicalTe
 import { ARCHETYPE_REGISTRY, ArchetypeId } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
+import { Lock } from 'lucide-react';
 
 interface BlueprintSlot {
   slotTitle: string;
@@ -507,6 +509,7 @@ function DocDetailPageContent() {
   const [activeTab, setActiveTab] = useState<'doc' | 'blueprints' | 'hierarchy'>('doc');
   const [copiedSuccess, setCopiedSuccess] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isChangeReportOpen, setIsChangeReportOpen] = useState(false);
 
   // Find active archetype metadata
   const docMeta = useMemo(() => {
@@ -981,13 +984,24 @@ function DocDetailPageContent() {
             </button>
           </div>
 
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-          >
-            <Printer className="w-3.5 h-3.5 text-sky-500" />
-            <span>Print to PDF</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsChangeReportOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/10 hover:from-sky-500/20 hover:to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+              title="View element-by-element changes made to the blueprint copies for this project"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-500" />
+              <span>Blueprint Change Report</span>
+            </button>
+
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            >
+              <Printer className="w-3.5 h-3.5 text-sky-500" />
+              <span>Print to PDF</span>
+            </button>
+          </div>
         </div>
 
         {/* TAB A: FULL MASTER DOCUMENT */}
@@ -1058,6 +1072,15 @@ function DocDetailPageContent() {
           </div>
         )}
       </main>
+
+      {/* Blueprint Change Report Modal */}
+      <BlueprintChangeReportModal
+        isOpen={isChangeReportOpen}
+        onClose={() => setIsChangeReportOpen(false)}
+        selectedDomain={selectedDomain}
+        projectTitle={docMeta.name}
+        docTypeName={docMeta.shortName}
+      />
     </div>
   );
 }

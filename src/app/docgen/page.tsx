@@ -53,6 +53,7 @@ import {
 import { ARCHETYPE_REGISTRY, ArchetypeId, DocArchetype } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
 
 // Multi-Blueprint Pack mapping for each of the 9 archetypes
 interface BlueprintSlot {
@@ -542,6 +543,7 @@ function DocGenContent() {
   const [sampleCopiedSuccess, setSampleCopiedSuccess] = useState<boolean>(false);
   const [shareCopiedSuccess, setShareCopiedSuccess] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
+  const [isChangeReportOpen, setIsChangeReportOpen] = useState<boolean>(false);
 
   // URL query parameter synchronization (e.g. ?doc=brd, ?doc=sdd, ?tab=studio)
   useEffect(() => {
@@ -1525,12 +1527,16 @@ function DocGenContent() {
                       <FileCheck className="w-5 h-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-lg font-black text-slate-900 dark:text-white">
                           {projectTitle} &bull; {activeMeta.name}
                         </h3>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                           Production-Ready
+                        </span>
+                        <span className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/10 text-sky-500 border border-sky-500/20">
+                          <Lock className="w-2.5 h-2.5" />
+                          Project Copy (Decoupled)
                         </span>
                       </div>
                       <p className="text-xs text-slate-400">
@@ -1539,8 +1545,18 @@ function DocGenContent() {
                     </div>
                   </div>
 
-                  {/* Action Buttons: Word, PDF/Print, Markdown, Raw/Formatted Toggle */}
+                  {/* Action Buttons: Change Report, Word, PDF/Print, Markdown, Raw/Formatted Toggle */}
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Change Report Modal Trigger */}
+                    <button
+                      onClick={() => setIsChangeReportOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/10 hover:from-sky-500/20 hover:to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="View element-by-element changes made to the blueprint copies for this project"
+                    >
+                      <FileCheck className="w-3.5 h-3.5 text-sky-500" />
+                      <span>Blueprint Change Report</span>
+                    </button>
+
                     {/* View Mode Toggle */}
                     <div className="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">
                       <button
@@ -1868,6 +1884,15 @@ function DocGenContent() {
           </div>
         </div>
       )}
+
+      {/* Blueprint Change Report Modal */}
+      <BlueprintChangeReportModal
+        isOpen={isChangeReportOpen}
+        onClose={() => setIsChangeReportOpen(false)}
+        selectedDomain={selectedDomain}
+        projectTitle={projectTitle}
+        docTypeName={DOC_ARCHETYPES_META.find((m) => m.id === selectedArchetypeId)?.name || 'Architecture Specification'}
+      />
     </div>
   );
 }
