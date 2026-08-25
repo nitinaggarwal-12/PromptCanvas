@@ -11,22 +11,185 @@ export type ArchetypeId =
 
 export type ProvenanceClass = 'derived' | 'inferred' | 'human';
 
+export interface BlueprintSlot {
+  slotTitle: string;
+  chapterNumber: number;
+  recommendedTemplateId: string;
+  description: string;
+}
+
 export interface DocSectionSpec {
   id: string;
   title: string;
   provenance: ProvenanceClass;
-  mapper?: string; // key into Phase 3 mappers, for derived sections
-  inferPrompt?: string; // key into src/prompts/compose/, for inferred sections
-  guidance?: string; // TODO guidance text for human sections
+  mapper?: string;
+  inferPrompt?: string;
+  guidance?: string;
 }
 
 export interface DocArchetype {
   id: ArchetypeId;
   name: string;
   description: string;
-  diagramTypes: string[]; // which template types this doc composes
+  diagramTypes: string[];
   sections: DocSectionSpec[];
 }
+
+export interface DocArchetypeMeta {
+  id: ArchetypeId;
+  name: string;
+  shortName: string;
+  badge: string;
+  badgeColor: string;
+  audience: string;
+  primaryPurpose: string;
+  blueprintPack: BlueprintSlot[];
+  sectionsCount: number;
+}
+
+export const DOC_ARCHETYPES_META: DocArchetypeMeta[] = [
+  {
+    id: 'brd',
+    name: 'Business Requirements Document',
+    shortName: 'BRD',
+    badge: 'Executive Business',
+    badgeColor: 'from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30',
+    audience: 'Executive Sponsors, Business Unit Leaders, Architecture Review Board (ARB)',
+    primaryPurpose: 'Defines enterprise business transformation vision, ROI realization formulas, risk-based autonomy levels, and phased governance approval gates.',
+    blueprintPack: [
+      { slotTitle: 'Executive System Context & Stakeholder Topology', chapterNumber: 2, recommendedTemplateId: '01', description: 'Overall system boundaries, external partners, and users.' },
+      { slotTitle: 'Strategic Business Capability & Value Stream', chapterNumber: 4, recommendedTemplateId: '04', description: 'Enterprise capability mapping and business value streams.' },
+      { slotTitle: 'As-Is vs. To-Be Process Modernization Matrix', chapterNumber: 3, recommendedTemplateId: '05', description: 'Current manual baseline vs automated target state.' },
+      { slotTitle: 'Human-in-the-Loop Governance & Decision Gates', chapterNumber: 5, recommendedTemplateId: '26', description: 'Safety screening, dual-custody gates, and e-signatures.' },
+    ],
+    sectionsCount: 9,
+  },
+  {
+    id: 'prd',
+    name: 'Product Requirements Document',
+    shortName: 'PRD',
+    badge: 'Product & UX',
+    badgeColor: 'from-sky-500/20 to-blue-500/20 text-sky-600 dark:text-sky-400 border-sky-500/30',
+    audience: 'Product Managers, Engineering Leads, UX Designers, QA / Validation Teams',
+    primaryPurpose: 'Specifies product scope, target personas, functional epics, measurable acceptance criteria, and non-functional requirements (NFRs).',
+    blueprintPack: [
+      { slotTitle: 'Product System Context & Boundary', chapterNumber: 1, recommendedTemplateId: '01', description: 'Product ecosystem and external system touchpoints.' },
+      { slotTitle: 'Core Functional Capability Taxonomy', chapterNumber: 3, recommendedTemplateId: '02', description: 'Feature hierarchy and functional capability pods.' },
+      { slotTitle: 'User Interaction & Workflow Journey', chapterNumber: 4, recommendedTemplateId: '23', description: 'End-to-end user journeys and cognitive reasoning loops.' },
+      { slotTitle: 'Lifecycle State Machine & Transition Gates', chapterNumber: 5, recommendedTemplateId: '12', description: 'Entity lifecycle states, approvals, and transition gates.' },
+    ],
+    sectionsCount: 9,
+  },
+  {
+    id: 'sdd',
+    name: 'System Design Document (HLD)',
+    shortName: 'SDD',
+    badge: 'Core Architecture',
+    badgeColor: 'from-indigo-500/20 to-purple-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
+    audience: 'Principal Architects, Cloud Engineers, Lead Tech Architects, Security Leads',
+    primaryPurpose: 'Complete high-level technical architecture detailing multi-tier cloud deployment, zero-trust network boundaries, cognitive runtime, and disaster recovery.',
+    blueprintPack: [
+      { slotTitle: 'Multi-Tier Subsystem & Container Topology', chapterNumber: 2, recommendedTemplateId: '08', description: 'C4 Container and microservice topology.' },
+      { slotTitle: 'Zero-Trust Network Perimeter & VPC Infrastructure', chapterNumber: 3, recommendedTemplateId: '15', description: 'Cloud Armor ingress, VPC-SC, and private endpoints.' },
+      { slotTitle: 'Cloud Infrastructure & Compute Deployment Map', chapterNumber: 2, recommendedTemplateId: '16', description: 'GKE clusters, serverless containers, and managed storage.' },
+      { slotTitle: 'Cognitive Runtime & Model Gateway Routing', chapterNumber: 4, recommendedTemplateId: '23', description: 'Agent reasoning engine and LLM gateway dispatch.' },
+      { slotTitle: 'High-Availability & Multi-Region DR Strategy', chapterNumber: 7, recommendedTemplateId: '19', description: 'Active-Active failover, RTO < 15m, and cross-region replication.' },
+    ],
+    sectionsCount: 10,
+  },
+  {
+    id: 'fdd',
+    name: 'Functional Design Document',
+    shortName: 'FDD',
+    badge: 'Functional Engineering',
+    badgeColor: 'from-teal-500/20 to-emerald-500/20 text-teal-600 dark:text-teal-400 border-teal-500/30',
+    audience: 'Functional Analysts, Microservice Developers, Integration Engineers, QA Testers',
+    primaryPurpose: 'Deep functional specifications, multi-agent reasoning sequences, domain data relationships, safety exception gates, and human approval workbenches.',
+    blueprintPack: [
+      { slotTitle: 'Multi-Actor Swimlane & Workflow Initiation', chapterNumber: 2, recommendedTemplateId: '03', description: 'Cross-functional swimlanes and role hand-offs.' },
+      { slotTitle: 'Multi-Service Interaction Sequence Flow', chapterNumber: 5, recommendedTemplateId: '11', description: 'Step-by-step sequential message exchanges and callbacks.' },
+      { slotTitle: 'Domain Entity Relationship Diagram (ERD)', chapterNumber: 6, recommendedTemplateId: '14', description: 'Core functional entities and relational cardinality.' },
+      { slotTitle: 'Human Review Workbench & E-Signature Controls', chapterNumber: 8, recommendedTemplateId: '26', description: 'Human-in-the-loop review queues and audit stamps.' },
+    ],
+    sectionsCount: 10,
+  },
+  {
+    id: 'tdd',
+    name: 'Technical Design Document (LLD)',
+    shortName: 'TDD',
+    badge: 'Low-Level Engineering',
+    badgeColor: 'from-cyan-500/20 to-blue-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/30',
+    audience: 'Software Engineers, Backend Developers, DevOps/SRE Engineers, SecOps',
+    primaryPurpose: 'Low-level code implementation specifications, database indexes, distributed saga outbox transactions, fault tolerance, and CI/CD quality gates.',
+    blueprintPack: [
+      { slotTitle: 'Micro-Level API Interaction Sequence & Latency Budgets', chapterNumber: 2, recommendedTemplateId: '11', description: 'RPC contracts, timeout budgets, and retry limits.' },
+      { slotTitle: 'Physical Database Schema & Foreign Key ERD', chapterNumber: 3, recommendedTemplateId: '14', description: 'Postgres/Spanner DDL, B-tree indexes, and constraints.' },
+      { slotTitle: 'Fault Tolerance, Circuit Breakers & Retry Policies', chapterNumber: 5, recommendedTemplateId: '28', description: 'Dead-letter queues, exponential backoff, and fallbacks.' },
+      { slotTitle: 'Multi-Stage CI/CD & Security Scanning Pipeline', chapterNumber: 6, recommendedTemplateId: '20', description: '22-stage build, SAST, DAST, and canary deployments.' },
+    ],
+    sectionsCount: 8,
+  },
+  {
+    id: 'exec_brief',
+    name: 'Executive Architecture Brief',
+    shortName: 'EAB',
+    badge: 'C-Suite Briefing',
+    badgeColor: 'from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30',
+    audience: 'CIO, CTO, Board of Directors, Enterprise Investment Committee',
+    primaryPurpose: 'High-impact 2-page executive summary focusing on strategic pillars, architectural differentiators, risk posture, and capital investment roadmap.',
+    blueprintPack: [
+      { slotTitle: 'Executive System Context & Strategic Scope', chapterNumber: 1, recommendedTemplateId: '01', description: 'High-level business and technology boundaries.' },
+      { slotTitle: 'Strategic Business Capability & Value Stream', chapterNumber: 2, recommendedTemplateId: '04', description: 'Capability maturity and business value drivers.' },
+      { slotTitle: 'Architecture Options & Trade-Off Matrix', chapterNumber: 3, recommendedTemplateId: '32', description: 'Buy vs build, SaaS vs self-hosted evaluation.' },
+    ],
+    sectionsCount: 7,
+  },
+  {
+    id: 'threat_model',
+    name: 'STRIDE Threat Model & Security Posture',
+    shortName: 'STRIDE',
+    badge: 'Cybersecurity',
+    badgeColor: 'from-rose-500/20 to-red-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30',
+    audience: 'CISO, Security Engineering, SecOps, Penetration Testers, Compliance Auditors',
+    primaryPurpose: 'Comprehensive threat modeling covering STRIDE attack vectors, data flow diagrams (DFD), trust boundaries, mitigation controls, and residual risk.',
+    blueprintPack: [
+      { slotTitle: 'Security Trust Boundaries & Attack Surface Map', chapterNumber: 2, recommendedTemplateId: '18', description: 'Cross-zone trust boundaries and attacker ingress vectors.' },
+      { slotTitle: 'STRIDE Threat Assessment Matrix & Mitigation Flow', chapterNumber: 4, recommendedTemplateId: '27', description: 'Detailed STRIDE mapping per component and mitigation.' },
+      { slotTitle: 'Perimeter Defense & Zero-Trust Access Architecture', chapterNumber: 3, recommendedTemplateId: '15', description: 'Cloud Armor, mTLS, and VPC Service Controls.' },
+    ],
+    sectionsCount: 8,
+  },
+  {
+    id: 'api_spec',
+    name: 'Enterprise API & Integration Blueprint',
+    shortName: 'API Spec',
+    badge: 'API & Microservices',
+    badgeColor: 'from-blue-500/20 to-indigo-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30',
+    audience: 'API Architects, Integration Engineers, Partner Developers, Backend Teams',
+    primaryPurpose: 'Full specification of public and internal REST/gRPC/GraphQL APIs, rate limits, schema models, authentication methods, and webhook callback topologies.',
+    blueprintPack: [
+      { slotTitle: 'Enterprise API Gateway & Traffic Routing Map', chapterNumber: 2, recommendedTemplateId: '08', description: 'Apigee / Envoy traffic ingress and microservice routing.' },
+      { slotTitle: 'End-to-End API Sequence & Callback Flow', chapterNumber: 3, recommendedTemplateId: '11', description: 'Request lifecycle, rate limiting, and response payloads.' },
+      { slotTitle: 'Entity Resource Data Model & JSON Schema ERD', chapterNumber: 4, recommendedTemplateId: '14', description: 'Resource hierarchies, fields, types, and relations.' },
+    ],
+    sectionsCount: 8,
+  },
+  {
+    id: 'security_package',
+    name: 'GRC & Security Compliance Package',
+    shortName: 'GRC',
+    badge: 'Governance & Risk',
+    badgeColor: 'from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
+    audience: 'Internal Audit, Compliance Officers, Legal Counsel, External Regulators',
+    primaryPurpose: 'Authoritative audit evidence package mapping technical controls to ISO 27001, SOC 2 Type II, HIPAA, GDPR, and 21 CFR Part 11 mandates.',
+    blueprintPack: [
+      { slotTitle: 'Enterprise Security Architecture & Defense-in-Depth', chapterNumber: 2, recommendedTemplateId: '15', description: 'Zero-trust perimeter, network isolation, and encryption.' },
+      { slotTitle: 'Identity Governance, ABAC & Privilege Access Flow', chapterNumber: 3, recommendedTemplateId: '17', description: 'IAM policies, RBAC/ABAC matrices, and SSO federation.' },
+      { slotTitle: 'Audit Logging & Continuous Observability Pipeline', chapterNumber: 4, recommendedTemplateId: '21', description: 'Cryptographic log immutability and SIEM integration.' },
+    ],
+    sectionsCount: 8,
+  },
+];
 
 export const NON_GOALS_DISCLAIMER =
   'Derived diagrams describe what is designed, not what was excluded; absence of a capability here is not a scope decision.';

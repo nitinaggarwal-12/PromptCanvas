@@ -6,12 +6,12 @@ export const MASTER_DOCUMENTS: Record<string, string> = {
 **Document ID:** BRD-BIO-2026-001  
 **Document Version:** v1.0 (Executive Steering Committee & ARB Approved Baseline)  
 **Document Status:** Approved — Executive Steering Committee Sign-Off  
-**Executive Sponsor:** Dr. Marcus Vance (Executive VP, Global Medical & Commercial Operations)  
+**Executive Sponsor:** Chief Solutions Architect (Enterprise Executive Sponsor)  
 **Business Owner:** Dr. Elena Vance (VP, Cognitive Platforms & Digital Product)  
 **Program Director:** Jennifer Sterling (Enterprise AI Program Management Director)  
 **Principal Business Analyst:** Kabir Mehta (Principal Healthcare Systems Analyst)  
 **Medical & Regulatory Lead:** Dr. Aris Thorne, MD (Global Medical Safety Director)  
-**Compliance & Legal Lead:** Sarah Chen, JD (Senior VP, Global Regulatory & Quality Compliance)  
+**Compliance & Legal Lead:** Principal Architecture Lead (Enterprise Architecture Review Board)  
 **Principal Enterprise Architect:** Nitin Aggarwal (Principal AI Systems Architect)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 **Confidentiality:** Enterprise Confidential — GxP Validated Repository  
@@ -39,7 +39,7 @@ graph TD
     
     ORCH <--> KNOWLEDGE["🗄️ Enterprise Scientific Knowledge Lake (Spanner + GCS)"]
     ORCH <--> SAFETY["⚖️ Human-in-the-Loop Governance Board"]
-    ORCH <--> SYSTEMS["☁️ Systems of Record (Veeva Vault / Argus Safety / Salesforce)"]
+    ORCH <--> SYSTEMS["☁️ Systems of Record (Enterprise ERP / Core Storage / CRM)"]
 \`\`\`
 
 ---
@@ -151,10 +151,10 @@ graph LR
 
 | Reviewer Role | Executive Sign-Off Name | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Executive Sponsor** | Dr. Marcus Vance | ✅ APPROVED | \`SIG_EXEC_99214_VERIFIED\` | August 2, 2026 |
+| **Executive Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_99214_VERIFIED\` | August 2, 2026 |
 | **Business Owner** | Dr. Elena Vance | ✅ APPROVED | \`SIG_BUS_88102_VERIFIED\` | August 2, 2026 |
 | **Principal Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_ARCH_44192_VERIFIED\` | August 2, 2026 |
-| **Global Quality Lead** | Sarah Chen, JD | ✅ APPROVED | \`SIG_QUAL_11904_VERIFIED\` | August 2, 2026 |
+| **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_11904_VERIFIED\` | August 2, 2026 |
 `,
 
   prd: `# Product Requirements Document (PRD)
@@ -166,7 +166,7 @@ graph LR
 **Product Manager:** Dr. Elena Vance (VP, Cognitive Platforms & Digital Product)  
 **Lead Technical Architect:** Nitin Aggarwal (Principal AI Systems Architect)  
 **UX & Workflow Design Lead:** Maya Lin (Principal AI Experience Designer)  
-**Regulatory Affairs Specialist:** Sarah Chen, JD (Senior VP, Global Regulatory & Quality Compliance)  
+**Regulatory Affairs Specialist:** Principal Architecture Lead (Enterprise Architecture Review Board)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 
 ---
@@ -250,7 +250,7 @@ graph LR
 ### AC-02: Adverse Event Interception
 * **Given** an ingested inquiry containing adverse event keywords (e.g. "myocardial infarction", "anaphylaxis"),
 * **When** the safety screening worker processes the text stream,
-* **Then** it must generate an urgent Argus Safety notification within **< 500ms** and lock the ticket from unauthorized closure.
+* **Then** it must generate an urgent Security & Safety Notification within **< 500ms** and lock the ticket from unauthorized closure.
 
 ---
 
@@ -270,9 +270,9 @@ graph LR
 | Reviewer Role | Executive Sign-Off Name | Approval Status | Timestamp |
 |---|---|---|---|
 | **Product Owner** | Dr. Elena Vance | ✅ **APPROVED** | August 2, 2026 |
-| **Business Sponsor** | Dr. Marcus Vance | ✅ **APPROVED** | August 2, 2026 |
+| **Business Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ **APPROVED** | August 2, 2026 |
 | **Technical Owner** | Nitin Aggarwal | ✅ **APPROVED** | August 2, 2026 |
-| **Quality & Regulatory Lead** | Sarah Chen, JD | ✅ **APPROVED** | August 2, 2026 |
+| **Quality & Regulatory Lead** | Principal Systems Architect (Enterprise ARB) | ✅ **APPROVED** | August 2, 2026 |
 `,
 
   sdd: `# System Design Document (SDD / HLD)
@@ -443,9 +443,9 @@ graph LR
 
 **Document ID:** FDD-BIO-2026-001  
 **Document Version:** v1.0 (Functional Architecture Review Baseline)  
-**Document Status:** Approved — GxP & Functional Architecture Sign-Off  
+**Document Status:** Approved — Production Architecture & ARB Sign-Off  
 **Functional Systems Architect:** Nitin Aggarwal  
-**Quality & Compliance Lead:** Sarah Chen, JD  
+**Quality & Compliance Lead:** Principal Systems Architect (Enterprise ARB)  
 **Target Release:** Release 1 Controlled Production Pilot (Q3 2026)  
 
 ---
@@ -524,7 +524,7 @@ graph TD
 |---|---|---|---|---|
 | **Lead Functional Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_FDD_44901_VERIFIED\` | August 2, 2026 |
 | **Medical Safety Officer** | Dr. Aris Thorne, MD | ✅ APPROVED | \`SIG_MED_88102_VERIFIED\` | August 2, 2026 |
-| **Principal Quality Engineer** | Sarah Chen, JD | ✅ APPROVED | \`SIG_QUAL_99014_VERIFIED\` | August 2, 2026 |
+| **Principal Quality Engineer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_99014_VERIFIED\` | August 2, 2026 |
 `,
 
   tdd: `# Technical Design Document (TDD / LLD)
@@ -713,7 +713,7 @@ graph LR
 **Document ID:** EAB-BIO-2026-001  
 **Document Version:** v1.0 (Executive Steering Committee Baseline)  
 **Document Status:** Approved — Executive Steering Committee Sign-Off  
-**Executive Sponsor:** Dr. Marcus Vance (Executive VP, Global Medical & Commercial Operations)  
+**Executive Sponsor:** Chief Solutions Architect (Enterprise Executive Sponsor)  
 **Target Audience:** CIO, CTO, Board of Directors, Enterprise Investment Committee  
 
 ---
@@ -785,7 +785,7 @@ graph LR
 
 | Executive Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Chief Executive Officer** | Dr. Marcus Vance | ✅ APPROVED | \`SIG_EXEC_CEO_9901\` | August 2, 2026 |
+| **Chief Executive Officer** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_CEO_9901\` | August 2, 2026 |
 | **Chief Information Officer** | Robert Sterling | ✅ APPROVED | \`SIG_EXEC_CIO_4812\` | August 2, 2026 |
 | **Chief Medical Officer** | Dr. Aris Thorne, MD | ✅ APPROVED | \`SIG_EXEC_CMO_2291\` | August 2, 2026 |
 `,
@@ -879,7 +879,7 @@ graph TD
 |---|---|---|---|---|
 | **Chief Information Security Officer** | Robert Sterling, CISSP | ✅ APPROVED | \`SIG_CISO_99412_VERIFIED\` | August 2, 2026 |
 | **Principal Security Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_SEC_48102_VERIFIED\` | August 2, 2026 |
-| **Lead Privacy Officer** | Sarah Chen, JD | ✅ APPROVED | \`SIG_PRIV_21904_VERIFIED\` | August 2, 2026 |
+| **Lead Privacy Officer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_PRIV_21904_VERIFIED\` | August 2, 2026 |
 `,
 
   api_spec: `# API & Service Interface Specification
@@ -976,7 +976,7 @@ graph TD
 
 **Document ID:** GRC-BIO-2026-001  
 **Document Version:** v1.0 (Compliance & Audit Review Baseline)  
-**Compliance Director:** Sarah Chen, JD (Senior VP, Global Regulatory & Quality Compliance)  
+**Compliance Director:** Principal Architecture Lead (Enterprise Architecture Review Board)  
 **Lead Security Architect:** Robert Sterling, CISSP  
 **Principal Enterprise Architect:** Nitin Aggarwal  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
@@ -1048,7 +1048,7 @@ graph TD
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Global Quality Lead** | Sarah Chen, JD | ✅ APPROVED | \`SIG_GRC_99014_VERIFIED\` | August 2, 2026 |
+| **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_GRC_99014_VERIFIED\` | August 2, 2026 |
 | **Chief Information Security Officer** | Robert Sterling, CISSP | ✅ APPROVED | \`SIG_CISO_88192_VERIFIED\` | August 2, 2026 |
 | **Principal Systems Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_ARCH_77012_VERIFIED\` | August 2, 2026 |
 `
@@ -1476,6 +1476,24 @@ graph LR
   "created_at": "2026-08-24T22:48:00Z"
 }
 \`\`\`
+
+---
+
+# 2. Enterprise API Gateway & Traffic Routing Map
+
+### 📐 Visual Diagram 1: Enterprise API Gateway & Traffic Routing Map (Template 08)
+
+---
+
+# 3. End-to-End API Sequence & Callback Flow
+
+### 📐 Visual Diagram 2: End-to-End API Sequence & Callback Flow (Template 11)
+
+---
+
+# 4. Entity Resource Data Model & JSON Schema ERD
+
+### 📐 Visual Diagram 3: Entity Resource Data Model & JSON Schema ERD (Template 14)
 `
 };
 
