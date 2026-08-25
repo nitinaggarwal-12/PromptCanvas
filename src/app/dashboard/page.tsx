@@ -592,36 +592,36 @@ export default function Dashboard() {
       )}
 
       {/* Main Portal View */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-10 md:py-14 space-y-8 sm:space-y-12 relative z-10">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 space-y-4 relative z-10">
         
-        {/* Page Title Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <h1 className={`text-4xl md:text-5xl font-extrabold tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise Operations Portal</h1>
-            <p className={`text-base ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
+        {/* Compact Page Title Header */}
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 min-w-0">
+          <div className="space-y-1 flex-1 min-w-0">
+            <h1 className={`text-xl sm:text-2xl font-black tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>Enterprise Operations Portal</h1>
+            <p className={`text-xs leading-normal line-clamp-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>High-level telemetry, security compliance matrices, and active diagram workspaces.</p>
           </div>
           
-          {/* Quick Telemetry Box */}
-          <div className={`flex items-center gap-8 border rounded-xl px-8 py-5 shadow-xl backdrop-blur-sm ${
+          {/* Compact Telemetry Box */}
+          <div className={`flex items-center gap-4 border rounded-xl px-4 py-2 shadow-xs backdrop-blur-sm shrink-0 w-full sm:w-auto ${
             isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/60 border-panel-border/30 text-white'
           }`}>
             <div className="text-center">
-              <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Compliance Matrix</span>
-              <span className="text-lg font-black text-teal-600 dark:text-teal-accent flex items-center gap-1.5 mt-1 justify-center">
-                <Shield className="w-5 h-5 text-teal-600 dark:text-teal-accent" />
+              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Compliance</span>
+              <span className="text-base font-black text-teal-600 dark:text-teal-accent flex items-center gap-1 mt-0.5 justify-center">
+                <Shield className="w-4 h-4 text-teal-600 dark:text-teal-accent" />
                 <span>94.2%</span>
               </span>
             </div>
-            <div className={`h-10 w-[1px] ${isLight ? 'bg-slate-200' : 'bg-panel-border/50'}`} />
+            <div className={`h-8 w-[1px] ${isLight ? 'bg-slate-200' : 'bg-panel-border/50'}`} />
             <div className="text-center">
-              <span className="block text-xs text-slate-500 font-extrabold uppercase tracking-wider">Deployments Active</span>
-              <span className={`text-lg font-black mt-1 block ${isLight ? 'text-slate-900' : 'text-white'}`}>{diagrams.length > 0 ? `${diagrams.length} Active Architectures` : '0 Active Stacks'}</span>
+              <span className="block text-[10px] text-slate-500 font-bold uppercase tracking-wider">Active Blueprints</span>
+              <span className={`text-base font-black mt-0.5 block ${isLight ? 'text-slate-900' : 'text-white'}`}>{diagrams.length > 0 ? `${diagrams.length} Stacks` : '0 Stacks'}</span>
             </div>
           </div>
         </div>
 
         {/* 1. Summary Metrics Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-3 sm:gap-4">
           {[
             {
               name: "Active Workspaces",

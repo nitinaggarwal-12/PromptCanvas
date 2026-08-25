@@ -571,42 +571,38 @@ export default function CanvasHistoryPage() {
           <div className="absolute top-0 right-0 w-[40vw] h-[40vw] rounded-full bg-teal-500/5 blur-[120px] pointer-events-none z-0" />
           <div className="absolute bottom-0 left-0 w-[35vw] h-[35vw] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none z-0" />
 
-          <div className="max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-10 space-y-6 sm:space-y-8 relative z-10">
+          <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8 space-y-4 relative z-10">
             
-            {/* KPI & Title Header */}
-            <div className={`flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
-              <div className="space-y-2 max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-xs font-bold">
-                  <History className="w-3.5 h-3.5" />
+            {/* COMPACT KPI & Title Header */}
+            <div className={`flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b min-w-0 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
+              <div className="space-y-1 flex-1 min-w-0">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-bold uppercase tracking-wider">
+                  <History className="w-3 h-3" />
                   <span>Historical Canvases &amp; Version Snapshots</span>
                 </div>
-                <h1 className={`text-2xl sm:text-3xl md:text-4xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                <h1 className={`text-xl sm:text-2xl font-black tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
                   Canvas Version <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Archive &amp; Tiles</span>
                 </h1>
-                <p className={`text-xs md:text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  Browse and inspect every historical canvas, architecture blueprint, and iterative snapshot created since project inception with instant vector preview, version time-travel, and star bookmarks.
+                <p className={`text-xs leading-normal line-clamp-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                  Browse and inspect historical canvases, architecture blueprints, and iterative snapshots with instant vector preview and star bookmarks.
                 </p>
               </div>
 
-              {/* KPI Stats Strip */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 shrink-0">
-                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
-                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
-                }`}>
-                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Total Canvases</span>
-                  <span className="text-2xl font-black text-teal-600 dark:text-teal-400 mt-0.5">{totalCanvases}</span>
+              {/* Compact KPI Stats Strip */}
+              <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-teal-600 dark:text-teal-400">{totalCanvases}</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Canvases</div>
                 </div>
-                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
-                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
-                }`}>
-                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Saved Versions</span>
-                  <span className="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-0.5">{totalVersions}</span>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-indigo-600 dark:text-indigo-400">{totalVersions}</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Versions</div>
                 </div>
-                <div className={`p-4 rounded-2xl flex flex-col justify-center shadow-lg border ${
-                  isLight ? 'bg-white border-slate-200 text-slate-800' : 'bg-slate-900/80 border-slate-800 text-white'
-                }`}>
-                  <span className={`text-[11px] font-semibold ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Max Version Depth</span>
-                  <span className="text-2xl font-black text-amber-600 dark:text-amber-400 mt-0.5">v{maxVersionDepth}</span>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">v{maxVersionDepth}</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Depth</div>
                 </div>
               </div>
             </div>

@@ -1807,68 +1807,72 @@ function DocGenContent() {
           </div>
         </header>
 
-        {/* HERO SECTION */}
-        <main className="max-w-[1600px] w-full mx-auto px-6 md:px-12 py-8">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-slate-200 dark:border-slate-800 no-print">
-          <div className="max-w-4xl space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-              <Zap className="w-3.5 h-3.5 text-sky-500" />
-              Multi-Blueprint Enterprise Document Engine
+        {/* COMPACT HERO SECTION */}
+        <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
+          <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                <Zap className="w-3 h-3 text-sky-500" />
+                Multi-Blueprint Enterprise Document Engine
+              </span>
             </div>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
               Architectural Grammar for{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
                 Production-Ready Enterprise Docs
               </span>
             </h1>
-            <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
-              Documents are syntheses of multiple architectural perspectives. Select a document goal (BRD, PRD, SDD, FDD, TDD, Threat Model, Workshop, RFP, FinOps, Runbook), preview its complete production specification, customize the attached blueprint pack, and export publication-ready Word (.docx) and PDF documents in seconds.
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-2xl line-clamp-1">
+              Synthesize 17 production document goals, attach canonical blueprint packs, and export publication-ready Word (.docx) and PDF documents.
             </p>
           </div>
 
-          {/* Quick Stats Banner */}
-          <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
-            <div className="text-center px-3 py-1.5">
-              <div className="text-2xl md:text-3xl font-black text-sky-500">17</div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Doc Archetypes</div>
+          {/* Compact Stats Pill Strip */}
+          <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-sky-500">17</div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
             </div>
-            <div className="text-center px-3 py-1.5 border-x border-slate-200 dark:border-slate-800">
-              <div className="text-2xl md:text-3xl font-black text-indigo-500">50</div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Canonical Blueprints</div>
+            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
             </div>
-            <div className="text-center px-3 py-1.5">
-              <div className="text-2xl md:text-3xl font-black text-emerald-500">100%</div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Word &amp; Print Ready</div>
+            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
+              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
             </div>
           </div>
         </div>
 
         {/* TAB 1: CATALOG VIEW (PREVIEW ALL 17 DOCUMENT BLUEPRINTS) */}
         {activeTab === 'catalog' && (
-          <div className="py-8 space-y-8">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="py-3 space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
+                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
                   Enterprise Document Archetypes Catalog
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Click &ldquo;Preview Full Specification&rdquo; to read the complete 10-page master document, inspect attached blueprints, or launch the generation studio.
+                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                  Preview full specifications, inspect attached blueprints, or launch the generation studio.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => setActiveTab('studio')}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-lg shadow-sky-500/20 hover:scale-[1.02] transition-transform"
+                  className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-sm hover:scale-[1.02] transition-transform"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Launch Generation Studio</span>
+                  <span>Launch Studio</span>
                 </button>
               </div>
             </div>
 
-            {/* 9 DOCUMENT ARCHETYPE CARDS GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 17 DOCUMENT ARCHETYPE CARDS GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-5">
               {DOC_ARCHETYPES_META.map((meta) => {
                 return (
                   <div

@@ -252,34 +252,34 @@ function CanonicalContent() {
         <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
           isDark ? 'bg-[#0B111E]/90 border-slate-800/80' : 'bg-white/90 border-slate-200/80'
         }`}>
-          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+          <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 min-w-0">
             {/* Left: Breadcrumbs & Catalog Context */}
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+            <div className="flex items-center gap-2.5 min-w-0 shrink truncate">
+              <div className="flex items-center gap-1.5 text-xs font-semibold truncate">
+                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0" title="Home">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-400">/</span>
+                <span className="text-slate-400 shrink-0">/</span>
                 <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate">
                   <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-                  <span>Canonical Blueprints Hub</span>
+                  <span className="truncate">Canonical Blueprints Hub</span>
                 </span>
-                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
                   {CANONICAL_TEMPLATES.length} Grammars
                 </span>
               </div>
             </div>
 
             {/* Right: Controls & Hub Quick Links */}
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-sky-500" />
-                <span className="text-slate-500 dark:text-slate-400 hidden lg:inline">Domain:</span>
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                <Sliders className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                <span className="text-slate-500 dark:text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs"
+                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
                 >
                   {DOMAIN_PRESETS.map((d) => (
                     <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
@@ -292,7 +292,7 @@ function CanonicalContent() {
               {/* Quick Links */}
               <Link
                 href="/docgen"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs shrink-0"
                 title="DocGen Studio & Master Specifications"
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -302,7 +302,7 @@ function CanonicalContent() {
 
               <Link
                 href="/workspace"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shrink-0"
                 title="Design Canvas Workspace"
               >
                 <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
@@ -315,61 +315,64 @@ function CanonicalContent() {
           </div>
         </header>
 
-      {/* HERO SECTION */}
-      <main className="max-w-[1600px] mx-auto px-6 md:px-12 py-10">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-slate-200 dark:border-slate-800">
-          <div className="max-w-4xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-              <Zap className="w-3.5 h-3.5" />
-              The {CANONICAL_TEMPLATES.length} Canonical Diagram Grammars
+      {/* COMPACT HERO SECTION */}
+      <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 min-w-0">
+          <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                <Zap className="w-3 h-3" />
+                {CANONICAL_TEMPLATES.length} Canonical Diagram Grammars
+              </span>
             </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
               Architectural Grammar for{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
                 Self-Healing AI Blueprints
               </span>
             </h1>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 font-normal leading-relaxed">
-              Fully editable, self-healing, and domain-adaptable Draw.io XML architecture templates.
-              Every template is collision-free, geometrically aligned (140px column pitch, 80px row pitch), and ready for 1-click execution.
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-normal max-w-2xl line-clamp-1">
+              Fully editable, self-healing Draw.io XML templates aligned to 140px column pitch, 80px row pitch, and ready for 1-click execution.
             </p>
           </div>
 
-          {/* Quick Stats Banner */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-4 p-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div className="text-center px-4 py-2">
-              <div className="text-2xl md:text-3xl font-black text-sky-500">{CANONICAL_TEMPLATES.length}</div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Canonical Schemas</div>
+          {/* Compact Stats Pill Strip */}
+          <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-sky-500">{CANONICAL_TEMPLATES.length}</div>
+              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Schemas</div>
             </div>
-            <div className="text-center px-4 py-2 border-x border-slate-200 dark:border-slate-800">
-              <div className="text-2xl md:text-3xl font-black text-indigo-500">{CANONICAL_FAMILIES.filter((f) => f !== 'All').length}</div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Visual Families</div>
+            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-indigo-500">{CANONICAL_FAMILIES.filter((f) => f !== 'All').length}</div>
+              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Families</div>
             </div>
-            <div className="text-center px-4 py-2">
-              <div className="text-2xl md:text-3xl font-black text-emerald-500">100%</div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">XML Compatible</div>
+            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+            <div className="text-center px-1.5">
+              <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
+              <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">XML Ready</div>
             </div>
           </div>
         </div>
 
-        {/* CONTROLS BAR: SEARCH, FAMILIES & LEVEL FILTERS */}
-        <div className="py-8 space-y-5">
+        {/* COMPACT CONTROLS BAR: SEARCH, FAMILIES & LEVEL FILTERS */}
+        <div className="py-3 space-y-2.5">
           {/* Top Row: Search & Level Tabs */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Search Input */}
-            <div className="relative w-full sm:w-96">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <div className="relative w-full sm:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search templates (e.g. System Context, RAG, Threat Model)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm"
+                className="w-full pl-8 pr-3 py-1.5 rounded-lg border text-xs bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-xs"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-[10px]"
                 >
                   Clear
                 </button>
@@ -377,14 +380,14 @@ function CanonicalContent() {
             </div>
 
             {/* Abstraction Level Filters */}
-            <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 self-stretch sm:self-auto">
+            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0">
               {['All', 'L1', 'L2', 'L3'].map((lvl) => (
                 <button
                   key={lvl}
                   onClick={() => setSelectedLevel(lvl)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
                     selectedLevel === lvl
-                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm'
+                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
                       : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
@@ -395,7 +398,7 @@ function CanonicalContent() {
           </div>
 
           {/* Bottom Row: 8 Visual Families Category Badges */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin max-w-full">
             {CANONICAL_FAMILIES.map((family) => {
               const count =
                 family === 'All'
@@ -405,17 +408,17 @@ function CanonicalContent() {
                 <button
                   key={family}
                   onClick={() => setSelectedFamily(family)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border shrink-0 ${
                     selectedFamily === family
-                      ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-500/20'
+                      ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
                       : isDark
                       ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-sm'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
                   }`}
                 >
                   <span>{family}</span>
                   <span
-                    className={`px-1.5 py-0.5 rounded-md text-[10px] ${
+                    className={`px-1.5 py-0.2 rounded text-[9px] ${
                       selectedFamily === family
                         ? 'bg-white/20 text-white'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
@@ -429,8 +432,8 @@ function CanonicalContent() {
           </div>
         </div>
 
-        {/* 34 TEMPLATES GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+        {/* 50 TEMPLATES GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-5 pt-2">
           {filteredTemplates.map((template) => {
             const isHighlighted = ['01', '02', '03', '04'].includes(template.id);
 

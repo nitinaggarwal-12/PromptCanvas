@@ -771,7 +771,7 @@ export default function GuidePage() {
         </header>
 
       {/* ==================== COMPACT HERO & PERSONA SWITCHER ==================== */}
-      <section className="pt-5 pb-3 px-6 md:px-12 max-w-[1600px] mx-auto space-y-3">
+      <section className="pt-5 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full mx-auto space-y-3">
         
         {/* Compact Title Row */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-slate-700/30">
@@ -825,7 +825,7 @@ export default function GuidePage() {
       </section>
 
       {/* ==================== INTERACTIVE WORKFLOW VIDEO PLAYER & CANVAS CONTROLS ==================== */}
-      <section className="pb-12 px-6 md:px-12 max-w-[1600px] mx-auto">
+      <section className="pb-12 px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full mx-auto">
         <div className={`rounded-2xl border p-5 md:p-6 transition-all ${
           isMaximized 
             ? 'fixed inset-4 z-[99999] overflow-y-auto bg-slate-950/98 border-teal-500/60 shadow-2xl backdrop-blur-2xl p-6 md:p-8'
