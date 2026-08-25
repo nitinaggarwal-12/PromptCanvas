@@ -23,8 +23,10 @@ import {
   ArrowLeft,
   Maximize2,
   Minimize2,
-  Share2
+  Share2,
+  FileText
 } from 'lucide-react';
+import { ComposeModal } from '@/components/workspace/ComposeModal';
 
 export default function CanonicalTemplateDetailPage() {
   const params = useParams();
@@ -37,6 +39,7 @@ export default function CanonicalTemplateDetailPage() {
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+  const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
 
   // Find template by ID
   const activeTemplate = useMemo(() => {
@@ -200,6 +203,17 @@ export default function CanonicalTemplateDetailPage() {
                 </select>
               </div>
 
+              {/* Generate Docs Button */}
+              <button
+                onClick={() => setIsComposeOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this diagram"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Generate Docs (BRD / PRD / SDD)</span>
+                <span className="sm:hidden">Docs</span>
+              </button>
+
               {/* Share URL */}
               <button
                 onClick={handleCopyShareUrl}
@@ -294,6 +308,15 @@ export default function CanonicalTemplateDetailPage() {
           />
         </div>
       </main>
+
+      {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
+      <ComposeModal
+        isOpen={isComposeOpen}
+        onClose={() => setIsComposeOpen(false)}
+        currentXml={currentXml}
+        currentTitle={activeTemplate.name}
+        currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
+      />
     </div>
   );
 }

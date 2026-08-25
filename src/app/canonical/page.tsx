@@ -34,8 +34,10 @@ import {
   ArrowRight,
   BookOpen,
   Share2,
-  X
+  X,
+  FileText
 } from 'lucide-react';
+import { ComposeModal } from '@/components/workspace/ComposeModal';
 
 function CanonicalContent() {
   const router = useRouter();
@@ -52,6 +54,7 @@ function CanonicalContent() {
   const [activeTemplate, setActiveTemplate] = useState<CanonicalTemplate | null>(null);
   const [isViewerOpen, setIsViewerOpen] = useState<boolean>(false);
   const [isAdaptModalOpen, setIsAdaptModalOpen] = useState<boolean>(false);
+  const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
   const [currentXml, setCurrentXml] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
@@ -500,21 +503,36 @@ function CanonicalContent() {
                 </div>
 
                 {/* Card Action Buttons */}
-                <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
+                <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-3 gap-1.5">
                   <button
                     onClick={() => handleOpenCanvas(template)}
-                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-sky-600 hover:bg-sky-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                    title="Open live interactive canvas"
                   >
                     <Eye className="w-3.5 h-3.5" />
-                    <span>Open Canvas</span>
+                    <span>Canvas</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setActiveTemplate(template);
+                      setCurrentXml(template.generateXml(selectedDomain, themeMode));
+                      setIsComposeOpen(true);
+                    }}
+                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                    title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this blueprint"
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Docs</span>
                   </button>
 
                   <button
                     onClick={() => handleOpenAdapt(template)}
-                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
+                    className="flex items-center justify-center gap-1 px-2 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
+                    title="Adapt blueprint for your custom prompt"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                    <span>Adapt Domain</span>
+                    <span>Adapt</span>
                   </button>
                 </div>
               </div>
@@ -592,6 +610,17 @@ function CanonicalContent() {
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-1.5 md:gap-2">
+                {/* Generate Docs Button */}
+                <button
+                  onClick={() => setIsComposeOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                  title="Generate BRD, PRD, SDD (HLD), FDD, TDD (LLD) from this diagram"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Generate Docs (BRD / PRD / SDD)</span>
+                  <span className="sm:hidden">Docs</span>
+                </button>
+
                 {/* Full Page Link */}
                 <Link
                   href={`/canonical/${activeTemplate.id}`}
@@ -792,6 +821,17 @@ function CanonicalContent() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
+      {activeTemplate && (
+        <ComposeModal
+          isOpen={isComposeOpen}
+          onClose={() => setIsComposeOpen(false)}
+          currentXml={currentXml || activeTemplate.generateXml(selectedDomain, themeMode)}
+          currentTitle={activeTemplate.name}
+          currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
+        />
       )}
     </div>
   );
