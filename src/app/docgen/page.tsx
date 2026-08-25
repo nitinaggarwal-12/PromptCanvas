@@ -1873,7 +1873,8 @@ function DocGenContent() {
 
             {/* 17 DOCUMENT ARCHETYPE CARDS GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-5">
-              {DOC_ARCHETYPES_META.map((meta) => {
+              {DOC_ARCHETYPES_META.map((meta, idx) => {
+                const docNumber = String(idx + 1).padStart(2, '0');
                 return (
                   <div
                     key={meta.id}
@@ -1884,22 +1885,29 @@ function DocGenContent() {
                     }`}
                   >
                     <div className="space-y-4">
-                      {/* Top Row: Short Name & Category Badge */}
-                      <div className="flex items-center justify-between">
-                        <span className="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-black text-sm flex items-center justify-center">
-                          {meta.shortName}
-                        </span>
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${meta.badgeColor}`}>
+                      {/* Top Row: Doc Number, Short Tag & Category Badge */}
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-black text-sm flex items-center justify-center shrink-0">
+                            {docNumber}
+                          </span>
+                          <div className="min-w-0">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                              DOC {docNumber} &bull; <span className="text-sky-600 dark:text-sky-400 font-extrabold">{meta.shortName}</span>
+                            </span>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
+                              {meta.name}
+                            </h3>
+                          </div>
+                        </div>
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shrink-0 ${meta.badgeColor}`}>
                           {meta.badge}
                         </span>
                       </div>
 
-                      {/* Title & Purpose */}
+                      {/* Purpose */}
                       <div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
-                          {meta.name}
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 mt-1.5 leading-relaxed">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
                           {meta.primaryPurpose}
                         </p>
                       </div>
@@ -2492,13 +2500,13 @@ function DocGenContent() {
             {/* Modal Header with Navigation Tabs & Action Buttons */}
             <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-2xl bg-sky-500 text-white font-black text-sm flex items-center justify-center shadow-sm">
-                  {previewModalDoc.shortName}
+                <span className="w-10 h-10 rounded-2xl bg-sky-500 text-white font-black text-sm flex items-center justify-center shadow-sm shrink-0">
+                  <FileText className="w-5 h-5 text-white" />
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base md:text-lg font-black text-slate-900 dark:text-white">
-                      {previewModalDoc.name} &bull; Master Specification Preview
+                      {previewModalDoc.name} <span className="text-sky-600 dark:text-sky-400 font-extrabold">({previewModalDoc.shortName})</span> &bull; Master Specification Preview
                     </h3>
                     <span className="hidden sm:inline-flex text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                       GxP Validated

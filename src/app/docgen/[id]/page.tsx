@@ -690,12 +690,12 @@ function DocDetailPageContent() {
 
             <div className="flex items-center gap-2.5 min-w-0">
               <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
-                {docMeta.shortName}
+                <FileText className="w-4 h-4 text-white" />
               </span>
               <div className="truncate">
                 <div className="flex items-center gap-2">
                   <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate">
-                    {docMeta.name}
+                    {docMeta.name} <span className="text-sky-600 dark:text-sky-400 font-extrabold">({docMeta.shortName})</span>
                   </h1>
                   <span className="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
                     Master Baseline
