@@ -755,6 +755,76 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
 
 
 
+export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'biopharma'): string {
+  if (!xml || domainFlavor === 'biopharma' || domainFlavor === 'default') {
+    return xml;
+  }
+
+  let out = xml;
+
+  if (domainFlavor === 'retail') {
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'OMNIVUE Retail & Marketplace Platform')
+      .replace(/NOVACURA\s+Bio-Pharma\s+Product/gi, 'OMNIVUE Omnichannel E-Commerce')
+      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'OMNIVUE RETAIL & MARKETPLACE PLATFORM')
+      .replace(/NOVACURA/g, 'OMNIVUE')
+      .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&amp;\s+Regulatory\s+AI/gi, 'Omnichannel Retail &amp; Intelligent Supply Chain')
+      .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&\s+Regulatory\s+AI/gi, 'Omnichannel Retail & Intelligent Supply Chain')
+      .replace(/Bio-Pharma/gi, 'Omnichannel Retail')
+      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Hyper-Scale Commerce. Intelligent Fulfillment.')
+      .replace(/🧬/g, '🛒')
+      .replace(/Research(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Scientists/gi, 'Global&lt;br/&gt;Shoppers')
+      .replace(/Research Scientists/gi, 'Global Shoppers')
+      .replace(/Clinical(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Operations/gi, '3P Marketplace&lt;br/&gt;Merchants')
+      .replace(/Clinical Operations/gi, '3P Marketplace Merchants')
+      .replace(/Regulatory(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Affairs/gi, 'Warehouse&lt;br/&gt;Logistics')
+      .replace(/Regulatory Affairs/gi, 'Warehouse Logistics')
+      .replace(/Safety\/PV(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Specialists/gi, 'Fraud &amp; Risk&lt;br/&gt;Screener')
+      .replace(/Safety\/PV Specialists/gi, 'Fraud & Risk Screener')
+      .replace(/Quality(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Teams/gi, 'Inventory &amp;&lt;br/&gt;Catalog QA')
+      .replace(/Medical(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Affairs/gi, 'Customer&lt;br/&gt;Support')
+      .replace(/Commercial(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Analytics/gi, 'E-Commerce&lt;br/&gt;Analytics')
+      .replace(/Veeva Vault/gi, 'Enterprise Product Catalog')
+      .replace(/CTMS \/ Medidata Rave/gi, 'Warehouse Management (WMS)')
+      .replace(/Argus Safety/gi, 'Stripe / Adyen Payment Vault')
+      .replace(/Salesforce Health Cloud/gi, 'Salesforce Commerce Cloud')
+      .replace(/Laboratory \/ LIMS/gi, 'Carrier Fleet & 3PL Routing')
+      .replace(/Regulatory Gateways/gi, 'Customs & Tax Gateways')
+      .replace(/FDA 21 CFR Part 11/gi, 'PCI-DSS Level 1 v4.0')
+      .replace(/HIPAA/gi, 'SOC 2 Type II');
+  } else if (domainFlavor === 'fintech') {
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'NEXUSFIN High-Speed Wealth Engine')
+      .replace(/NOVACURA/gi, 'NEXUSFIN')
+      .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'FinTech Autonomous Wealth & Payments')
+      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Wealth. Zero-Latency Execution.')
+      .replace(/🧬/g, '💳')
+      .replace(/Research Scientists/gi, 'Quantitative Traders')
+      .replace(/Clinical Operations/gi, 'Portfolio Managers')
+      .replace(/Regulatory Affairs/gi, 'SEC / FINRA Compliance')
+      .replace(/Safety\/PV Specialists/gi, 'AML & Fraud Screening')
+      .replace(/Veeva Vault/gi, 'Bloomberg / Refinitiv Feed')
+      .replace(/Argus Safety/gi, 'Plaid / ACH Settlement Mesh')
+      .replace(/FDA 21 CFR Part 11/gi, 'SEC Rule 17a-4 / FINRA');
+  } else if (domainFlavor === 'saas') {
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'AETHER Multi-Tenant Cloud Platform')
+      .replace(/NOVACURA/gi, 'AETHER')
+      .replace(/Bio-Pharma/gi, 'Enterprise SaaS')
+      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Multi-Tenant Cloud Scale.')
+      .replace(/🧬/g, '☁️');
+  } else if (domainFlavor === 'manufacturing') {
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'SYNACTIVE Smart Manufacturing IoT')
+      .replace(/NOVACURA/gi, 'SYNACTIVE')
+      .replace(/Bio-Pharma/gi, 'Smart Manufacturing')
+      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Industrial IoT. Real-Time Telemetry.')
+      .replace(/🧬/g, '🏭');
+  }
+
+  return out;
+}
+
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];
   return {
@@ -763,6 +833,10 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
     generatorVersion: contract ? contract.generatorVersion : "1.0",
     fidelityScore: contract && contract.certificationStatus === "certified" ? 0.98 : 0.90,
     certificationStatus: contract ? contract.certificationStatus : "in_review",
-    contract
+    contract,
+    generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
+      const baseXml = t.generateXml(domainFlavor, theme);
+      return injectDomainFlavorXml(baseXml, domainFlavor);
+    }
   };
 });

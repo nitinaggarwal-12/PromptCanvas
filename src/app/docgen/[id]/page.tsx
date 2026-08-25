@@ -667,6 +667,7 @@ function DocDetailPageContent() {
       if (line.trim().startsWith('```')) {
         const lang = line.trim().replace(/^```/, '').trim().toLowerCase();
         const codeLines: string[] = [];
+        const codeBlockStartIndex = i;
         i++;
         while (i < lines.length && !lines[i].trim().startsWith('```')) {
           codeLines.push(lines[i]);
@@ -711,17 +712,24 @@ function DocDetailPageContent() {
           continue;
         }
 
-        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08)
+        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08, Template 19)
         let precedingHeading = '';
-        for (let back = i - 2; back >= Math.max(0, i - 6); back--) {
-          if (lines[back] && lines[back].startsWith('#')) {
-            precedingHeading = lines[back].replace(/^#+\s*/, '');
-            break;
+        for (let back = codeBlockStartIndex - 1; back >= Math.max(0, codeBlockStartIndex - 8); back--) {
+          const backLine = lines[back] ? lines[back].trim() : '';
+          if (backLine.length > 0) {
+            if (backLine.startsWith('#')) {
+              precedingHeading = backLine.replace(/^#+\s*/, '');
+              break;
+            }
+            if (backLine.includes('Template') || backLine.includes('TEMPLATE') || backLine.includes('Visual Diagram')) {
+              precedingHeading = backLine;
+              break;
+            }
           }
         }
 
-        const tplMatch = precedingHeading.match(/Template\s*([0-9]{2})/i);
-        const matchedTemplateId = tplMatch ? tplMatch[1] : null;
+        const tplMatch = precedingHeading.match(/Template\s*([0-9]{1,2})/i);
+        const matchedTemplateId = tplMatch ? tplMatch[1].padStart(2, '0') : null;
         const canonicalTpl = matchedTemplateId ? CANONICAL_TEMPLATES.find((t) => t.id === matchedTemplateId) : null;
 
         const parsedNodes: { id: string; label: string; tier: string }[] = [];
