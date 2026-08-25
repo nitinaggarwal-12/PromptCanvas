@@ -755,21 +755,20 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
 
 
 
-export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'biopharma'): string {
-  if (!xml || domainFlavor === 'biopharma' || domainFlavor === 'default') {
-    return xml;
-  }
+export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'general'): string {
+  if (!xml) return '';
 
   let out = xml;
 
   if (domainFlavor === 'retail') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'OMNIVUE Retail & Marketplace Platform')
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'OMNIVUE Retail &amp; Marketplace Platform')
       .replace(/NOVACURA\s+Bio-Pharma\s+Product/gi, 'OMNIVUE Omnichannel E-Commerce')
-      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'OMNIVUE RETAIL & MARKETPLACE PLATFORM')
+      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'OMNIVUE RETAIL &amp; MARKETPLACE PLATFORM')
       .replace(/NOVACURA/g, 'OMNIVUE')
+      .replace(/NovaCura/g, 'OmniVue')
       .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&amp;\s+Regulatory\s+AI/gi, 'Omnichannel Retail &amp; Intelligent Supply Chain')
-      .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&\s+Regulatory\s+AI/gi, 'Omnichannel Retail & Intelligent Supply Chain')
+      .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&\s+Regulatory\s+AI/gi, 'Omnichannel Retail &amp; Intelligent Supply Chain')
       .replace(/Bio-Pharma/gi, 'Omnichannel Retail')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Hyper-Scale Commerce. Intelligent Fulfillment.')
       .replace(/🧬/g, '🛒')
@@ -780,7 +779,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'bioph
       .replace(/Regulatory(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Affairs/gi, 'Warehouse&lt;br/&gt;Logistics')
       .replace(/Regulatory Affairs/gi, 'Warehouse Logistics')
       .replace(/Safety\/PV(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Specialists/gi, 'Fraud &amp; Risk&lt;br/&gt;Screener')
-      .replace(/Safety\/PV Specialists/gi, 'Fraud & Risk Screener')
+      .replace(/Safety\/PV Specialists/gi, 'Fraud &amp; Risk Screener')
       .replace(/Quality(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Teams/gi, 'Inventory &amp;&lt;br/&gt;Catalog QA')
       .replace(/Medical(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Affairs/gi, 'Customer&lt;br/&gt;Support')
       .replace(/Commercial(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Analytics/gi, 'E-Commerce&lt;br/&gt;Analytics')
@@ -788,21 +787,22 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'bioph
       .replace(/CTMS \/ Medidata Rave/gi, 'Warehouse Management (WMS)')
       .replace(/Argus Safety/gi, 'Stripe / Adyen Payment Vault')
       .replace(/Salesforce Health Cloud/gi, 'Salesforce Commerce Cloud')
-      .replace(/Laboratory \/ LIMS/gi, 'Carrier Fleet & 3PL Routing')
-      .replace(/Regulatory Gateways/gi, 'Customs & Tax Gateways')
+      .replace(/Laboratory \/ LIMS/gi, 'Carrier Fleet &amp; 3PL Routing')
+      .replace(/Regulatory Gateways/gi, 'Customs &amp; Tax Gateways')
       .replace(/FDA 21 CFR Part 11/gi, 'PCI-DSS Level 1 v4.0')
       .replace(/HIPAA/gi, 'SOC 2 Type II');
   } else if (domainFlavor === 'fintech') {
     out = out
       .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'NEXUSFIN High-Speed Wealth Engine')
       .replace(/NOVACURA/gi, 'NEXUSFIN')
-      .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'FinTech Autonomous Wealth & Payments')
+      .replace(/NovaCura/g, 'NexusFin')
+      .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'FinTech Autonomous Wealth &amp; Payments')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Wealth. Zero-Latency Execution.')
       .replace(/🧬/g, '💳')
       .replace(/Research Scientists/gi, 'Quantitative Traders')
       .replace(/Clinical Operations/gi, 'Portfolio Managers')
       .replace(/Regulatory Affairs/gi, 'SEC / FINRA Compliance')
-      .replace(/Safety\/PV Specialists/gi, 'AML & Fraud Screening')
+      .replace(/Safety\/PV Specialists/gi, 'AML &amp; Fraud Screening')
       .replace(/Veeva Vault/gi, 'Bloomberg / Refinitiv Feed')
       .replace(/Argus Safety/gi, 'Plaid / ACH Settlement Mesh')
       .replace(/FDA 21 CFR Part 11/gi, 'SEC Rule 17a-4 / FINRA');
@@ -810,6 +810,7 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'bioph
     out = out
       .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'AETHER Multi-Tenant Cloud Platform')
       .replace(/NOVACURA/gi, 'AETHER')
+      .replace(/NovaCura/g, 'Aether')
       .replace(/Bio-Pharma/gi, 'Enterprise SaaS')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Multi-Tenant Cloud Scale.')
       .replace(/🧬/g, '☁️');
@@ -817,10 +818,40 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'bioph
     out = out
       .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'SYNACTIVE Smart Manufacturing IoT')
       .replace(/NOVACURA/gi, 'SYNACTIVE')
+      .replace(/NovaCura/g, 'Synactive')
       .replace(/Bio-Pharma/gi, 'Smart Manufacturing')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Industrial IoT. Real-Time Telemetry.')
       .replace(/🧬/g, '🏭');
+  } else if (domainFlavor === 'biopharma') {
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'Precision Clinical AI &amp; Genomics Platform')
+      .replace(/NOVACURA/gi, 'CLINICAL AI')
+      .replace(/NovaCura/g, 'Clinical AI Platform')
+      .replace(/novacura-prod-vpc/gi, 'clinical-ai-prod-vpc')
+      .replace(/novacura-prod/gi, 'clinical-ai-prod');
+  } else {
+    // Universal domain fallback: Clean enterprise naming
+    out = out
+      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'Enterprise Architecture Platform')
+      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'ENTERPRISE ARCHITECTURE PLATFORM')
+      .replace(/NOVACURA/gi, 'ENTERPRISE PLATFORM')
+      .replace(/NovaCura/g, 'Enterprise Platform')
+      .replace(/novacura-prod-vpc/gi, 'enterprise-prod-vpc')
+      .replace(/novacura-prod/gi, 'enterprise-prod')
+      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Scalable. Resilient. Secure.')
+      .replace(/AI-Powered Regulatory Intelligence Platform/gi, 'High-Throughput Distributed Cloud Architecture');
   }
+
+  // Universal Scrub: ensure zero residual Novacura / Novacure occurrences remain
+  out = out
+    .replace(/NOVACURA/g, 'ENTERPRISE')
+    .replace(/NovaCura/g, 'Enterprise')
+    .replace(/novacura/g, 'enterprise')
+    .replace(/Novacure/g, 'Enterprise')
+    .replace(/novacure/g, 'enterprise');
+
+  // Universal XML Ampersand Safety Sanitizer: convert any loose & into &amp;
+  out = out.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/g, '&amp;');
 
   return out;
 }

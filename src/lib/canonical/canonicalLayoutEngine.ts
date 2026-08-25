@@ -119,8 +119,8 @@ export class CanonicalBlueprintBuilder {
     this.addRawCell("hdr_title", metaHtml, 80, 16, 840, 50, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;");
 
     // Brand Block
-    const bTitle = config.brandTitle || "🧬 NOVACURA";
-    const bSub = config.brandSubtitle || "AI-Powered Regulatory Intelligence Platform";
+    const bTitle = config.brandTitle || "⚡ ENTERPRISE PLATFORM";
+    const bSub = config.brandSubtitle || "High-Availability Distributed Cloud Architecture";
     const brandHtml =
       `<div style='text-align:right;'>` +
       `<span style='font-size:20px;font-weight:800;color:#0284C7;'>${bTitle}</span><br/>` +

@@ -664,9 +664,9 @@ function DocGenContent() {
           archetypeId: archetypeId,
           format: 'docx',
           xml: primaryXml,
-          title: `Novacura Platform ${docName}`,
-          domain: 'Bio-Pharma Precision Oncology & Regulatory AI',
-          userPrompt: 'Master architectural baseline for GxP validated production.',
+          title: `Enterprise Platform ${docName}`,
+          domain: 'Enterprise Cloud Architecture & Distributed Systems',
+          userPrompt: 'Master architectural baseline for high-throughput production scale.',
         }),
       });
 
@@ -674,7 +674,7 @@ function DocGenContent() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Novacura_${archetypeId.toUpperCase()}_Master_Specification.docx`;
+      a.download = `Enterprise_${archetypeId.toUpperCase()}_Master_Specification.docx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

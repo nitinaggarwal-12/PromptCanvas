@@ -901,7 +901,7 @@ function DocDetailPageContent() {
             {[
               { id: 'retail', label: '🛒 Omnichannel Retail (Amazon Scale)', badge: 'E-Commerce' },
               { id: 'fintech', label: '💳 FinTech Payments & Wealth', badge: 'NexusFin' },
-              { id: 'biopharma', label: '🧬 Bio-Pharma Clinical AI', badge: 'Novacura' },
+              { id: 'biopharma', label: '🧬 Bio-Pharma Clinical AI', badge: 'Clinical AI' },
               { id: 'saas', label: '☁️ Enterprise SaaS Platform', badge: 'Aether' },
               { id: 'manufacturing', label: '🏭 Smart Manufacturing IoT', badge: 'Synactive' },
             ].map((d) => (
