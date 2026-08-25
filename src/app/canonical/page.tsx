@@ -177,7 +177,7 @@ function CanonicalContent() {
   const filteredTemplates = useMemo(() => {
     return CANONICAL_TEMPLATES.filter((tpl) => {
       const matchFamily = selectedFamily === 'All' || tpl.family === selectedFamily;
-      const matchLevel = selectedLevel === 'All' || tpl.level.includes(selectedLevel);
+      const matchLevel = selectedLevel === 'All' || tpl.level === selectedLevel;
       const matchSearch =
         tpl.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         tpl.id.includes(searchQuery) ||
