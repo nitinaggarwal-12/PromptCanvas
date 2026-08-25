@@ -28,6 +28,7 @@ import {
   Boxes
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 export default function CanonicalTemplateDetailPage() {
   const params = useParams();
@@ -112,12 +113,17 @@ export default function CanonicalTemplateDetailPage() {
   const bgClass = isDark ? 'bg-[#0B111E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900';
 
   return (
-    <div className={`min-h-screen flex flex-col transition-colors duration-200 ${bgClass} font-sans`}>
-      {/* TOP NAVIGATION BAR */}
-      {!isFullScreen && (
-        <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
-          isDark ? 'bg-[#0B111E]/95 border-slate-800/80' : 'bg-white/95 border-slate-200/80'
-        }`}>
+    <div className={`flex min-h-screen transition-colors duration-200 ${bgClass} font-sans`}>
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* TOP NAVIGATION BAR */}
+        {!isFullScreen && (
+          <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
+            isDark ? 'bg-[#0B111E]/95 border-slate-800/80' : 'bg-white/95 border-slate-200/80'
+          }`}>
           <div className="max-w-[1680px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
             {/* Left: Back to Catalog & Template Title */}
             <div className="flex items-center gap-3">
@@ -319,14 +325,15 @@ export default function CanonicalTemplateDetailPage() {
         </div>
       </main>
 
-      {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
-      <ComposeModal
-        isOpen={isComposeOpen}
-        onClose={() => setIsComposeOpen(false)}
-        currentXml={currentXml}
-        currentTitle={activeTemplate.name}
-        currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
-      />
+        {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
+        <ComposeModal
+          isOpen={isComposeOpen}
+          onClose={() => setIsComposeOpen(false)}
+          currentXml={currentXml}
+          currentTitle={activeTemplate.name}
+          currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
+        />
+      </div>
     </div>
   );
 }

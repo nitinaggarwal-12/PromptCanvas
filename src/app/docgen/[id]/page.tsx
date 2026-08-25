@@ -31,6 +31,7 @@ import { ARCHETYPE_REGISTRY, ArchetypeId } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { Lock } from 'lucide-react';
 
 interface BlueprintSlot {
@@ -825,13 +826,18 @@ function DocDetailPageContent() {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-sky-500/30 transition-colors duration-300 ${
+    <div className={`flex min-h-screen font-sans selection:bg-sky-500/30 transition-colors duration-300 ${
       isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070A13] text-slate-100'
     }`}>
-      {/* HEADER */}
-      <header className={`sticky top-0 w-full z-40 border-b backdrop-blur-md transition-colors ${
-        isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
-      }`}>
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* HEADER */}
+        <header className={`sticky top-0 w-full z-40 border-b backdrop-blur-md transition-colors ${
+          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
+        }`}>
         <div className="max-w-[1600px] mx-auto h-16 md:h-20 px-4 md:px-12 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
@@ -1087,14 +1093,15 @@ function DocDetailPageContent() {
         )}
       </main>
 
-      {/* Blueprint Change Report Modal */}
-      <BlueprintChangeReportModal
-        isOpen={isChangeReportOpen}
-        onClose={() => setIsChangeReportOpen(false)}
-        selectedDomain={selectedDomain}
-        projectTitle={docMeta.name}
-        docTypeName={docMeta.shortName}
-      />
+        {/* Blueprint Change Report Modal */}
+        <BlueprintChangeReportModal
+          isOpen={isChangeReportOpen}
+          onClose={() => setIsChangeReportOpen(false)}
+          selectedDomain={selectedDomain}
+          projectTitle={docMeta.name}
+          docTypeName={docMeta.shortName}
+        />
+      </div>
     </div>
   );
 }

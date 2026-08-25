@@ -21,7 +21,7 @@ export interface VersionSnapshot {
   id: string;
   versionTag: string; // e.g. "v1.0", "v1.1", "v1.2"
   timestamp: string; // ISO 8601
-  author: 'User' | 'AI Copilot' | 'System';
+  author: 'User' | 'AI Assist' | 'System';
   changeSummary: string;
   targetType: 'doc' | 'diagram' | 'full';
   targetSlotIndex?: number;

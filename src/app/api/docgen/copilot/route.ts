@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         action: 'chat_only',
-        replyMessage: `I am your PromptCanvas AI Copilot for "${projectTitle}". You can ask me to rewrite sections, add technical matrices, or modify specific diagram slots.`,
+        replyMessage: `I am your PromptCanvas AI Assist for "${projectTitle}". You can ask me to rewrite sections, add technical matrices, or modify specific diagram slots.`,
         suggestedNextSteps: fallbackChips,
       });
     }
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
     const ai = new GoogleGenAI({ apiKey });
     const model = process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
 
-    const systemInstruction = `You are PromptCanvas AI Copilot, an elite Principal Enterprise Systems Architect.
+    const systemInstruction = `You are PromptCanvas AI Assist, an elite Principal Enterprise Systems Architect.
 You assist users in refining, editing, and expanding enterprise architecture specification documents and visual diagrams.
 
 Given the current document markdown, current diagram slots, and user request:

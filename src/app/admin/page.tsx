@@ -17,6 +17,7 @@ import {
 import type { User } from '@/lib/db';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 export default function SuperAdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
@@ -84,22 +85,26 @@ export default function SuperAdminDashboard() {
   );
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${
+    <div className={`flex min-h-screen font-sans transition-colors duration-300 ${
       isLight ? 'bg-[#F8FAFC] text-slate-900 selection:bg-amber-200' : 'bg-[#070a13] text-slate-100 selection:bg-amber-500/30'
     }`}>
-      
-      {/* Toast Notification */}
-      {toastMsg && (
-        <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-amber-950/90 border border-amber-500/50 text-amber-300 px-4 py-2.5 rounded-xl shadow-2xl backdrop-blur-md animate-slide-down">
-          <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-          <span className="text-xs font-bold">{toastMsg}</span>
-        </div>
-      )}
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
 
-      {/* Top Header */}
-      <header className={`sticky top-0 z-30 w-full border-b backdrop-blur-md shrink-0 transition-colors ${
-        isLight ? 'bg-white/95 border-slate-200 shadow-sm' : 'bg-[#090d18]/90 border-panel-border/60'
-      }`}>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* Toast Notification */}
+        {toastMsg && (
+          <div className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-amber-950/90 border border-amber-500/50 text-amber-300 px-4 py-2.5 rounded-xl shadow-2xl backdrop-blur-md animate-slide-down">
+            <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="text-xs font-bold">{toastMsg}</span>
+          </div>
+        )}
+
+        {/* Top Header */}
+        <header className={`sticky top-0 z-30 w-full border-b backdrop-blur-md shrink-0 transition-colors ${
+          isLight ? 'bg-white/95 border-slate-200 shadow-sm' : 'bg-[#090d18]/90 border-panel-border/60'
+        }`}>
         <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-12 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
@@ -299,6 +304,7 @@ export default function SuperAdminDashboard() {
           </>
         )}
       </main>
+      </div>
     </div>
   );
 }

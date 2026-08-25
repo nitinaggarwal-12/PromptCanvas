@@ -21,7 +21,7 @@ interface DocGenFloatingCopilotProps {
   diagramSlots: Record<number, DiagramSlotVersionData>;
   versionHistory: VersionSnapshot[];
   chatHistory: ChatMessage[];
-  onApplyDocUpdate: (newMarkdown: string, summary: string, author?: 'AI Copilot' | 'User') => void;
+  onApplyDocUpdate: (newMarkdown: string, summary: string, author?: 'AI Assist' | 'User') => void;
   onApplyDiagramUpdate: (slotIndex: number, newPrompt: string, summary: string) => void;
   onRestoreSnapshot: (snapshot: VersionSnapshot) => void;
   onAddChatMessage: (msg: ChatMessage) => void;
@@ -160,7 +160,7 @@ export default function DocGenFloatingCopilot({
       let appliedAction: ChatMessage['actionApplied'] = undefined;
 
       if (data.action === 'doc_update' && data.newMarkdown) {
-        onApplyDocUpdate(data.newMarkdown, data.changeSummary || 'Copilot Document Refinement', 'AI Copilot');
+        onApplyDocUpdate(data.newMarkdown, data.changeSummary || 'AI Assist Document Refinement', 'AI Assist');
         appliedAction = {
           type: 'doc_update',
           summary: data.changeSummary || 'Document text updated',
@@ -230,7 +230,7 @@ export default function DocGenFloatingCopilot({
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
           </span>
           <span className="flex items-center gap-1.5">
-            <span>✨ AI Copilot</span>
+            <span>✨ AI Assist</span>
             <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">
               {docVersion}
             </span>
@@ -241,7 +241,7 @@ export default function DocGenFloatingCopilot({
         </button>
       </div>
 
-      {/* EXPANDABLE COPILOT & VERSION HISTORY MODAL */}
+      {/* EXPANDABLE AI ASSIST & VERSION HISTORY MODAL */}
       {isOpen && (
         <div
           className={`fixed bottom-20 right-6 z-50 w-[92vw] sm:w-[460px] md:w-[500px] h-[600px] max-h-[82vh] rounded-2xl shadow-2xl flex flex-col border backdrop-blur-2xl transition-all duration-200 overflow-hidden no-print ${
@@ -262,7 +262,7 @@ export default function DocGenFloatingCopilot({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xs md:text-sm font-bold tracking-tight">PromptCanvas Copilot</h3>
+                  <h3 className="text-xs md:text-sm font-bold tracking-tight">PromptCanvas AI Assist</h3>
                   <span className="px-1.5 py-0.2 rounded text-[10px] font-mono font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">
                     {docVersion}
                   </span>
@@ -308,7 +308,7 @@ export default function DocGenFloatingCopilot({
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 text-xs"
-              title="Close Copilot"
+              title="Close AI Assist"
             >
               ✕
             </button>
@@ -422,7 +422,7 @@ export default function DocGenFloatingCopilot({
                 {isGenerating && (
                   <div className="flex items-center gap-2 text-xs text-sky-400 p-2">
                     <span className="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
-                    <span className="italic">AI Copilot is synthesizing architectural updates...</span>
+                    <span className="italic">AI Assist is synthesizing architectural updates...</span>
                   </div>
                 )}
               </div>
@@ -440,7 +440,7 @@ export default function DocGenFloatingCopilot({
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={isGenerating}
-                    placeholder="Ask Copilot to edit text, add tables, or update diagrams... (Enter to send)"
+                    placeholder="Ask AI Assist to edit text, add tables, or update diagrams... (Enter to send)"
                     className={`w-full text-xs rounded-xl px-3 py-2 pr-12 resize-none outline-none transition-all border ${
                       isLight
                         ? 'bg-white border-slate-300 text-slate-900 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/10'

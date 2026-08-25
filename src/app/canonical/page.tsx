@@ -35,9 +35,22 @@ import {
   BookOpen,
   Share2,
   X,
-  FileText
+  FileText,
+  History,
+  Network,
+  ShieldCheck,
+  Settings,
+  User,
+  Compass,
+  Menu,
+  Plus,
+  BarChart3
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
+import { UserProfileModal } from '@/components/UserProfileModal';
+import { AuthModal } from '@/components/AuthModal';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 function CanonicalContent() {
   const router = useRouter();
@@ -227,11 +240,16 @@ function CanonicalContent() {
     : 'bg-white border-slate-200/90 hover:border-sky-400/60 shadow-slate-200/40';
 
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${bgClass} font-sans`}>
-      {/* STICKY FULL-WIDTH TOP NAVIGATION */}
-      <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
-        isDark ? 'bg-[#0B111E]/90 border-slate-800/80' : 'bg-white/90 border-slate-200/80'
-      }`}>
+    <div className={`flex min-h-screen transition-colors duration-200 ${bgClass} font-sans`}>
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* STICKY FULL-WIDTH TOP NAVIGATION */}
+        <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
+          isDark ? 'bg-[#0B111E]/90 border-slate-800/80' : 'bg-white/90 border-slate-200/80'
+        }`}>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-18 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-3 group">
@@ -832,16 +850,17 @@ function CanonicalContent() {
         </div>
       )}
 
-      {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
-      {activeTemplate && (
-        <ComposeModal
-          isOpen={isComposeOpen}
-          onClose={() => setIsComposeOpen(false)}
-          currentXml={currentXml || activeTemplate.generateXml(selectedDomain, themeMode)}
-          currentTitle={activeTemplate.name}
-          currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
-        />
-      )}
+        {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}
+        {activeTemplate && (
+          <ComposeModal
+            isOpen={isComposeOpen}
+            onClose={() => setIsComposeOpen(false)}
+            currentXml={currentXml || activeTemplate.generateXml(selectedDomain, themeMode)}
+            currentTitle={activeTemplate.name}
+            currentDomain={DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name || selectedDomain}
+          />
+        )}
+      </div>
     </div>
   );
 }

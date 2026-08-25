@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 type PersonaKey = 'quickstart' | 'architect' | 'data_ai' | 'consultant' | 'secops';
 
@@ -704,12 +705,16 @@ export default function GuidePage() {
   }, [isMaximized, totalFrames]);
 
   return (
-    <div className={`min-h-screen font-sans ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#0B0F19] text-white'}`}>
-      
-      {/* ==================== STICKY CONSOLIDATED TOP NAVBAR ==================== */}
-      <header className={`sticky top-0 z-50 w-full border-b backdrop-blur-md transition-colors ${
-        isLight ? 'bg-white/95 border-slate-200 shadow-xs' : 'bg-[#0F172A]/95 border-slate-800 shadow-md shadow-black/20'
-      }`}>
+    <div className={`flex min-h-screen font-sans ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#0B0F19] text-white'}`}>
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* ==================== STICKY CONSOLIDATED TOP NAVBAR ==================== */}
+        <header className={`sticky top-0 z-30 w-full border-b backdrop-blur-md transition-colors ${
+          isLight ? 'bg-white/95 border-slate-200 shadow-xs' : 'bg-[#0F172A]/95 border-slate-800 shadow-md shadow-black/20'
+        }`}>
         <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-2.5 group">
@@ -1466,7 +1471,7 @@ export default function GuidePage() {
         </div>
 
       </section>
-
+      </div>
     </div>
   );
 }

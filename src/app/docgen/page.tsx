@@ -55,9 +55,17 @@ import {
   Presentation,
   Terminal,
   Send,
-  History
+  History,
+  Menu,
+  ShieldCheck,
+  Settings,
+  User,
+  Compass
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import { UserProfileModal } from '@/components/UserProfileModal';
+import { AuthModal } from '@/components/AuthModal';
 import {
   CANONICAL_TEMPLATES,
   DOMAIN_PRESETS,
@@ -83,6 +91,7 @@ import TerraformIaCModal from '@/components/TerraformIaCModal';
 import EnterpriseSyncModal from '@/components/EnterpriseSyncModal';
 import CollaborativeTeamPresence from '@/components/CollaborativeTeamPresence';
 import DocGenHistoryModal, { HistoricalProjectItem } from '@/components/DocGenHistoryModal';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import {
   VersionSnapshot,
   ChatMessage,
@@ -503,6 +512,25 @@ function DocGenContent() {
   const [newSectionTitleDraft, setNewSectionTitleDraft] = useState<string>('');
   const [newSectionContentDraft, setNewSectionContentDraft] = useState<string>('');
   const [newSectionLevelDraft, setNewSectionLevelDraft] = useState<1 | 2 | 3>(2);
+
+  // Navigation & Sidebar Layout State
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
+  const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
+
+  // Check Auth State on mount
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Slide Deck, Terraform IaC & Enterprise Sync Modal States
   const [isSlideDeckOpen, setIsSlideDeckOpen] = useState<boolean>(false);
@@ -1634,7 +1662,7 @@ function DocGenContent() {
   };
 
   return (
-    <div className={`min-h-screen font-sans selection:bg-sky-500/30 transition-colors duration-300 ${
+    <div className={`flex min-h-screen font-sans selection:bg-sky-500/30 transition-colors duration-300 ${
       isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070A13] text-slate-100'
     }`}>
       {/* PRINT-SPECIFIC CSS RULES FOR 100% CLEAN PDF EXPORT */}
@@ -1669,93 +1697,107 @@ function DocGenContent() {
         }}
       />
 
-      {/* TOP STICKY NAVBAR */}
-      <header className={`sticky top-0 w-full z-40 border-b backdrop-blur-md transition-colors no-print ${
-        isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
-      }`}>
-        <div className="max-w-[1600px] mx-auto h-16 md:h-20 px-4 md:px-12 flex items-center justify-between gap-4">
-          {/* Brand Logo & Title */}
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
-                <FileText className="w-5 h-5" />
+      {/* Collapsible Left Navigation Menu */}
+      <UnifiedAppSidebar />
+
+      {/* MAIN CONTENT WRAPPER */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        {/* TOP STICKY NAVBAR */}
+        <header className={`sticky top-0 w-full z-30 border-b backdrop-blur-md transition-colors no-print ${
+          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
+        }`}>
+          <div className="max-w-[1600px] mx-auto h-16 md:h-18 px-4 md:px-8 flex items-center justify-between gap-4">
+            {/* Left Title & Sidebar Toggle */}
+            <div className="flex items-center gap-3">
+              {!isSidebarOpen && (
+                <button
+                  onClick={() => setIsSidebarOpen(true)}
+                  className="hidden lg:flex p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                  title="Expand Left Navigation Menu"
+                >
+                  <Menu className="w-4 h-4" />
+                </button>
+              )}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                title="Toggle Menu"
+              >
+                <Menu className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-lg tracking-tight">PromptCanvas</span>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 uppercase tracking-wider">
+                  DocGen Studio
+                </span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-xl tracking-tight">PromptCanvas</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 uppercase tracking-wider">
-                    DocGen Hub v1.0
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">17 Enterprise Document Standards &bull; Multi-Blueprint Synthesis</p>
-              </div>
-            </Link>
+            </div>
+
+            {/* Center Navigation Tabs */}
+            <nav className="hidden md:flex items-center gap-2 text-xs font-bold">
+              <button
+                onClick={() => setActiveTab('catalog')}
+                className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+                  activeTab === 'catalog'
+                    ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
+                    : isLight
+                    ? 'hover:bg-slate-100 text-slate-600'
+                    : 'hover:bg-slate-800 text-slate-400'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Document Standards Catalog</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('studio')}
+                className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+                  activeTab === 'studio'
+                    ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
+                    : isLight
+                    ? 'hover:bg-slate-100 text-slate-600'
+                    : 'hover:bg-slate-800 text-slate-400'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Multi-Blueprint Generation Studio</span>
+              </button>
+            </nav>
+
+            {/* Right Controls */}
+            <div className="flex items-center gap-2.5">
+              <button
+                onClick={() => setIsDocHistoryModalOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                title="Open Historical Projects & Document Specifications"
+              >
+                <History className="w-3.5 h-3.5 text-amber-500" />
+                <span className="hidden sm:inline">Project History</span>
+              </button>
+
+              <Link
+                href="/canonical"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <Layers className="w-3.5 h-3.5 text-sky-500" />
+                <span className="hidden sm:inline">Canonical Hub</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
+              </Link>
+
+              <Link
+                href="/workspace"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+              >
+                <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
+                <span className="hidden sm:inline">Workspace</span>
+              </Link>
+            </div>
           </div>
+        </header>
 
-          {/* Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-2 text-xs font-bold">
-            <button
-              onClick={() => setActiveTab('catalog')}
-              className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
-                activeTab === 'catalog'
-                  ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
-                  : isLight
-                  ? 'hover:bg-slate-100 text-slate-600'
-                  : 'hover:bg-slate-800 text-slate-400'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>Document Standards Catalog</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('studio')}
-              className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
-                activeTab === 'studio'
-                  ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
-                  : isLight
-                  ? 'hover:bg-slate-100 text-slate-600'
-                  : 'hover:bg-slate-800 text-slate-400'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Multi-Blueprint Generation Studio</span>
-            </button>
-          </nav>
-
-          {/* Right Controls */}
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setIsDocHistoryModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
-              title="Open Historical Projects & Document Specifications"
-            >
-              <History className="w-3.5 h-3.5 text-amber-500" />
-              <span className="hidden sm:inline">Project History</span>
-            </button>
-
-            <Link
-              href="/canonical"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              <Layers className="w-3.5 h-3.5 text-sky-500" />
-              <span className="hidden sm:inline">Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
-            </Link>
-
-            <Link
-              href="/workspace"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
-              <span className="hidden sm:inline">Workspace</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* HERO SECTION */}
-      <main className="max-w-[1600px] mx-auto px-6 md:px-12 py-8">
+        {/* HERO SECTION */}
+        <main className="max-w-[1600px] w-full mx-auto px-6 md:px-12 py-8">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-8 border-b border-slate-200 dark:border-slate-800 no-print">
           <div className="max-w-4xl space-y-3">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
@@ -2711,6 +2753,39 @@ function DocGenContent() {
         onClose={() => setIsDocHistoryModalOpen(false)}
         onSelectProject={handleSelectHistoricalProject}
         isLight={isLight}
+      />
+      </div>
+
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={user}
+        onUpdateUser={(updated) => {
+          if (user) setUser({ ...user, ...updated });
+        }}
+        onLogout={async () => {
+          try {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            setUser(null);
+            setIsProfileModalOpen(false);
+          } catch {}
+        }}
+      />
+
+      {/* Auth / Sign In Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onSuccess={() => {
+          fetch('/api/auth/me')
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.authenticated && data.user) setUser(data.user);
+            })
+            .catch(() => {});
+          setIsAuthOpen(false);
+        }}
       />
     </div>
   );
