@@ -51,7 +51,7 @@ import {
   CANONICAL_FAMILIES
 } from '@/lib/canonical/canonicalTemplates';
 import { ARCHETYPE_REGISTRY, ArchetypeId, DocArchetype } from '@/lib/compose/archetypes';
-import { MASTER_DOCUMENTS } from '@/lib/compose/masterDocs';
+import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 
 // Multi-Blueprint Pack mapping for each of the 9 archetypes
@@ -1850,7 +1850,7 @@ function synthesizeCustomExecutiveDocument(
   scope: string,
   slotCustomizations: Record<number, { templateId: string }>
 ): string {
-  const baseTemplate = MASTER_DOCUMENTS[archetypeId] || '';
+  const baseTemplate = getDomainMasterDocument(archetypeId, domainId, scope) || MASTER_DOCUMENTS[archetypeId] || '';
   if (!baseTemplate) {
     return generateProductionFallbackDoc(meta, title, domainId, scope);
   }

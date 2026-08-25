@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, Suspense } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
   FileText,
   Sparkles,
@@ -20,12 +20,14 @@ import {
   BookOpen,
   LayoutGrid,
   ExternalLink,
-  Eye
+  Eye,
+  Globe,
+  Tag
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { CANONICAL_TEMPLATES, DOMAIN_PRESETS } from '@/lib/canonical/canonicalTemplates';
 import { ARCHETYPE_REGISTRY, ArchetypeId } from '@/lib/compose/archetypes';
-import { MASTER_DOCUMENTS } from '@/lib/compose/masterDocs';
+import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 
 interface BlueprintSlot {
@@ -467,11 +469,16 @@ function InlineDiagramFigure({
 function DocDetailPageContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
   const docId = (rawId || 'sdd').toLowerCase() as ArchetypeId;
 
   const { theme } = useTheme();
   const isLight = theme === 'light';
+
+  // Domain flavor state (defaults to retail / Amazon scale)
+  const initialDomain = searchParams?.get('domain') || 'retail';
+  const [selectedDomain, setSelectedDomain] = useState<string>(initialDomain);
 
   const [activeTab, setActiveTab] = useState<'doc' | 'blueprints' | 'hierarchy'>('doc');
   const [copiedSuccess, setCopiedSuccess] = useState(false);
@@ -489,15 +496,20 @@ function DocDetailPageContent() {
 
   const handleCopyShareUrl = () => {
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(window.location.href);
+      const url = new URL(window.location.href);
+      url.searchParams.set('domain', selectedDomain);
+      navigator.clipboard.writeText(url.toString());
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
     }
   };
 
+  const activeDocText = useMemo(() => {
+    return getDomainMasterDocument(docMeta.id, selectedDomain);
+  }, [docMeta.id, selectedDomain]);
+
   const handleCopyMarkdown = () => {
-    const md = MASTER_DOCUMENTS[docMeta.id] || '';
-    navigator.clipboard.writeText(md);
+    navigator.clipboard.writeText(activeDocText);
     setCopiedSuccess(true);
     setTimeout(() => setCopiedSuccess(false), 2000);
   };
@@ -505,7 +517,10 @@ function DocDetailPageContent() {
   const handleDownloadDocx = async () => {
     try {
       const primaryTpl = CANONICAL_TEMPLATES[0];
-      const primaryXml = primaryTpl.generateXml('biopharma', isLight ? 'light' : 'dark');
+      const primaryXml = primaryTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+
+      const domainPreset = DOMAIN_PRESETS.find((d) => d.id === selectedDomain);
+      const domainName = domainPreset ? domainPreset.name : 'Omnichannel Retail & E-Commerce';
 
       const res = await fetch('/api/compose', {
         method: 'POST',
@@ -514,9 +529,9 @@ function DocDetailPageContent() {
           archetypeId: docMeta.id,
           format: 'docx',
           xml: primaryXml,
-          title: `Novacura Platform ${docMeta.name}`,
-          domain: 'Bio-Pharma Precision Oncology & Regulatory AI',
-          userPrompt: 'Master architectural baseline for GxP validated production.',
+          title: `${domainPreset?.prefix || 'OMNIVUE'} Platform ${docMeta.name}`,
+          domain: domainName,
+          userPrompt: 'Master architectural baseline for high-throughput production scale.',
         }),
       });
 
@@ -524,7 +539,7 @@ function DocDetailPageContent() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `Novacura_${docMeta.id.toUpperCase()}_Master_Specification.docx`;
+      a.download = `${(domainPreset?.prefix || 'PLATFORM')}_${docMeta.id.toUpperCase()}_Master_Specification.docx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -743,7 +758,7 @@ function DocDetailPageContent() {
             templateId={matchedTemplateId || '01'}
             figureTitle={precedingHeading}
             isLight={isLight}
-            selectedDomain="biopharma"
+            selectedDomain={selectedDomain}
             codeLines={codeLines}
             parsedNodes={parsedNodes}
             parsedFlows={parsedFlows}
@@ -859,7 +874,47 @@ function DocDetailPageContent() {
       </header>
 
       {/* MAIN DOCUMENT VIEWPORT */}
-      <main className="max-w-5xl mx-auto px-6 md:px-12 py-10 space-y-6">
+      <main className="max-w-5xl mx-auto px-6 md:px-12 py-8 space-y-6">
+        {/* DOMAIN FLAVOR SELECTION BAR */}
+        <div className={`p-4 rounded-2xl border transition-all ${
+          isLight ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-900/70 border-slate-800'
+        }`}>
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-2.5">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-500">
+              <Globe className="w-3.5 h-3.5" />
+              <span>Architecture Domain &amp; Solution Baseline:</span>
+            </div>
+            <span className="text-[11px] text-slate-400 font-mono">
+              Customizes document text, system requirements &amp; Draw.io blueprints
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { id: 'retail', label: '🛒 Omnichannel Retail (Amazon Scale)', badge: 'E-Commerce' },
+              { id: 'fintech', label: '💳 FinTech Payments & Wealth', badge: 'NexusFin' },
+              { id: 'biopharma', label: '🧬 Bio-Pharma Clinical AI', badge: 'Novacura' },
+              { id: 'saas', label: '☁️ Enterprise SaaS Platform', badge: 'Aether' },
+              { id: 'manufacturing', label: '🏭 Smart Manufacturing IoT', badge: 'Synactive' },
+            ].map((d) => (
+              <button
+                key={d.id}
+                type="button"
+                onClick={() => setSelectedDomain(d.id)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
+                  selectedDomain === d.id
+                    ? 'bg-sky-600 text-white border-sky-500 shadow-md shadow-sky-500/25 scale-[1.02]'
+                    : isLight
+                    ? 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-800'
+                }`}
+              >
+                <span>{d.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Navigation Tabs */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">
@@ -906,7 +961,7 @@ function DocDetailPageContent() {
         {/* TAB A: FULL MASTER DOCUMENT */}
         {activeTab === 'doc' && (
           <div className="prose prose-slate dark:prose-invert max-w-none">
-            {renderExecutiveDocument(MASTER_DOCUMENTS[docMeta.id] || '')}
+            {renderExecutiveDocument(activeDocText)}
           </div>
         )}
 

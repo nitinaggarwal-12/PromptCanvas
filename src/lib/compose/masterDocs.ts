@@ -1053,3 +1053,438 @@ graph TD
 | **Principal Systems Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_ARCH_77012_VERIFIED\` | August 2, 2026 |
 `
 };
+
+export const RETAIL_AMAZON_DOCUMENTS: Record<string, string> = {
+  sdd: `# System Design Document (SDD / HLD)
+
+## Amazon-Scale Hyper-Scalable Omnichannel Marketplace & Logistics Platform
+
+**Document ID:** SDD-RETAIL-2026-001  
+**Document Version:** v2.4 (Enterprise Architecture Review Board Approved)  
+**Target Throughput:** 100,000+ Peak Order QPS (< 15ms P95 Latency)  
+**System Availability:** 99.999% Multi-Region Active-Active Uptime  
+**Compliance Standards:** PCI-DSS Level 1 v4.0, SOC 2 Type II, GDPR, CCPA  
+
+---
+
+# 1. Executive Architecture Summary
+
+### 1.1 Business & Architectural Objectives
+The **Omnichannel Marketplace Platform** is an enterprise-grade distributed commerce and supply chain engine designed to support multi-million concurrent shoppers, 3P marketplace merchant onboarding, sub-second product search over 50M+ SKUs, automated inventory reservation sagas, and intelligent warehouse routing across global fulfillment centers.
+
+### 1.2 Core Architectural Principles
+* **Decoupled Event-Driven Core**: Asynchronous event streams (Apache Kafka / Google Cloud Pub/Sub) decouple catalog updates, order lifecycle events, and warehouse carrier dispatch.
+* **Two-Phase Distributed Sagas**: All order reservations utilize an Outbox Pattern with automatic compensating transactions to eliminate overselling and race conditions.
+* **Cardholder Data Isolation**: Zero plain credit card numbers (PAN) touch core infrastructure; all payment credentials are tokenized at the edge via a dedicated PCI-DSS Level 1 Cardholder Data Environment (CDE).
+
+---
+
+# 2. Multi-Tier Subsystem & Container Topology
+
+### 📐 Visual Diagram 1: Multi-Tier Cloud Subsystems & Compute Mesh (Template 08)
+\`\`\`mermaid
+graph TD
+    SHOPPER["👤 Global Shoppers (Web / Mobile / Voice)"] --> CDN["🌐 Google Cloud Armor & Anycast Edge CDN"]
+    SELLER["🏢 3P Marketplace Merchants"] --> CDN
+    CDN --> APIGW["🚪 Envoy API Gateway & Kong Ingress Mesh"]
+    
+    APIGW --> CATALOG["🔍 Product Catalog & Semantic Search Service (GKE Pods)"]
+    APIGW --> CART["🛒 Distributed Cart & Dynamic Pricing Service (Redis Cluster)"]
+    APIGW --> ORDER_SAGA["⚙️ High-Throughput Order Orchestration Saga (Go / gRPC)"]
+    
+    ORDER_SAGA --> PAYMENTS["💳 Tokenized Payment & Settlement Service (PCI-DSS CDE)"]
+    ORDER_SAGA --> WMS["📦 Fulfillment & Warehouse Logistics Engine (WMS / 3PL)"]
+    CATALOG <--> REC_AI["🤖 Two-Tower Collaborative Recommendation Engine"]
+\`\`\`
+
+---
+
+# 3. Microsecond Interaction Flow & Checkout Sequence
+
+### 📐 Visual Diagram 2: Micro-Level API Interaction Sequence & Latency Budget (Template 11)
+\`\`\`mermaid
+sequenceDiagram
+    autonumber
+    actor Shopper as 👤 Shopper
+    participant Gateway as 🚪 API Gateway
+    participant OrderSaga as ⚙️ Order Orchestrator
+    participant Inventory as 📦 WMS Inventory Lock
+    participant Payment as 💳 PCI Token Vault
+    participant Kafka as ⚡ Event Bus
+
+    Shopper->>Gateway: POST /api/v1/checkout/1-click (Idempotency-Key)
+    Gateway->>OrderSaga: gRPC ExecuteCheckout() [< 10ms]
+    OrderSaga->>Inventory: AcquireTemporaryHold(SKU, qty=1, ttl=900s) [< 15ms]
+    Inventory-->>OrderSaga: ✅ HoldConfirmed(reservation_id)
+    OrderSaga->>Payment: ChargeTokenizedCard(amount, token) [< 120ms]
+    Payment-->>OrderSaga: ✅ ChargeSettled(tx_id)
+    OrderSaga->>Kafka: PublishOrderCreated(order_id) [< 5ms]
+    OrderSaga-->>Gateway: 200 OK (Order Confirmed)
+    Gateway-->>Shopper: 🎉 Order Placed & Delivery ETA
+\`\`\`
+
+---
+
+# 4. Enterprise Domain Entity Model & Storage Architecture
+
+### 📐 Visual Diagram 3: Relational Domain ERD & High-Throughput Storage (Template 14)
+\`\`\`mermaid
+erDiagram
+    MERCHANTS ||--o{ PRODUCTS : lists
+    PRODUCTS ||--o{ SKUS : contains
+    SKUS ||--o{ INVENTORY_LOTS : tracks
+    SHOPPERS ||--o{ ORDERS : places
+    ORDERS ||--|{ ORDER_LINE_ITEMS : includes
+    ORDERS ||--o{ SHIPMENTS : dispatches
+    ORDERS ||--|| PAYMENT_TRANSACTIONS : settles
+
+    MERCHANTS {
+        string merchant_id PK
+        string business_name
+        string payout_account_token
+        string kyb_status
+    }
+    PRODUCTS {
+        string product_id PK
+        string merchant_id FK
+        string title
+        string category_path
+    }
+    SKUS {
+        string sku_id PK
+        string product_id FK
+        int price_cents
+        string barcode
+    }
+    ORDERS {
+        string order_id PK
+        string shopper_id FK
+        int total_amount_cents
+        string order_status
+        string idempotency_key
+    }
+\`\`\`
+
+---
+
+# 5. Zero-Trust Security Perimeter & PCI-DSS Boundaries
+
+### 📐 Visual Diagram 4: Zero-Trust Network Perimeter & Payment Isolation (Template 18)
+\`\`\`mermaid
+graph LR
+    subgraph UNTRUSTED["🌐 Public Internet Zone"]
+        CLIENT["Shopper Mobile & Web Clients"]
+    end
+    subgraph DMZ["🛡️ DMZ Edge Perimeter"]
+        WAF["Cloud Armor DDoS & OWASP Top 10"]
+        PROXY["Envoy mTLS Reverse Proxy"]
+    end
+    subgraph CDE["🔒 Isolated Cardholder Data Environment (PCI-DSS CDE)"]
+        VAULT["💳 Card Tokenization Engine (Cloud KMS HSM)"]
+        PSP["🏦 Multi-PSP Payment Gateway Mesh (Stripe / Adyen)"]
+    end
+    
+    CLIENT -->|"TLS 1.3"| WAF
+    WAF --> PROXY
+    PROXY -->|"Private Service Connect"| VAULT
+    VAULT --> PSP
+\`\`\`
+
+---
+
+# 6. Disaster Recovery & Multi-Region Replication
+
+### 📐 Visual Diagram 5: HA / DR Architecture & Multi-Region Replication (Template 19)
+\`\`\`mermaid
+graph TD
+    DNS["🌐 Anycast Global DNS & Cloud CDN (Latency-Based Routing)"] --> REGION_A["🏢 Primary Region (us-central1 GKE Active)"]
+    DNS --> REGION_B["🏢 Secondary Region (us-east4 GKE Active)"]
+    
+    REGION_A --> SPANNER_A["🗄️ Cloud Spanner Multi-Region Paxos Leader"]
+    REGION_B --> SPANNER_B["🗄️ Cloud Spanner Multi-Region Paxos Replicas"]
+    
+    SPANNER_A <-->|"Synchronous Cross-Region Paxos (RPO=0, RTO<15s)"| SPANNER_B
+\`\`\`
+
+---
+
+# 7. CI/CD Delivery Pipeline & Canary Rollouts
+
+### 📐 Visual Diagram 6: Multi-Stage CI/CD Security Pipeline & Progressive Canary (Template 20)
+\`\`\`mermaid
+graph LR
+    GIT["💻 Git Push / PR"] --> SAST["🛡️ SonarQube & Trivy Security Scan"]
+    SAST --> BUILD["📦 Docker Multi-Stage Container Build"]
+    BUILD --> SIGN["🔏 Cosign SLSA L3 Container Signing"]
+    SIGN --> CANARY["🚀 Argo Rollouts Canary (10% -> 25% -> 50% -> 100%)"]
+    CANARY --> PROD["🎉 Production GKE Cluster"]
+\`\`\`
+`,
+
+  tdd: `# Technical Design Document (TDD / LLD)
+
+## Amazon-Scale E-Commerce Microservices & Low-Level Component Engineering
+
+**Document ID:** TDD-RETAIL-2026-001  
+**Target Latency:** Sub-10ms gRPC Service-to-Service P99  
+**Concurrency Target:** 250,000 Concurrent Active Shopping Sessions  
+
+---
+
+# 1. Microservices Monorepo Architecture
+
+\`\`\`
+amazon-marketplace/
+├── apps/
+│   ├── shopper-portal/         # Next.js 15 SSR High-Performance Storefront
+│   ├── seller-center/          # Merchant Onboarding & Inventory Management
+│   ├── checkout-orchestrator/  # Go gRPC High-Throughput Order Saga Engine
+│   ├── catalog-search/         # Elasticsearch + ScaNN Vector Hybrid Search
+│   └── fulfillment-engine/     # Real-Time Warehouse Allocation & Routing
+├── packages/
+│   ├── proto-contracts/        # gRPC Protobuf Contracts & Type Definitions
+│   ├── db-schema/              # Spanner DDL & PostgreSQL Migrations
+│   └── pci-tokens/             # Zero-Knowledge Card Tokenizer SDK
+└── infra/
+    ├── terraform/              # Multi-Region GKE & Cloud Armor Infrastructure
+    └── argo-rollouts/          # Canary Deployment & Automated Metric Rollback
+\`\`\`
+
+---
+
+# 2. Production Database Schema (Cloud Spanner DDL)
+
+\`\`\`sql
+CREATE TABLE orders (
+    tenant_id STRING(36) NOT NULL,
+    order_id STRING(36) NOT NULL,
+    shopper_id STRING(64) NOT NULL,
+    merchant_id STRING(64) NOT NULL,
+    total_amount_cents INT64 NOT NULL,
+    currency STRING(3) NOT NULL,
+    order_status STRING(32) NOT NULL, -- PENDING, RESERVED, PAID, FULFILLED, CANCELLED
+    shipping_address JSON NOT NULL,
+    idempotency_key STRING(64) NOT NULL,
+    created_at TIMESTAMP NOT NULL OPTIONS (allow_commit_timestamp = true)
+) PRIMARY KEY (tenant_id, order_id);
+
+CREATE TABLE order_line_items (
+    tenant_id STRING(36) NOT NULL,
+    order_id STRING(36) NOT NULL,
+    line_item_id STRING(36) NOT NULL,
+    sku_id STRING(64) NOT NULL,
+    quantity INT64 NOT NULL,
+    unit_price_cents INT64 NOT NULL,
+    warehouse_id STRING(64) NOT NULL
+) PRIMARY KEY (tenant_id, order_id, line_item_id),
+  INTERLEAVE IN PARENT orders ON DELETE CASCADE;
+
+CREATE UNIQUE INDEX idx_orders_idempotency ON orders(tenant_id, idempotency_key);
+CREATE INDEX idx_orders_shopper ON orders(tenant_id, shopper_id, created_at DESC);
+\`\`\`
+
+---
+
+# 3. 1-Click Checkout Distributed Saga (Outbox Pattern)
+
+### 📐 Visual Diagram 1: Distributed Outbox Saga & Compensating Transaction Flow (Template 28)
+\`\`\`mermaid
+graph TD
+    START["1. Shopper Clicks 1-Click Buy"] --> LOCK["2. Acquire Redis Distributed Lock on SKU"]
+    LOCK --> SAGA["3. Order Orchestrator Creates Pending Saga Entry"]
+    SAGA --> INVENTORY["4. Reserve Warehouse Lot Quantity (TTL=900s)"]
+    
+    INVENTORY -->|Success| CHARGE["5. Charge Payment via PCI Token Vault"]
+    INVENTORY -->|Out of Stock| COMPENSATE_OUT["❌ Abort Order & Release Lock"]
+    
+    CHARGE -->|Approved| COMMIT["6. Commit Spanner Transaction & Publish to Kafka"]
+    CHARGE -->|Declined| COMPENSATE_PAY["❌ Release Warehouse Lot & Notify User"]
+\`\`\`
+
+---
+
+# 4. End-to-End Microservice Compute Topology
+
+### 📐 Visual Diagram 2: Microservice Compute Mesh & gRPC Channels (Template 08)
+\`\`\`mermaid
+graph TD
+    APIGW["🚪 Envoy Gateway (HTTP/3 & gRPC-Web)"] --> CATALOG_POD["🔍 Catalog Service (128 Pods Autoscaled)"]
+    APIGW --> CART_POD["🛒 Cart & Pricing Service (64 Pods)"]
+    APIGW --> SAGA_POD["⚙️ Order Orchestrator (Go High-Concurrency)"]
+    
+    CART_POD <--> REDIS["⚡ Redis Enterprise Cluster (Sub-1ms Latency)"]
+    CATALOG_POD <--> ELASTIC["🔍 OpenSearch / Elasticsearch Cluster"]
+    SAGA_POD <--> SPANNER["🗄️ Cloud Spanner Multi-Region Database"]
+\`\`\`
+`,
+
+  prd: `# Product Requirements Document (PRD)
+
+## Amazon-Scale Omnichannel E-Commerce & Merchant Marketplace Platform
+
+**Document ID:** PRD-RETAIL-2026-001  
+**Target Audience:** Product Managers, UX Architects, Engineering Leads  
+
+---
+
+# 1. Product Context & Personas
+
+### 📐 Visual Diagram 1: Marketplace System Context & Multi-Actor Ecosystem (Template 01)
+\`\`\`mermaid
+graph TD
+    SHOPPER["👤 Retail Shoppers (Mobile, Web, Voice)"] --> PLATFORM["🌐 Omnichannel E-Commerce Platform"]
+    SELLER["🏢 3P Marketplace Merchants"] --> PLATFORM
+    CARRIER["🚚 Logistics & 3PL Delivery Fleet"] --> PLATFORM
+    PSP["🏦 Payment Gateways (Stripe, Adyen, Apple Pay)"] --> PLATFORM
+\`\`\`
+
+---
+
+# 2. Product Functional Epics & Acceptance Criteria
+
+### EPIC-01: Universal Catalog & Sub-50ms Faceted Search (P0)
+* **Description**: Shoppers can search across 50M+ SKUs with instant typo-tolerant suggestions, category filters, and personalized ranking.
+* **Acceptance Criteria**: Search P95 response time $< 50\text{ms}$; real-time inventory stock badges updated within 2 seconds of stock changes.
+
+### EPIC-02: 1-Click Buy & Streamlined Checkout (P0)
+* **Description**: Authenticated shoppers can complete an order in a single click using their stored default payment token and shipping address.
+* **Acceptance Criteria**: Checkout conversion rate target $\ge 88\%$; zero duplicate charges under rapid multiple clicks (enforced by idempotency key).
+
+### EPIC-03: 3P Seller Central & Inventory Bulk Ingestion (P0)
+* **Description**: Merchants can register, undergo automated KYB verification, and sync inventory catalogs via CSV bulk upload or REST APIs.
+* **Acceptance Criteria**: Automated onboarding turnaround $< 15\text{ minutes}$; automated commission split calculation per category.
+`,
+
+  brd: `# Business Requirements Document (BRD)
+
+## Amazon-Scale Omnichannel Retail & Merchant Marketplace Transformation
+
+**Document ID:** BRD-RETAIL-2026-001  
+**Target GMV:** $10B+ Annual Gross Merchandise Value Target  
+**Strategic Horizon:** 2026–2029 Multi-Year Commercial Growth Baseline  
+
+---
+
+# 1. Executive Summary & Market Opportunity
+
+### 1.1 Business Problem Statement
+Traditional retail channels suffer from fragmented inventory silos, high shopping cart abandonment ($> 70\%$), and manual merchant onboarding. The **Amazon-Scale Omnichannel Marketplace** delivers a frictionless, hyper-personalized commerce platform that scales to multi-million concurrent shoppers while enabling third-party merchants to list and fulfill goods globally.
+
+### 1.2 Strategic Transformation & ROI Realization
+* **Conversion Rate Optimization**: 1-Click Buy increases mobile checkout conversion by $+32\%$.
+* **Merchant Ecosystem Growth**: Automated KYB seller onboarding enables $10\text{x}$ growth in active seller listings.
+* **Supply Chain Efficiency**: Automated multi-warehouse order routing reduces fulfillment delivery cost by $22\%$.
+
+---
+
+# 2. Marketplace Context & Actor Topology
+
+### 📐 Visual Diagram 1: Executive System Context & Stakeholder Topology (Template 01)
+\`\`\`mermaid
+graph TD
+    SHOPPERS["👥 Global Consumers & Prime Subscribers"] --> STOREFRONT["🌐 Omnichannel Web & Mobile Storefront"]
+    SELLERS["🏢 3P Marketplace Sellers"] --> SELLER_HUB["💼 Seller Central Portal & Catalog Ingestion"]
+    
+    STOREFRONT --> CORE["⚙️ Core Marketplace Engine & Dynamic Pricing"]
+    SELLER_HUB --> CORE
+    
+    CORE <--> PAYMENTS["💳 Global Payment Mesh (PCI-DSS Level 1)"]
+    CORE <--> LOGISTICS["🚚 3PL Carrier Mesh & Warehouse Management"]
+    CORE <--> ANALYTICS["📊 Real-Time Commerce Lakehouse & Dynamic Pricing"]
+\`\`\`
+`,
+
+  threat_model: `# STRIDE Threat Model & Payment Security Architecture
+
+## Amazon-Scale E-Commerce Platform Threat Assessment
+
+**Document ID:** SEC-RETAIL-2026-001  
+**Target Compliance:** PCI-DSS Level 1 v4.0, SOC 2 Type II  
+
+---
+
+# 1. Security Trust Boundaries & Perimeter Defense
+
+### 📐 Visual Diagram 1: Zero-Trust Security Perimeter & Cardholder Data Isolation (Template 18)
+\`\`\`mermaid
+graph LR
+    subgraph PUBLIC["🌐 Public Zone"]
+        CLIENT["Mobile / Web Browser"]
+    end
+    subgraph DMZ["🛡️ DMZ Edge"]
+        WAF["Cloud Armor (OWASP Top 10 + Rate Limiting)"]
+        GATEWAY["API Gateway (mTLS & OAuth2 Token Inspection)"]
+    end
+    subgraph CDE["🔒 Isolated Cardholder Data Environment (PCI-DSS CDE)"]
+        VAULT["💳 Tokenization Engine (KMS Cloud HSM)"]
+        PSP["🏦 Multi-Acquirer Payment Mesh"]
+    end
+    
+    CLIENT -->|"TLS 1.3"| WAF
+    WAF --> GATEWAY
+    GATEWAY -->|"Dedicated Private Link"| VAULT
+    VAULT --> PSP
+\`\`\`
+
+---
+
+# 2. STRIDE Threat Analysis Matrix
+
+| Threat Category | Target Subsystem | Attack Vector | Security Control & Mitigation | Risk Level |
+|---|---|---|---|:---:|
+| **Spoofing** | Seller API Gateway | Compromised API tokens attempting inventory theft | mTLS + HMAC-SHA256 request signing with nonces | **LOW** |
+| **Tampering** | Shopping Cart Price | Client-side payload price modification | Server-side cart calculation; price source locked to Spanner | **VERY LOW** |
+| **Repudiation** | Merchant Payouts | Disputed commission fee calculations | Immutable append-only audit ledger with cryptographic hashes | **VERY LOW** |
+| **Information Disclosure** | Customer Database | SQL Injection / Credential Stuffing | Prepared statements only; column-level AES-256 envelope encryption | **LOW** |
+| **Denial of Service** | Flash Sale Checkout | Bot army scalping high-demand inventory | Cloud Armor reCAPTCHA Enterprise + Virtual Waiting Room | **LOW** |
+`,
+
+  api_spec: `# API & Protocol Interface Specification
+
+## Amazon-Scale E-Commerce OpenAPI 3.1 & gRPC Interface Contracts
+
+**Document ID:** API-RETAIL-2026-001  
+**Protocols:** REST (HTTPS/JSON), gRPC (HTTP/2 Protobuf)  
+
+---
+
+# 1. Primary Checkout Execution Endpoint
+
+* **Route:** \`POST /api/v1/checkout/execute\`
+* **Headers:** \`Authorization: Bearer <JWT>\`, \`Idempotency-Key: <UUIDv4>\`
+* **Request Payload**:
+\`\`\`json
+{
+  "shopper_id": "usr_9984120",
+  "cart_id": "cart_881920_a1",
+  "payment_method_token": "pm_tok_pci_7719284",
+  "shipping_address_id": "addr_home_primary",
+  "delivery_speed": "SAME_DAY_PRIORITY",
+  "expected_total_cents": 12499,
+  "currency": "USD"
+}
+\`\`\`
+
+* **Response (201 Created)**:
+\`\`\`json
+{
+  "order_id": "ord_2026_99410294",
+  "status": "CONFIRMED",
+  "estimated_delivery": "2026-08-25T18:00:00Z",
+  "tracking_url": "https://amazon-app.internal/orders/ord_2026_99410294/track",
+  "line_items_count": 2,
+  "created_at": "2026-08-24T22:48:00Z"
+}
+\`\`\`
+`
+};
+
+export function getDomainMasterDocument(docId: string, domainId: string = 'retail', userPrompt?: string): string {
+  const isAmazonOrRetail = domainId === 'retail' || (userPrompt && /amazon|retail|ecommerce|cart|store|shop|marketplace/i.test(userPrompt));
+
+  if (isAmazonOrRetail && RETAIL_AMAZON_DOCUMENTS[docId]) {
+    return RETAIL_AMAZON_DOCUMENTS[docId];
+  }
+
+  return MASTER_DOCUMENTS[docId] || MASTER_DOCUMENTS.sdd;
+}
