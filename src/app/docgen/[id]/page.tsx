@@ -319,8 +319,23 @@ function DocDetailPageContent() {
           i++;
         }
 
-        const headers = tableLines[0].split('|').map((c) => c.trim()).filter(Boolean);
-        const dataRows = tableLines.slice(1).filter((r) => !r.includes('---')).map((r) => r.split('|').map((c) => c.trim()).filter((_, idx, arr) => idx >= 0 && idx < arr.length));
+        const parseTableRow = (rowStr: string) => {
+          const trimmed = rowStr.trim();
+          const content = trimmed.replace(/^\|/, '').replace(/\|$/, '');
+          return content.split('|').map((cell) => cell.trim());
+        };
+
+        const headers = parseTableRow(tableLines[0]);
+        const dataRows = tableLines
+          .slice(1)
+          .filter((r) => !r.includes('---'))
+          .map((r) => {
+            const cells = parseTableRow(r);
+            while (cells.length < headers.length) {
+              cells.push('');
+            }
+            return cells.slice(0, headers.length);
+          });
 
         elements.push(
           <div key={`table-${i}`} className={`my-5 overflow-x-auto rounded-2xl border shadow-md ${isLight ? 'border-slate-300 bg-white' : 'border-slate-700/80 bg-slate-950/60'}`}>

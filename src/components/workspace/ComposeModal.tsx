@@ -101,20 +101,23 @@ export const ComposeModal: React.FC<ComposeModalProps> = ({
           i++;
         }
 
-        const headers = tableLines[0]
-          .split('|')
-          .map((c) => c.trim())
-          .filter(Boolean);
+        const parseTableRow = (rowStr: string) => {
+          const trimmed = rowStr.trim();
+          const content = trimmed.replace(/^\|/, '').replace(/\|$/, '');
+          return content.split('|').map((cell) => cell.trim());
+        };
 
+        const headers = parseTableRow(tableLines[0]);
         const dataRows = tableLines
           .slice(1)
           .filter((rowLine) => !rowLine.includes('---'))
-          .map((rowLine) =>
-            rowLine
-              .split('|')
-              .map((c) => c.trim())
-              .filter((_, idx, arr) => idx >= 0 && idx < arr.length)
-          );
+          .map((rowLine) => {
+            const cells = parseTableRow(rowLine);
+            while (cells.length < headers.length) {
+              cells.push('');
+            }
+            return cells.slice(0, headers.length);
+          });
 
         elements.push(
           <div key={`table-${i}`} className={`my-4 overflow-x-auto rounded-xl border shadow-md ${
