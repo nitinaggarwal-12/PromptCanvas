@@ -231,7 +231,7 @@ async function runMasterAuditHarness() {
       while ((match = mermaidRegex.exec(doc)) !== null) {
         mermaidCount++;
         const code = match[1].trim();
-        const hasValidHeader = /^(?:graph\s+(?:TD|TB|LR|RL)|flowchart\s+(?:TD|TB|LR|RL)|sequenceDiagram|classDiagram|stateDiagram)/m.test(code);
+        const hasValidHeader = /^(?:graph\s+(?:TD|TB|LR|RL|BT)|flowchart\s+(?:TD|TB|LR|RL|BT)|sequenceDiagram|classDiagram|stateDiagram|erDiagram|gantt|pie|journey)/m.test(code);
         const hasMatchingBrackets = (code.match(/\[/g) || []).length === (code.match(/\]/g) || []).length;
         const hasMatchingParens = (code.match(/\(/g) || []).length === (code.match(/\)/g) || []).length;
 
