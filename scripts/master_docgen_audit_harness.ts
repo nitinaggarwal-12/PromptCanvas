@@ -16,6 +16,8 @@ import {
   moveSectionDown,
   changeSectionHierarchy,
 } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/versioning/docSectionEngine';
+import { generateSlideDeck } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/export/slideDeckEngine';
+import { generateTerraformBundle, simulateTerraformPlan } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/iac/terraformEngine';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -556,6 +558,74 @@ Zero-trust VPC service perimeters protect all data at rest and in transit.`;
     allReconstructedMatch,
     `Round-trip parse & reconstruct preserves AST structure across all 17 Master Document Archetypes`
   );
+
+  // ============================================================================
+  // SUITE 11: 16:9 PRESENTATION SLIDE DECK GENERATION & PPTX ENGINE
+  // ============================================================================
+  console.log('\n📌 SUITE 11: 16:9 Presentation Slide Deck Generation & PPTX Engine');
+
+  for (const domain of domains) {
+    const deck = generateSlideDeck(
+      'Autonomous Micro-Hub & High-Throughput Cluster Platform',
+      'Production deployment with multi-region failover and zero-trust VPC perimeters.',
+      domain,
+      'sdd'
+    );
+    assert(
+      deck.slides.length === 8,
+      `Slide Deck for [${domain}] has exactly 8 structured 16:9 slides`
+    );
+    assert(
+      deck.slides[0].category === 'title' && deck.slides[1].category === 'problem' && deck.slides[7].category === 'roadmap',
+      `Slide categories follow structured executive flow for [${domain}]`
+    );
+    assert(
+      (deck.slides[1].kpiCards?.length || 0) >= 4,
+      `Slide 2 contains at least 4 quantified domain KPI cards for [${domain}]`
+    );
+    assert(
+      deck.slides.every((s) => s.speakerNotes.length > 20),
+      `All 8 slides contain actionable speaker notes and presentation script for [${domain}]`
+    );
+  }
+
+  // ============================================================================
+  // SUITE 12: TERRAFORM / IAC GENERATION, KUBERNETES MANIFESTS & DRY-RUN PLAN SIMULATION
+  // ============================================================================
+  console.log('\n📌 SUITE 12: Terraform / IaC Modules, Kubernetes Specs & Plan Simulation');
+
+  for (const domain of domains) {
+    const tfBundle = generateTerraformBundle(
+      'Enterprise Ingestion & Compute Engine',
+      'Zero-trust VPC SC with Cloud Spanner multi-region and Cloud Armor WAF.',
+      domain,
+      'gcp'
+    );
+    assert(
+      tfBundle.mainTf.includes('resource "google_compute_network"') &&
+      tfBundle.mainTf.includes('resource "google_container_cluster"') &&
+      tfBundle.mainTf.includes('resource "google_spanner_instance"'),
+      `Terraform main.tf contains VPC, GKE, and Spanner definitions for [${domain}]`
+    );
+    assert(
+      tfBundle.variablesTf.includes('variable "project_id"') && tfBundle.outputsTf.includes('output "gke_cluster_endpoint"'),
+      `Terraform variables and outputs defined with strict typing for [${domain}]`
+    );
+    assert(
+      tfBundle.k8sManifestYaml.includes('kind: Deployment') && tfBundle.k8sManifestYaml.includes('kind: HorizontalPodAutoscaler'),
+      `Kubernetes manifest includes Deployment, Service, and HPA for [${domain}]`
+    );
+
+    const simulation = simulateTerraformPlan(tfBundle);
+    assert(
+      simulation.resourcesToAdd === 18 && simulation.resourcesToDestroy === 0,
+      `Dry-run terraform plan accurately projects 18 resources to add with 0 to destroy for [${domain}]`
+    );
+    assert(
+      simulation.securityChecksPassed > 20,
+      `Security compliance checks passed (>20 CIS benchmarks) for [${domain}]`
+    );
+  }
 
   // ============================================================================
   // SUMMARY REPORT

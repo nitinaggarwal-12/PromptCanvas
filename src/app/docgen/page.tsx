@@ -51,7 +51,10 @@ import {
   PlusCircle,
   CornerDownRight,
   FolderTree,
-  X
+  X,
+  Presentation,
+  Terminal,
+  Send
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import {
@@ -74,6 +77,10 @@ import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
 import DocGenFloatingCopilot from '@/components/DocGenFloatingCopilot';
+import SlideDeckPresenterModal from '@/components/SlideDeckPresenterModal';
+import TerraformIaCModal from '@/components/TerraformIaCModal';
+import EnterpriseSyncModal from '@/components/EnterpriseSyncModal';
+import CollaborativeTeamPresence from '@/components/CollaborativeTeamPresence';
 import {
   VersionSnapshot,
   ChatMessage,
@@ -472,6 +479,11 @@ function DocGenContent() {
   const [newSectionTitleDraft, setNewSectionTitleDraft] = useState<string>('');
   const [newSectionContentDraft, setNewSectionContentDraft] = useState<string>('');
   const [newSectionLevelDraft, setNewSectionLevelDraft] = useState<1 | 2 | 3>(2);
+
+  // Slide Deck, Terraform IaC & Enterprise Sync Modal States
+  const [isSlideDeckOpen, setIsSlideDeckOpen] = useState<boolean>(false);
+  const [isTerraformOpen, setIsTerraformOpen] = useState<boolean>(false);
+  const [isEnterpriseSyncOpen, setIsEnterpriseSyncOpen] = useState<boolean>(false);
 
   // Load version history and chat from localStorage when projectId is active
   useEffect(() => {
@@ -2198,6 +2210,36 @@ function DocGenContent() {
                       )}
                     </button>
 
+                    {/* Slide Deck (16:9) Modal Trigger */}
+                    <button
+                      onClick={() => setIsSlideDeckOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-amber-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Open interactive 16:9 executive presentation slide deck & export to PowerPoint (.pptx)"
+                    >
+                      <Presentation className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Slide Deck (16:9)</span>
+                    </button>
+
+                    {/* Terraform IaC Generator Trigger */}
+                    <button
+                      onClick={() => setIsTerraformOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-purple-500/10 hover:from-purple-500/20 hover:to-indigo-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Generate and inspect deployable HashiCorp Terraform modules and simulate terraform plan"
+                    >
+                      <Terminal className="w-3.5 h-3.5 text-purple-500" />
+                      <span>Terraform IaC</span>
+                    </button>
+
+                    {/* Jira & Confluence Toolchain Sync Trigger */}
+                    <button
+                      onClick={() => setIsEnterpriseSyncOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500/10 via-cyan-500/10 to-sky-500/10 hover:from-sky-500/20 hover:to-cyan-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Export Epics/Stories to Jira, Confluence Space, and GitHub PRD templates"
+                    >
+                      <Send className="w-3.5 h-3.5 text-sky-500" />
+                      <span>Jira &amp; Confluence Sync</span>
+                    </button>
+
                     {/* Change Report Modal Trigger */}
                     <button
                       onClick={() => setIsChangeReportOpen(true)}
@@ -2239,7 +2281,7 @@ function DocGenContent() {
                       title="Print or Save as PDF"
                     >
                       <Printer className="w-3.5 h-3.5 text-sky-500" />
-                      <span>Print to PDF</span>
+                      <span>Print / PDF</span>
                     </button>
 
                     {/* Download Word DOCX */}
@@ -2271,6 +2313,9 @@ function DocGenContent() {
                     </button>
                   </div>
                 </div>
+
+                {/* REAL-TIME COLLABORATIVE PRESENCE BAR */}
+                <CollaborativeTeamPresence projectId={projectId} isLight={isLight} />
 
                 {/* Rendered Document Body */}
                 <div className="pt-2">
@@ -2574,6 +2619,38 @@ function DocGenContent() {
         selectedDomain={selectedDomain}
         projectTitle={projectTitle}
         docTypeName={DOC_ARCHETYPES_META.find((m) => m.id === selectedArchetypeId)?.name || 'Architecture Specification'}
+      />
+
+      {/* 16:9 Executive Slide Deck Presenter Modal */}
+      <SlideDeckPresenterModal
+        isOpen={isSlideDeckOpen}
+        onClose={() => setIsSlideDeckOpen(false)}
+        projectTitle={projectTitle}
+        projectScope={projectScopePrompt}
+        domain={selectedDomain}
+        docArchetype={selectedArchetypeId}
+        docMarkdown={generatedDocContent || ''}
+        isLight={isLight}
+      />
+
+      {/* Terraform & Kubernetes Infrastructure as Code (IaC) Modal */}
+      <TerraformIaCModal
+        isOpen={isTerraformOpen}
+        onClose={() => setIsTerraformOpen(false)}
+        projectTitle={projectTitle}
+        projectScope={projectScopePrompt}
+        domain={selectedDomain}
+        isLight={isLight}
+      />
+
+      {/* Enterprise Toolchain Sync Modal (Jira, Confluence, GitHub, Webhook) */}
+      <EnterpriseSyncModal
+        isOpen={isEnterpriseSyncOpen}
+        onClose={() => setIsEnterpriseSyncOpen(false)}
+        projectTitle={projectTitle}
+        docArchetype={selectedArchetypeId}
+        docMarkdown={generatedDocContent || ''}
+        isLight={isLight}
       />
     </div>
   );
