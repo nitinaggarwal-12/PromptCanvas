@@ -693,27 +693,51 @@ function DocGenContent() {
 
     try {
       // Step 1: Synthesizing Multi-Blueprint System Graph
-      await new Promise((r) => setTimeout(r, 400));
-      setGenerationStep(2);
-
+      setGenerationStep(1);
+      await new Promise((r) => setTimeout(r, 300));
+      
       // Step 2: Mapping AST Component Inventories & Slot Attachments
-      await new Promise((r) => setTimeout(r, 400));
-      setGenerationStep(3);
-
-      // Step 3: Synthesizing Production Document from Master Archetype + Custom Scope
-      const synthesizedContent = synthesizeCustomExecutiveDocument(
-        selectedArchetypeId,
-        activeMeta,
-        projectTitle,
-        effectiveDomain,
-        projectScopePrompt,
-        slotCustomizations
-      );
-
-      setGenerationStep(4);
+      setGenerationStep(2);
       await new Promise((r) => setTimeout(r, 300));
 
-      setGeneratedDocContent(synthesizedContent);
+      // Step 3: Invoking Gemini AI Model to synthesize custom architectural specification
+      setGenerationStep(3);
+      const res = await fetch('/api/docgen/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          archetypeId: selectedArchetypeId,
+          projectTitle,
+          projectScopePrompt,
+          selectedDomain: effectiveDomain,
+          slotCustomizations,
+        }),
+      });
+
+      let finalDoc = '';
+      if (res.ok) {
+        const data = await res.json();
+        if (data.markdown) {
+          finalDoc = data.markdown;
+        }
+      }
+
+      // If Gemini returned empty or failed, use curated synthesized master document
+      if (!finalDoc) {
+        finalDoc = synthesizeCustomExecutiveDocument(
+          selectedArchetypeId,
+          activeMeta,
+          projectTitle,
+          effectiveDomain,
+          projectScopePrompt,
+          slotCustomizations
+        );
+      }
+
+      setGenerationStep(4);
+      await new Promise((r) => setTimeout(r, 200));
+
+      setGeneratedDocContent(finalDoc);
       setActiveTab('studio');
 
       // Update browser URL with unique project ID and parameters
@@ -723,7 +747,14 @@ function DocGenContent() {
       }
     } catch (err: any) {
       console.error('DocGen generation error:', err);
-      const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, effectiveDomain, projectScopePrompt);
+      const fallbackContent = synthesizeCustomExecutiveDocument(
+        selectedArchetypeId,
+        activeMeta,
+        projectTitle,
+        effectiveDomain,
+        projectScopePrompt,
+        slotCustomizations
+      ) || MASTER_DOCUMENTS[selectedArchetypeId];
       setGeneratedDocContent(fallbackContent);
     } finally {
       setIsGenerating(false);
