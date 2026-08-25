@@ -125,9 +125,7 @@ export default function SuperAdminDashboard() {
             <div className="flex items-center gap-2.5">
               <Link
                 href="/dashboard"
-                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                }`}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
                 title="Return to Operations Dashboard"
               >
                 <span>Dashboard</span>

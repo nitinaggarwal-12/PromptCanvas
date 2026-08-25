@@ -302,10 +302,10 @@ function CanonicalContent() {
 
               <Link
                 href="/workspace"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
                 title="Design Canvas Workspace"
               >
-                <LayoutGrid className="w-3.5 h-3.5" />
+                <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
                 <span className="hidden sm:inline">Workspace</span>
               </Link>
 
