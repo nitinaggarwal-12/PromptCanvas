@@ -56,6 +56,15 @@ export default function TerraformIaCModal({
     }
   }, [isOpen, projectTitle, projectScope, domain]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !bundle) return null;
 
   const getActiveCode = () => {
@@ -66,6 +75,7 @@ export default function TerraformIaCModal({
       case 'tfvars': return bundle.terraformTfvars;
       case 'provider': return bundle.providerTf;
       case 'k8s': return bundle.k8sManifestYaml;
+      case 'plan': return simulation?.planOutput || '';
       default: return bundle.mainTf;
     }
   };
@@ -78,6 +88,7 @@ export default function TerraformIaCModal({
       case 'tfvars': return 'terraform.tfvars';
       case 'provider': return 'provider.tf';
       case 'k8s': return 'k8s_manifest.yaml';
+      case 'plan': return 'terraform_plan_simulation.log';
       default: return 'main.tf';
     }
   };
