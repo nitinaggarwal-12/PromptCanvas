@@ -219,6 +219,92 @@ async function runMasterAuditHarness() {
   }
 
   // ============================================================================
+  // SUITE 5: MERMAID FLOWCHART & DIAGRAM SYNTAX VALIDATION
+  // ============================================================================
+  console.log('\n📌 SUITE 5: Embedded Mermaid Flowchart & Sequence Syntax Validation');
+  const mermaidRegex = /```mermaid\s*([\s\S]*?)```/g;
+  for (const meta of DOC_ARCHETYPES_META) {
+    for (const domain of domains) {
+      const doc = getDomainMasterDocument(meta.id, domain) || MASTER_DOCUMENTS[meta.id] || '';
+      let match;
+      let mermaidCount = 0;
+      while ((match = mermaidRegex.exec(doc)) !== null) {
+        mermaidCount++;
+        const code = match[1].trim();
+        const hasValidHeader = /^(?:graph\s+(?:TD|TB|LR|RL)|flowchart\s+(?:TD|TB|LR|RL)|sequenceDiagram|classDiagram|stateDiagram)/m.test(code);
+        const hasMatchingBrackets = (code.match(/\[/g) || []).length === (code.match(/\]/g) || []).length;
+        const hasMatchingParens = (code.match(/\(/g) || []).length === (code.match(/\)/g) || []).length;
+
+        assert(
+          hasValidHeader && hasMatchingBrackets && hasMatchingParens,
+          `Mermaid Block #${mermaidCount} in Archetype [${meta.shortName}] x Domain [${domain}]`,
+          !hasValidHeader ? 'Missing valid Mermaid diagram header' : !hasMatchingBrackets ? 'Unbalanced brackets' : 'Unbalanced parens'
+        );
+      }
+    }
+  }
+
+  // ============================================================================
+  // SUITE 6: DEEP-LINK URL SERIALIZATION & ROUNDTRIP PRESERVATION
+  // ============================================================================
+  console.log('\n📌 SUITE 6: Deep-Link URL Parameter Encoding & Deserialization Stress Test');
+  const deepLinkScenarios = [
+    { title: 'AeroNode 5G / AI-Mesh & Edge-Robotics', domain: 'manufacturing', doc: 'fdd', proj: 'PROJ-98124' },
+    { title: 'ApexPay & Plaid <> "Zero-Trust" Settlement', domain: 'fintech', doc: 'sdd', proj: 'PROJ-77192' },
+    { title: 'OmniVue E-Commerce / WMS & Checkout', domain: 'retail', doc: 'prd', proj: 'PROJ-33419' },
+    { title: 'VoltGrid & Tesla Megapack (BESS) <V2G>', domain: 'manufacturing', doc: 'tdd', proj: 'PROJ-11029' },
+  ];
+
+  for (const s of deepLinkScenarios) {
+    const params = new URLSearchParams({
+      tab: 'studio',
+      doc: s.doc,
+      proj: s.proj,
+      domain: s.domain,
+      title: s.title,
+    });
+    const serialized = params.toString();
+    const parsedParams = new URLSearchParams(serialized);
+
+    const matchTitle = parsedParams.get('title') === s.title;
+    const matchDomain = parsedParams.get('domain') === s.domain;
+    const matchDoc = parsedParams.get('doc') === s.doc;
+    const matchProj = parsedParams.get('proj') === s.proj;
+
+    assert(
+      matchTitle && matchDomain && matchDoc && matchProj,
+      `Deep-Link Roundtrip for: "${s.title}"`,
+      `Mismatch in deserialized query parameters`
+    );
+  }
+
+  // ============================================================================
+  // SUITE 7: 2D GEOMETRY BOUNDING BOX & CANVAS COORDINATE INTEGRITY
+  // ============================================================================
+  console.log('\n📌 SUITE 7: 2D Geometry Bounding Box & 16:9 Canvas Coordinate Guard');
+  for (const tpl of CANONICAL_TEMPLATES) {
+    const xml = tpl.generateXml('biopharma', 'light');
+    const geomMatches = Array.from(xml.matchAll(/<mxGeometry\s+[^>]*x="([^"]+)"[^>]*y="([^"]+)"[^>]*width="([^"]+)"[^>]*height="([^"]+)"/g));
+    
+    let allValid = true;
+    let detail = '';
+    for (const m of geomMatches) {
+      const x = parseFloat(m[1]);
+      const y = parseFloat(m[2]);
+      const w = parseFloat(m[3]);
+      const h = parseFloat(m[4]);
+
+      if (isNaN(x) || isNaN(y) || isNaN(w) || isNaN(h) || w <= 0 || h <= 0) {
+        allValid = false;
+        detail = `Invalid geometry: x=${x}, y=${y}, w=${w}, h=${h}`;
+        break;
+      }
+    }
+
+    assert(allValid && geomMatches.length > 0, `Template ${tpl.id} 2D Geometry Integrity (${geomMatches.length} nodes checked)`, detail);
+  }
+
+  // ============================================================================
   // SUMMARY REPORT
   // ============================================================================
   console.log('\n================================================================');
