@@ -96,7 +96,7 @@ export default function DiagramViewerRenderSafe({
 
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
-    ...(isCompactViewport && aspectRatioId !== '9:16'
+    ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
       : {}),
   };
@@ -118,23 +118,20 @@ export default function DiagramViewerRenderSafe({
 <meta charset="utf-8">
 <style>
   html, body { margin:0; padding:0; width:100%; height:100%; background:${bgColor}; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-  .canvas-container { position:absolute; inset:0; padding:4px; box-sizing:border-box; overflow:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:${bgColor}; }
-  .mxgraph { width:100%; min-height:100%; display:flex; align-items:center; justify-content:center; background:transparent; }
+  .canvas-container { position:absolute; inset:0; padding:6px; box-sizing:border-box; overflow:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:${bgColor}; }
+  .mxgraph { width:100%; height:100%; min-height:100%; display:flex; align-items:center; justify-content:center; background:transparent; }
 
-  /* IMPORTANT: resize only the diagram SVG, never arbitrary Draw.io overlay DIVs. */
+  /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping */
   .mxgraph > svg,
-  .mxgraph > div > svg { width:100% !important; max-width:100% !important; height:auto !important; margin:0 auto !important; display:block !important; }
-  .mxgraph > div { max-width:100%; }
+  .mxgraph > div > svg { width:100% !important; max-width:100% !important; height:auto !important; max-height:100% !important; margin:0 auto !important; display:block !important; }
+  .mxgraph > div { max-width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
   .geEditor { background-color:transparent !important; }
 
   @media (max-width:1280px), (pointer:coarse) {
-    .canvas-container { padding:8px 24px 18px 8px; }
-    .mxgraph { width:max(1120px, calc(100vw - 40px)); min-width:max(1120px, calc(100vw - 40px)); min-height:0; align-items:flex-start; justify-content:flex-start; }
-    .mxgraph > svg,
-    .mxgraph > div > svg { width:max(1120px, calc(100vw - 40px)) !important; min-width:max(1120px, calc(100vw - 40px)) !important; max-width:none !important; height:auto !important; margin:0 !important; }
+    .canvas-container { padding:8px 16px; }
   }
 
-  ::-webkit-scrollbar { width:4px; height:4px; }
+  ::-webkit-scrollbar { width:6px; height:6px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(100,116,139,.4); border-radius:9999px; }
 

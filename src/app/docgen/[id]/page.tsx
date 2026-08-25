@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Maximize2,
+  Minimize2,
   FileCode,
   BookOpen,
   LayoutGrid,
@@ -214,6 +215,7 @@ function InlineDiagramFigure({
   parsedFlows,
 }: InlineDiagramFigureProps) {
   const [viewMode, setViewMode] = useState<'canvas' | 'image'>('canvas');
+  const [isExpanded, setIsExpanded] = useState(false);
   const [copiedXml, setCopiedXml] = useState(false);
 
   const canonicalTpl =
@@ -301,13 +303,29 @@ function InlineDiagramFigure({
             </button>
           </div>
 
+          {viewMode === 'canvas' && (
+            <button
+              type="button"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1.5 transition-all ${
+                isExpanded
+                  ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200'
+              }`}
+              title={isExpanded ? 'Fit View' : 'Expand Full Blueprint View'}
+            >
+              {isExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              <span>{isExpanded ? 'Fit View' : 'Expand View'}</span>
+            </button>
+          )}
+
           {canonicalTpl && (
             <Link
               href={`/canonical/${canonicalTpl.id}`}
               target="_blank"
               className="px-3.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105"
             >
-              <Maximize2 className="w-3.5 h-3.5" />
+              <ExternalLink className="w-3.5 h-3.5" />
               <span>Open in Canvas Editor</span>
             </Link>
           )}
@@ -328,7 +346,13 @@ function InlineDiagramFigure({
       <div className="p-6 space-y-6">
         {/* VIEW 1: LIVE INTERACTIVE VECTOR DRAW.IO CANVAS */}
         {viewMode === 'canvas' && diagramXml && (
-          <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-inner min-h-[460px]">
+          <div
+            className={`rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-inner transition-all duration-300 ${
+              isExpanded
+                ? 'h-[1100px] md:h-[1250px]'
+                : 'h-[740px] md:h-[840px] lg:h-[920px]'
+            }`}
+          >
             <DiagramViewerRenderSafe
               xml={diagramXml}
               bgTheme={isLight ? 'light' : 'dark'}
@@ -343,7 +367,7 @@ function InlineDiagramFigure({
             <img
               src={imageSrc}
               alt={canonicalTpl?.name || 'Architecture Diagram'}
-              className="w-full max-h-[550px] object-contain rounded-xl"
+              className="w-full max-h-[700px] object-contain rounded-xl mx-auto"
               onError={(e) => {
                 if (canonicalTpl) {
                   (e.target as HTMLImageElement).src = `/images/${canonicalTpl.id}.png`;
