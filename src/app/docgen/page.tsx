@@ -42,7 +42,16 @@ import {
   FileCheck,
   Building2,
   ChevronDown,
-  Tag
+  Tag,
+  Edit3,
+  Save,
+  CopyPlus,
+  ArrowUp,
+  ArrowDown,
+  PlusCircle,
+  CornerDownRight,
+  FolderTree,
+  X
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import {
@@ -76,6 +85,18 @@ import {
   loadVersionHistory,
   formatRelativeTime,
 } from '@/lib/versioning/docVersionEngine';
+import {
+  DocumentSection,
+  parseDocumentIntoSections,
+  reconstructDocumentFromSections,
+  updateSection,
+  deleteSection,
+  cloneSection,
+  insertNewSectionAfter,
+  moveSectionUp,
+  moveSectionDown,
+  changeSectionHierarchy,
+} from '@/lib/versioning/docSectionEngine';
 
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
@@ -443,6 +464,15 @@ function DocGenContent() {
   const [versionHistory, setVersionHistory] = useState<VersionSnapshot[]>([]);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
 
+  // Granular Section-Level Hierarchy & Editing State
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editTitleDraft, setEditTitleDraft] = useState<string>('');
+  const [editContentDraft, setEditContentDraft] = useState<string>('');
+  const [addingSectionBelowId, setAddingSectionBelowId] = useState<string | null>(null);
+  const [newSectionTitleDraft, setNewSectionTitleDraft] = useState<string>('');
+  const [newSectionContentDraft, setNewSectionContentDraft] = useState<string>('');
+  const [newSectionLevelDraft, setNewSectionLevelDraft] = useState<1 | 2 | 3>(2);
+
   // Load version history and chat from localStorage when projectId is active
   useEffect(() => {
     if (!projectId) return;
@@ -706,8 +736,8 @@ function DocGenContent() {
     }
   }, [generatedDocContent, activeMeta, projectId]);
 
-  // Handle Copilot Document Text Update (bumps doc version, preserves diagram slots)
-  const handleApplyDocUpdate = (newMarkdown: string, summary: string, author: 'AI Copilot' | 'User' = 'AI Copilot') => {
+  // Handle AI Assist Document Text Update (bumps doc version, preserves diagram slots)
+  const handleApplyDocUpdate = (newMarkdown: string, summary: string, author: 'AI Assist' | 'User' = 'AI Assist') => {
     const nextVer = bumpVersionTag(docVersion);
     const currentSlots: Record<number, DiagramSlotVersionData> = {};
     activeMeta.blueprintPack.forEach((slot, idx) => {
@@ -740,7 +770,7 @@ function DocGenContent() {
     saveVersionHistory(projectId || 'default', updatedHistory, chatHistory);
   };
 
-  // Handle Copilot Diagram Slot Update (bumps specific slot version, preserves doc markdown)
+  // Handle AI Assist Diagram Slot Update (bumps specific slot version, preserves doc markdown)
   const handleApplyDiagramUpdate = (slotIndex: number, newPrompt: string, summary: string) => {
     const slotKey = slotIndex;
     const currentSlotVersion = versionHistory[0]?.diagramSlots[slotKey]?.version || 'v1.0';
@@ -769,7 +799,7 @@ function DocGenContent() {
       id: `snap_${Date.now()}_diag`,
       versionTag: docVersion,
       timestamp: new Date().toISOString(),
-      author: 'AI Copilot',
+      author: 'AI Assist',
       changeSummary: summary,
       targetType: 'diagram',
       targetSlotIndex: slotIndex,
@@ -835,6 +865,106 @@ function DocGenContent() {
       saveVersionHistory(projectId || 'default', versionHistory, updated);
       return updated;
     });
+  };
+
+  // Section Action Handlers
+  const handleStartEditSection = (sec: DocumentSection) => {
+    setEditingSectionId(sec.id);
+    setEditTitleDraft(sec.title);
+    setEditContentDraft(sec.content);
+    setAddingSectionBelowId(null);
+  };
+
+  const handleCancelEditSection = () => {
+    setEditingSectionId(null);
+  };
+
+  const handleSaveSection = (sec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = updateSection(sections, sec.id, editTitleDraft, editContentDraft);
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Edited Section "${editTitleDraft || sec.title}"`, 'User');
+    setEditingSectionId(null);
+  };
+
+  const handleDeleteSection = (sec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    if (typeof window !== 'undefined' && !window.confirm(`Are you sure you want to delete section "${sec.title}"?`)) {
+      return;
+    }
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = deleteSection(sections, sec.id);
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Deleted Section "${sec.title}"`, 'User');
+    if (editingSectionId === sec.id) setEditingSectionId(null);
+  };
+
+  const handleCloneSection = (sec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = cloneSection(sections, sec.id);
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Cloned Section "${sec.title}"`, 'User');
+  };
+
+  const handleStartAddSectionBelow = (sec: DocumentSection) => {
+    setAddingSectionBelowId(sec.id);
+    setNewSectionTitleDraft('New Architectural Chapter');
+    setNewSectionContentDraft('* Add technical specifications, SLA tables, and requirements here.');
+    setNewSectionLevelDraft(sec.level);
+    setEditingSectionId(null);
+  };
+
+  const handleCancelAddSectionBelow = () => {
+    setAddingSectionBelowId(null);
+  };
+
+  const handleConfirmAddSectionBelow = (targetSec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = insertNewSectionAfter(
+      sections,
+      targetSec.id,
+      newSectionLevelDraft,
+      newSectionTitleDraft,
+      newSectionContentDraft
+    );
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Added New Section "${newSectionTitleDraft}"`, 'User');
+    setAddingSectionBelowId(null);
+  };
+
+  const handleMoveSectionUp = (sec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = moveSectionUp(sections, sec.id);
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Moved Up Section "${sec.title}"`, 'User');
+  };
+
+  const handleMoveSectionDown = (sec: DocumentSection) => {
+    if (!generatedDocContent) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = moveSectionDown(sections, sec.id);
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Moved Down Section "${sec.title}"`, 'User');
+  };
+
+  const handlePromoteSection = (sec: DocumentSection) => {
+    if (!generatedDocContent || sec.level <= 1) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = changeSectionHierarchy(sections, sec.id, 'promote');
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Promoted "${sec.title}" to Higher Parent Level (H${sec.level - 1})`, 'User');
+  };
+
+  const handleDemoteSection = (sec: DocumentSection) => {
+    if (!generatedDocContent || sec.level >= 3) return;
+    const sections = parseDocumentIntoSections(generatedDocContent);
+    const updated = changeSectionHierarchy(sections, sec.id, 'demote');
+    const newMarkdown = reconstructDocumentFromSections(updated);
+    handleApplyDocUpdate(newMarkdown, `Demoted "${sec.title}" to Leaf Sub-Section Level (H${sec.level + 1})`, 'User');
   };
 
   // Download Word docx
@@ -939,51 +1069,31 @@ function DocGenContent() {
     window.print();
   };
 
-  // Parse markdown for executive publication rendering
-  const renderExecutiveDocument = (text: string) => {
-    const lines = text.split('\n');
+  // Helper to render markdown content inside a section (tables, bullets, code blocks, diagrams, paragraphs)
+  const renderMarkdownBlocks = (content: string, secKey: string) => {
+    if (!content.trim()) return null;
+    const lines = content.split('\n');
     const elements: React.ReactNode[] = [];
     let i = 0;
 
     while (i < lines.length) {
       const line = lines[i];
 
-      // H1 Header
-      if (line.startsWith('# ')) {
-        elements.push(
-          <div key={`h1-${i}`} className={`pb-4 border-b-2 mt-6 mb-4 ${isLight ? 'border-sky-600' : 'border-sky-500/60'}`}>
-            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-1">
-              <Sparkles className="w-3.5 h-3.5" /> PromptCanvas Architecture Specification
-            </div>
-            <h1 className={`text-2xl md:text-3xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-slate-50'}`}>
-              {line.replace('# ', '')}
-            </h1>
-          </div>
-        );
-        i++;
-        continue;
-      }
-
-      // H2 Header
-      if (line.startsWith('## ')) {
-        elements.push(
-          <div key={`h2-${i}`} className="mt-8 mb-3 pt-2">
-            <h2 className={`text-lg md:text-xl font-bold flex items-center gap-2 ${isLight ? 'text-sky-800' : 'text-sky-400'}`}>
-              <span className={`h-2.5 w-2.5 rounded-full ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`}></span>
-              {line.replace('## ', '')}
-            </h2>
-          </div>
-        );
-        i++;
-        continue;
-      }
-
-      // H3 Header
+      // Nested Sub-headers inside section
       if (line.startsWith('### ')) {
         elements.push(
-          <h3 key={`h3-${i}`} className={`text-sm md:text-base font-bold uppercase tracking-wider mt-5 mb-1.5 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+          <h3 key={`subh3-${secKey}-${i}`} className={`text-sm md:text-base font-bold uppercase tracking-wider mt-4 mb-2 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
             {line.replace('### ', '')}
           </h3>
+        );
+        i++;
+        continue;
+      }
+      if (line.startsWith('#### ')) {
+        elements.push(
+          <h4 key={`subh4-${secKey}-${i}`} className={`text-xs md:text-sm font-semibold tracking-wide mt-3 mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-400'}`}>
+            {line.replace('#### ', '')}
+          </h4>
         );
         i++;
         continue;
@@ -991,7 +1101,7 @@ function DocGenContent() {
 
       // Horizontal rule
       if (line.trim() === '---') {
-        elements.push(<hr key={`hr-${i}`} className={`my-6 ${isLight ? 'border-slate-300' : 'border-slate-800'}`} />);
+        elements.push(<hr key={`hr-${secKey}-${i}`} className={`my-4 ${isLight ? 'border-slate-300' : 'border-slate-800'}`} />);
         i++;
         continue;
       }
@@ -1023,7 +1133,7 @@ function DocGenContent() {
           });
 
         elements.push(
-          <div key={`table-${i}`} className={`my-5 overflow-x-auto rounded-2xl border shadow-md ${
+          <div key={`table-${secKey}-${i}`} className={`my-4 overflow-x-auto rounded-2xl border shadow-md ${
             isLight ? 'border-slate-300 bg-white' : 'border-slate-700/80 bg-slate-950/60'
           }`}>
             <table className="w-full text-left border-collapse text-xs">
@@ -1066,7 +1176,7 @@ function DocGenContent() {
       if (line.trim().startsWith('* ') || line.trim().startsWith('- ')) {
         const bulletText = line.trim().replace(/^[\*\-]\s+/, '');
         elements.push(
-          <div key={`bullet-${i}`} className={`flex items-start gap-2.5 text-xs ml-3 my-1.5 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+          <div key={`bullet-${secKey}-${i}`} className={`flex items-start gap-2.5 text-xs ml-3 my-1.5 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
             <span className={`mt-1 font-bold text-base ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>•</span>
             <span className="leading-relaxed">{bulletText.replace(/\*\*(.*?)\*\*/g, '$1')}</span>
           </div>
@@ -1100,11 +1210,10 @@ function DocGenContent() {
           );
 
         if (!isDiagram) {
-          // Render standard clean code block (for SQL, JSON, YAML, TypeScript, Shell, etc.)
           elements.push(
             <div
-              key={`code-block-${i}`}
-              className={`my-5 rounded-2xl border overflow-hidden shadow-sm ${
+              key={`code-block-${secKey}-${i}`}
+              className={`my-4 rounded-2xl border overflow-hidden shadow-sm ${
                 isLight ? 'bg-[#0F172A] border-slate-700 text-slate-100' : 'bg-slate-950 border-slate-800 text-slate-200'
               }`}
             >
@@ -1124,7 +1233,7 @@ function DocGenContent() {
           continue;
         }
 
-        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08, Template 11, Template 19)
+        // Extract preceding heading for title / template matching
         let precedingHeading = '';
         for (let back = codeBlockStartIndex - 1; back >= Math.max(0, codeBlockStartIndex - 8); back--) {
           const backLine = lines[back] ? lines[back].trim() : '';
@@ -1142,7 +1251,6 @@ function DocGenContent() {
 
         const tplMatch = precedingHeading.match(/Template\s*([0-9]{1,2})/i);
         const matchedTemplateId = tplMatch ? tplMatch[1].padStart(2, '0') : null;
-        const canonicalTpl = matchedTemplateId ? CANONICAL_TEMPLATES.find((t) => t.id === matchedTemplateId) : null;
 
         const parsedNodes: { id: string; label: string; tier: string }[] = [];
         const parsedFlows: { from: string; to: string; label?: string }[] = [];
@@ -1174,7 +1282,7 @@ function DocGenContent() {
 
         elements.push(
           <InlineDiagramFigure
-            key={`diagram-fig-${i}`}
+            key={`diagram-fig-${secKey}-${i}`}
             templateId={matchedTemplateId || '01'}
             figureTitle={precedingHeading}
             isLight={isLight}
@@ -1197,7 +1305,7 @@ function DocGenContent() {
 
       // Standard paragraph
       elements.push(
-        <p key={`p-${i}`} className={`text-xs md:text-sm leading-relaxed my-2.5 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+        <p key={`p-${secKey}-${i}`} className={`text-xs md:text-sm leading-relaxed my-2 ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
           {line.replace(/\*\*(.*?)\*\*/g, '$1')}
         </p>
       );
@@ -1205,6 +1313,269 @@ function DocGenContent() {
     }
 
     return elements;
+  };
+
+  // Parse markdown for executive publication rendering with granular section controls
+  const renderExecutiveDocument = (text: string, isInteractive: boolean = true) => {
+    const sections = parseDocumentIntoSections(text);
+
+    return (
+      <div className="space-y-6">
+        {sections.map((sec, secIdx) => {
+          const isEditing = editingSectionId === sec.id;
+          const isAddingBelow = addingSectionBelowId === sec.id;
+
+          return (
+            <div
+              key={sec.id}
+              className={`group relative rounded-2xl p-4 md:p-6 transition-all border ${
+                isEditing
+                  ? 'bg-sky-500/5 border-sky-500/40 shadow-lg ring-2 ring-sky-500/20'
+                  : isLight
+                  ? 'bg-white hover:bg-slate-50/70 border-slate-200/80 shadow-2xs hover:border-slate-300'
+                  : 'bg-[#0B132B]/40 hover:bg-[#0F172A]/70 border-slate-800/80 shadow-2xs hover:border-slate-700'
+              }`}
+            >
+              {/* SECTION HEADER WITH INTERACTIVE ACTION BAR */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-3 border-b border-slate-200/60 dark:border-slate-800/60">
+                <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                  {/* Hierarchy Level Badge */}
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider shrink-0 ${
+                    sec.level === 1
+                      ? 'bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/30'
+                      : sec.level === 2
+                      ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30'
+                      : 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                  }`}>
+                    {sec.level === 1 ? 'H1 Title' : sec.level === 2 ? `Chapter ${secIdx}` : `Sub-Sec ${secIdx}`}
+                  </span>
+
+                  {/* Section Title */}
+                  {sec.level === 1 ? (
+                    <h1 className={`text-xl md:text-2xl font-black tracking-tight truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                      {sec.title}
+                    </h1>
+                  ) : sec.level === 2 ? (
+                    <h2 className={`text-base md:text-lg font-bold truncate flex items-center gap-2 ${isLight ? 'text-sky-900' : 'text-sky-400'}`}>
+                      <span className={`h-2 w-2 rounded-full shrink-0 ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`}></span>
+                      <span className="truncate">{sec.title}</span>
+                    </h2>
+                  ) : (
+                    <h3 className={`text-sm md:text-base font-bold uppercase tracking-wider truncate ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+                      {sec.title}
+                    </h3>
+                  )}
+                </div>
+
+                {/* ACTION ICONS BAR: Edit, Save, Delete, Clone, Add, Move Up/Down, Promote/Demote */}
+                {isInteractive && (
+                  <div className="flex items-center gap-1 shrink-0 bg-slate-100 dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 no-print">
+                    {/* EDIT / SAVE TOGGLE */}
+                    {isEditing ? (
+                      <button
+                        onClick={() => handleSaveSection(sec)}
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+                        title="Save changes to this section"
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                        <span>Save</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleStartEditSection(sec)}
+                        className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer"
+                        title="Edit Section"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+
+                    {/* CLONE / DUPLICATE */}
+                    <button
+                      onClick={() => handleCloneSection(sec)}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 transition-colors cursor-pointer"
+                      title="Clone / Duplicate Section"
+                    >
+                      <CopyPlus className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* ADD BELOW */}
+                    <button
+                      onClick={() => handleStartAddSectionBelow(sec)}
+                      className="p-1.5 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-500 transition-colors cursor-pointer"
+                      title="Add New Section Below"
+                    >
+                      <PlusCircle className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* DELETE */}
+                    <button
+                      onClick={() => handleDeleteSection(sec)}
+                      className="p-1.5 rounded-lg hover:bg-rose-500/10 hover:text-rose-500 transition-colors cursor-pointer"
+                      title="Delete Section"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
+
+                    {/* MOVE UP */}
+                    <button
+                      onClick={() => handleMoveSectionUp(sec)}
+                      disabled={secIdx === 0}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Move Section Up"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* MOVE DOWN */}
+                    <button
+                      onClick={() => handleMoveSectionDown(sec)}
+                      disabled={secIdx === sections.length - 1}
+                      className="p-1.5 rounded-lg hover:bg-sky-500/10 hover:text-sky-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Move Section Down"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="w-[1px] h-3.5 bg-slate-300 dark:bg-slate-700 mx-0.5"></div>
+
+                    {/* PROMOTE (HIGHER PARENT LEVEL) */}
+                    <button
+                      onClick={() => handlePromoteSection(sec)}
+                      disabled={sec.level <= 1}
+                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Promote to Higher Parent Level (e.g. Sub-section to Chapter)"
+                    >
+                      <FolderTree className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* DEMOTE (LEAF LEVEL) */}
+                    <button
+                      onClick={() => handleDemoteSection(sec)}
+                      disabled={sec.level >= 3}
+                      className="p-1.5 rounded-lg hover:bg-purple-500/10 hover:text-purple-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                      title="Demote to Leaf Level (e.g. Chapter to Sub-section)"
+                    >
+                      <CornerDownRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* INLINE EDIT MODE */}
+              {isEditing ? (
+                <div className="space-y-3 pt-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <span className="text-xs font-bold text-slate-400">Title:</span>
+                    <input
+                      type="text"
+                      value={editTitleDraft}
+                      onChange={(e) => setEditTitleDraft(e.target.value)}
+                      className={`flex-1 w-full text-xs font-bold px-3 py-1.5 rounded-xl border outline-none ${
+                        isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-white'
+                      }`}
+                    />
+                  </div>
+                  <textarea
+                    rows={8}
+                    value={editContentDraft}
+                    onChange={(e) => setEditContentDraft(e.target.value)}
+                    className={`w-full text-xs font-mono p-3.5 rounded-xl border outline-none resize-y leading-relaxed ${
+                      isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-teal-300'
+                    }`}
+                  />
+                  <div className="flex items-center justify-end gap-2 pt-1">
+                    <button
+                      onClick={handleCancelEditSection}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleSaveSection(sec)}
+                      className="flex items-center gap-1 px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-all"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Save Section Changes</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* RENDERED SECTION CONTENT */
+                <div className="pt-1">
+                  {renderMarkdownBlocks(sec.content, sec.id)}
+                </div>
+              )}
+
+              {/* INLINE ADD NEW SECTION FORM BELOW */}
+              {isAddingBelow && (
+                <div className="mt-4 pt-4 border-t-2 border-dashed border-emerald-500/40 space-y-3 bg-emerald-500/5 p-4 rounded-2xl">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                      <PlusCircle className="w-4 h-4" /> Add New Architectural Section
+                    </span>
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-[10px] text-slate-400">Level:</span>
+                      <button
+                        onClick={() => setNewSectionLevelDraft(2)}
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          newSectionLevelDraft === 2 ? 'bg-sky-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
+                        }`}
+                      >
+                        Chapter (H2)
+                      </button>
+                      <button
+                        onClick={() => setNewSectionLevelDraft(3)}
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          newSectionLevelDraft === 3 ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'
+                        }`}
+                      >
+                        Sub-section (H3)
+                      </button>
+                    </div>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Section Title (e.g. 4. Security Architecture & Threat Model)"
+                    value={newSectionTitleDraft}
+                    onChange={(e) => setNewSectionTitleDraft(e.target.value)}
+                    className={`w-full text-xs font-bold px-3 py-2 rounded-xl border outline-none ${
+                      isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-white'
+                    }`}
+                  />
+                  <textarea
+                    rows={4}
+                    placeholder="Section content in markdown..."
+                    value={newSectionContentDraft}
+                    onChange={(e) => setNewSectionContentDraft(e.target.value)}
+                    className={`w-full text-xs font-mono p-3 rounded-xl border outline-none resize-y ${
+                      isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-slate-200'
+                    }`}
+                  />
+                  <div className="flex items-center justify-end gap-2">
+                    <button
+                      onClick={handleCancelAddSectionBelow}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleConfirmAddSectionBelow(sec)}
+                      className="flex items-center gap-1 px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Insert Section</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
@@ -1261,7 +1632,7 @@ function DocGenContent() {
                     DocGen Hub v1.0
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">9 Enterprise Document Standards &bull; Multi-Blueprint Synthesis</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">17 Enterprise Document Standards &bull; Multi-Blueprint Synthesis</p>
               </div>
             </Link>
           </div>
@@ -1334,14 +1705,14 @@ function DocGenContent() {
               </span>
             </h1>
             <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
-              Documents are syntheses of multiple architectural perspectives. Select a document goal (BRD, PRD, SDD, FDD, TDD, Threat Model), preview its complete production specification, customize the attached blueprint pack, and export publication-ready Word (.docx) and PDF documents in seconds.
+              Documents are syntheses of multiple architectural perspectives. Select a document goal (BRD, PRD, SDD, FDD, TDD, Threat Model, Workshop, RFP, FinOps, Runbook), preview its complete production specification, customize the attached blueprint pack, and export publication-ready Word (.docx) and PDF documents in seconds.
             </p>
           </div>
 
           {/* Quick Stats Banner */}
           <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
             <div className="text-center px-3 py-1.5">
-              <div className="text-2xl md:text-3xl font-black text-sky-500">9</div>
+              <div className="text-2xl md:text-3xl font-black text-sky-500">17</div>
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Doc Archetypes</div>
             </div>
             <div className="text-center px-3 py-1.5 border-x border-slate-200 dark:border-slate-800">
@@ -2094,7 +2465,7 @@ function DocGenContent() {
                   </div>
 
                   <div className="prose prose-slate dark:prose-invert max-w-none">
-                    {renderExecutiveDocument(MASTER_DOCUMENTS[previewModalDoc.id] || generateProductionFallbackDoc(previewModalDoc, previewModalDoc.name, 'Bio-Pharma Precision Oncology & Regulatory AI', previewModalDoc.primaryPurpose))}
+                    {renderExecutiveDocument(MASTER_DOCUMENTS[previewModalDoc.id] || generateProductionFallbackDoc(previewModalDoc, previewModalDoc.name, 'Bio-Pharma Precision Oncology & Regulatory AI', previewModalDoc.primaryPurpose), false)}
                   </div>
                 </div>
               )}

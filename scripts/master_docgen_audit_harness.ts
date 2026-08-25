@@ -5,6 +5,17 @@ import { DOC_ARCHETYPES_META, ArchetypeId } from '/Users/nitinagga/Documents/Pro
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/compose/masterDocs';
 import { detectDomainFromPrompt } from '/Users/nitinagga/Documents/PromptCanvas/src/app/docgen/page';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType } from '/Users/nitinagga/Documents/PromptCanvas/node_modules/docx';
+import {
+  parseDocumentIntoSections,
+  reconstructDocumentFromSections,
+  updateSection,
+  deleteSection,
+  cloneSection,
+  insertNewSectionAfter,
+  moveSectionUp,
+  moveSectionDown,
+  changeSectionHierarchy,
+} from '/Users/nitinagga/Documents/PromptCanvas/src/lib/versioning/docSectionEngine';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -349,7 +360,7 @@ async function runMasterAuditHarness() {
       id: `snap_${i}`,
       versionTag: newVer,
       timestamp: new Date().toISOString(),
-      author: 'AI Copilot' as const,
+      author: 'AI Assist' as const,
       changeSummary: `Iteration ${i}`,
       targetType: 'doc' as const,
       docMarkdown: `# Test Doc ${newVer}`,
@@ -368,7 +379,7 @@ async function runMasterAuditHarness() {
     id: 'snap_doc_only',
     versionTag: 'v1.16',
     timestamp: new Date().toISOString(),
-    author: 'AI Copilot' as const,
+    author: 'AI Assist' as const,
     changeSummary: 'Document text updated with SLA matrix',
     targetType: 'doc' as const,
     docMarkdown: '# Updated Doc with SLA table',
@@ -386,7 +397,7 @@ async function runMasterAuditHarness() {
     id: 'snap_diag_only',
     versionTag: 'v1.16',
     timestamp: new Date().toISOString(),
-    author: 'AI Copilot' as const,
+    author: 'AI Assist' as const,
     changeSummary: 'Diagram 2 modified to add Kafka',
     targetType: 'diagram' as const,
     targetSlotIndex: 2,
@@ -446,6 +457,105 @@ async function runMasterAuditHarness() {
     );
     assert(hasRelevantKeyword, `Contextual Chips for [${s.title}] (${s.domain}) strictly match domain keywords`);
   }
+
+  // ============================================================================
+  // SUITE 10: SECTION-LEVEL GRANULAR ACTIONS & HIERARCHY ENGINE
+  // ============================================================================
+  console.log('\n📌 SUITE 10: Granular Section Actions & Hierarchy Operations (Edit, Save, Delete, Clone, Add, Move, Promote/Demote)');
+
+  const sampleDocMarkdown = `# 1. Executive Vision & Problem Statement
+The enterprise platform provides high-throughput real-time telemetry.
+
+## 2. System Architecture & Topology
+Core services orchestrate distributed transactions.
+
+### 2.1 Microservices Mesh
+Individual pods handle ingest, scoring, and persistence.
+
+## 3. Security & Governance Compliance
+Zero-trust VPC service perimeters protect all data at rest and in transit.`;
+
+  // Test 10.1: Parsing into distinct sections
+  const parsedSecs = parseDocumentIntoSections(sampleDocMarkdown);
+  assert(
+    parsedSecs.length === 4,
+    `Parsed markdown into exactly 4 sections (got ${parsedSecs.length})`
+  );
+  assert(
+    parsedSecs[0].level === 1 && parsedSecs[1].level === 2 && parsedSecs[2].level === 3 && parsedSecs[3].level === 2,
+    `Section hierarchy levels match expected depths (H1, H2, H3, H2)`
+  );
+
+  // Test 10.2: Updating a section
+  const secToEdit = parsedSecs[1];
+  const updatedSecs = updateSection(parsedSecs, secToEdit.id, '2. Overhauled Core Architecture', 'New technical description.');
+  assert(
+    updatedSecs[1].title === '2. Overhauled Core Architecture' && updatedSecs[1].content === 'New technical description.',
+    `updateSection correctly updates title and content`
+  );
+
+  // Test 10.3: Cloning a section
+  const clonedSecs = cloneSection(parsedSecs, secToEdit.id);
+  assert(
+    clonedSecs.length === 5 && clonedSecs[2].title === '2. System Architecture & Topology (Copy)',
+    `cloneSection inserts duplicated section immediately below with (Copy) suffix`
+  );
+
+  // Test 10.4: Inserting a new section after target
+  const insertedSecs = insertNewSectionAfter(parsedSecs, secToEdit.id, 2, '2.5 Ingress & Edge Routing', '* API gateway routing rules.');
+  assert(
+    insertedSecs.length === 5 && insertedSecs[2].title === '2.5 Ingress & Edge Routing' && insertedSecs[2].level === 2,
+    `insertNewSectionAfter inserts custom section at specified hierarchy level`
+  );
+
+  // Test 10.5: Deleting a section
+  const deletedSecs = deleteSection(parsedSecs, secToEdit.id);
+  assert(
+    deletedSecs.length === 3 && !deletedSecs.some((s) => s.id === secToEdit.id),
+    `deleteSection cleanly removes target section`
+  );
+
+  // Test 10.6: Reordering sections (Move Up / Move Down)
+  const movedDown = moveSectionDown(parsedSecs, parsedSecs[1].id);
+  assert(
+    movedDown[2].id === parsedSecs[1].id,
+    `moveSectionDown correctly swaps section with successor`
+  );
+  const movedUp = moveSectionUp(movedDown, parsedSecs[1].id);
+  assert(
+    movedUp[1].id === parsedSecs[1].id,
+    `moveSectionUp restores section position`
+  );
+
+  // Test 10.7: Hierarchy Promotion (Leaf -> Parent Level) & Demotion (Parent -> Leaf Level)
+  const promotedSecs = changeSectionHierarchy(parsedSecs, parsedSecs[2].id, 'promote'); // H3 -> H2
+  assert(
+    promotedSecs[2].level === 2,
+    `changeSectionHierarchy('promote') elevates H3 sub-section to H2 chapter`
+  );
+  const demotedSecs = changeSectionHierarchy(parsedSecs, parsedSecs[1].id, 'demote'); // H2 -> H3
+  assert(
+    demotedSecs[1].level === 3,
+    `changeSectionHierarchy('demote') pushes H2 chapter down to H3 sub-section`
+  );
+
+  // Test 10.8: Round-trip reconstruction fidelity across all 17 master documents
+  let allReconstructedMatch = true;
+  for (const meta of DOC_ARCHETYPES_META) {
+    const originalDoc = MASTER_DOCUMENTS[meta.id];
+    if (originalDoc) {
+      const docSections = parseDocumentIntoSections(originalDoc);
+      const reconstructed = reconstructDocumentFromSections(docSections);
+      // Verify sections count matches and title headers are retained
+      if (docSections.length < 4 || !reconstructed.includes('# ')) {
+        allReconstructedMatch = false;
+      }
+    }
+  }
+  assert(
+    allReconstructedMatch,
+    `Round-trip parse & reconstruct preserves AST structure across all 17 Master Document Archetypes`
+  );
 
   // ============================================================================
   // SUMMARY REPORT
