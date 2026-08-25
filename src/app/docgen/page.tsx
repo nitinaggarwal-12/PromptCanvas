@@ -50,6 +50,7 @@ import {
   CANONICAL_FAMILIES
 } from '@/lib/canonical/canonicalTemplates';
 import { ARCHETYPE_REGISTRY, ArchetypeId, DocArchetype } from '@/lib/compose/archetypes';
+import { MASTER_DOCUMENTS } from '@/lib/compose/masterDocs';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 
 // Multi-Blueprint Pack mapping for each of the 9 archetypes
@@ -240,7 +241,9 @@ function DocGenContent() {
   const [generationStep, setGenerationStep] = useState<number>(0);
   const [generatedDocContent, setGeneratedDocContent] = useState<string | null>(null);
   const [previewModalDoc, setPreviewModalDoc] = useState<DocArchetypeMeta | null>(null);
+  const [modalTab, setModalTab] = useState<'doc' | 'blueprints' | 'hierarchy'>('doc');
   const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
+  const [sampleCopiedSuccess, setSampleCopiedSuccess] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
 
   // Find active archetype metadata
@@ -305,8 +308,8 @@ function DocGenContent() {
       setActiveTab('studio');
     } catch (err: any) {
       console.error('DocGen generation error:', err);
-      // Fallback: Generate robust structured preview
-      const fallbackContent = generateProductionFallbackDoc(activeMeta, projectTitle, selectedDomain, projectScopePrompt);
+      // Fallback: Generate robust structured preview from master documents
+      const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, selectedDomain, projectScopePrompt);
       setGeneratedDocContent(fallbackContent);
     } finally {
       setIsGenerating(false);
@@ -349,6 +352,39 @@ function DocGenContent() {
     }
   };
 
+  // Download sample docx from preview modal
+  const handleDownloadSampleDocx = async (archetypeId: ArchetypeId, docName: string) => {
+    try {
+      const primaryTpl = CANONICAL_TEMPLATES[0];
+      const primaryXml = primaryTpl.generateXml('biopharma', isLight ? 'light' : 'dark');
+
+      const res = await fetch('/api/compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          archetypeId: archetypeId,
+          format: 'docx',
+          xml: primaryXml,
+          title: `Novacura Platform ${docName}`,
+          domain: 'Bio-Pharma Precision Oncology & Regulatory AI',
+          userPrompt: 'Master architectural baseline for GxP validated production.',
+        }),
+      });
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Novacura_${archetypeId.toUpperCase()}_Master_Specification.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Sample DOCX download error:', err);
+    }
+  };
+
   // Download Markdown
   const handleDownloadMarkdown = () => {
     if (!generatedDocContent) return;
@@ -369,6 +405,13 @@ function DocGenContent() {
     navigator.clipboard.writeText(generatedDocContent);
     setCopiedSuccess(true);
     setTimeout(() => setCopiedSuccess(false), 2000);
+  };
+
+  // Copy Sample Markdown
+  const handleCopySampleMarkdown = (content: string) => {
+    navigator.clipboard.writeText(content);
+    setSampleCopiedSuccess(true);
+    setTimeout(() => setSampleCopiedSuccess(false), 2000);
   };
 
   // Print to PDF
@@ -687,7 +730,7 @@ function DocGenContent() {
               </span>
             </h1>
             <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
-              Documents are syntheses of multiple architectural perspectives. Select a document goal (BRD, PRD, SDD, FDD, TDD, Threat Model), customize the attached canonical blueprint pack or synthesize from scratch, and generate publication-ready Word (.docx) and PDF specifications in seconds.
+              Documents are syntheses of multiple architectural perspectives. Select a document goal (BRD, PRD, SDD, FDD, TDD, Threat Model), preview its complete production specification, customize the attached blueprint pack, and export publication-ready Word (.docx) and PDF documents in seconds.
             </p>
           </div>
 
@@ -703,7 +746,7 @@ function DocGenContent() {
             </div>
             <div className="text-center px-3 py-1.5">
               <div className="text-2xl md:text-3xl font-black text-emerald-500">100%</div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Word & Print Ready</div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Word &amp; Print Ready</div>
             </div>
           </div>
         </div>
@@ -717,7 +760,7 @@ function DocGenContent() {
                   Enterprise Document Archetypes Catalog
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Click &ldquo;Preview Sample&rdquo; to inspect publication-ready specifications or &ldquo;Start Generation&rdquo; to customize with your project prompt.
+                  Click &ldquo;Preview Full Specification&rdquo; to read the complete 10-page master document, inspect attached blueprints, or launch the generation studio.
                 </p>
               </div>
 
@@ -805,11 +848,14 @@ function DocGenContent() {
                     {/* Card Actions */}
                     <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
                       <button
-                        onClick={() => setPreviewModalDoc(meta)}
+                        onClick={() => {
+                          setPreviewModalDoc(meta);
+                          setModalTab('doc');
+                        }}
                         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
                       >
                         <Eye className="w-3.5 h-3.5 text-sky-500" />
-                        <span>Preview Sample</span>
+                        <span>Preview Full Spec</span>
                       </button>
 
                       <button
@@ -1182,48 +1228,110 @@ function DocGenContent() {
         )}
       </main>
 
-      {/* SAMPLE PREVIEW MODAL */}
+      {/* FULL-FEATURED MASTER SPECIFICATION PREVIEW MODAL */}
       {previewModalDoc && (
         <div
           onClick={() => setPreviewModalDoc(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-2 md:p-6 cursor-pointer"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`relative w-full max-w-5xl h-[88vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden cursor-default ${
+            className={`relative w-full max-w-[1400px] h-[92vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden cursor-default ${
               isLight ? 'bg-white border-slate-200' : 'bg-[#0F172A] border-slate-800'
             }`}
           >
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            {/* Modal Header with Navigation Tabs & Action Buttons */}
+            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="w-9 h-9 rounded-xl bg-sky-500 text-white font-black text-xs flex items-center justify-center">
+                <span className="w-10 h-10 rounded-2xl bg-sky-500 text-white font-black text-sm flex items-center justify-center shadow-sm">
                   {previewModalDoc.shortName}
                 </span>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                    {previewModalDoc.name} &bull; Blueprint Structure Preview
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base md:text-lg font-black text-slate-900 dark:text-white">
+                      {previewModalDoc.name} &bull; Master Specification Preview
+                    </h3>
+                    <span className="hidden sm:inline-flex text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      GxP Validated
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-400">{previewModalDoc.audience}</p>
                 </div>
               </div>
 
+              {/* Center Modal Tabs */}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">
+                <button
+                  onClick={() => setModalTab('doc')}
+                  className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    modalTab === 'doc'
+                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Full Master Specification</span>
+                </button>
+
+                <button
+                  onClick={() => setModalTab('blueprints')}
+                  className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    modalTab === 'blueprints'
+                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Multi-Blueprint Pack ({previewModalDoc.blueprintPack.length})</span>
+                </button>
+
+                <button
+                  onClick={() => setModalTab('hierarchy')}
+                  className={`px-3.5 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                    modalTab === 'hierarchy'
+                      ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <FileCode className="w-3.5 h-3.5 text-teal-400" />
+                  <span>Section Hierarchy</span>
+                </button>
+              </div>
+
+              {/* Action Buttons: Word, Copy, Use */}
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleDownloadSampleDocx(previewModalDoc.id, previewModalDoc.name)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-all"
+                  title="Download Microsoft Word .docx"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Download .docx</span>
+                </button>
+
+                <button
+                  onClick={() => handleCopySampleMarkdown(MASTER_DOCUMENTS[previewModalDoc.id] || '')}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
+                >
+                  {sampleCopiedSuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span className="hidden sm:inline">{sampleCopiedSuccess ? 'Copied!' : 'Copy .md'}</span>
+                </button>
+
                 <button
                   onClick={() => {
                     setSelectedArchetypeId(previewModalDoc.id);
                     setPreviewModalDoc(null);
                     setActiveTab('studio');
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white hover:bg-sky-500 transition-colors"
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Use This Blueprint</span>
+                  <span>Customize &amp; Generate</span>
                 </button>
 
                 <button
                   onClick={() => setPreviewModalDoc(null)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-slate-200"
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   &times;
                 </button>
@@ -1231,60 +1339,115 @@ function DocGenContent() {
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-6">
-              {/* Executive Overview */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-sky-500">Document Purpose</h4>
-                <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                  {previewModalDoc.primaryPurpose}
-                </p>
-              </div>
+            <div className="flex-1 p-6 md:p-10 overflow-y-auto space-y-6">
+              {/* TAB A: FULL MASTER DOCUMENT RENDERING */}
+              {modalTab === 'doc' && (
+                <div className="max-w-5xl mx-auto space-y-4">
+                  <div className="p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs text-sky-600 dark:text-sky-400 font-semibold">
+                      <Sparkles className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span>This is the complete, certified {previewModalDoc.name} master architecture specification. You can read, print, or download this template directly as .docx.</span>
+                    </div>
+                  </div>
 
-              {/* Multi-Blueprint Composition Pack */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Attached Blueprint Pack ({previewModalDoc.blueprintPack.length} Architecture Diagrams)
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {previewModalDoc.blueprintPack.map((slot, sIdx) => {
-                    return (
-                      <div
-                        key={sIdx}
-                        className="p-3.5 rounded-xl border bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 flex items-start gap-3"
-                      >
-                        <span className="w-7 h-7 rounded-lg bg-sky-500/10 text-sky-500 font-bold text-xs flex items-center justify-center shrink-0">
-                          {slot.recommendedTemplateId}
-                        </span>
-                        <div className="space-y-1">
-                          <div className="text-xs font-bold text-slate-900 dark:text-white">
-                            Chapter {slot.chapterNumber}: {slot.slotTitle}
+                  <div className="prose prose-slate dark:prose-invert max-w-none">
+                    {renderExecutiveDocument(MASTER_DOCUMENTS[previewModalDoc.id] || generateProductionFallbackDoc(previewModalDoc, previewModalDoc.name, 'Bio-Pharma Precision Oncology & Regulatory AI', previewModalDoc.primaryPurpose))}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB B: MULTI-BLUEPRINT PACK ARCHITECTURE */}
+              {modalTab === 'blueprints' && (
+                <div className="max-w-5xl mx-auto space-y-6">
+                  <div className="space-y-1">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Attached Blueprint Architecture Pack ({previewModalDoc.blueprintPack.length} Diagrams)
+                    </h4>
+                    <p className="text-xs text-slate-400">
+                      The {previewModalDoc.name} composes the following architectural blueprints across its chapters:
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {previewModalDoc.blueprintPack.map((slot, sIdx) => {
+                      const tpl = CANONICAL_TEMPLATES.find((t) => t.id === slot.recommendedTemplateId);
+                      return (
+                        <div
+                          key={sIdx}
+                          className="p-5 rounded-2xl border bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 space-y-3"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                              <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 font-black text-xs flex items-center justify-center border border-sky-500/20">
+                                {slot.recommendedTemplateId}
+                              </span>
+                              <div>
+                                <span className="text-[10px] font-mono text-slate-400 uppercase">Chapter {slot.chapterNumber}</span>
+                                <h5 className="text-xs font-bold text-slate-900 dark:text-white">{slot.slotTitle}</h5>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500">
+                              Canonical Master
+                            </span>
                           </div>
-                          <p className="text-[11px] text-slate-400">
+
+                          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                             {slot.description}
                           </p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
 
-              {/* Sample Document Section Tree */}
-              <div className="space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Chapter &amp; Section Hierarchy ({previewModalDoc.sectionsCount} Sections)
-                </h4>
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 font-mono text-xs text-slate-700 dark:text-slate-300 space-y-1.5">
-                  {ARCHETYPE_REGISTRY[previewModalDoc.id]?.sections.map((sec, secIdx) => (
-                    <div key={secIdx} className="flex items-center justify-between">
-                      <span>{secIdx + 1}. {sec.title}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-500 font-sans uppercase font-bold">
-                        {sec.provenance}
-                      </span>
-                    </div>
-                  ))}
+                          {tpl?.previewImage && (
+                            <div className="relative w-full h-32 rounded-xl overflow-hidden bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-center">
+                              <img
+                                src={tpl.previewImage}
+                                alt={tpl.name}
+                                className="w-full h-full object-contain p-2"
+                                onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* TAB C: SECTION HIERARCHY */}
+              {modalTab === 'hierarchy' && (
+                <div className="max-w-5xl mx-auto space-y-4">
+                  <div className="space-y-1">
+                    <h4 className="text-lg font-bold text-slate-900 dark:text-white">
+                      Chapter &amp; Section Hierarchy ({previewModalDoc.sectionsCount} Sections)
+                    </h4>
+                    <p className="text-xs text-slate-400">
+                      Standard section breakdown showing AST mapping provenance:
+                    </p>
+                  </div>
+
+                  <div className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+                    {ARCHETYPE_REGISTRY[previewModalDoc.id]?.sections.map((sec, secIdx) => (
+                      <div
+                        key={secIdx}
+                        className="flex items-center justify-between p-3 rounded-xl bg-white dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 text-xs"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-sky-500 font-bold w-6">{secIdx + 1}.</span>
+                          <span className="font-semibold text-slate-900 dark:text-white">{sec.title}</span>
+                        </div>
+                        <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${
+                          sec.provenance === 'derived'
+                            ? 'bg-sky-500/10 text-sky-500 border-sky-500/20'
+                            : sec.provenance === 'inferred'
+                            ? 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                            : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                        }`}>
+                          {sec.provenance}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
