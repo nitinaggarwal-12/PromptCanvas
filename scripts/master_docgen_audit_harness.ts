@@ -33,60 +33,73 @@ async function runMasterAuditHarness() {
   console.log('================================================================\n');
 
   // ============================================================================
-  // SUITE 1: XML DOM PARSING & SPECIAL CHARACTER FUZZING
+  // SUITE 1: ALL 50 CANONICAL TEMPLATES x 5 DOMAINS x 2 THEMES x 3 FUZZ TITLES (1,500 TESTS)
   // ============================================================================
-  console.log('📌 SUITE 1: Special Character & Ampersand XML DOM Parsing Stress Test');
+  console.log('📌 SUITE 1: All 50 Canonical Diagrams x 5 Domains x 2 Themes Stress Test (1,500 Combinations)');
+  const domains = ['biopharma', 'fintech', 'retail', 'manufacturing', 'saas'];
+  const themes = ['light', 'dark'] as const;
   const fuzzTitles = [
     'AeroNode 5G / AI-Mesh & Edge-Robotics (Part 135: "Sub-20ms" <UTM> Airspace)',
     'Stripe & Plaid <> "Zero-Trust" Multi-Acquirer & Sub-10ms ISO 20022 Gateway',
     'VoltGrid & Tesla Megapack (BESS) | Solar Microgrid <V2G> Dynamic Load-Balancer',
-    'OmniVue E-Commerce & Retail Supply Mesh (WMS & Cross-Dock "1-Click" Checkout)',
-    'Enterprise SaaS Multi-Tenant Cloud Platform (RBAC & SOC-2 "Zero-Trust" VPC)',
   ];
 
-  const testTemplateIds = ['01', '02', '03', '08', '11', '14', '18', '20', '26', '36', '43', '44', '50'];
+  for (const tpl of CANONICAL_TEMPLATES) {
+    for (const domain of domains) {
+      for (const theme of themes) {
+        for (const fuzzTitle of fuzzTitles) {
+          try {
+            const rawXml = tpl.generateXml(domain, theme);
+            const domainCleaned = injectDomainFlavorXml(rawXml, domain);
+            const finalXml = injectUseCaseFlavor(domainCleaned, fuzzTitle, 'Nationwide telemetry mesh with high throughput.');
 
-  for (const tplId of testTemplateIds) {
-    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === tplId);
-    if (!tpl) continue;
+            // 1. Strict XML Parse check
+            let parseError: string | null = null;
+            try {
+              const parsed = parser.parse(finalXml);
+              if (!parsed.mxfile || !parsed.mxfile.diagram) {
+                parseError = 'Missing mxfile or diagram root node';
+              }
+            } catch (e: any) {
+              parseError = e.message;
+            }
 
-    for (const fuzzTitle of fuzzTitles) {
-      try {
-        const rawXml = tpl.generateXml('manufacturing', 'light');
-        const domainCleaned = injectDomainFlavorXml(rawXml, 'manufacturing');
-        const finalXml = injectUseCaseFlavor(domainCleaned, fuzzTitle, 'Nationwide telemetry mesh with high throughput.');
+            // 2. Check for loose unescaped ampersand
+            const hasLooseAmpersand = /&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/.test(finalXml);
 
-        // 1. Strict XML Parse check
-        let parseError: string | null = null;
-        try {
-          const parsed = parser.parse(finalXml);
-          if (!parsed.mxfile || !parsed.mxfile.diagram) {
-            parseError = 'Missing mxfile or diagram root node';
+            // 3. Check for stale date
+            const hasStaleDate = /May 8, 2025|Aug 8, 2025|Jun 8, 2025/.test(finalXml);
+
+            assert(
+              parseError === null && !hasLooseAmpersand && !hasStaleDate,
+              `Template ${tpl.id} [${domain}/${theme}] Combination`,
+              parseError || (hasLooseAmpersand ? 'Found loose unescaped ampersand' : hasStaleDate ? 'Found stale May 8, 2025 date' : undefined)
+            );
+          } catch (err: any) {
+            assert(false, `Template ${tpl.id} [${domain}/${theme}] crash on fuzz title`, err.message);
           }
-        } catch (e: any) {
-          parseError = e.message;
         }
-
-        // 2. Check for loose unescaped ampersand
-        const hasLooseAmpersand = /&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/.test(finalXml);
-
-        assert(
-          parseError === null && !hasLooseAmpersand,
-          `Template ${tplId} XML Parsing with Fuzz Title: "${fuzzTitle.slice(0, 35)}..."`,
-          parseError || (hasLooseAmpersand ? 'Found loose unescaped ampersand' : undefined)
-        );
-      } catch (err: any) {
-        assert(false, `Template ${tplId} crash on fuzz title`, err.message);
       }
     }
   }
 
   // ============================================================================
-  // SUITE 2: 45-PERMUTATION (9 ARCHETYPES x 5 DOMAINS) SYNTHESIS & PURITY
+  // SUITE 2: 45-PERMUTATION (9 ARCHETYPES x 5 DOMAINS) SYNTHESIS & PERSONAL NAME SCRUBBING
   // ============================================================================
-  console.log('\n📌 SUITE 2: Full 45-Permutation ($9 \\times 5$) Document Synthesis & Domain Purity');
-  const domains = ['biopharma', 'fintech', 'retail', 'manufacturing', 'saas'];
-  const bannedPharmaWords = ['Sarah Chen', 'Dr. Marcus Vance', 'Veeva Vault', 'Medidata Rave', 'Argus Safety', 'IND Submission', 'GxP & Functional'];
+  console.log('\n📌 SUITE 2: Full 45-Permutation ($9 \\times 5$) Document Synthesis & Author Scrubbing');
+  const bannedPersonalNames = [
+    'Nitin Aggarwal',
+    'Dr. Marcus Vance',
+    'Dr. Elena Vance',
+    'Dr. Aris Thorne',
+    'Dr. Sophia Reyes',
+    'Viktor Vance',
+    'Ananya Ramanathan',
+    'David K. Thorne',
+    'Robert Sterling',
+    'Sarah Chen',
+  ];
+  const bannedPharmaWords = ['Veeva Vault', 'Medidata Rave', 'Argus Safety', 'IND Submission', 'GxP & Functional'];
 
   for (const meta of DOC_ARCHETYPES_META) {
     for (const domain of domains) {
@@ -99,13 +112,21 @@ async function runMasterAuditHarness() {
       const hasLength = doc.length > 500;
       assert(hasLength, `Archetype [${meta.shortName}] x Domain [${domain}] has content length > 500 chars (${doc.length} chars)`);
 
+      // Test Zero Personal Names
+      const nameLeaks = bannedPersonalNames.filter((n) => doc.includes(n));
+      assert(
+        nameLeaks.length === 0,
+        `Archetype [${meta.shortName}] x Domain [${domain}] zero hardcoded personal names`,
+        nameLeaks.length > 0 ? `Found: ${nameLeaks.join(', ')}` : undefined
+      );
+
       // Test Non-Biopharma Purity
       if (domain !== 'biopharma') {
-        const leaks = bannedPharmaWords.filter((w) => doc.includes(w));
+        const pharmaLeaks = bannedPharmaWords.filter((w) => doc.includes(w));
         assert(
-          leaks.length === 0,
+          pharmaLeaks.length === 0,
           `Archetype [${meta.shortName}] x Domain [${domain}] zero pharma leaks`,
-          leaks.length > 0 ? `Found: ${leaks.join(', ')}` : undefined
+          pharmaLeaks.length > 0 ? `Found: ${pharmaLeaks.join(', ')}` : undefined
         );
       }
 

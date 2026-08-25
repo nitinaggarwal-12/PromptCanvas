@@ -201,9 +201,9 @@ graph LR
 
 | Persona ID | Persona Name & Role | Primary Objectives | Critical Friction Points |
 |---|---|---|---|
-| **PER-01** | **Dr. Sophia Reyes** (Medical Information Specialist) | Rapidly draft verified scientific responses to healthcare provider inquiries | Fragmented literature databases; manual citation verification |
-| **PER-02** | **Marcus Thorne** (Commercial MLR Reviewer) | Ensure marketing promotional claims align with approved FDA package labels | Ambiguous regulatory label language; iterative review cycles |
-| **PER-03** | **Safety & Governance Officer** (PV Safety Reviewer) | Identify and escalate adverse events occurring in clinical narratives | High narrative volume; strict 24-hour FDA reporting deadlines |
+| **PER-01** | **Lead Domain Specialist** (Enterprise Operations Specialist) | Rapidly draft verified domain responses to incoming queries | Fragmented knowledge repositories; manual verification |
+| **PER-02** | **Compliance Reviewer** (Regulatory & Policy Reviewer) | Ensure operational transactions align with enterprise governance policies | Ambiguous policies; iterative manual sign-off cycles |
+| **PER-03** | **Safety & Risk Officer** (Continuous Risk Assessment Officer) | Identify and escalate anomalies occurring in real-time streams | High throughput volume; strict SLA deadlines |
 
 ---
 
