@@ -64,6 +64,18 @@ import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterD
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
+import DocGenFloatingCopilot from '@/components/DocGenFloatingCopilot';
+import {
+  VersionSnapshot,
+  ChatMessage,
+  DiagramSlotVersionData,
+  createInitialSnapshot,
+  pushVersionSnapshot,
+  bumpVersionTag,
+  saveVersionHistory,
+  loadVersionHistory,
+  formatRelativeTime,
+} from '@/lib/versioning/docVersionEngine';
 
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
@@ -426,6 +438,26 @@ function DocGenContent() {
   const [isChangeReportOpen, setIsChangeReportOpen] = useState<boolean>(false);
   const [projectId, setProjectId] = useState<string>('');
 
+  // 10-Version History & Chatbot Copilot State
+  const [docVersion, setDocVersion] = useState<string>('v1.0');
+  const [versionHistory, setVersionHistory] = useState<VersionSnapshot[]>([]);
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  // Load version history and chat from localStorage when projectId is active
+  useEffect(() => {
+    if (!projectId) return;
+    const saved = loadVersionHistory(projectId);
+    if (saved) {
+      if (saved.snapshots.length > 0) {
+        setVersionHistory(saved.snapshots);
+        setDocVersion(saved.snapshots[0].docVersion || 'v1.0');
+      }
+      if (saved.chatHistory.length > 0) {
+        setChatHistory(saved.chatHistory);
+      }
+    }
+  }, [projectId]);
+
   // URL query parameter synchronization (e.g. ?doc=brd, ?proj=proj_xxx, ?domain=fintech, ?title=..., ?prompt=..., ?scope=..., ?tab=studio)
   useEffect(() => {
     const docParam = searchParams.get('doc') as ArchetypeId | null;
@@ -613,6 +645,23 @@ function DocGenContent() {
       setGeneratedDocContent(finalDoc);
       setActiveTab('studio');
 
+      // Initialize v1.0 snapshot on full generation
+      const initialSlots: Record<number, DiagramSlotVersionData> = {};
+      activeMeta.blueprintPack.forEach((slot, idx) => {
+        const slotKey = idx + 1;
+        const custom = slotCustomizations[slotKey];
+        initialSlots[slotKey] = {
+          templateId: custom?.templateId || slot.recommendedTemplateId,
+          xml: '',
+          version: 'v1.0',
+          customizationPrompt: custom?.customPrompt,
+        };
+      });
+      const initSnap = createInitialSnapshot(finalDoc, initialSlots, `Initial ${activeMeta.name} Generated Baseline`);
+      setVersionHistory([initSnap]);
+      setDocVersion('v1.0');
+      saveVersionHistory(generatedProjId, [initSnap], chatHistory);
+
       // Update browser URL with unique project ID and parameters
       if (typeof window !== 'undefined') {
         const uniqueUrl = `/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${effectiveDomain}&title=${encodeURIComponent(projectTitle)}`;
@@ -633,6 +682,159 @@ function DocGenContent() {
       setIsGenerating(false);
       setGenerationStep(0);
     }
+  };
+
+  // Auto-initialize v1.0 snapshot if document exists but history is empty
+  useEffect(() => {
+    if (!generatedDocContent) return;
+    if (versionHistory.length === 0) {
+      const initialSlots: Record<number, DiagramSlotVersionData> = {};
+      activeMeta.blueprintPack.forEach((slot, idx) => {
+        const slotKey = idx + 1;
+        const custom = slotCustomizations[slotKey];
+        initialSlots[slotKey] = {
+          templateId: custom?.templateId || slot.recommendedTemplateId,
+          xml: '',
+          version: 'v1.0',
+          customizationPrompt: custom?.customPrompt,
+        };
+      });
+      const initSnap = createInitialSnapshot(generatedDocContent, initialSlots, `Initial ${activeMeta.name} Baseline`);
+      setVersionHistory([initSnap]);
+      setDocVersion('v1.0');
+      saveVersionHistory(projectId || 'default', [initSnap], chatHistory);
+    }
+  }, [generatedDocContent, activeMeta, projectId]);
+
+  // Handle Copilot Document Text Update (bumps doc version, preserves diagram slots)
+  const handleApplyDocUpdate = (newMarkdown: string, summary: string, author: 'AI Copilot' | 'User' = 'AI Copilot') => {
+    const nextVer = bumpVersionTag(docVersion);
+    const currentSlots: Record<number, DiagramSlotVersionData> = {};
+    activeMeta.blueprintPack.forEach((slot, idx) => {
+      const slotKey = idx + 1;
+      const custom = slotCustomizations[slotKey];
+      currentSlots[slotKey] = {
+        templateId: custom?.templateId || slot.recommendedTemplateId,
+        xml: '',
+        version: versionHistory[0]?.diagramSlots[slotKey]?.version || 'v1.0',
+        customizationPrompt: custom?.customPrompt,
+      };
+    });
+
+    const newSnapshot: VersionSnapshot = {
+      id: `snap_${Date.now()}_doc`,
+      versionTag: nextVer,
+      timestamp: new Date().toISOString(),
+      author,
+      changeSummary: summary,
+      targetType: 'doc',
+      docMarkdown: newMarkdown,
+      docVersion: nextVer,
+      diagramSlots: currentSlots,
+    };
+
+    const updatedHistory = pushVersionSnapshot(versionHistory, newSnapshot);
+    setDocVersion(nextVer);
+    setGeneratedDocContent(newMarkdown);
+    setVersionHistory(updatedHistory);
+    saveVersionHistory(projectId || 'default', updatedHistory, chatHistory);
+  };
+
+  // Handle Copilot Diagram Slot Update (bumps specific slot version, preserves doc markdown)
+  const handleApplyDiagramUpdate = (slotIndex: number, newPrompt: string, summary: string) => {
+    const slotKey = slotIndex;
+    const currentSlotVersion = versionHistory[0]?.diagramSlots[slotKey]?.version || 'v1.0';
+    const nextSlotVersion = bumpVersionTag(currentSlotVersion);
+
+    const updatedSlots: Record<number, DiagramSlotVersionData> = { ...(versionHistory[0]?.diagramSlots || {}) };
+    const activeSlotMeta = activeMeta.blueprintPack[slotIndex - 1];
+    const custom = slotCustomizations[slotKey];
+    updatedSlots[slotKey] = {
+      templateId: custom?.templateId || activeSlotMeta?.recommendedTemplateId || '01',
+      xml: '',
+      version: nextSlotVersion,
+      customizationPrompt: newPrompt,
+    };
+
+    setSlotCustomizations((prev) => ({
+      ...prev,
+      [slotKey]: {
+        templateId: prev[slotKey]?.templateId || activeSlotMeta?.recommendedTemplateId || '01',
+        isCustom: true,
+        customPrompt: newPrompt,
+      },
+    }));
+
+    const newSnapshot: VersionSnapshot = {
+      id: `snap_${Date.now()}_diag`,
+      versionTag: docVersion,
+      timestamp: new Date().toISOString(),
+      author: 'AI Copilot',
+      changeSummary: summary,
+      targetType: 'diagram',
+      targetSlotIndex: slotIndex,
+      docMarkdown: generatedDocContent || '',
+      docVersion,
+      diagramSlots: updatedSlots,
+    };
+
+    const updatedHistory = pushVersionSnapshot(versionHistory, newSnapshot);
+    setVersionHistory(updatedHistory);
+    saveVersionHistory(projectId || 'default', updatedHistory, chatHistory);
+  };
+
+  // Handle 1-Click Snapshot Rollback & Replay
+  const handleRestoreSnapshot = (snapshot: VersionSnapshot) => {
+    setGeneratedDocContent(snapshot.docMarkdown);
+    setDocVersion(snapshot.docVersion);
+
+    const restoredCustoms: Record<number, { templateId: string; isCustom: boolean; customPrompt?: string }> = {};
+    Object.keys(snapshot.diagramSlots || {}).forEach((k) => {
+      const numKey = parseInt(k, 10);
+      const data = snapshot.diagramSlots[numKey];
+      if (data) {
+        restoredCustoms[numKey] = {
+          templateId: data.templateId,
+          isCustom: !!data.customizationPrompt,
+          customPrompt: data.customizationPrompt,
+        };
+      }
+    });
+    setSlotCustomizations(restoredCustoms);
+
+    const rollbackSnap: VersionSnapshot = {
+      id: `snap_${Date.now()}_rollback`,
+      versionTag: bumpVersionTag(docVersion),
+      timestamp: new Date().toISOString(),
+      author: 'User',
+      changeSummary: `Rollback to ${snapshot.versionTag} (${snapshot.changeSummary})`,
+      targetType: 'full',
+      docMarkdown: snapshot.docMarkdown,
+      docVersion: snapshot.docVersion,
+      diagramSlots: snapshot.diagramSlots,
+    };
+
+    const updatedHistory = pushVersionSnapshot(versionHistory, rollbackSnap);
+    setVersionHistory(updatedHistory);
+
+    const rollbackMsg: ChatMessage = {
+      id: `msg_${Date.now()}_sys`,
+      sender: 'system',
+      text: `⏪ Restored snapshot ${snapshot.versionTag} (authored ${formatRelativeTime(snapshot.timestamp)} by ${snapshot.author}). All document text and diagram slot configurations were restored.`,
+      timestamp: new Date().toISOString(),
+    };
+    const updatedChat = [...chatHistory, rollbackMsg];
+    setChatHistory(updatedChat);
+    saveVersionHistory(projectId || 'default', updatedHistory, updatedChat);
+  };
+
+  // Append Chat Message helper
+  const handleAddChatMessage = (msg: ChatMessage) => {
+    setChatHistory((prev) => {
+      const updated = [...prev, msg];
+      saveVersionHistory(projectId || 'default', versionHistory, updated);
+      return updated;
+    });
   };
 
   // Download Word docx
@@ -1597,6 +1799,15 @@ function DocGenContent() {
 
                   {/* Action Buttons: Project Link, Change Report, Word, PDF/Print, Markdown, Raw/Formatted Toggle */}
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Live Version Tag & Ring Buffer Counter */}
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs font-mono font-bold text-sky-400">
+                      <span>DOC:</span>
+                      <span className="text-white px-1.5 py-0.2 rounded bg-sky-600">{docVersion}</span>
+                      <span className="text-[10px] text-slate-400 font-sans border-l pl-1.5 border-slate-700">
+                        {versionHistory.length}/10 Snapshots
+                      </span>
+                    </div>
+
                     {/* Share Unique Project Link */}
                     <button
                       onClick={handleCopyProjectShareLink}
@@ -1707,6 +1918,37 @@ function DocGenContent() {
               </div>
             )}
           </div>
+        )}
+
+        {/* FLOATING AI COPILOT CHATBOT & 10-VERSION HISTORY DRAWER */}
+        {generatedDocContent && (
+          <DocGenFloatingCopilot
+            projectId={projectId || 'default'}
+            projectTitle={projectTitle}
+            selectedDomain={selectedDomain}
+            archetypeId={selectedArchetypeId}
+            isLight={isLight}
+            docMarkdown={generatedDocContent}
+            docVersion={docVersion}
+            diagramSlots={
+              versionHistory[0]?.diagramSlots ||
+              activeMeta.blueprintPack.reduce((acc, slot, idx) => {
+                acc[idx + 1] = {
+                  templateId: slotCustomizations[idx + 1]?.templateId || slot.recommendedTemplateId,
+                  xml: '',
+                  version: 'v1.0',
+                  customizationPrompt: slotCustomizations[idx + 1]?.customPrompt,
+                };
+                return acc;
+              }, {} as Record<number, DiagramSlotVersionData>)
+            }
+            versionHistory={versionHistory}
+            chatHistory={chatHistory}
+            onApplyDocUpdate={handleApplyDocUpdate}
+            onApplyDiagramUpdate={handleApplyDiagramUpdate}
+            onRestoreSnapshot={handleRestoreSnapshot}
+            onAddChatMessage={handleAddChatMessage}
+          />
         )}
       </main>
 
