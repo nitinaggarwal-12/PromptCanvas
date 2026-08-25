@@ -760,6 +760,15 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/(❖\s*USE CASE:\s*)[^<"&]+/gi, `$1${topicClean}`)
     .replace(/(\bUSE CASE:\s*)[^<"&]+/gi, `$1${topicClean}`)
     .replace(/(\bSYSTEM CONTEXT:\s*)[^<"&]+/gi, `$1${topicClean}`)
+    .replace(/BUSINESS PROCESS \/ SWIMLANE — [^<"&]+/gi, `BUSINESS PROCESS / SWIMLANE — ${topicClean.toUpperCase()}`)
+    .replace(/BUSINESS PROCESS \/ SWIMLANE — [^<"]+/gi, `BUSINESS PROCESS / SWIMLANE — ${topicClean.toUpperCase()}`)
+    .replace(/SYNACTIVE SMART GRID &amp; INDUSTRIAL IOT/gi, topicClean.toUpperCase())
+    .replace(/OMNIVUE RETAIL &amp; SUPPLY CHAIN/gi, topicClean.toUpperCase())
+    .replace(/NEXUSFIN WEALTH &amp; PAYMENTS/gi, topicClean.toUpperCase())
+    .replace(/ENTERPRISE ARCHITECTURE PLATFORM/gi, topicClean.toUpperCase())
+    .replace(/SYNACTIVE/gi, shortBrandUpper)
+    .replace(/OMNIVUE/gi, shortBrandUpper)
+    .replace(/NEXUSFIN/gi, shortBrandUpper)
     .replace(/Enterprise Governed Agentic AI Platform/gi, topicClean)
     .replace(/Enterprise Technical System View/gi, `${topicClean} System View`)
     .replace(/Enterprise DevSecOps Polyrepo CI\/CD Pipeline/gi, `${topicClean} DevSecOps CI/CD Pipeline`)
@@ -907,6 +916,10 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/PubMed/gi, `${topic} API`)
     .replace(/Oncology/gi, topic || 'Enterprise')
     .replace(/ITACS/gi, topic || 'Enterprise')
+    .replace(/CLINICAL AI BIO-PHARMA PRODUCT/gi, `${topicClean.toUpperCase()}`)
+    .replace(/NOVACURA BIO-PHARMA PRODUCT/gi, `${topicClean.toUpperCase()}`)
+    .replace(/NOVACURA BIO-PHARMA/gi, `${shortBrandUpper} PLATFORM`)
+    .replace(/Transforming Therapies\. Improving Lives\./gi, `${shortBrand} Autonomous Cloud Architecture`)
     .replace(/&amp;amp;/g, '&amp;');
 
   // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine
@@ -917,7 +930,13 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   let dynSla = 'SLA: 99.99% Uptime | Zero-Trust Perimeter';
   let dynArchName = 'Enterprise Architecture System';
 
-  if (/payment|fintech|banking|pci|ledger|fraud/i.test(promptLower)) {
+  if (/energy|ev|charging|microgrid|solar|battery|bess|v2g|ocpp|grid|iot|sensor/i.test(promptLower)) {
+    dynPersonas = 'Grid Architect, IoT Fleet SRE, Power Trading Specialist';
+    dynStakeholders = 'ISO/RTO Grid Authority, Utility Operations, Sustainability Lead';
+    dynDefinition = 'Decentralized Smart EV Fast-Charging, Sub-50ms Dynamic Load Balancing &amp; Microgrid Energy Trading';
+    dynSla = 'SLA: 99.999% Grid Availability | Telemetry &lt;100ms';
+    dynArchName = 'Decentralized Smart Grid &amp; EV Fleet Architecture';
+  } else if (/payment|fintech|banking|pci|ledger|fraud/i.test(promptLower)) {
     dynPersonas = 'Payment Operator, Risk Officer, Compliance Analyst';
     dynStakeholders = 'Central Bank Ops, Clearing House, Security Lead';
     dynDefinition = 'Real-Time Financial Settlement, Multi-Tier Fraud Detection, &amp; ISO 20022 Ledger Flow';

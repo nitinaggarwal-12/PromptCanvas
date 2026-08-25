@@ -64,6 +64,10 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   const bg = isDark ? "#0F172A" : "#FFFFFF";
   const c: string[] = [];
 
+  const isRetail = domainFlavor === "retail";
+  const isFintech = domainFlavor === "fintech";
+  const isMfg = domainFlavor === "manufacturing" || domainFlavor === "energy";
+
   const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
     c.push(
       `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
@@ -94,24 +98,78 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   cell("hdr_num", `<span style="font-size:24px;font-weight:900;color:#FFFFFF;">03</span>`, 16, 12, 54, 46, "rounded=1;arcSize=8;fillColor=#0F2A4A;strokeColor=#0F2A4A;html=1;align=center;verticalAlign=middle;");
 
   // Title & Subtitle
-  const titleHtml = `<div style="font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">BUSINESS PROCESS / SWIMLANE — NOVACURA BIO-PHARMA PRODUCT</div>` +
-    `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">End-to-End Drug Development &amp; Commercialization Lifecycle</div>`;
+  const subTitle = isRetail
+    ? "End-to-End E-Commerce Order Fulfillment, Dynamic Inventory &amp; Logistics Lifecycle"
+    : isFintech
+    ? "End-to-End ISO 20022 Wire Settlement, Pre-Trade Risk &amp; Ledger Reconciliation"
+    : isMfg
+    ? "End-to-End IoT Telemetry, Dynamic Load Balancing &amp; Real-Time Grid Settlement"
+    : "End-to-End Enterprise Architecture, Workflow Choreography &amp; Quality Gates";
+
+  const platformName = isRetail
+    ? "OMNIVUE RETAIL &amp; SUPPLY CHAIN"
+    : isFintech
+    ? "NEXUSFIN WEALTH &amp; PAYMENTS"
+    : isMfg
+    ? "SYNACTIVE SMART GRID &amp; INDUSTRIAL IOT"
+    : "ENTERPRISE ARCHITECTURE PLATFORM";
+
+  const brandTag = isRetail
+    ? "Hyper-Scale Commerce. Intelligent Fulfillment."
+    : isFintech
+    ? "Autonomous Wealth. Zero-Latency Execution."
+    : isMfg
+    ? "Industrial IoT. Real-Time Telemetry."
+    : "Scalable. Resilient. Secure.";
+
+  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isMfg ? "SYNACTIVE" : "ENTERPRISE";
+
+  const titleHtml = `<div style="font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">BUSINESS PROCESS / SWIMLANE — ${platformName}</div>` +
+    `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">${subTitle}</div>`;
   cell("hdr_title", titleHtml, 78, 12, 980, 46, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   // Top Right Brand Logo
   const brandLogoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="8" cy="8" r="4" fill="#1D4ED8"/><circle cx="24" cy="8" r="4" fill="#1D4ED8"/><circle cx="8" cy="24" r="4" fill="#1D4ED8"/><circle cx="24" cy="24" r="4" fill="#1D4ED8"/><line x1="8" y1="8" x2="24" y2="24" stroke="#1D4ED8" stroke-width="2.5"/><line x1="24" y1="8" x2="8" y2="24" stroke="#1D4ED8" stroke-width="2.5"/></svg>`;
-  const brandHtml = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;"><div style="flex-shrink:0;">${brandLogoSvg}</div><div style="text-align:left;"><div style="font-size:16px;font-weight:900;color:#0F2A4A;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:8px;font-weight:600;color:#64748B;font-style:italic;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div></div></div>`;
+  const brandHtml = `<div style="display:flex;align-items:center;justify-content:flex-end;gap:8px;"><div style="flex-shrink:0;">${brandLogoSvg}</div><div style="text-align:left;"><div style="font-size:16px;font-weight:900;color:#0F2A4A;letter-spacing:1px;line-height:1;">${brandName}</div><div style="font-size:8px;font-weight:600;color:#64748B;font-style:italic;line-height:1;margin-top:2px;">${brandTag}</div></div></div>`;
   cell("hdr_brand", brandHtml, 1280, 12, 304, 46, "text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
 
   // ==================== 2. PHASE COLUMN HEADERS (CHEVRONS) ====================
-  const phases = [
-    { title: "SWIMLANES", color: "#0F2A4A", x: 16, w: 180 },
-    { title: "1. RESEARCH &amp; DISCOVERY", color: "#166534", x: 200, w: 330 },
-    { title: "2. DEVELOPMENT", color: "#1D4ED8", x: 534, w: 460 },
-    { title: "3. MANUFACTURING", color: "#6D28D9", x: 998, w: 220 },
-    { title: "4. COMMERCIALIZATION", color: "#D97706", x: 1222, w: 234 },
-    { title: "5. PATIENT OUTCOMES", color: "#0D9488", x: 1460, w: 124 },
-  ];
+  const phases = isRetail
+    ? [
+        { title: "SWIMLANES", color: "#0F2A4A", x: 16, w: 180 },
+        { title: "1. CATALOG &amp; DEMAND", color: "#166534", x: 200, w: 330 },
+        { title: "2. CART &amp; CHECKOUT", color: "#1D4ED8", x: 534, w: 460 },
+        { title: "3. WMS &amp; FULFILLMENT", color: "#6D28D9", x: 998, w: 220 },
+        { title: "4. CARRIER LOGISTICS", color: "#D97706", x: 1222, w: 234 },
+        { title: "5. CUSTOMER EXPERIENCE", color: "#0D9488", x: 1460, w: 124 },
+      ]
+    : isFintech
+    ? [
+        { title: "SWIMLANES", color: "#0F2A4A", x: 16, w: 180 },
+        { title: "1. ORDER &amp; INGRESS", color: "#166534", x: 200, w: 330 },
+        { title: "2. RISK &amp; LIMITS", color: "#1D4ED8", x: 534, w: 460 },
+        { title: "3. MATCHING &amp; DMA", color: "#6D28D9", x: 998, w: 220 },
+        { title: "4. CLEARING &amp; SETTLEMENT", color: "#D97706", x: 1222, w: 234 },
+        { title: "5. REGULATORY AUDIT", color: "#0D9488", x: 1460, w: 124 },
+      ]
+    : isMfg
+    ? [
+        { title: "SWIMLANES", color: "#0F2A4A", x: 16, w: 180 },
+        { title: "1. TELEMETRY INGRESS", color: "#166534", x: 200, w: 330 },
+        { title: "2. LOAD BALANCING", color: "#1D4ED8", x: 534, w: 460 },
+        { title: "3. STORAGE &amp; DISPATCH", color: "#6D28D9", x: 998, w: 220 },
+        { title: "4. GRID SETTLEMENT", color: "#D97706", x: 1222, w: 234 },
+        { title: "5. OPERATOR VISIBILITY", color: "#0D9488", x: 1460, w: 124 },
+      ]
+    : [
+        { title: "SWIMLANES", color: "#0F2A4A", x: 16, w: 180 },
+        { title: "1. RESEARCH &amp; DISCOVERY", color: "#166534", x: 200, w: 330 },
+        { title: "2. DEVELOPMENT", color: "#1D4ED8", x: 534, w: 460 },
+        { title: "3. MANUFACTURING", color: "#6D28D9", x: 998, w: 220 },
+        { title: "4. COMMERCIALIZATION", color: "#D97706", x: 1222, w: 234 },
+        { title: "5. PATIENT OUTCOMES", color: "#0D9488", x: 1460, w: 124 },
+      ];
+
   phases.forEach((p, idx) => {
     cell(`ph_${idx}`, `<b style="font-size:10.5px;color:#FFFFFF;letter-spacing:0.5px;">${p.title}</b>`, p.x, 70, p.w, 32, `rounded=0;fillColor=${p.color};strokeColor=${p.color};html=1;align=center;verticalAlign=middle;`);
   });
@@ -128,16 +186,46 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     ]);
   });
 
-  // 7 Swimlane Rows (heights: 94px for Rows 1-6, 118px for Row 7)
-  const lanes = [
-    { id: "lane_research", y: 102, h: 94, icon: "microscope", color: "#166534", title: "RESEARCH<br/>SCIENTIST", desc: "Discover &amp; validate<br/>novel therapies" },
-    { id: "lane_clinops", y: 196, h: 94, icon: "users", color: "#1D4ED8", title: "CLINICAL<br/>OPERATIONS", desc: "Design &amp; execute<br/>clinical trials" },
-    { id: "lane_reg", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "REGULATORY<br/>AFFAIRS", desc: "Ensure compliance<br/>&amp; regulatory submissions" },
-    { id: "lane_mfg", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "MANUFACTURING<br/>OPERATIONS", desc: "Manufacture with<br/>quality &amp; compliance" },
-    { id: "lane_comm", y: 478, h: 94, icon: "chart", color: "#EA580C", title: "COMMERCIAL<br/>OPERATIONS", desc: "Deliver to market &amp;<br/>engage customers" },
-    { id: "lane_patient", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "PATIENT &amp;<br/>HEALTHCARE PROVIDERS", desc: "Care delivery &amp;<br/>patient outcomes" },
-    { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "DATA &amp; DIGITAL<br/>PLATFORM", desc: "Enable data, analytics<br/>&amp; insights" },
-  ];
+  // 7 Swimlane Rows
+  const lanes = isRetail
+    ? [
+        { id: "lane_merch", y: 102, h: 94, icon: "chart", color: "#166534", title: "MERCHANDISING<br/>&amp; BUYING", desc: "Catalog assortment &amp;<br/>dynamic pricing" },
+        { id: "lane_storefront", y: 196, h: 94, icon: "users", color: "#1D4ED8", title: "DIGITAL STOREFRONT<br/>&amp; CHECKOUT", desc: "1-Click cart &amp;<br/>order reservation" },
+        { id: "lane_security", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "PAYMENT &amp; FRAUD<br/>SECURITY", desc: "PCI tokenization &amp;<br/>fraud scoring" },
+        { id: "lane_wms", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "WAREHOUSE<br/>OPERATIONS (WMS)", desc: "Slotting, pick &amp; pack,<br/>cross-docking" },
+        { id: "lane_carrier", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "CARRIER &amp; 3PL<br/>LOGISTICS", desc: "Route optimization &amp;<br/>last-mile dispatch" },
+        { id: "lane_shopper", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "SHOPPER &amp; PRIME<br/>CUSTOMER", desc: "Real-time tracking &amp;<br/>delivery confirmation" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "DATA &amp; EVENT<br/>STREAM PLATFORM", desc: "Kafka telemetry &amp;<br/>Spanner inventory" },
+      ]
+    : isFintech
+    ? [
+        { id: "lane_trader", y: 102, h: 94, icon: "chart", color: "#166534", title: "INSTITUTIONAL<br/>TRADER", desc: "Order creation &amp;<br/>algorithmic strategy" },
+        { id: "lane_oms", y: 196, h: 94, icon: "users", color: "#1D4ED8", title: "ORDER ROUTING<br/>&amp; OMS", desc: "Smart order routing<br/>&amp; FIX 4.4 ingress" },
+        { id: "lane_risk", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "RISK &amp; COMPLIANCE<br/>(SEC / FINRA)", desc: "Pre-trade limits &amp;<br/>AML sanctions check" },
+        { id: "lane_matching", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "MATCHING ENGINE<br/>&amp; DMA", desc: "Sub-ms execution &amp;<br/>liquidity pool fill" },
+        { id: "lane_clearing", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "CLEARING &amp; CUSTODY<br/>(DTCC / SWIFT)", desc: "RTGS settlement &amp;<br/>ISO 20022 wire" },
+        { id: "lane_client", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "CLIENT INVESTOR<br/>&amp; WEALTH", desc: "Portfolio dashboard<br/>&amp; P&L confirmation" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "CORE FINANCIAL<br/>SPANNER LEDGER", desc: "Double-entry general<br/>ledger &amp; audit trail" },
+      ]
+    : isMfg
+    ? [
+        { id: "lane_driver", y: 102, h: 94, icon: "chart", color: "#166534", title: "EV DRIVER &amp;<br/>FLEET MANAGER", desc: "Plug &amp; Charge session<br/>&amp; V2G authorization" },
+        { id: "lane_edge", y: 196, h: 94, icon: "users", color: "#1D4ED8", title: "EDGE IoT &amp;<br/>CHARGING STATIONS", desc: "OCPP 2.0.1 telemetry<br/>&amp; power monitoring" },
+        { id: "lane_grid", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "GRID BALANCING<br/>&amp; V2G CONTROL", desc: "Sub-50ms pricing &amp;<br/>peak shaving algorithm" },
+        { id: "lane_bess", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "BESS &amp; MICROGRID<br/>INVERTERS", desc: "Battery energy storage<br/>&amp; solar power flow" },
+        { id: "lane_trading", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "ENERGY TRADING<br/>&amp; P2P SETTLEMENT", desc: "Renewable credit ledger<br/>&amp; utility billing" },
+        { id: "lane_operator", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "UTILITY &amp; GRID<br/>OPERATORS", desc: "Grid stability view &amp;<br/>demand response alerts" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "SPANNER TELEMETRY<br/>&amp; TIME-SERIES MESH", desc: "Kafka real-time stream<br/>&amp; BigQuery analytics" },
+      ]
+    : [
+        { id: "lane_research", y: 102, h: 94, icon: "microscope", color: "#166534", title: "RESEARCH<br/>SCIENTIST", desc: "Discover &amp; validate<br/>novel therapies" },
+        { id: "lane_clinops", y: 196, h: 94, icon: "users", color: "#1D4ED8", title: "CLINICAL<br/>OPERATIONS", desc: "Design &amp; execute<br/>clinical trials" },
+        { id: "lane_reg", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "REGULATORY<br/>AFFAIRS", desc: "Ensure compliance<br/>&amp; regulatory submissions" },
+        { id: "lane_mfg", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "MANUFACTURING<br/>OPERATIONS", desc: "Manufacture with<br/>quality &amp; compliance" },
+        { id: "lane_comm", y: 478, h: 94, icon: "chart", color: "#EA580C", title: "COMMERCIAL<br/>OPERATIONS", desc: "Deliver to market &amp;<br/>engage customers" },
+        { id: "lane_patient", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "PATIENT &amp;<br/>HEALTHCARE PROVIDERS", desc: "Care delivery &amp;<br/>patient outcomes" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "DATA &amp; DIGITAL<br/>PLATFORM", desc: "Enable data, analytics<br/>&amp; insights" },
+      ];
 
   lanes.forEach((lane, idx) => {
     if (idx > 0) {
@@ -207,36 +295,95 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   stepCard("card_rwe_evid", "Real-World\nEvidence", 1378, 592, 92, 54, "#059669", "database");
 
   // --- ROW 7: DATA & DIGITAL PLATFORM (y=666..784) ---
-  const platformPods = [
-    { title: "Data Collection<br/>(EDC, ePRO, Labs)", icon: "database", x: 216, w: 104 },
-    { title: "Data Integration<br/>& Governance", icon: "network", x: 326, w: 104 },
-    { title: "Analytics &<br/>AI/ML Insights", icon: "brain", x: 436, w: 104 },
-    { title: "Document & Content<br/>Management", icon: "folder", x: 546, w: 114 },
-    { title: "Security, Privacy<br/>& Compliance", icon: "shieldCheck", x: 666, w: 108 },
-    { title: "Audit Trail &<br/>Lineage", icon: "search", x: 780, w: 98 },
-    { title: "Reporting &<br/>Dashboards", icon: "chart", x: 884, w: 98 },
-  ];
+  const platformPods = isRetail
+    ? [
+        { title: "Catalog & SKU<br/>Data Ingestion", icon: "database", x: 216, w: 104 },
+        { title: "Real-Time Event<br/>Stream (Kafka)", icon: "network", x: 326, w: 104 },
+        { title: "Recommendation &<br/>Pricing ML (Vertex)", icon: "brain", x: 436, w: 104 },
+        { title: "Order History &<br/>Inventory Ledger", icon: "folder", x: 546, w: 114 },
+        { title: "PCI Tokenizer &<br/>Fraud Shield", icon: "shieldCheck", x: 666, w: 108 },
+        { title: "Audit Trail &<br/>Cart Lineage", icon: "search", x: 780, w: 98 },
+        { title: "Sales & Carrier<br/>Dashboards", icon: "chart", x: 884, w: 98 },
+      ]
+    : isFintech
+    ? [
+        { title: "Tick & Quote<br/>Feed Ingestion", icon: "database", x: 216, w: 104 },
+        { title: "Sub-ms Event<br/>Mesh (Kafka/Flink)", icon: "network", x: 326, w: 104 },
+        { title: "Vertex AI Real-Time<br/>Fraud Anomaly ML", icon: "brain", x: 436, w: 104 },
+        { title: "Cloud Spanner<br/>Double-Entry Ledger", icon: "folder", x: 546, w: 114 },
+        { title: "KMS Tokenizer &<br/>mTLS Zero-Trust", icon: "shieldCheck", x: 666, w: 108 },
+        { title: "SEC 17a-4 Immutability<br/>& Audit Trail", icon: "search", x: 780, w: 98 },
+        { title: "Trading & Risk<br/>Dashboards", icon: "chart", x: 884, w: 98 },
+      ]
+    : isMfg
+    ? [
+        { title: "OCPP & MQTT<br/>Sensor Ingestion", icon: "database", x: 216, w: 104 },
+        { title: "Time-Series Telemetry<br/>Stream (Kafka)", icon: "network", x: 326, w: 104 },
+        { title: "Vertex AI Dynamic<br/>Load Balancer ML", icon: "brain", x: 436, w: 104 },
+        { title: "Cloud Spanner<br/>Energy & V2G Ledger", icon: "folder", x: 546, w: 114 },
+        { title: "ISO 15118 Security<br/>& HSM Enclave", icon: "shieldCheck", x: 666, w: 108 },
+        { title: "Grid Audit Trail<br/>& Billing Lineage", icon: "search", x: 780, w: 98 },
+        { title: "Grid Telemetry &<br/>BESS Dashboards", icon: "chart", x: 884, w: 98 },
+      ]
+    : [
+        { title: "Data Collection<br/>(EDC, ePRO, Labs)", icon: "database", x: 216, w: 104 },
+        { title: "Data Integration<br/>& Governance", icon: "network", x: 326, w: 104 },
+        { title: "Analytics &<br/>AI/ML Insights", icon: "brain", x: 436, w: 104 },
+        { title: "Document & Content<br/>Management", icon: "folder", x: 546, w: 114 },
+        { title: "Security, Privacy<br/>& Compliance", icon: "shieldCheck", x: 666, w: 108 },
+        { title: "Audit Trail &<br/>Lineage", icon: "search", x: 780, w: 98 },
+        { title: "Reporting &<br/>Dashboards", icon: "chart", x: 884, w: 98 },
+      ];
+
   platformPods.forEach((pod, i) => {
     const html = `<div style="text-align:center;padding:4px 2px;"><div style="display:flex;justify-content:center;margin-bottom:2px;">${svgIcon(pod.icon as keyof typeof SVG, "#0F2A4A", 18)}</div><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${pod.title}</div></div>`;
     cell(`pod_plat_${i}`, html, pod.x, 680, pod.w, 90, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Right Enclosure inside Row 7: KEY SYSTEMS & TOOLS (Examples) (x: 994..1572, w: 578, h: 90)
+  const sysTools = isRetail
+    ? [
+        { title: "Stripe", sub: "PCI CDE Vault", color: "#635BFF" },
+        { title: "Shopify", sub: "Commerce API", color: "#96BF48" },
+        { title: "SAP S/4", sub: "Inventory ERP", color: "#0F172A" },
+        { title: "Manhattan", sub: "Active WMS", color: "#0284C7" },
+        { title: "FedEx/UPS", sub: "Carrier Fleet", color: "#EA580C" },
+      ]
+    : isFintech
+    ? [
+        { title: "Bloomberg", sub: "Market Feed", color: "#EA580C" },
+        { title: "FIX 4.4", sub: "DMA Gateway", color: "#0284C7" },
+        { title: "Plaid", sub: "Open Banking", color: "#0F172A" },
+        { title: "DTCC", sub: "RTGS Clearing", color: "#2563EB" },
+        { title: "Swift", sub: "ISO 20022", color: "#16A34A" },
+      ]
+    : isMfg
+    ? [
+        { title: "OCPP 2.0", sub: "EV Protocol", color: "#16A34A" },
+        { title: "Tesla BESS", sub: "Megapack Invert", color: "#DC2626" },
+        { title: "SAP PM", sub: "Plant ERP", color: "#0F172A" },
+        { title: "MQTT Edge", sub: "SCADA Broker", color: "#0284C7" },
+        { title: "ISO 15118", sub: "Plug & Charge", color: "#7C3AED" },
+      ]
+    : [
+        { title: "Veeva", sub: "Veeva Vault", color: "#EA580C" },
+        { title: "Medidata", sub: "Rave EDC", color: "#0284C7" },
+        { title: "SAP", sub: "S/4HANA", color: "#0F172A" },
+        { title: "IQVIA", sub: "Orchestrate", color: "#2563EB" },
+        { title: "Salesforce", sub: "Health Cloud", color: "#0284C7" },
+      ];
+
   const sysBoxHtml = `<div style="padding:4px 6px;">
     <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;text-align:center;margin-bottom:4px;">KEY SYSTEMS &amp; TOOLS (Examples)</div>
     <div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:4px;">
-      <div style="text-align:center;"><div style="font-size:11px;font-weight:900;color:#EA580C;">Veeva</div><div style="font-size:6.5px;color:#64748B;">Veeva Vault</div></div>
-      <div style="text-align:center;"><div style="font-size:10px;font-weight:900;color:#0284C7;">Medidata</div><div style="font-size:6.5px;color:#64748B;">Rave EDC</div></div>
-      <div style="text-align:center;"><div style="font-size:11px;font-weight:900;color:#0F172A;">SAP</div><div style="font-size:6.5px;color:#64748B;">S/4HANA</div></div>
-      <div style="text-align:center;"><div style="font-size:10px;font-weight:900;color:#2563EB;">IQVIA</div><div style="font-size:6.5px;color:#64748B;">Orchestrate</div></div>
-      <div style="text-align:center;"><div style="font-size:8px;font-weight:900;background:#0284C7;color:#FFFFFF;padding:1px 4px;border-radius:4px;">Salesforce</div><div style="font-size:6.5px;color:#64748B;">Health Cloud</div></div>
+      ${sysTools.map(t => `<div style="text-align:center;"><div style="font-size:10px;font-weight:900;color:${t.color};">${t.title}</div><div style="font-size:6.5px;color:#64748B;">${t.sub}</div></div>`).join('')}
     </div>
-    <div style="display:flex;justify-content:space-around;align-items:center;">
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("cloud", "#4285F4", 14)}</div><div style="font-size:6.5px;color:#475569;font-weight:700;">Google Cloud</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("search", "#4285F4", 14)}</div><div style="font-size:6.5px;color:#475569;font-weight:700;">BigQuery</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("network", "#4285F4", 14)}</div><div style="font-size:6.5px;color:#475569;font-weight:700;">Dataplex</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("sparkles", "#7C3AED", 14)}</div><div style="font-size:6.5px;color:#475569;font-weight:700;">Vertex AI</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("chart", "#34A853", 14)}</div><div style="font-size:6.5px;color:#475569;font-weight:700;">Looker</div></div>
+    <div style="display:flex;justify-content:space-around;align-items:center;border-top:1px dashed #CBD5E1;padding-top:2px;">
+      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("cloud", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Google Cloud</div></div>
+      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("search", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">BigQuery</div></div>
+      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("network", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Spanner</div></div>
+      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("sparkles", "#7C3AED", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Vertex AI</div></div>
+      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("chart", "#34A853", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Looker</div></div>
     </div>
   </div>`;
   cell("box_key_systems", sysBoxHtml, 994, 680, 578, 90, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;html=1;align=left;verticalAlign=top;padding=1;");

@@ -49,12 +49,34 @@ import {
   CANONICAL_TEMPLATES,
   DOMAIN_PRESETS,
   CanonicalTemplate,
-  CANONICAL_FAMILIES
+  CANONICAL_FAMILIES,
+  injectDomainFlavorXml
 } from '@/lib/canonical/canonicalTemplates';
 import { ARCHETYPE_REGISTRY, ArchetypeId, DocArchetype } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
+import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
+
+export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
+  const combined = `${title} ${prompt}`.toLowerCase();
+  if (/\b(ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city|telemetry|sensor|iot|plc|scada|factory|plant|robotics|conveyor|assembly|manufacturing)\b/i.test(combined)) {
+    return 'manufacturing';
+  }
+  if (/\b(payment|fraud|trading|trader|wealth|fintech|bank|banking|ledger|spanner double-entry|clearing|settlement|swift|iso 20022|fiat|crypto|securities|aml|ofac|sec 15c3-5)\b/i.test(combined)) {
+    return 'fintech';
+  }
+  if (/\b(ecommerce|e-commerce|retail|shopper|cart|checkout|catalog|sku|wms|warehouse|cross-dock|fulfillment|3pl|carrier|fedex|ups|dhl|parcel|amazon|merchant|marketplace)\b/i.test(combined)) {
+    return 'retail';
+  }
+  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp)\b/i.test(combined)) {
+    return 'saas';
+  }
+  if (/\b(clinical|genomics|biopharma|pharma|oncology|fda|gxp|hipaa|veeva|drug|patient|ctms|edc|medidata|adverse event|pharmacovigilance)\b/i.test(combined)) {
+    return 'biopharma';
+  }
+  return fallbackDomain === 'biopharma' ? 'general' : fallbackDomain;
+}
 
 // Multi-Blueprint Pack mapping for each of the 9 archetypes
 interface BlueprintSlot {
@@ -226,6 +248,8 @@ interface InlineDiagramFigureProps {
   figureTitle: string;
   isLight: boolean;
   selectedDomain: string;
+  projectTitle?: string;
+  projectScopePrompt?: string;
   codeLines: string[];
   parsedNodes: { id: string; label: string; tier: string }[];
   parsedFlows: { from: string; to: string; label?: string }[];
@@ -236,6 +260,8 @@ function InlineDiagramFigure({
   figureTitle,
   isLight,
   selectedDomain,
+  projectTitle,
+  projectScopePrompt,
   codeLines,
   parsedNodes,
   parsedFlows,
@@ -248,14 +274,24 @@ function InlineDiagramFigure({
     CANONICAL_TEMPLATES.find((t) => t.id === templateId) ||
     CANONICAL_TEMPLATES.find((t) => t.id === '01');
 
+  const effectiveDomain = useMemo(() => {
+    if (selectedDomain && selectedDomain !== 'biopharma') return selectedDomain;
+    return detectDomainFromPrompt(projectTitle || '', projectScopePrompt || '', selectedDomain);
+  }, [selectedDomain, projectTitle, projectScopePrompt]);
+
   const diagramXml = useMemo(() => {
     if (!canonicalTpl) return '';
     try {
-      return canonicalTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const rawXml = canonicalTpl.generateXml(effectiveDomain, isLight ? 'light' : 'dark');
+      const domainCleaned = injectDomainFlavorXml(rawXml, effectiveDomain);
+      if (projectTitle || projectScopePrompt) {
+        return injectUseCaseFlavor(domainCleaned, projectTitle || canonicalTpl.name, projectScopePrompt);
+      }
+      return domainCleaned;
     } catch {
       return '';
     }
-  }, [canonicalTpl, selectedDomain, isLight]);
+  }, [canonicalTpl, effectiveDomain, isLight, projectTitle, projectScopePrompt]);
 
   const handleCopyXml = () => {
     if (!diagramXml) return;
@@ -649,6 +685,12 @@ function DocGenContent() {
     const generatedProjId = projectId || `proj_${Math.random().toString(36).substring(2, 9)}`;
     setProjectId(generatedProjId);
 
+    // Auto-detect domain if prompt does not match biopharma
+    const effectiveDomain = detectDomainFromPrompt(projectTitle, projectScopePrompt, selectedDomain);
+    if (effectiveDomain !== selectedDomain && selectedDomain === 'biopharma') {
+      setSelectedDomain(effectiveDomain);
+    }
+
     try {
       // Step 1: Synthesizing Multi-Blueprint System Graph
       await new Promise((r) => setTimeout(r, 400));
@@ -663,7 +705,7 @@ function DocGenContent() {
         selectedArchetypeId,
         activeMeta,
         projectTitle,
-        selectedDomain,
+        effectiveDomain,
         projectScopePrompt,
         slotCustomizations
       );
@@ -676,12 +718,12 @@ function DocGenContent() {
 
       // Update browser URL with unique project ID and parameters
       if (typeof window !== 'undefined') {
-        const uniqueUrl = `/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`;
+        const uniqueUrl = `/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${effectiveDomain}&title=${encodeURIComponent(projectTitle)}`;
         window.history.pushState(null, '', uniqueUrl);
       }
     } catch (err: any) {
       console.error('DocGen generation error:', err);
-      const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, selectedDomain, projectScopePrompt);
+      const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, effectiveDomain, projectScopePrompt);
       setGeneratedDocContent(fallbackContent);
     } finally {
       setIsGenerating(false);
@@ -1031,6 +1073,8 @@ function DocGenContent() {
             figureTitle={precedingHeading}
             isLight={isLight}
             selectedDomain={selectedDomain}
+            projectTitle={projectTitle}
+            projectScopePrompt={projectScopePrompt}
             codeLines={codeLines}
             parsedNodes={parsedNodes}
             parsedFlows={parsedFlows}
@@ -1977,20 +2021,45 @@ function synthesizeCustomExecutiveDocument(
   scope: string,
   slotCustomizations: Record<number, { templateId: string }>
 ): string {
-  const baseTemplate = getDomainMasterDocument(archetypeId, domainId, scope) || MASTER_DOCUMENTS[archetypeId] || '';
+  const effectiveDomain = detectDomainFromPrompt(title, scope, domainId);
+  const baseTemplate = getDomainMasterDocument(archetypeId, effectiveDomain, scope) || MASTER_DOCUMENTS[archetypeId] || '';
   if (!baseTemplate) {
-    return generateProductionFallbackDoc(meta, title, domainId, scope);
+    return generateProductionFallbackDoc(meta, title, effectiveDomain, scope);
   }
 
-  const domainObj = DOMAIN_PRESETS.find((d) => d.id === domainId);
-  const domainName = domainObj ? domainObj.name : domainId;
+  const domainObj = DOMAIN_PRESETS.find((d) => d.id === effectiveDomain);
+  const domainName = domainObj ? domainObj.name : effectiveDomain;
+  const titleSlug = (title || 'SYSTEM').replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 10);
 
   let doc = baseTemplate;
 
   // Replace Title & Domain metadata
   doc = doc.replace(/^#\s+[^\n]+/m, `# ${meta.name}\n\n## ${title} — Comprehensive Specification Baseline`);
   doc = doc.replace(/\*\*Executive Sponsor:\*\*[^\n]+/g, `**Executive Sponsor:** Dr. Marcus Vance (${domainName} Lead)`);
-  doc = doc.replace(/\*\*Document ID:\*\*[^\n]+/g, `**Document ID:** ${archetypeId.toUpperCase()}-${domainId.toUpperCase()}-2026-001`);
+  doc = doc.replace(/\*\*Document ID:\*\*[^\n]+/g, `**Document ID:** ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
+  doc = doc.replace(/Document ID:\s*FDD-BIOPHARM-2026-001/gi, `Document ID: ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
+  doc = doc.replace(/Document ID:\s*FDD-BIO-2026-001/gi, `Document ID: ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
+  doc = doc.replace(/Quality & Compliance Lead:\s*Sarah Chen, JD/gi, `Principal Architecture & ARB Lead: Enterprise Engineering`);
+  doc = doc.replace(/Approved\s*—\s*GxP & Functional Architecture Sign-Off/gi, `Approved — Production Architecture & ARB Sign-Off`);
+  doc = doc.replace(/Target Release:\s*Release 1 Controlled Production Pilot \(Q3 2026\)/gi, `Target Release: ${title} Production Pilot (Q3 2026)`);
+  doc = doc.replace(/Enterprise Architecture Platform\s*—\s*Functional Specifications & Workflow Sequence/gi, `${title} — Functional Specifications & Architecture`);
+
+  // If effectiveDomain is not biopharma, scrub biopharma phrases from FDD
+  if (effectiveDomain !== 'biopharma') {
+    doc = doc
+      .replace(/Submit Medical Inquiry/gi, 'Ingest Telemetry / Request Event')
+      .replace(/Adverse Event Screening/gi, 'Real-Time Policy & Anomaly Screening')
+      .replace(/Evidence Dossier Drafting/gi, 'Autonomous Decision / Transaction Execution')
+      .replace(/Dual-Custody HITL Review/gi, 'ARB & Operator Policy Verification')
+      .replace(/Medical \/ Regulatory Synthesis/gi, 'Domain Business Logic & Compute')
+      .replace(/Safety & PV Detector Agent/gi, 'Real-Time Fraud & Anomaly Detector')
+      .replace(/FDA Label & Fair Balance/gi, 'System Governance & Policy Guardrails')
+      .replace(/FDA 21 CFR Part 11/gi, 'ISO / SOC-2 Audit Immutability')
+      .replace(/GxP/gi, 'Enterprise ARB')
+      .replace(/Veeva Vault/gi, 'Cloud Spanner Ledger')
+      .replace(/Medidata Rave/gi, 'Kafka Stream Broker')
+      .replace(/IQVIA/gi, 'Data Cloud Mesh');
+  }
 
   // If user provided a custom scope, inject it into Chapter 1 Executive Summary / Problem Statement
   if (scope && scope.trim().length > 10) {
