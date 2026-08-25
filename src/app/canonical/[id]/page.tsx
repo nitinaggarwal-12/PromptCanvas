@@ -24,7 +24,8 @@ import {
   Maximize2,
   Minimize2,
   Share2,
-  FileText
+  FileText,
+  Boxes
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
 
@@ -213,6 +214,15 @@ export default function CanonicalTemplateDetailPage() {
                 <span className="hidden sm:inline">Generate Docs (BRD / PRD / SDD)</span>
                 <span className="sm:hidden">Docs</span>
               </button>
+
+              <Link
+                href="/docgen"
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-indigo-600 dark:text-indigo-400"
+                title="Open Multi-Blueprint DocGen Hub"
+              >
+                <Boxes className="w-3.5 h-3.5" />
+                <span>DocGen Hub</span>
+              </Link>
 
               {/* Share URL */}
               <button

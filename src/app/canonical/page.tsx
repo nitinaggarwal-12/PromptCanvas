@@ -270,6 +270,15 @@ function CanonicalContent() {
 
             {/* Quick Links */}
             <Link
+              href="/docgen"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-colors"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>DocGen Hub</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 font-mono font-bold">9</span>
+            </Link>
+
+            <Link
               href="/workspace"
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >

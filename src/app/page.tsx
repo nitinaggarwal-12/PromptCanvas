@@ -144,7 +144,7 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-xs font-bold shrink-0 ${
+          <nav className={`hidden lg:flex items-center gap-4 xl:gap-5 text-xs font-bold shrink-0 ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
             <Link href="/canonical" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
@@ -152,7 +152,15 @@ export default function LandingPage() {
             }`}>
               <Sparkles className="w-3.5 h-3.5 text-sky-400" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">34</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
+            </Link>
+
+            <Link href="/docgen" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-indigo-600' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'
+            }`}>
+              <FileText className="w-3.5 h-3.5 text-indigo-400" />
+              <span>DocGen Hub</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">9</span>
             </Link>
 
             <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
