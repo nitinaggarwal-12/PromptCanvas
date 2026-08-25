@@ -160,7 +160,7 @@ export default function LandingPage() {
             }`}>
               <FileText className="w-3.5 h-3.5 text-indigo-400" />
               <span>DocGen Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">9</span>
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">17</span>
             </Link>
 
             <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${

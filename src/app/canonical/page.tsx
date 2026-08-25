@@ -51,17 +51,20 @@ import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { useTheme } from '@/lib/themeContext';
 
 function CanonicalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const themeMode: 'light' | 'dark' = isDark ? 'dark' : 'light';
 
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
   const [customPrompt, setCustomPrompt] = useState<string>('');
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
 
   // Modal / Canvas state
   const [activeTemplate, setActiveTemplate] = useState<CanonicalTemplate | null>(null);
@@ -233,7 +236,6 @@ function CanonicalContent() {
   };
 
   // Background & theme colors
-  const isDark = themeMode === 'dark';
   const bgClass = isDark ? 'bg-[#0B111E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900';
   const cardClass = isDark
     ? 'bg-[#0F172A] border-slate-800 hover:border-sky-500/50 shadow-slate-950/50'
@@ -250,71 +252,68 @@ function CanonicalContent() {
         <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
           isDark ? 'bg-[#0B111E]/90 border-slate-800/80' : 'bg-white/90 border-slate-200/80'
         }`}>
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-18 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-5 h-5" />
+          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+            {/* Left: Breadcrumbs & Catalog Context */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-2 text-xs font-semibold">
+                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+                  PromptCanvas
+                </Link>
+                <span className="text-slate-400">/</span>
+                <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate">
+                  <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                  <span>Canonical Blueprints Hub</span>
+                </span>
+                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                  {CANONICAL_TEMPLATES.length} Grammars
+                </span>
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-xl tracking-tight">PromptCanvas</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 uppercase tracking-wider">
-                    Canonical Hub v1.0
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{CANONICAL_TEMPLATES.length} Canonical Diagram Grammars &bull; {CANONICAL_FAMILIES.filter((f) => f !== 'All').length} Visual Families</p>
-              </div>
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Domain Preset Selector */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-              <Sliders className="w-3.5 h-3.5 text-sky-500" />
-              <span className="text-slate-500 dark:text-slate-400">Domain Flavor:</span>
-              <select
-                value={selectedDomain}
-                onChange={(e) => setSelectedDomain(e.target.value)}
-                className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer"
-              >
-                {DOMAIN_PRESETS.map((d) => (
-                  <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                    {d.name}
-                  </option>
-                ))}
-              </select>
             </div>
 
-            {/* Quick Links */}
-            <Link
-              href="/docgen"
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-colors"
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>DocGen Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 font-mono font-bold">9</span>
-            </Link>
+            {/* Right: Controls & Hub Quick Links */}
+            <div className="flex items-center gap-3 shrink-0">
+              {/* Domain Preset Selector */}
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                <Sliders className="w-3.5 h-3.5 text-sky-500" />
+                <span className="text-slate-500 dark:text-slate-400 hidden lg:inline">Domain:</span>
+                <select
+                  value={selectedDomain}
+                  onChange={(e) => setSelectedDomain(e.target.value)}
+                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs"
+                >
+                  {DOMAIN_PRESETS.map((d) => (
+                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <Link
-              href="/workspace"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-            >
-              <LayoutGrid className="w-3.5 h-3.5" />
-              <span>Workspace</span>
-            </Link>
+              {/* Quick Links */}
+              <Link
+                href="/docgen"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs"
+                title="DocGen Studio & Master Specifications"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">DocGen Hub</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold">17</span>
+              </Link>
 
-            {/* Theme Toggle */}
-            <button
-              onClick={() => setThemeMode(isDark ? 'light' : 'dark')}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
-              title="Toggle Executive Light / Deep Slate Midnight"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
-            </button>
+              <Link
+                href="/workspace"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                title="Design Canvas Workspace"
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Workspace</span>
+              </Link>
+
+              {/* Standardized Theme Toggle */}
+              <ThemeToggleBtn id="canonical-theme-toggle-btn" />
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* HERO SECTION */}
       <main className="max-w-[1600px] mx-auto px-6 md:px-12 py-10">

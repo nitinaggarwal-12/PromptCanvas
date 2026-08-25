@@ -29,15 +29,19 @@ import {
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { useTheme } from '@/lib/themeContext';
+import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 
 export default function CanonicalTemplateDetailPage() {
   const params = useParams();
   const router = useRouter();
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
   const templateId = String(rawId || '01').padStart(2, '0');
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const themeMode: 'light' | 'dark' = isDark ? 'dark' : 'light';
 
   const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -109,7 +113,6 @@ export default function CanonicalTemplateDetailPage() {
     URL.revokeObjectURL(url);
   };
 
-  const isDark = themeMode === 'dark';
   const bgClass = isDark ? 'bg-[#0B111E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900';
 
   return (
@@ -268,13 +271,7 @@ export default function CanonicalTemplateDetailPage() {
               </button>
 
               {/* Theme Toggle */}
-              <button
-                onClick={() => setThemeMode(isDark ? 'light' : 'dark')}
-                className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
-                title="Toggle Executive Light / Deep Slate Midnight"
-              >
-                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
-              </button>
+              <ThemeToggleBtn id="canonical-detail-theme-toggle-btn" />
             </div>
           </div>
         </header>

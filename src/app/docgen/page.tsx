@@ -1832,7 +1832,7 @@ function DocGenContent() {
           </div>
         </div>
 
-        {/* TAB 1: CATALOG VIEW (PREVIEW ALL 9 DOCUMENT BLUEPRINTS) */}
+        {/* TAB 1: CATALOG VIEW (PREVIEW ALL 17 DOCUMENT BLUEPRINTS) */}
         {activeTab === 'catalog' && (
           <div className="py-8 space-y-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
