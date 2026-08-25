@@ -13,6 +13,9 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   const E = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   const c: string[] = [];
 
+  const isRetail = domainFlavor === 'retail';
+  const isFintech = domainFlavor === 'fintech';
+
   const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
     c.push(`<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
   };
@@ -46,24 +49,42 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // =========================================================================
   rect("badge_14", "<b style='font-size:24px;color:#FFFFFF;'>14</b>", 20, 14, 52, 40, "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=0;arcSize=0;align=center;verticalAlign=middle;");
 
+  const subHeader = isRetail
+    ? "OMNIVUE Hyper-Scale Omnichannel E-Commerce &amp; Logistics Platform"
+    : isFintech
+    ? "NEXUSFIN High-Speed Wealth Engine"
+    : "Enterprise Architecture Platform";
+
+  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : "⚡";
+  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : "ENTERPRISE";
+  const brandTagline = isRetail
+    ? "Hyper-Scale Commerce. Intelligent Fulfillment."
+    : isFintech
+    ? "Autonomous Wealth. Zero-Latency Execution."
+    : "Scalable. Resilient. Secure.";
+
   const titleHtml = `<div style="font-family:Inter,system-ui,sans-serif;">
     <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;line-height:1.1;">CLASS / ENTITY RELATIONSHIP DIAGRAM</div>
-    <div style="font-size:12px;font-weight:700;color:#475569;margin-top:2px;">NOVACURA Enterprise AI Platform for Biopharma</div>
+    <div style="font-size:12px;font-weight:700;color:#475569;margin-top:2px;">${subHeader}</div>
   </div>`;
   text("header_title", titleHtml, 82, 14, 750, 40, "align=left;verticalAlign=middle;");
 
   const brandHtml = `<div style="text-align:right;font-family:Inter,system-ui,sans-serif;">
     <div style="display:inline-flex;align-items:center;gap:6px;">
-      <span style="font-size:20px;">🧬</span>
-      <span style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</span>
+      <span style="font-size:20px;">${brandIcon}</span>
+      <span style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">${brandName}</span>
     </div>
-    <div style="font-size:9.5px;font-style:italic;color:#64748B;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
+    <div style="font-size:9.5px;font-style:italic;color:#64748B;margin-top:2px;">${brandTagline}</div>
   </div>`;
   text("brand_block", brandHtml, 1260, 12, 320, 44, "align=right;verticalAlign=top;");
 
   // =========================================================================
   // 2. LEFT SIDEBAR: CORE DOMAINS (x: 20, y: 70, w: 160, h: 470)
   // =========================================================================
+  const domain3Title = isRetail ? "Merchandising &amp; Catalog" : "Clinical Research";
+  const domain3Icon = isRetail ? "🛒" : "🔬";
+  const domain4Title = isRetail ? "Recommendations &amp; Search" : "Knowledge &amp; AI";
+
   const coreDomainsHtml = `<div style="padding:6px;">
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:8px;letter-spacing:0.5px;">CORE DOMAINS</div>
     <div style="font-size:8px;font-weight:700;line-height:1.4;">
@@ -76,12 +97,12 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
         <span>Content &amp; Documents</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;border:1px solid #7DD3FC;background:#F0F9FF;color:#0284C7;margin-bottom:6px;">
-        <span style="font-size:12px;">🔬</span>
-        <span>Clinical Research</span>
+        <span style="font-size:12px;">${domain3Icon}</span>
+        <span>${domain3Title}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;border:1px solid #D8B4FE;background:#FAF5FF;color:#7C3AED;margin-bottom:6px;">
         <span style="font-size:12px;">🧠</span>
-        <span>Knowledge &amp; AI</span>
+        <span>${domain4Title}</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;border:1px solid #FDBA74;background:#FFF7ED;color:#C2410C;margin-bottom:6px;">
         <span style="font-size:12px;">🛡️</span>
@@ -102,26 +123,40 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // =========================================================================
   // 3. CENTER ERD ENTITY GRID (x: 195 to 1130)
   // =========================================================================
-  // --- ROW 1: User, Role, Permission (Blue) & Document, DocumentVersion (Green) ---
+  // --- ROW 1: User, Role, Permission (Blue) & Document/CatalogItem, DocumentVersion/ItemVariant (Green) ---
   entity("ent_user", "User", ["PK user_id", "name", "email", "role_id (FK)", "dept_id (FK)", "status", "created_at"], 200, 70, 125, 135, "#3B82F6", "#EFF6FF", "#93C5FD");
   entity("ent_role", "Role", ["PK role_id", "name", "description", "scope"], 370, 70, 115, 95, "#3B82F6", "#EFF6FF", "#93C5FD");
   entity("ent_permission", "Permission", ["PK permission_id", "name", "resource", "action"], 530, 70, 115, 95, "#3B82F6", "#EFF6FF", "#93C5FD");
   
-  entity("ent_document", "Document", ["PK doc_id", "title", "doc_type", "version", "status", "created_at", "owner_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
-  entity("ent_doc_version", "DocumentVersion", ["PK version_id", "doc_id (FK)", "version_no", "content_uri", "checksum", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  if (isRetail) {
+    entity("ent_document", "CatalogItem", ["PK item_id", "sku", "title", "category_id (FK)", "price", "status", "merchant_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
+    entity("ent_doc_version", "ItemVariant", ["PK variant_id", "item_id (FK)", "variant_sku", "inventory_qty", "price_override", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  } else {
+    entity("ent_document", "Document", ["PK doc_id", "title", "doc_type", "version", "status", "created_at", "owner_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
+    entity("ent_doc_version", "DocumentVersion", ["PK version_id", "doc_id (FK)", "version_no", "content_uri", "checksum", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  }
 
   // Row 1 Relationships
   edge("rel_user_role", "1    assigned_to    *", 325, 115, 370, 115, "#0F172A", false, "diamond");
   edge("rel_role_perm", "*       grants       *", 485, 115, 530, 115, "#0F172A", false, "diamond");
-  edge("rel_doc_version", "1     has_versions     *", 810, 115, 860, 115, "#0F172A", false, "diamond");
+  edge("rel_doc_version", "1     has_variants     *", 810, 115, 860, 115, "#0F172A", false, "diamond");
 
-  // --- ROW 2: Study, Protocol, Site (Sky) & KnowledgeBase, Embedding (Purple) ---
-  entity("ent_study", "Study", ["PK study_id", "title", "phase", "indication", "sponsor", "start_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
-  entity("ent_protocol", "Protocol", ["PK protocol_id", "study_id (FK)", "version", "effective_date", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
-  entity("ent_site", "Site", ["PK site_id", "study_id (FK)", "country", "site_name", "status"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+  // --- ROW 2: Merchant/Study, Category/Protocol, Warehouse/Site (Sky) & ProductCatalog/KnowledgeBase, SkuEmbedding/Embedding (Purple) ---
+  if (isRetail) {
+    entity("ent_study", "Merchant", ["PK merchant_id", "name", "rating", "country", "commission_rate", "onboard_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_protocol", "Category", ["PK category_id", "merchant_id (FK)", "name", "slug", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_site", "Warehouse", ["PK warehouse_id", "merchant_id (FK)", "country", "facility_name", "status"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
 
-  entity("ent_kb", "KnowledgeBase", ["PK kb_id", "name", "description", "source_type", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
-  entity("ent_embedding", "Embedding", ["PK embed_id", "kb_id (FK)", "chunk_id", "vector", "model_id"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_kb", "ProductCatalog", ["PK catalog_id", "name", "description", "feed_type", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_embedding", "SkuEmbedding", ["PK embed_id", "catalog_id (FK)", "sku_id", "vector", "rec_model_id"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else {
+    entity("ent_study", "Study", ["PK study_id", "title", "phase", "indication", "sponsor", "start_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_protocol", "Protocol", ["PK protocol_id", "study_id (FK)", "version", "effective_date", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_site", "Site", ["PK site_id", "study_id (FK)", "country", "site_name", "status"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_kb", "KnowledgeBase", ["PK kb_id", "name", "description", "source_type", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_embedding", "Embedding", ["PK embed_id", "kb_id (FK)", "chunk_id", "vector", "model_id"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+  }
 
   // Row 2 Relationships
   edge("rel_study_protocol", "1    has    *", 325, 280, 370, 280, "#0F172A", false, "diamond");
@@ -129,29 +164,46 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_kb_embedding", "1       stores       *", 810, 290, 860, 290, "#0F172A", false, "diamond");
   edge("rel_doc_kb", "indexed_in", 745, 205, 745, 245, "#0F172A", true, "open");
 
-  // --- ROW 3: Trial, Patient, Event (Sky) & AI Model, Prompt, Response (Purple) ---
-  entity("ent_trial", "Trial", ["PK trial_id", "study_id (FK)", "title", "start_date", "end_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
-  entity("ent_patient", "Patient", ["PK patient_id", "trial_id (FK)", "age", "gender", "enrollment_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
-  entity("ent_event", "Event", ["PK event_id", "patient_id (FK)", "event_type", "event_date", "severity", "outcome"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+  // --- ROW 3: Order/Trial, Shopper/Patient, Shipment/Event (Sky) & RecEngine/AI Model, Cart/Prompt, CartItem/Response (Purple) ---
+  if (isRetail) {
+    entity("ent_trial", "Order", ["PK order_id", "merchant_id (FK)", "shopper_id (FK)", "total_amount", "order_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_patient", "Shopper", ["PK shopper_id", "name", "email", "prime_status", "join_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_event", "Shipment", ["PK shipment_id", "order_id (FK)", "tracking_no", "carrier", "dispatch_date", "status"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
 
-  entity("ent_ai_model", "AI Model", ["PK model_id", "name", "model_type", "provider", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
-  entity("ent_prompt", "Prompt", ["PK prompt_id", "model_id (FK)", "template", "intent", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
-  entity("ent_response", "Response", ["PK response_id", "prompt_id (FK)", "output", "confidence", "citations"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_ai_model", "RecEngine", ["PK rec_model_id", "name", "model_type", "accuracy_score", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_prompt", "Cart", ["PK cart_id", "shopper_id (FK)", "coupon_code", "session_id", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_response", "CartItem", ["PK cart_item_id", "cart_id (FK)", "variant_id (FK)", "quantity", "unit_price"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else {
+    entity("ent_trial", "Trial", ["PK trial_id", "study_id (FK)", "title", "start_date", "end_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_patient", "Patient", ["PK patient_id", "trial_id (FK)", "age", "gender", "enrollment_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_event", "Event", ["PK event_id", "patient_id (FK)", "event_type", "event_date", "severity", "outcome"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_ai_model", "AI Model", ["PK model_id", "name", "model_type", "provider", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_prompt", "Prompt", ["PK prompt_id", "model_id (FK)", "template", "intent", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_response", "Response", ["PK response_id", "prompt_id (FK)", "output", "confidence", "citations"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+  }
 
   // Row 3 Relationships
   edge("rel_study_trial", "1\nproduces\n*", 262, 370, 262, 395, "#0F172A", false, "diamond");
-  edge("rel_trial_patient", "1   enrolled_in   *", 325, 445, 370, 445, "#0F172A", false, "diamond");
-  edge("rel_patient_event", "1    records    *", 485, 445, 530, 445, "#0F172A", false, "diamond");
+  edge("rel_trial_patient", "1   places_order   *", 325, 445, 370, 445, "#0F172A", false, "diamond");
+  edge("rel_patient_event", "1    dispatches    *", 485, 445, 530, 445, "#0F172A", false, "diamond");
   edge("rel_kb_ai_model", "used_by", 745, 355, 727, 400, "#0F172A", true, "open");
   edge("rel_model_prompt", "1       *", 780, 445, 810, 445, "#0F172A", false, "diamond");
-  edge("rel_prompt_resp", "generates", 915, 445, 945, 445, "#0F172A", false, "diamond");
+  edge("rel_prompt_resp", "contains", 915, 445, 945, 445, "#0F172A", false, "diamond");
   edge("rel_event_model", "", 675, 465, 645, 465, "#64748B", true, "open");
 
-  // --- ROW 4: Policy, Regulation, Control, Risk (Orange) & AuditLog, Metric (Slate/Blue) ---
-  entity("ent_policy", "Policy", ["PK policy_id", "name", "category", "version", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
-  entity("ent_regulation", "Regulation", ["PK regulation_id", "name", "authority", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
-  entity("ent_control", "Control", ["PK control_id", "policy_id (FK)", "description", "frequency", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
-  entity("ent_risk", "Risk", ["PK risk_id", "control_id (FK)", "severity", "likelihood", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  // --- ROW 4: PricingPolicy, TaxJurisdiction, FraudRule, ChargebackRisk (Orange) & AuditLog, Metric (Slate/Blue) ---
+  if (isRetail) {
+    entity("ent_policy", "PricingPolicy", ["PK pricing_policy_id", "name", "discount_pct", "tier", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_regulation", "TaxJurisdiction", ["PK tax_jurisdiction_id", "state", "vat_rate", "country"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_control", "FraudRule", ["PK fraud_rule_id", "policy_id (FK)", "velocity_limit", "cvv_required", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_risk", "ChargebackRisk", ["PK chargeback_id", "fraud_rule_id (FK)", "risk_score", "hold_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  } else {
+    entity("ent_policy", "Policy", ["PK policy_id", "name", "category", "version", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_regulation", "Regulation", ["PK regulation_id", "name", "authority", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_control", "Control", ["PK control_id", "policy_id (FK)", "description", "frequency", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_risk", "Risk", ["PK risk_id", "control_id (FK)", "severity", "likelihood", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  }
 
   entity("ent_audit_log", "AuditLog", ["PK audit_id", "user_id (FK)", "action", "resource", "timestamp", "ip_address"], 720, 555, 125, 110, "#64748B", "#F8FAFC", "#CBD5E1");
   entity("ent_metric", "Metric", ["PK metric_id", "name", "value", "unit", "timestamp", "source"], 895, 555, 115, 110, "#64748B", "#F8FAFC", "#CBD5E1");
@@ -163,11 +215,18 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_audit_metric", "emits", 845, 600, 895, 600, "#0F172A", false, "diamond");
   edge("rel_model_audit", "", 727, 505, 782, 555, "#64748B", true, "open");
 
-  // --- ROW 5: DataSource, Connector, IngestionJob, DataAsset (Teal) ---
-  entity("ent_data_source", "DataSource", ["PK source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
-  entity("ent_connector", "Connector", ["PK connector_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
-  entity("ent_ingestion_job", "IngestionJob", ["PK job_id", "connector_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
-  entity("ent_data_asset", "DataAsset", ["PK asset_id", "job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  // --- ROW 5: DataSource/ERPConnector, Connector/PaymentGateway, IngestionJob/InventorySyncJob, DataAsset/CatalogFeed (Teal) ---
+  if (isRetail) {
+    entity("ent_data_source", "ERPConnector", ["PK erp_source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_connector", "PaymentGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_ingestion_job", "InventorySyncJob", ["PK sync_job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_data_asset", "CatalogFeed", ["PK feed_id", "sync_job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  } else {
+    entity("ent_data_source", "DataSource", ["PK source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_connector", "Connector", ["PK connector_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_ingestion_job", "IngestionJob", ["PK job_id", "connector_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_data_asset", "DataAsset", ["PK asset_id", "job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  }
 
   // Row 5 Relationships
   edge("rel_ds_conn", "connects", 135, 735, 185, 735, "#0F172A", false, "diamond");
@@ -219,36 +278,44 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   rect("card_constraints", constraintsHtml, 1140, 220, 440, 165, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
   // Card 3: SAMPLE BUSINESS RULES (y: 395, h: 220)
+  const rule1 = isRetail ? "CatalogItem must have at least one ItemVariant" : "Document must have at least one version";
+  const rule2 = isRetail ? "User role defines merchant access permissions" : "User role defines access to resources";
+  const rule3 = isRetail ? "Order must belong to a Merchant" : "Trial must belong to a Study";
+  const rule4 = isRetail ? "Shipment must belong to an enrolled Shopper" : "Event must belong to an enrolled Patient";
+  const rule5 = isRetail ? "Pricing policy links to Tax Jurisdictions" : "Policy links to one or more Regulations";
+  const rule6 = isRetail ? "Chargeback risk screened by a Fraud Rule" : "Risk must be mapped to a Control";
+  const rule7 = isRetail ? "Order total must reconcile with Cart Items" : "Response must cite source Documents";
+
   const businessRulesHtml = `<div style="padding:6px;">
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:6px;letter-spacing:0.5px;">SAMPLE BUSINESS RULES</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;">
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">1</span>
-        <span>Document must have at least one version</span>
+        <span>${rule1}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">2</span>
-        <span>User role defines access to resources</span>
+        <span>${rule2}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">3</span>
-        <span>Trial must belong to a Study</span>
+        <span>${rule3}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">4</span>
-        <span>Event must belong to an enrolled Patient</span>
+        <span>${rule4}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">5</span>
-        <span>Policy links to one or more Regulations</span>
+        <span>${rule5}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;margin-bottom:4px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">6</span>
-        <span>Risk must be mapped to a Control</span>
+        <span>${rule6}</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:6px;">
         <span style="background:#1D4ED8;color:#FFF;border-radius:50%;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:900;flex-shrink:0;">7</span>
-        <span>Response must cite source Documents</span>
+        <span>${rule7}</span>
       </div>
     </div>
   </div>`;
@@ -329,7 +396,17 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   rect("card_data_flow_hint", flowHintHtml, 630, 815, 470, 145, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
   // Card 4: USE CASE MAPPING (x: 1110, w: 470)
-  const useCaseHtml = `<div style="padding:6px 8px;">
+  const useCaseHtml = isRetail
+    ? `<div style="padding:6px 8px;">
+    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
+    <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Catalog Search</b> ➔ CatalogItem + SkuEmbedding + RecEngine</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Order Fulfillment</b> ➔ Order + Shipment + Warehouse</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Cart Checkout</b> ➔ Cart + CartItem + PaymentGateway</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Fraud &amp; Risk</b> ➔ PricingPolicy + FraudRule + ChargebackRisk</span></div>
+    </div>
+  </div>`
+    : `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Protocol Intelligence</b> ➔ Document + KB + AI Model</span></div>

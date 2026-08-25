@@ -12,6 +12,9 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   const bg = isDark ? "#0B111E" : "#FFFFFF";
   const c: string[] = [];
 
+  const isRetail = domainFlavor === "retail";
+  const isFintech = domainFlavor === "fintech";
+
   const rect = (id: string, v: string, x: number, y: number, w: number, h: number, s = "") =>
     c.push(`<mxCell id="${id}" value="${E(v)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;fontColor=#0F172A;fontSize=11;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
 
@@ -19,16 +22,36 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     c.push(`<mxCell id="${id}" value="${E(v)}" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;${s}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
 
   // =========================================================================
-  // 1. TOP HEADER BANNER & NOVACURA LOGO
+  // 1. TOP HEADER BANNER & LOGO
   // =========================================================================
+  const subTitle = isRetail
+    ? "08 — COMPONENT ARCHITECTURE | OMNIVUE Hyper-Scale Omnichannel E-Commerce Platform"
+    : isFintech
+    ? "08 — COMPONENT ARCHITECTURE | NEXUSFIN High-Speed Wealth Engine"
+    : "08 — COMPONENT ARCHITECTURE | Enterprise Architecture Platform";
+
+  const familySub = isRetail
+    ? "Core Architecture Family | Omnichannel Retail &amp; Logistics"
+    : isFintech
+    ? "Core Architecture Family | Autonomous FinTech &amp; Wealth"
+    : "Core Architecture Family | Enterprise Product";
+
+  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : "⚡";
+  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : "ENTERPRISE";
+  const brandTagline = isRetail
+    ? "Hyper-Scale Commerce. Intelligent Fulfillment."
+    : isFintech
+    ? "Autonomous Wealth. Zero-Latency Execution."
+    : "Scalable. Resilient. Secure.";
+
   const titleHtml = `<table style="border-collapse:collapse;">
     <tr>
       <td style="width:46px;height:46px;background:#0F2A4A;border-radius:6px;text-align:center;vertical-align:middle;">
         <span style="font-size:24px;font-weight:900;color:#FFFFFF;font-family:sans-serif;">08</span>
       </td>
       <td style="padding-left:14px;vertical-align:middle;">
-        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;font-family:sans-serif;">08 — COMPONENT ARCHITECTURE | NOVACURA Bio-Pharma Platform</div>
-        <div style="font-size:12.5px;font-weight:600;color:#64748B;margin-top:2px;">Core Architecture Family | Bio-Pharma Product</div>
+        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;font-family:sans-serif;">${subTitle}</div>
+        <div style="font-size:12.5px;font-weight:600;color:#64748B;margin-top:2px;">${familySub}</div>
       </td>
     </tr>
   </table>`;
@@ -36,10 +59,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">🧬</span></td>
+      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">${brandIcon}</span></td>
       <td style="vertical-align:middle;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
-        <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
+        <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">${brandName}</div>
+        <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">${brandTagline}</div>
       </td>
     </tr>
   </table>`;
@@ -51,16 +74,28 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   rect("users_top_frame", "", 210, 70, 1120, 48, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
   text("users_top_title", "<b>PRIMARY USERS</b>", 210, 72, 1120, 14, "fontSize=8.5;fontColor=#1E3A8A;align=center;");
 
-  const primaryUsers = [
-    { title: "Research\nScientists", icon: "🔬" },
-    { title: "Clinical\nOperations", icon: "👥" },
-    { title: "Regulatory\nAffairs", icon: "📄" },
-    { title: "Safety/PV\nSpecialists", icon: "🛡️" },
-    { title: "Quality\nTeams", icon: "🏅" },
-    { title: "Medical\nAffairs", icon: "🩺" },
-    { title: "Commercial\nAnalytics", icon: "📊" },
-    { title: "Platform\nAdmins", icon: "⚙️" },
-  ];
+  const primaryUsers = isRetail
+    ? [
+        { title: "Global\nShoppers", icon: "🛒" },
+        { title: "3P Marketplace\nMerchants", icon: "🏪" },
+        { title: "Warehouse\nLogistics", icon: "📦" },
+        { title: "Fraud & Risk\nSpecialists", icon: "🛡️" },
+        { title: "Catalog & SKU\nQA Teams", icon: "🏅" },
+        { title: "Customer\nSupport", icon: "🎧" },
+        { title: "E-Commerce\nAnalytics", icon: "📊" },
+        { title: "Platform\nAdmins", icon: "⚙️" },
+      ]
+    : [
+        { title: "Research\nScientists", icon: "🔬" },
+        { title: "Clinical\nOperations", icon: "👥" },
+        { title: "Regulatory\nAffairs", icon: "📄" },
+        { title: "Safety/PV\nSpecialists", icon: "🛡️" },
+        { title: "Quality\nTeams", icon: "🏅" },
+        { title: "Medical\nAffairs", icon: "🩺" },
+        { title: "Commercial\nAnalytics", icon: "📊" },
+        { title: "Platform\nAdmins", icon: "⚙️" },
+      ];
+
   primaryUsers.forEach((u, i) => {
     const ux = 218 + i * 138;
     const html = `<div style="text-align:center;padding:1px;"><span style="font-size:11px;">${u.icon}</span><div style="font-size:8px;font-weight:800;color:#0F2A4A;line-height:1.15;">${u.title.replace(/\n/g, "<br/>")}</div></div>`;
@@ -73,15 +108,26 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   rect("sor_box", "", 20, 130, 155, 520, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
   rect("sor_hdr", "<b style='font-size:9px;color:#FFFFFF;'>SYSTEMS OF RECORD /<br/>DATA SOURCES</b>", 20, 130, 155, 28, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
-  const sorList = [
-    { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "📁" },
-    { title: "CTMS / Medidata Rave", sub: "Clinical Trials,\nSubject Data", icon: "👥" },
-    { title: "Argus Safety", sub: "Safety Cases,\nICSRs, Signals", icon: "🛡️" },
-    { title: "SAP S/4HANA", sub: "Finance, Supply Chain,\nProcurement", icon: "🏢" },
-    { title: "Salesforce Health Cloud", sub: "HCP Engagement,\nPatient Insights", icon: "☁️" },
-    { title: "Laboratory / LIMS", sub: "Lab Data, Results,\nCertificates", icon: "⚗️" },
-    { title: "Regulatory Gateways", sub: "eSubmissions, Queries,\nResponses", icon: "🏛️" },
-  ];
+  const sorList = isRetail
+    ? [
+        { title: "Enterprise Product Catalog", sub: "SKUs, Pricing,\nMedia Assets", icon: "📁" },
+        { title: "Warehouse WMS", sub: "Inventory, Bins,\nCross-Dock", icon: "📦" },
+        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "💳" },
+        { title: "SAP S/4HANA Supply Chain", sub: "Procurement, ERP,\nPO Tracking", icon: "🏢" },
+        { title: "Salesforce Commerce", sub: "Loyalty, Prime,\nCustomer CRM", icon: "☁️" },
+        { title: "Carrier Fleet & 3PL", sub: "FedEx, UPS,\nLast-Mile Routing", icon: "🚚" },
+        { title: "Customs & Tax Gateways", sub: "Avalara, Vertex,\nCross-Border Duties", icon: "🏛️" },
+      ]
+    : [
+        { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "📁" },
+        { title: "CTMS / Medidata Rave", sub: "Clinical Trials,\nSubject Data", icon: "👥" },
+        { title: "Argus Safety", sub: "Safety Cases,\nICSRs, Signals", icon: "🛡️" },
+        { title: "SAP S/4HANA", sub: "Finance, Supply Chain,\nProcurement", icon: "🏢" },
+        { title: "Salesforce Health Cloud", sub: "HCP Engagement,\nPatient Insights", icon: "☁️" },
+        { title: "Laboratory / LIMS", sub: "Lab Data, Results,\nCertificates", icon: "⚗️" },
+        { title: "Regulatory Gateways", sub: "eSubmissions, Queries,\nResponses", icon: "🏛️" },
+      ];
+
   sorList.forEach((s, i) => {
     const sy = 162 + i * 69;
     const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
@@ -99,114 +145,214 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   // =========================================================================
   // 4. CENTRAL BOUNDARY: 7 TIERS A TO G (x: 210 to 1330, y: 130 to 650)
   // =========================================================================
-  rect("platform_frame", "", 210, 130, 1120, 520, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
-  rect("platform_hdr", "<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>NOVACURA BIO-PHARMA PLATFORM — COMPONENT ARCHITECTURE</b>", 210, 130, 1120, 22, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+  const platformTitle = isRetail
+    ? "OMNIVUE RETAIL &amp; MARKETPLACE PLATFORM — COMPONENT ARCHITECTURE"
+    : "ENTERPRISE PLATFORM — COMPONENT ARCHITECTURE";
 
-  const layers = [
-    {
-      code: "A",
-      name: "EXPERIENCE & ACCESS LAYER",
-      y: 156,
-      h: 66,
-      color: "#1E3A8A",
-      items: [
-        { title: "Web Portal /\nWorkspace UI", icon: "🌐" },
-        { title: "Role-Based\nDashboards", icon: "📊" },
-        { title: "Task Inbox &\nNotifications", icon: "🔔" },
-        { title: "API / Partner\nAccess Channel", icon: "⚡" },
+  rect("platform_frame", "", 210, 130, 1120, 520, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
+  rect("platform_hdr", `<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>${platformTitle}</b>`, 210, 130, 1120, 22, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+
+  const layers = isRetail
+    ? [
+        {
+          code: "A",
+          name: "EXPERIENCE & ACCESS LAYER",
+          y: 156,
+          h: 66,
+          color: "#1E3A8A",
+          items: [
+            { title: "Next.js Storefront /\nMobile iOS App", icon: "🌐" },
+            { title: "Merchant Seller\nCentral Dashboard", icon: "📊" },
+            { title: "Customer Order\nTracking & Alerts", icon: "🔔" },
+            { title: "GraphQL API &\nPartner Ingress", icon: "⚡" },
+          ]
+        },
+        {
+          code: "B",
+          name: "PROCESS & ORCHESTRATION LAYER",
+          y: 226,
+          h: 68,
+          color: "#1E40AF",
+          items: [
+            { title: "Temporal Order\nSaga Orchestrator", icon: "🔄" },
+            { title: "Dynamic Pricing &\nPromotion Rules", icon: "⚙️" },
+            { title: "Returns & Dispute\nWorkflow Service", icon: "📋" },
+            { title: "Fulfillment &\nCarrier Router", icon: "📦" },
+            { title: "Fraud Assessment\nPipeline Service", icon: "🛡️" },
+          ]
+        },
+        {
+          code: "C",
+          name: "DOMAIN BUSINESS SERVICES LAYER",
+          y: 298,
+          h: 70,
+          color: "#0369A1",
+          items: [
+            { title: "Product & SKU\nCatalog Service", icon: "📁" },
+            { title: "Shopping Cart &\nSession Mesh", icon: "🛒" },
+            { title: "Order Management\nSystem (OMS)", icon: "📑" },
+            { title: "Inventory Allocation\n& WMS Hold Engine", icon: "📦" },
+            { title: "Payment Vault &\nSettlement Gateway", icon: "💳" },
+            { title: "Customer Profile &\nLoyalty Service", icon: "👤" },
+          ]
+        },
+        {
+          code: "D",
+          name: "AI & INTELLIGENT CAPABILITIES LAYER",
+          y: 372,
+          h: 70,
+          color: "#0284C7",
+          items: [
+            { title: "Vertex AI Product\nRecommender Engine", icon: "🧠" },
+            { title: "OpenSearch Semantic\nCatalog Search", icon: "🔍" },
+            { title: "Dynamic Real-Time\nPricing Optimizer", icon: "🏷️" },
+            { title: "Fraud & Anomaly\nDetection ML", icon: "🛡️" },
+            { title: "Conversational AI\nShopping Assistant", icon: "💬" },
+          ]
+        },
+        {
+          code: "E",
+          name: "DATA & ANALYTICS PLATFORM LAYER",
+          y: 446,
+          h: 66,
+          color: "#0D9488",
+          items: [
+            { title: "Kafka Real-Time\nEvent Streaming Bus", icon: "⚡" },
+            { title: "BigQuery Enterprise\nData Lakehouse", icon: "🗄️" },
+            { title: "Search Index\nCDC Pipeline", icon: "🔄" },
+            { title: "Real-Time GMV &\nSales Analytics", icon: "📊" },
+            { title: "Customer Data\nPlatform (CDP)", icon: "👥" },
+          ]
+        },
+        {
+          code: "F",
+          name: "INTEGRATION, PLATFORM & SECURITY LAYER",
+          y: 516,
+          h: 64,
+          color: "#0F766E",
+          items: [
+            { title: "Apigee API Gateway\n& Rate Limiter", icon: "🌐" },
+            { title: "Cloud Identity &\nOAuth2/OIDC Auth", icon: "🔒" },
+            { title: "OpenTelemetry APM\n& Cloud Logging", icon: "📊" },
+            { title: "Vault Secrets &\nPCI Tokenization", icon: "🛡️" },
+            { title: "GitOps CI/CD &\nArgoCD Deployer", icon: "🚀" },
+          ]
+        },
+        {
+          code: "G",
+          name: "FOUNDATION & INFRASTRUCTURE LAYER",
+          y: 584,
+          h: 60,
+          color: "#047857",
+          items: [
+            { title: "GKE Multi-AZ\nKubernetes Mesh", icon: "☁️" },
+            { title: "Cloud Storage CDN\n& Media Bucket", icon: "📦" },
+            { title: "Cloud Spanner Multi-\nRegion Database", icon: "🗄️" },
+            { title: "Memorystore Redis\nDistributed Cache", icon: "⚡" },
+            { title: "Cloud Armor DDoS\n& WAF Security", icon: "🛡️" },
+          ]
+        }
       ]
-    },
-    {
-      code: "B",
-      name: "PROCESS & ORCHESTRATION LAYER",
-      y: 226,
-      h: 68,
-      color: "#1E40AF",
-      items: [
-        { title: "Workflow\nOrchestrator", icon: "🔄" },
-        { title: "Business Rules\nEngine", icon: "⚙️" },
-        { title: "Case / Task\nManagement Service", icon: "📋" },
-        { title: "Submission\nOrchestration Service", icon: "📄" },
-        { title: "CAPA / Quality\nWorkflow Service", icon: "🛡️" },
-      ]
-    },
-    {
-      code: "C",
-      name: "DOMAIN BUSINESS SERVICES LAYER",
-      y: 298,
-      h: 70,
-      color: "#0369A1",
-      items: [
-        { title: "R&D / Clinical\nStudy Service", icon: "🔬" },
-        { title: "Regulatory\nAffairs Service", icon: "📄" },
-        { title: "Safety &\nPharmacovigilance", icon: "🛡️" },
-        { title: "Quality &\nManufacturing", icon: "🏭" },
-        { title: "Medical\nInformation", icon: "🩺" },
-        { title: "Commercial\nInsights Service", icon: "📊" },
-        { title: "Patient Program\nService", icon: "👥" },
-        { title: "Document &\nContent Mgmt", icon: "📁" },
-      ]
-    },
-    {
-      code: "D",
-      name: "AI & KNOWLEDGE SERVICES LAYER",
-      y: 372,
-      h: 70,
-      color: "#6D28D9",
-      items: [
-        { title: "AI Copilot\nService", icon: "✨" },
-        { title: "Prompt / Policy\nGuardrails", icon: "🔒" },
-        { title: "Semantic Search &\nRetrieval Service", icon: "🔍" },
-        { title: "Vector Index /\nEmbeddings Service", icon: "🕸️" },
-        { title: "LLM Gateway\n(Approved Models)", icon: "🧠" },
-        { title: "Summarization / Q&A /\nRecommendation", icon: "⭐" },
-      ]
-    },
-    {
-      code: "E",
-      name: "DATA & ANALYTICS LAYER",
-      y: 446,
-      h: 68,
-      color: "#0D9488",
-      items: [
-        { title: "Operational\nData Store", icon: "🗄️" },
-        { title: "Master Data\nManagement", icon: "📑" },
-        { title: "Clinical / Regulatory /\nSafety Data Store", icon: "🛡️" },
-        { title: "Data Lakehouse /\nWarehouse", icon: "🗄️" },
-        { title: "Analytics &\nKPI Service", icon: "📊" },
-        { title: "Audit / Compliance\nEvidence Store", icon: "🔒" },
-      ]
-    },
-    {
-      code: "F",
-      name: "INTEGRATION & EVENTING LAYER",
-      y: 518,
-      h: 66,
-      color: "#15803D",
-      items: [
-        { title: "API\nGateway", icon: "⚡" },
-        { title: "Event Bus /\nPub/Sub", icon: "📡" },
-        { title: "Data Integration\nPipelines", icon: "🌊" },
-        { title: "File / eCTD\nExchange Adapter", icon: "📁" },
-        { title: "External Connector\nFramework", icon: "🔗" },
-      ]
-    },
-    {
-      code: "G",
-      name: "CROSS-CUTTING PLATFORM SERVICES",
-      y: 588,
-      h: 58,
-      color: "#334155",
-      items: [
-        { title: "Identity & Access\nManagement", icon: "👤" },
-        { title: "Secrets / Key\nManagement", icon: "🔑" },
-        { title: "Monitoring /\nObservability", icon: "📈" },
-        { title: "Audit Logging /\nTraceability", icon: "📑" },
-        { title: "Data Lineage &\nQuality", icon: "🔗" },
-        { title: "Configuration /\nTenant Management", icon: "⚙️" },
-      ]
-    }
-  ];
+    : [
+        {
+          code: "A",
+          name: "EXPERIENCE & ACCESS LAYER",
+          y: 156,
+          h: 66,
+          color: "#1E3A8A",
+          items: [
+            { title: "Web Portal /\nWorkspace UI", icon: "🌐" },
+            { title: "Role-Based\nDashboards", icon: "📊" },
+            { title: "Task Inbox &\nNotifications", icon: "🔔" },
+            { title: "API / Partner\nAccess Channel", icon: "⚡" },
+          ]
+        },
+        {
+          code: "B",
+          name: "PROCESS & ORCHESTRATION LAYER",
+          y: 226,
+          h: 68,
+          color: "#1E40AF",
+          items: [
+            { title: "Workflow\nOrchestrator", icon: "🔄" },
+            { title: "Business Rules\nEngine", icon: "⚙️" },
+            { title: "Case / Task\nManagement Service", icon: "📋" },
+            { title: "Submission\nOrchestration Service", icon: "📄" },
+            { title: "CAPA / Quality\nWorkflow Service", icon: "🛡️" },
+          ]
+        },
+        {
+          code: "C",
+          name: "DOMAIN BUSINESS SERVICES LAYER",
+          y: 298,
+          h: 70,
+          color: "#0369A1",
+          items: [
+            { title: "R&D / Clinical\nStudy Service", icon: "🔬" },
+            { title: "Regulatory Operations\n& Submissions", icon: "📄" },
+            { title: "Safety & Pharmacovigilance\nService", icon: "🛡️" },
+            { title: "Quality & Compliance\nManagement Service", icon: "🏅" },
+            { title: "Medical Affairs &\nMSL Service", icon: "🩺" },
+            { title: "Supply Chain &\nSerialization", icon: "📦" },
+          ]
+        },
+        {
+          code: "D",
+          name: "AI & INTELLIGENT CAPABILITIES LAYER",
+          y: 372,
+          h: 70,
+          color: "#0284C7",
+          items: [
+            { title: "Vertex AI LLM\nFoundation Service", icon: "🧠" },
+            { title: "Domain Specific\nAgents Framework", icon: "🤖" },
+            { title: "Document Intelligence\n& Extraction Service", icon: "📄" },
+            { title: "Regulatory Intelligence\n& Insights Service", icon: "💡" },
+            { title: "Safety Signal Detection\n& Prediction Engine", icon: "📈" },
+          ]
+        },
+        {
+          code: "E",
+          name: "DATA & ANALYTICS PLATFORM LAYER",
+          y: 446,
+          h: 66,
+          color: "#0D9488",
+          items: [
+            { title: "Enterprise Knowledge\nGraph & Ontologies", icon: "🔗" },
+            { title: "Vector Database &\nSemantic Search", icon: "🔍" },
+            { title: "Clinical Data\nRepository (CDR)", icon: "🗄️" },
+            { title: "Data Lakehouse &\nAnalytics Engine", icon: "📊" },
+            { title: "Data Governance &\nLineage Service", icon: "🛡️" },
+          ]
+        },
+        {
+          code: "F",
+          name: "INTEGRATION, PLATFORM & SECURITY LAYER",
+          y: 516,
+          h: 64,
+          color: "#0F766E",
+          items: [
+            { title: "API Gateway &\nService Mesh", icon: "🌐" },
+            { title: "Identity & Access\nManagement (IAM)", icon: "🔒" },
+            { title: "Audit Trail, Logging &\nObservability", icon: "📊" },
+            { title: "Integration Adapters &\nConnectors", icon: "🔌" },
+            { title: "Secrets & Key\nManagement Service", icon: "🔑" },
+          ]
+        },
+        {
+          code: "G",
+          name: "FOUNDATION & INFRASTRUCTURE LAYER",
+          y: 584,
+          h: 60,
+          color: "#047857",
+          items: [
+            { title: "Hybrid Multi-Cloud\nDeployment (GCP/AWS)", icon: "☁️" },
+            { title: "Enterprise Network &\nPerimeter Security", icon: "🛡️" },
+            { title: "High Availability &\nDisaster Recovery", icon: "🔄" },
+            { title: "Container Runtime &\nKubernetes (GKE/EKS)", icon: "⚙️" },
+            { title: "Storage, Database &\nCompute Infrastructure", icon: "🗄️" },
+          ]
+        }
+      ];
 
   layers.forEach((ly) => {
     rect(`ly_box_${ly.code}`, "", 214, ly.y, 1112, ly.h, `rounded=1;strokeColor=${ly.color};strokeWidth=1;fillColor=#FFFFFF;`);
