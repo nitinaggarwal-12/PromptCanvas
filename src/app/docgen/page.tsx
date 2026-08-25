@@ -584,33 +584,64 @@ function DocGenContent() {
   const [isChangeReportOpen, setIsChangeReportOpen] = useState<boolean>(false);
   const [projectId, setProjectId] = useState<string>('');
 
-  // URL query parameter synchronization (e.g. ?doc=brd, ?proj=proj_xxx, ?domain=fintech, ?title=..., ?tab=studio)
+  // URL query parameter synchronization (e.g. ?doc=brd, ?proj=proj_xxx, ?domain=fintech, ?title=..., ?prompt=..., ?scope=..., ?tab=studio)
   useEffect(() => {
     const docParam = searchParams.get('doc') as ArchetypeId | null;
     const tabParam = searchParams.get('tab');
     const domainParam = searchParams.get('domain');
     const titleParam = searchParams.get('title');
-    const scopeParam = searchParams.get('scope');
+    const scopeParam = searchParams.get('scope') || searchParams.get('prompt');
     const projParam = searchParams.get('proj') || searchParams.get('project');
 
-    if (domainParam) setSelectedDomain(domainParam);
-    if (titleParam) setProjectTitle(decodeURIComponent(titleParam));
-    if (scopeParam) setProjectScopePrompt(decodeURIComponent(scopeParam));
+    let effectiveTitle = projectTitle;
+    let effectiveDomain = selectedDomain;
+    let effectiveScope = projectScopePrompt;
+
+    if (domainParam) {
+      effectiveDomain = domainParam;
+      setSelectedDomain(domainParam);
+    }
+    if (titleParam) {
+      effectiveTitle = decodeURIComponent(titleParam);
+      setProjectTitle(effectiveTitle);
+      // If domain wasn't explicitly passed, detect it from title
+      if (!domainParam) {
+        effectiveDomain = detectDomainFromPrompt(effectiveTitle, '', effectiveDomain);
+        setSelectedDomain(effectiveDomain);
+      }
+    }
+    if (scopeParam) {
+      effectiveScope = decodeURIComponent(scopeParam);
+      setProjectScopePrompt(effectiveScope);
+    } else if (titleParam || domainParam) {
+      // If scope was not provided but title or domain was provided, auto-generate domain-aligned prompt
+      if (effectiveDomain === 'manufacturing') {
+        effectiveScope = `Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${effectiveTitle}.`;
+      } else if (effectiveDomain === 'fintech') {
+        effectiveScope = `High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${effectiveTitle}.`;
+      } else if (effectiveDomain === 'retail') {
+        effectiveScope = `Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${effectiveTitle}.`;
+      } else if (effectiveDomain === 'saas') {
+        effectiveScope = `Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${effectiveTitle}.`;
+      }
+      setProjectScopePrompt(effectiveScope);
+    }
+
     if (projParam) setProjectId(projParam);
 
     if (docParam) {
       const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
       if (matched) {
         setSelectedArchetypeId(docParam);
-        if (tabParam === 'studio' || projParam || domainParam) {
+        if (tabParam === 'studio' || projParam || domainParam || titleParam) {
           setActiveTab('studio');
           // Auto-generate if custom project link
           const synthesized = synthesizeCustomExecutiveDocument(
             docParam,
             matched,
-            titleParam ? decodeURIComponent(titleParam) : projectTitle,
-            domainParam || selectedDomain,
-            scopeParam ? decodeURIComponent(scopeParam) : projectScopePrompt,
+            effectiveTitle,
+            effectiveDomain,
+            effectiveScope,
             {}
           );
           setGeneratedDocContent(synthesized);
@@ -1499,7 +1530,23 @@ function DocGenContent() {
                     <select
                       value={selectedDomain}
                       onChange={(e) => {
-                        setSelectedDomain(e.target.value);
+                        const newDom = e.target.value;
+                        setSelectedDomain(newDom);
+                        // If prompt is a default clinical prompt or placeholder, update it to match the new domain
+                        const isDefaultPrompt = /clinical genomics analysis and regulatory pharmacovigilance|Mission-critical autonomous telemetry|High-throughput transaction orchestration|Omnichannel marketplace catalog|Enterprise multi-tenant workflow orchestration/i.test(projectScopePrompt);
+                        if (isDefaultPrompt) {
+                          if (newDom === 'manufacturing') {
+                            setProjectScopePrompt(`Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${projectTitle}.`);
+                          } else if (newDom === 'fintech') {
+                            setProjectScopePrompt(`High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${projectTitle}.`);
+                          } else if (newDom === 'retail') {
+                            setProjectScopePrompt(`Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${projectTitle}.`);
+                          } else if (newDom === 'saas') {
+                            setProjectScopePrompt(`Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${projectTitle}.`);
+                          } else if (newDom === 'biopharma') {
+                            setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
+                          }
+                        }
                       }}
                       className="w-full px-3 py-2.5 rounded-xl border text-xs font-semibold bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 focus:outline-none cursor-pointer"
                     >
