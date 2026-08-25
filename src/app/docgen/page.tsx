@@ -1726,23 +1726,30 @@ function DocGenContent() {
                 <Menu className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-tight">PromptCanvas</span>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 uppercase tracking-wider">
-                  DocGen Studio
+              <div className="flex items-center gap-2 text-xs font-semibold">
+                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+                  PromptCanvas
+                </Link>
+                <span className="text-slate-400">/</span>
+                <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate">
+                  <FileText className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                  <span>DocGen Studio &amp; Specifications</span>
+                </span>
+                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
+                  {DOC_ARCHETYPES_META.length} Archetypes
                 </span>
               </div>
             </div>
 
-            {/* Center Navigation Tabs */}
-            <nav className="hidden md:flex items-center gap-2 text-xs font-bold">
+            {/* Center View Selector Tabs */}
+            <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold">
               <button
                 onClick={() => setActiveTab('catalog')}
-                className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'catalog'
                     ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
                     : isLight
-                    ? 'hover:bg-slate-100 text-slate-600'
+                    ? 'hover:bg-slate-200 text-slate-600'
                     : 'hover:bg-slate-800 text-slate-400'
                 }`}
               >
@@ -1752,16 +1759,16 @@ function DocGenContent() {
 
               <button
                 onClick={() => setActiveTab('studio')}
-                className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'studio'
                     ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
                     : isLight
-                    ? 'hover:bg-slate-100 text-slate-600'
+                    ? 'hover:bg-slate-200 text-slate-600'
                     : 'hover:bg-slate-800 text-slate-400'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Multi-Blueprint Generation Studio</span>
+                <span>Multi-Blueprint Studio</span>
               </button>
             </nav>
 
@@ -1769,7 +1776,7 @@ function DocGenContent() {
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setIsDocHistoryModalOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
                 title="Open Historical Projects & Document Specifications"
               >
                 <History className="w-3.5 h-3.5 text-amber-500" />
@@ -1778,7 +1785,8 @@ function DocGenContent() {
 
               <Link
                 href="/canonical"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                title="Canonical Blueprints Hub"
               >
                 <Layers className="w-3.5 h-3.5 text-sky-500" />
                 <span className="hidden sm:inline">Canonical Hub</span>
@@ -1787,11 +1795,14 @@ function DocGenContent() {
 
               <Link
                 href="/workspace"
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                title="Design Canvas Workspace"
               >
                 <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
                 <span className="hidden sm:inline">Workspace</span>
               </Link>
+
+              <ThemeToggleBtn id="docgen-theme-toggle-btn" />
             </div>
           </div>
         </header>

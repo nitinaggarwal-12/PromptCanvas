@@ -715,53 +715,60 @@ export default function GuidePage() {
         <header className={`sticky top-0 z-30 w-full border-b backdrop-blur-md transition-colors ${
           isLight ? 'bg-white/95 border-slate-200 shadow-xs' : 'bg-[#0F172A]/95 border-slate-800 shadow-md shadow-black/20'
         }`}>
-        <div className="max-w-[1600px] mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-teal-400 to-indigo-500 flex items-center justify-center text-slate-950 font-black shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-4 h-4 text-slate-950 fill-slate-950" />
-              </div>
-              <div>
-                <span className="font-extrabold text-sm tracking-tight flex items-center gap-1.5">
-                  PromptCanvas <span className="text-[10px] px-2 py-0.2 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-mono">Playbooks</span>
+          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+            {/* Left: Breadcrumbs */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                <Link href="/" className={`font-extrabold transition-colors ${isLight ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'}`} title="Home">
+                  PromptCanvas
+                </Link>
+                <span className="text-slate-400">/</span>
+                <span className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1.5 truncate">
+                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                  <span>User Guide &amp; Playbooks</span>
+                </span>
+                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/20 shrink-0">
+                  Interactive GIFs
                 </span>
               </div>
-            </Link>
+            </div>
 
-            <nav className="hidden md:flex items-center gap-1 pl-4 border-l border-slate-700/40 text-xs font-semibold">
-              <Link href="/workspace" className={`px-3 py-1.5 rounded-lg transition-colors ${
-                isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}>
-                Canvas Workspace
+            {/* Right: Hub Links & Action */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Link
+                href="/canonical"
+                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                }`}
+                title="Canonical Blueprints Hub"
+              >
+                <span>Canonical Hub</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
               </Link>
-              <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors ${
-                isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}>
-                50-Blueprint Matrix
-              </Link>
-              <Link href="/dashboard" className={`px-3 py-1.5 rounded-lg transition-colors ${
-                isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}>
-                Operations Dashboard
-              </Link>
-              <span className="px-3 py-1.5 rounded-lg text-teal-400 bg-teal-500/10 border border-teal-500/20 font-bold">
-                User Guide &amp; GIFs
-              </span>
-            </nav>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <ThemeToggleBtn />
-            <Link
-              href="/workspace"
-              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02]"
-            >
-              <span>Launch Canvas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+              <Link
+                href="/docgen"
+                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+                }`}
+                title="DocGen Studio & Specifications"
+              >
+                <span>DocGen Hub</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
+              </Link>
+
+              <ThemeToggleBtn id="guide-theme-toggle-btn" />
+
+              <Link
+                href="/workspace"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02]"
+              >
+                <span>Launch Canvas</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
       {/* ==================== COMPACT HERO & PERSONA SWITCHER ==================== */}
       <section className="pt-5 pb-3 px-6 md:px-12 max-w-[1600px] mx-auto space-y-3">

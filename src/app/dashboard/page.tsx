@@ -458,18 +458,44 @@ export default function Dashboard() {
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-            <h1 className={`font-black text-sm sm:text-base tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-              Operations Dashboard
-            </h1>
+          <div className="flex items-center gap-2 text-xs font-semibold">
+            <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+              PromptCanvas
+            </Link>
+            <span className="text-slate-400">/</span>
+            <span className="font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1.5 truncate">
+              <BarChart3 className="w-4 h-4 text-teal-500 shrink-0" />
+              <span>Operations Dashboard</span>
+            </span>
+            <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 shrink-0">
+              Telemetry &amp; Governance
+            </span>
           </div>
-          <span className="text-[10px] sm:text-[11px] font-extrabold text-teal-600 dark:text-teal-accent uppercase tracking-widest px-2 sm:px-2.5 py-0.5 rounded bg-teal-500/10 border border-teal-500/20">
-            Telemetry &amp; Management
-          </span>
         </div>
 
         <div className="flex items-center gap-2.5 sm:gap-3">
+          <Link
+            href="/canonical"
+            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+              isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            }`}
+            title="Canonical Blueprints Hub"
+          >
+            <span>Canonical Hub</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
+          </Link>
+
+          <Link
+            href="/docgen"
+            className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+              isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            }`}
+            title="DocGen Studio & Specifications"
+          >
+            <span>DocGen Hub</span>
+            <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
+          </Link>
+
           <ThemeToggleBtn id="dashboard-theme-toggle-btn" />
           {user && (
             <>
@@ -491,43 +517,6 @@ export default function Dashboard() {
             </>
           )}
 
-          <Link
-            href="/guide"
-            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
-              isLight
-                ? 'bg-teal-50 hover:bg-teal-100 text-teal-900 border-teal-300'
-                : 'bg-teal-500/15 hover:bg-teal-500/25 text-teal-200 border-teal-500/30'
-            }`}
-          >
-            <Sparkles className="w-4 h-4 text-teal-400" />
-            <span>User Guide &amp; GIFs</span>
-          </Link>
-
-          <Link
-            href="/workspace?tab=templates"
-            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 shadow-sm ${
-              isLight
-                ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300'
-                : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-slate-700'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4 text-teal-500" />
-            <span>Blueprint Library (50)</span>
-          </Link>
-
-          <button
-            type="button"
-            onClick={() => setIsUseCaseModalOpen(true)}
-            className={`px-3.5 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center gap-1.5 cursor-pointer ${
-              isLight
-                ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300 shadow-sm'
-                : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border-slate-700'
-            }`}
-          >
-            <ClipboardList className="w-4 h-4 text-teal-500" />
-            <span>Use Case Intake Form</span>
-          </button>
-
           <button
             id="new-diagram-btn"
             onClick={() => {
@@ -536,7 +525,7 @@ export default function Dashboard() {
               setSelectedTemplate('0');
               setIsCreateModalOpen(true);
             }}
-            className="px-4 py-2 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold text-xs tracking-wide transition-all shadow-md shadow-teal-500/15 hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-teal-accent hover:bg-teal-hover text-bg-dark font-extrabold text-xs tracking-wide transition-all shadow-md shadow-teal-500/15 hover:scale-[1.02] flex items-center gap-1.5 cursor-pointer shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span>New Architecture</span>

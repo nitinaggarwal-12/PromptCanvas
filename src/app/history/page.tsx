@@ -465,63 +465,49 @@ export default function CanvasHistoryPage() {
 
           {/* Right: Quick Action Controls */}
           <div className="flex items-center gap-2.5">
-            <ThemeToggleBtn id="history-theme-toggle-btn" />
-
-            {/* User Guide & GIFs Button */}
             <Link
-              href="/guide"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/40 text-teal-600 dark:text-teal-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
-              title="Watch Interactive Persona Workflows & Video Guide"
+              href="/canonical"
+              className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+                isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              title="Canonical Blueprints Hub"
             >
-              <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
-              <span>User Guide &amp; GIFs</span>
+              <span>Canonical Hub</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
             </Link>
 
-            {/* Blueprint Matrix Button */}
-            <button
-              onClick={() => setIsPlaybookModalOpen(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-600 dark:text-amber-300 font-bold text-xs transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
-              title="Open Strategic Blueprint Catalog & Matrix"
-            >
-              <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-              <span>Blueprint Matrix</span>
-            </button>
-
-            {/* Guided Architecture Wizard Button */}
-            <button
-              type="button"
-              onClick={() => setIsUseCaseModalOpen(true)}
-              className={`hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-bold text-xs transition-all cursor-pointer shadow-sm ${
-                isLight
-                  ? 'bg-slate-100 hover:bg-slate-200 text-teal-800 border-slate-300'
-                  : 'bg-slate-900 hover:bg-slate-800 text-teal-300 border-teal-500/30 hover:border-teal-400'
+            <Link
+              href="/docgen"
+              className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+                isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
-              title="Open Guided Architecture Intake Wizard"
+              title="DocGen Studio & Specifications"
             >
-              <ClipboardList className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
-              <span>Architecture Wizard</span>
-            </button>
+              <span>DocGen Hub</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
+            </Link>
 
             {/* Refresh Button */}
             <button
               onClick={fetchAllCanvases}
               disabled={isLoading}
-              className={`p-1.5 rounded-xl border transition cursor-pointer ${
+              className={`p-2 rounded-xl border transition cursor-pointer ${
                 isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300 hover:text-teal-300'
               }`}
               title="Refresh Historical Canvases"
             >
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
             </button>
 
-            {/* + New Architecture Button */}
+            <ThemeToggleBtn id="history-theme-toggle-btn" />
+
             <Link
-              href="/workspace?new=true"
-              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-lg shadow-teal-500/20 transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
-              title="Create a New Architecture from AI Prompt"
+              href="/workspace"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
+              title="Return to Workspace Canvas"
             >
-              <Plus className="w-3.5 h-3.5 stroke-[3]" />
-              <span>New Architecture</span>
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Workspace</span>
             </Link>
           </div>
         </header>

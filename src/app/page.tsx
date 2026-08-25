@@ -144,41 +144,35 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className={`hidden lg:flex items-center gap-4 xl:gap-5 text-xs font-bold shrink-0 ${
+          <nav className={`hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            <Link href="/canonical" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
               isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-sky-600' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'
-            }`}>
+            }`} title="50 High-Contrast Architecture Blueprints">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
             </Link>
 
-            <Link href="/docgen" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+            <Link href="/docgen" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
               isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-indigo-600' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'
-            }`}>
+            }`} title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
               <FileText className="w-3.5 h-3.5 text-indigo-400" />
               <span>DocGen Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">17</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">17</span>
             </Link>
 
-            <Link href="/workspace?tab=templates" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
-            }`}>
-              <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
-              <span>50-Blueprint Matrix</span>
-              <span className="px-1.5 py-0.2 rounded text-[9px] bg-teal-500/20 text-teal-600 dark:text-teal-300 font-mono font-bold">50</span>
-            </Link>
-
-            <Link href="/guide" className="px-3 py-1.5 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 hover:bg-teal-500/20 transition-all flex items-center gap-1.5">
+            <Link href="/guide" className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-teal-50 text-teal-700 hover:text-teal-900' : 'hover:bg-teal-500/10 text-teal-400 hover:text-teal-300'
+            }`} title="Interactive Animated Playbooks & GIFs">
               <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-              <span>User Guide &amp; GIFs</span>
+              <span>Playbooks &amp; GIFs</span>
             </Link>
 
-            <Link href="/dashboard" className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+            <Link href="/dashboard" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
               isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
-            }`}>
+            }`} title="Operations Telemetry & Workspace Management">
               <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
               <span>Operations Dashboard</span>
             </Link>
