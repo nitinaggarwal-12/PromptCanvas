@@ -19,12 +19,14 @@ import {
   FileCode,
   BookOpen,
   LayoutGrid,
-  ExternalLink
+  ExternalLink,
+  Eye
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { CANONICAL_TEMPLATES, DOMAIN_PRESETS } from '@/lib/canonical/canonicalTemplates';
 import { ARCHETYPE_REGISTRY, ArchetypeId } from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS } from '@/lib/compose/masterDocs';
+import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 
 interface BlueprintSlot {
   slotTitle: string;
@@ -189,6 +191,278 @@ const DOC_ARCHETYPES_META: DocArchetypeMeta[] = [
     sectionsCount: 8,
   },
 ];
+
+interface InlineDiagramFigureProps {
+  templateId: string;
+  figureTitle: string;
+  isLight: boolean;
+  selectedDomain: string;
+  codeLines: string[];
+  parsedNodes: { id: string; label: string; tier: string }[];
+  parsedFlows: { from: string; to: string; label?: string }[];
+}
+
+function InlineDiagramFigure({
+  templateId,
+  figureTitle,
+  isLight,
+  selectedDomain,
+  codeLines,
+  parsedNodes,
+  parsedFlows,
+}: InlineDiagramFigureProps) {
+  const [viewMode, setViewMode] = useState<'canvas' | 'image'>('canvas');
+  const [copiedXml, setCopiedXml] = useState(false);
+
+  const canonicalTpl =
+    CANONICAL_TEMPLATES.find((t) => t.id === templateId) ||
+    CANONICAL_TEMPLATES.find((t) => t.id === '01');
+
+  const diagramXml = useMemo(() => {
+    if (!canonicalTpl) return '';
+    try {
+      return canonicalTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+    } catch {
+      return '';
+    }
+  }, [canonicalTpl, selectedDomain, isLight]);
+
+  const handleCopyXml = () => {
+    if (!diagramXml) return;
+    navigator.clipboard.writeText(diagramXml);
+    setCopiedXml(true);
+    setTimeout(() => setCopiedXml(false), 2000);
+  };
+
+  const imageSrc = canonicalTpl?.previewImage || `/images/${templateId}.png`;
+
+  return (
+    <div
+      className={`my-8 rounded-3xl border shadow-xl overflow-hidden transition-all ${
+        isLight
+          ? 'border-sky-300/80 bg-white shadow-slate-300/40'
+          : 'border-sky-500/40 bg-[#0B111E] shadow-2xl'
+      }`}
+    >
+      {/* Figure Header Bar */}
+      <div
+        className={`px-6 py-4 border-b flex flex-wrap items-center justify-between gap-3 ${
+          isLight
+            ? 'bg-gradient-to-r from-slate-100 via-sky-50 to-slate-100 border-slate-200'
+            : 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-slate-800'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <span className="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 font-mono font-black text-xs flex items-center justify-center border border-sky-500/20">
+            {templateId || '01'}
+          </span>
+          <div>
+            <span className="text-[10px] font-mono uppercase text-sky-500 font-bold tracking-wider">
+              Embedded Architecture Blueprint {templateId ? `(Canonical Template ${templateId})` : ''}
+            </span>
+            <h4
+              className={`text-sm font-bold leading-tight ${
+                isLight ? 'text-slate-900' : 'text-white'
+              }`}
+            >
+              {figureTitle || canonicalTpl?.name || 'Architecture Diagram Figure'}
+            </h4>
+          </div>
+        </div>
+
+        {/* View Mode Toggle & Canvas Link */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center p-1 rounded-xl bg-slate-200/80 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-[11px] font-bold">
+            <button
+              type="button"
+              onClick={() => setViewMode('canvas')}
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
+                viewMode === 'canvas'
+                  ? 'bg-sky-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Sparkles className="w-3 h-3" />
+              <span>Live Vector Canvas</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('image')}
+              className={`px-3 py-1 rounded-lg transition-all flex items-center gap-1.5 ${
+                viewMode === 'image'
+                  ? 'bg-sky-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Eye className="w-3 h-3" />
+              <span>Blueprint Image</span>
+            </button>
+          </div>
+
+          {canonicalTpl && (
+            <Link
+              href={`/canonical/${canonicalTpl.id}`}
+              target="_blank"
+              className="px-3.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Open in Canvas Editor</span>
+            </Link>
+          )}
+
+          <button
+            type="button"
+            onClick={handleCopyXml}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold flex items-center gap-1 transition-all"
+            title="Copy Raw Draw.io XML"
+          >
+            {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+            <span>{copiedXml ? 'Copied XML!' : 'XML'}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Figure Body */}
+      <div className="p-6 space-y-6">
+        {/* VIEW 1: LIVE INTERACTIVE VECTOR DRAW.IO CANVAS */}
+        {viewMode === 'canvas' && diagramXml && (
+          <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 shadow-inner min-h-[460px]">
+            <DiagramViewerRenderSafe
+              xml={diagramXml}
+              bgTheme={isLight ? 'light' : 'dark'}
+              aspectRatioId="16:9"
+            />
+          </div>
+        )}
+
+        {/* VIEW 2: BLUEPRINT MASTER IMAGE */}
+        {viewMode === 'image' && (
+          <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-4 relative group">
+            <img
+              src={imageSrc}
+              alt={canonicalTpl?.name || 'Architecture Diagram'}
+              className="w-full max-h-[550px] object-contain rounded-xl"
+              onError={(e) => {
+                if (canonicalTpl) {
+                  (e.target as HTMLImageElement).src = `/images/${canonicalTpl.id}.png`;
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {/* Component Topology Pods Grid (if nodes parsed) */}
+        {parsedNodes.length >= 2 && (
+          <div className="space-y-2">
+            <div
+              className={`text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+                isLight ? 'text-slate-600' : 'text-slate-400'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-sky-500" />
+              <span>Architecture Subsystems &amp; Component Topology ({parsedNodes.length} Nodes)</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {parsedNodes.map((node, nIdx) => (
+                <div
+                  key={node.id}
+                  className={`p-3.5 rounded-2xl border transition-all flex flex-col justify-between ${
+                    isLight
+                      ? 'bg-slate-50/80 border-slate-200 hover:border-sky-300 hover:bg-white'
+                      : 'bg-slate-900/80 border-slate-800 hover:border-sky-500/50 hover:bg-slate-900'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span
+                      className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${
+                        isLight
+                          ? 'bg-sky-100 text-sky-800 border-sky-300'
+                          : 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                      }`}
+                    >
+                      Node 0{nIdx + 1}
+                    </span>
+                    <span
+                      className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                        isLight
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-emerald-500/10 text-emerald-400'
+                      }`}
+                    >
+                      {node.tier}
+                    </span>
+                  </div>
+                  <div
+                    className={`text-xs font-bold leading-snug ${
+                      isLight ? 'text-slate-900' : 'text-slate-100'
+                    }`}
+                  >
+                    {node.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Integration Pathways (if flows parsed) */}
+        {parsedFlows.length >= 2 && (
+          <div
+            className={`p-4 rounded-2xl border ${
+              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800/80'
+            }`}
+          >
+            <div
+              className={`text-[11px] font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5 ${
+                isLight ? 'text-slate-600' : 'text-slate-400'
+              }`}
+            >
+              <span>⚡ Primary Integration Pathways &amp; Event Channels ({parsedFlows.length} Routes)</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+              {parsedFlows.map((flow, fIdx) => {
+                const sourceNode = parsedNodes.find((n) => n.id === flow.from);
+                const targetNode = parsedNodes.find((n) => n.id === flow.to);
+                return (
+                  <div
+                    key={fIdx}
+                    className={`px-3 py-2 rounded-xl border flex items-center justify-between ${
+                      isLight
+                        ? 'bg-white border-slate-200 text-slate-800'
+                        : 'bg-slate-950/80 border-slate-800 text-slate-300'
+                    }`}
+                  >
+                    <span
+                      className={`font-semibold truncate max-w-[42%] ${
+                        isLight ? 'text-sky-800' : 'text-sky-300'
+                      }`}
+                    >
+                      {sourceNode?.label.replace(/^[^\s]+\s+/, '') || flow.from}
+                    </span>
+                    <span
+                      className={`text-[10px] font-mono px-1 ${
+                        isLight ? 'text-slate-400' : 'text-slate-500'
+                      }`}
+                    >
+                      {flow.label ? `➔ [${flow.label}] ➔` : '──────►'}
+                    </span>
+                    <span
+                      className={`font-semibold truncate max-w-[42%] ${
+                        isLight ? 'text-emerald-800' : 'text-emerald-300'
+                      }`}
+                    >
+                      {targetNode?.label.replace(/^[^\s]+\s+/, '') || flow.to}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function DocDetailPageContent() {
   const params = useParams();
@@ -464,155 +738,16 @@ function DocDetailPageContent() {
         }
 
         elements.push(
-          <div
+          <InlineDiagramFigure
             key={`diagram-fig-${i}`}
-            className={`my-6 rounded-2xl border shadow-xl overflow-hidden ${
-              isLight
-                ? 'border-sky-300 bg-white shadow-slate-300/40'
-                : 'border-sky-500/40 bg-slate-950/95 shadow-2xl'
-            }`}
-          >
-            {/* Figure Header */}
-            <div className={`px-5 py-3 border-b flex flex-wrap items-center justify-between gap-2 ${
-              isLight
-                ? 'bg-slate-100/90 border-slate-200'
-                : 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-slate-800'
-            }`}>
-              <div className="flex items-center gap-2">
-                <span className={`h-2.5 w-2.5 rounded-full animate-pulse ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`}></span>
-                <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-sky-800' : 'text-sky-300'}`}>
-                  📐 Embedded Architecture Flow Diagram {matchedTemplateId ? `(Blueprint ${matchedTemplateId})` : 'Figure'}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${
-                  isLight
-                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                    : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
-                }`}>
-                  GxP &amp; VPC-SC Verified
-                </span>
-                {canonicalTpl && (
-                  <Link
-                    href={`/canonical/${canonicalTpl.id}`}
-                    target="_blank"
-                    className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-500 hover:bg-sky-500/20 border border-sky-500/20 flex items-center gap-1 transition-colors"
-                  >
-                    <span>Inspect Draw.io XML</span>
-                    <ExternalLink className="w-2.5 h-2.5" />
-                  </Link>
-                )}
-              </div>
-            </div>
-
-            {/* Visual Figure Body */}
-            <div className="p-5 space-y-4">
-              {/* If Canonical Template Preview is Available */}
-              {canonicalTpl?.previewImage && (
-                <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 relative group">
-                  <img
-                    src={canonicalTpl.previewImage}
-                    alt={canonicalTpl.name}
-                    className="w-full max-h-80 object-contain rounded-lg"
-                    onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
-                  />
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Link
-                      href={`/canonical/${canonicalTpl.id}`}
-                      target="_blank"
-                      className="px-3 py-1.5 rounded-lg bg-sky-600/90 hover:bg-sky-600 text-white text-[11px] font-bold shadow-lg backdrop-blur-sm flex items-center gap-1.5"
-                    >
-                      <Maximize2 className="w-3.5 h-3.5" />
-                      <span>Open Canvas</span>
-                    </Link>
-                  </div>
-                </div>
-              )}
-
-              {/* Multi-Tier Component Topology Grid */}
-              {parsedNodes.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {parsedNodes.map((node, nIdx) => (
-                    <div
-                      key={node.id}
-                      className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
-                        isLight
-                          ? 'bg-slate-50 border-slate-200 hover:border-sky-300 hover:bg-white'
-                          : 'bg-slate-900/80 border-slate-800 hover:border-sky-500/60 hover:bg-slate-900'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
-                          isLight ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-sky-500/10 text-sky-400 border-sky-500/20'
-                        }`}>
-                          Node 0{nIdx + 1}
-                        </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
-                          isLight ? 'bg-emerald-100 text-emerald-800' : 'bg-emerald-500/10 text-emerald-400'
-                        }`}>
-                          {node.tier}
-                        </span>
-                      </div>
-                      <div className={`text-xs font-bold leading-snug ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
-                        {node.label}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Flow Connections Visual Bar */}
-              {parsedFlows.length > 0 && (
-                <div className={`p-3.5 rounded-xl border ${
-                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800/80'
-                }`}>
-                  <div className={`text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5 ${
-                    isLight ? 'text-slate-600' : 'text-slate-400'
-                  }`}>
-                    <span>⚡ Primary Integration Pathways &amp; Event Channels</span>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                    {parsedFlows.map((flow, fIdx) => {
-                      const sourceNode = parsedNodes.find((n) => n.id === flow.from);
-                      const targetNode = parsedNodes.find((n) => n.id === flow.to);
-                      return (
-                        <div
-                          key={fIdx}
-                          className={`px-3 py-2 rounded-lg border flex items-center justify-between ${
-                            isLight
-                              ? 'bg-white border-slate-200 text-slate-800'
-                              : 'bg-slate-950/80 border-slate-800 text-slate-300'
-                          }`}
-                        >
-                          <span className={`font-semibold truncate max-w-[42%] ${isLight ? 'text-sky-800' : 'text-sky-300'}`}>
-                            {sourceNode?.label.replace(/^[^\s]+\s+/, '') || flow.from}
-                          </span>
-                          <span className={`text-[10px] font-mono px-1 ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>
-                            {flow.label ? `➔ [${flow.label}] ➔` : '──────►'}
-                          </span>
-                          <span className={`font-semibold truncate max-w-[42%] ${isLight ? 'text-emerald-800' : 'text-emerald-300'}`}>
-                            {targetNode?.label.replace(/^[^\s]+\s+/, '') || flow.to}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Raw Flow Definition Accordion */}
-              <details className="text-xs">
-                <summary className={`cursor-pointer font-bold select-none text-[11px] uppercase tracking-wider ${isLight ? 'text-slate-500 hover:text-slate-700' : 'text-slate-400 hover:text-slate-200'}`}>
-                  View Raw Flow DSL Definition ({codeLines.length} lines)
-                </summary>
-                <pre className={`mt-2 p-3 rounded-xl font-mono text-[11px] overflow-x-auto ${
-                  isLight ? 'bg-slate-100 text-slate-800' : 'bg-slate-950 text-teal-300'
-                }`}>
-                  {codeLines.join('\n')}
-                </pre>
-              </details>
-            </div>
-          </div>
+            templateId={matchedTemplateId || '01'}
+            figureTitle={precedingHeading}
+            isLight={isLight}
+            selectedDomain="biopharma"
+            codeLines={codeLines}
+            parsedNodes={parsedNodes}
+            parsedFlows={parsedFlows}
+          />
         );
         continue;
       }
