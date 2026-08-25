@@ -54,7 +54,8 @@ import {
   X,
   Presentation,
   Terminal,
-  Send
+  Send,
+  History
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import {
@@ -81,6 +82,7 @@ import SlideDeckPresenterModal from '@/components/SlideDeckPresenterModal';
 import TerraformIaCModal from '@/components/TerraformIaCModal';
 import EnterpriseSyncModal from '@/components/EnterpriseSyncModal';
 import CollaborativeTeamPresence from '@/components/CollaborativeTeamPresence';
+import DocGenHistoryModal, { HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 import {
   VersionSnapshot,
   ChatMessage,
@@ -506,6 +508,25 @@ function DocGenContent() {
   const [isSlideDeckOpen, setIsSlideDeckOpen] = useState<boolean>(false);
   const [isTerraformOpen, setIsTerraformOpen] = useState<boolean>(false);
   const [isEnterpriseSyncOpen, setIsEnterpriseSyncOpen] = useState<boolean>(false);
+  const [isDocHistoryModalOpen, setIsDocHistoryModalOpen] = useState<boolean>(false);
+
+  const handleSelectHistoricalProject = (proj: HistoricalProjectItem) => {
+    setProjectId(proj.id);
+    setSelectedArchetypeId(proj.archetypeId as ArchetypeId);
+    setSelectedDomain(proj.domainId);
+    setProjectTitle(proj.title);
+    setDocVersion(proj.docVersion);
+    setActiveTab('studio');
+
+    // Load snapshots from localStorage
+    const saved = loadVersionHistory(proj.id);
+    if (saved && saved.snapshots.length > 0) {
+      setVersionHistory(saved.snapshots);
+      setGeneratedDocContent(saved.snapshots[0].docMarkdown);
+    } else {
+      handleStartGeneration();
+    }
+  };
 
   // Load version history and chat from localStorage when projectId is active
   useEffect(() => {
@@ -1703,7 +1724,16 @@ function DocGenContent() {
           </nav>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => setIsDocHistoryModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
+              title="Open Historical Projects & Document Specifications"
+            >
+              <History className="w-3.5 h-3.5 text-amber-500" />
+              <span className="hidden sm:inline">Project History</span>
+            </button>
+
             <Link
               href="/canonical"
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -2672,6 +2702,14 @@ function DocGenContent() {
         projectTitle={projectTitle}
         docArchetype={selectedArchetypeId}
         docMarkdown={generatedDocContent || ''}
+        isLight={isLight}
+      />
+
+      {/* Historical Projects & Document Specifications Modal */}
+      <DocGenHistoryModal
+        isOpen={isDocHistoryModalOpen}
+        onClose={() => setIsDocHistoryModalOpen(false)}
+        onSelectProject={handleSelectHistoricalProject}
         isLight={isLight}
       />
     </div>
