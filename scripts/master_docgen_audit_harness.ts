@@ -221,10 +221,16 @@ async function runMasterAuditHarness() {
   // ============================================================================
   // SUITE 4: DOMAIN CLASSIFIER NLP MATRIX
   // ============================================================================
-  console.log('\n📌 SUITE 4: Intelligent Domain Detection (20 Real-World Industry Scenarios)');
+  console.log('\n📌 SUITE 4: Intelligent Domain Detection (12 Major Enterprise Domains)');
   const testScenarios = [
     { title: 'AeroNode Drone Delivery', prompt: 'ADS-B mesh and UTM airspace routing', expected: 'manufacturing' },
-    { title: 'VoltGrid EV Charging', prompt: 'OCPP 2.0 and BESS dynamic load balancing', expected: 'manufacturing' },
+    { title: 'VoltGrid EV Charging', prompt: 'OCPP 2.0 and BESS dynamic load balancing', expected: 'energy' },
+    { title: 'HealthPulse Clinical System', prompt: 'FHIR R4 EHR interoperability and HIPAA patient care', expected: 'healthcare' },
+    { title: 'AutoDrive Connected Fleet', prompt: 'ADAS CAN bus telematics and ISO 26262 ASIL-D safety', expected: 'automotive' },
+    { title: 'TelcoMesh 5G Slicing', prompt: 'O-RAN 3GPP Rel-17 and gNodeB URLLC network slicing', expected: 'telecom' },
+    { title: 'AeroShield Defense Mission', prompt: 'Tactical C2 radar synthetic aperture and ITAR compliance', expected: 'defense' },
+    { title: 'CyberShield SOC SecOps', prompt: 'Chronicle SIEM STIX/TAXII threat hunting and SOAR playbooks', expected: 'cybersecurity' },
+    { title: 'StreamWave 4K Broadcast', prompt: 'Low-latency HLS DASH 4K transcoding and FairPlay DRM', expected: 'media' },
     { title: 'ApexPay Global Settlement', prompt: 'ISO 20022 wire transfer and sub-50ms fraud scoring', expected: 'fintech' },
     { title: 'Amazon Omnichannel Retail', prompt: 'Cart checkout, SKU inventory, and WMS cross-dock', expected: 'retail' },
     { title: 'WorkCloud SaaS Platform', prompt: 'Multi-tenant Kubernetes with RBAC and subscription billing', expected: 'saas' },

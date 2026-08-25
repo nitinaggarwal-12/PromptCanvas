@@ -107,7 +107,29 @@ import {
 
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
-  if (/\b(drone|aeronode|aviation|aircraft|flight|airspace|utm|faa|ads-b|avionics|aerospace|micro-hub|payload|satellite|orbit|telemetry|sensor|iot|plc|scada|robotics|conveyor|assembly|manufacturing|ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city|vessel|maritime|port|quay|tugboat|cargo|berthing)\b/i.test(combined)) {
+  
+  if (/\b(healthcare|hospital|ehr|emr|fhir|hl7|dicom|pacs|clinical care|physician|nurse|doctor|patient record|hipaa security|cpoe|joint commission)\b/i.test(combined)) {
+    return 'healthcare';
+  }
+  if (/\b(energy|grid|microgrid|solar|wind|bess|battery storage|v2g|nerc-cip|ferc|substation|inverter|megapack|power dispatcher|synchrophasor|power plant|kilowatt|megawatt)\b/i.test(combined)) {
+    return 'energy';
+  }
+  if (/\b(automotive|vehicle|car|adas|v2x|connected fleet|autosar|can bus|lidar|telematics|vin|nhtsa|unece|iso 26262|asil-d|autonomous drive)\b/i.test(combined)) {
+    return 'automotive';
+  }
+  if (/\b(telecom|telecommunications|5g|o-ran|ran|gnodeb|network slice|urllc|embb|3gpp|fronthaul|ecpri|upf|nrf|fcc|core network)\b/i.test(combined)) {
+    return 'telecom';
+  }
+  if (/\b(defense|military|mission|tactical|c2|joint operations|radar|electronic warfare|disa|stig|itar|fedramp high|do-178c|air-gapped|synthetic aperture|sortie)\b/i.test(combined)) {
+    return 'defense';
+  }
+  if (/\b(cybersecurity|soc|siem|soar|threat|secops|zero-trust|beyondcorp|stix|taxii|cve|incident response|threat hunter|red team|chronicle|nist 800-53|pcap)\b/i.test(combined)) {
+    return 'cybersecurity';
+  }
+  if (/\b(media|streaming|video|broadcast|playout|transcoding|hls|dash|rtmp|srt|4k|drm|widevine|fairplay|smpte|encoder|content delivery)\b/i.test(combined)) {
+    return 'media';
+  }
+  if (/\b(drone|aeronode|aviation|aircraft|flight|airspace|utm|faa|ads-b|avionics|payload|telemetry|sensor|iot|plc|scada|robotics|conveyor|assembly|manufacturing)\b/i.test(combined)) {
     return 'manufacturing';
   }
   if (/\b(payment|fraud|trading|trader|wealth|fintech|bank|banking|ledger|spanner double-entry|clearing|settlement|swift|iso 20022|fiat|crypto|securities|aml|ofac|sec 15c3-5|acquirer)\b/i.test(combined)) {
@@ -116,7 +138,7 @@ export function detectDomainFromPrompt(title: string, prompt: string, fallbackDo
   if (/\b(ecommerce|e-commerce|retail|shopper|cart|checkout|catalog|sku|wms|warehouse|cross-dock|fulfillment|3pl|carrier|fedex|ups|dhl|parcel|amazon|merchant|marketplace|supply chain|logistics)\b/i.test(combined)) {
     return 'retail';
   }
-  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp|cloud|media|streaming|audio|video|lipsync|holographic)\b/i.test(combined)) {
+  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp|cloud)\b/i.test(combined)) {
     return 'saas';
   }
   if (/\b(clinical|genomics|biopharma|pharma|oncology|fda|gxp|hipaa|veeva|drug|patient|ctms|edc|medidata|adverse event|pharmacovigilance)\b/i.test(combined)) {
