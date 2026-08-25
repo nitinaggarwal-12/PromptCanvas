@@ -382,21 +382,28 @@ function CanonicalContent() {
             {/* Abstraction Level Filters */}
             <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shrink-0">
               {[
-                { id: 'All', label: 'All Levels' },
-                { id: 'L1', label: 'L1 Conceptual' },
-                { id: 'L2', label: 'L2 Logical' },
-                { id: 'L3', label: 'L3 Physical / Technical' }
-              ].map(({ id, label }) => (
+                { id: 'All', label: 'All Levels', count: CANONICAL_TEMPLATES.length },
+                { id: 'L1', label: 'L1 Conceptual', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L1').length },
+                { id: 'L2', label: 'L2 Logical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L2').length },
+                { id: 'L3', label: 'L3 Physical / Technical', count: CANONICAL_TEMPLATES.filter((t) => t.level === 'L3').length }
+              ].map(({ id, label, count }) => (
                 <button
                   key={id}
                   onClick={() => setSelectedLevel(id)}
-                  className={`px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold transition-all ${
                     selectedLevel === id
                       ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs'
                       : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
-                  {label}
+                  <span>{label}</span>
+                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-extrabold ${
+                    selectedLevel === id
+                      ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300'
+                      : 'bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                  }`}>
+                    {count}
+                  </span>
                 </button>
               ))}
             </div>
