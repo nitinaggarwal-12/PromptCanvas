@@ -10,6 +10,7 @@ import {
   Printer,
   Copy,
   Check,
+  Share2,
   Layers,
   Shield,
   Zap,
@@ -244,7 +245,48 @@ function DocGenContent() {
   const [modalTab, setModalTab] = useState<'doc' | 'blueprints' | 'hierarchy'>('doc');
   const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
   const [sampleCopiedSuccess, setSampleCopiedSuccess] = useState<boolean>(false);
+  const [shareCopiedSuccess, setShareCopiedSuccess] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
+
+  // URL query parameter synchronization (e.g. ?doc=brd, ?doc=sdd, ?tab=studio)
+  useEffect(() => {
+    const docParam = searchParams.get('doc') as ArchetypeId | null;
+    const tabParam = searchParams.get('tab');
+    if (docParam) {
+      const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
+      if (matched) {
+        setPreviewModalDoc(matched);
+        setModalTab('doc');
+      }
+    }
+    if (tabParam === 'studio') {
+      setActiveTab('studio');
+    }
+  }, [searchParams]);
+
+  const handleOpenPreview = (meta: DocArchetypeMeta) => {
+    setPreviewModalDoc(meta);
+    setModalTab('doc');
+    if (typeof window !== 'undefined') {
+      window.history.pushState(null, '', `/docgen?doc=${meta.id}`);
+    }
+  };
+
+  const handleClosePreview = () => {
+    setPreviewModalDoc(null);
+    if (typeof window !== 'undefined') {
+      window.history.pushState(null, '', '/docgen');
+    }
+  };
+
+  const handleCopyShareLink = (docId: string) => {
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}/docgen?doc=${docId}`;
+      navigator.clipboard.writeText(url);
+      setShareCopiedSuccess(true);
+      setTimeout(() => setShareCopiedSuccess(false), 2000);
+    }
+  };
 
   // Find active archetype metadata
   const activeMeta = useMemo(() => {
@@ -848,10 +890,7 @@ function DocGenContent() {
                     {/* Card Actions */}
                     <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
                       <button
-                        onClick={() => {
-                          setPreviewModalDoc(meta);
-                          setModalTab('doc');
-                        }}
+                        onClick={() => handleOpenPreview(meta)}
                         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
                       >
                         <Eye className="w-3.5 h-3.5 text-sky-500" />
@@ -1298,8 +1337,26 @@ function DocGenContent() {
                 </button>
               </div>
 
-              {/* Action Buttons: Word, Copy, Use */}
+              {/* Action Buttons: Word, Copy, Share, Full Page, Use */}
               <div className="flex items-center gap-2">
+                <Link
+                  href={`/docgen/${previewModalDoc.id}`}
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
+                  title="Open dedicated full page"
+                >
+                  <Maximize2 className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Full Page</span>
+                </Link>
+
+                <button
+                  onClick={() => handleCopyShareLink(previewModalDoc.id)}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors"
+                  title="Copy direct shareable link"
+                >
+                  {shareCopiedSuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5 text-sky-500" />}
+                  <span className="hidden md:inline">{shareCopiedSuccess ? 'Copied Link!' : 'Share'}</span>
+                </button>
+
                 <button
                   onClick={() => handleDownloadSampleDocx(previewModalDoc.id, previewModalDoc.name)}
                   className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition-all"
@@ -1326,11 +1383,12 @@ function DocGenContent() {
                   className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all hover:scale-[1.02]"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Customize &amp; Generate</span>
+                  <span className="hidden sm:inline">Customize &amp; Generate</span>
+                  <span className="sm:hidden">Build</span>
                 </button>
 
                 <button
-                  onClick={() => setPreviewModalDoc(null)}
+                  onClick={() => handleClosePreview()}
                   className="p-2 rounded-xl text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   &times;
