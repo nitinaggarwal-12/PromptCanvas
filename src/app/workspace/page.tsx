@@ -471,6 +471,53 @@ function WorkspaceContent() {
   const [isInsightsMenuOpen, setIsInsightsMenuOpen] = useState(false);
   const [currentGeneratingPrompt, setCurrentGeneratingPrompt] = useState<string>('');
 
+  // Auto-Save Draft Recovery State
+  const [hasRecoverableDraft, setHasRecoverableDraft] = useState<boolean>(false);
+  const [recoverableDraftTime, setRecoverableDraftTime] = useState<string>('');
+
+  // Auto-Save Recovery Guard: periodically backup active customXml to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined' && customXml && customXml.length > 200) {
+      try {
+        localStorage.setItem('pc_autosave_canvas_xml', customXml);
+        localStorage.setItem('pc_autosave_timestamp', Date.now().toString());
+      } catch (e) {}
+    }
+  }, [customXml]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedXml = localStorage.getItem('pc_autosave_canvas_xml');
+      const savedTs = localStorage.getItem('pc_autosave_timestamp');
+      if (savedXml && savedXml.length > 200 && savedTs) {
+        const ageHours = (Date.now() - parseInt(savedTs, 10)) / (1000 * 60 * 60);
+        if (ageHours < 48) {
+          setHasRecoverableDraft(true);
+          const minsAgo = Math.round((Date.now() - parseInt(savedTs, 10)) / (1000 * 60));
+          setRecoverableDraftTime(minsAgo < 60 ? `${minsAgo}m ago` : `${Math.round(minsAgo / 60)}h ago`);
+        }
+      }
+    }
+  }, []);
+
+  const handleRestoreDraft = () => {
+    if (typeof window !== 'undefined') {
+      const savedXml = localStorage.getItem('pc_autosave_canvas_xml');
+      if (savedXml) {
+        setCustomXml(savedXml);
+        setHasRecoverableDraft(false);
+      }
+    }
+  };
+
+  const handleDiscardDraft = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('pc_autosave_canvas_xml');
+      localStorage.removeItem('pc_autosave_timestamp');
+      setHasRecoverableDraft(false);
+    }
+  };
+
   // Global Keyboard Navigation for Master Template Preview Carousel
   useEffect(() => {
     if (!previewModalTemplateId) return;
@@ -6556,6 +6603,38 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               setActiveAlternativeTypes([]);
             }}
           />
+          {hasRecoverableDraft && !activeDiagram && (
+            <div className={`w-full border-b py-2 px-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in ${
+              canvasTheme === 'light'
+                ? 'bg-sky-50/95 border-sky-300 text-sky-950 shadow-sm'
+                : 'bg-gradient-to-r from-sky-500/15 via-indigo-500/15 to-purple-500/15 border-sky-500/30 text-sky-200'
+            }`}>
+              <div className="flex items-center gap-2 font-medium min-w-0">
+                <Sparkles className={`w-4 h-4 shrink-0 ${canvasTheme === 'light' ? 'text-sky-600' : 'text-sky-400'}`} />
+                <span className="truncate sm:whitespace-normal">
+                  <strong className={`font-bold ${canvasTheme === 'light' ? 'text-sky-950 font-black' : 'text-sky-300'}`}>Unsaved Draft Recovered:</strong>{' '}
+                  <span className={canvasTheme === 'light' ? 'text-sky-900 font-medium' : 'text-sky-200'}>
+                    You have an autosaved canvas architecture session from {recoverableDraftTime}.
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={handleRestoreDraft}
+                  className="px-3.5 py-1 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-lg shadow-sm transition-all shrink-0 cursor-pointer flex items-center gap-1.5 text-xs hover:scale-[1.02]"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Restore Canvas</span>
+                </button>
+                <button
+                  onClick={handleDiscardDraft}
+                  className="px-2.5 py-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 text-xs font-semibold hover:underline cursor-pointer"
+                >
+                  Discard
+                </button>
+              </div>
+            </div>
+          )}
           {currentUser?.is_guest && !isGuestDisclaimerDismissed && (
             <div className={`w-full border-b py-2 px-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs md:text-sm backdrop-blur-md z-40 shrink-0 animate-fade-in ${
               canvasTheme === 'light'

@@ -165,6 +165,14 @@ export function isPostgres(): boolean {
 
 function getPgPool(): Pool {
   if (!pgPoolInstance) {
+    if (!process.env.DATABASE_URL) {
+      if (process.env.NODE_ENV === 'production') {
+        console.warn(
+          '⚠️ [DATABASE CRITICAL]: DATABASE_URL is not set in production. Falling back to local SQLite, which is ephemeral across container redeploys. Please configure PostgreSQL for persistent multi-user production storage.'
+        );
+      }
+    }
+
     pgPoolInstance = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: process.env.DATABASE_URL?.includes('railway') || process.env.NODE_ENV === 'production'
@@ -192,6 +200,12 @@ function getSqliteDb(): DatabaseSync {
     return sqliteDbInstance;
   }
   try {
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL) {
+      console.warn(
+        '⚠️ [SQLite Warning] Running SQLite on ephemeral production container at:',
+        sqliteDbPath
+      );
+    }
     mkdirSync(dirname(sqliteDbPath), { recursive: true });
     sqliteDbInstance = new DatabaseSync(sqliteDbPath);
     sqliteDbInstance.exec('PRAGMA foreign_keys = ON;');
