@@ -70,10 +70,21 @@ async function runMasterAuditHarness() {
             // 3. Check for stale date
             const hasStaleDate = /May 8, 2025|Aug 8, 2025|Jun 8, 2025/.test(finalXml);
 
+            // 4. Check for domain leak (clinical/pharma terms leaking into manufacturing, saas, fintech, or retail)
+            let domainLeak: string | null = null;
+            if (domain !== 'biopharma') {
+              if (/Scientist \(User\)/i.test(finalXml)) domainLeak = 'Found clinical term "Scientist (User)" in non-biopharma domain';
+              else if (/Drug X/i.test(finalXml)) domainLeak = 'Found clinical term "Drug X" in non-biopharma domain';
+              else if (/Clinical Data APIs/i.test(finalXml)) domainLeak = 'Found clinical term "Clinical Data APIs" in non-biopharma domain';
+              else if (/Phase 3 trials/i.test(finalXml)) domainLeak = 'Found clinical term "Phase 3 trials" in non-biopharma domain';
+              else if (/Argus Safety/i.test(finalXml)) domainLeak = 'Found clinical term "Argus Safety" in non-biopharma domain';
+              else if (/Veeva Vault/i.test(finalXml)) domainLeak = 'Found clinical term "Veeva Vault" in non-biopharma domain';
+            }
+
             assert(
-              parseError === null && !hasLooseAmpersand && !hasStaleDate,
+              parseError === null && !hasLooseAmpersand && !hasStaleDate && !domainLeak,
               `Template ${tpl.id} [${domain}/${theme}] Combination`,
-              parseError || (hasLooseAmpersand ? 'Found loose unescaped ampersand' : hasStaleDate ? 'Found stale May 8, 2025 date' : undefined)
+              parseError || (hasLooseAmpersand ? 'Found loose unescaped ampersand' : hasStaleDate ? 'Found stale May 8, 2025 date' : domainLeak || undefined)
             );
           } catch (err: any) {
             assert(false, `Template ${tpl.id} [${domain}/${theme}] crash on fuzz title`, err.message);

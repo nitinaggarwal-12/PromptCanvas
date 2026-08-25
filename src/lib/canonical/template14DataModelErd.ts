@@ -15,6 +15,8 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
 
   const isRetail = domainFlavor === 'retail';
   const isFintech = domainFlavor === 'fintech';
+  const isManufacturing = domainFlavor === 'manufacturing';
+  const isSaas = domainFlavor === 'saas';
 
   const rect = (id: string, val: string, x: number, y: number, w: number, h: number, style: string) => {
     c.push(`<mxCell id="${id}" value="${E(val)}" style="rounded=1;whiteSpace=wrap;html=1;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
@@ -53,14 +55,22 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     ? "OMNIVUE Hyper-Scale Omnichannel E-Commerce &amp; Logistics Platform"
     : isFintech
     ? "NEXUSFIN High-Speed Wealth Engine"
+    : isManufacturing
+    ? "SYNACTIVE Autonomous Industrial IoT &amp; Drone Fleet Platform"
+    : isSaas
+    ? "AETHER Autonomous Multi-Tenant Enterprise Cloud Platform"
     : "Enterprise Architecture Platform";
 
-  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : "⚡";
-  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : "ENTERPRISE";
+  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : isManufacturing ? "🏭" : isSaas ? "☁️" : "⚡";
+  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isManufacturing ? "SYNACTIVE" : isSaas ? "AETHER" : "ENTERPRISE";
   const brandTagline = isRetail
     ? "Hyper-Scale Commerce. Intelligent Fulfillment."
     : isFintech
     ? "Autonomous Wealth. Zero-Latency Execution."
+    : isManufacturing
+    ? "Industrial IoT. Real-Time Telemetry."
+    : isSaas
+    ? "Autonomous Multi-Tenant Cloud Scale."
     : "Scalable. Resilient. Secure.";
 
   const titleHtml = `<div style="font-family:Inter,system-ui,sans-serif;">
@@ -85,12 +95,20 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     ? "Merchandising &amp; Catalog"
     : isFintech
     ? "Trading &amp; Settlement"
+    : isManufacturing
+    ? "Fleet &amp; Vertiport Logistics"
+    : isSaas
+    ? "Tenancy &amp; Billing Mesh"
     : "Clinical Research";
-  const domain3Icon = isRetail ? "🛒" : isFintech ? "💳" : "🔬";
+  const domain3Icon = isRetail ? "🛒" : isFintech ? "💳" : isManufacturing ? "🛸" : isSaas ? "🏢" : "🔬";
   const domain4Title = isRetail
     ? "Recommendations &amp; Search"
     : isFintech
     ? "Risk &amp; Fraud AI"
+    : isManufacturing
+    ? "Telemetry &amp; Airspace AI"
+    : isSaas
+    ? "Quota &amp; Policy AI"
     : "Knowledge &amp; AI";
 
   const coreDomainsHtml = `<div style="padding:6px;">
@@ -142,6 +160,12 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   } else if (isFintech) {
     entity("ent_document", "Account", ["PK account_id", "user_id (FK)", "account_no", "currency", "balance", "status", "opened_at"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
     entity("ent_doc_version", "AccountLimit", ["PK limit_id", "account_id (FK)", "daily_transfer_limit", "margin_enabled", "updated_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  } else if (isManufacturing) {
+    entity("ent_document", "DroneProfile", ["PK drone_id", "model_sku", "firmware_ver", "battery_health", "status", "created_at"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
+    entity("ent_doc_version", "FirmwareRelease", ["PK release_id", "drone_id (FK)", "checksum", "ota_status", "deployed_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  } else if (isSaas) {
+    entity("ent_document", "TenantProfile", ["PK tenant_id", "name", "tier_id (FK)", "quota_limit", "status", "created_at"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
+    entity("ent_doc_version", "TenantConfig", ["PK config_id", "tenant_id (FK)", "region", "rate_limit_qps", "encryption_key_uri"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
   } else {
     entity("ent_document", "Document", ["PK doc_id", "title", "doc_type", "version", "status", "created_at", "owner_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
     entity("ent_doc_version", "DocumentVersion", ["PK version_id", "doc_id (FK)", "version_no", "content_uri", "checksum", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
@@ -167,6 +191,20 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
 
     entity("ent_kb", "AssetCatalog", ["PK asset_id", "ticker", "asset_class", "exchange", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_embedding", "PriceVector", ["PK vector_id", "asset_id (FK)", "time_bucket", "volatility", "momentum_score"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isManufacturing) {
+    entity("ent_study", "FleetOperator", ["PK operator_id", "user_id (FK)", "cert_level", "assigned_hub", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_protocol", "FlightCorridor", ["PK corridor_id", "name", "min_altitude", "max_altitude", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_site", "VertiportHub", ["PK hub_id", "location_gps", "pad_count", "charging_slots", "status"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_kb", "TelemetryCatalog", ["PK catalog_id", "source_type", "sampling_hz", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_embedding", "AirspaceVector", ["PK vector_id", "corridor_id (FK)", "gps_bounds", "wind_vector", "traffic_density"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isSaas) {
+    entity("ent_study", "SubscriptionTier", ["PK tier_id", "name", "monthly_cost", "max_users", "sla_pct", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_protocol", "Workspace", ["PK workspace_id", "tenant_id (FK)", "name", "slug", "created_at"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_site", "ResourceShard", ["PK shard_id", "region", "db_instance", "cluster_name", "status"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_kb", "ServiceCatalog", ["PK catalog_id", "api_name", "version", "schema_uri", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_embedding", "FeatureVector", ["PK vector_id", "feature_id", "embedding_type", "dimension"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
   } else {
     entity("ent_study", "Study", ["PK study_id", "title", "phase", "indication", "sponsor", "start_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_protocol", "Protocol", ["PK protocol_id", "study_id (FK)", "version", "effective_date", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -199,6 +237,22 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     entity("ent_ai_model", "RiskModel", ["PK model_id", "name", "model_type", "var_confidence", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_prompt", "PaymentInstruction", ["PK instruction_id", "account_id (FK)", "iso_code", "amount", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_response", "TransferLeg", ["PK leg_id", "instruction_id (FK)", "debit_acct (FK)", "credit_acct (FK)", "amount"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isManufacturing) {
+    entity("ent_trial", "FlightMission", ["PK mission_id", "drone_id (FK)", "corridor_id (FK)", "start_time", "eta", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_patient", "DroneNode", ["PK node_id", "mission_id (FK)", "current_gps", "battery_pct", "speed_knots", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_event", "WaypointEvent", ["PK event_id", "node_id (FK)", "event_type", "altitude_ft", "timestamp", "outcome"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_ai_model", "FlightModel", ["PK model_id", "name", "collision_risk_score", "weather_model", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_prompt", "DispatchPlan", ["PK dispatch_id", "mission_id (FK)", "flight_path_wkt", "payload_weight", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_response", "WaypointTelemetry", ["PK telemetry_id", "dispatch_id (FK)", "lat", "lon", "battery_v", "rssi_dbm"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isSaas) {
+    entity("ent_trial", "ApiSubscription", ["PK sub_id", "tenant_id (FK)", "plan_type", "active_seats", "renewal_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_patient", "TenantUser", ["PK user_id", "tenant_id (FK)", "email", "mfa_enabled", "role_id (FK)", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_event", "AuditEvent", ["PK event_id", "tenant_id (FK)", "action", "ip_address", "timestamp", "outcome"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_ai_model", "QuotaModel", ["PK model_id", "name", "rate_limit_algo", "burst_capacity", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_prompt", "ApiRequest", ["PK req_id", "tenant_id (FK)", "endpoint", "method", "timestamp"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_response", "ApiResponse", ["PK resp_id", "req_id (FK)", "status_code", "latency_ms", "egress_bytes"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
   } else {
     entity("ent_trial", "Trial", ["PK trial_id", "study_id (FK)", "title", "start_date", "end_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_patient", "Patient", ["PK patient_id", "trial_id (FK)", "age", "gender", "enrollment_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -229,6 +283,16 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     entity("ent_regulation", "TaxJurisdiction", ["PK tax_jurisdiction_id", "state", "vat_rate", "country"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_control", "AMLRule", ["PK aml_rule_id", "policy_id (FK)", "threshold_amount", "pep_check", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_risk", "FraudCase", ["PK fraud_case_id", "aml_rule_id (FK)", "anomaly_score", "freeze_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  } else if (isManufacturing) {
+    entity("ent_policy", "AirspacePolicy", ["PK airspace_policy_id", "name", "corridor_tier", "no_fly_zones", "effective_date"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_regulation", "FAAStandard", ["PK faa_std_id", "part_number", "jurisdiction", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_control", "CollisionRule", ["PK collision_rule_id", "policy_id (FK)", "separation_dist_m", "rth_trigger"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_risk", "GeofenceRisk", ["PK risk_id", "collision_rule_id (FK)", "breach_severity", "rth_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  } else if (isSaas) {
+    entity("ent_policy", "TenantPolicy", ["PK tenant_policy_id", "name", "isolation_mode", "max_storage_gb", "effective_date"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_regulation", "ComplianceStandard", ["PK std_id", "name", "authority", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_control", "RateLimitRule", ["PK rule_id", "policy_id (FK)", "burst_qps", "ip_throttle_limit"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_risk", "QuotaExceededRisk", ["PK risk_id", "rule_id (FK)", "risk_level", "throttle_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
   } else {
     entity("ent_policy", "Policy", ["PK policy_id", "name", "category", "version", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_regulation", "Regulation", ["PK regulation_id", "name", "authority", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
@@ -257,6 +321,16 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     entity("ent_connector", "ClearingGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_ingestion_job", "LedgerSyncJob", ["PK sync_job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_data_asset", "MarketDataFeed", ["PK feed_id", "sync_job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  } else if (isManufacturing) {
+    entity("ent_data_source", "SCADAConnector", ["PK scada_id", "name", "protocol", "plc_endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_connector", "UTMGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_ingestion_job", "TelemetrySyncJob", ["PK sync_job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_data_asset", "ADS_BFeed", ["PK feed_id", "sync_job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  } else if (isSaas) {
+    entity("ent_data_source", "CloudConnector", ["PK cloud_id", "name", "provider", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_connector", "APIGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_ingestion_job", "MeteringJob", ["PK job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_data_asset", "UsageEventFeed", ["PK feed_id", "job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
   } else {
     entity("ent_data_source", "DataSource", ["PK source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_connector", "Connector", ["PK connector_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
@@ -318,36 +392,64 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     ? "CatalogItem must have at least one ItemVariant"
     : isFintech
     ? "Account must have at least one AccountLimit policy"
+    : isManufacturing
+    ? "DroneProfile must have active FirmwareRelease"
+    : isSaas
+    ? "TenantProfile must have valid TenantConfig"
     : "Document must have at least one version";
   const rule2 = isRetail
     ? "User role defines merchant access permissions"
     : isFintech
     ? "Trader role defines desk limits and clearing access"
+    : isManufacturing
+    ? "Operator role defines fleet command and airspace access"
+    : isSaas
+    ? "Tenant role defines workspace RBAC and API permissions"
     : "User role defines access to resources";
   const rule3 = isRetail
     ? "Order must belong to a Merchant"
     : isFintech
     ? "TradeOrder must belong to an authorized Trader"
+    : isManufacturing
+    ? "FlightMission must belong to an assigned Operator"
+    : isSaas
+    ? "ApiSubscription must belong to an active Tenant"
     : "Trial must belong to a Study";
   const rule4 = isRetail
     ? "Shipment must belong to an enrolled Shopper"
     : isFintech
     ? "ExecutionFill must belong to an active TradeOrder"
+    : isManufacturing
+    ? "WaypointEvent must link to active DroneNode"
+    : isSaas
+    ? "AuditEvent must link to enrolled TenantUser"
     : "Event must belong to an enrolled Patient";
   const rule5 = isRetail
     ? "Pricing policy links to Tax Jurisdictions"
     : isFintech
     ? "RiskPolicy governs AMLRule and position thresholds"
+    : isManufacturing
+    ? "AirspacePolicy links to FAA/UTM Regulations"
+    : isSaas
+    ? "TenantPolicy links to Compliance Standards (SOC2/ISO)"
     : "Policy links to one or more Regulations";
   const rule6 = isRetail
     ? "Chargeback risk screened by a Fraud Rule"
     : isFintech
     ? "High-risk payment (> $10k) screened by FraudCase AI"
+    : isManufacturing
+    ? "Geofence breach triggers CollisionRule &amp; RTH"
+    : isSaas
+    ? "Rate limit burst screened by QuotaExceededRisk"
     : "Risk must be mapped to a Control";
   const rule7 = isRetail
     ? "Order total must reconcile with Cart Items"
     : isFintech
     ? "TransferLeg must balance debit and credit in same currency"
+    : isManufacturing
+    ? "DispatchPlan must validate against AirspaceVector"
+    : isSaas
+    ? "ApiResponse egress bytes recorded for Billing Meter"
     : "Response must cite source Documents";
 
   const businessRulesHtml = `<div style="padding:6px;">
@@ -409,7 +511,16 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // 5. BOTTOM 4 ANALYTICAL PANELS (y: 815, h: 145)
   // =========================================================================
   // Card 1: ENTITY SUMMARY (x: 20, w: 220)
-  const complianceLabel = isRetail ? "PCI-DSS Level 1" : isFintech ? "SOC 2 / SEC 15c3-5" : "GxP Validated";
+  const complianceLabel = isRetail
+    ? "PCI-DSS Level 1"
+    : isFintech
+    ? "SOC 2 / SEC 15c3-5"
+    : isManufacturing
+    ? "FAA Part 107 / ISO 27001"
+    : isSaas
+    ? "SOC 2 Type II / GDPR"
+    : "GxP Validated";
+
   const summaryHtml = `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">ENTITY SUMMARY</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.4;margin-top:6px;">
@@ -479,6 +590,26 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Real-Time Settlement</b> ➔ PaymentInstruction + TransferLeg + Spanner</span></div>
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Fraud Anomaly Detection</b> ➔ Trader + FraudCase + Graph ML</span></div>
       <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>AML &amp; Sanctions</b> ➔ RiskPolicy + AMLRule + SAR Log</span></div>
+    </div>
+  </div>`
+    : isManufacturing
+    ? `<div style="padding:6px 8px;">
+    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
+    <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Fleet Ingestion</b> ➔ DroneProfile + TelemetryCatalog + FlightModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Airspace Dispatch</b> ➔ FlightMission + FlightCorridor + VertiportHub</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Collision Guard</b> ➔ AirspacePolicy + CollisionRule + GeofenceRisk</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Live Telemetry Stream</b> ➔ SCADAConnector + UTMGateway + ADS_BFeed</span></div>
+    </div>
+  </div>`
+    : isSaas
+    ? `<div style="padding:6px 8px;">
+    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
+    <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Tenant Provisioning</b> ➔ TenantProfile + TenantConfig + SubscriptionTier</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>API Gateway Routing</b> ➔ ApiRequest + ApiResponse + ServiceCatalog</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Rate Limiting &amp; Quota</b> ➔ TenantPolicy + RateLimitRule + QuotaModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Metering &amp; Ingestion</b> ➔ CloudConnector + APIGateway + UsageEventFeed</span></div>
     </div>
   </div>`
     : `<div style="padding:6px 8px;">
