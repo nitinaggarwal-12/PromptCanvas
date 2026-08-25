@@ -149,6 +149,12 @@ export default function CanonicalTemplateDetailPage() {
                     <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate">
                       {activeTemplate.name}
                     </h1>
+                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                      {activeTemplate.level === 'L1' ? 'L1 Conceptual' :
+                       activeTemplate.level === 'L2' ? 'L2 Logical' :
+                       activeTemplate.level === 'L3' ? 'L3 Physical / Technical' :
+                       activeTemplate.level}
+                    </span>
                     <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
                       Master
                     </span>
