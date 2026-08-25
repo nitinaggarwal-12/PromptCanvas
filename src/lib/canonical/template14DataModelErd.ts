@@ -81,9 +81,17 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // =========================================================================
   // 2. LEFT SIDEBAR: CORE DOMAINS (x: 20, y: 70, w: 160, h: 470)
   // =========================================================================
-  const domain3Title = isRetail ? "Merchandising &amp; Catalog" : "Clinical Research";
-  const domain3Icon = isRetail ? "🛒" : "🔬";
-  const domain4Title = isRetail ? "Recommendations &amp; Search" : "Knowledge &amp; AI";
+  const domain3Title = isRetail
+    ? "Merchandising &amp; Catalog"
+    : isFintech
+    ? "Trading &amp; Settlement"
+    : "Clinical Research";
+  const domain3Icon = isRetail ? "🛒" : isFintech ? "💳" : "🔬";
+  const domain4Title = isRetail
+    ? "Recommendations &amp; Search"
+    : isFintech
+    ? "Risk &amp; Fraud AI"
+    : "Knowledge &amp; AI";
 
   const coreDomainsHtml = `<div style="padding:6px;">
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:8px;letter-spacing:0.5px;">CORE DOMAINS</div>
@@ -123,7 +131,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // =========================================================================
   // 3. CENTER ERD ENTITY GRID (x: 195 to 1130)
   // =========================================================================
-  // --- ROW 1: User, Role, Permission (Blue) & Document/CatalogItem, DocumentVersion/ItemVariant (Green) ---
+  // --- ROW 1: User, Role, Permission (Blue) & Document/CatalogItem/Account, DocumentVersion/ItemVariant/AccountLimit (Green) ---
   entity("ent_user", "User", ["PK user_id", "name", "email", "role_id (FK)", "dept_id (FK)", "status", "created_at"], 200, 70, 125, 135, "#3B82F6", "#EFF6FF", "#93C5FD");
   entity("ent_role", "Role", ["PK role_id", "name", "description", "scope"], 370, 70, 115, 95, "#3B82F6", "#EFF6FF", "#93C5FD");
   entity("ent_permission", "Permission", ["PK permission_id", "name", "resource", "action"], 530, 70, 115, 95, "#3B82F6", "#EFF6FF", "#93C5FD");
@@ -131,6 +139,9 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   if (isRetail) {
     entity("ent_document", "CatalogItem", ["PK item_id", "sku", "title", "category_id (FK)", "price", "status", "merchant_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
     entity("ent_doc_version", "ItemVariant", ["PK variant_id", "item_id (FK)", "variant_sku", "inventory_qty", "price_override", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
+  } else if (isFintech) {
+    entity("ent_document", "Account", ["PK account_id", "user_id (FK)", "account_no", "currency", "balance", "status", "opened_at"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
+    entity("ent_doc_version", "AccountLimit", ["PK limit_id", "account_id (FK)", "daily_transfer_limit", "margin_enabled", "updated_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
   } else {
     entity("ent_document", "Document", ["PK doc_id", "title", "doc_type", "version", "status", "created_at", "owner_id (FK)"], 680, 70, 130, 135, "#22C55E", "#F0FDF4", "#86EFAC");
     entity("ent_doc_version", "DocumentVersion", ["PK version_id", "doc_id (FK)", "version_no", "content_uri", "checksum", "created_at"], 860, 70, 130, 120, "#22C55E", "#F0FDF4", "#86EFAC");
@@ -141,7 +152,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_role_perm", "*       grants       *", 485, 115, 530, 115, "#0F172A", false, "diamond");
   edge("rel_doc_version", "1     has_variants     *", 810, 115, 860, 115, "#0F172A", false, "diamond");
 
-  // --- ROW 2: Merchant/Study, Category/Protocol, Warehouse/Site (Sky) & ProductCatalog/KnowledgeBase, SkuEmbedding/Embedding (Purple) ---
+  // --- ROW 2: Merchant/Trader/Study, Category/Portfolio/Protocol, Warehouse/Position/Site (Sky) & ProductCatalog/AssetCatalog/KnowledgeBase (Purple) ---
   if (isRetail) {
     entity("ent_study", "Merchant", ["PK merchant_id", "name", "rating", "country", "commission_rate", "onboard_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_protocol", "Category", ["PK category_id", "merchant_id (FK)", "name", "slug", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -149,6 +160,13 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
 
     entity("ent_kb", "ProductCatalog", ["PK catalog_id", "name", "description", "feed_type", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_embedding", "SkuEmbedding", ["PK embed_id", "catalog_id (FK)", "sku_id", "vector", "rec_model_id"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isFintech) {
+    entity("ent_study", "Trader", ["PK trader_id", "user_id (FK)", "desk_code", "clearing_firm", "risk_tier", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_protocol", "Portfolio", ["PK portfolio_id", "trader_id (FK)", "name", "base_currency", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_site", "Position", ["PK position_id", "portfolio_id (FK)", "asset_id (FK)", "quantity", "avg_cost"], 530, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_kb", "AssetCatalog", ["PK asset_id", "ticker", "asset_class", "exchange", "created_at"], 685, 245, 125, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_embedding", "PriceVector", ["PK vector_id", "asset_id (FK)", "time_bucket", "volatility", "momentum_score"], 860, 245, 130, 110, "#A855F7", "#FAF5FF", "#D8B4FE");
   } else {
     entity("ent_study", "Study", ["PK study_id", "title", "phase", "indication", "sponsor", "start_date", "status"], 200, 235, 125, 135, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_protocol", "Protocol", ["PK protocol_id", "study_id (FK)", "version", "effective_date", "status"], 370, 235, 115, 105, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -164,7 +182,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_kb_embedding", "1       stores       *", 810, 290, 860, 290, "#0F172A", false, "diamond");
   edge("rel_doc_kb", "indexed_in", 745, 205, 745, 245, "#0F172A", true, "open");
 
-  // --- ROW 3: Order/Trial, Shopper/Patient, Shipment/Event (Sky) & RecEngine/AI Model, Cart/Prompt, CartItem/Response (Purple) ---
+  // --- ROW 3: Order/TradeOrder/Trial, Shopper/ExecutionFill/Patient, Shipment/SettlementBatch/Event (Sky) & RecEngine/RiskModel (Purple) ---
   if (isRetail) {
     entity("ent_trial", "Order", ["PK order_id", "merchant_id (FK)", "shopper_id (FK)", "total_amount", "order_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_patient", "Shopper", ["PK shopper_id", "name", "email", "prime_status", "join_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -173,6 +191,14 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     entity("ent_ai_model", "RecEngine", ["PK rec_model_id", "name", "model_type", "accuracy_score", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_prompt", "Cart", ["PK cart_id", "shopper_id (FK)", "coupon_code", "session_id", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
     entity("ent_response", "CartItem", ["PK cart_item_id", "cart_id (FK)", "variant_id (FK)", "quantity", "unit_price"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+  } else if (isFintech) {
+    entity("ent_trial", "TradeOrder", ["PK order_id", "trader_id (FK)", "asset_id (FK)", "order_type", "amount", "order_time", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_patient", "ExecutionFill", ["PK fill_id", "order_id (FK)", "fill_price", "fill_qty", "exchange_id", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+    entity("ent_event", "SettlementBatch", ["PK batch_id", "fill_id (FK)", "clearing_house", "settled_amount", "settle_date", "status"], 530, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
+
+    entity("ent_ai_model", "RiskModel", ["PK model_id", "name", "model_type", "var_confidence", "version"], 675, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_prompt", "PaymentInstruction", ["PK instruction_id", "account_id (FK)", "iso_code", "amount", "created_at"], 810, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
+    entity("ent_response", "TransferLeg", ["PK leg_id", "instruction_id (FK)", "debit_acct (FK)", "credit_acct (FK)", "amount"], 945, 400, 105, 105, "#A855F7", "#FAF5FF", "#D8B4FE");
   } else {
     entity("ent_trial", "Trial", ["PK trial_id", "study_id (FK)", "title", "start_date", "end_date", "status"], 200, 395, 125, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
     entity("ent_patient", "Patient", ["PK patient_id", "trial_id (FK)", "age", "gender", "enrollment_date", "status"], 370, 395, 115, 115, "#0EA5E9", "#F0F9FF", "#7DD3FC");
@@ -192,12 +218,17 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_prompt_resp", "contains", 915, 445, 945, 445, "#0F172A", false, "diamond");
   edge("rel_event_model", "", 675, 465, 645, 465, "#64748B", true, "open");
 
-  // --- ROW 4: PricingPolicy, TaxJurisdiction, FraudRule, ChargebackRisk (Orange) & AuditLog, Metric (Slate/Blue) ---
+  // --- ROW 4: PricingPolicy/RiskPolicy, TaxJurisdiction/JurisdictionTax, FraudRule/AMLRule, ChargebackRisk/FraudCase ---
   if (isRetail) {
     entity("ent_policy", "PricingPolicy", ["PK pricing_policy_id", "name", "discount_pct", "tier", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_regulation", "TaxJurisdiction", ["PK tax_jurisdiction_id", "state", "vat_rate", "country"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_control", "FraudRule", ["PK fraud_rule_id", "policy_id (FK)", "velocity_limit", "cvv_required", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_risk", "ChargebackRisk", ["PK chargeback_id", "fraud_rule_id (FK)", "risk_score", "hold_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
+  } else if (isFintech) {
+    entity("ent_policy", "RiskPolicy", ["PK risk_policy_id", "name", "max_notional", "tier", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_regulation", "TaxJurisdiction", ["PK tax_jurisdiction_id", "state", "vat_rate", "country"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_control", "AMLRule", ["PK aml_rule_id", "policy_id (FK)", "threshold_amount", "pep_check", "owner_id (FK)"], 355, 555, 120, 110, "#F97316", "#FFF7ED", "#FDBA74");
+    entity("ent_risk", "FraudCase", ["PK fraud_case_id", "aml_rule_id (FK)", "anomaly_score", "freeze_action", "status"], 530, 555, 115, 100, "#F97316", "#FFF7ED", "#FDBA74");
   } else {
     entity("ent_policy", "Policy", ["PK policy_id", "name", "category", "version", "effective_date", "status"], 20, 555, 115, 110, "#F97316", "#FFF7ED", "#FDBA74");
     entity("ent_regulation", "Regulation", ["PK regulation_id", "name", "authority", "region"], 185, 555, 115, 90, "#F97316", "#FFF7ED", "#FDBA74");
@@ -215,12 +246,17 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   edge("rel_audit_metric", "emits", 845, 600, 895, 600, "#0F172A", false, "diamond");
   edge("rel_model_audit", "", 727, 505, 782, 555, "#64748B", true, "open");
 
-  // --- ROW 5: DataSource/ERPConnector, Connector/PaymentGateway, IngestionJob/InventorySyncJob, DataAsset/CatalogFeed (Teal) ---
+  // --- ROW 5: DataSource/ERPConnector/CoreBankConnector, Connector/PaymentGateway/ClearingGateway, IngestionJob/InventorySyncJob/LedgerSyncJob, DataAsset/CatalogFeed/MarketDataFeed (Teal) ---
   if (isRetail) {
     entity("ent_data_source", "ERPConnector", ["PK erp_source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_connector", "PaymentGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_ingestion_job", "InventorySyncJob", ["PK sync_job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_data_asset", "CatalogFeed", ["PK feed_id", "sync_job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
+  } else if (isFintech) {
+    entity("ent_data_source", "CoreBankConnector", ["PK core_source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_connector", "ClearingGateway", ["PK gateway_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_ingestion_job", "LedgerSyncJob", ["PK sync_job_id", "gateway_id (FK)", "status", "started_at", "ended_at"], 355, 690, 125, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
+    entity("ent_data_asset", "MarketDataFeed", ["PK feed_id", "sync_job_id (FK)", "format", "location_uri", "size", "checksum"], 530, 690, 125, 110, "#14B8A6", "#F0FDFA", "#5EEAD4");
   } else {
     entity("ent_data_source", "DataSource", ["PK source_id", "name", "type", "endpoint", "status"], 20, 690, 115, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
     entity("ent_connector", "Connector", ["PK connector_id", "source_id (FK)", "protocol", "auth_type", "frequency"], 185, 690, 120, 100, "#14B8A6", "#F0FDFA", "#5EEAD4");
@@ -278,13 +314,41 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   rect("card_constraints", constraintsHtml, 1140, 220, 440, 165, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
   // Card 3: SAMPLE BUSINESS RULES (y: 395, h: 220)
-  const rule1 = isRetail ? "CatalogItem must have at least one ItemVariant" : "Document must have at least one version";
-  const rule2 = isRetail ? "User role defines merchant access permissions" : "User role defines access to resources";
-  const rule3 = isRetail ? "Order must belong to a Merchant" : "Trial must belong to a Study";
-  const rule4 = isRetail ? "Shipment must belong to an enrolled Shopper" : "Event must belong to an enrolled Patient";
-  const rule5 = isRetail ? "Pricing policy links to Tax Jurisdictions" : "Policy links to one or more Regulations";
-  const rule6 = isRetail ? "Chargeback risk screened by a Fraud Rule" : "Risk must be mapped to a Control";
-  const rule7 = isRetail ? "Order total must reconcile with Cart Items" : "Response must cite source Documents";
+  const rule1 = isRetail
+    ? "CatalogItem must have at least one ItemVariant"
+    : isFintech
+    ? "Account must have at least one AccountLimit policy"
+    : "Document must have at least one version";
+  const rule2 = isRetail
+    ? "User role defines merchant access permissions"
+    : isFintech
+    ? "Trader role defines desk limits and clearing access"
+    : "User role defines access to resources";
+  const rule3 = isRetail
+    ? "Order must belong to a Merchant"
+    : isFintech
+    ? "TradeOrder must belong to an authorized Trader"
+    : "Trial must belong to a Study";
+  const rule4 = isRetail
+    ? "Shipment must belong to an enrolled Shopper"
+    : isFintech
+    ? "ExecutionFill must belong to an active TradeOrder"
+    : "Event must belong to an enrolled Patient";
+  const rule5 = isRetail
+    ? "Pricing policy links to Tax Jurisdictions"
+    : isFintech
+    ? "RiskPolicy governs AMLRule and position thresholds"
+    : "Policy links to one or more Regulations";
+  const rule6 = isRetail
+    ? "Chargeback risk screened by a Fraud Rule"
+    : isFintech
+    ? "High-risk payment (> $10k) screened by FraudCase AI"
+    : "Risk must be mapped to a Control";
+  const rule7 = isRetail
+    ? "Order total must reconcile with Cart Items"
+    : isFintech
+    ? "TransferLeg must balance debit and credit in same currency"
+    : "Response must cite source Documents";
 
   const businessRulesHtml = `<div style="padding:6px;">
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:6px;letter-spacing:0.5px;">SAMPLE BUSINESS RULES</div>
@@ -345,6 +409,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // 5. BOTTOM 4 ANALYTICAL PANELS (y: 815, h: 145)
   // =========================================================================
   // Card 1: ENTITY SUMMARY (x: 20, w: 220)
+  const complianceLabel = isRetail ? "PCI-DSS Level 1" : isFintech ? "SOC 2 / SEC 15c3-5" : "GxP Validated";
   const summaryHtml = `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">ENTITY SUMMARY</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.4;margin-top:6px;">
@@ -352,7 +417,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>~ 36 relationships</span></div>
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>7 business domains</span></div>
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Extensible &amp; future-proof</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Built for compliance (GxP)</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span>Built for compliance (${complianceLabel})</span></div>
     </div>
   </div>`;
   rect("card_entity_summary", summaryHtml, 20, 815, 220, 145, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
@@ -404,6 +469,16 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Order Fulfillment</b> ➔ Order + Shipment + Warehouse</span></div>
       <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Cart Checkout</b> ➔ Cart + CartItem + PaymentGateway</span></div>
       <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Fraud &amp; Risk</b> ➔ PricingPolicy + FraudRule + ChargebackRisk</span></div>
+    </div>
+  </div>`
+    : isFintech
+    ? `<div style="padding:6px 8px;">
+    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
+    <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Algorithmic Trading</b> ➔ TradeOrder + ExecutionFill + RiskModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Real-Time Settlement</b> ➔ PaymentInstruction + TransferLeg + Spanner</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>Fraud Anomaly Detection</b> ➔ Trader + FraudCase + Graph ML</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span><b>AML &amp; Sanctions</b> ➔ RiskPolicy + AMLRule + SAR Log</span></div>
     </div>
   </div>`
     : `<div style="padding:6px 8px;">

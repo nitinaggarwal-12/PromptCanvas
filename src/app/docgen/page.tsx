@@ -41,7 +41,8 @@ import {
   HelpCircle,
   FileCheck,
   Building2,
-  ChevronDown
+  ChevronDown,
+  Tag
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import {
@@ -542,21 +543,47 @@ function DocGenContent() {
   const [copiedSuccess, setCopiedSuccess] = useState<boolean>(false);
   const [sampleCopiedSuccess, setSampleCopiedSuccess] = useState<boolean>(false);
   const [shareCopiedSuccess, setShareCopiedSuccess] = useState<boolean>(false);
+  const [projectShareCopied, setProjectShareCopied] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<'formatted' | 'raw'>('formatted');
   const [isChangeReportOpen, setIsChangeReportOpen] = useState<boolean>(false);
+  const [projectId, setProjectId] = useState<string>('');
 
-  // URL query parameter synchronization (e.g. ?doc=brd, ?doc=sdd, ?tab=studio)
+  // URL query parameter synchronization (e.g. ?doc=brd, ?proj=proj_xxx, ?domain=fintech, ?title=..., ?tab=studio)
   useEffect(() => {
     const docParam = searchParams.get('doc') as ArchetypeId | null;
     const tabParam = searchParams.get('tab');
+    const domainParam = searchParams.get('domain');
+    const titleParam = searchParams.get('title');
+    const scopeParam = searchParams.get('scope');
+    const projParam = searchParams.get('proj') || searchParams.get('project');
+
+    if (domainParam) setSelectedDomain(domainParam);
+    if (titleParam) setProjectTitle(decodeURIComponent(titleParam));
+    if (scopeParam) setProjectScopePrompt(decodeURIComponent(scopeParam));
+    if (projParam) setProjectId(projParam);
+
     if (docParam) {
       const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
       if (matched) {
-        setPreviewModalDoc(matched);
-        setModalTab('doc');
+        setSelectedArchetypeId(docParam);
+        if (tabParam === 'studio' || projParam || domainParam) {
+          setActiveTab('studio');
+          // Auto-generate if custom project link
+          const synthesized = synthesizeCustomExecutiveDocument(
+            docParam,
+            matched,
+            titleParam ? decodeURIComponent(titleParam) : projectTitle,
+            domainParam || selectedDomain,
+            scopeParam ? decodeURIComponent(scopeParam) : projectScopePrompt,
+            {}
+          );
+          setGeneratedDocContent(synthesized);
+        } else {
+          setPreviewModalDoc(matched);
+          setModalTab('doc');
+        }
       }
-    }
-    if (tabParam === 'studio') {
+    } else if (tabParam === 'studio') {
       setActiveTab('studio');
     }
   }, [searchParams]);
@@ -585,6 +612,18 @@ function DocGenContent() {
     }
   };
 
+  const handleCopyProjectShareLink = () => {
+    if (typeof window !== 'undefined') {
+      const activeProjId = projectId || `proj_${Date.now().toString(36)}`;
+      if (!projectId) setProjectId(activeProjId);
+      const url = `${window.location.origin}/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${activeProjId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}&scope=${encodeURIComponent(projectScopePrompt)}`;
+      navigator.clipboard.writeText(url);
+      setProjectShareCopied(true);
+      window.history.pushState(null, '', url);
+      setTimeout(() => setProjectShareCopied(false), 2500);
+    }
+  };
+
   // Find active archetype metadata
   const activeMeta = useMemo(() => {
     return DOC_ARCHETYPES_META.find((m) => m.id === selectedArchetypeId) || DOC_ARCHETYPES_META[2];
@@ -606,6 +645,9 @@ function DocGenContent() {
     setIsGenerating(true);
     setGenerationStep(1);
     setGeneratedDocContent(null);
+
+    const generatedProjId = projectId || `proj_${Math.random().toString(36).substring(2, 9)}`;
+    setProjectId(generatedProjId);
 
     try {
       // Step 1: Synthesizing Multi-Blueprint System Graph
@@ -631,6 +673,12 @@ function DocGenContent() {
 
       setGeneratedDocContent(synthesizedContent);
       setActiveTab('studio');
+
+      // Update browser URL with unique project ID and parameters
+      if (typeof window !== 'undefined') {
+        const uniqueUrl = `/docgen?tab=studio&doc=${selectedArchetypeId}&proj=${generatedProjId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`;
+        window.history.pushState(null, '', uniqueUrl);
+      }
     } catch (err: any) {
       console.error('DocGen generation error:', err);
       const fallbackContent = MASTER_DOCUMENTS[selectedArchetypeId] || generateProductionFallbackDoc(activeMeta, projectTitle, selectedDomain, projectScopePrompt);
@@ -1534,6 +1582,10 @@ function DocGenContent() {
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                           Production-Ready
                         </span>
+                        <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold uppercase bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/30">
+                          <Tag className="w-2.5 h-2.5" />
+                          ID: {projectId || 'proj_active'}
+                        </span>
                         <span className="hidden sm:flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/10 text-sky-500 border border-sky-500/20">
                           <Lock className="w-2.5 h-2.5" />
                           Project Copy (Decoupled)
@@ -1545,8 +1597,27 @@ function DocGenContent() {
                     </div>
                   </div>
 
-                  {/* Action Buttons: Change Report, Word, PDF/Print, Markdown, Raw/Formatted Toggle */}
+                  {/* Action Buttons: Project Link, Change Report, Word, PDF/Print, Markdown, Raw/Formatted Toggle */}
                   <div className="flex flex-wrap items-center gap-2">
+                    {/* Share Unique Project Link */}
+                    <button
+                      onClick={handleCopyProjectShareLink}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Copy permanent shareable link with unique Project ID and parameters"
+                    >
+                      {projectShareCopied ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Link Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Share2 className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Copy Project Link</span>
+                        </>
+                      )}
+                    </button>
+
                     {/* Change Report Modal Trigger */}
                     <button
                       onClick={() => setIsChangeReportOpen(true)}

@@ -85,6 +85,17 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
         { title: "E-Commerce\nAnalytics", icon: "📊" },
         { title: "Platform\nAdmins", icon: "⚙️" },
       ]
+    : isFintech
+    ? [
+        { title: "Institutional\nTraders", icon: "💼" },
+        { title: "Retail\nInvestors", icon: "📱" },
+        { title: "Compliance &\nAML Officers", icon: "🛡️" },
+        { title: "Risk & Quant\nAnalysts", icon: "📈" },
+        { title: "Portfolio\nManagers", icon: "🏦" },
+        { title: "Custody &\nClearing Teams", icon: "🏛️" },
+        { title: "FinOps &\nSettlement Ops", icon: "📊" },
+        { title: "Platform\nAdmins", icon: "⚙️" },
+      ]
     : [
         { title: "Research\nScientists", icon: "🔬" },
         { title: "Clinical\nOperations", icon: "👥" },
@@ -118,6 +129,16 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
         { title: "Carrier Fleet & 3PL", sub: "FedEx, UPS,\nLast-Mile Routing", icon: "🚚" },
         { title: "Customs & Tax Gateways", sub: "Avalara, Vertex,\nCross-Border Duties", icon: "🏛️" },
       ]
+    : isFintech
+    ? [
+        { title: "Bloomberg Core Feed", sub: "Tickers, Order Books,\nQuotes", icon: "📈" },
+        { title: "FIX Protocol 4.4 Engine", sub: "DMA, OMS Ingress,\nExecution Routing", icon: "⚡" },
+        { title: "Core Banking Ledger", sub: "Double-Entry, DDA,\nBalance Ledger", icon: "🗄️" },
+        { title: "Plaid Open Banking", sub: "ACH, Fast Transfers,\nAccount Linking", icon: "🏢" },
+        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "💳" },
+        { title: "FedNow / Swift Network", sub: "ISO 20022, Wire Rails,\nRTGS Settlement", icon: "🏛️" },
+        { title: "OFAC & FinCEN Watchlist", sub: "PEP Screening, Sanctions,\nSAR Filing", icon: "🛡️" },
+      ]
     : [
         { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "📁" },
         { title: "CTMS / Medidata Rave", sub: "Clinical Trials,\nSubject Data", icon: "👥" },
@@ -147,6 +168,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   // =========================================================================
   const platformTitle = isRetail
     ? "OMNIVUE RETAIL &amp; MARKETPLACE PLATFORM — COMPONENT ARCHITECTURE"
+    : isFintech
+    ? "NEXUSFIN HIGH-SPEED WEALTH &amp; PAYMENTS PLATFORM — COMPONENT ARCHITECTURE"
     : "ENTERPRISE PLATFORM — COMPONENT ARCHITECTURE";
 
   rect("platform_frame", "", 210, 130, 1120, 520, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
@@ -250,6 +273,107 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
             { title: "Cloud Spanner Multi-\nRegion Database", icon: "🗄️" },
             { title: "Memorystore Redis\nDistributed Cache", icon: "⚡" },
             { title: "Cloud Armor DDoS\n& WAF Security", icon: "🛡️" },
+          ]
+        }
+      ]
+    : isFintech
+    ? [
+        {
+          code: "A",
+          name: "EXPERIENCE & ACCESS LAYER",
+          y: 156,
+          h: 66,
+          color: "#1E3A8A",
+          items: [
+            { title: "Trader Web Terminal /\nMobile FinApp", icon: "🌐" },
+            { title: "Wealth Management\nAdvisor Dashboard", icon: "📊" },
+            { title: "Real-Time Market\nAlerts & Notifications", icon: "🔔" },
+            { title: "FIX Protocol & High-Speed\nREST/gRPC Ingress", icon: "⚡" },
+          ]
+        },
+        {
+          code: "B",
+          name: "PROCESS & ORCHESTRATION LAYER",
+          y: 226,
+          h: 68,
+          color: "#1E40AF",
+          items: [
+            { title: "Payment Saga &\n2PC Orchestrator", icon: "🔄" },
+            { title: "Sub-Millisecond Pre-Trade\nRisk Rules Engine", icon: "⚙️" },
+            { title: "Automated SAR Filing &\nAML Investigation", icon: "📋" },
+            { title: "Smart Order Router (SOR)\n& Execution Allocator", icon: "📄" },
+            { title: "Custody & Escrow\nSettlement Pipeline", icon: "🛡️" },
+          ]
+        },
+        {
+          code: "C",
+          name: "DOMAIN BUSINESS SERVICES LAYER",
+          y: 298,
+          h: 70,
+          color: "#0369A1",
+          items: [
+            { title: "Trade Order Matching\n& Execution Engine", icon: "⚡" },
+            { title: "Double-Entry General\nLedger (Spanner)", icon: "🗄️" },
+            { title: "Portfolio Valuation &\nReal-Time P&L Engine", icon: "📊" },
+            { title: "Payment Vault & ISO\n20022 Swift Router", icon: "💳" },
+            { title: "AML & OFAC Sanctions\nScreening Service", icon: "🛡️" },
+            { title: "Account & Margin\nManagement Service", icon: "👤" },
+          ]
+        },
+        {
+          code: "D",
+          name: "AI & INTELLIGENT CAPABILITIES LAYER",
+          y: 372,
+          h: 70,
+          color: "#0284C7",
+          items: [
+            { title: "Vertex AI Real-Time\nFraud Anomaly ML", icon: "🧠" },
+            { title: "Graph Neural Network\nfor Money Mules", icon: "🤖" },
+            { title: "Algorithmic Market\nRegime Classifier", icon: "📈" },
+            { title: "Sub-Millisecond Volatility\n& VaR Predictor", icon: "💡" },
+            { title: "Conversational Wealth\nAI Copilot Assistant", icon: "💬" },
+          ]
+        },
+        {
+          code: "E",
+          name: "DATA & ANALYTICS PLATFORM LAYER",
+          y: 446,
+          h: 66,
+          color: "#0D9488",
+          items: [
+            { title: "Kafka / Flink Real-Time\nEvent Stream Mesh", icon: "⚡" },
+            { title: "BigQuery Financial\nData Lakehouse", icon: "🗄️" },
+            { title: "Real-Time Ticks &\nOrder Book CDC", icon: "🔄" },
+            { title: "Real-Time P&L, Risk\n& Exposure Telemetry", icon: "📊" },
+            { title: "Audit Vault & Immutable\nTransaction Ledger", icon: "🛡️" },
+          ]
+        },
+        {
+          code: "F",
+          name: "INTEGRATION, PLATFORM & SECURITY LAYER",
+          y: 516,
+          h: 64,
+          color: "#0F766E",
+          items: [
+            { title: "Apigee mTLS API Gateway\n& Token Vault", icon: "🌐" },
+            { title: "Cloud Identity &\nHSM Key Management", icon: "🔒" },
+            { title: "SEC 15c3-5 Compliance &\nAudit Observability", icon: "📊" },
+            { title: "Core Banking & Clearing\nHouse Adapters", icon: "🔌" },
+            { title: "Zero-Trust Network &\nPCI Tokenizer", icon: "🔑" },
+          ]
+        },
+        {
+          code: "G",
+          name: "FOUNDATION & INFRASTRUCTURE LAYER",
+          y: 584,
+          h: 60,
+          color: "#047857",
+          items: [
+            { title: "GKE Ultra-Low Latency\nKubernetes Mesh", icon: "☁️" },
+            { title: "Cloud Spanner Multi-Region\nActive-Active Ledger", icon: "🗄️" },
+            { title: "Memorystore Redis\nSub-ms Risk Cache", icon: "⚡" },
+            { title: "Cloud Armor DDoS &\nFinTech WAF Perimeter", icon: "🛡️" },
+            { title: "Multi-Region Failover &\nHot-Standby Node", icon: "🔄" },
           ]
         }
       ]
@@ -379,13 +503,29 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   rect("ext_part_box", "", 1365, 130, 175, 520, "rounded=1;strokeColor=#0D9488;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;");
   rect("ext_part_hdr", "<b style='font-size:9px;color:#FFFFFF;'>EXTERNAL PARTICIPANTS</b>", 1365, 130, 175, 28, "rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;");
 
-  const extList = [
-    { title: "CRO / CDMO Partners", sub: "Collaborate on studies, data\n& supply chain", icon: "👥" },
-    { title: "Investigators / Sites", sub: "Study conduct, data capture\n& updates", icon: "🏥" },
-    { title: "Regulatory Authorities", sub: "eSubmissions, queries,\ncompliance comms", icon: "🏛️" },
-    { title: "Patients / Patient Programs", sub: "Access programs, support\n& communications", icon: "👥" },
-    { title: "HCPs / Healthcare Providers", sub: "Engage with medical content\n& communications", icon: "🩺" },
-  ];
+  const extList = isRetail
+    ? [
+        { title: "3P Marketplace Sellers", sub: "Catalog feeds, inventory sync\n& fulfillment updates", icon: "🏪" },
+        { title: "Carrier Logistics & 3PL", sub: "FedEx, UPS, DHL last-mile\nrouting & tracking", icon: "🚚" },
+        { title: "Payment Gateways & Banks", sub: "Stripe, Adyen, Apple Pay\ntokenized settlement", icon: "💳" },
+        { title: "Global Shoppers & Prime", sub: "Storefront sessions, 1-Click\n& order alerts", icon: "🛒" },
+        { title: "Tax & Customs Authorities", sub: "Avalara, Vertex, Cross-border\nduties clearing", icon: "🏛️" },
+      ]
+    : isFintech
+    ? [
+        { title: "Liquidity Providers / Exchanges", sub: "NYSE, NASDAQ, CME, FIX\n4.4 DMA Gateways", icon: "🏛️" },
+        { title: "Clearing Houses & Custodians", sub: "DTCC, Euroclear, Apex,\nSwift RTGS rails", icon: "🏦" },
+        { title: "Financial Regulators", sub: "SEC, FINRA, CFTC automated\nCAT/SAR auditing", icon: "⚖️" },
+        { title: "Institutional Clients", sub: "Hedge Funds, Family Offices\ndirect API ingress", icon: "💼" },
+        { title: "Payment Networks & Banks", sub: "FedNow, Visa, Mastercard,\nACH settlement", icon: "💳" },
+      ]
+    : [
+        { title: "CRO / CDMO Partners", sub: "Collaborate on studies, data\n& supply chain", icon: "👥" },
+        { title: "Investigators / Sites", sub: "Study conduct, data capture\n& updates", icon: "🏥" },
+        { title: "Regulatory Authorities", sub: "eSubmissions, queries,\ncompliance comms", icon: "🏛️" },
+        { title: "Patients / Patient Programs", sub: "Access programs, support\n& communications", icon: "👥" },
+        { title: "HCPs / Healthcare Providers", sub: "Engage with medical content\n& communications", icon: "🩺" },
+      ];
   extList.forEach((ep, i) => {
     const epy = 166 + i * 96;
     const html = `<table style="width:100%;height:100%;border-collapse:collapse;">
@@ -448,12 +588,26 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   rect("conn_apps_box", "", 1170, 686, 370, 128, "rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;");
   text("conn_apps_title", "<b>ENTERPRISE APPLICATIONS (CONNECTED)</b>", 1170, 690, 370, 14, "fontSize=8;fontColor=#1E3A8A;align=center;");
 
-  const connApps = [
-    { title: "Salesforce\nHealth Cloud", icon: "☁️" },
-    { title: "SAP\nS/4HANA", icon: "🏢" },
-    { title: "Veeva\nVault", icon: "📁" },
-    { title: "Medidata\nRave", icon: "👥" },
-  ];
+  const connApps = isRetail
+    ? [
+        { title: "Salesforce\nCommerce Cloud", icon: "☁️" },
+        { title: "SAP S/4HANA\nSupply Chain", icon: "🏢" },
+        { title: "Stripe / Adyen\nPCI Vault", icon: "💳" },
+        { title: "FedEx / UPS\nLogistics Mesh", icon: "🚚" },
+      ]
+    : isFintech
+    ? [
+        { title: "Bloomberg Core\n& Reuters Feed", icon: "📈" },
+        { title: "Core Banking\nLedger (Spanner)", icon: "🗄️" },
+        { title: "FedNow / Swift\nISO 20022 Network", icon: "🏛️" },
+        { title: "DTCC / Apex\nClearing Gateway", icon: "🏦" },
+      ]
+    : [
+        { title: "Salesforce\nHealth Cloud", icon: "☁️" },
+        { title: "SAP\nS/4HANA", icon: "🏢" },
+        { title: "Veeva\nVault", icon: "📁" },
+        { title: "Medidata\nRave", icon: "👥" },
+      ];
   connApps.forEach((ca, i) => {
     const cax = 1178 + i * 89;
     const html = `<div style="text-align:center;padding:2px;"><span style="font-size:15px;">${ca.icon}</span><div style="font-size:7px;font-weight:800;color:#0F2A4A;line-height:1.15;margin-top:3px;">${ca.title.replace(/\n/g, "<br/>")}</div></div>`;
@@ -466,14 +620,32 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   rect("arch_char_box", "", 20, 824, 1520, 56, "rounded=1;strokeColor=#15803D;strokeWidth=1.2;fillColor=#F0FDF4;shadow=0;");
   text("arch_char_title", "<b>KEY ARCHITECTURAL CHARACTERISTICS</b>", 20, 826, 1520, 14, "fontSize=8;fontColor=#15803D;align=center;");
 
-  const chars = [
-    { title: "Compliant by Design", desc: "Built-in compliance with GxP, 21 CFR Part 11, EU Annex 11, HIPAA", icon: "🛡️" },
-    { title: "Traceable & Auditable", desc: "End-to-end traceability, audit logging & evidence management", icon: "📑" },
-    { title: "AI-Grounded Knowledge", desc: "AI Copilot with governed guardrails & trusted RAG", icon: "🧠" },
-    { title: "Scalable Cloud-Native", desc: "Microservices, containers & serverless elasticity", icon: "☁️" },
-    { title: "Secure Integration", desc: "API-first, zero trust, encryption at scale", icon: "🔒" },
-    { title: "Reusable Shared Services", desc: "Common capabilities reused globally to accelerate delivery", icon: "⚙️" },
-  ];
+  const chars = isRetail
+    ? [
+        { title: "Omnichannel Elasticity", desc: "Sub-50ms catalog search & 100k TPS flash sale auto-scaling", icon: "🚀" },
+        { title: "PCI-DSS Level 1 CDE", desc: "Tokenized payment vault with zero PAN plaintext storage", icon: "🛡️" },
+        { title: "Sub-Second WMS Hold", desc: "Two-phase commit inventory reservation with 900s TTL lock", icon: "📦" },
+        { title: "Cloud Spanner ACID", desc: "Multi-region strict serializability for order transactions", icon: "🗄️" },
+        { title: "Real-Time Fraud Graph", desc: "Vertex AI streaming risk scoring on checkout ingress", icon: "🧠" },
+        { title: "Global CDN & Edge Cache", desc: "Edge SSR storefront with 99.999% SLA availability", icon: "🌐" },
+      ]
+    : isFintech
+    ? [
+        { title: "Sub-Millisecond Risk", desc: "Pre-trade risk budget check < 5ms on Redis cluster", icon: "⚡" },
+        { title: "SOC 2 & SEC 15c3-5", desc: "FINRA CAT / OATS compliant tamper-evident audit ledger", icon: "🛡️" },
+        { title: "Cloud Spanner Ledger", desc: "Multi-region double-entry active-active financial ledger", icon: "🗄️" },
+        { title: "ISO 20022 Messaging", desc: "End-to-end Swift MX and FedNow wire messaging interoperability", icon: "🏛️" },
+        { title: "Graph Fraud ML Anomaly", desc: "Vertex AI money-mule and anomaly detection under 20ms", icon: "🧠" },
+        { title: "Zero-Trust mTLS Mesh", desc: "Hardware Security Module (HSM) keys and mutual TLS", icon: "🔒" },
+      ]
+    : [
+        { title: "Compliant by Design", desc: "Built-in compliance with GxP, 21 CFR Part 11, EU Annex 11, HIPAA", icon: "🛡️" },
+        { title: "Traceable & Auditable", desc: "End-to-end traceability, audit logging & evidence management", icon: "📑" },
+        { title: "AI-Grounded Knowledge", desc: "AI Copilot with governed guardrails & trusted RAG", icon: "🧠" },
+        { title: "Scalable Cloud-Native", desc: "Microservices, containers & serverless elasticity", icon: "☁️" },
+        { title: "Secure Integration", desc: "API-first, zero trust, encryption at scale", icon: "🔒" },
+        { title: "Reusable Shared Services", desc: "Common capabilities reused globally to accelerate delivery", icon: "⚙️" },
+      ];
   chars.forEach((ch, i) => {
     const chx = 28 + i * 252;
     const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:12px;">${ch.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7px;font-weight:800;color:#14532D;">${ch.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${ch.desc}</div></td></tr></table>`;

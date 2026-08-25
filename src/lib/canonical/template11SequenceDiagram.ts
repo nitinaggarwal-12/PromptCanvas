@@ -73,6 +73,8 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // Scenario Card
   const scenarioText = isRetail
     ? "<b style='color:#0284C7;'>Scenario:</b> Shopper initiates 1-Click Checkout in Storefront <span style='color:#64748B;'>→</span> Order Saga reserves WMS inventory (TTL 900s), tokenizes payment via Stripe PCI CDE <span style='color:#64748B;'>→</span> Confirms order and dispatches warehouse Kafka event."
+    : isFintech
+    ? "<b style='color:#0284C7;'>Scenario:</b> Trader / User initiates ISO 20022 wire transfer <span style='color:#64748B;'>→</span> Payment Saga checks real-time FX &amp; risk limits <span style='color:#64748B;'>→</span> Commits double-entry ledger in Spanner <span style='color:#64748B;'>→</span> Scores real-time fraud in Vertex AI &amp; emits Swift settlement event."
     : "<b style='color:#0284C7;'>Scenario:</b> Scientist asks a clinical question in AI Copilot <span style='color:#64748B;'>→</span> System retrieves contextual data, reasons with LLM <span style='color:#64748B;'>→</span> Returns answer with citations and logs interaction.";
 
   const scenarioHtml = `<div style="font-size:10px;color:#0F172A;font-weight:600;">
@@ -97,6 +99,21 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
         { id: "p_policy", name: "Fraud &amp; Tax<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
         { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
         { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+      ]
+    : isFintech
+    ? [
+        { id: "p_user", name: "Trader / Sender<br><span style='color:#64748B;font-weight:500;'>(Financial Client)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "Payment App<br><span style='color:#64748B;font-weight:500;'>(Portal UI)</span>", icon: "💳", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee mTLS)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth &amp; HSM<br><span style='color:#64748B;font-weight:500;'>(Cloud KMS)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Payment Saga<br><span style='color:#64748B;font-weight:500;'>(Orchestrator)</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "Risk &amp; FX Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>", icon: "🏷️", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Ledger Hold<br><span style='color:#64748B;font-weight:500;'>(Spanner Hold)</span>", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Clearing Gateway<br><span style='color:#64748B;font-weight:500;'>(FedNow / Swift)</span>", icon: "🏛️", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "Ledger Core<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "🗄️", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "AML &amp; Fraud<br><span style='color:#64748B;font-weight:500;'>(Vertex AI Graph)</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "SAR &amp; Audit Log<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "FinOps Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ]
     : [
         { id: "p_user", name: "Scientist<br><span style='color:#64748B;font-weight:500;'>(User)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
@@ -200,6 +217,51 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     msg("m17", "⓱ Display order receipt &amp; tracking ETA", centers.p_copilot, centers.p_user, 670, "#1D4ED8", true);
     // 18: Audit log
     msg("m18", "⓲ Publish OrderCreated event &amp; log transaction", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
+  } else if (isFintech) {
+    // 1: Trader initiates ISO transfer
+    msg("m1", "❶ Initiate ISO 20022 wire transfer ($50k to ACC_9824)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    // 2: App sends request to Gateway
+    msg("m2", "❷ POST /api/v1/payments/transfer (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    // 3: Gateway validates token
+    msg("m3", "❸ Validate mTLS client cert &amp; JWT", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    // 4: Auth responds
+    msg("m4", "❹ Token valid (trader_id=usr_9281)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    // 5: Gateway forwards to Saga Orchestrator
+    msg("m5", "❺ Forward to Payment Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+
+    // 6: Orchestrator Self-Plan Box
+    const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
+      <b>❻ Payment Saga</b><br>
+      • Check risk budget<br>
+      • Lock ledger accounts<br>
+      • Start 2PC Settlement
+    </div>`;
+    rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
+
+    // 7: FX & Risk Engine check
+    msg("m7", "❼ Query real-time FX rate &amp; pre-trade limits", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    // 8: Spanner balance hold
+    msg("m8", "❽ Reserve source account balance hold", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    // 9: Hold confirmed
+    msg("m9", "❾ Balance hold confirmed (hold_id=hld_8192)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    // 10: Clearing House Gateway Auth
+    msg("m10", "❿ Dispatch to FedNow / Clearing Gateway", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    // 11: Clearing authorized
+    msg("m11", "⓫ Clearing confirmed (auth_code=CLR_7721)", centers.p_data, centers.p_rag, 475, "#64748B", true);
+    // 12: Context returned
+    msg("m12", "⓬ Settlement authorization returned", centers.p_rag, centers.p_orch, 505, "#64748B", true);
+    // 13: Spanner double-entry commit
+    msg("m13", "⓭ Commit double-entry ledger debit &amp; credit", centers.p_orch, centers.p_llm, 540, "#7C3AED");
+    // 14: Ledger committed
+    msg("m14", "⓮ Ledger transaction committed (tx_id=TX_88192)", centers.p_llm, centers.p_orch, 570, "#64748B", true);
+    // 15: AML & Sanctions screening
+    msg("m15", "⓯ Real-time fraud anomaly &amp; OFAC sanctions screen", centers.p_orch, centers.p_policy, 600, "#6D28D9");
+    // 16: Return to Payment App
+    msg("m16", "⓰ Transfer settled (tx_id=TX_88192)", centers.p_orch, centers.p_copilot, 635, "#64748B", true);
+    // 17: Display receipt to User
+    msg("m17", "⓱ Display wire confirmation &amp; Swift UETR", centers.p_copilot, centers.p_user, 670, "#1D4ED8", true);
+    // 18: Audit & SAR logging
+    msg("m18", "⓲ Publish PaymentSettled event to Kafka &amp; log SAR", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
   } else {
     // 1: User asks question
     msg("m1", "❶ Ask question: \"What are the safety signals for Drug X in Phase 3 trials?\"", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
@@ -263,16 +325,28 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   rect("alt_badge", "<b style='color:#FFFFFF;font-size:9px;letter-spacing:0.5px;'>ALT</b>", 1226, 281, 38, 18, "fillColor=#0284C7;strokeColor=none;rounded=0;arcSize=0;align=center;verticalAlign=middle;");
 
   // Section 1 Header: [ If inventory hold fails / no results ]
-  const altSec1Title = isRetail ? "[ If inventory hold fails or item out of stock ]" : "[ If no relevant results found ]";
+  const altSec1Title = isRetail
+    ? "[ If inventory hold fails or item out of stock ]"
+    : isFintech
+    ? "[ If insufficient balance or risk limit exceeded ]"
+    : "[ If no relevant results found ]";
   text("alt_sec1_title", `<b style='font-size:8.5px;color:#0284C7;'>${altSec1Title}</b>`, 1234, 302, 280, 16, "align=left;verticalAlign=top;");
 
   // A1: Notify out of stock
-  const altA1 = isRetail ? "<b>A1</b> Notify shopper: Item out of stock" : "<b>A1</b> Notify no results";
+  const altA1 = isRetail
+    ? "<b>A1</b> Notify shopper: Item out of stock"
+    : isFintech
+    ? "<b>A1</b> Notify sender: Insufficient balance"
+    : "<b>A1</b> Notify no results";
   text("alt_a1_text", `<span style='font-size:8px;color:#1E293B;'>${altA1}</span>`, 1248, 322, 260, 16, "align=left;verticalAlign=top;");
   line("alt_a1_arrow", 1510, 348, 1230, 348, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // A2: Suggest alternatives
-  const altA2 = isRetail ? "<b>A2</b> Suggest alternative merchants &amp; restock alert" : "<b>A2</b> Suggest refined query or broader search";
+  const altA2 = isRetail
+    ? "<b>A2</b> Suggest alternative merchants &amp; restock alert"
+    : isFintech
+    ? "<b>A2</b> Suggest alternative funding account"
+    : "<b>A2</b> Suggest refined query or broader search";
   text("alt_a2_text", `<span style='font-size:8px;color:#1E293B;'>${altA2}</span>`, 1248, 366, 260, 16, "align=left;verticalAlign=top;");
   line("alt_a2_arrow", 1510, 392, 1230, 392, "strokeColor=#0284C7;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
@@ -280,16 +354,28 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   line("alt_divider", 1230, 408, 1520, 408, "strokeColor=#CBD5E1;dashed=1;dashPattern=4 3;endArrow=none;strokeWidth=1;");
 
   // Section 2 Header: [ If card declined or fraud trigger ]
-  const altSec2Title = isRetail ? "[ If card declined or high fraud risk ]" : "[ If policy violation detected ]";
+  const altSec2Title = isRetail
+    ? "[ If card declined or high fraud risk ]"
+    : isFintech
+    ? "[ If fraud anomaly > 0.85 or OFAC match ]"
+    : "[ If policy violation detected ]";
   text("alt_sec2_title", `<b style='font-size:8.5px;color:#DC2626;'>${altSec2Title}</b>`, 1234, 416, 280, 16, "align=left;verticalAlign=top;");
 
   // B1: Block transaction
-  const altB1 = isRetail ? "<b>B1</b> Release WMS inventory hold &amp; abort 2PC" : "<b>B1</b> Block response";
+  const altB1 = isRetail
+    ? "<b>B1</b> Release WMS inventory hold &amp; abort 2PC"
+    : isFintech
+    ? "<b>B1</b> Freeze transaction &amp; hold funds in escrow"
+    : "<b>B1</b> Block response";
   text("alt_b1_text", `<span style='font-size:8px;color:#1E293B;'>${altB1}</span>`, 1248, 436, 260, 16, "align=left;verticalAlign=top;");
   line("alt_b1_arrow", 1510, 462, 1230, 462, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
   // B2: Prompt new payment method
-  const altB2 = isRetail ? "<b>B2</b> Prompt shopper for alternative payment card" : "<b>B2</b> Return safe response with explanation";
+  const altB2 = isRetail
+    ? "<b>B2</b> Prompt shopper for alternative payment card"
+    : isFintech
+    ? "<b>B2</b> Route to AML Compliance Queue for SAR"
+    : "<b>B2</b> Return safe response with explanation";
   text("alt_b2_text", `<span style='font-size:8px;color:#1E293B;'>${altB2}</span>`, 1248, 480, 260, 14, "align=left;verticalAlign=top;");
   line("alt_b2_arrow", 1510, 506, 1230, 506, "strokeColor=#DC2626;dashed=1;dashPattern=4 3;endArrow=open;endFill=0;strokeWidth=1;");
 
@@ -344,6 +430,38 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
           <div><b style="color:#0284C7;">⓲</b> Publish OrderCreated event</div>
           <div><b style="color:#0284C7;">⓳</b> Persist order audit log</div>
           <div><b style="color:#0284C7;">⓴</b> Emit latency &amp; GMV metrics</div>
+        </td>
+      </tr>
+    </table>
+  </div>`
+    : isFintech
+    ? `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">SEQUENCE STEPS SUMMARY</div>
+    <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
+      <tr>
+        <td style="width:50%;vertical-align:top;padding-right:6px;">
+          <div><b style="color:#1D4ED8;">❶</b> Trader initiates ISO 20022 wire transfer</div>
+          <div><b style="color:#1D4ED8;">❷</b> POST transfer request to API Gateway</div>
+          <div><b style="color:#0D9488;">❸</b> Validate mTLS client cert &amp; JWT</div>
+          <div><b style="color:#64748B;">❹</b> Token valid &amp; authorized response</div>
+          <div><b style="color:#0D9488;">❺</b> Forward to Payment Saga Orchestrator</div>
+          <div><b style="color:#7C3AED;">❻</b> Plan 2PC atomic transfer saga</div>
+          <div><b style="color:#7C3AED;">❼</b> Query FX rate &amp; pre-trade limits</div>
+          <div><b style="color:#7C3AED;">❽</b> Reserve account balance hold</div>
+          <div><b style="color:#64748B;">❾</b> Balance hold confirmed in Spanner</div>
+          <div><b style="color:#7C3AED;">❿</b> Dispatch to Clearing House Gateway</div>
+        </td>
+        <td style="width:50%;vertical-align:top;padding-left:6px;">
+          <div><b style="color:#64748B;">⓫</b> Clearing authorization code returned</div>
+          <div><b style="color:#64748B;">⓬</b> Settlement authorization returned</div>
+          <div><b style="color:#7C3AED;">⓭</b> Commit double-entry ledger in Spanner</div>
+          <div><b style="color:#64748B;">⓮</b> Ledger transaction committed</div>
+          <div><b style="color:#6D28D9;">⓯</b> Score real-time fraud &amp; OFAC sanctions</div>
+          <div><b style="color:#64748B;">⓰</b> Return transfer confirmation to App</div>
+          <div><b style="color:#1D4ED8;">⓱</b> Display wire confirmation &amp; Swift ID</div>
+          <div><b style="color:#0284C7;">⓲</b> Publish PaymentSettled event to Kafka</div>
+          <div><b style="color:#0284C7;">⓳</b> Persist immutable SAR audit log</div>
+          <div><b style="color:#0284C7;">⓴</b> Emit FinOps telemetry &amp; latency metrics</div>
         </td>
       </tr>
     </table>
@@ -456,6 +574,18 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
       <div>• Distributed locks managed via Redis Redlock</div>
       <div>• Order state machine governed via Temporal Saga</div>
       <div>• Real-time fraud scoring powered by Vertex AI</div>
+    </div>
+  </div>`
+    : isFintech
+    ? `<div style="padding:8px 10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">NOTES</div>
+    <div style="font-size:8px;color:#334155;line-height:1.55;margin-top:8px;">
+      <div>• All API calls use HTTPS / TLS 1.3 with mTLS</div>
+      <div>• Authentication via OAuth 2.0 / OIDC &amp; Cloud KMS HSM</div>
+      <div>• End-to-end ISO 20022 message compliance</div>
+      <div>• Sub-millisecond pre-trade risk check on Redis Cluster</div>
+      <div>• Atomic double-entry transactions on Cloud Spanner</div>
+      <div>• Real-time fraud graph scoring powered by Vertex AI</div>
     </div>
   </div>`
     : `<div style="padding:8px 10px;">

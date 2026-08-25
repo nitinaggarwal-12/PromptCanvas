@@ -502,9 +502,13 @@ function DocDetailPageContent() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  // Domain flavor state (defaults to retail / Amazon scale)
   const initialDomain = searchParams?.get('domain') || 'retail';
+  const initialTitle = searchParams?.get('title') ? decodeURIComponent(searchParams.get('title')!) : '';
+  const initialProj = searchParams?.get('proj') || searchParams?.get('project') || '';
+
   const [selectedDomain, setSelectedDomain] = useState<string>(initialDomain);
+  const [projectTitle, setProjectTitle] = useState<string>(initialTitle);
+  const [projectId, setProjectId] = useState<string>(initialProj);
 
   const [activeTab, setActiveTab] = useState<'doc' | 'blueprints' | 'hierarchy'>('doc');
   const [copiedSuccess, setCopiedSuccess] = useState(false);
@@ -525,6 +529,8 @@ function DocDetailPageContent() {
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.set('domain', selectedDomain);
+      if (projectId) url.searchParams.set('proj', projectId);
+      if (projectTitle) url.searchParams.set('title', projectTitle);
       navigator.clipboard.writeText(url.toString());
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
@@ -898,8 +904,16 @@ function DocDetailPageContent() {
             </button>
 
             <button
-              onClick={() => router.push(`/docgen?tab=studio&doc=${docMeta.id}`)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20 hover:scale-[1.02] transition-transform"
+              onClick={() => {
+                const q = new URLSearchParams();
+                q.set('tab', 'studio');
+                q.set('doc', docMeta.id);
+                q.set('domain', selectedDomain);
+                if (projectId) q.set('proj', projectId);
+                if (projectTitle) q.set('title', projectTitle);
+                router.push(`/docgen?${q.toString()}`);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-md shadow-sky-500/20 hover:scale-[1.02] transition-transform"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Customize in Studio</span>
