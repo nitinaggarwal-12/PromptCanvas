@@ -60,16 +60,16 @@ import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal'
 
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
-  if (/\b(ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city|telemetry|sensor|iot|plc|scada|factory|plant|robotics|conveyor|assembly|manufacturing)\b/i.test(combined)) {
+  if (/\b(drone|aeronode|aviation|aircraft|flight|airspace|utm|faa|ads-b|avionics|aerospace|micro-hub|payload|satellite|orbit|telemetry|sensor|iot|plc|scada|robotics|conveyor|assembly|manufacturing|ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city)\b/i.test(combined)) {
     return 'manufacturing';
   }
   if (/\b(payment|fraud|trading|trader|wealth|fintech|bank|banking|ledger|spanner double-entry|clearing|settlement|swift|iso 20022|fiat|crypto|securities|aml|ofac|sec 15c3-5)\b/i.test(combined)) {
     return 'fintech';
   }
-  if (/\b(ecommerce|e-commerce|retail|shopper|cart|checkout|catalog|sku|wms|warehouse|cross-dock|fulfillment|3pl|carrier|fedex|ups|dhl|parcel|amazon|merchant|marketplace)\b/i.test(combined)) {
+  if (/\b(ecommerce|e-commerce|retail|shopper|cart|checkout|catalog|sku|wms|warehouse|cross-dock|fulfillment|3pl|carrier|fedex|ups|dhl|parcel|amazon|merchant|marketplace|supply chain|logistics)\b/i.test(combined)) {
     return 'retail';
   }
-  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp)\b/i.test(combined)) {
+  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp|cloud)\b/i.test(combined)) {
     return 'saas';
   }
   if (/\b(clinical|genomics|biopharma|pharma|oncology|fda|gxp|hipaa|veeva|drug|patient|ctms|edc|medidata|adverse event|pharmacovigilance)\b/i.test(combined)) {
@@ -1419,8 +1419,15 @@ function DocGenContent() {
                     <input
                       type="text"
                       value={projectTitle}
-                      onChange={(e) => setProjectTitle(e.target.value)}
-                      placeholder="e.g. Bio-Pharma Autonomous Safety Screener"
+                      onChange={(e) => {
+                        const newTitle = e.target.value;
+                        setProjectTitle(newTitle);
+                        const autoDomain = detectDomainFromPrompt(newTitle, projectScopePrompt, selectedDomain);
+                        if (autoDomain && autoDomain !== selectedDomain) {
+                          setSelectedDomain(autoDomain);
+                        }
+                      }}
+                      placeholder="e.g. AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh"
                       className="w-full px-4 py-2.5 rounded-xl border text-sm font-semibold bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
                     />
                   </div>
@@ -1432,8 +1439,15 @@ function DocGenContent() {
                     <textarea
                       rows={4}
                       value={projectScopePrompt}
-                      onChange={(e) => setProjectScopePrompt(e.target.value)}
-                      placeholder="Describe what the system does, key microservices, data sources, security mandates (GxP / HIPAA / SEC), and integration endpoints..."
+                      onChange={(e) => {
+                        const newScope = e.target.value;
+                        setProjectScopePrompt(newScope);
+                        const autoDomain = detectDomainFromPrompt(projectTitle, newScope, selectedDomain);
+                        if (autoDomain && autoDomain !== selectedDomain) {
+                          setSelectedDomain(autoDomain);
+                        }
+                      }}
+                      placeholder="Describe what the system does, key microservices, data sources, security mandates, and integration endpoints..."
                       className="w-full p-4 rounded-xl border text-xs leading-relaxed bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
                     />
                   </div>
@@ -1442,23 +1456,19 @@ function DocGenContent() {
                 {/* Right Col: Domain Flavor Preset & Instant Samples */}
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                      3. Enterprise Domain Flavor
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+                        3. Enterprise Domain Flavor
+                      </label>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live Prompt Sync
+                      </span>
+                    </div>
                     <select
                       value={selectedDomain}
                       onChange={(e) => {
                         setSelectedDomain(e.target.value);
-                        if (e.target.value === 'biopharma') {
-                          setProjectTitle('Bio-Pharma Precision Oncology & Regulatory AI Platform');
-                          setProjectScopePrompt('An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.');
-                        } else if (e.target.value === 'fintech') {
-                          setProjectTitle('FinTech Autonomous Wealth & Real-Time Fraud Prevention Hub');
-                          setProjectScopePrompt('A high-throughput sub-millisecond fraud detection engine with Apache Flink event stream processing, Bigtable ledger storage, mTLS zero-trust endpoints, and SEC/FINRA regulatory audit compliance.');
-                        } else if (e.target.value === 'manufacturing') {
-                          setProjectTitle('Smart Manufacturing & Industrial IoT Digital Twin Platform');
-                          setProjectScopePrompt('An edge-to-cloud smart factory telemetry hub with MQTT ingestion, BigQuery time-series anomaly detection, and predictive maintenance dispatch.');
-                        }
                       }}
                       className="w-full px-3 py-2.5 rounded-xl border text-xs font-semibold bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 focus:outline-none cursor-pointer"
                     >
@@ -1476,6 +1486,26 @@ function DocGenContent() {
                       ⚡ Quick Load Architecture Scenarios:
                     </span>
                     <div className="flex flex-col gap-1.5">
+                      <button
+                        onClick={() => {
+                          setSelectedDomain('manufacturing');
+                          setProjectTitle('AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh');
+                          setProjectScopePrompt('I want to architect a nationwide autonomous drone delivery and automated micro-hub fulfillment network called AeroNode. The system coordinates real-time collision-avoidance telemetry across 25,000+ autonomous delivery drones via 5G Ultra-Wideband and ADS-B mesh networks. It requires sub-20ms UTM (Unmanned Traffic Management) airspace routing, automated robotic payload swapping at local battery swap stations, dynamic weather radar ingestion via NOAA APIs, and FAA Part 135 continuous flight certification logging.');
+                        }}
+                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                      >
+                        🚁 AeroNode Drone Fleet &amp; Airspace
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedDomain('manufacturing');
+                          setProjectTitle('VoltGrid Autonomous EV Fleet Charging & Microgrid Energy Exchange');
+                          setProjectScopePrompt('I want to architect a nationwide decentralized smart EV fast-charging network and dynamic microgrid energy trading platform called VoltGrid. The system must ingest high-frequency telemetry from 50,000+ DC fast chargers via OCPP 2.0.1 and ISO 15118 (Plug & Charge). It requires sub-50ms dynamic load balancing across local Battery Energy Storage Systems (BESS), solar microgrids, and the utility distribution grid.');
+                        }}
+                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                      >
+                        ⚡ VoltGrid Smart EV &amp; Microgrid
+                      </button>
                       <button
                         onClick={() => {
                           setSelectedDomain('biopharma');
