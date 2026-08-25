@@ -929,6 +929,9 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/NOVACURA BIO-PHARMA PRODUCT/gi, topicCleanUpperXml)
     .replace(/NOVACURA BIO-PHARMA/gi, `${shortBrandUpperXml} PLATFORM`)
     .replace(/Transforming Therapies\. Improving Lives\./gi, `${shortBrandXml} Autonomous Cloud Architecture`)
+    .replace(/May 8, 2025/g, 'August 2026')
+    .replace(/Aug 8, 2025/g, 'Q4 2026')
+    .replace(/Jun 8, 2025/g, 'Q4 2026')
     .replace(/&amp;amp;/g, '&amp;');
 
   // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine

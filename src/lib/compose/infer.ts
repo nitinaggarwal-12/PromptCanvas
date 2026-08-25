@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID, getGenConfig } from '../geminiConfig';
 import { SystemModel } from './extract';
 import { buildInferredPrompt } from '../../prompts/compose/prompts';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 export interface InferredSectionOutput {
   paragraphs: string[];
@@ -49,14 +50,15 @@ export async function fillInferredSections(
     const ai = new GoogleGenAI({ apiKey });
     const prompt = buildInferredPrompt(model, sections);
     const config = getGenConfig('narrative');
+    const modelName = process.env.GEMINI_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
 
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Gemini API timeout (1500ms limit)')), 1500)
+      setTimeout(() => reject(new Error('Gemini API timeout (20s limit)')), 20000)
     );
 
     const response = (await Promise.race([
-      ai.models.generateContent({
-        model: GEMINI_MODEL_ID,
+      generateContentWithRetry(ai, {
+        model: modelName,
         contents: prompt,
         config,
       }),
