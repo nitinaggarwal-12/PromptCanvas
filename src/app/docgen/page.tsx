@@ -607,28 +607,196 @@ function DocGenContent() {
         }
         i++; // skip closing ```
 
+        // Extract preceding heading for title / template matching (e.g. Template 01, Template 08)
+        let precedingHeading = '';
+        for (let back = i - 2; back >= Math.max(0, i - 6); back--) {
+          if (lines[back] && lines[back].startsWith('#')) {
+            precedingHeading = lines[back].replace(/^#+\s*/, '');
+            break;
+          }
+        }
+
+        const tplMatch = precedingHeading.match(/Template\s*([0-9]{2})/i);
+        const matchedTemplateId = tplMatch ? tplMatch[1] : null;
+        const canonicalTpl = matchedTemplateId ? CANONICAL_TEMPLATES.find((t) => t.id === matchedTemplateId) : null;
+
+        const parsedNodes: { id: string; label: string; tier: string }[] = [];
+        const parsedFlows: { from: string; to: string; label?: string }[] = [];
+
+        for (const rawLine of codeLines) {
+          const l = rawLine.trim();
+          const nodeMatch = l.match(/^([A-Za-z0-9_]+)\["([^"]+)"\]/);
+          if (nodeMatch) {
+            const [, id, label] = nodeMatch;
+            let tier = 'Architecture Subsystem';
+            if (label.includes('🌐') || label.includes('Client') || label.includes('Portal') || label.includes('USERS')) tier = 'Client & Ingress Tier';
+            else if (label.includes('🛡️') || label.includes('WAF') || label.includes('Gateway') || label.includes('VPC')) tier = 'Security & Perimeter Tier';
+            else if (label.includes('⚙️') || label.includes('Orchestrator') || label.includes('Compute') || label.includes('Pod')) tier = 'Compute & Runtime Tier';
+            else if (label.includes('🤖') || label.includes('Model') || label.includes('LLM') || label.includes('AI')) tier = 'AI & Cognitive Model Tier';
+            else if (label.includes('🗄️') || label.includes('Spanner') || label.includes('Lake') || label.includes('DB') || label.includes('Data')) tier = 'Enterprise Data & Knowledge Tier';
+            else if (label.includes('⚖️') || label.includes('Audit') || label.includes('Governance') || label.includes('SAFETY') || label.includes('HITL')) tier = 'Governance & Audit Tier';
+            else if (label.includes('☁️') || label.includes('Systems') || label.includes('External') || label.includes('API')) tier = 'External Ecosystem Tier';
+
+            if (!parsedNodes.some((n) => n.id === id)) {
+              parsedNodes.push({ id, label, tier });
+            }
+          }
+
+          const flowMatch = l.match(/([A-Za-z0-9_]+)\s*(?:-->|<-->)\s*(?:\|"([^"]+)"\|\s*)?([A-Za-z0-9_]+)/);
+          if (flowMatch) {
+            parsedFlows.push({ from: flowMatch[1], to: flowMatch[3], label: flowMatch[2] });
+          }
+        }
+
         elements.push(
           <div
-            key={`code-${i}`}
-            className={`my-5 rounded-2xl border shadow-lg overflow-hidden ${
-              isLight ? 'border-sky-300 bg-white shadow-slate-300/40' : 'border-sky-500/50 bg-slate-950/95 shadow-2xl'
+            key={`diagram-fig-${i}`}
+            className={`my-6 rounded-2xl border shadow-xl overflow-hidden ${
+              isLight
+                ? 'border-sky-300 bg-white shadow-slate-300/40'
+                : 'border-sky-500/40 bg-slate-950/95 shadow-2xl'
             }`}
           >
-            <div className={`px-4 py-2.5 border-b flex items-center justify-between ${
-              isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
+            {/* Figure Header */}
+            <div className={`px-5 py-3 border-b flex flex-wrap items-center justify-between gap-2 ${
+              isLight
+                ? 'bg-slate-100/90 border-slate-200'
+                : 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-slate-800'
             }`}>
-              <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${isLight ? 'text-sky-800' : 'text-sky-300'}`}>
-                <Network className="w-3.5 h-3.5 text-sky-500" /> Embedded Architecture Flow Vector Diagram
-              </span>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                100% Collision-Free
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`h-2.5 w-2.5 rounded-full animate-pulse ${isLight ? 'bg-sky-600' : 'bg-sky-400'}`}></span>
+                <span className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-sky-800' : 'text-sky-300'}`}>
+                  📐 Embedded Architecture Flow Diagram {matchedTemplateId ? `(Blueprint ${matchedTemplateId})` : 'Figure'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${
+                  isLight
+                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                    : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+                }`}>
+                  GxP &amp; VPC-SC Verified
+                </span>
+                {canonicalTpl && (
+                  <Link
+                    href={`/canonical/${canonicalTpl.id}`}
+                    target="_blank"
+                    className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-500 hover:bg-sky-500/20 border border-sky-500/20 flex items-center gap-1 transition-colors"
+                  >
+                    <span>Inspect Draw.io XML</span>
+                    <ExternalLink className="w-2.5 h-2.5" />
+                  </Link>
+                )}
+              </div>
             </div>
-            <pre className={`p-4 font-mono text-xs overflow-x-auto ${
-              isLight ? 'bg-slate-50 text-teal-800' : 'bg-slate-950 text-teal-300'
-            }`}>
-              {codeLines.join('\n')}
-            </pre>
+
+            {/* Visual Figure Body */}
+            <div className="p-5 space-y-4">
+              {/* If Canonical Template Preview is Available */}
+              {canonicalTpl?.previewImage && (
+                <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 p-2 relative group">
+                  <img
+                    src={canonicalTpl.previewImage}
+                    alt={canonicalTpl.name}
+                    className="w-full max-h-80 object-contain rounded-lg"
+                    onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+                  />
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Link
+                      href={`/canonical/${canonicalTpl.id}`}
+                      target="_blank"
+                      className="px-3 py-1.5 rounded-lg bg-sky-600/90 hover:bg-sky-600 text-white text-[11px] font-bold shadow-lg backdrop-blur-sm flex items-center gap-1.5"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span>Open Canvas</span>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              {/* Multi-Tier Component Topology Grid */}
+              {parsedNodes.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {parsedNodes.map((node, nIdx) => (
+                    <div
+                      key={node.id}
+                      className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
+                        isLight
+                          ? 'bg-slate-50 border-slate-200 hover:border-sky-300 hover:bg-white'
+                          : 'bg-slate-900/80 border-slate-800 hover:border-sky-500/60 hover:bg-slate-900'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${
+                          isLight ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-sky-500/10 text-sky-400 border-sky-500/20'
+                        }`}>
+                          Node 0{nIdx + 1}
+                        </span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                          isLight ? 'bg-emerald-100 text-emerald-800' : 'bg-emerald-500/10 text-emerald-400'
+                        }`}>
+                          {node.tier}
+                        </span>
+                      </div>
+                      <div className={`text-xs font-bold leading-snug ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                        {node.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Flow Connections Visual Bar */}
+              {parsedFlows.length > 0 && (
+                <div className={`p-3.5 rounded-xl border ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800/80'
+                }`}>
+                  <div className={`text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5 ${
+                    isLight ? 'text-slate-600' : 'text-slate-400'
+                  }`}>
+                    <span>⚡ Primary Integration Pathways &amp; Event Channels</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    {parsedFlows.map((flow, fIdx) => {
+                      const sourceNode = parsedNodes.find((n) => n.id === flow.from);
+                      const targetNode = parsedNodes.find((n) => n.id === flow.to);
+                      return (
+                        <div
+                          key={fIdx}
+                          className={`px-3 py-2 rounded-lg border flex items-center justify-between ${
+                            isLight
+                              ? 'bg-white border-slate-200 text-slate-800'
+                              : 'bg-slate-950/80 border-slate-800 text-slate-300'
+                          }`}
+                        >
+                          <span className={`font-semibold truncate max-w-[42%] ${isLight ? 'text-sky-800' : 'text-sky-300'}`}>
+                            {sourceNode?.label.replace(/^[^\s]+\s+/, '') || flow.from}
+                          </span>
+                          <span className={`text-[10px] font-mono px-1 ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>
+                            {flow.label ? `➔ [${flow.label}] ➔` : '──────►'}
+                          </span>
+                          <span className={`font-semibold truncate max-w-[42%] ${isLight ? 'text-emerald-800' : 'text-emerald-300'}`}>
+                            {targetNode?.label.replace(/^[^\s]+\s+/, '') || flow.to}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Raw Flow Definition Accordion */}
+              <details className="text-xs">
+                <summary className={`cursor-pointer font-bold select-none text-[11px] uppercase tracking-wider ${isLight ? 'text-slate-500 hover:text-slate-700' : 'text-slate-400 hover:text-slate-200'}`}>
+                  View Raw Flow DSL Definition ({codeLines.length} lines)
+                </summary>
+                <pre className={`mt-2 p-3 rounded-xl font-mono text-[11px] overflow-x-auto ${
+                  isLight ? 'bg-slate-100 text-slate-800' : 'bg-slate-950 text-teal-300'
+                }`}>
+                  {codeLines.join('\n')}
+                </pre>
+              </details>
+            </div>
           </div>
         );
         continue;
