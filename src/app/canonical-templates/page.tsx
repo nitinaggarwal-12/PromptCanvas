@@ -18,7 +18,7 @@ export default function CanonicalTemplatesPage() {
           <Sparkles className="w-6 h-6 animate-pulse" />
         </div>
         <div className="space-y-1">
-          <h2 className="text-lg font-extrabold text-white">Opening 34 Canonical Templates</h2>
+          <h2 className="text-lg font-extrabold text-white">Opening 50 Canonical Templates</h2>
           <p className="text-xs text-slate-400">Redirecting to the master visual catalog with live diagram previews...</p>
         </div>
         <div className="flex items-center gap-2 text-xs text-sky-400 font-mono mt-2">

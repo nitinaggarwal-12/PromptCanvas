@@ -242,7 +242,7 @@ function CanonicalContent() {
                     Canonical Hub v1.0
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">34 Canonical Diagram Grammars &bull; 8 Visual Families</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{CANONICAL_TEMPLATES.length} Canonical Diagram Grammars &bull; {CANONICAL_FAMILIES.filter((f) => f !== 'All').length} Visual Families</p>
               </div>
             </Link>
           </div>
@@ -292,7 +292,7 @@ function CanonicalContent() {
           <div className="max-w-4xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
               <Zap className="w-3.5 h-3.5" />
-              The 34 Canonical Diagram Grammars
+              The {CANONICAL_TEMPLATES.length} Canonical Diagram Grammars
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
               Architectural Grammar for{' '}
@@ -309,11 +309,11 @@ function CanonicalContent() {
           {/* Quick Stats Banner */}
           <div className="grid grid-cols-3 gap-3 sm:gap-4 p-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm">
             <div className="text-center px-4 py-2">
-              <div className="text-2xl md:text-3xl font-black text-sky-500">34</div>
+              <div className="text-2xl md:text-3xl font-black text-sky-500">{CANONICAL_TEMPLATES.length}</div>
               <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Canonical Schemas</div>
             </div>
             <div className="text-center px-4 py-2 border-x border-slate-200 dark:border-slate-800">
-              <div className="text-2xl md:text-3xl font-black text-indigo-500">8</div>
+              <div className="text-2xl md:text-3xl font-black text-indigo-500">{CANONICAL_FAMILIES.filter((f) => f !== 'All').length}</div>
               <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Visual Families</div>
             </div>
             <div className="text-center px-4 py-2">
