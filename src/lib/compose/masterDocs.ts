@@ -7,12 +7,12 @@ export const MASTER_DOCUMENTS: Record<string, string> = {
 **Document Version:** v1.0 (Executive Steering Committee & ARB Approved Baseline)  
 **Document Status:** Approved — Executive Steering Committee Sign-Off  
 **Executive Sponsor:** Chief Solutions Architect (Enterprise Executive Sponsor)  
-**Business Owner:** Dr. Elena Vance (VP, Cognitive Platforms & Digital Product)  
+**Business Owner:** Enterprise Product & Business Steering Committee  
 **Program Director:** Jennifer Sterling (Enterprise AI Program Management Director)  
 **Principal Business Analyst:** Kabir Mehta (Principal Healthcare Systems Analyst)  
-**Medical & Regulatory Lead:** Dr. Aris Thorne, MD (Global Medical Safety Director)  
+**Medical & Regulatory Lead:** Enterprise Risk & Safety Compliance Lead  
 **Compliance & Legal Lead:** Principal Architecture Lead (Enterprise Architecture Review Board)  
-**Principal Enterprise Architect:** Nitin Aggarwal (Principal AI Systems Architect)  
+**Principal Enterprise Architect:** Enterprise Architecture Review Board (ARB)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 **Confidentiality:** Enterprise Confidential — GxP Validated Repository  
 
@@ -152,8 +152,8 @@ graph LR
 | Reviewer Role | Executive Sign-Off Name | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
 | **Executive Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_99214_VERIFIED\` | August 2, 2026 |
-| **Business Owner** | Dr. Elena Vance | ✅ APPROVED | \`SIG_BUS_88102_VERIFIED\` | August 2, 2026 |
-| **Principal Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_ARCH_44192_VERIFIED\` | August 2, 2026 |
+| **Business Owner** | Business Architecture Lead | ✅ APPROVED | \`SIG_BUS_88102_VERIFIED\` | August 2, 2026 |
+| **Principal Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_ARCH_44192_VERIFIED\` | August 2, 2026 |
 | **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_11904_VERIFIED\` | August 2, 2026 |
 `,
 
@@ -163,8 +163,8 @@ graph LR
 
 **Document ID:** PRD-BIO-2026-001  
 **Document Version:** v1.0 (Product Leadership & Engineering Lead Baseline)  
-**Product Manager:** Dr. Elena Vance (VP, Cognitive Platforms & Digital Product)  
-**Lead Technical Architect:** Nitin Aggarwal (Principal AI Systems Architect)  
+**Product Manager:** Enterprise Product & Business Steering Committee  
+**Lead Technical Architect:** Enterprise Architecture Review Board (ARB)  
 **UX & Workflow Design Lead:** Maya Lin (Principal AI Experience Designer)  
 **Regulatory Affairs Specialist:** Principal Architecture Lead (Enterprise Architecture Review Board)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
@@ -203,7 +203,7 @@ graph LR
 |---|---|---|---|
 | **PER-01** | **Dr. Sophia Reyes** (Medical Information Specialist) | Rapidly draft verified scientific responses to healthcare provider inquiries | Fragmented literature databases; manual citation verification |
 | **PER-02** | **Marcus Thorne** (Commercial MLR Reviewer) | Ensure marketing promotional claims align with approved FDA package labels | Ambiguous regulatory label language; iterative review cycles |
-| **PER-03** | **Dr. Aris Thorne** (PV Safety Reviewer) | Identify and escalate adverse events occurring in clinical narratives | High narrative volume; strict 24-hour FDA reporting deadlines |
+| **PER-03** | **Safety & Governance Officer** (PV Safety Reviewer) | Identify and escalate adverse events occurring in clinical narratives | High narrative volume; strict 24-hour FDA reporting deadlines |
 
 ---
 
@@ -269,9 +269,9 @@ graph LR
 
 | Reviewer Role | Executive Sign-Off Name | Approval Status | Timestamp |
 |---|---|---|---|
-| **Product Owner** | Dr. Elena Vance | ✅ **APPROVED** | August 2, 2026 |
+| **Product Owner** | Business Architecture Lead | ✅ **APPROVED** | August 2, 2026 |
 | **Business Sponsor** | Chief Solutions Architect (Executive Sponsor) | ✅ **APPROVED** | August 2, 2026 |
-| **Technical Owner** | Nitin Aggarwal | ✅ **APPROVED** | August 2, 2026 |
+| **Technical Owner** | Principal Architecture Lead (ARB) | ✅ **APPROVED** | August 2, 2026 |
 | **Quality & Regulatory Lead** | Principal Systems Architect (Enterprise ARB) | ✅ **APPROVED** | August 2, 2026 |
 `,
 
@@ -282,11 +282,11 @@ graph LR
 **Document ID:** SDD-BIO-2026-001  
 **Document Version:** v1.0 (Technical & Infrastructure Architecture Review Ready)  
 **Document Status:** Approved — Engineering, DevSecOps & Regulatory Sign-Off  
-**Principal AI Systems Architect:** Nitin Aggarwal  
-**Cloud Infrastructure & SRE Lead:** David K. Thorne  
-**Cybersecurity & VPC-SC Lead:** Robert Sterling, CISSP  
-**Principal Data Architect:** Ananya Ramanathan  
-**Validation & Quality Director:** Dr. Aris Thorne, MD  
+**Principal AI Systems Architect:** Principal Architecture Lead (ARB)  
+**Cloud Infrastructure & SRE Lead:** DevSecOps & SRE Lead  
+**Cybersecurity & VPC-SC Lead:** Chief Information Security Officer (CISO)  
+**Principal Data Architect:** Principal Data Architect  
+**Validation & Quality Director:** Domain Safety & Risk Officer  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 **Confidentiality:** Confidential — Enterprise Architecture Review Board Repository  
 
@@ -432,9 +432,9 @@ graph LR
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Chief Systems Architect** | Nitin Aggarwal | ✅ **APPROVED** | \`SIG_ARB_99014_VERIFIED\` | August 2, 2026 |
-| **Lead Cloud SRE** | David K. Thorne | ✅ **APPROVED** | \`SIG_SRE_88192_VERIFIED\` | August 2, 2026 |
-| **Enterprise Security Lead** | Robert Sterling, CISSP | ✅ **APPROVED** | \`SIG_SEC_77012_VERIFIED\` | August 2, 2026 |
+| **Chief Systems Architect** | Principal Architecture Lead (ARB) | ✅ **APPROVED** | \`SIG_ARB_99014_VERIFIED\` | August 2, 2026 |
+| **Lead Cloud SRE** | DevSecOps & SRE Lead | ✅ **APPROVED** | \`SIG_SRE_88192_VERIFIED\` | August 2, 2026 |
+| **Enterprise Security Lead** | Chief Information Security Officer (CISO) | ✅ **APPROVED** | \`SIG_SEC_77012_VERIFIED\` | August 2, 2026 |
 `,
 
   fdd: `# Functional Design Document (FDD)
@@ -444,7 +444,7 @@ graph LR
 **Document ID:** FDD-BIO-2026-001  
 **Document Version:** v1.0 (Functional Architecture Review Baseline)  
 **Document Status:** Approved — Production Architecture & ARB Sign-Off  
-**Functional Systems Architect:** Nitin Aggarwal  
+**Functional Systems Architect:** Principal Architecture Lead (ARB)  
 **Quality & Compliance Lead:** Principal Systems Architect (Enterprise ARB)  
 **Target Release:** Release 1 Controlled Production Pilot (Q3 2026)  
 
@@ -522,8 +522,8 @@ graph TD
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Lead Functional Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_FDD_44901_VERIFIED\` | August 2, 2026 |
-| **Medical Safety Officer** | Dr. Aris Thorne, MD | ✅ APPROVED | \`SIG_MED_88102_VERIFIED\` | August 2, 2026 |
+| **Lead Functional Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_FDD_44901_VERIFIED\` | August 2, 2026 |
+| **Medical Safety Officer** | Domain Safety & Risk Officer | ✅ APPROVED | \`SIG_MED_88102_VERIFIED\` | August 2, 2026 |
 | **Principal Quality Engineer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_QUAL_99014_VERIFIED\` | August 2, 2026 |
 `,
 
@@ -534,10 +534,10 @@ graph TD
 **Document ID:** TDD-BIO-2026-001  
 **Document Version:** v1.0 (Engineering Architecture Review Ready)  
 **Document Status:** Approved — Engineering Lead & SRE Sign-Off  
-**Principal AI Systems Architect:** Nitin Aggarwal  
-**Lead Backend Engineer:** Viktor Vance  
-**Database Architect:** Ananya Ramanathan  
-**DevSecOps & SRE Lead:** David K. Thorne  
+**Principal AI Systems Architect:** Principal Architecture Lead (ARB)  
+**Lead Backend Engineer:** Lead Platform Engineer  
+**Database Architect:** Principal Data Architect  
+**DevSecOps & SRE Lead:** DevSecOps & SRE Lead  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 **Confidentiality:** Enterprise Confidential — Technical Implementation Repository  
 
@@ -700,10 +700,10 @@ graph LR
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Principal Systems Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_TDD_99014_VERIFIED\` | August 2, 2026 |
-| **Lead Backend Engineer** | Viktor Vance | ✅ APPROVED | \`SIG_DEV_88192_VERIFIED\` | August 2, 2026 |
-| **Principal Database Architect** | Ananya Ramanathan | ✅ APPROVED | \`SIG_DATA_77012_VERIFIED\` | August 2, 2026 |
-| **DevSecOps & SRE Lead** | David K. Thorne | ✅ APPROVED | \`SIG_SRE_44019_VERIFIED\` | August 2, 2026 |
+| **Principal Systems Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_TDD_99014_VERIFIED\` | August 2, 2026 |
+| **Lead Backend Engineer** | Lead Platform Engineer | ✅ APPROVED | \`SIG_DEV_88192_VERIFIED\` | August 2, 2026 |
+| **Principal Database Architect** | Principal Data Architect | ✅ APPROVED | \`SIG_DATA_77012_VERIFIED\` | August 2, 2026 |
+| **DevSecOps & SRE Lead** | DevSecOps & SRE Lead | ✅ APPROVED | \`SIG_SRE_44019_VERIFIED\` | August 2, 2026 |
 `,
 
   exec_brief: `# Executive Architecture Brief (EAB)
@@ -786,8 +786,8 @@ graph LR
 | Executive Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
 | **Chief Executive Officer** | Chief Solutions Architect (Executive Sponsor) | ✅ APPROVED | \`SIG_EXEC_CEO_9901\` | August 2, 2026 |
-| **Chief Information Officer** | Robert Sterling | ✅ APPROVED | \`SIG_EXEC_CIO_4812\` | August 2, 2026 |
-| **Chief Medical Officer** | Dr. Aris Thorne, MD | ✅ APPROVED | \`SIG_EXEC_CMO_2291\` | August 2, 2026 |
+| **Chief Information Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_EXEC_CIO_4812\` | August 2, 2026 |
+| **Chief Medical Officer** | Domain Safety & Risk Officer | ✅ APPROVED | \`SIG_EXEC_CMO_2291\` | August 2, 2026 |
 `,
 
   threat_model: `# STRIDE Threat Model & Security Assessment
@@ -797,7 +797,7 @@ graph LR
 **Document ID:** STRIDE-BIO-2026-001  
 **Document Version:** v1.0 (Enterprise Security Architecture Review Baseline)  
 **Document Status:** Approved — CISO & Cyber Risk Review Ready  
-**Lead Security Architect:** Robert Sterling, CISSP (Director of Cyber Risk & Cloud Security)  
+**Lead Security Architect:** Chief Information Security Officer (CISO) (Director of Cyber Risk & Cloud Security)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 
 ---
@@ -877,8 +877,8 @@ graph TD
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Chief Information Security Officer** | Robert Sterling, CISSP | ✅ APPROVED | \`SIG_CISO_99412_VERIFIED\` | August 2, 2026 |
-| **Principal Security Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_SEC_48102_VERIFIED\` | August 2, 2026 |
+| **Chief Information Security Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_CISO_99412_VERIFIED\` | August 2, 2026 |
+| **Principal Security Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_SEC_48102_VERIFIED\` | August 2, 2026 |
 | **Lead Privacy Officer** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_PRIV_21904_VERIFIED\` | August 2, 2026 |
 `,
 
@@ -888,7 +888,7 @@ graph TD
 
 **Document ID:** API-BIO-2026-001  
 **Document Version:** v1.0 (Integration Architecture Review Baseline)  
-**Lead Integration Architect:** Nitin Aggarwal  
+**Lead Integration Architect:** Principal Architecture Lead (ARB)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 
 ---
@@ -966,8 +966,8 @@ graph TD
 
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
-| **Principal API Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_API_99014_VERIFIED\` | August 2, 2026 |
-| **Integration Lead** | Viktor Vance | ✅ APPROVED | \`SIG_INT_88192_VERIFIED\` | August 2, 2026 |
+| **Principal API Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_API_99014_VERIFIED\` | August 2, 2026 |
+| **Integration Lead** | Lead Platform Engineer | ✅ APPROVED | \`SIG_INT_88192_VERIFIED\` | August 2, 2026 |
 `,
 
   security_package: `# Enterprise Security & Compliance Package (GRC)
@@ -977,8 +977,8 @@ graph TD
 **Document ID:** GRC-BIO-2026-001  
 **Document Version:** v1.0 (Compliance & Audit Review Baseline)  
 **Compliance Director:** Principal Architecture Lead (Enterprise Architecture Review Board)  
-**Lead Security Architect:** Robert Sterling, CISSP  
-**Principal Enterprise Architect:** Nitin Aggarwal  
+**Lead Security Architect:** Chief Information Security Officer (CISO)  
+**Principal Enterprise Architect:** Principal Architecture Lead (ARB)  
 **Target Release:** Release 1 Production Pilot (Q3 2026)  
 
 ---
@@ -1049,8 +1049,8 @@ graph TD
 | Reviewer Role | Name & Title | Approval Status | Signature Stamp | Date |
 |---|---|---|---|---|
 | **Global Quality Lead** | Principal Systems Architect (Enterprise ARB) | ✅ APPROVED | \`SIG_GRC_99014_VERIFIED\` | August 2, 2026 |
-| **Chief Information Security Officer** | Robert Sterling, CISSP | ✅ APPROVED | \`SIG_CISO_88192_VERIFIED\` | August 2, 2026 |
-| **Principal Systems Architect** | Nitin Aggarwal | ✅ APPROVED | \`SIG_ARCH_77012_VERIFIED\` | August 2, 2026 |
+| **Chief Information Security Officer** | Chief Information Security Officer (CISO) | ✅ APPROVED | \`SIG_CISO_88192_VERIFIED\` | August 2, 2026 |
+| **Principal Systems Architect** | Principal Architecture Lead (ARB) | ✅ APPROVED | \`SIG_ARCH_77012_VERIFIED\` | August 2, 2026 |
 `
 };
 

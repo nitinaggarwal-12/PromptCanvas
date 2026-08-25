@@ -2096,7 +2096,7 @@ function synthesizeCustomExecutiveDocument(
 
   // Replace Title & Domain metadata
   doc = doc.replace(/^#\s+[^\n]+/m, `# ${meta.name}\n\n## ${title} — Comprehensive Specification Baseline`);
-  doc = doc.replace(/\*\*Executive Sponsor:\*\*[^\n]+/g, `**Executive Sponsor:** Dr. Marcus Vance (${domainName} Lead)`);
+  doc = doc.replace(/\*\*Executive Sponsor:\*\*[^\n]+/g, `**Executive Sponsor:** Enterprise Executive Committee (${domainName})`);
   doc = doc.replace(/\*\*Document ID:\*\*[^\n]+/g, `**Document ID:** ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
   doc = doc.replace(/Document ID:\s*FDD-BIOPHARM-2026-001/gi, `Document ID: ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
   doc = doc.replace(/Document ID:\s*FDD-BIO-2026-001/gi, `Document ID: ${archetypeId.toUpperCase()}-${titleSlug}-2026-001`);
