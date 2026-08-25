@@ -52,7 +52,14 @@ import {
   CANONICAL_FAMILIES,
   injectDomainFlavorXml
 } from '@/lib/canonical/canonicalTemplates';
-import { ARCHETYPE_REGISTRY, ArchetypeId, DocArchetype } from '@/lib/compose/archetypes';
+import {
+  ARCHETYPE_REGISTRY,
+  ArchetypeId,
+  DocArchetype,
+  DOC_ARCHETYPES_META,
+  DocArchetypeMeta,
+  BlueprintSlot
+} from '@/lib/compose/archetypes';
 import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterDocs';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -60,16 +67,16 @@ import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal'
 
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
-  if (/\b(drone|aeronode|aviation|aircraft|flight|airspace|utm|faa|ads-b|avionics|aerospace|micro-hub|payload|satellite|orbit|telemetry|sensor|iot|plc|scada|robotics|conveyor|assembly|manufacturing|ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city)\b/i.test(combined)) {
+  if (/\b(drone|aeronode|aviation|aircraft|flight|airspace|utm|faa|ads-b|avionics|aerospace|micro-hub|payload|satellite|orbit|telemetry|sensor|iot|plc|scada|robotics|conveyor|assembly|manufacturing|ev|charger|charging|grid|solar|battery|bess|v2g|ocpp|energy|power|watt|kilowatt|microgrid|smart city|vessel|maritime|port|quay|tugboat|cargo|berthing)\b/i.test(combined)) {
     return 'manufacturing';
   }
-  if (/\b(payment|fraud|trading|trader|wealth|fintech|bank|banking|ledger|spanner double-entry|clearing|settlement|swift|iso 20022|fiat|crypto|securities|aml|ofac|sec 15c3-5)\b/i.test(combined)) {
+  if (/\b(payment|fraud|trading|trader|wealth|fintech|bank|banking|ledger|spanner double-entry|clearing|settlement|swift|iso 20022|fiat|crypto|securities|aml|ofac|sec 15c3-5|acquirer)\b/i.test(combined)) {
     return 'fintech';
   }
   if (/\b(ecommerce|e-commerce|retail|shopper|cart|checkout|catalog|sku|wms|warehouse|cross-dock|fulfillment|3pl|carrier|fedex|ups|dhl|parcel|amazon|merchant|marketplace|supply chain|logistics)\b/i.test(combined)) {
     return 'retail';
   }
-  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp|cloud)\b/i.test(combined)) {
+  if (/\b(saas|multi-tenant|tenant|workspace|subscription|billing|seat|crm|org|rbac|oauth|idp|cloud|media|streaming|audio|video|lipsync|holographic)\b/i.test(combined)) {
     return 'saas';
   }
   if (/\b(clinical|genomics|biopharma|pharma|oncology|fda|gxp|hipaa|veeva|drug|patient|ctms|edc|medidata|adverse event|pharmacovigilance)\b/i.test(combined)) {
@@ -77,171 +84,6 @@ export function detectDomainFromPrompt(title: string, prompt: string, fallbackDo
   }
   return fallbackDomain === 'biopharma' ? 'general' : fallbackDomain;
 }
-
-// Multi-Blueprint Pack mapping for each of the 9 archetypes
-interface BlueprintSlot {
-  slotTitle: string;
-  chapterNumber: number;
-  recommendedTemplateId: string;
-  description: string;
-}
-
-interface DocArchetypeMeta {
-  id: ArchetypeId;
-  name: string;
-  shortName: string;
-  badge: string;
-  badgeColor: string;
-  audience: string;
-  primaryPurpose: string;
-  blueprintPack: BlueprintSlot[];
-  sectionsCount: number;
-}
-
-const DOC_ARCHETYPES_META: DocArchetypeMeta[] = [
-  {
-    id: 'brd',
-    name: 'Business Requirements Document',
-    shortName: 'BRD',
-    badge: 'Executive Business',
-    badgeColor: 'from-amber-500/20 to-orange-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30',
-    audience: 'Executive Sponsors, Business Unit Leaders, Architecture Review Board (ARB)',
-    primaryPurpose: 'Defines enterprise business transformation vision, ROI realization formulas, risk-based autonomy levels, and phased governance approval gates.',
-    blueprintPack: [
-      { slotTitle: 'Executive System Context & Stakeholder Topology', chapterNumber: 2, recommendedTemplateId: '01', description: 'Overall system boundaries, external partners, and users.' },
-      { slotTitle: 'Strategic Business Capability & Value Stream', chapterNumber: 4, recommendedTemplateId: '04', description: 'Enterprise capability mapping and business value streams.' },
-      { slotTitle: 'As-Is vs. To-Be Process Modernization Matrix', chapterNumber: 3, recommendedTemplateId: '05', description: 'Current manual baseline vs automated target state.' },
-      { slotTitle: 'Human-in-the-Loop Governance & Decision Gates', chapterNumber: 5, recommendedTemplateId: '26', description: 'Safety screening, dual-custody gates, and e-signatures.' },
-    ],
-    sectionsCount: 9,
-  },
-  {
-    id: 'prd',
-    name: 'Product Requirements Document',
-    shortName: 'PRD',
-    badge: 'Product & UX',
-    badgeColor: 'from-sky-500/20 to-blue-500/20 text-sky-600 dark:text-sky-400 border-sky-500/30',
-    audience: 'Product Managers, Engineering Leads, UX Designers, QA / Validation Teams',
-    primaryPurpose: 'Specifies product scope, target personas, functional epics, measurable acceptance criteria, and non-functional requirements (NFRs).',
-    blueprintPack: [
-      { slotTitle: 'Product System Context & Boundary', chapterNumber: 1, recommendedTemplateId: '01', description: 'Product ecosystem and external system touchpoints.' },
-      { slotTitle: 'Core Functional Capability Taxonomy', chapterNumber: 3, recommendedTemplateId: '02', description: 'Feature hierarchy and functional capability pods.' },
-      { slotTitle: 'User Interaction & Workflow Journey', chapterNumber: 4, recommendedTemplateId: '23', description: 'End-to-end user journeys and cognitive reasoning loops.' },
-      { slotTitle: 'Lifecycle State Machine & Transition Gates', chapterNumber: 5, recommendedTemplateId: '12', description: 'Entity lifecycle states, approvals, and transition gates.' },
-    ],
-    sectionsCount: 9,
-  },
-  {
-    id: 'sdd',
-    name: 'System Design Document (HLD)',
-    shortName: 'SDD',
-    badge: 'Core Architecture',
-    badgeColor: 'from-indigo-500/20 to-purple-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
-    audience: 'Principal Architects, Cloud Engineers, Lead Tech Architects, Security Leads',
-    primaryPurpose: 'Complete high-level technical architecture detailing multi-tier cloud deployment, zero-trust network boundaries, cognitive runtime, and disaster recovery.',
-    blueprintPack: [
-      { slotTitle: 'Multi-Tier Subsystem & Container Topology', chapterNumber: 2, recommendedTemplateId: '08', description: 'C4 Container and microservice topology.' },
-      { slotTitle: 'Zero-Trust Network Perimeter & VPC Infrastructure', chapterNumber: 3, recommendedTemplateId: '15', description: 'Cloud Armor ingress, VPC-SC, and private endpoints.' },
-      { slotTitle: 'Cloud Infrastructure & Compute Deployment Map', chapterNumber: 2, recommendedTemplateId: '16', description: 'GKE clusters, serverless containers, and managed storage.' },
-      { slotTitle: 'Cognitive Runtime & Model Gateway Routing', chapterNumber: 4, recommendedTemplateId: '23', description: 'Agent reasoning engine and LLM gateway dispatch.' },
-      { slotTitle: 'High-Availability & Multi-Region DR Strategy', chapterNumber: 7, recommendedTemplateId: '19', description: 'Active-Active failover, RTO < 15m, and cross-region replication.' },
-    ],
-    sectionsCount: 10,
-  },
-  {
-    id: 'fdd',
-    name: 'Functional Design Document',
-    shortName: 'FDD',
-    badge: 'Functional Engineering',
-    badgeColor: 'from-teal-500/20 to-emerald-500/20 text-teal-600 dark:text-teal-400 border-teal-500/30',
-    audience: 'Functional Analysts, Microservice Developers, Integration Engineers, QA Testers',
-    primaryPurpose: 'Deep functional specifications, multi-agent reasoning sequences, domain data relationships, safety exception gates, and human approval workbenches.',
-    blueprintPack: [
-      { slotTitle: 'Multi-Actor Swimlane & Workflow Initiation', chapterNumber: 2, recommendedTemplateId: '03', description: 'Cross-functional swimlanes and role hand-offs.' },
-      { slotTitle: 'Multi-Service Interaction Sequence Flow', chapterNumber: 5, recommendedTemplateId: '11', description: 'Step-by-step sequential message exchanges and callbacks.' },
-      { slotTitle: 'Domain Entity Relationship Diagram (ERD)', chapterNumber: 6, recommendedTemplateId: '14', description: 'Core functional entities and relational cardinality.' },
-      { slotTitle: 'Human Review Workbench & E-Signature Controls', chapterNumber: 8, recommendedTemplateId: '26', description: 'Human-in-the-loop review queues and audit stamps.' },
-    ],
-    sectionsCount: 10,
-  },
-  {
-    id: 'tdd',
-    name: 'Technical Design Document (LLD)',
-    shortName: 'TDD',
-    badge: 'Low-Level Engineering',
-    badgeColor: 'from-cyan-500/20 to-blue-500/20 text-cyan-600 dark:text-cyan-400 border-cyan-500/30',
-    audience: 'Software Engineers, Backend Developers, DevOps/SRE Engineers, SecOps',
-    primaryPurpose: 'Low-level code implementation specifications, database indexes, distributed saga outbox transactions, fault tolerance, and CI/CD quality gates.',
-    blueprintPack: [
-      { slotTitle: 'Micro-Level API Interaction Sequence & Latency Budgets', chapterNumber: 2, recommendedTemplateId: '11', description: 'RPC contracts, timeout budgets, and retry limits.' },
-      { slotTitle: 'Physical Database Schema & Foreign Key ERD', chapterNumber: 3, recommendedTemplateId: '14', description: 'Postgres/Spanner DDL, B-tree indexes, and constraints.' },
-      { slotTitle: 'Fault Tolerance, Circuit Breakers & Retry Policies', chapterNumber: 5, recommendedTemplateId: '28', description: 'Dead-letter queues, exponential backoff, and fallbacks.' },
-      { slotTitle: 'Multi-Stage CI/CD & Security Scanning Pipeline', chapterNumber: 6, recommendedTemplateId: '20', description: '22-stage build, SAST, DAST, and canary deployments.' },
-    ],
-    sectionsCount: 8,
-  },
-  {
-    id: 'exec_brief',
-    name: 'Executive Architecture Brief',
-    shortName: 'EAB',
-    badge: 'C-Suite Briefing',
-    badgeColor: 'from-purple-500/20 to-pink-500/20 text-purple-600 dark:text-purple-400 border-purple-500/30',
-    audience: 'CIO, CTO, Board of Directors, Enterprise Investment Committee',
-    primaryPurpose: 'High-impact 2-page executive summary focusing on strategic pillars, architectural differentiators, risk posture, and capital investment roadmap.',
-    blueprintPack: [
-      { slotTitle: 'Executive System Context & Strategic Scope', chapterNumber: 1, recommendedTemplateId: '01', description: 'High-level business and technology boundaries.' },
-      { slotTitle: 'Strategic Business Capability & Value Stream', chapterNumber: 2, recommendedTemplateId: '04', description: 'Capability maturity and business value drivers.' },
-      { slotTitle: 'Architecture Options & Trade-Off Matrix', chapterNumber: 3, recommendedTemplateId: '32', description: 'Buy vs build, SaaS vs self-hosted evaluation.' },
-    ],
-    sectionsCount: 5,
-  },
-  {
-    id: 'threat_model',
-    name: 'STRIDE Threat Model & Security Assessment',
-    shortName: 'Threat Model',
-    badge: 'Security & Compliance',
-    badgeColor: 'from-rose-500/20 to-red-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30',
-    audience: 'CISO, Cyber Risk Team, Security Architects, Compliance Auditors',
-    primaryPurpose: 'Formal threat modeling analyzing trust-boundary crossings, STRIDE threat vectors, compensating zero-trust security controls, and CMEK key hierarchy.',
-    blueprintPack: [
-      { slotTitle: 'Network Security Perimeter & Trust Boundaries', chapterNumber: 2, recommendedTemplateId: '18', description: 'Zero-trust perimeter, ingress/egress, and micro-segmentation.' },
-      { slotTitle: 'STRIDE Threat Vectors & Attack Pathways', chapterNumber: 3, recommendedTemplateId: '27', description: 'Threat tree, spoofing, tampering, and privilege escalation.' },
-      { slotTitle: 'SOC Telemetry & Automated Incident Response', chapterNumber: 4, recommendedTemplateId: '44', description: 'SIEM integration, guardrails, and automated containment.' },
-    ],
-    sectionsCount: 6,
-  },
-  {
-    id: 'api_spec',
-    name: 'API & Service Interface Specification',
-    shortName: 'API Spec',
-    badge: 'Integration & Protocols',
-    badgeColor: 'from-emerald-500/20 to-teal-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30',
-    audience: 'Integration Architects, API Developers, Third-Party Ecosystem Partners',
-    primaryPurpose: 'Comprehensive REST/gRPC API contracts, payload schemas, idempotent webhook interfaces, rate-limiting policies, and mTLS security controls.',
-    blueprintPack: [
-      { slotTitle: 'Component & Subsystem Topology', chapterNumber: 2, recommendedTemplateId: '08', description: 'Microservices, message brokers, and API endpoints.' },
-      { slotTitle: 'Integration Hub & Protocol Exchange Matrix', chapterNumber: 3, recommendedTemplateId: '45', description: 'FHIR, IDMP, SFTP, and OpenAPI gateway routes.' },
-      { slotTitle: 'Micro-Level API Interaction Sequence Flow', chapterNumber: 4, recommendedTemplateId: '11', description: 'Request/response flow, error codes, and header validations.' },
-    ],
-    sectionsCount: 7,
-  },
-  {
-    id: 'security_package',
-    name: 'Enterprise Security & Compliance Package',
-    shortName: 'GRC Package',
-    badge: 'GRC & Governance',
-    badgeColor: 'from-slate-500/20 to-zinc-500/20 text-slate-600 dark:text-slate-400 border-slate-500/30',
-    audience: 'Data Protection Officers, Compliance Officers, External Regulatory Auditors',
-    primaryPurpose: 'Formal compliance package documenting 21 CFR Part 11 electronic records, HIPAA/GDPR data residency, audit trail immutability, and SOC2 Type II controls.',
-    blueprintPack: [
-      { slotTitle: 'Security Perimeter & Trust Boundaries', chapterNumber: 2, recommendedTemplateId: '18', description: 'Zero-trust perimeter and encrypted transit links.' },
-      { slotTitle: 'Dedicated Cloud Infrastructure & Data Isolation', chapterNumber: 3, recommendedTemplateId: '37', description: 'VPC service perimeters and KMS customer-managed keys.' },
-      { slotTitle: 'Governance, Risk & Compliance Framework Map', chapterNumber: 4, recommendedTemplateId: '39', description: 'Regulatory controls, audit ledgers, and certification gates.' },
-      { slotTitle: 'Cybersecurity Operations & SOC Platform', chapterNumber: 5, recommendedTemplateId: '44', description: 'Continuous SIEM auditing and telemetry streaming.' },
-    ],
-    sectionsCount: 8,
-  },
-];
 
 interface InlineDiagramFigureProps {
   templateId: string;
@@ -1168,7 +1010,9 @@ function DocGenContent() {
       isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070A13] text-slate-100'
     }`}>
       {/* PRINT-SPECIFIC CSS RULES FOR 100% CLEAN PDF EXPORT */}
-      <style jsx global>{`
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @media print {
           body {
             background: white !important;
@@ -1193,7 +1037,9 @@ function DocGenContent() {
             border: 1px solid #ccc !important;
           }
         }
-      `}</style>
+      `,
+        }}
+      />
 
       {/* TOP STICKY NAVBAR */}
       <header className={`sticky top-0 w-full z-40 border-b backdrop-blur-md transition-colors no-print ${

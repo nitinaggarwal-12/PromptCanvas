@@ -95,9 +95,9 @@ async function runMasterAuditHarness() {
   }
 
   // ============================================================================
-  // SUITE 2: 45-PERMUTATION (9 ARCHETYPES x 5 DOMAINS) SYNTHESIS & PERSONAL NAME SCRUBBING
+  // SUITE 2: 85-PERMUTATION (17 ARCHETYPES x 5 DOMAINS) SYNTHESIS & PERSONAL NAME SCRUBBING
   // ============================================================================
-  console.log('\n📌 SUITE 2: Full 45-Permutation ($9 \\times 5$) Document Synthesis & Author Scrubbing');
+  console.log('\n📌 SUITE 2: Full 85-Permutation ($17 \\times 5$) Document Synthesis & Author Scrubbing');
   const bannedPersonalNames = [
     'Nitin Aggarwal',
     'Dr. Marcus Vance',
