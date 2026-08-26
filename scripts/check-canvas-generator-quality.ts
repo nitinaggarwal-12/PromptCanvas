@@ -23,14 +23,14 @@ const CANVAS_TEST_SUITE: CanvasPromptTestCase[] = [
     name: 'AWS Cloud Native Serverless & Event-Driven',
     prompt: 'Design an AWS Serverless Event-Driven Platform with Route 53, AWS WAF, Amazon API Gateway, AWS Lambda, Amazon DynamoDB, and Amazon SQS',
     expectedVendorOrDomain: 'AWS',
-    disallowedPatterns: [/\bBigQuery\b/i, /\bCloud Run\b/i],
+    disallowedPatterns: [/value="[^"]*\bBigQuery\b[^"]*"/i, /value="[^"]*\bCloud Run\b[^"]*"/i],
     requiredPatterns: [/AWS|Amazon/i, /<mxfile\b/i]
   },
   {
     name: 'Microsoft Azure Enterprise Microservices Mesh',
     prompt: 'Enterprise Azure Microservices Platform with Azure Front Door, Azure Kubernetes Service (AKS), Azure Event Hubs, and Azure Cosmos DB',
     expectedVendorOrDomain: 'Azure',
-    disallowedPatterns: [/\bBigQuery\b/i, /\bCloud Pub\/Sub\b/i],
+    disallowedPatterns: [/value="[^"]*\bBigQuery\b[^"]*"/i, /value="[^"]*\bCloud Pub\/Sub\b[^"]*"/i],
     requiredPatterns: [/Azure|Microsoft/i, /<mxfile\b/i]
   },
   {

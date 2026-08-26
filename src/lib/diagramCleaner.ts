@@ -1627,58 +1627,58 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     const promptLowerFull = userPrompt.toLowerCase();
     if (promptLowerFull.includes('aws') || promptLowerFull.includes('amazon') || promptLowerFull.includes('eks') || promptLowerFull.includes('lambda')) {
       updatedXml = updatedXml
-        .replace(/Google Cloud Platform \(GCP\)/g, 'Amazon Web Services (AWS)')
-        .replace(/Google Cloud Platform/g, 'Amazon Web Services (AWS)')
-        .replace(/Google Cloud/g, 'AWS')
+        .replace(/Google Cloud Platform \(GCP\)/gi, 'Amazon Web Services (AWS)')
+        .replace(/Google Cloud Platform/gi, 'Amazon Web Services (AWS)')
+        .replace(/Google Cloud/gi, 'AWS')
         .replace(/GCP/g, 'AWS')
-        .replace(/Cloud Pub\/Sub/g, 'Amazon Kinesis &amp; SQS')
-        .replace(/Pub\/Sub/g, 'Amazon SQS / SNS')
-        .replace(/Cloud KMS/g, 'AWS KMS &amp; Secrets Manager')
-        .replace(/Cloud Run/g, 'AWS ECS Fargate')
-        .replace(/GKE Autopilot/g, 'Amazon EKS Cluster')
+        .replace(/Cloud Pub\/Sub/gi, 'Amazon Kinesis &amp; SQS')
+        .replace(/Pub\/Sub/gi, 'Amazon SQS / SNS')
+        .replace(/Cloud KMS/gi, 'AWS KMS &amp; Secrets Manager')
+        .replace(/Cloud Run/gi, 'AWS ECS Fargate')
+        .replace(/GKE Autopilot/gi, 'Amazon EKS Cluster')
         .replace(/GKE/g, 'EKS')
-        .replace(/BigQuery/g, 'Amazon Redshift &amp; Athena')
-        .replace(/Cloud Storage/g, 'Amazon S3 Bucket')
-        .replace(/Cloud Armor/g, 'AWS WAF &amp; Shield')
-        .replace(/Cloud Functions/g, 'AWS Lambda')
-        .replace(/Cloud SQL/g, 'Amazon Aurora PostgreSQL')
-        .replace(/Cloud Spanner/g, 'Amazon DynamoDB Global Tables')
-        .replace(/Vertex AI/g, 'Amazon Bedrock &amp; SageMaker')
-        .replace(/Cloud Logging/g, 'Amazon CloudWatch');
+        .replace(/BigQuery/gi, 'Amazon Redshift &amp; Athena')
+        .replace(/Cloud Storage/gi, 'Amazon S3 Bucket')
+        .replace(/Cloud Armor/gi, 'AWS WAF &amp; Shield')
+        .replace(/Cloud Functions/gi, 'AWS Lambda')
+        .replace(/Cloud SQL/gi, 'Amazon Aurora PostgreSQL')
+        .replace(/Cloud Spanner/gi, 'Amazon DynamoDB Global Tables')
+        .replace(/Vertex AI/gi, 'Amazon Bedrock &amp; SageMaker')
+        .replace(/Cloud Logging/gi, 'Amazon CloudWatch');
     } else if (promptLowerFull.includes('azure') || promptLowerFull.includes('aks')) {
       updatedXml = updatedXml
-        .replace(/Google Cloud Platform \(GCP\)/g, 'Microsoft Azure Enterprise Cloud')
-        .replace(/Google Cloud Platform/g, 'Microsoft Azure Enterprise Cloud')
-        .replace(/Google Cloud/g, 'Microsoft Azure')
+        .replace(/Google Cloud Platform \(GCP\)/gi, 'Microsoft Azure Enterprise Cloud')
+        .replace(/Google Cloud Platform/gi, 'Microsoft Azure Enterprise Cloud')
+        .replace(/Google Cloud/gi, 'Microsoft Azure')
         .replace(/GCP/g, 'Azure')
-        .replace(/Cloud Pub\/Sub/g, 'Azure Event Hubs &amp; Service Bus')
-        .replace(/Pub\/Sub/g, 'Azure Service Bus / Event Grid')
-        .replace(/Cloud KMS/g, 'Azure Key Vault &amp; Managed HSM')
-        .replace(/Cloud Run/g, 'Azure Container Apps')
-        .replace(/GKE Autopilot/g, 'Azure Kubernetes Service (AKS)')
+        .replace(/Cloud Pub\/Sub/gi, 'Azure Event Hubs &amp; Service Bus')
+        .replace(/Pub\/Sub/gi, 'Azure Service Bus / Event Grid')
+        .replace(/Cloud KMS/gi, 'Azure Key Vault &amp; Managed HSM')
+        .replace(/Cloud Run/gi, 'Azure Container Apps')
+        .replace(/GKE Autopilot/gi, 'Azure Kubernetes Service (AKS)')
         .replace(/GKE/g, 'AKS')
-        .replace(/BigQuery/g, 'Azure Synapse Analytics &amp; Microsoft Fabric')
-        .replace(/Cloud Storage/g, 'Azure Blob Storage (ADLS Gen2)')
-        .replace(/Cloud Armor/g, 'Azure Front Door &amp; WAF')
-        .replace(/Cloud Functions/g, 'Azure Functions')
-        .replace(/Cloud SQL/g, 'Azure Database for PostgreSQL (Flexible)')
-        .replace(/Cloud Spanner/g, 'Azure Cosmos DB (Multi-Region Active-Active)')
-        .replace(/Vertex AI/g, 'Azure OpenAI Service &amp; AI Search')
-        .replace(/Cloud Logging/g, 'Azure Monitor &amp; Log Analytics');
+        .replace(/BigQuery/gi, 'Azure Synapse Analytics &amp; Microsoft Fabric')
+        .replace(/Cloud Storage/gi, 'Azure Blob Storage (ADLS Gen2)')
+        .replace(/Cloud Armor/gi, 'Azure Front Door &amp; WAF')
+        .replace(/Cloud Functions/gi, 'Azure Functions')
+        .replace(/Cloud SQL/gi, 'Azure Database for PostgreSQL (Flexible)')
+        .replace(/Cloud Spanner/gi, 'Azure Cosmos DB (Multi-Region Active-Active)')
+        .replace(/Vertex AI/gi, 'Azure OpenAI Service &amp; AI Search')
+        .replace(/Cloud Logging/gi, 'Azure Monitor &amp; Log Analytics');
     } else if (promptLowerFull.includes('oracle') || promptLowerFull.includes('oci')) {
       updatedXml = updatedXml
-        .replace(/Google Cloud Platform \(GCP\)/g, 'Oracle Cloud Infrastructure (OCI)')
+        .replace(/Google Cloud Platform \(GCP\)/gi, 'Oracle Cloud Infrastructure (OCI)')
         .replace(/GCP/g, 'OCI')
-        .replace(/Cloud Pub\/Sub/g, 'OCI Streaming Service')
-        .replace(/Cloud KMS/g, 'OCI Vault &amp; KMS')
-        .replace(/Cloud Run/g, 'OCI Container Instances')
-        .replace(/BigQuery/g, 'OCI Autonomous Database')
-        .replace(/Cloud Storage/g, 'OCI Object Storage');
+        .replace(/Cloud Pub\/Sub/gi, 'OCI Streaming Service')
+        .replace(/Cloud KMS/gi, 'OCI Vault &amp; KMS')
+        .replace(/Cloud Run/gi, 'OCI Container Instances')
+        .replace(/BigQuery/gi, 'OCI Autonomous Database')
+        .replace(/Cloud Storage/gi, 'OCI Object Storage');
     } else if (promptLowerFull.includes('snowflake') || promptLowerFull.includes('databricks')) {
       updatedXml = updatedXml
-        .replace(/Cloud Pub\/Sub/g, 'Databricks Event Stream / Kafka')
-        .replace(/BigQuery/g, 'Snowflake Iceberg Lakehouse')
-        .replace(/Cloud Storage/g, 'Databricks Unity Catalog Storage');
+        .replace(/Cloud Pub\/Sub/gi, 'Databricks Event Stream / Kafka')
+        .replace(/BigQuery/gi, 'Snowflake Iceberg Lakehouse')
+        .replace(/Cloud Storage/gi, 'Databricks Unity Catalog Storage');
     }
   }
 
