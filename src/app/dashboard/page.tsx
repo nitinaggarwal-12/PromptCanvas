@@ -171,42 +171,62 @@ function DashboardContent() {
     if (archType.startsWith('canonical_')) {
       const tplId = archType.replace('canonical_', '');
       const tpl = CANONICAL_TEMPLATES.find(t => t.id === tplId);
-      if (tpl) return tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+      if (tpl) {
+        const raw = tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+        return injectUseCaseFlavor(raw, diag.name, diag.prompt || '');
+      }
     }
 
-    // 2. Check if name or prompt references a template number #XX or canonical title
+    // 2. Check for domain keywords (Autonomous, Drone, Vehicle, Robotics, FinTech, etc.)
+    const nameLower = diag.name.toLowerCase();
+    const promptLower = (diag.prompt || '').toLowerCase();
+    const fullText = `${nameLower} ${promptLower}`;
+
+    if (fullText.includes('underwater') || fullText.includes('vehicle') || fullText.includes('drone') || fullText.includes('autonomous')) {
+      // Use Template 36 (Smart Manufacturing & Industrial IoT) or Template 15 (Network Topology)
+      const tpl = CANONICAL_TEMPLATES.find(t => t.id === '36') || CANONICAL_TEMPLATES[0];
+      const raw = tpl.generateXml('manufacturing', isLight ? 'light' : 'dark');
+      return injectUseCaseFlavor(raw, diag.name, diag.prompt || 'Autonomous Vehicle Edge Telemetry, Sonar Sensor Fusion & Command Mesh');
+    }
+
+    // 3. Check if name or prompt references a template number #XX
     const numMatch = diag.name.match(/#(\d+)/);
     if (numMatch) {
       const numStr = numMatch[1];
-      // e.g. 441 -> 44, 05 -> 05, 7 -> 07
       const normalizedId = numStr.length === 3 ? numStr.slice(0, 2) : numStr.length === 1 ? `0${numStr}` : numStr.slice(-2);
       const tpl = CANONICAL_TEMPLATES.find(t => t.id === normalizedId);
-      if (tpl) return tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+      if (tpl) {
+        const raw = tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+        return injectUseCaseFlavor(raw, diag.name, diag.prompt || '');
+      }
     }
 
     const tplByName = CANONICAL_TEMPLATES.find(t => 
-      diag.name.toLowerCase().includes(t.name.toLowerCase()) || 
-      (diag.prompt && diag.prompt.toLowerCase().includes(t.name.toLowerCase()))
+      nameLower.includes(t.name.toLowerCase()) || 
+      promptLower.includes(t.name.toLowerCase())
     );
     if (tplByName) {
-      return tplByName.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+      const raw = tplByName.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+      return injectUseCaseFlavor(raw, diag.name, diag.prompt || '');
     }
 
-    // 3. Check version XML
+    // 4. Check version XML (rejecting stale ERD placeholders)
     if (verNumber && diag.versions) {
       const ver = diag.versions.find(v => v.version_number === verNumber);
-      if (ver && ver.xml_content && ver.xml_content.includes('<mxfile')) {
+      if (ver && ver.xml_content && ver.xml_content.includes('<mxfile') && !ver.xml_content.includes('Core Business Intelligence') && !ver.xml_content.includes('sub_schema_1')) {
         return ver.xml_content;
       }
     }
 
-    // 4. Default to diag xml_content if present and valid
-    if (diag.xml_content && diag.xml_content.includes('<mxfile')) {
+    // 5. Default to diag xml_content if present and valid (rejecting stale ERD placeholders)
+    if (diag.xml_content && diag.xml_content.includes('<mxfile') && !diag.xml_content.includes('Core Business Intelligence') && !diag.xml_content.includes('sub_schema_1')) {
       return diag.xml_content;
     }
 
-    // 5. Fallback to Blueprint 01 or matching canonical
-    return CANONICAL_TEMPLATES[0].generateXml('biopharma', isLight ? 'light' : 'dark');
+    // 6. Fallback to Blueprint 01 or 08
+    const fallbackTpl = CANONICAL_TEMPLATES.find(t => t.id === '08') || CANONICAL_TEMPLATES[0];
+    const fallbackRaw = fallbackTpl.generateXml('biopharma', isLight ? 'light' : 'dark');
+    return injectUseCaseFlavor(fallbackRaw, diag.name, diag.prompt || '');
   };
 
   // Filtered Diagrams
