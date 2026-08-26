@@ -295,14 +295,14 @@ export default function CanvasHistoryPage() {
     URL.revokeObjectURL(url);
   };
 
-  // Open Diagram in DiaGen Studio
-  const handleOpenInDiaGen = (diagramId: string, archType?: string | null) => {
+  // Open Canvas in workspace
+  const handleLaunchWorkspace = (diagramId: string, archType?: string | null) => {
     if (diagramId) {
-      router.push(`/diagen?diagram=${diagramId}`);
+      router.push(`/workspace?diagram=${diagramId}&tab=editor`);
     } else if (archType) {
-      router.push(`/diagen?arch=${archType}`);
+      router.push(`/workspace?blueprint=${archType}&tab=editor`);
     } else {
-      router.push(`/diagen`);
+      router.push(`/workspace?tab=editor`);
     }
   };
 
@@ -457,7 +457,7 @@ export default function CanvasHistoryPage() {
               <span className="text-slate-400">/</span>
               <span className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1.5">
                 <History className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Projects &amp; Version History</span>
+                <span className="hidden sm:inline">Historical Canvases &amp; Snapshots</span>
                 <span className="sm:hidden">History</span>
               </span>
             </div>
@@ -466,13 +466,13 @@ export default function CanvasHistoryPage() {
           {/* Right: Quick Action Controls */}
           <div className="flex items-center gap-2.5">
             <Link
-              href="/diablueprint"
+              href="/canonical"
               className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
                 isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
               }`}
               title="Canonical Blueprints Hub"
             >
-              <span>DiaBluePrint</span>
+              <span>Canonical Hub</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
             </Link>
 
@@ -483,7 +483,7 @@ export default function CanvasHistoryPage() {
               }`}
               title="DocGen Studio & Specifications"
             >
-              <span>DocGen</span>
+              <span>DocGen Hub</span>
               <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
             </Link>
 
@@ -494,7 +494,7 @@ export default function CanvasHistoryPage() {
               className={`p-2 rounded-xl border transition cursor-pointer ${
                 isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300 hover:text-teal-300'
               }`}
-              title="Refresh Projects & Versions"
+              title="Refresh Historical Canvases"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />
             </button>
@@ -502,12 +502,12 @@ export default function CanvasHistoryPage() {
             <ThemeToggleBtn id="history-theme-toggle-btn" />
 
             <Link
-              href="/diagen"
-              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
-              title="Launch DiaGen Studio"
+              href="/workspace"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-teal-400 to-emerald-400 hover:from-teal-300 hover:to-emerald-300 text-[#070a13] font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
+              title="Return to Workspace Canvas"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Launch Studio</span>
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Workspace</span>
             </Link>
           </div>
         </header>
@@ -578,13 +578,13 @@ export default function CanvasHistoryPage() {
               <div className="space-y-1 flex-1 min-w-0">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-bold uppercase tracking-wider">
                   <History className="w-3 h-3" />
-                  <span>Projects &amp; Architecture Version Snapshots</span>
+                  <span>Historical Canvases &amp; Version Snapshots</span>
                 </div>
                 <h1 className={`text-xl sm:text-2xl font-black tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                  Projects &amp; <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Version History</span>
+                  Canvas Version <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Archive &amp; Tiles</span>
                 </h1>
                 <p className={`text-xs leading-normal line-clamp-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  Browse, inspect, and open historical architecture designs, prompt evolutions, and version rollbacks with instant vector previews.
+                  Browse and inspect historical canvases, architecture blueprints, and iterative snapshots with instant vector preview and star bookmarks.
                 </p>
               </div>
 
@@ -592,7 +592,7 @@ export default function CanvasHistoryPage() {
               <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
                 <div className="text-center px-1.5">
                   <div className="text-base sm:text-lg font-black text-teal-600 dark:text-teal-400">{totalCanvases}</div>
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Projects</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Canvases</div>
                 </div>
                 <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
                 <div className="text-center px-1.5">
@@ -602,7 +602,7 @@ export default function CanvasHistoryPage() {
                 <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
                 <div className="text-center px-1.5">
                   <div className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">v{maxVersionDepth}</div>
-                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Max Depth</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">Depth</div>
                 </div>
               </div>
             </div>
@@ -624,7 +624,7 @@ export default function CanvasHistoryPage() {
                 }`}
               >
                 <User className="w-4 h-4" />
-                <span>My Projects &amp; Designs ({myCanvasesList.length})</span>
+                <span>My Workspace Canvases ({myCanvasesList.length})</span>
               </button>
 
               <button
@@ -642,7 +642,7 @@ export default function CanvasHistoryPage() {
                 }`}
               >
                 <Globe className="w-4 h-4" />
-                <span>Community &amp; Master Blueprints ({diagrams.length})</span>
+                <span>Community Showcase &amp; 50 Blueprints ({diagrams.length})</span>
               </button>
             </div>
 
@@ -914,16 +914,16 @@ export default function CanvasHistoryPage() {
                       }`}
                     >
                       <Eye className="w-3.5 h-3.5 text-teal-500" />
-                      <span>Version Timeline</span>
+                      <span>Preview All Versions</span>
                     </button>
 
                     <button
-                      onClick={() => handleOpenInDiaGen(diagram.id, diagram.architecture_type)}
-                      className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-md hover:scale-[1.02]"
-                      title="Open architecture in DiaGen Studio"
+                      onClick={() => handleLaunchWorkspace(diagram.id, diagram.architecture_type)}
+                      className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-[#070a13] text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-lg shadow-teal-500/20"
+                      title="Open full editable canvas in workspace"
                     >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Open in DiaGen</span>
+                      <span>Open Canvas</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </button>
                     </div>
                   </div>
@@ -985,11 +985,11 @@ export default function CanvasHistoryPage() {
                     </button>
 
                     <button
-                      onClick={() => handleOpenInDiaGen(activeModalCanvas.id, activeModalCanvas.architecture_type)}
-                      className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-lg shadow-teal-500/20 cursor-pointer"
+                      onClick={() => handleLaunchWorkspace(activeModalCanvas.id, activeModalCanvas.architecture_type)}
+                      className="px-4 py-1.5 rounded-lg bg-teal-400 hover:bg-teal-300 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-lg shadow-teal-500/20"
                     >
-                      <Layers className="w-3.5 h-3.5" />
-                      <span>Open in DiaGen Studio</span>
+                      <span>Open in Workspace</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </button>
                   </>
                 )}
