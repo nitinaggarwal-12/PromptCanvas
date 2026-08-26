@@ -81,11 +81,11 @@ export default function DiagramViewerRenderSafe({
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
-  let containerDimensions = 'w-full h-full min-h-[420px] max-w-full';
+  let containerDimensions = 'w-full h-full max-w-full';
   if (aspectRatioId === '1:1') containerDimensions = 'w-full max-w-[950px] h-[980px]';
   else if (aspectRatioId === '9:16') containerDimensions = 'w-full max-w-[650px] h-[1180px]';
   else if (aspectRatioId === '4:3') containerDimensions = 'w-full max-w-[1350px] h-[1040px]';
-  else if (aspectRatioId === '21:9') containerDimensions = 'w-full h-full min-h-[420px] max-w-full';
+  else if (aspectRatioId === '21:9') containerDimensions = 'w-full h-full max-w-full';
 
   let customHeightStyle: React.CSSProperties | undefined;
   if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
@@ -96,7 +96,8 @@ export default function DiagramViewerRenderSafe({
 
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
-    minHeight: '420px',
+    height: '100%',
+    width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
       : {}),

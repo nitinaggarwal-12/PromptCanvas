@@ -1571,26 +1571,32 @@ function WorkspaceContent() {
     activeLoadingIdRef.current = id;
 
     // Handle Canonical Blueprint loading directly
-    const canonicalMatch = CANONICAL_TEMPLATES.find(c => c.id === id || c.id === `canonical_${id}` || id.includes(c.id));
+    const canonicalMatch = CANONICAL_TEMPLATES.find(
+      (c) => c.id === id || c.id === id.padStart(2, '0') || id === `canonical_${c.id}` || id === `canonical_${c.id.padStart(2, '0')}`
+    );
     if (canonicalMatch) {
+      const xml = canonicalMatch.generateXml('biopharma', isLight ? 'light' : 'dark');
+      activeXmlRef.current = xml;
+      setCustomXml(xml);
       const syntheticDiagram: Diagram = {
         id: canonicalMatch.id,
         name: canonicalMatch.name,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        architecture_type: canonicalMatch.id,
-        xml_content: canonicalMatch.xml,
+        architecture_type: `canonical_${canonicalMatch.id}`,
+        xml_content: xml,
         versions: [{
           id: `canonical_ver_${canonicalMatch.id}`,
           version_number: 1,
-          xml_content: canonicalMatch.xml,
+          xml_content: xml,
           created_at: new Date().toISOString(),
           comment: 'Ground-Truth Blueprint'
         }]
       };
       setRestrictedState(null);
       setActiveDiagram(syntheticDiagram);
-      setSelectedArchType(canonicalMatch.id);
+      setSelectedArchType(`canonical_${canonicalMatch.id}`);
+      setNewDiagramName(canonicalMatch.name);
       setViewMode('canvas');
       setLayoutPreset('detailed');
       setZoom(1.0);

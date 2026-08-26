@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import {
   CANONICAL_TEMPLATES,
   DOMAIN_PRESETS,
   CanonicalTemplate,
+  injectDomainFlavorXml,
 } from '@/lib/canonical/canonicalTemplates';
+import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
   ChevronLeft,
@@ -25,7 +27,8 @@ import {
   Minimize2,
   Share2,
   FileText,
-  Boxes
+  Boxes,
+  Edit3,
 } from 'lucide-react';
 import { ComposeModal } from '@/components/workspace/ComposeModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -35,17 +38,28 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 export default function CanonicalTemplateDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const domainParam = searchParams.get('domain');
+  const titleParam = searchParams.get('title');
+  const promptParam = searchParams.get('prompt');
+
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
   const templateId = String(rawId || '01').padStart(2, '0');
   const { theme } = useTheme();
   const isDark = theme === 'dark';
   const themeMode: 'light' | 'dark' = isDark ? 'dark' : 'light';
 
-  const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
+  const [selectedDomain, setSelectedDomain] = useState<string>(domainParam || 'biopharma');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (domainParam) {
+      setSelectedDomain(domainParam);
+    }
+  }, [domainParam]);
 
   // Find template by ID
   const activeTemplate = useMemo(() => {
@@ -70,8 +84,13 @@ export default function CanonicalTemplateDetailPage() {
   // Generate XML
   const currentXml = useMemo(() => {
     if (!activeTemplate) return '';
-    return activeTemplate.generateXml(selectedDomain, themeMode);
-  }, [activeTemplate, selectedDomain, themeMode]);
+    const rawXml = activeTemplate.generateXml(selectedDomain, themeMode);
+    const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
+    if (titleParam || promptParam) {
+      return injectUseCaseFlavor(domainCleaned, titleParam || activeTemplate.name, promptParam);
+    }
+    return domainCleaned;
+  }, [activeTemplate, selectedDomain, themeMode, titleParam, promptParam]);
 
   // Keyboard navigation for Left / Right arrows
   useEffect(() => {
@@ -225,6 +244,17 @@ export default function CanonicalTemplateDetailPage() {
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
                 <span className="hidden sm:inline">Launch Studio</span>
                 <span className="sm:hidden">Studio</span>
+              </Link>
+
+              {/* Design Canvas Editor Button */}
+              <Link
+                href={`/workspace?blueprint=${activeTemplate.id}&domain=${selectedDomain}&title=${encodeURIComponent(titleParam || activeTemplate.name)}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/20 transition-all hover:scale-[1.02] shrink-0"
+                title="Open and edit this exact blueprint in Design Canvas workspace"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Design Canvas</span>
+                <span className="sm:hidden">Canvas</span>
               </Link>
 
               {/* Generate Docs Button */}

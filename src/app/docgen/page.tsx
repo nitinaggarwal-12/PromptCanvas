@@ -2789,16 +2789,31 @@ function DocGenContent() {
                             {/* Selected Chapter Viewport */}
                             {(() => {
                               const activeSlot = activeMeta.blueprintPack[activePreviewChapterIndex] || activeMeta.blueprintPack[0];
+                              const slotTplId = slotCustomizations[activePreviewChapterIndex + 1]?.templateId || activeSlot?.recommendedTemplateId || '01';
+                              const chapterTpl = CANONICAL_TEMPLATES.find((t) => t.id === slotTplId) || CANONICAL_TEMPLATES[0];
+                              const chapterXml = chapterTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+                              const flavoredChapterXml = injectDomainFlavorXml(chapterXml, selectedDomain);
                               return (
                                 <div className="space-y-2">
-                                  <div className="p-2.5 rounded-xl bg-sky-50/50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-[11px] text-sky-900 dark:text-sky-300">
-                                    <span className="font-bold">Ch. {activeSlot.chapterNumber} &bull; {activeSlot.slotTitle}:</span>{' '}
-                                    <span className="text-slate-500 dark:text-slate-400">{activeSlot.description}</span>
+                                  <div className="p-2.5 rounded-xl bg-sky-50/50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-[11px] text-sky-900 dark:text-sky-300 flex items-center justify-between">
+                                    <div className="truncate pr-2">
+                                      <span className="font-bold">Ch. {activeSlot.chapterNumber} &bull; {activeSlot.slotTitle}:</span>{' '}
+                                      <span className="text-slate-500 dark:text-slate-400">{activeSlot.description}</span>
+                                    </div>
+                                    <Link
+                                      href={`/canonical/${chapterTpl.id}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || chapterTpl.name)}`}
+                                      target="_blank"
+                                      className="px-2 py-0.5 rounded-md bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 font-mono font-bold text-[10px] flex items-center gap-1 shrink-0 cursor-pointer"
+                                      title="Open standalone Canonical Blueprint in new tab"
+                                    >
+                                      <span>#{chapterTpl.id} [↗]</span>
+                                    </Link>
                                   </div>
-                                  <div className="w-full h-56 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center">
+                                  <div className="w-full h-[360px] md:h-[420px] border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center p-1">
                                     <DiagramViewerRenderSafe
-                                      diagramId={currentPreviewTemplateId}
-                                      xml={liveStudioDiagramXml}
+                                      diagramId={chapterTpl.id}
+                                      diagramType={`canonical_${chapterTpl.id}`}
+                                      xml={flavoredChapterXml}
                                       aspectRatioId="16:9"
                                       bgTheme={isLight ? 'light' : 'dark'}
                                     />
