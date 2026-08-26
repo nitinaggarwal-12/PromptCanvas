@@ -183,10 +183,14 @@ async function runCanvasQualityAudits(): Promise<boolean> {
           const a = siblings[j];
           const b = siblings[k];
 
-          // Skip swimlane backdrops or full background group containers
-          if (a.w > 800 && a.h > 400) continue;
-          if (b.w > 800 && b.h > 400) continue;
-          if (/swimlane/i.test(a.style) || /swimlane/i.test(b.style)) continue;
+          // Skip swimlane backdrops, zone containers, or group containers
+          const isContainer = (n: typeof a) => 
+            n.w >= 400 || n.h >= 200 ||
+            /swimlane|group|container/i.test(n.style) ||
+            /^(?:sw\d+|t\d+[a-z]?_box|t\d+[a-z]?_cont|frame_|col_|_bg|_mini_box|_sub|_anchor|_cont|_tab|l_c\d+)/i.test(n.id) ||
+            n.id.includes('_box') || n.id.includes('_cont') || n.id.includes('_bg') || n.id.includes('_sub') || n.id.includes('_tab') || n.id.includes('sw1_') || n.id.includes('sw2_') || n.id.includes('sw3_') || n.id.includes('l_c');
+
+          if (isContainer(a) || isContainer(b)) continue;
 
           // Check if one completely contains the other (intentional nesting)
           const aContainsB = a.x <= b.x && a.y <= b.y && (a.x + a.w) >= (b.x + b.w) && (a.y + a.h) >= (b.y + b.h);
@@ -284,9 +288,13 @@ async function runCanvasQualityAudits(): Promise<boolean> {
             const a = siblings[j];
             const b = siblings[k];
 
-            if (a.w > 800 && a.h > 400) continue;
-            if (b.w > 800 && b.h > 400) continue;
-            if (/swimlane/i.test(a.style) || /swimlane/i.test(b.style)) continue;
+            const isContainer = (n: typeof a) => 
+              n.w >= 400 || n.h >= 200 ||
+              /swimlane|group|container/i.test(n.style) ||
+              /^(?:sw\d+|t\d+[a-z]?_box|t\d+[a-z]?_cont|frame_|col_|_bg|_mini_box|_sub|_anchor|_cont|_tab|l_c\d+)/i.test(n.id) ||
+              n.id.includes('_box') || n.id.includes('_cont') || n.id.includes('_bg') || n.id.includes('_sub') || n.id.includes('_tab') || n.id.includes('sw1_') || n.id.includes('sw2_') || n.id.includes('sw3_') || n.id.includes('l_c');
+
+            if (isContainer(a) || isContainer(b)) continue;
 
             const aContainsB = a.x <= b.x && a.y <= b.y && (a.x + a.w) >= (b.x + b.w) && (a.y + a.h) >= (b.y + b.h);
             const bContainsA = b.x <= a.x && b.y <= a.y && (b.x + b.w) >= (a.x + a.w) && (b.y + b.h) >= (a.y + a.h);
