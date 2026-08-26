@@ -180,10 +180,15 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   // Phase Vertical Guidelines (Dashed dividers across process rows y=102..666)
   const phaseDividers = [200, 534, 998, 1222, 1460];
   phaseDividers.forEach((px, idx) => {
-    rawEdge(`div_phase_${idx}`, "edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=4 4;endArrow=none;", [
-      { x: px, y: 102 },
-      { x: px, y: 666 }
-    ]);
+    cell(
+      `div_phase_${idx}`,
+      "",
+      px,
+      102,
+      1,
+      564,
+      "line;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=4 4;html=1;"
+    );
   });
 
   // 7 Swimlane Rows

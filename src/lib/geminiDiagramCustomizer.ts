@@ -236,8 +236,29 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = newVal.replace(/(<span\b[^>]*?color:[^>]*?334155[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(subtitle)}$3`);
           }
         }
+        const badge = custom.badge || '';
+        if (badge) {
+          if (/(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
+            newVal = newVal.replace(/(&lt;span\b[^&]*?border-radius:[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(badge)}$3`);
+          } else if (/<span\b[^>]*?border-radius:[^>]*?>(.*?)<\/span>/i.test(newVal)) {
+            newVal = newVal.replace(/(<span\b[^>]*?border-radius:[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(badge)}$3`);
+          } else if (newVal.includes('&lt;/tr&gt;')) {
+            newVal = newVal.replace('&lt;/tr&gt;', `&lt;span style="font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;"&gt;${escapeXmlText(badge)}&lt;/span&gt;&lt;/tr&gt;`);
+          } else if (newVal.includes('</tr>')) {
+            newVal = newVal.replace('</tr>', `<span style="font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;">${escapeXmlText(badge)}</span></tr>`);
+          } else {
+            newVal = `${newVal} &lt;span&gt;${escapeXmlText(badge)}&lt;/span&gt;`;
+          }
+        }
         customizedXml = customizedXml.replace(nodeRegex, `$1${newVal}$3`);
       }
+    }
+
+    if (data.headerTitle) {
+      customizedXml = customizedXml.replace(/(<mxCell\s+id="header_title"\s+value=")([^"]*)(")/i, `$1${escapeXmlText(data.headerTitle)}$3`);
+    }
+    if (data.headerSubtitle) {
+      customizedXml = customizedXml.replace(/(<mxCell\s+id="header_subtitle"\s+value=")([^"]*)(")/i, `$1${escapeXmlText(data.headerSubtitle)}$3`);
     }
 
     const reasoning = data.reasoning || `Architected using Gemini ${modelName} strictly tailored for "${userPrompt.slice(0, 50)}".`;

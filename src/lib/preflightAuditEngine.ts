@@ -8,12 +8,11 @@ import { sanitizeDrawioXmlAttributes } from './diagramCleaner';
  */
 export function preflightVerifyAndHealXmlAcrossAll6Audits(
   xmlInput: string,
-  archType: string = 'unified_system_view'
+  archType: string = 'custom'
 ): string {
   const isMasterOrStructured = (
     xmlInput.includes('id="exact_unified_system_view"') ||
     xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||
-    xmlInput.includes('id="unified_system_view"') ||
     (archType !== undefined && archType !== null && (
       archType === 'unified_system_view' ||
       archType === 'unified_flowchart' ||
@@ -86,10 +85,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       archType.includes('canonical') ||
       archType.includes('wbs') ||
       archType.includes('blueprint')
-    )
+    ) && archType !== 'custom' && archType !== 'gemini_custom')
   ) || (
     xmlInput && (
-      xmlInput.includes('PromptCanvas') ||
       xmlInput.includes('canonical') ||
       xmlInput.includes('NOVACURA') ||
       xmlInput.includes('template_0') ||
@@ -98,8 +96,6 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('01 — System Context') ||
       xmlInput.includes('wbs') ||
       xmlInput.includes('WBS') ||
-      xmlInput.includes('Blueprint') ||
-      xmlInput.includes('Phase ') ||
       xmlInput.includes('id="hdr_title_box"') ||
       xmlInput.includes('id="hdr_meta_box"') ||
       xmlInput.includes('id="box_workspace_outer"') ||
@@ -116,9 +112,9 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
       xmlInput.includes('PromptCanvas-LayoutEngineV2')
     )
-  ));
+  );
 
-  if (isMasterOrStructured) {
+  if (isMasterOrStructured && !xmlInput.includes('GeminiDirect')) {
     return xmlInput.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
   }
 

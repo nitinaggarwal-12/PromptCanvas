@@ -20,8 +20,9 @@ interface Segment {
 }
 
 function lineIntersectsRect(seg: Segment, r: Rect): boolean {
-  // Ignore container background wrappers (large outer cards)
-  if (r.w > 350 && r.h > 120) return false;
+  // Ignore container background wrappers (large outer cards) and layout divider guides
+  if ((r.w > 350 && r.h > 120) || r.id.startsWith('div_') || r.id.startsWith('guide_')) return false;
+  if (seg.id.startsWith('div_') || seg.id.startsWith('guide_')) return false;
   
   // Lifelines in sequence diagrams are intentional background guides for activation bars and participant boxes
   if (seg.isLifeline) {

@@ -27,11 +27,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   const rawEdge = (
     id: string,
     style: string,
-    pts: { x: number; y: number }[]
+    pts: { x: number; y: number }[],
+    label = ""
   ) => {
     const pStr = pts.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
     c.push(
-      `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+      `<mxCell id="${id}" value="${E(label)}" edge="1" parent="1" style="${style}">
         <mxGeometry relative="1" as="geometry">
           <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
           <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
@@ -108,22 +109,16 @@ export function generateTemplate21ObservabilityArchitectureXml(
     );
   });
 
-  // Telemetry flow label pill
-  cell(
-    "lbl_flow_top",
-    "Logs, Metrics, Traces, Events, Audit Logs",
-    612,
-    142,
-    280,
-    16,
-    "rounded=1;arcSize=12;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor:#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;"
+  // Drop line from Sources to Pipeline & Stages with high-contrast label pill
+  rawEdge(
+    "e_src_to_pipe",
+    "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#F8FAFC;labelBorderColor=#CBD5E1;fontColor=#64748B;fontSize=8;fontStyle=1;align=center;",
+    [
+      { x: 752, y: 138 },
+      { x: 752, y: 162 }
+    ],
+    "Logs, Metrics, Traces, Events, Audit Logs"
   );
-
-  // Drop line from Sources to Pipeline & Stages
-  rawEdge("e_src_to_pipe", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=4;", [
-    { x: 752, y: 138 },
-    { x: 752, y: 162 }
-  ]);
 
   // Dashed drop lines to Collection, Ingestion, Storage, Analysis, Visualization
   rawEdge("e_drop_p1", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1;dashed=1;dashPattern=3 2;endArrow=classic;endSize=3;", [
