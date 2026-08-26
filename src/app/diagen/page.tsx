@@ -644,45 +644,70 @@ function DiaGenStudioContent() {
               </div>
             </div>
 
-            {/* STEP 2: ATTACHED ARCHITECTURE TIERS & BLUEPRINT PREVIEW */}
+            {/* STEP 2: SELECTED BLUEPRINT SPECIFICATION & KEY COMPONENTS */}
             <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                  STEP 2 OF 2 · ATTACHED BLUEPRINT ARCHITECTURE PACK
-                </span>
-                <span className="text-xs font-bold text-slate-400">
-                  {selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id}) · {selectedBlueprintMeta.family}
-                </span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                    STEP 2 OF 2 · SELECTED BLUEPRINT SPECIFICATION &amp; KEY COMPONENTS
+                  </span>
+                  <h3 className={`text-base font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                    {selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id}) · <span className="text-teal-600 dark:text-teal-400">{selectedBlueprintMeta.family} ({selectedBlueprintMeta.level})</span>
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    <span>100% Zero-Collision Calibrated</span>
+                  </span>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {BIOPHARMA_REFERENCE_TIERS.map((tier) => (
-                  <div
-                    key={tier.tierNumber}
-                    className={`p-4 rounded-2xl border space-y-2 ${
-                      isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-md bg-teal-500/15 text-teal-600 dark:text-teal-300 border border-teal-500/20">
-                        TIER {tier.tierNumber}
+              {/* Purpose & Target Examples Card */}
+              <div className={`p-4 rounded-2xl border flex flex-col md:flex-row gap-4 ${
+                isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-[#090D18] border-slate-800'
+              }`}>
+                <div className="flex-1 space-y-1">
+                  <span className="text-[10px] font-mono font-extrabold uppercase text-slate-400">Architectural Role &amp; Purpose</span>
+                  <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    {selectedBlueprintMeta.primaryPurpose}
+                  </p>
+                </div>
+                <div className="md:w-80 space-y-1 md:border-l md:pl-4 border-slate-200 dark:border-slate-800">
+                  <span className="text-[10px] font-mono font-extrabold uppercase text-slate-400">Target Industry Examples</span>
+                  <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    {selectedBlueprintMeta.examples}
+                  </p>
+                </div>
+              </div>
+
+              {/* Dynamic Key Component Pods */}
+              <div className="space-y-2 pt-2">
+                <span className="text-[10.5px] font-mono font-black uppercase tracking-wider text-slate-400">
+                  Key Component Pods in this Architecture Layout ({selectedBlueprintMeta.keyComponents.length})
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                  {selectedBlueprintMeta.keyComponents.map((comp, compIdx) => (
+                    <div
+                      key={compIdx}
+                      className={`p-3.5 rounded-2xl border flex items-center justify-between gap-2.5 transition-all ${
+                        isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="w-6 h-6 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 font-mono font-bold text-[11px] flex items-center justify-center shrink-0 border border-teal-500/20">
+                          {compIdx + 1}
+                        </span>
+                        <span className={`text-xs font-bold truncate ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
+                          {comp}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono text-emerald-500 font-bold shrink-0">
+                        AST Active
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400">100% Calibrated</span>
                     </div>
-
-                    <h4 className={`text-xs font-black line-clamp-1 ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                      {tier.subsystem}
-                    </h4>
-
-                    <p className={`text-[11px] leading-relaxed line-clamp-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                      {tier.gcpTechStack}
-                    </p>
-
-                    <div className="text-[10px] font-semibold text-indigo-500 dark:text-indigo-400 pt-1 border-t border-slate-100 dark:border-slate-800/80">
-                      🔒 {tier.complianceControls}
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
 
