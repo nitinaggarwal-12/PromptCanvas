@@ -6102,280 +6102,186 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           </button>
         </div>
 
-        {/* 3. CLEAN PRIMARY NAVIGATION LINKS (No Auto-Hover Accordion Sprawl) */}
+        {/* 3. CLEAN PRIMARY NAVIGATION LINKS */}
         <div className="p-3 space-y-1 flex-1 overflow-y-auto">
-          {[
-            { id: 'editor', name: t.designCanvas, icon: Network },
-            { id: 'canonical', name: 'Canonical Blueprints Hub', icon: Sparkles, href: '/canonical', badge: '50' },
-            { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
-            { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
-            { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
-            { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
-            { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
-            { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
-            { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
-            { id: 'settings', name: t.settingsTier, icon: Settings }
-          ].map((item) => {
-            const Icon = item.icon;
-            const isActive = currentTab === item.id;
-            
-            const buttonContent = (
-              <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                isActive 
-                  ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
-                  : canvasTheme === 'light'
-                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-              }`}>
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${
-                    isActive
-                      ? 'text-bg-dark'
-                      : canvasTheme === 'light'
-                        ? 'text-slate-500'
-                        : 'text-slate-400'
-                  }`} />
-                  {isSidebarOpen && <span className="truncate">{item.name}</span>}
-                </div>
-                {isSidebarOpen && (item as any).badge && (
-                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
-                    {(item as any).badge}
-                  </span>
-                )}
+          {/* Design Canvas */}
+          <div
+            onClick={() => setCurrentTab('editor')}
+            className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              currentTab === 'editor'
+                ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                : canvasTheme === 'light'
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <Network className={`w-4 h-4 shrink-0 ${currentTab === 'editor' ? 'text-bg-dark' : 'text-slate-400'}`} />
+              {isSidebarOpen && <span className="truncate">{t.designCanvas}</span>}
+            </div>
+          </div>
+
+          {/* Studio [Expandable Hub] */}
+          <div className="space-y-1 pt-1">
+            <Link
+              href="/studio"
+              className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer select-none ${
+                canvasTheme === 'light'
+                  ? 'bg-indigo-50/70 border border-indigo-200/80 hover:bg-indigo-100/70 text-indigo-900 shadow-xs'
+                  : 'bg-indigo-950/40 border border-indigo-500/30 hover:bg-indigo-900/40 text-indigo-200 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
+                {isSidebarOpen && <span className="truncate">Studio</span>}
               </div>
-            );
+              {isSidebarOpen && (
+                <span className="text-[8.5px] font-mono font-black px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 border border-indigo-500/30">
+                  HUB
+                </span>
+              )}
+            </Link>
 
-            if (item.href) {
-              return (
-                <Link key={item.id} href={item.href} className="block">
-                  {buttonContent}
-                </Link>
-              );
-            }
-
-            if (item.id === 'settings') {
-              return (
-                <div
-                  key={item.id}
-                  className="relative"
-                  onMouseEnter={() => setIsSettingsHoverOpen(true)}
-                  onMouseLeave={() => setIsSettingsHoverOpen(false)}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentTab('settings');
-                      if (typeof window !== 'undefined') {
-                        const params = new URLSearchParams(window.location.search);
-                        params.set('tab', 'settings');
-                        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-                      }
-                      if (!isSidebarOpen) setIsSidebarOpen(true);
-                    }}
-                    className="w-full text-left block"
-                  >
-                    {buttonContent}
-                  </button>
-
-                  {/* HOVER-OVER SETTINGS & AI TIER DROPDOWN */}
-                  {isSettingsHoverOpen && (
-                    <div 
-                      className="fixed sm:absolute left-16 sm:left-full bottom-0 ml-3 w-[360px] bg-[#090d16]/98 backdrop-blur-2xl border border-teal-500/50 rounded-2xl shadow-2xl p-4 z-[9999] animate-fade-in text-slate-100 flex flex-col gap-3.5"
-                      onMouseEnter={() => setIsSettingsHoverOpen(true)}
-                      onMouseLeave={() => setIsSettingsHoverOpen(false)}
-                    >
-                      {/* Header */}
-                      <div className="pb-2 border-b border-slate-800 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Settings className="w-4 h-4 text-teal-400" />
-                          <span className="font-black text-xs text-white uppercase tracking-wider">System &amp; Workspace Settings</span>
-                        </div>
-                        <span className="text-[10px] font-mono text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded border border-teal-800/80 font-bold">
-                          AI Tier: Pro
-                        </span>
-                      </div>
-
-                      {/* 1. Theme Selection */}
-                      <div className="space-y-1.5">
-                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Canvas Theme</span>
-                        <div className="grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setCanvasTheme('light')}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border ${
-                              canvasTheme === 'light'
-                                ? 'bg-amber-100 border-amber-400 text-amber-950 shadow-sm font-black'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <Sun className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                            <span>☀️ Light Mode</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setCanvasTheme('dark')}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer border ${
-                              canvasTheme === 'dark'
-                                ? 'bg-indigo-500/20 border-indigo-400 text-indigo-200 shadow-sm font-extrabold'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                            <span>🌙 Dark Mode</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* 2. Language Selection */}
-                      <div className="space-y-1.5">
-                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Workspace Language</span>
-                        <div className="grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setCurrentLanguage('en')}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
-                              currentLanguage === 'en'
-                                ? canvasTheme === 'light'
-                                  ? 'bg-teal-100 border-teal-400 text-teal-950 shadow-sm font-black'
-                                  : 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <span>🇺🇸 English (EN)</span>
-                            {currentLanguage === 'en' && <span className="text-teal-600 dark:text-teal-400 font-black">✓</span>}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setCurrentLanguage('hi')}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
-                              currentLanguage === 'hi'
-                                ? canvasTheme === 'light'
-                                  ? 'bg-teal-100 border-teal-400 text-teal-950 shadow-sm font-black'
-                                  : 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <span>🇮🇳 हिन्दी (HI)</span>
-                            {currentLanguage === 'hi' && <span className="text-teal-600 dark:text-teal-400 font-black">✓</span>}
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* 3. Diagram Privacy */}
-                      <div className="space-y-1.5">
-                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Diagram Privacy &amp; Visibility</span>
-                        <div className="grid grid-cols-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => toggleDiagramPrivacy(false)}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
-                              !isPrivate
-                                ? canvasTheme === 'light'
-                                  ? 'bg-teal-100 border-teal-400 text-teal-950 shadow-sm font-black'
-                                  : 'bg-teal-500/20 border-teal-400 text-teal-200 shadow-sm font-extrabold'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                            <span>🌐 Public</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => toggleDiagramPrivacy(true)}
-                            className={`px-3 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border ${
-                              isPrivate
-                                ? canvasTheme === 'light'
-                                  ? 'bg-amber-100 border-amber-400 text-amber-950 shadow-sm font-black'
-                                  : 'bg-amber-500/20 border-amber-400 text-amber-200 shadow-sm font-extrabold'
-                                : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                            }`}
-                          >
-                            <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                            <span>🔒 Private</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* 4. Slides & Aspect Ratio Format */}
-                      <div className="space-y-1.5">
-                        <span className="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">Slides &amp; Canvas Ratio</span>
-                        <div className="grid grid-cols-4 gap-1.5">
-                          {[
-                            { id: '16:9', label: '16:9', desc: 'Widescreen (1360x720)' },
-                            { id: '4:3', label: '4:3', desc: 'Standard Slide (1024x768)' },
-                            { id: '1:1', label: '1:1', desc: 'Square (800x800)' },
-                            { id: '9:16', label: '9:16', desc: 'Story Mobile (720x1280)' },
-                          ].map((r) => (
-                            <button
-                              key={r.id}
-                              type="button"
-                              onClick={() => setSelectedAspectRatio(r.id)}
-                              className={`py-1.5 rounded-lg text-xs font-bold transition flex flex-col items-center justify-center cursor-pointer border ${
-                                selectedAspectRatio === r.id
-                                  ? 'bg-teal-400 text-slate-950 border-teal-300 font-black shadow-sm'
-                                  : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:text-white'
-                              }`}
-                              title={`${r.desc} (${r.id})`}
-                            >
-                              <span>{r.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 5. AI Tier & Full Settings Modal Trigger */}
-                      <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setIsSettingsHoverOpen(false);
-                            setCurrentTab('settings');
-                          }}
-                          className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-slate-950 font-black text-xs transition shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <Sparkles className="w-3.5 h-3.5" />
-                          <span>⚡ Open AI Tier &amp; API Key Config</span>
-                        </button>
-                      </div>
+            {/* Studio Sub-Items */}
+            {isSidebarOpen && (
+              <div className={`ml-3 pl-2.5 border-l space-y-1 py-1 ${
+                canvasTheme === 'light' ? 'border-indigo-200' : 'border-indigo-500/30'
+              }`}>
+                {/* DiaGen */}
+                <Link href="/diagen" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'light' ? 'text-slate-600 hover:text-teal-900 hover:bg-teal-50' : 'text-slate-300 hover:text-white hover:bg-teal-950/40'
+                  }`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Layers className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+                      <span className="truncate">DiaGen</span>
                     </div>
-                  )}
-                </div>
-              );
-            }
+                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-teal-500/15 text-teal-600 dark:text-teal-300">
+                      AI
+                    </span>
+                  </div>
+                </Link>
 
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
-                  setCurrentTab(newTab);
-                  if (newTab === 'editor') {
-                    setIsAssistantOpen(true);
-                    if (!activeDiagram && diagrams.length > 0) {
-                      loadDiagramDetails(diagrams[0].id);
-                    }
-                  }
-                  if (newTab === 'walkthrough') {
-                    setTourStep(1);
-                  }
-                  if (typeof window !== 'undefined') {
-                    const params = new URLSearchParams(window.location.search);
-                    if (newTab === 'editor') {
-                      params.delete('tab');
-                    } else {
-                      params.set('tab', newTab);
-                    }
-                    const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                    window.history.replaceState({}, '', newUrl);
-                  }
-                  if (!isSidebarOpen) setIsSidebarOpen(true);
-                }}
-                className="w-full text-left block"
-              >
-                {buttonContent}
-              </button>
-            );
-          })}
+                {/* DocGen */}
+                <Link href="/docgen" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'light' ? 'text-slate-600 hover:text-indigo-900 hover:bg-indigo-50' : 'text-slate-300 hover:text-white hover:bg-indigo-950/40'
+                  }`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                      <span className="truncate">DocGen</span>
+                    </div>
+                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-600 dark:text-indigo-300">
+                      17
+                    </span>
+                  </div>
+                </Link>
+
+                {/* DiaBluePrint */}
+                <Link href="/diablueprint" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'light' ? 'text-slate-600 hover:text-sky-900 hover:bg-sky-50' : 'text-slate-300 hover:text-white hover:bg-sky-950/40'
+                  }`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <LayoutGrid className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                      <span className="truncate">DiaBluePrint</span>
+                    </div>
+                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/15 text-sky-600 dark:text-sky-300">
+                      50
+                    </span>
+                  </div>
+                </Link>
+
+                {/* DocBluePrint */}
+                <Link href="/docblueprint" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'light' ? 'text-slate-600 hover:text-emerald-900 hover:bg-emerald-50' : 'text-slate-300 hover:text-white hover:bg-emerald-950/40'
+                  }`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <BookOpen className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                      <span className="truncate">DocBluePrint</span>
+                    </div>
+                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-300">
+                      17
+                    </span>
+                  </div>
+                </Link>
+
+                {/* Projects & Versions */}
+                <Link href="/history" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11.5px] font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'light' ? 'text-slate-600 hover:text-amber-900 hover:bg-amber-50' : 'text-slate-300 hover:text-white hover:bg-amber-950/40'
+                  }`}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <History className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span className="truncate">Projects &amp; Versions</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* Operations Dashboard */}
+          <Link href="/dashboard" className="block pt-1">
+            <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+            }`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <BarChart3 className="w-4 h-4 text-slate-400 shrink-0" />
+                {isSidebarOpen && <span className="truncate">{t.operationsDashboard}</span>}
+              </div>
+            </div>
+          </Link>
+
+          {/* Security Audit */}
+          <Link href="/audit" className="block">
+            <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+            }`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <ShieldCheck className="w-4 h-4 text-slate-400 shrink-0" />
+                {isSidebarOpen && <span className="truncate">Security Audit &amp; CIS</span>}
+              </div>
+            </div>
+          </Link>
+
+          {/* User Guide & Playbooks */}
+          <Link href="/guide" className="block">
+            <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+            }`}>
+              <div className="flex items-center gap-3 min-w-0">
+                <Compass className="w-4 h-4 text-slate-400 shrink-0" />
+                {isSidebarOpen && <span className="truncate">User Guide &amp; Playbooks</span>}
+              </div>
+              {isSidebarOpen && (
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                  NEW
+                </span>
+              )}
+            </div>
+          </Link>
+
+          {/* Settings */}
+          <div
+            onClick={() => {
+              setCurrentTab('settings');
+              setIsSettingsModalOpen(true);
+            }}
+            className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              currentTab === 'settings'
+                ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                : canvasTheme === 'light'
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <Settings className={`w-4 h-4 shrink-0 ${currentTab === 'settings' ? 'text-bg-dark' : 'text-slate-400'}`} />
+              {isSidebarOpen && <span className="truncate">{t.settingsTier}</span>}
+            </div>
+          </div>
 
           {/* 4. GEMINI ENTERPRISE AI STUDIO & REAL PROMPT DOSSIER (Docked in Left Sidebar) */}
           {isSidebarOpen && currentTab === 'editor' && activeDiagram && (
@@ -6501,14 +6407,15 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               <div className="p-3 space-y-1">
                 {[
                   { id: 'editor', name: t.designCanvas, icon: Network },
-                  { id: 'canonical', name: 'Canonical Blueprints Hub', icon: Sparkles, href: '/canonical', badge: '50' },
-                  { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
-                  { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
-                  { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
+                  { id: 'studio', name: 'Studio Hub', icon: Sparkles, href: '/studio', badge: 'HUB' },
+                  { id: 'diagen', name: 'DiaGen AI', icon: Layers, href: '/diagen', badge: 'AI' },
+                  { id: 'docgen', name: 'DocGen', icon: FileText, href: '/docgen', badge: '17' },
+                  { id: 'diablueprint', name: 'DiaBluePrint', icon: LayoutGrid, href: '/diablueprint', badge: '50' },
+                  { id: 'docblueprint', name: 'DocBluePrint', icon: BookOpen, href: '/docblueprint', badge: '17' },
+                  { id: 'history', name: 'Projects & Versions', icon: History, href: '/history' },
                   { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
-                  { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
-                  { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
-                  { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
+                  { id: 'audit', name: 'Security Audit & CIS', icon: ShieldCheck, href: '/audit' },
+                  { id: 'guide', name: 'User Guide & Playbooks', icon: Compass, href: '/guide', badge: 'NEW' },
                   { id: 'settings', name: t.settingsTier, icon: Settings }
                 ].map((item) => {
                   const Icon = item.icon;
