@@ -932,7 +932,7 @@ function DocGenContent() {
 
   // Auto-initialize v1.0 snapshot if document exists but history is empty
   useEffect(() => {
-    if (!generatedDocContent) return;
+    if (!generatedDocContent || generatedDocContent === 'DIAGRAMS_MODE_ACTIVE') return;
     if (versionHistory.length === 0) {
       const initialSlots: Record<number, DiagramSlotVersionData> = {};
       activeMeta.blueprintPack.forEach((slot, idx) => {
