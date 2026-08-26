@@ -5767,7 +5767,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       setChatMessages(messages);
     } else {
       // 2. No version exists yet for this topology -> load pristine Master Reference Blueprint tailored to prompt/domain
-      const promptContext = activeDiagram?.versions?.[0]?.prompt || (activeDiagram as any)?.latest_prompt || promptInput || activeDiagram?.name || '';
+      const promptContext = 
+        activeDiagram?.versions?.find(v => v.prompt && v.prompt.length > 5)?.prompt || 
+        activeDiagram?.prompt || 
+        (activeDiagram as any)?.latest_prompt || 
+        promptInput || 
+        activeDiagram?.name || 
+        '';
       const baseRefXml = getDefaultXmlForArchitecture(newArchId, promptContext, promptContext);
       const nextVerNum = (activeDiagram?.versions?.length || 0) + 1;
 

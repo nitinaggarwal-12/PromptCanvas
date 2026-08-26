@@ -1536,6 +1536,34 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/OUTMANEUVER COMPETITION/g, 'OPTIMIZE SYSTEM EFFICIENCY')
       .replace(/REACH PATIENTS FASTER/g, 'ACCELERATE TIME-TO-VALUE')
       .replace(/STRATEGIC PLANNING &amp; ANALYSIS/g, 'ENTERPRISE GOVERNANCE &amp; ANALYTICS')
+    const isRoboticsOceanDomain = /\b(auv|subsea|ocean|marine|maritime|sonar|bathymetry|drone|robot|telemetry|acoustic|vehicle|sensor|fleet)\b/i.test(promptLower);
+    if (isRoboticsOceanDomain) {
+      updatedXml = updatedXml
+        .replace(/Dim_Customer_Entity/g, 'Dim_AUV_Unit')
+        .replace(/Customer ID/g, 'Unit_ID (PK)')
+        .replace(/Entity Type/g, 'Vehicle_Class / Model')
+        .replace(/Account Tier/g, 'Depth_Rating (Meters)')
+        .replace(/Dim_Provider_Service/g, 'Dim_Survey_Grid')
+        .replace(/Provider ID/g, 'Grid_Cell_Key (PK)')
+        .replace(/Service Category/g, 'Acoustic_Bathymetry_Zone')
+        .replace(/Dim_Product_Catalog/g, 'Dim_Acoustic_Profile')
+        .replace(/Product Key/g, 'Profile_Key (PK)')
+        .replace(/Product ID/g, 'Profile_ID')
+        .replace(/Product Name/g, 'Sound_Velocity (m/s)')
+        .replace(/Dim_Functional_Silo/g, 'Dim_Mission_Objective')
+        .replace(/Fact_Business_Insights/g, 'Fact_Bathymetry_Pts')
+        .replace(/Fact_System_Transactions/g, 'Fact_Swarm_Telemetry_State')
+        .replace(/Fact_Competitive_Intel/g, 'Fact_Doppler_Velocity')
+        .replace(/Dim_Billing_Channel/g, 'Dim_Subsea_Asset')
+        .replace(/Dim_Intel_Source/g, 'Dim_Acoustic_Beacon')
+        .replace(/GenAI_Context_Corpus/g, '3D_Bathymetric_Octree_Corpus')
+        .replace(/GenAI_Vector_Index/g, 'Spatial_H3_Vector_Index')
+        .replace(/GenAI_Conversation_Log/g, 'Swarm_Acoustic_Relay_Log')
+        .replace(/ML_Feature_Store/g, 'Oceanographic_Feature_Store')
+        .replace(/ML_Inference_Log/g, 'Seabed_Segmentation_Inference_Log');
+    }
+
+    updatedXml = updatedXml
       .replace(/Dim_Patient/g, 'Dim_Consignee_Shipper')
       .replace(/Patient Key/g, 'Consignee Key (PK)')
       .replace(/Patient ID/g, 'Consignee ID')
@@ -1556,6 +1584,12 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
       .replace(/Product Key/g, 'Container SKU Key (PK)')
       .replace(/Product ID/g, 'Container ID')
       .replace(/Product Name/g, 'Cargo Description')
+      .replace(/Dim_Customer_Entity/g, `Dim_${shortBrand}_Entity`)
+      .replace(/Dim_Provider_Service/g, `Dim_${shortBrand}_Service`)
+      .replace(/Dim_Product_Catalog/g, `Dim_${shortBrand}_Catalog`)
+      .replace(/Fact_Business_Insights/g, `Fact_${shortBrand}_Insights`)
+      .replace(/Fact_System_Transactions/g, `Fact_${shortBrand}_Transactions`)
+      .replace(/Fact_Competitive_Intel/g, `Fact_${shortBrand}_Metrics`)
       .replace(/Row-Level Security on Patient Data/g, 'Row-Level Security on Cargo Manifest Data')
       .replace(/\bPatient\b/gi, 'Consignee')
       .replace(/\bPhysician\b/gi, 'Carrier')

@@ -138,9 +138,15 @@ export async function executeUnifiedDiagramPipeline(
     };
   } else {
     // 3. Prompt Gemini with Structured AST Schema to customize domain entities & text
-    const compositePrompt = diagramId && prompt !== existingPrompt 
-      ? `Target Domain: ${existingPrompt} | Specific Refinement Request: ${prompt}` 
+    const isActionWord = /^(?:update|refresh|sync|regenerate|adapt|apply|rebuild|re-generate|customize)[!.\s]*$/i.test(cleanPrompt);
+    const domainContext = existingPrompt && existingPrompt.length > 5 ? existingPrompt : prompt;
+    const effectivePrompt = isActionWord
+      ? `Adapt, refactor, and customize all diagram entities, tables, and workflows to fully represent: ${domainContext}`
       : prompt;
+
+    const compositePrompt = diagramId && prompt !== existingPrompt 
+      ? `Target Domain: ${domainContext} | Specific Refinement Request: ${effectivePrompt}` 
+      : effectivePrompt;
 
     console.log(`[Unified Diagram Engine] Processing ${effectiveArchType} for prompt: "${compositePrompt.slice(0, 60)}"...`);
 
@@ -149,7 +155,7 @@ export async function executeUnifiedDiagramPipeline(
     } catch (err) {
       console.warn('[Unified Diagram Engine Fallback] Gemini customizer failed, applying visual polish:', err);
       const fallbackXml = targetXml || baseTemplateXml || '';
-      const safeXml = diagramId ? fallbackXml : injectUseCaseFlavor(fallbackXml, prompt, prompt);
+      const safeXml = injectUseCaseFlavor(fallbackXml, domainContext, domainContext);
       const healed = preflightVerifyAndHealXmlAcrossAll6Audits(safeXml, effectiveArchType);
       customResult = {
         xml: healed,
