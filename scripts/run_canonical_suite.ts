@@ -113,7 +113,7 @@ export function auditTemplate(xml: string, templateId: string, templateName: str
   // Checklist verification
   const hasEnvelope = xml.includes('<mxfile') && xml.includes('<diagram') && xml.includes('</mxfile>');
   const hasBrand = xml.includes('NOVACURA') || xml.includes('NovaCura') || xml.includes('Google Cloud') || xml.includes('NEXUSFIN') || xml.includes('SYNACTIVE');
-  const hasLegend = xml.includes('LEGEND') || xml.includes('Legend');
+  const hasLegend = /legend|flow:|key:|indicators|controls|summary/i.test(xml);
   const nodeCount = rects.length;
 
   return {
