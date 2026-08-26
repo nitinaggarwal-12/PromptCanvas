@@ -2767,18 +2767,18 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
           <mxGeometry x="90" y="100" width="450" height="20" as="geometry" />
         </mxCell>
         <!-- Left Icons -->
-        <mxCell id="sw1_proj_plan" value="&lt;span style='font-size:26px;'&gt;📋&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Project&lt;br&gt;Planning&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="95" y="125" width="80" height="75" as="geometry" />
+        <mxCell id="sw1_proj_plan" value="&lt;span style='font-size:26px;'&gt;📋&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Project&lt;br&gt;Planning&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="125" width="85" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="sw1_data_vet" value="&lt;span style='font-size:26px;'&gt;🗄️✔&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Data&lt;br&gt;Vetting&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="195" y="125" width="80" height="75" as="geometry" />
+        <mxCell id="sw1_data_vet" value="&lt;span style='font-size:26px;'&gt;🗄️✔&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Data&lt;br&gt;Vetting&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="195" y="125" width="85" height="75" as="geometry" />
         </mxCell>
-        <mxCell id="sw1_eth_src" value="&lt;span style='font-size:26px;'&gt;🌿&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Ethical&lt;br&gt;Sourcing&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="295" y="125" width="80" height="75" as="geometry" />
+        <mxCell id="sw1_eth_src" value="&lt;span style='font-size:26px;'&gt;🌿&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:11px;color:#0F172A;'&gt;Ethical&lt;br&gt;Sourcing&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="295" y="125" width="85" height="75" as="geometry" />
         </mxCell>
         <!-- ERD Section -->
-        <mxCell id="sw1_erd_txt" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Dimensional Data Model (ERD)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#475569;'&gt;(Schema for structured,&lt;br&gt;unstructured, &amp;amp; derived&lt;br&gt;enterprise AI context)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="385" y="125" width="220" height="80" as="geometry" />
+        <mxCell id="sw1_erd_txt" value="&lt;b style='font-size:12px;color:#0F172A;'&gt;Dimensional Data Model (ERD)&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;color:#475569;'&gt;(Schema for structured,&lt;br&gt;unstructured, &amp;amp; derived&lt;br&gt;enterprise AI context)&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="390" y="125" width="215" height="80" as="geometry" />
         </mxCell>
         <!-- ERD diagram container with generous wide column pitch -->
         <mxCell id="sw1_erd_mini_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;strokeDashArray=3 3;" vertex="1" parent="1">

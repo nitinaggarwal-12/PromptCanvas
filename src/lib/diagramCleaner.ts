@@ -1578,29 +1578,41 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
   }
 
   // Universal Dynamic Entity & Workflow Step Extractor
-  // Parses explicit user prompt workflows (e.g. "Step 1 -> Step 2 -> Step 3 -> Step 4") and injects them onto canvas nodes
+  // Parses explicit user prompt workflows ONLY if explicit sequence operators (->, =>, •, Step 1:) exist
   if (userPrompt && typeof userPrompt === 'string') {
-    const rawSteps = userPrompt
-      .split(/(?:->|-->|=>|•|\n|;)/)
-      .map(s => s.replace(/^(?:Act as|Chief|Enterprise|Architect|Build|Create|Design|System details:|\d+\.)/gi, '').trim())
-      .filter(s => s.length > 3);
+    if (/(?:->|-->|=>|•|\bstep\s*\d+)/i.test(userPrompt)) {
+      const sanitizeStep = (raw: string, fallback: string) => {
+        if (!raw) return fallback;
+        const clean = raw.replace(/<[^>]+>/g, '').replace(/^(?:Act as|Chief|Enterprise|Architect|Build|Create|Design|System details:|\d+[\.:\)]\s*)/gi, '').trim();
+        if (!clean || clean.length < 3) return fallback;
+        if (clean.length <= 26) return clean;
+        const words = clean.split(/\s+/).filter(Boolean);
+        const short = words.slice(0, 3).join(' ');
+        return short.length <= 26 ? short : short.slice(0, 23) + '...';
+      };
 
-    if (rawSteps.length >= 2) {
-      const step1 = rawSteps[0] || 'Edge Field Ingress Gateway';
-      const step2 = rawSteps[1] || 'Cloud Stream Ingress Queue';
-      const step3 = rawSteps[2] || 'Real-Time Anomaly Detection';
-      const step4 = rawSteps[3] || rawSteps[rawSteps.length - 1] || 'Model Fine-Tuning & OTA Deployment';
+      const rawSteps = userPrompt
+        .split(/(?:->|-->|=>|•|\n|;)/)
+        .map(s => s.replace(/^(?:Act as|Chief|Enterprise|Architect|Build|Create|Design|System details:|\d+[\.:\)]\s*)/gi, '').trim())
+        .filter(s => s.length > 3);
 
-      updatedXml = updatedXml
-        .replace(/External Multimodal Client Portal/g, step1)
-        .replace(/Public Ingress Subnet/g, `${step1} Ingress Subnet`)
-        .replace(/BA Safety Workbench/g, step2)
-        .replace(/Managed PostgreSQL \/ pgvector/g, step3)
-        .replace(/Ephemeral Prompt Cache Store/g, step4)
-        .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${step1}`)
-        .replace(/\[2\] Event Streaming Gateway/g, `[2] ${step2}`)
-        .replace(/\[3\] AI Processing Cluster/g, `[3] ${step3}`)
-        .replace(/\[4\] Deployment & Lifecycle Hub/g, `[4] ${step4}`);
+      if (rawSteps.length >= 2) {
+        const step1 = sanitizeStep(rawSteps[0], 'Edge Ingress Gateway');
+        const step2 = sanitizeStep(rawSteps[1], 'Event Stream Queue');
+        const step3 = sanitizeStep(rawSteps[2], 'Real-Time Anomaly Engine');
+        const step4 = sanitizeStep(rawSteps[3] || rawSteps[rawSteps.length - 1], 'Model Fine-Tuning Hub');
+
+        updatedXml = updatedXml
+          .replace(/External Multimodal Client Portal/g, step1)
+          .replace(/Public Ingress Subnet/g, `${step1} Subnet`)
+          .replace(/BA Safety Workbench/g, step2)
+          .replace(/Managed PostgreSQL \/ pgvector/g, step3)
+          .replace(/Ephemeral Prompt Cache Store/g, step4)
+          .replace(/\[1\] Ingress \/ Client Portal/g, `[1] ${step1}`)
+          .replace(/\[2\] Event Streaming Gateway/g, `[2] ${step2}`)
+          .replace(/\[3\] AI Processing Cluster/g, `[3] ${step3}`)
+          .replace(/\[4\] Deployment & Lifecycle Hub/g, `[4] ${step4}`);
+      }
     }
 
     // Dynamic Purpose & Problem Statement card update
