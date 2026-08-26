@@ -608,8 +608,20 @@ export function getArchitectureTypeById(id: string): ArchitectureTypeOption {
   return ARCHITECTURE_TYPES.find(t => t.id === canonicalId) || BUSINESS_ARCHITECTURE_TYPES[0];
 }
 
+import { CANONICAL_TEMPLATES } from './canonical/canonicalTemplates';
+
 export function getTemplateTitle(archId?: string | null): string {
   if (!archId) return 'Architecture Diagram';
+  const rawId = archId.trim();
+  const canonicalMatch = CANONICAL_TEMPLATES.find(
+    (t) =>
+      t.id === rawId ||
+      t.id === rawId.padStart(2, '0') ||
+      `canonical_${t.id}` === rawId.toLowerCase() ||
+      `canonical_${t.id.replace(/^0+/, '')}` === rawId.toLowerCase() ||
+      t.name.toLowerCase() === rawId.toLowerCase()
+  );
+  if (canonicalMatch) return canonicalMatch.name;
   const canonicalId = normalizeArchitectureId(archId);
   const opt = ARCHITECTURE_TYPES.find(t => t.id === canonicalId);
   if (opt) return opt.name;
@@ -620,6 +632,27 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   if (archId === 'v2_freeform') {
     return null;
   }
+  const rawId = (archId || '').trim();
+  const canonicalMatch = CANONICAL_TEMPLATES.find(
+    (t) =>
+      t.id === rawId ||
+      t.id === rawId.padStart(2, '0') ||
+      `canonical_${t.id}` === rawId.toLowerCase() ||
+      `canonical_${t.id.replace(/^0+/, '')}` === rawId.toLowerCase() ||
+      t.name.toLowerCase() === rawId.toLowerCase()
+  );
+  if (canonicalMatch) {
+    let xml = canonicalMatch.generateXml('general', 'dark');
+    const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== canonicalMatch.name);
+    if (hasCustomUserPrompt) {
+      const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;
+      const effectiveContext = cleanUseCase || userPrompt || canonicalMatch.name;
+      xml = injectUseCaseFlavor(xml, effectiveContext, userPrompt);
+      xml = preflightVerifyAndHealXmlAcrossAll6Audits(xml, canonicalMatch.id);
+    }
+    return xml ? xml.replace(/&amp;amp;/g, '&amp;').replace(/&amp;quot;/g, '&quot;').replace(/&amp;lt;/g, '&lt;').replace(/&amp;gt;/g, '&gt;') : null;
+  }
+
   const id = normalizeArchitectureId(archId);
   if (id === 'blank_canvas' || id === 'arch_blank_canvas') {
     return `<mxGraphModel dx="1422" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0"><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>`;

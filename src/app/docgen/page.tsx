@@ -2120,6 +2120,7 @@ function DocGenContent() {
                       <button
                         onClick={() => {
                           setSelectedArchetypeId(meta.id);
+                          setStudioMode('both');
                           setActiveTab('studio');
                         }}
                         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
@@ -3102,6 +3103,7 @@ function DocGenContent() {
                 <button
                   onClick={() => {
                     setSelectedArchetypeId(previewModalDoc.id);
+                    setStudioMode('both');
                     setPreviewModalDoc(null);
                     setActiveTab('studio');
                   }}

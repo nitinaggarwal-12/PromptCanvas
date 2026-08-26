@@ -1181,6 +1181,10 @@ function WorkspaceContent() {
       setActiveVersion(null);
     }
     const archParam = searchParams.get('blueprint') || searchParams.get('arch') || searchParams.get('template');
+    const domainParam = searchParams.get('domain');
+    const titleParam = searchParams.get('title');
+    const promptParam = searchParams.get('prompt');
+
     if (archParam) {
       const meta = getBlueprintMetadataById(archParam);
       const targetCombinedId = meta ? meta.combinedId : archParam;
@@ -1188,7 +1192,7 @@ function WorkspaceContent() {
         setPreviewModalTemplateId(targetCombinedId);
       } else {
         setSelectedArchType(targetCombinedId);
-        const defaultXml = getDefaultXmlForArchitecture(targetCombinedId);
+        const defaultXml = getDefaultXmlForArchitecture(targetCombinedId, titleParam || domainParam || undefined, promptParam || titleParam || undefined);
         if (defaultXml) {
           activeXmlRef.current = defaultXml;
           setCustomXml(defaultXml);
@@ -1199,7 +1203,9 @@ function WorkspaceContent() {
         }
       }
     }
-    const promptParam = searchParams.get('prompt');
+    if (titleParam) {
+      setNewDiagramName(titleParam);
+    }
     if (promptParam && !promptInput) {
       setPromptInput(promptParam);
       setNewDiagramPrompt(promptParam);
