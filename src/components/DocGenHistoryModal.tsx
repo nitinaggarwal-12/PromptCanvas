@@ -40,6 +40,28 @@ interface DocGenHistoryModalProps {
   isLight: boolean;
 }
 
+export function clearAllHistoricalProjects(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (
+        key &&
+        (key.startsWith('promptcanvas_docgen_versions_') ||
+          key.startsWith('promptcanvas_docgen_chat_') ||
+          key.startsWith('promptcanvas_docgen_project_'))
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach((k) => window.localStorage.removeItem(k));
+    window.localStorage.setItem('promptcanvas_history_cleared', 'true');
+  } catch (err) {
+    console.warn('Failed to clear historical projects:', err);
+  }
+}
+
 export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
   if (typeof window === 'undefined') return [];
 
@@ -80,8 +102,10 @@ export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
       }
     }
 
-    // If no local history found, populate demo active historical projects
-    if (items.length === 0) {
+    const isExplicitlyCleared = window.localStorage.getItem('promptcanvas_history_cleared') === 'true';
+
+    // If no local history found and not explicitly cleared, populate demo active historical projects
+    if (items.length === 0 && !isExplicitlyCleared) {
       items.push(
         {
           id: 'proj_aeronode_981',

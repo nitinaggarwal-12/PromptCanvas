@@ -1331,6 +1331,28 @@ export async function deleteDiagram(id: string, userId?: string): Promise<void> 
   }
 }
 
+// Helper: Clear all diagrams (purge previous legacy canvases)
+export async function clearAllDiagrams(userId?: string): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    if (userId) {
+      await pool.query("DELETE FROM diagrams WHERE user_id = $1 OR user_id IS NULL OR user_id LIKE 'guest-%'", [userId]);
+    } else {
+      await pool.query("DELETE FROM diagrams");
+    }
+  } else {
+    const db = getSqliteDb();
+    if (userId) {
+      const stmt = db.prepare("DELETE FROM diagrams WHERE user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%'");
+      stmt.run(userId);
+    } else {
+      const stmt = db.prepare("DELETE FROM diagrams");
+      stmt.run();
+    }
+  }
+}
+
 export async function migrateGuestContent(guestUserId: string, newUserId: string): Promise<number> {
   await ensureTablesExist();
   if (!guestUserId || !newUserId || guestUserId === newUserId) return 0;

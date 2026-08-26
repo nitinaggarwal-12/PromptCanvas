@@ -37,7 +37,6 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'workspace', name: 'Design Canvas', icon: Network, href: '/workspace' },
   { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen?tab=studio', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
   { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
@@ -45,6 +44,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
   { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
   { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+  { id: 'workspace', name: 'Design Canvas', icon: Network, href: '/workspace' },
   { id: 'settings', name: 'Settings & AI Tier', icon: Settings, href: '/workspace?tab=settings' },
 ];
 
@@ -133,20 +133,6 @@ export default function UnifiedAppSidebar() {
                 <ChevronLeft className="w-4 h-4" />
               </button>
             )}
-          </div>
-
-          {/* Creation Action CTA */}
-          <div className={`p-3 border-b relative shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/50'}`}>
-            <Link
-              href="/workspace?new=true"
-              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-black transition-all shadow-md hover:shadow-sky-500/20 text-xs cursor-pointer ${
-                !isSidebarOpen && 'p-2'
-              }`}
-              title="Create New Architecture with AI Prompt"
-            >
-              <Plus className="w-4 h-4 stroke-[3]" />
-              {isSidebarOpen && <span>New Architecture</span>}
-            </Link>
           </div>
 
           {/* Navigation Links */}
