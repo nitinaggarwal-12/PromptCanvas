@@ -246,16 +246,7 @@ export default function CanonicalTemplateDetailPage() {
                 <span className="sm:hidden">Studio</span>
               </Link>
 
-              {/* Design Canvas Editor Button */}
-              <Link
-                href={`/workspace?blueprint=${activeTemplate.id}&domain=${selectedDomain}&title=${encodeURIComponent(titleParam || activeTemplate.name)}`}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm shadow-indigo-500/20 transition-all hover:scale-[1.02] shrink-0"
-                title="Open and edit this exact blueprint in Design Canvas workspace"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Design Canvas</span>
-                <span className="sm:hidden">Canvas</span>
-              </Link>
+
 
               {/* Generate Docs Button */}
               <button

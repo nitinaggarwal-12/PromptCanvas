@@ -2693,26 +2693,28 @@ function DocGenContent() {
                       <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
                       <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-200 ml-2 font-mono truncate">
-                        {studioMode === 'diagrams' && `Live GCP Vector Preview • Blueprint #${selectedDiagramTemplateId || '01'}`}
-                        {studioMode === 'documents' && `Live Spec Preview • ${activeMeta.shortName}`}
-                        {studioMode === 'both' && `Live Multi-Blueprint Spec • ${activeMeta.shortName} (#${currentPreviewTemplateId})`}
+                        {studioMode === 'diagrams' && `Live Architecture Preview • Blueprint #${selectedDiagramTemplateId || '01'}`}
+                        {studioMode === 'documents' && `Live Specification Document • ${activeMeta.name}`}
+                        {studioMode === 'both' && `Unified Specification & Blueprints • ${activeMeta.shortName}`}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-800">
-                        16:9 GCP
-                      </span>
-                      <Link
-                        href={`/canonical/${currentPreviewTemplateId}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
-                        title="Open in Canonical Blueprint Viewer in new tab"
-                      >
-                        <span>Canonical #{currentPreviewTemplateId}</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </Link>
+                      {studioMode === 'diagrams' && (
+                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-800">
+                          16:9 Vector GCP
+                        </span>
+                      )}
+                      {studioMode === 'documents' && (
+                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 dark:border-indigo-800">
+                          {activeMeta.shortName} • ARB Sign-Off
+                        </span>
+                      )}
+                      {studioMode === 'both' && (
+                        <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800">
+                          {attachedSlots.length} Attached Blueprints
+                        </span>
+                      )}
                     </div>
                   </div>
 
