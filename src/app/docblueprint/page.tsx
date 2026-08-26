@@ -33,13 +33,13 @@ function DocBluePrintContent() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const categories = [
-    { id: 'all', name: 'All Specifications' },
-    { id: 'Enterprise Architecture', name: 'Enterprise Architecture' },
-    { id: 'Cloud & Infrastructure', name: 'Cloud & Infrastructure' },
-    { id: 'Security & Compliance', name: 'Security & Compliance' },
-    { id: 'Data & Analytics', name: 'Data & Analytics' },
-    { id: 'AI & Cognitive Systems', name: 'AI & Cognitive' },
-    { id: 'DevOps & SRE', name: 'DevOps & Operations' },
+    { id: 'all', name: 'All 17 Specifications' },
+    { id: 'Executive', name: 'Executive & Business' },
+    { id: 'Architecture', name: 'Core Architecture' },
+    { id: 'Engineering', name: 'Engineering & Design' },
+    { id: 'Security', name: 'Security & Governance' },
+    { id: 'AI', name: 'AI & Safety' },
+    { id: 'Operations', name: 'Operations & SRE' },
   ];
 
   const archetypesList = useMemo(() => {
@@ -48,13 +48,31 @@ function DocBluePrintContent() {
 
   const filteredArchetypes = useMemo(() => {
     return archetypesList.filter((arch) => {
-      const matchesCategory = selectedCategory === 'all' || arch.category === selectedCategory;
+      let matchesCategory = true;
+      if (selectedCategory === 'Executive') {
+        matchesCategory = arch.badge.includes('Business') || arch.badge.includes('C-Suite') || arch.badge.includes('Procurement') || arch.badge.includes('FinOps');
+      } else if (selectedCategory === 'Architecture') {
+        matchesCategory = arch.badge.includes('Architecture') || arch.badge.includes('Product') || arch.badge.includes('Modernization') || arch.badge.includes('Technical Defense');
+      } else if (selectedCategory === 'Engineering') {
+        matchesCategory = arch.badge.includes('Engineering') || arch.badge.includes('API') || arch.badge.includes('Design');
+      } else if (selectedCategory === 'Security') {
+        matchesCategory = arch.badge.includes('Security') || arch.badge.includes('Governance') || arch.badge.includes('Cybersecurity');
+      } else if (selectedCategory === 'AI') {
+        matchesCategory = arch.badge.includes('AI') || arch.name.includes('AI') || arch.name.includes('LLM');
+      } else if (selectedCategory === 'Operations') {
+        matchesCategory = arch.badge.includes('Operations') || arch.badge.includes('Resilience') || arch.badge.includes('Go-Live');
+      }
+
+      const q = searchQuery.trim().toLowerCase();
       const matchesSearch =
-        searchQuery.trim() === '' ||
-        arch.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        arch.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        arch.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        arch.id.toLowerCase().includes(searchQuery.toLowerCase());
+        q === '' ||
+        arch.name.toLowerCase().includes(q) ||
+        arch.shortName.toLowerCase().includes(q) ||
+        arch.primaryPurpose.toLowerCase().includes(q) ||
+        arch.badge.toLowerCase().includes(q) ||
+        arch.audience.toLowerCase().includes(q) ||
+        arch.id.toLowerCase().includes(q);
+
       return matchesCategory && matchesSearch;
     });
   }, [archetypesList, searchQuery, selectedCategory]);
@@ -112,7 +130,7 @@ function DocBluePrintContent() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search archetypes (e.g. SAD, Threat Model, Runbook, HLD)..."
+                  placeholder="Search archetypes (e.g. BRD, PRD, SDD, Threat Model, Runbook)..."
                   className={`w-full text-xs rounded-xl pl-10 pr-4 py-2.5 border outline-none font-medium transition ${
                     isLight
                       ? 'bg-white border-slate-200 focus:border-emerald-500 text-slate-900 placeholder-slate-400'
@@ -155,25 +173,49 @@ function DocBluePrintContent() {
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-black px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 uppercase">
-                      {arch.category}
-                    </span>
-                    <span className="text-[10px] font-mono text-slate-400">
-                      {arch.sectionsCount || 6} Chapters
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 uppercase">
+                        {arch.shortName}
+                      </span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border bg-gradient-to-r ${arch.badgeColor}`}>
+                        {arch.badge}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 font-bold">
+                      {arch.sectionsCount || 8} Chapters
                     </span>
                   </div>
 
                   <h3 className={`text-base font-black group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors ${
                     isLight ? 'text-slate-900' : 'text-white'
                   }`}>
-                    {arch.title}
+                    {arch.name}
                   </h3>
 
                   <p className={`text-xs leading-relaxed line-clamp-3 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-                    {arch.description}
+                    {arch.primaryPurpose}
                   </p>
 
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                  <div className="pt-2">
+                    <div className="text-[10px] font-mono font-bold text-slate-400 uppercase mb-1.5 flex items-center justify-between">
+                      <span>Attached Blueprints ({arch.blueprintPack.length})</span>
+                    </div>
+                    <div className="space-y-1">
+                      {arch.blueprintPack.slice(0, 3).map((bp, bpIdx) => (
+                        <div key={bpIdx} className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1.5">
+                          <span className="text-emerald-500 font-bold font-mono">#{bp.recommendedTemplateId}</span>
+                          <span className="truncate">{bp.slotTitle}</span>
+                        </div>
+                      ))}
+                      {arch.blueprintPack.length > 3 && (
+                        <div className="text-[10px] text-slate-400 italic">
+                          + {arch.blueprintPack.length - 3} more blueprint slots
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 pt-2">
                     <span className="text-[9.5px] font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                       📊 16:9 Slides Included
                     </span>

@@ -32,7 +32,9 @@ import {
   Database,
   Cpu,
   Lock,
-  Globe
+  Globe,
+  Search,
+  CheckCircle2
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -40,6 +42,7 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import {
   CANONICAL_TEMPLATES,
+  CANONICAL_FAMILIES,
   DOMAIN_PRESETS,
   CanonicalTemplate,
   BIOPHARMA_REFERENCE_TIERS
@@ -91,34 +94,6 @@ const QUICK_SCENARIOS = [
   }
 ];
 
-// Architecture Blueprint Categories / Types
-const BLUEPRINT_TYPE_PILLS = [
-  { id: 'canonical_01', name: 'System Context', label: '01 System Context', number: '01' },
-  { id: 'canonical_02', name: 'Capability Map', label: '02 Capability Map', number: '02' },
-  { id: 'canonical_03', name: 'Business Process', label: '03 Business Process', number: '03' },
-  { id: 'canonical_04', name: 'Value Stream', label: '04 Value Stream', number: '04' },
-  { id: 'canonical_05', name: 'As-Is / To-Be', label: '05 As-Is / To-Be', number: '05' },
-  { id: 'canonical_06', name: 'C4 Context', label: '06 C4 Context', number: '06' },
-  { id: 'canonical_07', name: 'C4 Container', label: '07 C4 Container', number: '07' },
-  { id: 'canonical_08', name: 'Component Arch', label: '08 Component Arch', number: '08' },
-  { id: 'canonical_09', name: 'Data Flow', label: '09 Data Flow', number: '09' },
-  { id: 'canonical_10', name: 'Integration Arch', label: '10 Integration Arch', number: '10' },
-  { id: 'canonical_11', name: 'Sequence Diagram', label: '11 Sequence Diagram', number: '11' },
-  { id: 'canonical_12', name: 'State Machine', label: '12 State Machine', number: '12' },
-  { id: 'canonical_13', name: 'Decision Flow', label: '13 Decision Flow', number: '13' },
-  { id: 'canonical_14', name: 'Data Model / ERD', label: '14 Data Model / ERD', number: '14' },
-  { id: 'canonical_15', name: 'Network Topology', label: '15 Network Topology', number: '15' },
-  { id: 'canonical_16', name: 'Deployment Mesh', label: '16 Deployment Mesh', number: '16' },
-  { id: 'canonical_17', name: 'Identity & Access', label: '17 IAM Zero-Trust', number: '17' },
-  { id: 'canonical_18', name: 'Security Boundary', label: '18 Trust Boundary', number: '18' },
-  { id: 'canonical_19', name: 'HA / DR Architecture', label: '19 HA / DR Failover', number: '19' },
-  { id: 'canonical_20', name: 'CI/CD Pipeline', label: '20 CI/CD GitOps', number: '20' },
-  { id: 'canonical_21', name: 'Observability / SRE', label: '21 SRE Telemetry', number: '21' },
-  { id: 'canonical_23', name: 'Multi-Agent RAG', label: '23 Agent Interaction', number: '23' },
-  { id: 'canonical_24', name: 'Knowledge Graph', label: '24 RAG Flow', number: '24' },
-  { id: 'canonical_30', name: 'Cloud FinOps', label: '30 FinOps Chargeback', number: '30' }
-];
-
 interface DiagramVersion {
   id: string;
   version_number: number;
@@ -157,6 +132,8 @@ function DiaGenStudioContent() {
 
   // Intake Form State
   const [selectedArchType, setSelectedArchType] = useState<string>(initialArch);
+  const [selectedFamily, setSelectedFamily] = useState<string>('All');
+  const [blueprintSearch, setBlueprintSearch] = useState<string>('');
   const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Genomics & Regulatory AI Platform');
   const [scopePrompt, setScopePrompt] = useState<string>(
     'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
@@ -171,6 +148,22 @@ function DiaGenStudioContent() {
   const [activeTab, setActiveTab] = useState<'canvas' | 'xml'>('canvas');
   const [copied, setCopied] = useState<boolean>(false);
   const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState<boolean>(false);
+
+  // Filtered 50 Canonical Blueprints
+  const filteredBlueprints = useMemo(() => {
+    return CANONICAL_TEMPLATES.filter((tmpl) => {
+      const matchesFamily = selectedFamily === 'All' || tmpl.family === selectedFamily;
+      const q = blueprintSearch.trim().toLowerCase();
+      const matchesSearch =
+        q === '' ||
+        tmpl.name.toLowerCase().includes(q) ||
+        tmpl.id.toLowerCase().includes(q) ||
+        tmpl.primaryPurpose.toLowerCase().includes(q) ||
+        tmpl.family.toLowerCase().includes(q) ||
+        tmpl.examples.toLowerCase().includes(q);
+      return matchesFamily && matchesSearch;
+    });
+  }, [selectedFamily, blueprintSearch]);
 
   // Current XML content
   const [currentXml, setCurrentXml] = useState<string>(() => {
@@ -219,7 +212,9 @@ function DiaGenStudioContent() {
   const handleLaunchStudio = async () => {
     setIsGenerating(true);
     try {
-      const baseXml = getDefaultXmlForArchitecture(selectedArchType) || CANONICAL_TEMPLATES.find(t => t.id === selectedArchType)?.generateXml('NOVACURA') || CANONICAL_TEMPLATES[0].generateXml('NOVACURA');
+      const cleanId = selectedArchType.replace('canonical_', '');
+      const matchedTmpl = CANONICAL_TEMPLATES.find(t => t.id === cleanId || t.id === selectedArchType);
+      const baseXml = matchedTmpl ? matchedTmpl.generateXml(selectedDomain) : getDefaultXmlForArchitecture(selectedArchType) || CANONICAL_TEMPLATES[0].generateXml('NOVACURA');
       const flavored = injectUseCaseFlavor(baseXml, projectTitle, scopePrompt);
       setCurrentXml(flavored);
 
@@ -227,7 +222,7 @@ function DiaGenStudioContent() {
         id: `v_${Date.now()}`,
         version_number: 1,
         xml_content: flavored,
-        comment: `Initial Blueprint: ${getArchitectureTypeById(selectedArchType)?.name || selectedArchType}`,
+        comment: `Initial Blueprint: ${matchedTmpl?.name || selectedArchType}`,
         created_by: 'AI Compiler',
         created_at: new Date().toISOString(),
         prompt: scopePrompt,
@@ -337,7 +332,8 @@ function DiaGenStudioContent() {
 
   // Selected Blueprint metadata
   const selectedBlueprintMeta = useMemo(() => {
-    return CANONICAL_TEMPLATES.find(t => t.id === selectedArchType.replace('canonical_', '')) || CANONICAL_TEMPLATES[0];
+    const cleanId = selectedArchType.replace('canonical_', '');
+    return CANONICAL_TEMPLATES.find(t => t.id === cleanId || t.id === selectedArchType) || CANONICAL_TEMPLATES[0];
   }, [selectedArchType]);
 
   // Contextual chips for canvas refinements
@@ -392,7 +388,7 @@ function DiaGenStudioContent() {
                   DiaGen Architecture Studio
                 </span>
                 <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30">
-                  {viewMode === 'intake' ? 'BLUEPRINT INTAKE' : `CANVAS v${activeVersionNumber}`}
+                  {viewMode === 'intake' ? '50 BLUEPRINTS INTAKE' : `CANVAS v${activeVersionNumber}`}
                 </span>
               </div>
               <p className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">
@@ -423,7 +419,7 @@ function DiaGenStudioContent() {
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5 text-sky-500" />
-              <span>50 Blueprints</span>
+              <span>Catalog (50)</span>
             </Link>
 
             <ThemeToggleBtn />
@@ -445,42 +441,95 @@ function DiaGenStudioContent() {
                 Architectural Grammar for <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Cloud Systems</span>
               </h2>
               <p className={`text-xs md:text-sm max-w-3xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                Select your target architectural blueprint, define your domain boundaries and system requirements, and instantly compile collision-free vector topology.
+                Select from 50 certified master architecture blueprints, define your domain boundaries and system requirements, and instantly compile collision-free vector topology.
               </p>
             </div>
 
             {/* STEP 1: CONFIGURATION */}
             <div className="space-y-6">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                    STEP 1 OF 2 · ARCHITECTURE BLUEPRINT TYPE
-                  </span>
-                  <span className="text-xs text-slate-400 font-medium">50 Certified Master Layouts</span>
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                      STEP 1 OF 2 · SELECT ARCHITECTURE BLUEPRINT ({filteredBlueprints.length} OF 50)
+                    </span>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      Active Selection: <strong className="text-teal-600 dark:text-teal-400 font-bold">{selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id})</strong>
+                    </p>
+                  </div>
+
+                  {/* Search Filter */}
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={blueprintSearch}
+                      onChange={(e) => setBlueprintSearch(e.target.value)}
+                      placeholder="Search 50 blueprints..."
+                      className={`w-full text-xs rounded-xl pl-9 pr-3 py-2 border outline-none font-medium transition ${
+                        isLight
+                          ? 'bg-white border-slate-200 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                          : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
+                      }`}
+                    />
+                  </div>
                 </div>
 
-                {/* Blueprint Type Pills */}
-                <div className="flex flex-wrap gap-2">
-                  {BLUEPRINT_TYPE_PILLS.map((pill) => {
-                    const isSelected = selectedArchType === pill.id;
+                {/* Family Categories Filter Pills */}
+                <div className="flex flex-wrap gap-1.5 pb-2">
+                  {CANONICAL_FAMILIES.map((fam) => (
+                    <button
+                      key={fam}
+                      onClick={() => setSelectedFamily(fam)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer border ${
+                        selectedFamily === fam
+                          ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                          : isLight
+                          ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-600'
+                          : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
+                      }`}
+                    >
+                      {fam}
+                    </button>
+                  ))}
+                </div>
+
+                {/* ALL 50 BLUEPRINTS SCROLLABLE GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 max-h-72 overflow-y-auto p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40">
+                  {filteredBlueprints.map((tmpl) => {
+                    const isSelected = selectedArchType === `canonical_${tmpl.id}` || selectedArchType === tmpl.id;
                     return (
                       <button
-                        key={pill.id}
-                        onClick={() => setSelectedArchType(pill.id)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer flex items-center gap-2 border ${
+                        key={tmpl.id}
+                        onClick={() => setSelectedArchType(`canonical_${tmpl.id}`)}
+                        className={`p-3 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between space-y-1.5 relative ${
                           isSelected
-                            ? 'bg-teal-600 text-white border-teal-500 shadow-md shadow-teal-500/20 scale-[1.02]'
+                            ? 'bg-teal-600 text-white border-teal-500 shadow-md shadow-teal-500/20 ring-2 ring-teal-400/40'
                             : isLight
-                            ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700'
-                            : 'bg-[#090D18] hover:bg-slate-800/80 border-slate-800 text-slate-300'
+                            ? 'bg-white hover:bg-slate-100/90 border-slate-200 text-slate-800 hover:border-slate-300'
+                            : 'bg-[#090D18] hover:bg-slate-800/90 border-slate-800 text-slate-200'
                         }`}
                       >
-                        <span>{pill.label}</span>
-                        <span className={`text-[9.5px] font-mono px-1.5 py-0.2 rounded ${
-                          isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-400'
-                        }`}>
-                          #{pill.number}
-                        </span>
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded ${
+                            isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
+                          }`}>
+                            #{tmpl.id}
+                          </span>
+                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
+                            isSelected ? 'bg-white/20 text-white' : 'bg-teal-500/10 text-teal-600 dark:text-teal-400'
+                          }`}>
+                            {tmpl.level}
+                          </span>
+                        </div>
+
+                        <div className="font-extrabold text-xs line-clamp-1">
+                          {tmpl.name}
+                        </div>
+
+                        <p className={`text-[10px] line-clamp-1 ${isSelected ? 'text-teal-100' : 'text-slate-400'}`}>
+                          {tmpl.primaryPurpose}
+                        </p>
                       </button>
                     );
                   })}
@@ -602,7 +651,7 @@ function DiaGenStudioContent() {
                   STEP 2 OF 2 · ATTACHED BLUEPRINT ARCHITECTURE PACK
                 </span>
                 <span className="text-xs font-bold text-slate-400">
-                  {selectedBlueprintMeta?.name || 'Canonical Blueprint'}
+                  {selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id}) · {selectedBlueprintMeta.family}
                 </span>
               </div>
 
@@ -741,19 +790,19 @@ function DiaGenStudioContent() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-black tracking-tight flex items-center gap-1.5">
                         <LayoutGrid className="w-3.5 h-3.5 text-sky-500" />
-                        <span>Canonical Blueprints</span>
+                        <span>All 50 Canonical Blueprints</span>
                       </span>
                       <Link
                         href="/diablueprint"
                         className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-0.5"
                       >
-                        <span>View All 50</span>
+                        <span>Full Catalog</span>
                         <ArrowRight className="w-2.5 h-2.5" />
                       </Link>
                     </div>
 
-                    <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
-                      {CANONICAL_TEMPLATES.slice(0, 8).map((tmpl) => (
+                    <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
+                      {CANONICAL_TEMPLATES.map((tmpl) => (
                         <button
                           key={tmpl.id}
                           onClick={() => {
@@ -763,8 +812,8 @@ function DiaGenStudioContent() {
                             setActiveVersionNumber(prev => prev + 1);
                           }}
                           className={`w-full text-left p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
-                            selectedArchType === `canonical_${tmpl.id}`
-                              ? 'bg-sky-600 text-white font-extrabold shadow-sm'
+                            selectedArchType === `canonical_${tmpl.id}` || selectedArchType === tmpl.id
+                              ? 'bg-teal-600 text-white font-extrabold shadow-sm'
                               : isLight
                               ? 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800'
                               : 'bg-slate-900/60 hover:bg-slate-800 border-slate-800 text-slate-200'
@@ -772,7 +821,7 @@ function DiaGenStudioContent() {
                         >
                           <span className="truncate">{tmpl.name}</span>
                           <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
-                            selectedArchType === `canonical_${tmpl.id}` ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
+                            selectedArchType === `canonical_${tmpl.id}` || selectedArchType === tmpl.id ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
                           }`}>
                             #{tmpl.id}
                           </span>
