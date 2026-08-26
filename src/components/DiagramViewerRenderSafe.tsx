@@ -263,7 +263,7 @@ export default function DiagramViewerRenderSafe({
         className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}
       >
         <iframe
-          key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}`}
+          key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
           className="w-full h-full border-0 bg-transparent"
           title="PromptCanvas Draw.io Diagram Viewer"

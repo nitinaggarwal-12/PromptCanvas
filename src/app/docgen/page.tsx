@@ -554,6 +554,7 @@ function DocGenContent() {
 
   // Blueprint Slot customization state
   const [slotCustomizations, setSlotCustomizations] = useState<Record<number, { templateId: string; isCustom: boolean; customPrompt?: string }>>({});
+  const [activePreviewChapterIndex, setActivePreviewChapterIndex] = useState<number>(0);
 
   // Preview & Generation state
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -726,9 +727,23 @@ function DocGenContent() {
     }
   }, [searchParams]);
 
+  // Find active archetype metadata
+  const activeMeta = useMemo(() => {
+    return DOC_ARCHETYPES_META.find((m) => m.id === selectedArchetypeId) || DOC_ARCHETYPES_META[2];
+  }, [selectedArchetypeId]);
+
+  // Current active template ID for the live vector preview
+  const currentPreviewTemplateId = useMemo(() => {
+    if (studioMode === 'both') {
+      const activeSlot = activeMeta.blueprintPack[activePreviewChapterIndex] || activeMeta.blueprintPack[0];
+      return slotCustomizations[activePreviewChapterIndex + 1]?.templateId || activeSlot?.recommendedTemplateId || '01';
+    }
+    return selectedDiagramTemplateId || '01';
+  }, [studioMode, activeMeta, activePreviewChapterIndex, slotCustomizations, selectedDiagramTemplateId]);
+
   // Live Studio Real-Time 16:9 Vector Diagram Preview XML
   const liveStudioDiagramXml = useMemo(() => {
-    const targetId = selectedDiagramTemplateId || '01';
+    const targetId = currentPreviewTemplateId;
     const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
     try {
       const rawXml = tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
@@ -740,7 +755,7 @@ function DocGenContent() {
     } catch {
       return tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
     }
-  }, [selectedDiagramTemplateId, selectedDomain, isLight, projectTitle, projectScopePrompt]);
+  }, [currentPreviewTemplateId, selectedDomain, isLight, projectTitle, projectScopePrompt]);
 
   const handleOpenPreview = (meta: DocArchetypeMeta) => {
     setPreviewModalDoc(meta);
@@ -777,11 +792,6 @@ function DocGenContent() {
       setTimeout(() => setProjectShareCopied(false), 2500);
     }
   };
-
-  // Find active archetype metadata
-  const activeMeta = useMemo(() => {
-    return DOC_ARCHETYPES_META.find((m) => m.id === selectedArchetypeId) || DOC_ARCHETYPES_META[2];
-  }, [selectedArchetypeId]);
 
   // Handle slot template swap
   const handleSwapSlotTemplate = (slotIdx: number, newTemplateId: string) => {
@@ -2205,7 +2215,17 @@ function DocGenContent() {
                           <button
                             key={fam.id}
                             type="button"
-                            onClick={() => setSelectedDiagramFamily(fam.id)}
+                            onClick={() => {
+                              setSelectedDiagramFamily(fam.id);
+                              const matchingTpls = CANONICAL_TEMPLATES.filter((t) => fam.id === 'all' || (t.family && t.family.toLowerCase().includes(fam.id.toLowerCase())));
+                              if (matchingTpls.length > 0 && !matchingTpls.some(t => t.id === selectedDiagramTemplateId)) {
+                                const newId = matchingTpls[0].id;
+                                setSelectedDiagramTemplateId(newId);
+                                setDiagramSlotsList((prev) =>
+                                  prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: newId } : slot))
+                                );
+                              }
+                            }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
                               selectedDiagramFamily === fam.id
                                 ? 'bg-teal-600 text-white shadow-sm font-black'
@@ -2225,7 +2245,10 @@ function DocGenContent() {
                           <button
                             key={meta.id}
                             type="button"
-                            onClick={() => setSelectedArchetypeId(meta.id)}
+                            onClick={() => {
+                              setSelectedArchetypeId(meta.id);
+                              setActivePreviewChapterIndex(0);
+                            }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                               selectedArchetypeId === meta.id
                                 ? 'bg-sky-600 text-white shadow-sm font-black'
@@ -2669,7 +2692,7 @@ function DocGenContent() {
                       <span className="text-xs font-bold text-slate-700 dark:text-slate-200 ml-2 font-mono truncate">
                         {studioMode === 'diagrams' && `Live GCP Vector Preview • Blueprint #${selectedDiagramTemplateId || '01'}`}
                         {studioMode === 'documents' && `Live Spec Preview • ${activeMeta.shortName}`}
-                        {studioMode === 'both' && `Live Multi-Blueprint Spec • ${activeMeta.shortName}`}
+                        {studioMode === 'both' && `Live Multi-Blueprint Spec • ${activeMeta.shortName} (#${currentPreviewTemplateId})`}
                       </span>
                     </div>
 
@@ -2678,7 +2701,7 @@ function DocGenContent() {
                         16:9 GCP
                       </span>
                       <Link
-                        href={`/workspace?blueprint=${selectedDiagramTemplateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                        href={`/workspace?blueprint=${currentPreviewTemplateId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
                         className="text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
                         title="Open directly in Canvas Editor"
                       >
@@ -2693,6 +2716,7 @@ function DocGenContent() {
                     {studioMode === 'diagrams' ? (
                       <div className="w-full h-full flex items-center justify-center aspect-[16/9] max-h-[520px]">
                         <DiagramViewerRenderSafe
+                          diagramId={selectedDiagramTemplateId}
                           xml={liveStudioDiagramXml}
                           aspectRatioId="16:9"
                           bgTheme={isLight ? 'light' : 'dark'}
@@ -2703,56 +2727,318 @@ function DocGenContent() {
                         <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-black text-sky-600 uppercase tracking-wider">{activeMeta.name}</span>
-                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">ARB Sign-Off Ready</span>
+                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                              ARB Sign-Off Ready &bull; {activeMeta.sectionsCount} Sections
+                            </span>
                           </div>
-                          <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{projectTitle || 'Enterprise Architecture Specification'}</h3>
+                          <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{projectTitle || activeMeta.name}</h3>
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[10px] text-slate-500">
+                            <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-bold border border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-800">
+                              Audience: {activeMeta.audience}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800">
+                              {activeMeta.blueprintPack.length} Attached Blueprints
+                            </span>
+                          </div>
                         </div>
                         
-                        <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                        <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300">
+                          {/* Chapter 1 */}
                           <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ch. 1 &bull; Executive Overview &amp; Business Mandate</h4>
+                            <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ch. 1 &bull; Executive Mandate &amp; {activeMeta.shortName} Scope</h4>
                             <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
-                              {projectScopePrompt || 'Specifies core system requirements, regulatory governance policies, and latency targets...'}
+                              {projectScopePrompt || activeMeta.primaryPurpose}
                             </p>
                           </div>
 
+                          {/* Chapter Blueprint Interactive Tabs */}
                           <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white mb-1.5 flex items-center justify-between">
-                              <span>Ch. 2 &bull; Target Google Cloud Architecture Topology</span>
-                              <span className="text-[10px] text-teal-600 font-mono">16:9 Vector</span>
-                            </h4>
-                            <div className="w-full h-52 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center">
-                              <DiagramViewerRenderSafe
-                                xml={liveStudioDiagramXml}
-                                aspectRatioId="16:9"
-                                bgTheme={isLight ? 'light' : 'dark'}
-                              />
+                            <div className="flex items-center justify-between mb-1.5">
+                              <h4 className="font-bold text-slate-900 dark:text-white">
+                                Attached Architecture Blueprint Pack ({activeMeta.blueprintPack.length} Chapters):
+                              </h4>
+                              <span className="text-[10px] text-teal-600 font-mono font-bold">16:9 Vector Live</span>
                             </div>
+
+                            <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
+                              {activeMeta.blueprintPack.map((slot, sIdx) => {
+                                const isSelected = activePreviewChapterIndex === sIdx;
+                                const slotTplId = slotCustomizations[sIdx + 1]?.templateId || slot.recommendedTemplateId;
+                                return (
+                                  <button
+                                    key={sIdx}
+                                    type="button"
+                                    onClick={() => setActivePreviewChapterIndex(sIdx)}
+                                    className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                      isSelected
+                                        ? 'bg-sky-600 text-white shadow-xs'
+                                        : isLight
+                                        ? 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'
+                                        : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                                    }`}
+                                  >
+                                    <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-black/10">Ch.{slot.chapterNumber}</span>
+                                    <span className="truncate max-w-[130px]">{slot.slotTitle}</span>
+                                    <span className="text-[9px] font-mono opacity-80">#{slotTplId}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            {/* Selected Chapter Viewport */}
+                            {(() => {
+                              const activeSlot = activeMeta.blueprintPack[activePreviewChapterIndex] || activeMeta.blueprintPack[0];
+                              return (
+                                <div className="space-y-2">
+                                  <div className="p-2.5 rounded-xl bg-sky-50/50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-[11px] text-sky-900 dark:text-sky-300">
+                                    <span className="font-bold">Ch. {activeSlot.chapterNumber} &bull; {activeSlot.slotTitle}:</span>{' '}
+                                    <span className="text-slate-500 dark:text-slate-400">{activeSlot.description}</span>
+                                  </div>
+                                  <div className="w-full h-56 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center">
+                                    <DiagramViewerRenderSafe
+                                      diagramId={currentPreviewTemplateId}
+                                      xml={liveStudioDiagramXml}
+                                      aspectRatioId="16:9"
+                                      bgTheme={isLight ? 'light' : 'dark'}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })()}
                           </div>
 
+                          {/* Dynamic Chapter Component & SLA Demarcation Matrix */}
                           <div>
-                            <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ch. 3 &bull; Core Service Matrix &amp; Demarcation</h4>
-                            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-mono">
-                              <div className="flex justify-between border-b pb-1 border-slate-200 dark:border-slate-800 text-slate-400">
-                                <span>COMPONENT</span>
-                                <span>TIER / SERVICE</span>
-                                <span>SLA</span>
-                              </div>
-                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                <span>Ingress Perimeter</span>
-                                <span>Cloud Armor WAF</span>
-                                <span>99.99%</span>
-                              </div>
-                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                <span>Compute Engine</span>
-                                <span>GKE Autopilot / Cloud Run</span>
-                                <span>99.95%</span>
-                              </div>
-                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
-                                <span>Data Storage</span>
-                                <span>Cloud Spanner Multi-Region</span>
-                                <span>99.999%</span>
-                              </div>
+                            <h4 className="font-bold text-slate-900 dark:text-white mb-1.5 flex items-center justify-between">
+                              <span>Ch. 3 &bull; Component Demarcation &amp; SLA Matrix</span>
+                              <span className="text-[10px] font-mono text-slate-400">{activeMeta.shortName} Governance</span>
+                            </h4>
+                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10.5px]">
+                              {activeMeta.id === 'stride' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>THREAT VECTOR</span>
+                                    <span>MITIGATION ARCHITECTURE</span>
+                                    <span>STATUS / SLA</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Spoofing &amp; Ingress Hijack</span>
+                                    <span>BeyondCorp mTLS &amp; Zero-Trust</span>
+                                    <span className="text-emerald-600 font-bold">SOC 2 Type II</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Data Tampering &amp; In-Flight</span>
+                                    <span>Cloud Armor WAF &amp; Schema Guard</span>
+                                    <span className="text-emerald-600 font-bold">PCI-DSS 4.0</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Information Disclosure</span>
+                                    <span>Cloud KMS Envelope Encryption</span>
+                                    <span className="text-emerald-600 font-bold">FIPS 140-3</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Denial of Service (DoS)</span>
+                                    <span>Autopilot HPA &amp; Edge Rate Limits</span>
+                                    <span className="text-emerald-600 font-bold">99.99% Up</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'vendor_rfp' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>RFP EVALUATION PILLAR</span>
+                                    <span>WEIGHT</span>
+                                    <span>TARGET REQUIREMENT &amp; SCORE</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Architectural Parity &amp; APIs</span>
+                                    <span>35%</span>
+                                    <span className="text-sky-600 font-bold">9.4/10.0 (Native GCP)</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Security &amp; ISO Certifications</span>
+                                    <span>25%</span>
+                                    <span className="text-emerald-600 font-bold">100% (FedRAMP High)</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Disaster Recovery &amp; Multi-Region</span>
+                                    <span>20%</span>
+                                    <span className="text-teal-600 font-bold">RTO &lt; 5m, RPO &lt; 1m</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Unit Economics &amp; 3-Yr TCO</span>
+                                    <span>20%</span>
+                                    <span className="text-indigo-600 font-bold">42% Projected Savings</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'tdd' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>SUBSYSTEM COMPONENT</span>
+                                    <span>PROTOCOL / CONTRACT</span>
+                                    <span>TIMEOUT / P99 SLA</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Ingress Edge Proxy</span>
+                                    <span>HTTP/3 &amp; gRPC Ingress</span>
+                                    <span className="text-sky-600 font-bold">&lt; 15ms P99</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Core Domain Orchestrator</span>
+                                    <span>Protobuf RPC &amp; Circuit Breaker</span>
+                                    <span className="text-sky-600 font-bold">&lt; 45ms P99</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>State Ledger (Spanner)</span>
+                                    <span>Multi-Region Strong Consistency</span>
+                                    <span className="text-emerald-600 font-bold">99.999% SLA</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Event Stream Bus (Pub/Sub)</span>
+                                    <span>Exactly-Once Event Routing</span>
+                                    <span className="text-teal-600 font-bold">100k msg/sec</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'cloud_migration' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>MIGRATION WAVE</span>
+                                    <span>SOURCE WORKLOAD</span>
+                                    <span>TARGET GCP DESTINATION</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Wave 1: Edge &amp; Ingress</span>
+                                    <span>F5 BIG-IP / On-Prem WAF</span>
+                                    <span className="text-teal-600 font-bold">Cloud Armor + Cloud CDN</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Wave 2: Microservices</span>
+                                    <span>Legacy WebSphere / VMs</span>
+                                    <span className="text-sky-600 font-bold">GKE Autopilot / Cloud Run</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Wave 3: Relational DBs</span>
+                                    <span>Oracle Exadata / SQL Server</span>
+                                    <span className="text-indigo-600 font-bold">Cloud Spanner / Cloud SQL</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Wave 4: Lakehouse &amp; CDC</span>
+                                    <span>Hadoop / Teradata Warehouse</span>
+                                    <span className="text-purple-600 font-bold">BigQuery + Dataproc</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'ai_system_card' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>AI PIPELINE STAGE</span>
+                                    <span>MODEL / FOUNDATION TIER</span>
+                                    <span>SAFETY GUARDRAIL &amp; SLA</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Ingestion &amp; Chunking</span>
+                                    <span>Document AI Optical Parser</span>
+                                    <span className="text-emerald-600 font-bold">100% PII Redacted</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Vector Indexing</span>
+                                    <span>Vertex text-embedding-004</span>
+                                    <span className="text-sky-600 font-bold">768-dim &lt; 20ms</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Vector RAG Retrieval</span>
+                                    <span>Vertex Vector Search (HNSW)</span>
+                                    <span className="text-teal-600 font-bold">&lt; 15ms ANN Query</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Inference &amp; Grounding</span>
+                                    <span>Gemini 2.5 Flash / Pro</span>
+                                    <span className="text-purple-600 font-bold">Toxicity &lt; 0.01</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'cloud_finops' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>RESOURCE ALLOCATION</span>
+                                    <span>UNIT COST DRIVER</span>
+                                    <span>OPTIMIZATION LEVER</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>GKE Autopilot Clusters</span>
+                                    <span>vCPU / GiB Allocated-Hour</span>
+                                    <span className="text-emerald-600 font-bold">CUDs &amp; Spot VM Pools</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Cloud Spanner Database</span>
+                                    <span>Provisioned Compute Units</span>
+                                    <span className="text-sky-600 font-bold">Auto-Scale Min/Max Nodes</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>BigQuery Analytics</span>
+                                    <span>TB Scanned / On-Demand</span>
+                                    <span className="text-teal-600 font-bold">Slot Reservations &amp; Partitioning</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Ingress / Egress Network</span>
+                                    <span>Cross-Region Transfer GiB</span>
+                                    <span className="text-indigo-600 font-bold">Cloud CDN Cache Shield</span>
+                                  </div>
+                                </div>
+                              ) : activeMeta.id === 'grc' ? (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>COMPLIANCE STANDARD</span>
+                                    <span>CONTROL ID</span>
+                                    <span>AUTOMATED VERIFICATION GATE</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>HIPAA &amp; HITECH</span>
+                                    <span>§ 164.312 Technical Safeguards</span>
+                                    <span className="text-emerald-600 font-bold">Continuous VPC SC Perimeter</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>SOC 2 Type II</span>
+                                    <span>CC6.1 Logical Access Controls</span>
+                                    <span className="text-sky-600 font-bold">Cloud IAM Least-Privilege</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>FDA 21 CFR Part 11</span>
+                                    <span>11.10(e) Audit Trail Ledger</span>
+                                    <span className="text-teal-600 font-bold">Immutable Cloud Audit Logs</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>ISO 27001:2022</span>
+                                    <span>A.12.1.2 Change Management</span>
+                                    <span className="text-purple-600 font-bold">Binary Authorization Sign-Off</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="space-y-1 font-mono text-[10px]">
+                                  <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
+                                    <span>COMPONENT</span>
+                                    <span>TIER / SERVICE</span>
+                                    <span>SLA / COMPLIANCE</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Ingress Perimeter</span>
+                                    <span>Cloud Armor WAF &amp; CDN</span>
+                                    <span className="text-emerald-600 font-bold">99.99% Availability</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Compute Engine</span>
+                                    <span>GKE Autopilot / Cloud Run</span>
+                                    <span className="text-sky-600 font-bold">&lt; 50ms P99 Latency</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Data Storage Tier</span>
+                                    <span>Cloud Spanner Multi-Region</span>
+                                    <span className="text-teal-600 font-bold">99.999% Durability</span>
+                                  </div>
+                                  <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                    <span>Observability &amp; Audit</span>
+                                    <span>Cloud Monitoring &amp; SIEM</span>
+                                    <span className="text-purple-600 font-bold">Immutable Audit Logs</span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -2761,20 +3047,30 @@ function DocGenContent() {
                       <div className="w-full p-6 text-left space-y-4 max-h-[540px] overflow-y-auto">
                         <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
                           <div className="text-xs font-bold text-sky-600 uppercase tracking-wider">{activeMeta.name}</div>
-                          <h3 className="text-base font-black text-slate-900 dark:text-white">{projectTitle || 'Enterprise Architecture Specification'}</h3>
+                          <h3 className="text-base font-black text-slate-900 dark:text-white mt-0.5">{projectTitle || activeMeta.name}</h3>
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[10px] text-slate-500">
+                            <span className="px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-bold border border-sky-200 dark:bg-sky-950 dark:text-sky-400 dark:border-sky-800">
+                              Audience: {activeMeta.audience}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 dark:bg-emerald-950 dark:text-emerald-400 dark:border-emerald-800">
+                              {activeMeta.sectionsCount} Target Sections
+                            </span>
+                          </div>
                         </div>
                         <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                           <div>
-                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">1. Executive Overview &amp; Business Objectives</h4>
-                            <p className="text-slate-500 dark:text-slate-400">{projectScopePrompt || 'Specifies business goals, architectural constraints, and regulatory requirements...'}</p>
+                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">1. Strategic Mandate &amp; Executive Objectives</h4>
+                            <p className="text-slate-500 dark:text-slate-400">{projectScopePrompt || activeMeta.primaryPurpose}</p>
                           </div>
                           <div>
                             <h4 className="font-bold text-slate-800 dark:text-white mb-1">2. Architecture Demarcation &amp; Service Boundaries</h4>
-                            <p className="text-slate-500 dark:text-slate-400">Encapsulates zero-trust ingress, Google Cloud compute clusters, and immutable compliance ledgers.</p>
+                            <p className="text-slate-500 dark:text-slate-400">
+                              Encapsulates {activeMeta.blueprintPack.length} attached architectural chapters ({activeMeta.blueprintPack.map(b => b.slotTitle).join(', ')}).
+                            </p>
                           </div>
                           <div>
                             <h4 className="font-bold text-slate-800 dark:text-white mb-1">3. Non-Functional Requirements &amp; SLA Compliance</h4>
-                            <p className="text-slate-500 dark:text-slate-400">RTO &lt; 5 minutes, RPO &lt; 1 minute, active-active multi-region failover.</p>
+                            <p className="text-slate-500 dark:text-slate-400">RTO &lt; 5 minutes, RPO &lt; 1 minute, active-active multi-region failover, 99.999% data durability.</p>
                           </div>
                         </div>
                       </div>
