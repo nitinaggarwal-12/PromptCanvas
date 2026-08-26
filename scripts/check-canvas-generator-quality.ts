@@ -251,7 +251,8 @@ async function runCanvasQualityAudits(): Promise<boolean> {
       const res = await executeUnifiedDiagramPipeline({
         prompt: turnPrompt,
         architectureType: chain.archType,
-        existingXml: currentXml
+        existingXml: currentXml,
+        skipDb: true
       });
 
       currentXml = res.xml;

@@ -14,6 +14,7 @@ export interface UnifiedDiagramRequest {
   isPrivate?: boolean;
   userId?: string | null;
   existingXml?: string;
+  skipDb?: boolean;
   phaseName?: string;
   domain?: string;
   abstractionLevel?: string;
@@ -45,7 +46,7 @@ export interface UnifiedDiagramResponse {
 export async function executeUnifiedDiagramPipeline(
   req: UnifiedDiagramRequest
 ): Promise<UnifiedDiagramResponse> {
-  const { prompt, diagramId, name, isPrivate, userId } = req;
+  const { prompt, diagramId, name, isPrivate, userId, skipDb } = req;
   let effectiveArchType = req.architectureType || 'conceptual_diagram';
 
   const cleanPrompt = (prompt || '').trim();
@@ -163,41 +164,47 @@ export async function executeUnifiedDiagramPipeline(
   const validated = validateAndHealDrawioXml(customResult.xml, effectiveArchType);
   const finalXml = validated.xml;
 
-  // 5. Persist to Database
-  let diagramRecord = null;
-  let versionRecord = null;
+  // 5. Persist to Database (if not in offline test/build harness mode)
+  let diagramRecord: any = null;
+  let versionRecord: any = null;
 
-  if (diagramId) {
-    await updateDiagramArchitectureType(diagramId, effectiveArchType);
-    const comment = `${getArchitectureTypeById(effectiveArchType)?.name || effectiveArchType} (Tailored for: ${prompt.slice(0, 40)}...)`;
-    versionRecord = await saveDiagramVersion(
-      diagramId,
-      finalXml,
-      comment,
-      'AI',
-      prompt,
-      customResult.reasoning,
-      customResult.businessUsecase,
-      customResult.technicalUsecase,
-      effectiveArchType
-    );
-  } else {
-    const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
-    const comment = `Initial ${getArchitectureTypeById(effectiveArchType)?.name || effectiveArchType}`;
-    const result = await createDiagram(
-      diagramName,
-      finalXml,
-      comment,
-      prompt,
-      customResult.reasoning,
-      customResult.businessUsecase,
-      customResult.technicalUsecase,
-      userId || null,
-      effectiveArchType,
-      Boolean(isPrivate)
-    );
-    diagramRecord = result.diagram;
-    versionRecord = result.version;
+  if (!skipDb) {
+    try {
+      if (diagramId) {
+        await updateDiagramArchitectureType(diagramId, effectiveArchType);
+        const comment = `${getArchitectureTypeById(effectiveArchType)?.name || effectiveArchType} (Tailored for: ${prompt.slice(0, 40)}...)`;
+        versionRecord = await saveDiagramVersion(
+          diagramId,
+          finalXml,
+          comment,
+          'AI',
+          prompt,
+          customResult.reasoning,
+          customResult.businessUsecase,
+          customResult.technicalUsecase,
+          effectiveArchType
+        );
+      } else {
+        const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
+        const comment = `Initial ${getArchitectureTypeById(effectiveArchType)?.name || effectiveArchType}`;
+        const result = await createDiagram(
+          diagramName,
+          finalXml,
+          comment,
+          prompt,
+          customResult.reasoning,
+          customResult.businessUsecase,
+          customResult.technicalUsecase,
+          userId || null,
+          effectiveArchType,
+          Boolean(isPrivate)
+        );
+        diagramRecord = result.diagram;
+        versionRecord = result.version;
+      }
+    } catch (dbErr) {
+      console.warn('[Unified Diagram Engine] Database persistence skipped or unavailable:', dbErr);
+    }
   }
 
   return {

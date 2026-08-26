@@ -214,8 +214,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
         const match = nodeRegex.exec(customizedXml);
         if (!match) continue;
 
+        const existingVal = match[2] || '';
         const title = custom.title || (typeof custom === 'string' ? custom : '');
         const subtitle = custom.subtitle || '';
+        const isHeaderOrText = !existingVal.includes('&lt;b') && !existingVal.includes('<b');
         
         let newVal = existingVal;
         if (title) {
