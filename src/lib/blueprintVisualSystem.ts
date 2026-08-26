@@ -310,6 +310,22 @@ export function applyBlueprintVisualSystem(xml: string, architectureId?: string 
   if (!xml) return xml;
 
   const id = (architectureId || '').toLowerCase();
+  const isMasterOrStructured = 
+    id === 'unified_system_view' || 
+    id.startsWith('canonical') || 
+    id.startsWith('tech_') || 
+    id.startsWith('master_') ||
+    xml.includes('TOTAL UNIFIED SYSTEM VIEW') || 
+    xml.includes('id="exact_unified_system_view"') ||
+    xml.includes('sw1_');
+
+  if (isMasterOrStructured) {
+    let polished = replaceLegacyProductNames(xml);
+    polished = makeGcpStencilsViewerSafe(polished);
+    polished = normalizeCanvasDefaults(polished);
+    return polished;
+  }
+
   const notationSensitive = NOTATION_SENSITIVE_IDS.has(id);
   const fontFloor = notationSensitive ? 9 : 10;
   const strokeFloor = notationSensitive ? 1 : 1.2;
