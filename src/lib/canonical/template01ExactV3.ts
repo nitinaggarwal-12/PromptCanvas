@@ -229,8 +229,8 @@ export function generateTemplate01ExactV3Xml(
     cell(`ai_c_${idx}`, html, ax, 718, 142, 94, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.2;html=1;align=center;verticalAlign=top;padding=2;");
   });
 
-  // Callout banner inside AI services
-  cell("ai_note_banner", `<div style="font-size:8.5px;color:#6B21A8;font-style:italic;font-weight:700;line-height:1.2;text-align:left;">AI Copilot uses enterprise content and governed LLM to deliver grounded, compliant assistance within workflows.</div>`, 1398, 718, 172, 94, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=none;html=1;align=left;verticalAlign=middle;padding=6;");
+  // Callout banner inside AI services (with explicit text wrap)
+  cell("ai_note_banner", `<div style="font-size:8.5px;color:#6B21A8;font-style:italic;font-weight:700;line-height:1.35;text-align:left;white-space:normal;word-break:break-word;overflow-wrap:break-word;display:block;width:100%;">AI Copilot uses enterprise content and governed LLM to deliver grounded, compliant assistance within workflows.</div>`, 1398, 718, 172, 94, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=none;html=1;whiteSpace=wrap;overflow=hidden;align=left;verticalAlign=middle;spacing=6;");
 
   // Section Headers for Bottom Tier
   cell("ent_sec_title", "Enterprise Systems (Upstream / Downstream)", 16, 850, 894, 16, "html=1;fontColor:#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");

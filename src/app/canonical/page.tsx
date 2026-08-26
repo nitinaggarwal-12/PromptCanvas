@@ -670,7 +670,7 @@ function CanonicalContent() {
               <div className="flex items-center gap-1.5 md:gap-2">
                 {/* Launch Studio Button */}
                 <Link
-                  href={`/docgen?tab=studio&doc=sdd&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                  href={`/docgen?tab=studio&mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02]"
                   title="Launch in Multi-Blueprint Studio & DocGen"
                 >

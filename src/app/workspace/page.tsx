@@ -1191,24 +1191,36 @@ function WorkspaceContent() {
       );
       if (canonicalMatch) {
         setSelectedArchType(`canonical_${canonicalMatch.id}`);
-        setNewDiagramName(titleParam || canonicalMatch.name);
+        let resolvedXml = '';
         try {
           const rawXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
           const flavored = injectDomainFlavorXml(rawXml, domainParam || 'biopharma');
-          const finalXml = (titleParam || promptParam)
+          resolvedXml = (titleParam || promptParam)
             ? injectUseCaseFlavor(flavored, titleParam || canonicalMatch.name, promptParam)
             : flavored;
-          activeXmlRef.current = finalXml;
-          setCustomXml(finalXml);
         } catch {
-          const fallbackXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
-          activeXmlRef.current = fallbackXml;
-          setCustomXml(fallbackXml);
+          resolvedXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
         }
-        if (activeDiagram && activeDiagram.architecture_type !== `canonical_${canonicalMatch.id}`) {
-          setActiveDiagram(null);
-          setActiveVersion(null);
-        }
+        activeXmlRef.current = resolvedXml;
+        setCustomXml(resolvedXml);
+
+        const syntheticDiagram: Diagram = {
+          id: canonicalMatch.id,
+          name: titleParam || canonicalMatch.name,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          architecture_type: `canonical_${canonicalMatch.id}`,
+          xml_content: resolvedXml,
+          versions: [{
+            id: `canonical_ver_${canonicalMatch.id}`,
+            version_number: 1,
+            xml_content: resolvedXml,
+            created_at: new Date().toISOString(),
+            comment: 'Ground-Truth Blueprint'
+          }]
+        };
+        setActiveDiagram(syntheticDiagram);
+        setActiveVersion(syntheticDiagram.versions![0]);
       } else {
         const meta = getBlueprintMetadataById(archParam);
         const targetCombinedId = meta ? meta.combinedId : archParam;

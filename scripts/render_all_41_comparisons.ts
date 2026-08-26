@@ -53,7 +53,7 @@ async function renderAllComparisons() {
   const chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: fs.existsSync(chromePath) ? chromePath : undefined,
+    executablePath: chromePath,
     args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-web-security"]
   });
 

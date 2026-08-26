@@ -693,18 +693,12 @@ function DocGenContent() {
       setDiagramSlotsList((prev) =>
         prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: tplParam } : slot))
       );
-      if (!modeParam) {
-        setStudioMode('diagrams');
-      }
     }
 
     if (docParam) {
       const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
       if (matched) {
         setSelectedArchetypeId(docParam);
-        if (!modeParam) {
-          setStudioMode('both');
-        }
         if (tabParam === 'studio' || projParam || domainParam || titleParam) {
           setActiveTab('studio');
           // Auto-generate if custom project link
@@ -722,6 +716,15 @@ function DocGenContent() {
           setModalTab('doc');
         }
       }
+    }
+
+    // Explicit studio mode parameter precedence
+    if (modeParam === 'diagrams' || modeParam === 'documents' || modeParam === 'both') {
+      setStudioMode(modeParam);
+    } else if (tplParam && !docParam) {
+      setStudioMode('diagrams');
+    } else if (docParam && !tplParam) {
+      setStudioMode('both');
     } else if (tabParam === 'studio') {
       setActiveTab('studio');
     }

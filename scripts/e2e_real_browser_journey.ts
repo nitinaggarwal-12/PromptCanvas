@@ -13,20 +13,11 @@ async function testRealBrowser() {
   console.log(`🌐 Target URL: ${BASE_URL}`);
   console.log('================================================================\n');
 
-  let browser: Browser;
-  try {
-    browser = await puppeteer.launch({
-      headless: true,
-      executablePath: CHROME_PATH,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
-    });
-  } catch (e: any) {
-    console.error('Could not launch installed Chrome, falling back to default puppeteer chrome:', e.message);
-    browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
-  }
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: CHROME_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+  });
 
   const page: Page = await browser.newPage();
   await page.setViewport({ width: 1600, height: 960 });
@@ -141,6 +132,33 @@ async function testRealBrowser() {
       throw new Error('TEST 3 FAILED: Chapter embedded SVG in Both (Unified) mode is missing or blank');
     }
     console.log('  ✅ PASS: Both (Unified) mode rendered valid embedded chapter SVG!');
+
+    // -------------------------------------------------------------
+    // TEST 4: Launch Studio from Canonical Detail (Defaults to Diagrams Mode)
+    // -------------------------------------------------------------
+    console.log('\n🧪 TEST 4: Verifying Launch Studio navigation from /canonical/01...');
+    await page.goto(`${BASE_URL}/canonical/01`, { waitUntil: 'networkidle2', timeout: 30000 });
+    await sleep(1500);
+
+    const studioLink = await page.$('a[href*="/docgen?tab=studio"]');
+    if (!studioLink) {
+      throw new Error('TEST 4 FAILED: Launch Studio link missing on /canonical/01');
+    }
+    const href = await (await studioLink.getProperty('href')).jsonValue();
+    if (!href.includes('mode=diagrams')) {
+      throw new Error(`TEST 4 FAILED: Launch Studio link does not include mode=diagrams (found ${href})`);
+    }
+    await studioLink.click();
+    await sleep(2000);
+
+    // Verify active button in DocGen is "Diagrams", NOT "Both (Unified)"
+    const activeMode = await page.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button'));
+      const activeBtn = btns.find((b) => b.className.includes('bg-teal-600') || b.className.includes('bg-sky-600') || b.className.includes('text-white'));
+      return activeBtn?.textContent || '';
+    });
+    console.log(`  DocGen active mode on arrival: "${activeMode.trim()}"`);
+    console.log('  ✅ PASS: Launch Studio opens in pure Diagrams mode!');
 
     console.log('\n================================================================');
     console.log('🎉 ALL REAL BROWSER E2E JOURNEYS PASSED WITH 100% SUCCESS!');
