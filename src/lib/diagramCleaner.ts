@@ -1624,7 +1624,27 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
     // Dynamic Cloud Vendor Terminology Translation
     const promptLowerFull = userPrompt.toLowerCase();
-    if (promptLowerFull.includes('azure')) {
+    if (promptLowerFull.includes('aws') || promptLowerFull.includes('amazon') || promptLowerFull.includes('eks') || promptLowerFull.includes('lambda')) {
+      updatedXml = updatedXml
+        .replace(/Google Cloud Platform \(GCP\)/g, 'Amazon Web Services (AWS)')
+        .replace(/Google Cloud Platform/g, 'Amazon Web Services (AWS)')
+        .replace(/Google Cloud/g, 'AWS')
+        .replace(/GCP/g, 'AWS')
+        .replace(/Cloud Pub\/Sub/g, 'Amazon Kinesis &amp; SQS')
+        .replace(/Pub\/Sub/g, 'Amazon SQS / SNS')
+        .replace(/Cloud KMS/g, 'AWS KMS &amp; Secrets Manager')
+        .replace(/Cloud Run/g, 'AWS ECS Fargate')
+        .replace(/GKE Autopilot/g, 'Amazon EKS Cluster')
+        .replace(/GKE/g, 'EKS')
+        .replace(/BigQuery/g, 'Amazon Redshift &amp; Athena')
+        .replace(/Cloud Storage/g, 'Amazon S3 Bucket')
+        .replace(/Cloud Armor/g, 'AWS WAF &amp; Shield')
+        .replace(/Cloud Functions/g, 'AWS Lambda')
+        .replace(/Cloud SQL/g, 'Amazon Aurora PostgreSQL')
+        .replace(/Cloud Spanner/g, 'Amazon DynamoDB Global Tables')
+        .replace(/Vertex AI/g, 'Amazon Bedrock &amp; SageMaker')
+        .replace(/Cloud Logging/g, 'Amazon CloudWatch');
+    } else if (promptLowerFull.includes('azure')) {
       updatedXml = updatedXml
         .replace(/Google Cloud Platform \(GCP\)/g, 'Microsoft Azure Enterprise Cloud')
         .replace(/GCP/g, 'Azure')
