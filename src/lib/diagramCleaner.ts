@@ -763,6 +763,8 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
 
   // Universal Title & Use Case Header Injection across ALL diagrams
   updatedXml = updatedXml
+    .replace(/(&lt;span[^>]*&gt;\s*❖?\s*USE CASE:\s*&lt;\/span&gt;)[^<]+/gi, `$1 ${topicCleanXml}`)
+    .replace(/(<span[^>]*>\s*❖?\s*USE CASE:\s*<\/span>)[^<]+/gi, `$1 ${topicCleanXml}`)
     .replace(/(❖\s*USE CASE:\s*)[^<"&]+/gi, `$1${topicCleanXml}`)
     .replace(/(\bUSE CASE:\s*)[^<"&]+/gi, `$1${topicCleanXml}`)
     .replace(/(\bSYSTEM CONTEXT:\s*)[^<"&]+/gi, `$1${topicCleanXml}`)

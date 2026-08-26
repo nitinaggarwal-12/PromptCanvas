@@ -14,13 +14,14 @@ ${optionsList}
 INSTRUCTIONS:
 1. Analyze the user prompt carefully.
 2. Determine if the prompt clearly requests or strongly aligns with one of the available diagram types/templates listed above.
-3. Assign a confidence score between 0.0 and 1.0:
-   - 0.8 to 1.0: High confidence match for a specific template type (e.g. sequence diagram, ERD, conceptual diagram, RAG architecture).
+3. Domain Specificity Rule: If the prompt describes a specific industry domain (e.g., Healthcare/Life Sciences/DICOM/FHIR, Industrial IoT/Robotics/OT, FinTech/Payments/Banking, Zero-Trust/Cybersecurity/SOC/STRIDE, Cloud Landing Zone/VPC, Data Mesh/Lakehouse), prioritize that specialized Domain Reference Architecture over generic multi-tier overviews.
+4. Assign a confidence score between 0.0 and 1.0:
+   - 0.8 to 1.0: High confidence match for a specific template type (e.g. sequence diagram, ERD, healthcare platform, IoT digital twin, threat model).
    - 0.6 to 0.79: Medium confidence match for freeform technical or a specific template with reasonable assumptions.
    - Below 0.6: Low confidence or ambiguous intent.
-4. List explicit assumptions made if the prompt is vague or broad.
-5. Provide up to 3 alternative template IDs if the request could reasonably fit other diagram types.
-6. Return strictly a JSON object with NO markdown formatting, NO code blocks, and NO extra text.
+5. List explicit assumptions made if the prompt is vague or broad.
+6. Provide up to 3 alternative template IDs if the request could reasonably fit other diagram types.
+7. Return strictly a JSON object with NO markdown formatting, NO code blocks, and NO extra text.
 
 JSON RESPONSE SCHEMA:
 {
