@@ -215,27 +215,6 @@ function DashboardContent() {
     setTimeout(() => setCopiedXml(false), 2000);
   };
 
-  const [isClearing, setIsClearing] = useState<boolean>(false);
-  const [showClearConfirm, setShowClearConfirm] = useState<boolean>(false);
-
-  const handleClearAllHistory = async () => {
-    setIsClearing(true);
-    try {
-      // 1. Purge DB diagrams
-      await fetch('/api/diagrams', { method: 'DELETE' });
-
-      // 2. Purge local storage historical doc projects
-      clearAllHistoricalProjects();
-      setDocProjects([]);
-
-      setShowClearConfirm(false);
-    } catch (err) {
-      console.error('Failed to clear history:', err);
-    } finally {
-      setIsClearing(false);
-    }
-  };
-
   return (
     <div className={`min-h-screen flex ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#060913] text-slate-100'}`}>
       {/* Sidebar Navigation */}
@@ -267,17 +246,6 @@ function DashboardContent() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowClearConfirm(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
-                isLight ? 'bg-rose-50 hover:bg-rose-100 border-rose-200 text-rose-700' : 'bg-rose-950/40 hover:bg-rose-900/60 border-rose-900/60 text-rose-300'
-              }`}
-              title="Purge legacy diagrams and start tracking new projects fresh"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Reset &amp; Start Fresh</span>
-            </button>
-
             <Link
               href="/docgen?tab=studio"
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer"
@@ -324,11 +292,11 @@ function DashboardContent() {
               isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10.5px] font-mono font-bold uppercase">Canvases</span>
-                <Layers className="w-4 h-4 text-indigo-500" />
+                <span className="text-[10.5px] font-mono font-bold uppercase">Archetypes</span>
+                <Award className="w-4 h-4 text-indigo-500" />
               </div>
-              <div className="text-2xl font-black text-indigo-500">{stats.totalDiagrams}</div>
-              <p className="text-[10px] text-slate-400">Compiled Vector Models</p>
+              <div className="text-2xl font-black text-indigo-500">{stats.totalArchetypes}</div>
+              <p className="text-[10px] text-slate-400">Enterprise Doc Standards</p>
             </div>
 
             {/* KPI 4 */}
@@ -336,7 +304,7 @@ function DashboardContent() {
               isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10.5px] font-mono font-bold uppercase">Versions</span>
+                <span className="text-[10.5px] font-mono font-bold uppercase">Snapshots</span>
                 <GitBranch className="w-4 h-4 text-teal-500" />
               </div>
               <div className="text-2xl font-black text-teal-500">{stats.totalVersions}</div>
@@ -931,47 +899,6 @@ function DashboardContent() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* MODAL: RESET & PURGE PREVIOUS HISTORY CONFIRMATION */}
-        {/* ========================================================================= */}
-        {showClearConfirm && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-[#090D18] border border-slate-800 rounded-3xl w-full max-w-md p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500 mx-auto">
-                <Trash2 className="w-6 h-6" />
-              </div>
-
-              <div className="text-center space-y-2">
-                <h3 className="text-base font-black text-white">
-                  Reset &amp; Purge Previous History?
-                </h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  This will remove all previously recorded test canvases and drafts, giving you a completely clean slate to track your new canonical projects and specifications.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-3 pt-2">
-                <button
-                  onClick={() => setShowClearConfirm(false)}
-                  disabled={isClearing}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-800 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition cursor-pointer"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleClearAllHistory}
-                  disabled={isClearing}
-                  className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black transition flex items-center justify-center gap-1.5 shadow-lg shadow-rose-600/20 cursor-pointer disabled:opacity-50"
-                >
-                  {isClearing ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                  <span>{isClearing ? 'Clearing...' : 'Yes, Purge History'}</span>
-                </button>
               </div>
             </div>
           </div>
