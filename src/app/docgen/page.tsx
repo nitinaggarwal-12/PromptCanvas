@@ -726,6 +726,22 @@ function DocGenContent() {
     }
   }, [searchParams]);
 
+  // Live Studio Real-Time 16:9 Vector Diagram Preview XML
+  const liveStudioDiagramXml = useMemo(() => {
+    const targetId = selectedDiagramTemplateId || '01';
+    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
+    try {
+      const rawXml = tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
+      if (projectTitle || projectScopePrompt) {
+        return injectUseCaseFlavor(domainCleaned, projectTitle || tpl.name, projectScopePrompt);
+      }
+      return domainCleaned;
+    } catch {
+      return tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+    }
+  }, [selectedDiagramTemplateId, selectedDomain, isLight, projectTitle, projectScopePrompt]);
+
   const handleOpenPreview = (meta: DocArchetypeMeta) => {
     setPreviewModalDoc(meta);
     setModalTab('doc');
@@ -2152,183 +2168,221 @@ function DocGenContent() {
 
         {/* TAB 2: INTERACTIVE DOCUMENT STUDIO & GENERATOR */}
         {activeTab === 'studio' && (
-          <div className="py-6 space-y-8">
-            {/* Top Wizard Steps / Configuration Panel */}
-            <div className={`p-6 md:p-8 rounded-3xl border shadow-xl space-y-6 ${
-              isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
+          <div className="py-4 space-y-6 max-w-[1600px] mx-auto">
+            {/* Top Studio Generation Mode Command Bar */}
+            <div className={`flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-3xl border shadow-sm ${
+              isLight ? 'bg-white border-slate-200 shadow-slate-200/40' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
             }`}>
-              {/* 0. STUDIO SCOPE MODE SELECTOR */}
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 shadow-inner">
-                <div className="space-y-0.5">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-sky-500" />
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                      Studio Generation Mode:
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {studioMode === 'both' && '⚡ Unified Studio: Generate multi-blueprint specification with live 16:9 interactive diagrams embedded in each chapter.'}
-                    {studioMode === 'diagrams' && '🎨 Diagram Studio: Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canvas bridge.'}
-                    {studioMode === 'documents' && '📄 Document Studio: Synthesize publication-ready enterprise specifications (BRD, PRD, SDD, STRIDE) with section controls.'}
-                  </p>
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-teal-600" />
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white">
+                    Studio Generation Mode:
+                  </span>
+                  <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
+                    {studioMode === 'diagrams' && '50 Canonical 16:9 Master Blueprints'}
+                    {studioMode === 'documents' && '17 Production-Ready Archetypes'}
+                    {studioMode === 'both' && 'Unified Multi-Blueprint Specifications'}
+                  </span>
                 </div>
-
-                {/* 3 Scope Buttons */}
-                <div className="grid grid-cols-3 gap-1.5 p-1 bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStudioMode('diagrams');
-                      setGeneratedDocContent(null);
-                    }}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      studioMode === 'diagrams'
-                        ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-sm font-extrabold'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <Network className="w-3.5 h-3.5" />
-                    <span>🎨 Diagrams</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStudioMode('documents');
-                      setGeneratedDocContent(null);
-                    }}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      studioMode === 'documents'
-                        ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm font-extrabold'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>📄 Documents</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setStudioMode('both');
-                      setGeneratedDocContent(null);
-                    }}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      studioMode === 'both'
-                        ? 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-sm font-extrabold'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    <Zap className="w-3.5 h-3.5" />
-                    <span>⚡ Both (Unified)</span>
-                  </button>
-                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canvas editor bridge.'}
+                  {studioMode === 'documents' && 'Synthesize 17 production-ready enterprise specifications (BRD, PRD, SDD, TDD, STRIDE) with full section controls.'}
+                  {studioMode === 'both' && 'Generate multi-chapter enterprise specifications with live 16:9 interactive diagrams embedded in each chapter.'}
+                </p>
               </div>
 
-              {/* Wizard Title */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
-                <div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-sky-500/10 text-sky-500 mb-1">
-                    {studioMode === 'documents' ? 'Step 1 of 2 • Configuration' : 'Step 1 of 3 • Configuration'}
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">
-                    {studioMode === 'diagrams' && 'Interactive Architecture Diagram Synthesizer'}
-                    {studioMode === 'documents' && 'Enterprise Document & Specification Studio'}
-                    {studioMode === 'both' && 'Multi-Blueprint Document & Diagram Studio'}
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canvas editor bridge.'}
-                    {studioMode === 'documents' && 'Synthesize 17 production-ready enterprise specifications (BRD, PRD, SDD, TDD, STRIDE, GRC) with full section controls.'}
-                    {studioMode === 'both' && 'Choose your target specification, assign your architectural blueprint pack, and provide your business scope.'}
-                  </p>
-                </div>
-
-                {/* Right Header Controls: Diagram Categories vs Document Archetypes */}
-                {studioMode === 'diagrams' ? (
-                  <div className="flex flex-wrap items-center gap-1.5 max-w-xl justify-end">
-                    {DIAGRAM_FAMILY_PRESETS.map((fam) => (
-                      <button
-                        key={fam.id}
-                        type="button"
-                        onClick={() => setSelectedDiagramFamily(fam.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-                          selectedDiagramFamily === fam.id
-                            ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20 font-extrabold'
-                            : isLight
-                            ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                            : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
-                        }`}
-                      >
-                        <span>{fam.icon}</span>
-                        <span>{fam.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {DOC_ARCHETYPES_META.map((meta) => (
-                      <button
-                        key={meta.id}
-                        type="button"
-                        onClick={() => setSelectedArchetypeId(meta.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                          selectedArchetypeId === meta.id
-                            ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20 font-extrabold'
-                            : isLight
-                            ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                            : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
-                        }`}
-                      >
-                        {meta.shortName}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              {/* 3 Mode Switcher Buttons */}
+              <div className="flex items-center p-1.5 bg-slate-100 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudioMode('diagrams');
+                    setGeneratedDocContent(null);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    studioMode === 'diagrams'
+                      ? 'bg-teal-600 text-white shadow-sm font-black'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Network className="w-3.5 h-3.5" />
+                  <span>🎨 Diagrams</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudioMode('documents');
+                    setGeneratedDocContent(null);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    studioMode === 'documents'
+                      ? 'bg-sky-600 text-white shadow-sm font-black'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>📄 Documents</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudioMode('both');
+                    setGeneratedDocContent(null);
+                  }}
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    studioMode === 'both'
+                      ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-sm font-black'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>⚡ Both (Unified)</span>
+                </button>
               </div>
+            </div>
 
-              {/* TARGET CANONICAL BLUEPRINT SELECTOR (Diagrams Mode Only) */}
-              {studioMode === 'diagrams' && (
-                <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/20 space-y-2.5">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <Network className="w-4 h-4 text-teal-500" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                        Primary Canonical Architecture Blueprint:
+            {/* MAIN SPLIT-SCREEN COCKPIT */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              
+              {/* LEFT COLUMN (6 COLS): AI ARCHITECTURE CONFIGURATION */}
+              <div className="lg:col-span-6 space-y-6">
+                
+                {/* Step 1 Card: Core Configuration */}
+                <div className={`p-6 rounded-3xl border shadow-sm space-y-5 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                }`}>
+                  {/* Header & Categories */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
+                        Step 1 &bull; Configuration
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-400">
+                        {studioMode === 'diagrams' ? '50 Blueprints Available' : '17 Archetypes Available'}
                       </span>
                     </div>
-                    <span className="text-xs text-slate-500">
-                      Family: <span className="font-bold text-slate-800 dark:text-slate-200 capitalize">{selectedDiagramFamily}</span> ({
-                        CANONICAL_TEMPLATES.filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase()))).length
-                      } Blueprints Available)
-                    </span>
+
+                    {/* Category Filter Pills / Archetype Selector */}
+                    {studioMode === 'diagrams' ? (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {DIAGRAM_FAMILY_PRESETS.map((fam) => (
+                          <button
+                            key={fam.id}
+                            type="button"
+                            onClick={() => setSelectedDiagramFamily(fam.id)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                              selectedDiagramFamily === fam.id
+                                ? 'bg-teal-600 text-white shadow-sm font-black'
+                                : isLight
+                                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                            }`}
+                          >
+                            <span>{fam.icon}</span>
+                            <span>{fam.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        {DOC_ARCHETYPES_META.map((meta) => (
+                          <button
+                            key={meta.id}
+                            type="button"
+                            onClick={() => setSelectedArchetypeId(meta.id)}
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                              selectedArchetypeId === meta.id
+                                ? 'bg-sky-600 text-white shadow-sm font-black'
+                                : isLight
+                                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                            }`}
+                          >
+                            {meta.shortName}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <select
-                    value={selectedDiagramTemplateId}
-                    onChange={(e) => {
-                      const newTplId = e.target.value;
-                      setSelectedDiagramTemplateId(newTplId);
-                      setDiagramSlotsList((prev) =>
-                        prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: newTplId } : slot))
-                      );
-                    }}
-                    className="w-full p-3 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-teal-500/30 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-xs"
-                  >
-                    {CANONICAL_TEMPLATES
-                      .filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase())))
-                      .map((t) => (
-                        <option key={t.id} value={t.id} className="py-1">
-                          {t.id} - {t.name} [{t.family || 'Canonical'}]
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              )}
+                  {/* Blueprint Selector (Diagrams Mode) */}
+                  {studioMode === 'diagrams' && (
+                    <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-teal-950/20 border border-teal-200/80 dark:border-teal-800/40 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Network className="w-4 h-4 text-teal-600" />
+                          <span className="text-xs font-black uppercase tracking-wider text-teal-800 dark:text-teal-300">
+                            Primary Canonical Blueprint:
+                          </span>
+                        </div>
+                        <span className="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-400">
+                          #{selectedDiagramTemplateId || '01'}
+                        </span>
+                      </div>
 
-              {/* Form Grid: Title, Domain, Scope */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left 2 Cols: Project Title & Business Scope Prompt */}
-                <div className="lg:col-span-2 space-y-4">
+                      {/* Popular Blueprint Quick Pills */}
+                      <div className="flex flex-wrap items-center gap-1">
+                        {[
+                          { id: '01', label: '#01 System Context' },
+                          { id: '08', label: '#08 Component Arch' },
+                          { id: '17', label: '#17 Landing Zone' },
+                          { id: '23', label: '#23 Zero-Trust' },
+                          { id: '29', label: '#29 Lakehouse' },
+                          { id: '34', label: '#34 Vertex RAG' },
+                          { id: '41', label: '#41 Multi-Agent' },
+                        ].map((bp) => (
+                          <button
+                            key={bp.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedDiagramTemplateId(bp.id);
+                              setDiagramSlotsList((prev) =>
+                                prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: bp.id } : slot))
+                              );
+                            }}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                              selectedDiagramTemplateId === bp.id
+                                ? 'bg-teal-600 text-white shadow-sm'
+                                : isLight
+                                ? 'bg-white text-slate-700 hover:bg-teal-100 border border-slate-200'
+                                : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                            }`}
+                          >
+                            {bp.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <select
+                        value={selectedDiagramTemplateId}
+                        onChange={(e) => {
+                          const newTplId = e.target.value;
+                          setSelectedDiagramTemplateId(newTplId);
+                          setDiagramSlotsList((prev) =>
+                            prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: newTplId } : slot))
+                          );
+                        }}
+                        className={`w-full p-2.5 rounded-xl border text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer ${
+                          isLight
+                            ? 'bg-white border-teal-300 text-slate-900'
+                            : 'bg-slate-900 border-teal-500/40 text-white'
+                        }`}
+                      >
+                        {CANONICAL_TEMPLATES
+                          .filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase())))
+                          .map((t) => (
+                            <option key={t.id} value={t.id} className="py-1">
+                              {t.id} - {t.name} [{t.family || 'Canonical'}]
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* System Title */}
                   <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">
                       1. System / Architecture Title
                     </label>
                     <input
@@ -2343,14 +2397,22 @@ function DocGenContent() {
                         }
                       }}
                       placeholder="e.g. AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh"
-                      className="w-full px-4 py-2.5 rounded-xl border text-sm font-semibold bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
+                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                        isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                      }`}
                     />
                   </div>
 
+                  {/* AI Scope Prompt Terminal */}
                   <div>
-                    <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                      2. Architectural Scope &amp; Topology Requirements Prompt
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                        2. Architectural Scope &amp; Topology Requirements Prompt
+                      </label>
+                      <span className="text-[10px] font-mono text-slate-400">
+                        Gemini 3.7 &bull; Real-Time AST
+                      </span>
+                    </div>
                     <textarea
                       rows={4}
                       value={projectScopePrompt}
@@ -2362,20 +2424,20 @@ function DocGenContent() {
                           setSelectedDomain(autoDomain);
                         }
                       }}
-                      placeholder="Describe what the system does, key microservices, data sources, security mandates, and integration endpoints..."
-                      className="w-full p-4 rounded-xl border text-xs leading-relaxed bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-white"
+                      placeholder="Describe key Google Cloud services, data sources, security mandates, and integration endpoints..."
+                      className={`w-full p-3.5 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
+                        isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                      }`}
                     />
                   </div>
-                </div>
 
-                {/* Right Col: Domain Flavor Preset & Instant Samples */}
-                <div className="space-y-4">
+                  {/* Enterprise Domain Flavor Selector */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block">
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
                         3. Enterprise Domain Flavor
                       </label>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         Live Prompt Sync
                       </span>
@@ -2385,141 +2447,162 @@ function DocGenContent() {
                       onChange={(e) => {
                         const newDom = e.target.value;
                         setSelectedDomain(newDom);
-                        // If prompt is a default clinical prompt or placeholder, update it to match the new domain
-                        const isDefaultPrompt = /clinical genomics analysis and regulatory pharmacovigilance|Mission-critical autonomous telemetry|High-throughput transaction orchestration|Omnichannel marketplace catalog|Enterprise multi-tenant workflow orchestration/i.test(projectScopePrompt);
-                        if (isDefaultPrompt) {
-                          if (newDom === 'manufacturing') {
-                            setProjectScopePrompt(`Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${projectTitle}.`);
-                          } else if (newDom === 'fintech') {
-                            setProjectScopePrompt(`High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${projectTitle}.`);
-                          } else if (newDom === 'retail') {
-                            setProjectScopePrompt(`Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${projectTitle}.`);
-                          } else if (newDom === 'saas') {
-                            setProjectScopePrompt(`Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${projectTitle}.`);
-                          } else if (newDom === 'biopharma') {
-                            setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
-                          }
+                        if (newDom === 'manufacturing') {
+                          setProjectScopePrompt(`Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${projectTitle}.`);
+                        } else if (newDom === 'fintech') {
+                          setProjectScopePrompt(`High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${projectTitle}.`);
+                        } else if (newDom === 'retail') {
+                          setProjectScopePrompt(`Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${projectTitle}.`);
+                        } else if (newDom === 'saas') {
+                          setProjectScopePrompt(`Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${projectTitle}.`);
+                        } else if (newDom === 'biopharma') {
+                          setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
                         }
                       }}
-                      className="w-full px-3 py-2.5 rounded-xl border text-xs font-semibold bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 focus:outline-none cursor-pointer"
+                      className={`w-full px-3 py-2.5 rounded-xl border text-xs font-bold text-teal-700 dark:text-teal-400 focus:outline-none cursor-pointer ${
+                        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                      }`}
                     >
                       {DOMAIN_PRESETS.map((d) => (
-                        <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                        <option key={d.id} value={d.id}>
                           {d.name}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Fast Scenario Presets */}
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 space-y-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  {/* Quick Load Industry Presets (Glass Tiles) */}
+                  <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                       ⚡ Quick Load Architecture Scenarios:
                     </span>
-                    <div className="flex flex-col gap-1.5">
+                    <div className="grid grid-cols-2 gap-2">
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedDomain('manufacturing');
                           setProjectTitle('AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh');
                           setProjectScopePrompt('I want to architect a nationwide autonomous drone delivery and automated micro-hub fulfillment network called AeroNode. The system coordinates real-time collision-avoidance telemetry across 25,000+ autonomous delivery drones via 5G Ultra-Wideband and ADS-B mesh networks. It requires sub-20ms UTM (Unmanned Traffic Management) airspace routing, automated robotic payload swapping at local battery swap stations, dynamic weather radar ingestion via NOAA APIs, and FAA Part 135 continuous flight certification logging.');
                         }}
-                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                          isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
+                        }`}
                       >
-                        🚁 AeroNode Drone Fleet &amp; Airspace
+                        <span className="text-base">🚁</span>
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">AeroNode Drone</div>
+                          <div className="text-[9px] text-slate-400 truncate">5G UTM Airspace</div>
+                        </div>
                       </button>
+
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedDomain('manufacturing');
                           setProjectTitle('VoltGrid Autonomous EV Fleet Charging & Microgrid Energy Exchange');
                           setProjectScopePrompt('I want to architect a nationwide decentralized smart EV fast-charging network and dynamic microgrid energy trading platform called VoltGrid. The system must ingest high-frequency telemetry from 50,000+ DC fast chargers via OCPP 2.0.1 and ISO 15118 (Plug & Charge). It requires sub-50ms dynamic load balancing across local Battery Energy Storage Systems (BESS), solar microgrids, and the utility distribution grid.');
                         }}
-                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                          isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
+                        }`}
                       >
-                        ⚡ VoltGrid Smart EV &amp; Microgrid
+                        <span className="text-base">⚡</span>
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">VoltGrid Smart EV</div>
+                          <div className="text-[9px] text-slate-400 truncate">BESS Microgrid</div>
+                        </div>
                       </button>
+
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedDomain('biopharma');
                           setProjectTitle('Bio-Pharma FDA 21 CFR Part 11 PV Platform');
                           setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
-                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                          isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
+                        }`}
                       >
-                        🧬 Bio-Pharma GxP PV Platform
+                        <span className="text-base">🧬</span>
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">Bio-Pharma GxP</div>
+                          <div className="text-[9px] text-slate-400 truncate">FDA 21 CFR Part 11</div>
+                        </div>
                       </button>
+
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedDomain('fintech');
                           setProjectTitle('Autonomous Payments & Real-Time Fraud Hub');
                           setProjectScopePrompt('Real-time payment transaction monitoring, Flink stream clustering, ISO 20022 messaging, and automated SAR filing.');
                         }}
-                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
+                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                          isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
+                        }`}
                       >
-                        💳 FinTech Real-Time Fraud Hub
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedDomain('saas');
-                          setProjectTitle('Multi-Tenant Enterprise AI Cloud Platform');
-                          setProjectScopePrompt('Multi-tenant Kubernetes microservices with distributed Spanner outbox saga transactions, Redis cluster caching, and Datadog telemetry.');
-                        }}
-                        className="text-left text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-500 truncate"
-                      >
-                        ☁️ Multi-Tenant Enterprise SaaS
+                        <span className="text-base">💳</span>
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">FinTech Fraud Hub</div>
+                          <div className="text-[9px] text-slate-400 truncate">ISO 20022 & Spanner</div>
+                        </div>
                       </button>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Step 2: Diagram Slots & Composition Pack (Diagrams Mode) */}
-              {studioMode === 'diagrams' && (
-                <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-teal-500">
-                        Step 2 • Diagram Composition &amp; Multi-Tier Suite
-                      </span>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                        Architecture Diagram Suite ({diagramSlotsList.length} Diagram{diagramSlotsList.length > 1 ? 's' : ''})
-                      </h3>
+                {/* Step 2: Diagram Slots / Multi-Chapter Pipeline */}
+                {studioMode === 'diagrams' && (
+                  <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
+                    isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-teal-600 block">
+                          Step 2 &bull; Multi-Tier Suite
+                        </span>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          Diagram Slots ({diagramSlotsList.length} Tier{diagramSlotsList.length > 1 ? 's' : ''})
+                        </h3>
+                      </div>
+
+                      {/* Slot Count Selector */}
+                      <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                        {[
+                          { count: 1, label: 'Single (1)' },
+                          { count: 2, label: 'Dual (2)' },
+                          { count: 3, label: '3-Tier' },
+                          { count: 4, label: '4-Tier' },
+                        ].map((comp) => (
+                          <button
+                            key={comp.count}
+                            type="button"
+                            onClick={() => handleSetDiagramSlotsCount(comp.count)}
+                            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                              diagramSlotsCount === comp.count
+                                ? 'bg-teal-600 text-white shadow-sm font-black'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                            }`}
+                          >
+                            {comp.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
-                    {/* Composition Slot Count Selector */}
-                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-                      {[
-                        { count: 1, label: 'Single (1 Slot)' },
-                        { count: 2, label: 'Dual-Tier (2 Slots)' },
-                        { count: 3, label: 'Full-Stack (3 Slots)' },
-                        { count: 4, label: 'Enterprise Suite (4 Slots)' },
-                      ].map((comp) => (
-                        <button
-                          key={comp.count}
-                          type="button"
-                          onClick={() => handleSetDiagramSlotsCount(comp.count)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                            diagramSlotsCount === comp.count
-                              ? 'bg-teal-600 text-white shadow-sm font-extrabold'
-                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                          }`}
-                        >
-                          {comp.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Diagram Slots Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {diagramSlotsList.map((slot, sIdx) => {
-                      return (
+                    {/* Slots Grid */}
+                    <div className="space-y-3">
+                      {diagramSlotsList.map((slot, sIdx) => (
                         <div
                           key={sIdx}
-                          className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 space-y-3 shadow-xs"
+                          className={`p-3.5 rounded-2xl border space-y-2 ${
+                            isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                          }`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-lg bg-teal-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                              <span className="w-5 h-5 rounded-md bg-teal-600 text-white font-black text-[10px] flex items-center justify-center">
                                 #{sIdx + 1}
                               </span>
                               <input
@@ -2534,18 +2617,11 @@ function DocGenContent() {
                                 className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-teal-500 focus:outline-none"
                               />
                             </div>
-                            <span className="text-[10px] font-mono text-emerald-500 font-bold">
-                              Slot #{sIdx + 1}
-                            </span>
+                            <span className="text-[10px] font-bold text-teal-600">Slot #{sIdx + 1}</span>
                           </div>
 
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                            {slot.description}
-                          </p>
-
-                          {/* Assigned Blueprint Selector */}
-                          <div className="flex items-center gap-2 pt-1">
-                            <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Template:</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Blueprint:</span>
                             <select
                               value={slot.templateId}
                               onChange={(e) => {
@@ -2554,7 +2630,9 @@ function DocGenContent() {
                                   prev.map((s, i) => (i === sIdx ? { ...s, templateId: newTpl } : s))
                                 );
                               }}
-                              className="w-full text-xs font-semibold p-2 rounded-lg border bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none cursor-pointer"
+                              className={`w-full text-xs font-semibold p-1.5 rounded-lg border focus:outline-none cursor-pointer ${
+                                isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
+                              }`}
                             >
                               {CANONICAL_TEMPLATES.map((t) => (
                                 <option key={t.id} value={t.id}>
@@ -2564,116 +2642,191 @@ function DocGenContent() {
                             </select>
                           </div>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Step 2: Multi-Blueprint Architecture Pack Assembler (Both Mode) */}
-              {studioMode === 'both' && (
-                <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                {/* Step 2: Multi-Blueprint Architecture Pack (Both Mode) */}
+                {studioMode === 'both' && (
+                  <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
+                    isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                  }`}>
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-sky-500">
+                      <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 block">
                         Step 2 &bull; Attached Blueprint Architecture Pack
                       </span>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                        Diagram Slots for {activeMeta.name} ({activeMeta.blueprintPack.length} Slots)
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        Chapter Blueprint Pipeline ({activeMeta.blueprintPack.length} Chapters)
                       </h3>
                     </div>
-                    <span className="text-xs text-slate-400">
-                      Each chapter embeds its designated blueprint and component inventory table.
-                    </span>
-                  </div>
 
-                  {/* Slots Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {activeMeta.blueprintPack.map((slot, sIdx) => {
-                      const currentTplId = slotCustomizations[sIdx + 1]?.templateId || slot.recommendedTemplateId;
+                    <div className="space-y-3">
+                      {activeMeta.blueprintPack.map((slot, sIdx) => {
+                        const currentTplId = slotCustomizations[sIdx + 1]?.templateId || slot.recommendedTemplateId;
 
-                      return (
-                        <div
-                          key={sIdx}
-                          className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 space-y-3"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-sm">
-                                Ch.{slot.chapterNumber}
-                              </span>
-                              <span className="text-xs font-bold text-slate-900 dark:text-white">
-                                {slot.slotTitle}
-                              </span>
+                        return (
+                          <div
+                            key={sIdx}
+                            className={`p-3.5 rounded-2xl border space-y-2 ${
+                              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="w-5 h-5 rounded-md bg-sky-600 text-white font-black text-[10px] flex items-center justify-center">
+                                  Ch.{slot.chapterNumber}
+                                </span>
+                                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                                  {slot.slotTitle}
+                                </span>
+                              </div>
+                              <span className="text-[10px] font-bold text-sky-600">Slot #{sIdx + 1}</span>
                             </div>
-                            <span className="text-[10px] font-mono text-emerald-500 font-bold">
-                              Slot #{sIdx + 1}
-                            </span>
-                          </div>
 
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                            {slot.description}
-                          </p>
-
-                          {/* Assigned Blueprint Selector */}
-                          <div className="flex items-center gap-2 pt-1">
-                            <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Assigned:</span>
-                            <select
-                              value={currentTplId}
-                              onChange={(e) => handleSwapSlotTemplate(sIdx, e.target.value)}
-                              className="w-full text-xs font-semibold p-2 rounded-lg border bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none cursor-pointer"
-                            >
-                              {CANONICAL_TEMPLATES.map((t) => (
-                                <option key={t.id} value={t.id}>
-                                  {t.id} - {t.name} ({t.family})
-                                </option>
-                              ))}
-                            </select>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Assigned:</span>
+                              <select
+                                value={currentTplId}
+                                onChange={(e) => handleSwapSlotTemplate(sIdx, e.target.value)}
+                                className={`w-full text-xs font-semibold p-1.5 rounded-lg border focus:outline-none cursor-pointer ${
+                                  isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
+                                }`}
+                              >
+                                {CANONICAL_TEMPLATES.map((t) => (
+                                  <option key={t.id} value={t.id}>
+                                    {t.id} - {t.name} ({t.family})
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
                           </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+
+              {/* RIGHT COLUMN (6 COLS): LIVE 16:9 INTERACTIVE PREVIEW & SPEC VIEWER */}
+              <div className="lg:col-span-6 sticky top-24 space-y-4">
+                <div className={`rounded-3xl border shadow-xl overflow-hidden ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                }`}>
+                  {/* Viewport Window Bar */}
+                  <div className={`px-5 py-3.5 border-b flex items-center justify-between ${
+                    isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900 border-slate-800'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-200 ml-2 font-mono truncate">
+                        {studioMode === 'diagrams' && `Live GCP Vector Preview • Blueprint #${selectedDiagramTemplateId || '01'}`}
+                        {studioMode === 'documents' && `Live Spec Preview • ${activeMeta.shortName}`}
+                        {studioMode === 'both' && `Live Multi-Blueprint Spec • ${activeMeta.shortName}`}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-800">
+                        16:9 GCP
+                      </span>
+                      <Link
+                        href={`/workspace?blueprint=${selectedDiagramTemplateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                        className="text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
+                        title="Open directly in Canvas Editor"
+                      >
+                        <span>Canvas</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Interactive Live Diagram Viewport */}
+                  <div className="p-4 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[460px]">
+                    {studioMode === 'diagrams' || studioMode === 'both' ? (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <DiagramViewerRenderSafe
+                          xml={liveStudioDiagramXml}
+                          containerDimensions={{ width: 720, height: 440 }}
+                          aspectRatio="16:9"
+                          theme={isLight ? 'light' : 'dark'}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full p-6 text-left space-y-4">
+                        <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
+                          <div className="text-xs font-bold text-sky-600 uppercase tracking-wider">{activeMeta.name}</div>
+                          <h3 className="text-base font-black text-slate-900 dark:text-white">{projectTitle || 'Enterprise Architecture Specification'}</h3>
                         </div>
-                      );
-                    })}
+                        <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          <p className="font-semibold text-slate-800 dark:text-white">1. Executive Overview &amp; Business Objectives</p>
+                          <p>{projectScopePrompt || 'Specifies business goals, architectural constraints, and regulatory requirements...'}</p>
+                          <p className="font-semibold text-slate-800 dark:text-white">2. Architecture Demarcation &amp; Service Boundaries</p>
+                          <p>Encapsulates zero-trust ingress, Google Cloud compute clusters, and immutable compliance ledgers.</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Viewport Footer Bar */}
+                  <div className={`px-5 py-3 border-t flex items-center justify-between text-[11px] text-slate-500 font-medium ${
+                    isLight ? 'bg-slate-50/50 border-slate-100' : 'bg-slate-900/50 border-slate-800'
+                  }`}>
+                    <span className="flex items-center gap-1.5 text-teal-700 dark:text-teal-400 font-bold">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                      100% Collision-Free Google Cloud Architecture
+                    </span>
+                    <span>Aspect Ratio: 16:9 (1600x960)</span>
                   </div>
                 </div>
-              )}
 
-              {/* Step 3: Run Generation Action Button */}
-              <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-xs text-slate-500 dark:text-slate-400">
-                  {studioMode === 'diagrams' && '⚡ Synthesizes 16:9 interactive architecture diagrams • 100% collision-free geometry • Instant Canvas bridge'}
-                  {studioMode === 'documents' && '⚡ Synthesizes structured markdown chapters • ARB sign-off matrix • Publication-ready Word/PDF export'}
-                  {studioMode === 'both' && '⚡ Synthesizes multi-diagram AST models • Extracts component tables • Renders GxP & ARB sign-off matrix'}
+                {/* Floating Action Synthesizer Dock */}
+                <div className={`p-4 rounded-3xl border shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                }`}>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    <span className="font-bold text-slate-800 dark:text-white">Ready to synthesize:</span> {
+                      studioMode === 'diagrams'
+                        ? `${diagramSlotsList.length} 16:9 Architecture Diagram(s)`
+                        : studioMode === 'documents'
+                        ? `${activeMeta.shortName} Specification`
+                        : `${activeMeta.shortName} Document + ${activeMeta.blueprintPack.length} Diagrams`
+                    }
+                  </div>
+
+                  <button
+                    onClick={handleStartGeneration}
+                    disabled={isGenerating}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-600 via-sky-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-lg shadow-teal-500/20 hover:scale-[1.02] transition-transform disabled:opacity-50 cursor-pointer"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>
+                          {generationStep === 1 && (studioMode === 'diagrams' ? 'Synthesizing Diagrams...' : 'Extracting AST Graphs...')}
+                          {generationStep === 2 && (studioMode === 'diagrams' ? 'Applying 16:9 Flavoring...' : 'Mapping Component Inventories...')}
+                          {generationStep === 3 && 'Synthesizing Specification...'}
+                          {generationStep === 4 && 'Rendering Word & Print Engine...'}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        <span>
+                          {studioMode === 'diagrams' && `Synthesize ${diagramSlotsList.length} Architecture Diagram(s) Now`}
+                          {studioMode === 'documents' && `Synthesize ${activeMeta.shortName} Document Now`}
+                          {studioMode === 'both' && `Generate ${activeMeta.shortName} Document & Diagrams Now`}
+                        </span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
-                <button
-                  onClick={handleStartGeneration}
-                  disabled={isGenerating}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-sky-600 via-indigo-600 to-cyan-500 hover:from-sky-500 hover:to-cyan-400 text-white shadow-xl shadow-sky-500/25 hover:scale-[1.02] transition-transform disabled:opacity-50 cursor-pointer"
-                >
-                  {isGenerating ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>
-                        {generationStep === 1 && (studioMode === 'diagrams' ? 'Synthesizing Architecture Diagrams...' : 'Extracting Multi-Blueprint Graphs...')}
-                        {generationStep === 2 && (studioMode === 'diagrams' ? 'Applying 16:9 Domain Flavoring...' : 'Mapping AST Component Inventories...')}
-                        {generationStep === 3 && 'Synthesizing Production Document...'}
-                        {generationStep === 4 && 'Rendering Word & Print Engine...'}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      {studioMode === 'diagrams' && <Network className="w-4 h-4" />}
-                      {studioMode === 'documents' && <FileText className="w-4 h-4" />}
-                      {studioMode === 'both' && <Zap className="w-4 h-4" />}
-                      <span>
-                        {studioMode === 'diagrams' && `Synthesize ${diagramSlotsList.length} Architecture Diagram(s) Now`}
-                        {studioMode === 'documents' && `Synthesize ${activeMeta.shortName} Document Now`}
-                        {studioMode === 'both' && `Generate ${activeMeta.shortName} Document & Diagrams Now`}
-                      </span>
-                    </>
-                  )}
-                </button>
               </div>
+
             </div>
 
             {/* VIEW A: DEDICATED ARCHITECTURE DIAGRAM STUDIO (Diagrams Only Mode) */}
