@@ -86,7 +86,7 @@ function isCanvasHeaderCandidate(cell: Omit<TopLevelCell, 'isHeaderCandidate'>):
 function stripDuplicateCanvasHeader(xml: string): string {
   if (!xml || xml.includes('pc-canvas-header-stripped')) return xml;
 
-  const cellRegex = /<mxCell\b([^>]*)>([\s\S]*?)<\/mxCell>/gi;
+  const cellRegex = /<mxCell\b([^>]*?[^\/])>([\s\S]*?)<\/mxCell>/gi;
   const cells: TopLevelCell[] = [];
 
   for (const match of xml.matchAll(cellRegex)) {
