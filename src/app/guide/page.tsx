@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { 
   Sparkles, 
@@ -43,6 +43,8 @@ import {
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 
 type PersonaKey = 'quickstart' | 'architect' | 'data_ai' | 'consultant' | 'secops';
 
@@ -60,6 +62,7 @@ interface PersonaWorkflow {
   gifPath: string;
   frames: {
     frameIndex: number;
+    templateId?: string;
     imagePath: string;
     actionLabel: string;
     narrationText: string;
@@ -89,44 +92,47 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
+        templateId: '01',
         imagePath: '/workflows/frames/quickstart/frame_01.png',
-        actionLabel: '1. Workspace Orientation: Studio (Left), Header (Top) & 2D Canvas (Center)',
-        narrationText: 'Welcome to PromptCanvas. The interface is split into three zones: the Left Studio prompt engine, the Top Header navigation, and the Central High-DPI 2D Canvas.',
+        actionLabel: '1. Launch Studio & Orientation: Canonical Suite (Left), Canvas (Center) & Hub (Top)',
+        narrationText: 'Welcome to PromptCanvas. The interface is powered by the Canonical Architecture Suite: the Left Unified Sidebar, Top Header Controls, and the High-DPI 16:9 Canvas.',
         stepNumber: 1,
-        title: 'Workspace Orientation & Layout',
-        whereToClick: 'Main Workspace Interface',
-        description: 'PromptCanvas gives you a zero-friction workspace. On the left is the AI Prompt Studio. Across the top is your Project and View Manager. In the center is the 1600px high-DPI 2D diagram viewport.',
+        title: 'Launch Studio & Canonical Orientation',
+        whereToClick: 'Launch Studio / Canonical Hub',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 50 Canonical Blueprints and 17 DocGen Specification Archetypes directly from the sidebar.',
         validationChecklist: [
-          'Left Studio is ready for prompt input',
-          'Canvas is set to high-DPI 1600px desktop grid'
+          'Left Studio is ready for prompt input or blueprint selection',
+          'Canvas is set to high-DPI 1600px 16:9 desktop grid'
         ],
         tip: 'Hit Cmd+D or Ctrl+D anytime to toggle synchronized dark/light contrast backgrounds.'
       },
       {
         frameIndex: 1,
+        templateId: '08',
         imagePath: '/workflows/frames/quickstart/frame_02.png',
-        actionLabel: '2. Prompt Entry & Options: Type System Requirements & Select Architecture Type',
-        narrationText: 'Step two: Click into the prompt box in the Left Studio. Type your plain English architectural requirements and select your architecture notation type.',
+        actionLabel: '2. Prompt Entry & Domain Flavoring: Multi-Tier Microservices Topology',
+        narrationText: 'Step two: Select your architecture domain flavor or enter plain English requirements into the Studio prompt engine.',
         stepNumber: 2,
-        title: 'Prompt Entry & Option Selection',
-        whereToClick: 'Left Studio -> "ACTIVE USE CASE PROMPT" text area',
-        description: 'Type plain English requirements with concrete details (e.g. GKE Autopilot, Cloud SQL for PostgreSQL, Pub/Sub, and Cloud Armor WAF) and choose your Diagram Standard.',
+        title: 'Prompt Entry & Architecture Selection',
+        whereToClick: 'Launch Studio -> "ACTIVE USE CASE PROMPT" text area',
+        description: 'Type plain English requirements or select from 50 canonical master blueprints (e.g. Microservices, Event Buses, and Zero-Trust Mesh).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
-          'Cursor focus active inside the prompt input box',
+          'Active prompt input with concrete cloud infrastructure components',
           'Architecture type selector set to Multi-tier Enterprise GCP'
         ],
         tip: 'You can also click "Suggested Transformations" below the box for 1-click feature additions.'
       },
       {
         frameIndex: 2,
+        templateId: '09',
         imagePath: '/workflows/frames/quickstart/frame_03.png',
-        actionLabel: '3. Generating: Gemini 3.7 Flash Compiling 2D AST Architecture Graph',
-        narrationText: 'Step three: Click Generate. Gemini 3.7 Flash parses your prompt into functional tiers and compiles a 2D collision-free Draw.io XML graph in under two seconds.',
+        actionLabel: '3. Compiling 2D AST Architecture Graph with Zero Collision Routing',
+        narrationText: 'Step three: Click Generate. Gemini AI parses your prompt into functional tiers and compiles a 2D collision-free Draw.io XML graph.',
         stepNumber: 3,
         title: 'Compiling AST Architecture Graph',
         whereToClick: 'Left Studio -> Click "✨ Generate Architecture"',
-        description: 'Gemini 3.7 Flash reasons over your prompt, parses services into functional tiers, calculates 2D bounding boxes with zero line collision, and compiles the Draw.io XML graph.',
+        description: 'Gemini AI compiles your system into structured tiers, calculating 2D bounding boxes with zero line collision and W3C-compliant SVG styling.',
         validationChecklist: [
           'AI generation progress modal reflects AST validation',
           'Zero-overlap layout engine verifies node margins'
@@ -135,9 +141,10 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
+        templateId: '17',
         imagePath: '/workflows/frames/quickstart/frame_04.png',
-        actionLabel: '4. Diagram Open & Rendered: 1600px High-DPI Multi-Tier Canvas View',
-        narrationText: 'Step four: The live diagram opens on the canvas. Use Spacebar plus drag to pan, and inspect clean tier boxes, subnets, and collision-free connector lines.',
+        actionLabel: '4. 16:9 Multi-Tier Canvas View: High-Contrast Badges & Demarcation',
+        narrationText: 'Step four: The live diagram opens on the canvas. Inspect clean tier containers, subnets, and collision-free connector lines.',
         stepNumber: 4,
         title: 'Opening & Inspecting Diagram on Canvas',
         whereToClick: 'Central 2D Canvas Viewport',
@@ -150,8 +157,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
+        templateId: '23',
         imagePath: '/workflows/frames/quickstart/frame_05.png',
-        actionLabel: '5. Edit & Refine: Prompt Conversational Changes in Left Studio Chat',
+        actionLabel: '5. Interactive Edits & Zero-Trust Mesh Refinements',
         narrationText: 'Step five: Make edits. In the refinement chat, type any adjustments, like adding Cloud HA VPN dual tunnels and Cloud KMS HSM key rotation.',
         stepNumber: 5,
         title: 'Making Interactive Edits & Refinements',
@@ -166,13 +174,14 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
+        templateId: '34',
         imagePath: '/workflows/frames/quickstart/frame_06.png',
-        actionLabel: '6. Save & Version Increase: Auto-Committed to v2 with Rollback Timeline',
-        narrationText: 'Step six: Saving and version control. Version v2 is automatically committed. You can click the version dropdown to inspect history or perform one-click rollbacks.',
+        actionLabel: '6. Save & Version Increments: Immutable Snapshot History (v1 -> v2)',
+        narrationText: 'Step six: Saving and version control. Version v2 is automatically committed with full rollback lineage.',
         stepNumber: 6,
         title: 'Saving & Version Increments (v1 -> v2)',
         whereToClick: 'Top Header -> Version Dropdown (v1 ▾)',
-        description: 'PromptCanvas automatically commits an immutable version snapshot (v2) while preserving v1 in rollback history. Click the version dropdown to switch or compare visual diffs.',
+        description: 'PromptCanvas automatically commits an immutable version snapshot (v2) while preserving v1 in rollback history.',
         validationChecklist: [
           'Version badge increments to v2',
           'History dropdown contains both v1 and v2 with timestamps',
@@ -182,9 +191,10 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 6,
+        templateId: '41',
         imagePath: '/workflows/frames/quickstart/frame_07.png',
         actionLabel: '7. Export: Choose PDF Architecture Dossier or Boardroom PPTX Deck',
-        narrationText: 'Step seven: Export deliverables. Click Edit and Export to choose between Executive PDF Dossiers, PowerPoint slide presentations, high-res PNG, or Draw.io XML.',
+        narrationText: 'Step seven: Export deliverables. Choose between Executive PDF Dossiers, PowerPoint slide presentations, high-res PNG, or Draw.io XML.',
         stepNumber: 7,
         title: 'Selecting Export Format',
         whereToClick: 'Top Right Navigation -> Click "Edit ▾" or "Export"',
@@ -197,9 +207,10 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 7,
+        templateId: '10',
         imagePath: '/workflows/frames/quickstart/frame_08.png',
         actionLabel: '8. Open PDF Architecture Dossier: Executive Summary, SLAs & Vector Topology',
-        narrationText: 'Step eight: Open the generated PDF Architecture Dossier. It contains your high-resolution 300 DPI vector diagram, executive SLA summaries, and cloud cost projections.',
+        narrationText: 'Step eight: Open the generated PDF Architecture Dossier with high-resolution 300 DPI vector diagram and executive SLA summaries.',
         stepNumber: 8,
         title: 'Inspecting Open PDF Architecture Dossier',
         whereToClick: 'Export Viewer -> Downloaded PDF Dossier',
@@ -212,9 +223,10 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 8,
+        templateId: '06',
         imagePath: '/workflows/frames/quickstart/frame_09.png',
         actionLabel: '9. Open PowerPoint (.pptx) Deck: Boardroom Vector Slides Ready for ARB Sign-Off',
-        narrationText: 'Step nine: Open the PowerPoint deck. The slides feature native vector diagram shapes, executive decision points, and financial ROI models ready for boardroom presentations.',
+        narrationText: 'Step nine: Open the PowerPoint deck. The slides feature native vector diagram shapes, executive decision points, and financial ROI models.',
         stepNumber: 9,
         title: 'Inspecting Open PowerPoint (.pptx) Slide Deck',
         whereToClick: 'Export Viewer -> Downloaded .pptx Presentation',
@@ -242,12 +254,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
+        templateId: '17',
         imagePath: '/workflows/frames/architect/frame_01.png',
-        actionLabel: '1. Prompt Entry & Options: Greenfield Shared VPC, 100G Interconnect & CIDRs',
-        narrationText: 'Enter your greenfield Landing Zone requirements into the Left Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
+        actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #17)',
+        narrationText: 'Enter your greenfield Landing Zone requirements into Launch Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Inputting Landing Zone Requirements',
-        whereToClick: 'Left Studio -> Prompt Box',
+        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #17',
         description: 'Provide enterprise networking constraints: 100G Dedicated Interconnect, Cloud Router BGP ASN 65001, GKE Autopilot pod CIDR (10.20.0.0/16), and PSC consumer endpoints.',
         promptRecipe: 'Design a Google Cloud Landing Zone and Shared VPC Network Fabric with 100G Dedicated Interconnect, Cloud Router BGP, PSC Hub 10.100.0.0/24, GKE Autopilot, and VPC-SC perimeter.',
         validationChecklist: ['Prompt contains CIDRs and SLA parameters'],
@@ -255,8 +268,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
+        templateId: '23',
         imagePath: '/workflows/frames/architect/frame_02.png',
-        actionLabel: '2. Open Diagram: 5-Tier Zero-Trust Hub & Spoke with Clean Lines',
+        actionLabel: '2. 5-Tier Zero-Trust Hub & Spoke Network (Blueprint #23)',
         narrationText: 'Open and inspect the rendered diagram on the canvas. Notice the clear 5-tier demarcation, Cloud Router BGP routes, and zero line collisions.',
         stepNumber: 2,
         title: 'Inspecting Hybrid Transit & Hub',
@@ -267,8 +281,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
+        templateId: '08',
         imagePath: '/workflows/frames/architect/frame_03.png',
-        actionLabel: '3. Edit & Refine: Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings',
+        actionLabel: '3. Adding Cloud HA VPN Failover & Cloud KMS HSM Dual Rings (Blueprint #08)',
         narrationText: 'In the refinement chat, add Cloud HA VPN IPsec backup tunnels and Cloud KMS HSM dual rings for automated key rotation.',
         stepNumber: 3,
         title: 'Adding Resilience & Key Management',
@@ -280,8 +295,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
+        templateId: '16',
         imagePath: '/workflows/frames/architect/frame_04.png',
-        actionLabel: '4. Save & Version Increase: Auto-Committed to v2 Baseline',
+        actionLabel: '4. Multi-Region Active-Active DR & Spanner (Blueprint #16)',
         narrationText: 'Version v2 is committed automatically with immutable history for your Architecture Review Board sign-off.',
         stepNumber: 4,
         title: 'Committing Version 2 for ARB Sign-off',
@@ -292,8 +308,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
+        templateId: '07',
         imagePath: '/workflows/frames/architect/frame_05.png',
-        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck',
+        actionLabel: '5. Export Deliverables: Generate PDF Dossier and PowerPoint Deck (Blueprint #07)',
         narrationText: 'Open the export menu and choose PowerPoint presentation or PDF Architecture Dossier.',
         stepNumber: 5,
         title: 'Selecting Export Deliverables',
@@ -304,8 +321,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
+        templateId: '18',
         imagePath: '/workflows/frames/architect/frame_06.png',
-        actionLabel: '6. Open PowerPoint (.pptx): High-DPI Vector Slides for Enterprise ARB',
+        actionLabel: '6. High-DPI Vector Slides for Enterprise ARB (Blueprint #18)',
         narrationText: 'Open the PowerPoint presentation to inspect your high-res vector diagram slides, network demarcation specs, and executive takeaways.',
         stepNumber: 6,
         title: 'Open PowerPoint (.pptx) Slide Deck',
@@ -331,12 +349,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
+        templateId: '29',
         imagePath: '/workflows/frames/data_ai/frame_01.png',
-        actionLabel: '1. Prompt Entry & Options: Retail AI, AlloyDB pgvector & Lakehouse Star Schema',
+        actionLabel: '1. Medallion Data Lakehouse & BigQuery (Blueprint #29)',
         narrationText: 'Enter data and AI platform requirements: AlloyDB pgvector with text-embedding-004, BigQuery Lakehouse Star Schema, and Looker BI.',
         stepNumber: 1,
         title: 'Inputting Data & AI Requirements',
-        whereToClick: 'Left Studio -> Prompt Box',
+        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #29',
         description: 'Define real-time streaming, Vertex AI Search, AlloyDB pgvector, and BigQuery Lakehouse.',
         promptRecipe: 'Build an Omnichannel Retail AI Platform with AlloyDB pgvector, BigQuery Lakehouse Star Schema, and Looker BI.',
         validationChecklist: ['Data flows and model parameters defined'],
@@ -344,8 +363,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
+        templateId: '34',
         imagePath: '/workflows/frames/data_ai/frame_02.png',
-        actionLabel: '2. Open Diagram: Inspecting AlloyDB pgvector Core & BigQuery Star Schema',
+        actionLabel: '2. Event-Driven Real-Time CDC & Kafka Streaming (Blueprint #34)',
         narrationText: 'Open the diagram to validate the AI intelligence core, sub-10ms vector similarity recall, and BigQuery Star Schema relationships.',
         stepNumber: 2,
         title: 'Inspecting AI Intelligence Core',
@@ -356,8 +376,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
+        templateId: '41',
         imagePath: '/workflows/frames/data_ai/frame_03.png',
-        actionLabel: '3. Edit & Refine: Injecting Real-Time Fraud Scoring & Looker BI Cockpit',
+        actionLabel: '3. Multi-Agent Swarm Orchestration & Vertex AI RAG (Blueprint #41)',
         narrationText: 'Refine the pipeline in chat by prompting Gemini to add sub-second fraud anomaly scoring on Cloud Run and real-time conversion BI.',
         stepNumber: 3,
         title: 'Refining Pipeline with Chat',
@@ -369,8 +390,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
+        templateId: '35',
         imagePath: '/workflows/frames/data_ai/frame_04.png',
-        actionLabel: '4. Save & Version Increase: Committed to v2 with Immutable Rollback',
+        actionLabel: '4. BigQuery BI Engine & Realtime Dashboards (Blueprint #35)',
         narrationText: 'Version v2 is committed with an immutable snapshot, preserving previous states in rollback history.',
         stepNumber: 4,
         title: 'Committing Version 2 Snapshot',
@@ -381,8 +403,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
+        templateId: '36',
         imagePath: '/workflows/frames/data_ai/frame_05.png',
-        actionLabel: '5. Export Deliverables: Select PDF Data Dictionary and Draw.io XML',
+        actionLabel: '5. Data Lineage & Governance Catalog (Blueprint #36)',
         narrationText: 'Export your data architecture as a comprehensive PDF Data Dictionary or editable Draw.io XML.',
         stepNumber: 5,
         title: 'Exporting Data Architecture Package',
@@ -393,8 +416,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
+        templateId: '37',
         imagePath: '/workflows/frames/data_ai/frame_06.png',
-        actionLabel: '6. Open PDF Architecture Dossier: Data Flow Lineage & Model Specs',
+        actionLabel: '6. End-to-End Enterprise Lakehouse Map (Blueprint #37)',
         narrationText: 'Open the PDF Architecture Dossier to review end-to-end data flow lineage, table schemas, and model hosting specs.',
         stepNumber: 6,
         title: 'Open PDF Architecture Dossier',
@@ -420,12 +444,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
+        templateId: '05',
         imagePath: '/workflows/frames/consultant/frame_01.png',
-        actionLabel: '1. Prompt Entry & Options: Legacy Silos Discovery & 6Rs 4-Wave Plan',
+        actionLabel: '1. As-Is vs To-Be Cloud Migration Roadmap (Blueprint #05)',
         narrationText: 'Provide your legacy infrastructure inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         stepNumber: 1,
         title: 'Prompting Discovery & Assessment',
-        whereToClick: 'Left Studio -> Prompt Box',
+        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #05',
         description: 'Provide legacy inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         promptRecipe: 'Assess on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, and 4 migration waves.',
         validationChecklist: ['Legacy monoliths and discovery tools defined'],
@@ -433,8 +458,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
+        templateId: '04',
         imagePath: '/workflows/frames/consultant/frame_02.png',
-        actionLabel: '2. Open Diagram: On-Prem Monoliths, Spaghetti Matrix & 4 Migration Waves',
+        actionLabel: '2. Value Stream & Business Process Map (Blueprint #04)',
         narrationText: 'Open the diagram to see legacy silos in the red zone, spaghetti integrations, and the 4 target migration waves.',
         stepNumber: 2,
         title: 'Mapping On-Premises Monoliths',
@@ -445,8 +471,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
+        templateId: '03',
         imagePath: '/workflows/frames/consultant/frame_03.png',
-        actionLabel: '3. Edit & FinOps Insights: 42% TCO OpEx Savings & Strangler Fig Proxy',
+        actionLabel: '3. Cross-Functional Swimlanes & TCO Analysis (Blueprint #03)',
         narrationText: 'Click Insights and Cost to review the 3-year TCO financial model and 42 percent operating expenditure savings.',
         stepNumber: 3,
         title: 'Reviewing TCO & FinOps Score',
@@ -457,8 +484,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
+        templateId: '02',
         imagePath: '/workflows/frames/consultant/frame_04.png',
-        actionLabel: '4. Save & Version Increase: Roadmap Committed to v2',
+        actionLabel: '4. Decision Tree & Modernization Waves (Blueprint #02)',
         narrationText: 'The modernization roadmap is saved as version v2 with Strangler Fig API proxies approved.',
         stepNumber: 4,
         title: 'Committing Version 2 Roadmap',
@@ -469,8 +497,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
+        templateId: '11',
         imagePath: '/workflows/frames/consultant/frame_05.png',
-        actionLabel: '5. Export Deliverables: Exporting Boardroom PPTX Pitch Pack',
+        actionLabel: '5. Strangler Fig Pattern & API Gateway Migration (Blueprint #11)',
         narrationText: 'Export the client pitch deck as a native PowerPoint presentation.',
         stepNumber: 5,
         title: 'Exporting Client Pitch Deck',
@@ -481,6 +510,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
+        templateId: '01',
         imagePath: '/workflows/frames/consultant/frame_06.png',
         actionLabel: '6. Open PowerPoint (.pptx): Client Pitch Deck with 4-Wave Roadmap',
         narrationText: 'Open the PowerPoint pitch pack to view the 4-wave modernization roadmap, financial ROI charts, and decommissioning timeline.',
@@ -508,12 +538,13 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
     frames: [
       {
         frameIndex: 0,
+        templateId: '23',
         imagePath: '/workflows/frames/secops/frame_01.png',
-        actionLabel: '1. Prompt Entry & Options: Zero-Trust Isolation, STRIDE Threat Model & VPC-SC',
+        actionLabel: '1. Zero-Trust BeyondCorp & Identity-Aware Proxy (Blueprint #23)',
         narrationText: 'Enter zero-trust regulatory constraints: PCI-DSS 4.0, SOC2 Type II, Cloud KMS HSM CMEK, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Prompting Zero-Trust Security Requirements',
-        whereToClick: 'Left Studio -> Prompt Box',
+        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #23',
         description: 'Specify regulatory standards: PCI-DSS 4.0, SOC2 Type II, and VPC Service Controls.',
         promptRecipe: 'Enforce PCI-DSS 4.0 and SOC2 Type II: Cloud KMS HSM CMEK, VPC Service Controls, and Cloud Armor WAF.',
         validationChecklist: ['Compliance guardrails and policy IDs defined'],
@@ -521,8 +552,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 1,
+        templateId: '24',
         imagePath: '/workflows/frames/secops/frame_02.png',
-        actionLabel: '2. Open Diagram: Auditing Zero-Trust Perimeters & Egress Demarcations',
+        actionLabel: '2. STRIDE Threat Model & Security Controls Matrix (Blueprint #24)',
         narrationText: 'Open the diagram to audit perimeter boundaries, Cloud KMS HSM dual rings, and zero plain-text egress paths.',
         stepNumber: 2,
         title: 'Auditing Perimeter Demarcation',
@@ -533,8 +565,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 2,
+        templateId: '13',
         imagePath: '/workflows/frames/secops/frame_03.png',
-        actionLabel: '3. Edit & Remediate: 1-Click Automated Security Rule Hardening',
+        actionLabel: '3. SOC 2 / FedRAMP Audit & KMS Key Ring Mesh (Blueprint #13)',
         narrationText: 'Apply one-click automated remediation in chat to patch findings and seal exposed endpoints with Private Service Connect.',
         stepNumber: 3,
         title: 'Executing 1-Click Security Remediation',
@@ -546,8 +579,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 3,
+        templateId: '14',
         imagePath: '/workflows/frames/secops/frame_04.png',
-        actionLabel: '4. Save & Version Increase: Version Hardened to v2 (100% SOC2 Compliant)',
+        actionLabel: '4. Security Operations Center & Eventarc SIEM Ingestion (Blueprint #14)',
         narrationText: 'The hardened architecture is committed as version v2, achieving 100 percent SOC2 and CIS compliance.',
         stepNumber: 4,
         title: 'Committing Hardened Version v2',
@@ -558,8 +592,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 4,
+        templateId: '15',
         imagePath: '/workflows/frames/secops/frame_05.png',
-        actionLabel: '5. Export Deliverables: Exporting SOC2 / ISO 27001 Cryptographic Package',
+        actionLabel: '5. Multi-Cloud Guardrails & Policy Enforcement (Blueprint #15)',
         narrationText: 'Export the cryptographic SOC2 and ISO 27001 compliance audit package.',
         stepNumber: 5,
         title: 'Exporting Compliance Audit Package',
@@ -570,8 +605,9 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
       },
       {
         frameIndex: 5,
+        templateId: '23',
         imagePath: '/workflows/frames/secops/frame_06.png',
-        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors',
+        actionLabel: '6. Open PDF Compliance Dossier: Cryptographic Proof for SOC2 Auditors (Blueprint #23)',
         narrationText: 'Open the PDF compliance dossier to inspect perimeter boundary rules, key rotation policies, and SHA-256 proof for auditors.',
         stepNumber: 6,
         title: 'Open PDF Compliance Dossier',
@@ -594,14 +630,21 @@ export default function GuidePage() {
   const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
 
-  // New audio, captions, and maximize controls
   const [isAudioEnabled, setIsAudioEnabled] = useState<boolean>(false);
   const [isCaptionsEnabled, setIsCaptionsEnabled] = useState<boolean>(true);
   const [isMaximized, setIsMaximized] = useState<boolean>(false);
+  const [playerViewMode, setPlayerViewMode] = useState<'canonical' | 'screenshot'>('canonical');
 
   const currentWorkflow = PERSONA_WORKFLOWS[activePersona];
   const totalFrames = currentWorkflow.frames.length;
   const activeFrame = currentWorkflow.frames[currentFrameIndex] || currentWorkflow.frames[0];
+
+  // Active Canonical Blueprint XML for current frame
+  const activeCanonicalXml = useMemo(() => {
+    const targetId = activeFrame.templateId || '01';
+    const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
+    return tpl.generateXml('biopharma', isLight ? 'light' : 'dark');
+  }, [activeFrame, isLight]);
 
   // Speech Synthesis Audio Narration
   const speakNarration = useCallback((text: string) => {
@@ -1074,54 +1117,89 @@ export default function GuidePage() {
 
             </div>
 
-            {/* RIGHT (7.5 Cols): HIGH-DPI WORKFLOW SCREENSHOT FRAME WITH CAPTIONS */}
+            {/* RIGHT (7.5 Cols): HIGH-DPI CANONICAL MASTER BLUEPRINT & WORKFLOW VIEWPORT */}
             <div className="lg:col-span-7">
               <div className={`rounded-2xl border p-4 shadow-2xl relative overflow-hidden ${
                 isLight ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-950 border-slate-800 text-white'
               }`}>
                 
                 {/* Window Bar */}
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center justify-between pb-3 mb-3 border-b border-slate-800 gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
                     <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80 inline-block" />
                     <span className="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block" />
-                    <span className="text-[11px] font-mono text-slate-400 ml-2">
-                      PromptCanvas • {currentWorkflow.title}
+                    <span className="text-[11px] font-mono text-slate-200 ml-2 font-bold truncate">
+                      Canonical Master Blueprint #{activeFrame.templateId || '01'} • {currentWorkflow.title}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-mono px-2 py-0.2 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                      LIVE RECORDING
-                    </span>
-                    <a
-                      href={currentWorkflow.gifPath}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[10px] font-bold text-slate-400 hover:text-teal-400 flex items-center gap-1"
+                    {/* View Switcher Pill */}
+                    <div className="flex items-center p-0.5 rounded-lg bg-slate-900 border border-slate-800 text-[10px] font-bold">
+                      <button
+                        type="button"
+                        onClick={() => setPlayerViewMode('canonical')}
+                        className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
+                          playerViewMode === 'canonical'
+                            ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>Live Canonical</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPlayerViewMode('screenshot')}
+                        className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 cursor-pointer ${
+                          playerViewMode === 'screenshot'
+                            ? 'bg-teal-500 text-slate-950 shadow-sm font-black'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <span>Playbook GIF</span>
+                      </button>
+                    </div>
+
+                    {/* Open in Canvas Link */}
+                    <Link
+                      href={`/workspace?blueprint=${activeFrame.templateId || '01'}`}
+                      className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-[10px] transition-all flex items-center gap-1 shadow-sm shrink-0 cursor-pointer"
+                      title="Open full interactive blueprint in Canvas"
                     >
-                      <span>Watch Full GIF</span>
+                      <span>Open in Canvas</span>
                       <ExternalLink className="w-3 h-3" />
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
-                {/* Frame Screen Image with Live Captions Overlay */}
-                <div className={`w-full rounded-xl overflow-hidden border border-slate-800 bg-black flex items-center justify-center relative ${
+                {/* Frame Screen: Live Vector Diagram or GIF Playback */}
+                <div className={`w-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center relative ${
                   isMaximized ? 'h-[620px]' : 'h-[440px]'
                 }`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={activeFrame.imagePath}
-                    alt={activeFrame.actionLabel}
-                    className="w-full h-full object-contain"
-                  />
+                  {playerViewMode === 'canonical' ? (
+                    <div className="w-full h-full bg-white dark:bg-[#070A13] flex items-center justify-center relative">
+                      <DiagramViewerRenderSafe
+                        xml={activeCanonicalXml}
+                        containerDimensions={{ width: isMaximized ? 1400 : 880, height: isMaximized ? 620 : 440 }}
+                        aspectRatio="16:9"
+                        theme={isLight ? 'light' : 'dark'}
+                      />
+                    </div>
+                  ) : (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={activeFrame.imagePath}
+                      alt={activeFrame.actionLabel}
+                      className="w-full h-full object-contain"
+                    />
+                  )}
 
                   {/* 💬 Live Subtitles / Captions Overlay */}
                   {isCaptionsEnabled && activeFrame.narrationText && (
-                    <div className="absolute bottom-4 left-4 right-4 bg-black/85 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-2xl flex items-center gap-3 animate-fade-in">
-                      <div className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 text-[10px] font-mono font-bold shrink-0">
+                    <div className="absolute bottom-4 left-4 right-4 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-2xl flex items-center gap-3 animate-fade-in z-20">
+                      <div className="px-2 py-0.5 rounded bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-mono font-bold shrink-0">
                         CC
                       </div>
                       <p className="text-xs md:text-sm font-medium text-slate-100 leading-snug">
@@ -1133,10 +1211,10 @@ export default function GuidePage() {
 
                 {/* Frame Footer Info */}
                 <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
-                  <span className="flex items-center gap-1 text-teal-400 font-bold">
-                    <Sparkles className="w-3 h-3" /> {activeFrame.actionLabel}
+                  <span className="flex items-center gap-1 text-teal-400 font-bold truncate">
+                    <Sparkles className="w-3 h-3 shrink-0" /> {activeFrame.actionLabel}
                   </span>
-                  <span>Frame {currentFrameIndex + 1} / {totalFrames}</span>
+                  <span className="shrink-0 ml-2">Frame {currentFrameIndex + 1} / {totalFrames}</span>
                 </div>
 
               </div>
