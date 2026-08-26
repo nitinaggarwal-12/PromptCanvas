@@ -38,6 +38,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'workspace', name: 'Design Canvas', icon: Network, href: '/workspace' },
+  { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
   { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
   { id: 'history', name: 'Historical Canvases & Docs', icon: History, href: '/history' },

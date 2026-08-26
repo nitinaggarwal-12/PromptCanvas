@@ -199,10 +199,10 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/workspace"
+                  href="/docgen"
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
-                  <span>Launch Workspace</span>
+                  <span>Launch Studio</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
@@ -222,10 +222,10 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/workspace"
+                  href="/docgen"
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
-                  <span>Launch Workspace</span>
+                  <span>Launch Studio</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
@@ -338,7 +338,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href="/workspace?new=true"
+              href="/docgen"
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <span>Start Building Free</span>
@@ -817,10 +817,10 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href="/workspace?new=true"
+              href="/docgen"
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Launch Free Workspace</span>
+              <span>Launch Studio Free</span>
               <ArrowRight className="w-4.5 h-4.5" />
             </Link>
           </div>
