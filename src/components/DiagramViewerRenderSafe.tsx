@@ -137,7 +137,9 @@ ${origin ? `<base href="${origin}/">` : ''}
 </style>
 </head>
 <body>
-<div class="canvas-container"><div class="mxgraph" id="diagram-container"></div></div>
+<div class="canvas-container">
+  <div class="mxgraph" id="diagram-container"></div>
+</div>
 <script>
   if (typeof window.btoa === 'function') {
     const _btoa = window.btoa.bind(window);
@@ -197,7 +199,6 @@ ${origin ? `<base href="${origin}/">` : ''}
     const rootRect = root.getBoundingClientRect();
     const rootArea = Math.max(1, rootRect.width * rootRect.height);
 
-    // Root-cause class: Draw.io UI/overlay DIV expanded by host CSS.
     root.querySelectorAll('div').forEach(function(node) {
       if (!(node instanceof HTMLElement)) return;
       if (node.querySelector('svg')) return;
@@ -207,12 +208,9 @@ ${origin ? `<base href="${origin}/">` : ''}
       if (isOpaqueBlack(style.backgroundColor) && ratio >= 0.08) {
         node.style.setProperty('display', 'none', 'important');
         node.setAttribute('data-pc-suppressed-oversized-overlay', 'true');
-        console.warn('[PromptCanvas] Suppressed oversized opaque Draw.io DIV overlay', rect.width, rect.height);
       }
     });
 
-    // Targeted safety net for the three reported templates. Legitimate vendor/logo black
-    // marks are far below this area threshold, while a canvas-obscuring primitive is not.
     if (aggressiveOverlayGuard) {
       const svg = root.querySelector('svg');
       if (!svg) return;
@@ -224,7 +222,6 @@ ${origin ? `<base href="${origin}/">` : ''}
         if (isOpaqueBlack(style.fill) && ratio >= 0.12) {
           node.style.setProperty('display', 'none', 'important');
           node.setAttribute('data-pc-suppressed-oversized-overlay', 'true');
-          console.warn('[PromptCanvas] Suppressed oversized opaque Draw.io SVG artifact', node.tagName, rect.width, rect.height);
         }
       });
     }
@@ -238,30 +235,22 @@ ${origin ? `<base href="${origin}/">` : ''}
     suppressOversizedBlackOverlay();
   }
 
-  function loadViewerScript() {
-    if (document.getElementById('mxgraph-script-element')) return;
-    const script = document.createElement('script');
-    script.id = 'mxgraph-script-element';
-    script.src = ${JSON.stringify(scriptUrl)};
-    script.onload = function() {
-      if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
-        try { window.GraphViewer.processElements(); } catch(e) {}
-      }
-      requestAnimationFrame(finishPresentation);
-      [60, 150, 350, 800, 1500].forEach(function(ms) { setTimeout(finishPresentation, ms); });
-    };
-    script.onerror = function(e) {
-      console.warn('[PromptCanvas] Retrying viewer script load from root path...', e);
-      if (!script.getAttribute('data-retried')) {
-        script.setAttribute('data-retried', 'true');
-        script.src = '/viewer-static.min.js';
-      }
-    };
-    document.body.appendChild(script);
+  function triggerRender() {
+    if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
+      try { window.GraphViewer.processElements(); } catch(e) {}
+    }
+    requestAnimationFrame(finishPresentation);
+    [20, 80, 200, 500, 1000].forEach(function(ms) { setTimeout(finishPresentation, ms); });
   }
-
-  if (document.readyState === 'complete' || document.readyState === 'interactive') setTimeout(loadViewerScript, 20);
-  else window.addEventListener('load', loadViewerScript);
+</script>
+<script src="${scriptUrl}" onload="triggerRender()" onerror="this.src='/viewer-static.min.js';"></script>
+<script>
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(triggerRender, 30);
+  } else {
+    window.addEventListener('DOMContentLoaded', triggerRender);
+    window.addEventListener('load', triggerRender);
+  }
 </script>
 </body>
 </html>`;

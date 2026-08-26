@@ -140,9 +140,9 @@ async function testRealBrowser() {
     await page.goto(`${BASE_URL}/canonical/01`, { waitUntil: 'networkidle2', timeout: 30000 });
     await sleep(1500);
 
-    const studioLink = await page.$('a[href*="/docgen?tab=studio"]');
+    const studioLink = await page.$('a[title*="Launch in Multi-Blueprint"]');
     if (!studioLink) {
-      throw new Error('TEST 4 FAILED: Launch Studio link missing on /canonical/01');
+      throw new Error('TEST 4 FAILED: Launch Studio button missing in header on /canonical/01');
     }
     const href = await (await studioLink.getProperty('href')).jsonValue();
     if (!href.includes('mode=diagrams')) {

@@ -2705,8 +2705,10 @@ function DocGenContent() {
                       </span>
                       <Link
                         href={`/canonical/${currentPreviewTemplateId}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
-                        title="Open in Canonical Blueprint Viewer"
+                        title="Open in Canonical Blueprint Viewer in new tab"
                       >
                         <span>Canonical #{currentPreviewTemplateId}</span>
                         <ExternalLink className="w-3 h-3" />
