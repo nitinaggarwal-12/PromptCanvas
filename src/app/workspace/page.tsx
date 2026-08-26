@@ -117,6 +117,7 @@ import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicSummaryModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture, normalizeArchitectureId } from '@/lib/architectureTypes';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 import { getExactAgenticMeshXml } from '@/lib/newEnterpriseReferenceXmls';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
@@ -964,6 +965,7 @@ function WorkspaceContent() {
   
   // UI Panels
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Modals
@@ -1536,6 +1538,38 @@ function WorkspaceContent() {
   // Fetch active diagram details when ID changes
   const loadDiagramDetails = useCallback(async (id: string) => {
     activeLoadingIdRef.current = id;
+
+    // Handle Canonical Blueprint loading directly
+    const canonicalMatch = CANONICAL_TEMPLATES.find(c => c.id === id || c.id === `canonical_${id}` || id.includes(c.id));
+    if (canonicalMatch) {
+      const syntheticDiagram: Diagram = {
+        id: canonicalMatch.id,
+        name: canonicalMatch.name,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        architecture_type: canonicalMatch.id,
+        xml_content: canonicalMatch.xml,
+        versions: [{
+          id: `canonical_ver_${canonicalMatch.id}`,
+          version_number: 1,
+          xml_content: canonicalMatch.xml,
+          created_at: new Date().toISOString(),
+          comment: 'Ground-Truth Blueprint'
+        }]
+      };
+      setRestrictedState(null);
+      setActiveDiagram(syntheticDiagram);
+      setSelectedArchType(canonicalMatch.id);
+      setViewMode('canvas');
+      setLayoutPreset('detailed');
+      setZoom(1.0);
+      setPan({ x: 0, y: 0 });
+      setOutlineEdits({});
+      setUndoStack([]);
+      setRedoStack([]);
+      return;
+    }
+
     try {
       const res = await fetch(`/api/diagrams/${id}`);
       if (activeLoadingIdRef.current !== id) return;
@@ -3696,8 +3730,27 @@ function WorkspaceContent() {
   };
 
   function renderAuditCenterView() {
-    const filteredDiagrams = diagrams.filter(d => {
-      const matchesQuery = d.name.toLowerCase().includes(auditSearchQuery.toLowerCase());
+    // 50 Canonical Blueprints + Custom Diagrams
+    const auditAssets = [
+      ...CANONICAL_TEMPLATES.map(t => ({
+        id: t.id,
+        name: t.name,
+        isCanonical: true,
+        family: t.family,
+        xml: t.xml
+      })),
+      ...diagrams.map(d => ({
+        id: d.id,
+        name: d.name,
+        isCanonical: false,
+        family: 'Custom Canvas',
+        xml: d.xml_content || ''
+      }))
+    ];
+
+    const filteredDiagrams = auditAssets.filter(d => {
+      const q = auditSearchQuery.trim().toLowerCase();
+      const matchesQuery = q === '' || d.name.toLowerCase().includes(q) || d.family.toLowerCase().includes(q) || d.id.toLowerCase().includes(q);
       if (!matchesQuery) return false;
       const isSelected = activeDiagram?.id === d.id;
       const hasReport = isSelected && (auditReport || auditHistory.length > 0);
@@ -3755,7 +3808,7 @@ function WorkspaceContent() {
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search architecture diagrams..."
+                placeholder="Search architecture diagrams or blueprints..."
                 value={auditSearchQuery}
                 onChange={(e) => setAuditSearchQuery(e.target.value)}
                 className={`w-full rounded-xl pl-9 pr-8 py-2 text-xs outline-none transition-all ${
@@ -3786,7 +3839,7 @@ function WorkspaceContent() {
                     : canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
                 }`}
               >
-                All ({diagrams.length})
+                All ({auditAssets.length})
               </button>
               <button
                 type="button"
@@ -3833,7 +3886,31 @@ function WorkspaceContent() {
                 return (
                   <div
                     key={d.id}
-                    onClick={() => loadDiagramDetails(d.id)}
+                    onClick={() => {
+                      if (d.isCanonical) {
+                        const can = CANONICAL_TEMPLATES.find(c => c.id === d.id);
+                        if (can) {
+                          setActiveDiagram({
+                            id: can.id,
+                            name: can.name,
+                            created_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString(),
+                            architecture_type: can.id,
+                            xml_content: can.xml,
+                            versions: [{
+                              id: `canonical_ver_${can.id}`,
+                              version_number: 1,
+                              xml_content: can.xml,
+                              created_at: new Date().toISOString(),
+                              comment: 'Ground-Truth Blueprint'
+                            }]
+                          });
+                          setSelectedArchType(can.id);
+                        }
+                      } else {
+                        loadDiagramDetails(d.id);
+                      }
+                    }}
                     className={`group p-3 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
                       isActive 
                         ? canvasTheme === 'light'
@@ -3857,6 +3934,11 @@ function WorkspaceContent() {
                         {d.name}
                       </span>
                       <div className="flex items-center gap-1.5 shrink-0">
+                        {d.isCanonical && (
+                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                            {d.family}
+                          </span>
+                        )}
                         {isActive ? (
                           <span className="text-[10px] font-extrabold text-teal-700 dark:text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-md border border-teal-500/40">
                             Selected
@@ -6102,19 +6184,19 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           </button>
         </div>
 
-        {/* 3. CLEAN PRIMARY NAVIGATION LINKS (No Auto-Hover Accordion Sprawl) */}
+        {/* 3. CLEAN PRIMARY NAVIGATION LINKS */}
         <div className="p-3 space-y-1 flex-1 overflow-y-auto">
+          <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
+            {isSidebarOpen ? 'Canonical Suite' : '•••'}
+          </div>
+
           {[
-            { id: 'editor', name: t.designCanvas, icon: Network },
-            { id: 'canonical', name: 'Canonical Blueprints Hub', icon: Sparkles, href: '/canonical', badge: '50' },
-            { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
-            { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
-            { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
-            { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
-            { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
+            { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen?tab=studio', badge: 'PRO' },
+            { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
+            { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
+            { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },
+            { id: 'audit', name: 'Security Audit', icon: ShieldCheck },
             { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
-            { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
-            { id: 'settings', name: t.settingsTier, icon: Settings }
           ].map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
@@ -6153,29 +6235,145 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               );
             }
 
-            if (item.id === 'settings') {
-              return (
-                <div
-                  key={item.id}
-                  className="relative"
-                  onMouseEnter={() => setIsSettingsHoverOpen(true)}
-                  onMouseLeave={() => setIsSettingsHoverOpen(false)}
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setCurrentTab(item.id as any);
+                  if (typeof window !== 'undefined') {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('tab', item.id);
+                    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+                  }
+                  if (!isSidebarOpen) setIsSidebarOpen(true);
+                }}
+                className="w-full text-left block cursor-pointer"
+              >
+                {buttonContent}
+              </button>
+            );
+          })}
+
+          {/* DIVIDER: CANVAS SUITE */}
+          <div className="pt-3 pb-1">
+            <div className="border-t border-slate-200 dark:border-slate-800/80 my-1" />
+          </div>
+
+          {/* DEDICATED CANVAS EXPANDABLE BUTTON / GROUP */}
+          <div className="space-y-1">
+            <div
+              onClick={() => setIsCanvasGroupOpen(!isCanvasGroupOpen)}
+              className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'editor'
+                  ? canvasTheme === 'light'
+                    ? 'bg-sky-50 border border-sky-200 text-sky-900'
+                    : 'bg-sky-950/40 border border-sky-800/60 text-sky-300'
+                  : canvasTheme === 'light'
+                  ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+              }`}
+              title="Design Canvas Workspace & History"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <Network className={`w-4 h-4 shrink-0 ${currentTab === 'editor' ? 'text-teal-500' : 'text-slate-400'}`} />
+                {isSidebarOpen && <span className="truncate font-black">Canvas</span>}
+              </div>
+              {isSidebarOpen && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">
+                    EDIT
+                  </span>
+                  <ChevronRight
+                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
+                      isCanvasGroupOpen ? 'rotate-90' : ''
+                    }`}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Sub-Items belonging exclusively to Canvas */}
+            {isSidebarOpen && isCanvasGroupOpen && (
+              <div className="pl-4 space-y-1 pt-0.5 border-l-2 border-slate-200 dark:border-slate-800 ml-4 animate-in fade-in slide-in-from-top-1 duration-150">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentTab('editor');
+                    if (typeof window !== 'undefined') {
+                      const params = new URLSearchParams(window.location.search);
+                      params.delete('tab');
+                      window.history.replaceState({}, '', `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`);
+                    }
+                  }}
+                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer text-left ${
+                    currentTab === 'editor'
+                      ? 'bg-teal-accent text-bg-dark font-extrabold shadow-xs'
+                      : canvasTheme === 'light'
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCurrentTab('settings');
-                      if (typeof window !== 'undefined') {
-                        const params = new URLSearchParams(window.location.search);
-                        params.set('tab', 'settings');
-                        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-                      }
-                      if (!isSidebarOpen) setIsSidebarOpen(true);
-                    }}
-                    className="w-full text-left block"
-                  >
-                    {buttonContent}
-                  </button>
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <Network className={`w-3.5 h-3.5 shrink-0 ${currentTab === 'editor' ? 'text-bg-dark' : 'text-slate-400'}`} />
+                    <span className="truncate">Design Canvas</span>
+                  </div>
+                </button>
+
+                <Link href="/history" className="block">
+                  <div className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    canvasTheme === 'light'
+                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  }`}>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <History className="w-3.5 h-3.5 shrink-0 text-slate-400" />
+                      <span className="truncate">Canvas History</span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
+
+          {/* SETTINGS AT BOTTOM */}
+          <div
+            className="relative pt-2"
+            onMouseEnter={() => setIsSettingsHoverOpen(true)}
+            onMouseLeave={() => setIsSettingsHoverOpen(false)}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setCurrentTab('settings');
+                if (typeof window !== 'undefined') {
+                  const params = new URLSearchParams(window.location.search);
+                  params.set('tab', 'settings');
+                  window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+                }
+                if (!isSidebarOpen) setIsSidebarOpen(true);
+              }}
+              className="w-full text-left block cursor-pointer"
+            >
+              <div className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                currentTab === 'settings'
+                  ? 'bg-teal-accent text-bg-dark font-extrabold shadow-sm'
+                  : canvasTheme === 'light'
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
+              }`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <Settings className={`w-4 h-4 shrink-0 ${
+                    currentTab === 'settings'
+                      ? 'text-bg-dark'
+                      : canvasTheme === 'light'
+                      ? 'text-slate-500'
+                      : 'text-slate-400'
+                  }`} />
+                  {isSidebarOpen && <span className="truncate">Settings &amp; AI Tier</span>}
+                </div>
+              </div>
+            </button>
 
                   {/* HOVER-OVER SETTINGS & AI TIER DROPDOWN */}
                   {isSettingsHoverOpen && (
@@ -6340,42 +6538,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </div>
                   )}
                 </div>
-              );
-            }
-
-            return (
-              <button
-                key={item.id}
-                onClick={() => {
-                  const newTab = item.id as 'editor' | 'templates' | 'audit' | 'settings' | 'walkthrough';
-                  setCurrentTab(newTab);
-                  if (newTab === 'editor') {
-                    setIsAssistantOpen(true);
-                    if (!activeDiagram && diagrams.length > 0) {
-                      loadDiagramDetails(diagrams[0].id);
-                    }
-                  }
-                  if (newTab === 'walkthrough') {
-                    setTourStep(1);
-                  }
-                  if (typeof window !== 'undefined') {
-                    const params = new URLSearchParams(window.location.search);
-                    if (newTab === 'editor') {
-                      params.delete('tab');
-                    } else {
-                      params.set('tab', newTab);
-                    }
-                    const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
-                    window.history.replaceState({}, '', newUrl);
-                  }
-                  if (!isSidebarOpen) setIsSidebarOpen(true);
-                }}
-                className="w-full text-left block"
-              >
-                {buttonContent}
-              </button>
-            );
-          })}
 
           {/* 4. GEMINI ENTERPRISE AI STUDIO & REAL PROMPT DOSSIER (Docked in Left Sidebar) */}
           {isSidebarOpen && currentTab === 'editor' && activeDiagram && (
