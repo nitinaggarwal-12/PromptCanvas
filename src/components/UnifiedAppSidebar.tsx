@@ -40,10 +40,10 @@ const NAV_ITEMS: NavItem[] = [
   { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen?tab=studio', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
   { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
-  { id: 'history', name: 'Historical Canvases & Docs', icon: History, href: '/history' },
-  { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
+  { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },
   { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
   { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+  { id: 'history', name: 'Canvas History', icon: History, href: '/history' },
   { id: 'workspace', name: 'Design Canvas', icon: Network, href: '/workspace' },
   { id: 'settings', name: 'Settings & AI Tier', icon: Settings, href: '/workspace?tab=settings' },
 ];
