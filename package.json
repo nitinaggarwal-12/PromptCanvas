@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && npm run validate:canvas && npm run test:docgen:master && npm run test:enterprise:gaps && NODE_OPTIONS=--max-old-space-size=4096 next build",
+    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && npm run validate:canvas && npm run test:docgen:master && npm run test:enterprise:gaps && npm run test:pending:all && NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "next start",
     "lint": "eslint",
     "validate": "tsx bin/validate-cli.ts",
@@ -24,7 +24,8 @@
     "eval:templates:gate": "tsx evals/check_template_integrity.ts --allow evals/template-integrity-allowlist.json templates/master_blueprints/xml/*.xml",
     "test:canonical": "tsx scripts/test_canonical_full_suite.ts",
     "test:docgen:master": "tsx scripts/master_docgen_audit_harness.ts",
-    "test:enterprise:gaps": "tsx scripts/test_partial_gap_verification_suite.ts"
+    "test:enterprise:gaps": "tsx scripts/test_partial_gap_verification_suite.ts",
+    "test:pending:all": "tsx scripts/test_pending_gap_verification_suite.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
