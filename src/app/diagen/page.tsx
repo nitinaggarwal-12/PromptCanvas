@@ -34,7 +34,8 @@ import {
   Lock,
   Globe,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  X
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -44,8 +45,7 @@ import {
   CANONICAL_TEMPLATES,
   CANONICAL_FAMILIES,
   DOMAIN_PRESETS,
-  CanonicalTemplate,
-  BIOPHARMA_REFERENCE_TIERS
+  CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
 import { getDefaultXmlForArchitecture, getArchitectureTypeById } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
@@ -123,22 +123,25 @@ function DiaGenStudioContent() {
   const initialArch = searchParams.get('arch') || 'canonical_01';
   const forceNew = searchParams.get('new') === 'true';
 
-  // Mode: 'intake' (Configuration & Assembly Studio) vs 'canvas' (Live Interactive Studio)
-  const [viewMode, setViewMode] = useState<'intake' | 'canvas'>(() => {
+  // View Mode: 'catalog' (50 Master Blueprint Cards format) vs 'canvas' (Live Interactive Studio)
+  const [viewMode, setViewMode] = useState<'catalog' | 'canvas'>(() => {
     if (initialDiagramId) return 'canvas';
-    if (forceNew) return 'intake';
-    return 'intake';
+    if (forceNew) return 'catalog';
+    return 'catalog';
   });
 
-  // Intake Form State
-  const [selectedArchType, setSelectedArchType] = useState<string>(initialArch);
+  // Filter & Search State
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
-  const [blueprintSearch, setBlueprintSearch] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedDomain, setSelectedDomain] = useState<string>('Biopharma');
+  const [activePreviewBlueprint, setActivePreviewBlueprint] = useState<CanonicalTemplate | null>(null);
+
+  // Selected Active Architecture
+  const [selectedArchType, setSelectedArchType] = useState<string>(initialArch);
   const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Genomics & Regulatory AI Platform');
   const [scopePrompt, setScopePrompt] = useState<string>(
     'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
   );
-  const [selectedDomain, setSelectedDomain] = useState<string>('Biopharma');
 
   // Canvas Studio State
   const [activeDiagram, setActiveDiagram] = useState<DiagramRecord | null>(null);
@@ -153,7 +156,7 @@ function DiaGenStudioContent() {
   const filteredBlueprints = useMemo(() => {
     return CANONICAL_TEMPLATES.filter((tmpl) => {
       const matchesFamily = selectedFamily === 'All' || tmpl.family === selectedFamily;
-      const q = blueprintSearch.trim().toLowerCase();
+      const q = searchQuery.trim().toLowerCase();
       const matchesSearch =
         q === '' ||
         tmpl.name.toLowerCase().includes(q) ||
@@ -163,7 +166,7 @@ function DiaGenStudioContent() {
         tmpl.examples.toLowerCase().includes(q);
       return matchesFamily && matchesSearch;
     });
-  }, [selectedFamily, blueprintSearch]);
+  }, [selectedFamily, searchQuery]);
 
   // Current XML content
   const [currentXml, setCurrentXml] = useState<string>(() => {
@@ -200,33 +203,26 @@ function DiaGenStudioContent() {
     }
   }, [initialDiagramId, forceNew]);
 
-  // Load Quick Scenario
-  const handleLoadScenario = (sc: typeof QUICK_SCENARIOS[0]) => {
-    setSelectedDomain(sc.domain);
-    setProjectTitle(sc.title);
-    setScopePrompt(sc.prompt);
-    setSelectedArchType(sc.archType);
-  };
-
-  // Compile & Launch Canvas Studio
-  const handleLaunchStudio = async () => {
+  // Generate & Launch into Live Canvas Studio
+  const handleLaunchStudioWithBlueprint = (tmpl: CanonicalTemplate) => {
     setIsGenerating(true);
     try {
-      const cleanId = selectedArchType.replace('canonical_', '');
-      const matchedTmpl = CANONICAL_TEMPLATES.find(t => t.id === cleanId || t.id === selectedArchType);
-      const baseXml = matchedTmpl ? matchedTmpl.generateXml(selectedDomain) : getDefaultXmlForArchitecture(selectedArchType) || CANONICAL_TEMPLATES[0].generateXml('NOVACURA');
-      const flavored = injectUseCaseFlavor(baseXml, projectTitle, scopePrompt);
+      setSelectedArchType(`canonical_${tmpl.id}`);
+      const baseXml = tmpl.generateXml(selectedDomain);
+      const title = `${tmpl.name} Platform (${selectedDomain})`;
+      setProjectTitle(title);
+      const flavored = injectUseCaseFlavor(baseXml, title, tmpl.primaryPurpose);
       setCurrentXml(flavored);
 
       const nextVer: DiagramVersion = {
         id: `v_${Date.now()}`,
         version_number: 1,
         xml_content: flavored,
-        comment: `Initial Blueprint: ${matchedTmpl?.name || selectedArchType}`,
+        comment: `Initial Blueprint: ${tmpl.name} (#${tmpl.id})`,
         created_by: 'AI Compiler',
         created_at: new Date().toISOString(),
-        prompt: scopePrompt,
-        architecture_type: selectedArchType
+        prompt: tmpl.primaryPurpose,
+        architecture_type: `canonical_${tmpl.id}`
       };
 
       setVersionHistory([nextVer]);
@@ -330,12 +326,6 @@ function DiaGenStudioContent() {
     URL.revokeObjectURL(url);
   };
 
-  // Selected Blueprint metadata
-  const selectedBlueprintMeta = useMemo(() => {
-    const cleanId = selectedArchType.replace('canonical_', '');
-    return CANONICAL_TEMPLATES.find(t => t.id === cleanId || t.id === selectedArchType) || CANONICAL_TEMPLATES[0];
-  }, [selectedArchType]);
-
   // Contextual chips for canvas refinements
   const suggestionChips = useMemo(() => {
     if (selectedDomain.toLowerCase().includes('fin')) {
@@ -388,11 +378,11 @@ function DiaGenStudioContent() {
                   DiaGen Architecture Studio
                 </span>
                 <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/30">
-                  {viewMode === 'intake' ? '50 BLUEPRINTS INTAKE' : `CANVAS v${activeVersionNumber}`}
+                  {viewMode === 'catalog' ? '50 BLUEPRINTS INTAKE' : `CANVAS v${activeVersionNumber}`}
                 </span>
               </div>
               <p className="text-[10.5px] text-slate-500 dark:text-slate-400 font-medium">
-                {viewMode === 'intake' 
+                {viewMode === 'catalog' 
                   ? 'Intelligent Architecture Compiler & 50 Master Canonical Blueprints' 
                   : projectTitle}
               </p>
@@ -402,335 +392,255 @@ function DiaGenStudioContent() {
           <div className="flex items-center gap-2.5">
             {viewMode === 'canvas' && (
               <button
-                onClick={() => setViewMode('intake')}
+                onClick={() => setViewMode('catalog')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
                   isLight ? 'bg-white hover:bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
                 }`}
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Configure New</span>
+                <span>All Blueprints</span>
               </button>
             )}
-
-            <Link
-              href="/diablueprint"
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition ${
-                isLight ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
-              }`}
-            >
-              <LayoutGrid className="w-3.5 h-3.5 text-sky-500" />
-              <span>Catalog (50)</span>
-            </Link>
 
             <ThemeToggleBtn />
           </div>
         </header>
 
         {/* ========================================================================= */}
-        {/* VIEW MODE A: ARCHITECTURE BLUEPRINT INTAKE & ASSEMBLY STUDIO */}
+        {/* VIEW MODE A: 50 MASTER ARCHITECTURE BLUEPRINTS CATALOG (REQUESTED CARD FORMAT) */}
         {/* ========================================================================= */}
-        {viewMode === 'intake' && (
-          <div className="w-full max-w-8xl mx-auto px-6 md:px-12 py-8 space-y-10">
-            {/* Header Banner */}
-            <div className="space-y-2 border-b pb-6 border-slate-200 dark:border-slate-800">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-400 text-xs font-extrabold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Zero-Collision Architecture Compiler</span>
+        {viewMode === 'catalog' && (
+          <div className="w-full max-w-8xl mx-auto px-6 md:px-12 py-8 space-y-8">
+            {/* Header & Controls Bar */}
+            <div className="space-y-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search 50 blueprints (e.g. C4, Data Flow, Sequence, IAM, Network, DR)..."
+                    className={`w-full text-xs rounded-xl pl-10 pr-4 py-2.5 border outline-none font-medium transition ${
+                      isLight
+                        ? 'bg-white border-slate-200 focus:border-teal-500 text-slate-900 placeholder-slate-400'
+                        : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
+                    }`}
+                  />
+                </div>
+
+                {/* Domain Selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold text-slate-500 whitespace-nowrap">Domain Flavor:</span>
+                  <select
+                    value={selectedDomain}
+                    onChange={(e) => setSelectedDomain(e.target.value)}
+                    className={`rounded-xl px-3 py-2 text-xs font-bold border outline-none cursor-pointer ${
+                      isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#090D18] border-slate-800 text-white'
+                    }`}
+                  >
+                    {DOMAIN_PRESETS.map((d) => (
+                      <option key={d.id} value={d.name}>
+                        {d.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <h2 className={`text-2xl md:text-3xl font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                Architectural Grammar for <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Enterprise Cloud Systems</span>
-              </h2>
-              <p className={`text-xs md:text-sm max-w-3xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                Select from 50 certified master architecture blueprints, define your domain boundaries and system requirements, and instantly compile collision-free vector topology.
-              </p>
+
+              {/* Family Category Pills */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {CANONICAL_FAMILIES.map((fam) => (
+                  <button
+                    key={fam}
+                    onClick={() => setSelectedFamily(fam)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer ${
+                      selectedFamily === fam
+                        ? 'bg-teal-600 text-white shadow-xs'
+                        : isLight
+                        ? 'bg-white border border-slate-200 text-slate-600 hover:text-slate-900'
+                        : 'bg-slate-900 border border-slate-800 text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    {fam}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* STEP 1: CONFIGURATION */}
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div>
-                    <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                      STEP 1 OF 2 · SELECT ARCHITECTURE BLUEPRINT ({filteredBlueprints.length} OF 50)
-                    </span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      Active Selection: <strong className="text-teal-600 dark:text-teal-400 font-bold">{selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id})</strong>
+            {/* 50 MASTER BLUEPRINT CARDS (REQUESTED USER FORMAT) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredBlueprints.map((tmpl) => (
+                <div
+                  key={tmpl.id}
+                  className={`border rounded-3xl p-6 flex flex-col justify-between space-y-4 transition-all duration-200 group ${
+                    isLight
+                      ? 'bg-white hover:bg-slate-50/50 border-slate-200 hover:border-teal-400 shadow-sm hover:shadow-xl hover:shadow-teal-500/10'
+                      : 'bg-[#090D18] hover:bg-[#0c1222] border-slate-800 hover:border-teal-500/40 shadow-md hover:shadow-xl hover:shadow-teal-500/10'
+                  }`}
+                >
+                  <div className="space-y-3">
+                    {/* Top Header Strip with Number Circle */}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-11 h-11 rounded-full border-2 flex items-center justify-center font-black text-sm shrink-0 ${
+                          isLight
+                            ? 'border-teal-200 bg-teal-50 text-teal-700'
+                            : 'border-teal-500/30 bg-teal-500/10 text-teal-300'
+                        }`}>
+                          {tmpl.id}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">
+                            ARCH {tmpl.id} • {tmpl.level}
+                          </div>
+                          <h3 className={`text-base font-black truncate transition-colors ${
+                            isLight ? 'text-slate-900 group-hover:text-teal-700' : 'text-white group-hover:text-teal-300'
+                          }`}>
+                            {tmpl.name}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <span className={`text-[9.5px] font-mono font-extrabold px-2.5 py-1 rounded-full border uppercase shrink-0 ${
+                        isLight
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+                      }`}>
+                        {tmpl.family}
+                      </span>
+                    </div>
+
+                    {/* Purpose Description */}
+                    <p className={`text-xs leading-relaxed line-clamp-3 ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                      {tmpl.primaryPurpose}
+                    </p>
+
+                    {/* Target Scope / Examples */}
+                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                      <strong className={isLight ? 'text-slate-700' : 'text-slate-300'}>Target Systems:</strong> {tmpl.examples}
+                    </div>
+
+                    {/* KEY ARCHITECTURAL TIERS & COMPONENT PODS */}
+                    <div className="space-y-1.5 pt-2">
+                      <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                        <span>KEY ARCHITECTURAL TIERS &amp; PODS ({tmpl.keyComponents.length})</span>
+                        <span className="text-emerald-500 font-extrabold">100% CERTIFIED</span>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {tmpl.keyComponents.slice(0, 4).map((comp, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className={`flex items-center justify-between p-2.5 rounded-xl border text-xs font-semibold ${
+                              isLight
+                                ? 'bg-slate-50/80 border-slate-100 text-slate-700'
+                                : 'bg-slate-900/60 border-slate-800 text-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className={`w-5 h-5 rounded-md font-mono font-bold text-[10px] flex items-center justify-center shrink-0 ${
+                                isLight ? 'bg-teal-100 text-teal-800' : 'bg-teal-500/20 text-teal-300'
+                              }`}>
+                                0{cIdx + 1}
+                              </span>
+                              <span className="truncate">{comp}</span>
+                            </div>
+                            <span className={`text-[9.5px] font-mono shrink-0 px-2 py-0.5 rounded border ${
+                              isLight ? 'bg-white border-slate-200 text-slate-500' : 'bg-slate-950 border-slate-800 text-slate-400'
+                            }`}>
+                              Tier {cIdx + 1}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dual Action Buttons */}
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2.5">
+                    <button
+                      onClick={() => setActivePreviewBlueprint(tmpl)}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                        isLight
+                          ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                          : 'bg-slate-900 hover:bg-slate-800 border-slate-700 text-slate-200'
+                      }`}
+                    >
+                      <Eye className="w-3.5 h-3.5 text-teal-500" />
+                      <span>Preview Architecture</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleLaunchStudioWithBlueprint(tmpl)}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-md shadow-teal-500/20 cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Generate in DiaGen</span>
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* INTERACTIVE BLUEPRINT PREVIEW MODAL */}
+        {/* ========================================================================= */}
+        {activePreviewBlueprint && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+            <div className="bg-[#090D18] border border-slate-800 rounded-3xl w-full max-w-5xl h-[88vh] flex flex-col overflow-hidden shadow-2xl">
+              {/* Modal Header */}
+              <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold shrink-0">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base font-black text-white truncate">
+                        {activePreviewBlueprint.name}
+                      </h2>
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-teal-500/15 text-teal-300 border border-teal-500/30">
+                        #{activePreviewBlueprint.id}
+                      </span>
+                      <span className="text-[10px] font-mono text-slate-400 uppercase">
+                        {activePreviewBlueprint.family} ({activePreviewBlueprint.level})
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 truncate">
+                      {activePreviewBlueprint.primaryPurpose}
                     </p>
                   </div>
-
-                  {/* Search Filter */}
-                  <div className="relative w-full sm:w-64">
-                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      value={blueprintSearch}
-                      onChange={(e) => setBlueprintSearch(e.target.value)}
-                      placeholder="Search 50 blueprints..."
-                      className={`w-full text-xs rounded-xl pl-9 pr-3 py-2 border outline-none font-medium transition ${
-                        isLight
-                          ? 'bg-white border-slate-200 focus:border-teal-500 text-slate-900 placeholder-slate-400'
-                          : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
-                      }`}
-                    />
-                  </div>
                 </div>
 
-                {/* Family Categories Filter Pills */}
-                <div className="flex flex-wrap gap-1.5 pb-2">
-                  {CANONICAL_FAMILIES.map((fam) => (
-                    <button
-                      key={fam}
-                      onClick={() => setSelectedFamily(fam)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-extrabold transition cursor-pointer border ${
-                        selectedFamily === fam
-                          ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
-                          : isLight
-                          ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-600'
-                          : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
-                      }`}
-                    >
-                      {fam}
-                    </button>
-                  ))}
-                </div>
-
-                {/* ALL 50 BLUEPRINTS SCROLLABLE GRID */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 max-h-72 overflow-y-auto p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40">
-                  {filteredBlueprints.map((tmpl) => {
-                    const isSelected = selectedArchType === `canonical_${tmpl.id}` || selectedArchType === tmpl.id;
-                    return (
-                      <button
-                        key={tmpl.id}
-                        onClick={() => setSelectedArchType(`canonical_${tmpl.id}`)}
-                        className={`p-3 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between space-y-1.5 relative ${
-                          isSelected
-                            ? 'bg-teal-600 text-white border-teal-500 shadow-md shadow-teal-500/20 ring-2 ring-teal-400/40'
-                            : isLight
-                            ? 'bg-white hover:bg-slate-100/90 border-slate-200 text-slate-800 hover:border-slate-300'
-                            : 'bg-[#090D18] hover:bg-slate-800/90 border-slate-800 text-slate-200'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className={`text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                            isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
-                          }`}>
-                            #{tmpl.id}
-                          </span>
-                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
-                            isSelected ? 'bg-white/20 text-white' : 'bg-teal-500/10 text-teal-600 dark:text-teal-400'
-                          }`}>
-                            {tmpl.level}
-                          </span>
-                        </div>
-
-                        <div className="font-extrabold text-xs line-clamp-1">
-                          {tmpl.name}
-                        </div>
-
-                        <p className={`text-[10px] line-clamp-1 ${isSelected ? 'text-teal-100' : 'text-slate-400'}`}>
-                          {tmpl.primaryPurpose}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Form Fields: Grid 2 Columns */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-                {/* Left Form: Title & Scope */}
-                <div className="lg:col-span-7 space-y-6">
-                  {/* 1. Project Title */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-extrabold uppercase tracking-wider flex items-center justify-between ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      <span>1. System / Architecture Title</span>
-                      <span className="text-[10px] font-mono text-slate-400">Required</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={projectTitle}
-                      onChange={(e) => setProjectTitle(e.target.value)}
-                      placeholder="e.g. Autonomous Robotic Telesurgery Platform..."
-                      className={`w-full rounded-2xl p-3.5 text-xs font-bold border outline-none transition ${
-                        isLight
-                          ? 'bg-white border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
-                          : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
-                      }`}
-                    />
-                  </div>
-
-                  {/* 2. Business Context & Scope Prompt */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-extrabold uppercase tracking-wider flex items-center justify-between ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      <span>2. Business Context &amp; Architectural Scope Prompt</span>
-                      <span className="text-[10px] font-mono text-slate-400">AI Prompt Tailoring</span>
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={scopePrompt}
-                      onChange={(e) => setScopePrompt(e.target.value)}
-                      placeholder="Describe architectural requirements, data stores, API gateways, security perimeters, AI models, pipelines..."
-                      className={`w-full rounded-2xl p-3.5 text-xs font-medium border outline-none resize-none leading-relaxed transition ${
-                        isLight
-                          ? 'bg-white border-slate-300 focus:border-teal-500 text-slate-900 placeholder-slate-400'
-                          : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white placeholder-slate-500'
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {/* Right Form: Domain Flavor & Scenarios */}
-                <div className="lg:col-span-5 space-y-6">
-                  {/* Domain Selector */}
-                  <div className="space-y-2">
-                    <label className={`text-xs font-extrabold uppercase tracking-wider flex items-center justify-between ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      <span>3. Enterprise Domain Flavor</span>
-                      <span className="text-[10px] font-mono text-teal-500">Live Auto-Sync</span>
-                    </label>
-                    <select
-                      value={selectedDomain}
-                      onChange={(e) => setSelectedDomain(e.target.value)}
-                      className={`w-full rounded-2xl p-3.5 text-xs font-bold border outline-none transition cursor-pointer ${
-                        isLight
-                          ? 'bg-white border-slate-300 focus:border-teal-500 text-slate-900'
-                          : 'bg-[#090D18] border-slate-800 focus:border-teal-400 text-white'
-                      }`}
-                    >
-                      {DOMAIN_PRESETS.map((d) => (
-                        <option key={d.id} value={d.name}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Quick Load Architecture Scenarios */}
-                  <div className={`p-4 rounded-2xl border space-y-3 ${
-                    isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-[#090D18] border-slate-800'
-                  }`}>
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-3.5 h-3.5 text-amber-500" />
-                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                        Quick Load Architecture Scenarios:
-                      </span>
-                    </div>
-
-                    <div className="space-y-1.5">
-                      {QUICK_SCENARIOS.map((sc) => (
-                        <button
-                          key={sc.id}
-                          onClick={() => handleLoadScenario(sc)}
-                          className={`w-full text-left p-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between cursor-pointer border ${
-                            projectTitle === sc.title
-                              ? 'bg-teal-500/15 border-teal-500/40 text-teal-600 dark:text-teal-300'
-                              : isLight
-                              ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
-                              : 'bg-slate-900/60 hover:bg-slate-800 border-slate-800/80 text-slate-300'
-                          }`}
-                        >
-                          <span className="truncate">{sc.name}</span>
-                          <ChevronRight className="w-3.5 h-3.5 opacity-50 shrink-0" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* STEP 2: SELECTED BLUEPRINT SPECIFICATION & KEY COMPONENTS */}
-            <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-slate-800">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <span className="text-[11px] font-mono font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
-                    STEP 2 OF 2 · SELECTED BLUEPRINT SPECIFICATION &amp; KEY COMPONENTS
-                  </span>
-                  <h3 className={`text-base font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    {selectedBlueprintMeta.name} (#{selectedBlueprintMeta.id}) · <span className="text-teal-600 dark:text-teal-400">{selectedBlueprintMeta.family} ({selectedBlueprintMeta.level})</span>
-                  </h3>
-                </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    <span>100% Zero-Collision Calibrated</span>
-                  </span>
+                  <button
+                    onClick={() => handleLaunchStudioWithBlueprint(activePreviewBlueprint)}
+                    className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-md shadow-teal-500/20"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Open in DiaGen Studio</span>
+                  </button>
+
+                  <button
+                    onClick={() => setActivePreviewBlueprint(null)}
+                    className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer text-lg font-bold"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
 
-              {/* Purpose & Target Examples Card */}
-              <div className={`p-4 rounded-2xl border flex flex-col md:flex-row gap-4 ${
-                isLight ? 'bg-slate-100/70 border-slate-200' : 'bg-[#090D18] border-slate-800'
-              }`}>
-                <div className="flex-1 space-y-1">
-                  <span className="text-[10px] font-mono font-extrabold uppercase text-slate-400">Architectural Role &amp; Purpose</span>
-                  <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                    {selectedBlueprintMeta.primaryPurpose}
-                  </p>
-                </div>
-                <div className="md:w-80 space-y-1 md:border-l md:pl-4 border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] font-mono font-extrabold uppercase text-slate-400">Target Industry Examples</span>
-                  <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                    {selectedBlueprintMeta.examples}
-                  </p>
-                </div>
+              {/* Modal Body: Vector Canvas Preview */}
+              <div className="flex-1 overflow-hidden bg-white relative">
+                <DiagramViewerRenderSafe
+                  xml={activePreviewBlueprint.generateXml(selectedDomain)}
+                  theme={theme as any}
+                  zoomLevel={100}
+                />
               </div>
-
-              {/* Dynamic Key Component Pods */}
-              <div className="space-y-2 pt-2">
-                <span className="text-[10.5px] font-mono font-black uppercase tracking-wider text-slate-400">
-                  Key Component Pods in this Architecture Layout ({selectedBlueprintMeta.keyComponents.length})
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  {selectedBlueprintMeta.keyComponents.map((comp, compIdx) => (
-                    <div
-                      key={compIdx}
-                      className={`p-3.5 rounded-2xl border flex items-center justify-between gap-2.5 transition-all ${
-                        isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <span className="w-6 h-6 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 font-mono font-bold text-[11px] flex items-center justify-center shrink-0 border border-teal-500/20">
-                          {compIdx + 1}
-                        </span>
-                        <span className={`text-xs font-bold truncate ${isLight ? 'text-slate-800' : 'text-slate-200'}`}>
-                          {comp}
-                        </span>
-                      </div>
-                      <span className="text-[9px] font-mono text-emerald-500 font-bold shrink-0">
-                        AST Active
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* PRIMARY COMPILE & LAUNCH BUTTON */}
-            <div className="pt-4 flex items-center justify-end">
-              <button
-                onClick={handleLaunchStudio}
-                disabled={isGenerating}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-sm transition-all shadow-xl shadow-teal-500/20 flex items-center justify-center gap-3 cursor-pointer hover:scale-[1.02] disabled:opacity-50"
-              >
-                {isGenerating ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Compiling Architecture AST...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-5 h-5" />
-                    <span>Generate &amp; Open Architecture Studio</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
             </div>
           </div>
         )}
@@ -817,13 +727,13 @@ function DiaGenStudioContent() {
                         <LayoutGrid className="w-3.5 h-3.5 text-sky-500" />
                         <span>All 50 Canonical Blueprints</span>
                       </span>
-                      <Link
-                        href="/diablueprint"
-                        className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-0.5"
+                      <button
+                        onClick={() => setViewMode('catalog')}
+                        className="text-[10px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-0.5 cursor-pointer"
                       >
                         <span>Full Catalog</span>
                         <ArrowRight className="w-2.5 h-2.5" />
-                      </Link>
+                      </button>
                     </div>
 
                     <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
@@ -905,7 +815,7 @@ function DiaGenStudioContent() {
                       className="px-2.5 py-1 rounded-lg border text-xs font-bold flex items-center gap-1.5 cursor-pointer bg-slate-900/60 border-slate-800 text-slate-300 hover:text-white"
                       title="Copy Draw.io XML"
                     >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
                       <span>{copied ? 'Copied' : 'Copy'}</span>
                     </button>
 
