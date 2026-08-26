@@ -81,11 +81,11 @@ export default function DiagramViewerRenderSafe({
   const origin = typeof window !== 'undefined' ? window.location.origin : '';
   const scriptUrl = `${origin}/viewer-static.min.js`;
 
-  let containerDimensions = 'w-full h-full max-w-full';
+  let containerDimensions = 'w-full h-full min-h-[420px] max-w-full';
   if (aspectRatioId === '1:1') containerDimensions = 'w-full max-w-[950px] h-[980px]';
   else if (aspectRatioId === '9:16') containerDimensions = 'w-full max-w-[650px] h-[1180px]';
   else if (aspectRatioId === '4:3') containerDimensions = 'w-full max-w-[1350px] h-[1040px]';
-  else if (aspectRatioId === '21:9') containerDimensions = 'w-full h-full max-w-full';
+  else if (aspectRatioId === '21:9') containerDimensions = 'w-full h-full min-h-[420px] max-w-full';
 
   let customHeightStyle: React.CSSProperties | undefined;
   if (aspectRatioId === 'custom' && customW > 0 && customH > 0) {
@@ -96,6 +96,7 @@ export default function DiagramViewerRenderSafe({
 
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
+    minHeight: '420px',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
       : {}),
@@ -116,6 +117,7 @@ export default function DiagramViewerRenderSafe({
 <html>
 <head>
 <meta charset="utf-8">
+${origin ? `<base href="${origin}/">` : ''}
 <style>
   html, body { margin:0; padding:0; width:100%; height:100%; background:${bgColor}; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
   .canvas-container { position:absolute; inset:0; padding:4px; box-sizing:border-box; overflow:hidden; background:${bgColor}; display:flex; align-items:center; justify-content:center; }
@@ -237,12 +239,33 @@ export default function DiagramViewerRenderSafe({
     if (document.getElementById('mxgraph-script-element')) return;
     const script = document.createElement('script');
     script.id = 'mxgraph-script-element';
-    script.src = ${JSON.stringify(scriptUrl)};
+    
+    var originUrl = ${JSON.stringify(origin)};
+    if (!originUrl && typeof window !== 'undefined') {
+      try {
+        if (window.location && window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('about:')) {
+          originUrl = window.location.origin;
+        } else if (window.parent && window.parent.location && window.parent.location.origin && window.parent.location.origin !== 'null') {
+          originUrl = window.parent.location.origin;
+        }
+      } catch(e) {}
+    }
+    var fullScriptUrl = (originUrl ? originUrl.replace(/\/$/, '') : '') + '/viewer-static.min.js';
+    script.src = fullScriptUrl;
     script.onload = function() {
+      if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
+        try { window.GraphViewer.processElements(); } catch(e) {}
+      }
       requestAnimationFrame(finishPresentation);
-      [80, 180, 420, 900, 1600].forEach(function(ms) { setTimeout(finishPresentation, ms); });
+      [60, 150, 350, 800, 1500].forEach(function(ms) { setTimeout(finishPresentation, ms); });
     };
-    script.onerror = function() { console.error('[PromptCanvas] Draw.io viewer script failed to load'); };
+    script.onerror = function(e) {
+      console.warn('[PromptCanvas] Retrying viewer script load from root path...', e);
+      if (!script.getAttribute('data-retried')) {
+        script.setAttribute('data-retried', 'true');
+        script.src = '/viewer-static.min.js';
+      }
+    };
     document.body.appendChild(script);
   }
 

@@ -2712,11 +2712,12 @@ function DocGenContent() {
                   </div>
 
                   {/* Interactive Live Diagram Viewport */}
-                  <div className="p-3 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[460px] max-h-[580px] overflow-hidden">
+                  <div className="p-3 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[480px] h-[520px] max-h-[580px] overflow-hidden">
                     {studioMode === 'diagrams' ? (
-                      <div className="w-full h-full flex items-center justify-center aspect-[16/9] max-h-[520px]">
+                      <div className="w-full h-full flex items-center justify-center aspect-[16/9] min-h-[460px]">
                         <DiagramViewerRenderSafe
                           diagramId={selectedDiagramTemplateId}
+                          diagramType={`canonical_${selectedDiagramTemplateId || '01'}`}
                           xml={liveStudioDiagramXml}
                           aspectRatioId="16:9"
                           bgTheme={isLight ? 'light' : 'dark'}
