@@ -1182,9 +1182,8 @@ export default function GuidePage() {
                     <div className="w-full h-full bg-white dark:bg-[#070A13] flex items-center justify-center relative">
                       <DiagramViewerRenderSafe
                         xml={activeCanonicalXml}
-                        containerDimensions={{ width: isMaximized ? 1400 : 880, height: isMaximized ? 620 : 440 }}
-                        aspectRatio="16:9"
-                        theme={isLight ? 'light' : 'dark'}
+                        aspectRatioId="16:9"
+                        bgTheme={isLight ? 'light' : 'dark'}
                       />
                     </div>
                   ) : (

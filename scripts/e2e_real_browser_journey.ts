@@ -23,9 +23,9 @@ async function testRealBrowser() {
   await page.setViewport({ width: 1600, height: 960 });
 
   const errors: string[] = [];
-  page.on('pageerror', (err) => {
-    console.error('  ⚠️ [Browser Page Error Stack]:', err.stack || err.message);
-    errors.push(err.stack || err.message);
+  page.on('pageerror', (err: any) => {
+    console.error('  ⚠️ [Browser Page Error Stack]:', err?.stack || err?.message || String(err));
+    errors.push(err?.stack || err?.message || String(err));
   });
   page.on('console', (msg) => {
     if (msg.type() === 'error') {

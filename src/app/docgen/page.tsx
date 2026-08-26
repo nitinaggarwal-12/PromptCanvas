@@ -2837,7 +2837,7 @@ function DocGenContent() {
                               <span className="text-[10px] font-mono text-slate-400">{activeMeta.shortName} Governance</span>
                             </h4>
                             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10.5px]">
-                              {activeMeta.id === 'stride' ? (
+                              {(activeMeta.id as string) === 'threat_model' || (activeMeta.id as string) === 'stride' ? (
                                 <div className="space-y-1 font-mono text-[10px]">
                                   <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
                                     <span>THREAT VECTOR</span>
@@ -3005,7 +3005,7 @@ function DocGenContent() {
                                     <span className="text-indigo-600 font-bold">Cloud CDN Cache Shield</span>
                                   </div>
                                 </div>
-                              ) : activeMeta.id === 'grc' ? (
+                              ) : (activeMeta.id as string) === 'grc' || (activeMeta.id as string) === 'security_package' ? (
                                 <div className="space-y-1 font-mono text-[10px]">
                                   <div className="flex justify-between border-b pb-1 text-slate-400 font-bold">
                                     <span>COMPLIANCE STANDARD</span>

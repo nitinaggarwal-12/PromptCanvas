@@ -52,8 +52,8 @@ async function runDeepScan() {
   await page.setViewport({ width: 1600, height: 960 });
 
   const loggedErrors: { url: string; error: string }[] = [];
-  page.on('pageerror', (err) => {
-    loggedErrors.push({ url: page.url(), error: `[PageError] ${err.message}` });
+  page.on('pageerror', (err: any) => {
+    loggedErrors.push({ url: page.url(), error: `[PageError] ${err?.message || String(err)}` });
   });
   page.on('console', (msg) => {
     if (msg.type() === 'error') {

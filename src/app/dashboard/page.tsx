@@ -50,7 +50,7 @@ import {
   DOMAIN_PRESETS,
   CanonicalTemplate
 } from '@/lib/canonical/canonicalTemplates';
-import { DOC_ARCHETYPES_META, ARCHETYPE_REGISTRY, DocArchetypeMeta } from '@/lib/compose/archetypes';
+import { DOC_ARCHETYPES_META, ARCHETYPE_REGISTRY, DocArchetypeMeta, BlueprintSlot } from '@/lib/compose/archetypes';
 import { loadAllHistoricalProjects, clearAllHistoricalProjects, HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 
 interface DiagramVersion {
@@ -137,6 +137,14 @@ function DashboardContent() {
     };
   }, [docProjects]);
 
+  const getArchetypeTitle = (archId: string) => {
+    return DOC_ARCHETYPES_META.find((a) => a.id === archId)?.name || archId;
+  };
+
+  const getDomainName = (domId: string) => {
+    return DOMAIN_PRESETS.find((d) => d.id === domId)?.name || domId;
+  };
+
   // Filtered Canonical Blueprints
   const filteredBlueprints = useMemo(() => {
     return CANONICAL_TEMPLATES.filter((tpl) => {
@@ -144,7 +152,6 @@ function DashboardContent() {
       const matchesSearch =
         q === '' ||
         tpl.name.toLowerCase().includes(q) ||
-        tpl.description.toLowerCase().includes(q) ||
         tpl.family.toLowerCase().includes(q) ||
         tpl.id.includes(q);
 
@@ -160,12 +167,14 @@ function DashboardContent() {
   const filteredDocuments = useMemo(() => {
     return docProjects.filter((p) => {
       const q = searchQuery.trim().toLowerCase();
+      const archTitle = getArchetypeTitle(p.archetypeId);
+      const domName = getDomainName(p.domainId);
       const matchesSearch =
         q === '' ||
         p.title.toLowerCase().includes(q) ||
-        p.archetypeTitle.toLowerCase().includes(q) ||
-        p.domainName.toLowerCase().includes(q) ||
-        (p.scopePrompt && p.scopePrompt.toLowerCase().includes(q));
+        archTitle.toLowerCase().includes(q) ||
+        domName.toLowerCase().includes(q) ||
+        (p.scopeSummary && p.scopeSummary.toLowerCase().includes(q));
 
       const matchesDomain = selectedDomain === 'All' || p.domainId === selectedDomain;
 
@@ -187,14 +196,14 @@ function DashboardContent() {
 
     // Collect from doc projects
     docProjects.forEach((doc) => {
-      if (doc.scopePrompt) {
+      if (doc.scopeSummary) {
         items.push({
           id: `doc_${doc.id}`,
           title: doc.title,
-          prompt: doc.scopePrompt,
+          prompt: doc.scopeSummary,
           version: doc.docVersion || 'v1.0',
           date: doc.lastUpdated || new Date().toISOString(),
-          domainOrFamily: doc.domainName || doc.archetypeTitle,
+          domainOrFamily: getDomainName(doc.domainId) || getArchetypeTitle(doc.archetypeId),
           recordRef: doc
         });
       }
@@ -539,7 +548,7 @@ function DashboardContent() {
                             </span>
                           </div>
                           <p className="text-[10.5px] text-slate-400 truncate mt-0.5">
-                            {p.archetypeTitle} · {p.domainName}
+                            {getArchetypeTitle(p.archetypeId)} · {getDomainName(p.domainId)}
                           </p>
                         </div>
                         <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
@@ -603,7 +612,7 @@ function DashboardContent() {
                       </h3>
 
                       <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                        {tpl.description}
+                        {tpl.family} architecture blueprint with zero collision layout.
                       </p>
 
                       <div className="text-[10px] font-mono text-slate-400 flex items-center gap-1.5">
@@ -661,7 +670,7 @@ function DashboardContent() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 border border-emerald-500/30">
-                          {doc.archetypeTitle}
+                          {getArchetypeTitle(doc.archetypeId)}
                         </span>
                         <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-400">
                           {doc.docVersion} · {doc.snapshotCount || 1} Snapshots
@@ -673,11 +682,11 @@ function DashboardContent() {
                       </h3>
 
                       <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
-                        {doc.scopePrompt || 'Production-grade engineering specification document with attached blueprint slots.'}
+                        {doc.scopeSummary || 'Production-grade engineering specification document with attached blueprint slots.'}
                       </p>
 
                       <div className="text-[10px] font-mono text-indigo-400">
-                        🏷️ Domain: {doc.domainName}
+                        🏷️ Domain: {getDomainName(doc.domainId)}
                       </div>
                     </div>
 
@@ -829,8 +838,7 @@ function DashboardContent() {
               <div className="flex-1 bg-white relative overflow-hidden">
                 <DiagramViewerRenderSafe
                   xml={inspectBlueprint.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark')}
-                  theme={theme as any}
-                  zoomLevel={100}
+                  bgTheme={isLight ? 'light' : 'dark'}
                 />
               </div>
             </div>
@@ -851,7 +859,7 @@ function DashboardContent() {
                   <div>
                     <h3 className="text-base font-black text-white">{inspectDoc.title}</h3>
                     <p className="text-xs text-slate-400">
-                      {inspectDoc.archetypeTitle} · {inspectDoc.domainName} · {inspectDoc.docVersion}
+                      {getArchetypeTitle(inspectDoc.archetypeId)} · {getDomainName(inspectDoc.domainId)} · {inspectDoc.docVersion}
                     </p>
                   </div>
                 </div>
@@ -880,7 +888,7 @@ function DashboardContent() {
                     Architectural Scope Prompt:
                   </span>
                   <p className="leading-relaxed font-sans text-xs text-slate-300">
-                    {inspectDoc.scopePrompt}
+                    {inspectDoc.scopeSummary}
                   </p>
                 </div>
 
@@ -889,7 +897,7 @@ function DashboardContent() {
                     Attached Canonical Blueprint Slots:
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                    {inspectDoc.blueprintSlots?.map((slot, sIdx) => (
+                    {DOC_ARCHETYPES_META.find((a) => a.id === inspectDoc.archetypeId)?.blueprintPack?.map((slot: BlueprintSlot, sIdx: number) => (
                       <div key={sIdx} className="p-2.5 rounded-xl border border-slate-800 bg-slate-950 font-sans text-xs flex items-center justify-between">
                         <span className="truncate">{slot.slotTitle}</span>
                         <span className="text-teal-400 font-mono font-bold text-[10px] shrink-0">

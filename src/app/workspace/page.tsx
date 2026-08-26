@@ -1193,13 +1193,14 @@ function WorkspaceContent() {
         setSelectedArchType(`canonical_${canonicalMatch.id}`);
         let resolvedXml = '';
         try {
-          const rawXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
+          const isL = canvasTheme !== 'dark';
+          const rawXml = canonicalMatch.generateXml(domainParam || 'biopharma', isL ? 'light' : 'dark');
           const flavored = injectDomainFlavorXml(rawXml, domainParam || 'biopharma');
           resolvedXml = (titleParam || promptParam)
-            ? injectUseCaseFlavor(flavored, titleParam || canonicalMatch.name, promptParam)
+            ? injectUseCaseFlavor(flavored, titleParam || canonicalMatch.name, promptParam || undefined)
             : flavored;
         } catch {
-          resolvedXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
+          resolvedXml = canonicalMatch.generateXml(domainParam || 'biopharma', canvasTheme !== 'dark' ? 'light' : 'dark');
         }
         activeXmlRef.current = resolvedXml;
         setCustomXml(resolvedXml);
@@ -1213,6 +1214,8 @@ function WorkspaceContent() {
           xml_content: resolvedXml,
           versions: [{
             id: `canonical_ver_${canonicalMatch.id}`,
+            diagram_id: canonicalMatch.id,
+            created_by: 'system',
             version_number: 1,
             xml_content: resolvedXml,
             created_at: new Date().toISOString(),
@@ -1587,7 +1590,7 @@ function WorkspaceContent() {
       (c) => c.id === id || c.id === id.padStart(2, '0') || id === `canonical_${c.id}` || id === `canonical_${c.id.padStart(2, '0')}`
     );
     if (canonicalMatch) {
-      const xml = canonicalMatch.generateXml('biopharma', isLight ? 'light' : 'dark');
+      const xml = canonicalMatch.generateXml('biopharma', canvasTheme !== 'dark' ? 'light' : 'dark');
       activeXmlRef.current = xml;
       setCustomXml(xml);
       const syntheticDiagram: Diagram = {
@@ -1599,6 +1602,8 @@ function WorkspaceContent() {
         xml_content: xml,
         versions: [{
           id: `canonical_ver_${canonicalMatch.id}`,
+          diagram_id: canonicalMatch.id,
+          created_by: 'system',
           version_number: 1,
           xml_content: xml,
           created_at: new Date().toISOString(),
@@ -3786,7 +3791,7 @@ function WorkspaceContent() {
         name: t.name,
         isCanonical: true,
         family: t.family,
-        xml: t.xml
+        xml: t.generateXml('biopharma', canvasTheme === 'light' ? 'light' : 'dark')
       })),
       ...diagrams.map(d => ({
         id: d.id,
@@ -3939,17 +3944,20 @@ function WorkspaceContent() {
                       if (d.isCanonical) {
                         const can = CANONICAL_TEMPLATES.find(c => c.id === d.id);
                         if (can) {
+                          const canXml = can.generateXml('biopharma', canvasTheme === 'light' ? 'light' : 'dark');
                           setActiveDiagram({
                             id: can.id,
                             name: can.name,
                             created_at: new Date().toISOString(),
                             updated_at: new Date().toISOString(),
                             architecture_type: can.id,
-                            xml_content: can.xml,
+                            xml_content: canXml,
                             versions: [{
                               id: `canonical_ver_${can.id}`,
+                              diagram_id: can.id,
+                              created_by: 'system',
                               version_number: 1,
-                              xml_content: can.xml,
+                              xml_content: canXml,
                               created_at: new Date().toISOString(),
                               comment: 'Ground-Truth Blueprint'
                             }]
