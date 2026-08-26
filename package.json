@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && npm run validate:canvas && NODE_OPTIONS=--max-old-space-size=4096 next build",
+    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && npm run validate:canvas && npm run test:docgen:master && NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "next start",
     "lint": "eslint",
     "validate": "tsx bin/validate-cli.ts",
