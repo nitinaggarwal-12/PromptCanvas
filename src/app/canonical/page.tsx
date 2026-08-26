@@ -289,7 +289,16 @@ function CanonicalContent() {
                 </select>
               </div>
 
-              {/* Quick Links */}
+              {/* Quick Links & Launch Studio */}
+              <Link
+                href="/workspace?new=true"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
+                title="Launch Studio"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Launch Studio</span>
+              </Link>
+
               <Link
                 href="/docgen"
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs shrink-0"
