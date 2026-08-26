@@ -1644,15 +1644,26 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
         .replace(/Cloud Spanner/g, 'Amazon DynamoDB Global Tables')
         .replace(/Vertex AI/g, 'Amazon Bedrock &amp; SageMaker')
         .replace(/Cloud Logging/g, 'Amazon CloudWatch');
-    } else if (promptLowerFull.includes('azure')) {
+    } else if (promptLowerFull.includes('azure') || promptLowerFull.includes('aks')) {
       updatedXml = updatedXml
         .replace(/Google Cloud Platform \(GCP\)/g, 'Microsoft Azure Enterprise Cloud')
+        .replace(/Google Cloud Platform/g, 'Microsoft Azure Enterprise Cloud')
+        .replace(/Google Cloud/g, 'Microsoft Azure')
         .replace(/GCP/g, 'Azure')
-        .replace(/Cloud Pub\/Sub/g, 'Azure Event Hubs &amp; IoT Hub')
-        .replace(/Cloud KMS/g, 'Azure Key Vault')
+        .replace(/Cloud Pub\/Sub/g, 'Azure Event Hubs &amp; Service Bus')
+        .replace(/Pub\/Sub/g, 'Azure Service Bus / Event Grid')
+        .replace(/Cloud KMS/g, 'Azure Key Vault &amp; Managed HSM')
         .replace(/Cloud Run/g, 'Azure Container Apps')
-        .replace(/BigQuery/g, 'Azure Synapse Analytics')
-        .replace(/Cloud Storage/g, 'Azure Blob Storage');
+        .replace(/GKE Autopilot/g, 'Azure Kubernetes Service (AKS)')
+        .replace(/GKE/g, 'AKS')
+        .replace(/BigQuery/g, 'Azure Synapse Analytics &amp; Microsoft Fabric')
+        .replace(/Cloud Storage/g, 'Azure Blob Storage (ADLS Gen2)')
+        .replace(/Cloud Armor/g, 'Azure Front Door &amp; WAF')
+        .replace(/Cloud Functions/g, 'Azure Functions')
+        .replace(/Cloud SQL/g, 'Azure Database for PostgreSQL (Flexible)')
+        .replace(/Cloud Spanner/g, 'Azure Cosmos DB (Multi-Region Active-Active)')
+        .replace(/Vertex AI/g, 'Azure OpenAI Service &amp; AI Search')
+        .replace(/Cloud Logging/g, 'Azure Monitor &amp; Log Analytics');
     } else if (promptLowerFull.includes('oracle') || promptLowerFull.includes('oci')) {
       updatedXml = updatedXml
         .replace(/Google Cloud Platform \(GCP\)/g, 'Oracle Cloud Infrastructure (OCI)')
