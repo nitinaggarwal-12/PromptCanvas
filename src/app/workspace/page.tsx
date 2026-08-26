@@ -616,16 +616,31 @@ function WorkspaceContent() {
     const prompt = String(activeVersion?.prompt || activeDiagram?.prompt || '').toLowerCase();
     const xml = String(activeVersion?.xml_content || '').toLowerCase();
     const archType = String(activeDiagram?.architecture_type || '').toLowerCase();
-    const combo = `${name} ${prompt} ${xml} ${archType}`;
+    const textCombo = `${name} ${prompt} ${archType}`;
+    const combo = `${textCombo} ${xml}`;
 
-    const isBanking = combo.includes('bank') || combo.includes('fintech') || combo.includes('payment') || combo.includes('card') || combo.includes('ledger') || combo.includes('atm');
-    const isECom = combo.includes('ecom') || combo.includes('store') || combo.includes('shop') || combo.includes('cart') || combo.includes('order') || combo.includes('retail');
-    const isInsurance = combo.includes('insurance') || combo.includes('claim') || combo.includes('policy') || combo.includes('underwrite');
-    const isHealthcare = combo.includes('health') || combo.includes('clinical') || combo.includes('medical') || combo.includes('patient');
-    const isAi = combo.includes('rag') || combo.includes('agent') || combo.includes('vector') || combo.includes('llm') || combo.includes('embedding');
+    const isRoboticsOcean = textCombo.includes('auv') || textCombo.includes('subsea') || textCombo.includes('ocean') || textCombo.includes('marine') || textCombo.includes('maritime') || textCombo.includes('sonar') || textCombo.includes('bathymetry') || textCombo.includes('drone') || textCombo.includes('robot') || textCombo.includes('telemetry') || textCombo.includes('acoustic') || textCombo.includes('vehicle') || textCombo.includes('satellite') || textCombo.includes('sensor') || textCombo.includes('lidar');
+    const isBanking = textCombo.includes('bank') || textCombo.includes('fintech') || textCombo.includes('payment') || textCombo.includes('credit card') || textCombo.includes('ledger') || textCombo.includes('atm') || textCombo.includes('iso 20022') || textCombo.includes('pci') || textCombo.includes('swift') || textCombo.includes('trading') || textCombo.includes('wallet');
+    const isECom = textCombo.includes('ecom') || textCombo.includes('store') || textCombo.includes('shop') || textCombo.includes('cart') || textCombo.includes('order') || textCombo.includes('retail');
+    const isInsurance = textCombo.includes('insurance') || textCombo.includes('claim') || textCombo.includes('policy') || textCombo.includes('underwrite');
+    const isHealthcare = textCombo.includes('health') || textCombo.includes('clinical') || textCombo.includes('medical') || textCombo.includes('patient') || textCombo.includes('biopharma') || textCombo.includes('fhir');
+    const isAi = textCombo.includes('rag') || textCombo.includes('agent') || textCombo.includes('vector') || textCombo.includes('llm') || textCombo.includes('embedding');
     
-    const isErd = archType === 'erd' || combo.includes('erd') || combo.includes('dimensional');
-    const isSeq = archType.includes('sequence') || combo.includes('sequence');
+    const isErd = archType === 'erd' || textCombo.includes('erd') || (archType === 'unified_system_view' && !isRoboticsOcean);
+    const isSeq = archType.includes('sequence') || textCombo.includes('sequence');
+
+    // 0. Robotics / Subsea / Ocean / Telemetry Domain
+    if (isRoboticsOcean) {
+      return {
+        suggestions: [
+          'Add Dim_Sonar_Ping & Fact_Doppler_Velocity tables',
+          'Enforce NOAA & IHO S-44 Hydrographic Precision Standards',
+          'Add Real-Time Acoustic Modem Mesh Relay Nodes',
+          'Configure Dynamic Geo-Fencing & Failsafe Auto-Return'
+        ],
+        dynamicPlaceholder: 'e.g., Add Doppler Velocity Log (DVL) real-time Kalman filtering node...'
+      };
+    }
 
     // 1. Banking / FinTech Domain
     if (isBanking) {

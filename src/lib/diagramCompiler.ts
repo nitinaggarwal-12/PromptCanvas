@@ -2751,9 +2751,9 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
           <mxGeometry x="15" y="15" width="1890" height="60" as="geometry" />
         </mxCell>
 
-        <!-- Top Main Label across phases -->
-        <mxCell id="top_main_lbl_uv" value="&lt;b style='font-size:13px;color:#1E293B;'&gt;End-to-End Enterprise Architecture across major phases&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
-          <mxGeometry x="400" y="70" width="1120" height="20" as="geometry" />
+        <!-- Top Main Label placeholder -->
+        <mxCell id="top_main_lbl_uv" value="" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="400" y="70" width="1120" height="0" as="geometry" />
         </mxCell>
 
         <!-- 2. Swimlane 1: PLAN & DATA FOUNDATION -->
