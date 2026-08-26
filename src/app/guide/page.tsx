@@ -735,28 +735,6 @@ export default function GuidePage() {
 
             {/* Right: Hub Links & Action */}
             <div className="flex items-center gap-2.5 shrink-0">
-              <Link
-                href="/canonical"
-                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                }`}
-                title="Canonical Blueprints Hub"
-              >
-                <span>Canonical Hub</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
-              </Link>
-
-              <Link
-                href="/docgen"
-                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-                  isLight ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                }`}
-                title="DocGen Studio & Specifications"
-              >
-                <span>DocGen Hub</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
-              </Link>
-
               <ThemeToggleBtn id="guide-theme-toggle-btn" />
 
               <Link

@@ -279,16 +279,6 @@ function DashboardContent() {
             </button>
 
             <Link
-              href="/canonical"
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition ${
-                isLight ? 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-sky-500" />
-              <span>Canonical Hub (50)</span>
-            </Link>
-
-            <Link
               href="/docgen?tab=studio"
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer"
             >

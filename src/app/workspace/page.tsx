@@ -6791,28 +6791,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
 
               {/* Group 3: Right - Consolidated Action Hub */}
               <div className="flex items-center gap-2 shrink-0 min-w-0">
-                <Link
-                  href="/canonical"
-                  className={`hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-                    canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                  }`}
-                  title="Canonical Blueprints Hub"
-                >
-                  <span>Canonical Hub</span>
-                  <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-600 dark:text-sky-400">50</span>
-                </Link>
-
-                <Link
-                  href="/docgen"
-                  className={`hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
-                    canvasTheme === 'light' ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-                  }`}
-                  title="DocGen Studio & Specifications"
-                >
-                  <span>DocGen Hub</span>
-                  <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 font-mono font-bold text-indigo-600 dark:text-indigo-400">17</span>
-                </Link>
-                
                 {/* ☀️ / 🌙 Theme Toggle Button */}
                 <button
                   type="button"
@@ -6843,20 +6821,6 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                     </>
                   )}
                 </button>
-
-                {/* 🎬 Interactive Guide & GIFs Link */}
-                <Link
-                  href="/guide"
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-sm cursor-pointer shrink-0 ${
-                    canvasTheme === 'light'
-                      ? 'bg-teal-50 hover:bg-teal-100 border-teal-300 text-teal-950'
-                      : 'border-teal-400/50 bg-teal-500/15 hover:bg-teal-500/25 text-teal-200'
-                  }`}
-                  title="Watch Interactive Persona Workflows & Video Guide"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-                  <span>Guide &amp; GIFs</span>
-                </Link>
 
                 <AccessRequestsInbox user={currentUser} />
                 {activeDiagram && (

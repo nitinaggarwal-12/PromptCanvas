@@ -1799,25 +1799,6 @@ function DocGenContent() {
                 <span className="hidden sm:inline">Project History</span>
               </button>
 
-              <Link
-                href="/canonical"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                title="Canonical Blueprints Hub"
-              >
-                <Layers className="w-3.5 h-3.5 text-sky-500" />
-                <span className="hidden sm:inline">Canonical Hub</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
-              </Link>
-
-              <Link
-                href="/workspace"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                title="Design Canvas Workspace"
-              >
-                <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
-                <span className="hidden sm:inline">Workspace</span>
-              </Link>
-
               <ThemeToggleBtn id="docgen-theme-toggle-btn" />
             </div>
           </div>
