@@ -2152,7 +2152,7 @@ function DocGenContent() {
                   }`}
                 >
                   <Network className="w-3.5 h-3.5" />
-                  <span>🎨 Diagrams</span>
+                  <span>Diagrams</span>
                 </button>
                 <button
                   type="button"
@@ -2167,7 +2167,7 @@ function DocGenContent() {
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
-                  <span>📄 Documents</span>
+                  <span>Documents</span>
                 </button>
                 <button
                   type="button"
@@ -2182,7 +2182,7 @@ function DocGenContent() {
                   }`}
                 >
                   <Zap className="w-3.5 h-3.5" />
-                  <span>⚡ Both (Unified)</span>
+                  <span>Both (Unified)</span>
                 </button>
               </div>
             </div>

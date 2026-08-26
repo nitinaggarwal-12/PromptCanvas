@@ -46,9 +46,11 @@ export default function DiagramViewerRenderSafe({
   diagramType,
   isLiveFlow = false,
 }: DiagramViewerRenderSafeProps) {
+  const [mounted, setMounted] = React.useState(false);
   const [isCompactViewport, setIsCompactViewport] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
     document.body.classList.add('pc-diagram-viewer-active');
     const widthQuery = window.matchMedia('(max-width: 1280px)');
     const pointerQuery = window.matchMedia('(pointer: coarse)');
@@ -279,6 +281,20 @@ ${origin ? `<base href="${origin}/">` : ''}
   const containerBgClass = bgTheme === 'light'
     ? 'bg-white border-slate-300 shadow-xl'
     : 'bg-[#0F172A] border-panel-border/20 shadow-2xl';
+
+  if (!mounted) {
+    return (
+      <div
+        style={responsiveFrameStyle}
+        className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto flex items-center justify-center`}
+      >
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <div className="w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin" />
+          <span>Rendering Architecture Blueprint...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <DiagramErrorBoundary fallbackXml={sanitizedXml}>
