@@ -116,6 +116,17 @@ import {
   changeSectionHierarchy,
 } from '@/lib/versioning/docSectionEngine';
 
+export const DIAGRAM_FAMILY_PRESETS = [
+  { id: 'all', label: 'All 50 Blueprints', icon: '⚡' },
+  { id: 'structure', label: 'Structure & Containers', icon: '🏛️' },
+  { id: 'flow', label: 'Flow & Sequences', icon: '🔄' },
+  { id: 'infrastructure', label: 'Cloud & Network', icon: '☁️' },
+  { id: 'data', label: 'Data Mesh & ETL', icon: '🗄️' },
+  { id: 'ai', label: 'Vertex & Agentic AI', icon: '🧠' },
+  { id: 'security', label: 'Security & Zero-Trust', icon: '🛡️' },
+  { id: 'business', label: 'Value Stream & Capability', icon: '📊' },
+];
+
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
   
@@ -498,15 +509,48 @@ function DocGenContent() {
     'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
   );
 
-  // Studio Scope Mode: 'both' | 'diagrams' | 'documents'
+  // Studio Scope Mode: 'both' | 'diagrams' | 'documents' (Defaults to 'diagrams')
   const modeParam = searchParams.get('mode');
   const [studioMode, setStudioMode] = useState<'both' | 'diagrams' | 'documents'>(() => {
     if (modeParam === 'diagrams' || modeParam === 'documents' || modeParam === 'both') {
       return modeParam;
     }
-    return 'both';
+    return 'diagrams';
   });
   const [activeDiagramSlotIndex, setActiveDiagramSlotIndex] = useState<number>(0);
+  const [selectedDiagramFamily, setSelectedDiagramFamily] = useState<string>('all');
+  const [selectedDiagramTemplateId, setSelectedDiagramTemplateId] = useState<string>('01');
+  const [diagramSlotsCount, setDiagramSlotsCount] = useState<number>(1);
+  const [diagramSlotsList, setDiagramSlotsList] = useState<Array<{ id: number; title: string; templateId: string; description: string }>>([
+    { id: 1, title: 'Primary Architecture Topology', templateId: '01', description: 'System boundaries, external actors, and high-level core services.' },
+  ]);
+
+  const handleSetDiagramSlotsCount = (count: number) => {
+    setDiagramSlotsCount(count);
+    if (count === 1) {
+      setDiagramSlotsList([
+        { id: 1, title: 'Primary Architecture Topology', templateId: selectedDiagramTemplateId || '01', description: 'System boundaries, external actors, and core topology.' },
+      ]);
+    } else if (count === 2) {
+      setDiagramSlotsList([
+        { id: 1, title: 'System Context & Boundary', templateId: '01', description: 'Executive system context and external ecosystem integrations.' },
+        { id: 2, title: 'Component & Container Architecture', templateId: '08', description: 'Microservices containers, APIs, and data storage subsystems.' },
+      ]);
+    } else if (count === 3) {
+      setDiagramSlotsList([
+        { id: 1, title: 'System Context & Ingestion', templateId: '01', description: 'Client gateways, telemetry ingestion, and external APIs.' },
+        { id: 2, title: 'Microservices & Event Mesh', templateId: '12', description: 'Asynchronous event mesh, saga orchestration, and service mesh.' },
+        { id: 3, title: 'Compute & Cloud Deployment', templateId: '16', description: 'GKE clusters, Spanner multi-region databases, and VPC networks.' },
+      ]);
+    } else if (count === 4) {
+      setDiagramSlotsList([
+        { id: 1, title: 'System Context & Actors', templateId: '01', description: 'Overall system boundary and partner ecosystem.' },
+        { id: 2, title: 'Component & Subsystem Topology', templateId: '08', description: 'Container microservices and application runtime.' },
+        { id: 3, title: 'Real-Time Data Pipelines & CDC', templateId: '03', description: 'Kafka/PubSub streaming, Dataproc, and BigQuery analytics.' },
+        { id: 4, title: 'Zero-Trust Security & Network', templateId: '15', description: 'VPC Service Perimeters, Cloud Armor, and IAM roles.' },
+      ]);
+    }
+  };
 
   // Blueprint Slot customization state
   const [slotCustomizations, setSlotCustomizations] = useState<Record<number, { templateId: string; isCustom: boolean; customPrompt?: string }>>({});
@@ -1860,37 +1904,104 @@ function DocGenContent() {
           <div className="flex-1 min-w-0 space-y-1">
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-                <Zap className="w-3 h-3 text-sky-500" />
-                Multi-Blueprint Enterprise Document Engine
+                {studioMode === 'diagrams' ? (
+                  <>
+                    <Network className="w-3 h-3 text-teal-500" />
+                    <span>Canonical Architecture Diagram Engine</span>
+                  </>
+                ) : studioMode === 'documents' ? (
+                  <>
+                    <FileText className="w-3 h-3 text-sky-500" />
+                    <span>Enterprise Specification &amp; Document Engine</span>
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-3 h-3 text-indigo-500" />
+                    <span>Multi-Blueprint Enterprise Document &amp; Diagram Engine</span>
+                  </>
+                )}
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
-              Architectural Grammar for{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
-                Production-Ready Enterprise Docs
-              </span>
+              {studioMode === 'diagrams' ? (
+                <>
+                  Canonical Architectural Grammar for{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-sky-500 to-indigo-500">
+                    High-Fidelity Cloud Topologies
+                  </span>
+                </>
+              ) : (
+                <>
+                  Architectural Grammar for{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
+                    Production-Ready Enterprise Docs
+                  </span>
+                </>
+              )}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-2xl line-clamp-1">
-              Synthesize 17 production document goals, attach canonical blueprint packs, and export publication-ready Word (.docx) and PDF documents.
+              {studioMode === 'diagrams'
+                ? 'Synthesize 50 canonical 16:9 widescreen cloud architectures, agentic meshes, and microservice topologies with 100% collision-free geometry.'
+                : studioMode === 'documents'
+                ? 'Synthesize 17 production document specifications (BRD, PRD, SDD, TDD, STRIDE, GRC) with full section controls and Word export.'
+                : 'Synthesize 17 production document goals, attach canonical blueprint packs, and export publication-ready Word and diagrams.'}
             </p>
           </div>
 
           {/* Compact Stats Pill Strip */}
           <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-sky-500">17</div>
-              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
-            </div>
-            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
-              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
-            </div>
-            <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-            <div className="text-center px-1.5">
-              <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
-              <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
-            </div>
+            {studioMode === 'diagrams' ? (
+              <>
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-teal-500">50</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-indigo-500">100%</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Collision Free</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-emerald-500">16:9</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Widescreen</div>
+                </div>
+              </>
+            ) : studioMode === 'documents' ? (
+              <>
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-sky-500">17</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-indigo-500">100%</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-emerald-500">ARB</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Sign-Off</div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-sky-500">17</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+                </div>
+                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+                <div className="text-center px-1.5">
+                  <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
+                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -2115,25 +2226,87 @@ function DocGenContent() {
                   </p>
                 </div>
 
-                {/* Archetype Selector Dropdown Pills */}
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {DOC_ARCHETYPES_META.map((meta) => (
-                    <button
-                      key={meta.id}
-                      onClick={() => setSelectedArchetypeId(meta.id)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                        selectedArchetypeId === meta.id
-                          ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
-                          : isLight
-                          ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                          : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
-                      }`}
-                    >
-                      {meta.shortName}
-                    </button>
-                  ))}
-                </div>
+                {/* Right Header Controls: Diagram Categories vs Document Archetypes */}
+                {studioMode === 'diagrams' ? (
+                  <div className="flex flex-wrap items-center gap-1.5 max-w-xl justify-end">
+                    {DIAGRAM_FAMILY_PRESETS.map((fam) => (
+                      <button
+                        key={fam.id}
+                        type="button"
+                        onClick={() => setSelectedDiagramFamily(fam.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                          selectedDiagramFamily === fam.id
+                            ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20 font-extrabold'
+                            : isLight
+                            ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                        }`}
+                      >
+                        <span>{fam.icon}</span>
+                        <span>{fam.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {DOC_ARCHETYPES_META.map((meta) => (
+                      <button
+                        key={meta.id}
+                        type="button"
+                        onClick={() => setSelectedArchetypeId(meta.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          selectedArchetypeId === meta.id
+                            ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20 font-extrabold'
+                            : isLight
+                            ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                        }`}
+                      >
+                        {meta.shortName}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
+
+              {/* TARGET CANONICAL BLUEPRINT SELECTOR (Diagrams Mode Only) */}
+              {studioMode === 'diagrams' && (
+                <div className="p-4 rounded-2xl bg-teal-500/5 border border-teal-500/20 space-y-2.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Network className="w-4 h-4 text-teal-500" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                        Primary Canonical Architecture Blueprint:
+                      </span>
+                    </div>
+                    <span className="text-xs text-slate-500">
+                      Family: <span className="font-bold text-slate-800 dark:text-slate-200 capitalize">{selectedDiagramFamily}</span> ({
+                        CANONICAL_TEMPLATES.filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase()))).length
+                      } Blueprints Available)
+                    </span>
+                  </div>
+
+                  <select
+                    value={selectedDiagramTemplateId}
+                    onChange={(e) => {
+                      const newTplId = e.target.value;
+                      setSelectedDiagramTemplateId(newTplId);
+                      setDiagramSlotsList((prev) =>
+                        prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: newTplId } : slot))
+                      );
+                    }}
+                    className="w-full p-3 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-teal-500/30 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer shadow-xs"
+                  >
+                    {CANONICAL_TEMPLATES
+                      .filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase())))
+                      .map((t) => (
+                        <option key={t.id} value={t.id} className="py-1">
+                          {t.id} - {t.name} [{t.family || 'Canonical'}]
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
 
               {/* Form Grid: Title, Domain, Scope */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -2141,7 +2314,7 @@ function DocGenContent() {
                 <div className="lg:col-span-2 space-y-4">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                      1. System / Project Title
+                      1. System / Architecture Title
                     </label>
                     <input
                       type="text"
@@ -2161,7 +2334,7 @@ function DocGenContent() {
 
                   <div>
                     <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-                      2. Business Context &amp; Architectural Scope Prompt
+                      2. Architectural Scope &amp; Topology Requirements Prompt
                     </label>
                     <textarea
                       rows={4}
@@ -2284,8 +2457,106 @@ function DocGenContent() {
                 </div>
               </div>
 
-              {/* Step 2: Multi-Blueprint Architecture Pack Assembler (Visible in 'both' and 'diagrams' modes) */}
-              {studioMode !== 'documents' && (
+              {/* Step 2: Diagram Slots & Composition Pack (Diagrams Mode) */}
+              {studioMode === 'diagrams' && (
+                <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-xs font-bold uppercase tracking-wider text-teal-500">
+                        Step 2 • Diagram Composition &amp; Multi-Tier Suite
+                      </span>
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        Architecture Diagram Suite ({diagramSlotsList.length} Diagram{diagramSlotsList.length > 1 ? 's' : ''})
+                      </h3>
+                    </div>
+
+                    {/* Composition Slot Count Selector */}
+                    <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      {[
+                        { count: 1, label: 'Single (1 Slot)' },
+                        { count: 2, label: 'Dual-Tier (2 Slots)' },
+                        { count: 3, label: 'Full-Stack (3 Slots)' },
+                        { count: 4, label: 'Enterprise Suite (4 Slots)' },
+                      ].map((comp) => (
+                        <button
+                          key={comp.count}
+                          type="button"
+                          onClick={() => handleSetDiagramSlotsCount(comp.count)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                            diagramSlotsCount === comp.count
+                              ? 'bg-teal-600 text-white shadow-sm font-extrabold'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          {comp.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Diagram Slots Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {diagramSlotsList.map((slot, sIdx) => {
+                      return (
+                        <div
+                          key={sIdx}
+                          className="p-4 rounded-2xl border bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 space-y-3 shadow-xs"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-lg bg-teal-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+                                #{sIdx + 1}
+                              </span>
+                              <input
+                                type="text"
+                                value={slot.title}
+                                onChange={(e) => {
+                                  const newTitle = e.target.value;
+                                  setDiagramSlotsList((prev) =>
+                                    prev.map((s, i) => (i === sIdx ? { ...s, title: newTitle } : s))
+                                  );
+                                }}
+                                className="text-xs font-bold text-slate-900 dark:text-white bg-transparent border-b border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-teal-500 focus:outline-none"
+                              />
+                            </div>
+                            <span className="text-[10px] font-mono text-emerald-500 font-bold">
+                              Slot #{sIdx + 1}
+                            </span>
+                          </div>
+
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                            {slot.description}
+                          </p>
+
+                          {/* Assigned Blueprint Selector */}
+                          <div className="flex items-center gap-2 pt-1">
+                            <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Template:</span>
+                            <select
+                              value={slot.templateId}
+                              onChange={(e) => {
+                                const newTpl = e.target.value;
+                                setDiagramSlotsList((prev) =>
+                                  prev.map((s, i) => (i === sIdx ? { ...s, templateId: newTpl } : s))
+                                );
+                              }}
+                              className="w-full text-xs font-semibold p-2 rounded-lg border bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none cursor-pointer"
+                            >
+                              {CANONICAL_TEMPLATES.map((t) => (
+                                <option key={t.id} value={t.id}>
+                                  {t.id} - {t.name} ({t.family})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Multi-Blueprint Architecture Pack Assembler (Both Mode) */}
+              {studioMode === 'both' && (
                 <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
@@ -2297,9 +2568,7 @@ function DocGenContent() {
                       </h3>
                     </div>
                     <span className="text-xs text-slate-400">
-                      {studioMode === 'diagrams'
-                        ? 'Select canonical reference templates for each synthesized architectural diagram.'
-                        : 'Each chapter embeds its designated blueprint and component inventory table.'}
+                      Each chapter embeds its designated blueprint and component inventory table.
                     </span>
                   </div>
 
@@ -2382,7 +2651,7 @@ function DocGenContent() {
                       {studioMode === 'documents' && <FileText className="w-4 h-4" />}
                       {studioMode === 'both' && <Zap className="w-4 h-4" />}
                       <span>
-                        {studioMode === 'diagrams' && `Synthesize ${activeMeta.blueprintPack.length} Architecture Diagram(s) Now`}
+                        {studioMode === 'diagrams' && `Synthesize ${diagramSlotsList.length} Architecture Diagram(s) Now`}
                         {studioMode === 'documents' && `Synthesize ${activeMeta.shortName} Document Now`}
                         {studioMode === 'both' && `Generate ${activeMeta.shortName} Document & Diagrams Now`}
                       </span>
@@ -2417,7 +2686,7 @@ function DocGenContent() {
                         </span>
                       </div>
                       <p className="text-xs text-slate-400">
-                        Synthesized {activeMeta.blueprintPack.length} architectural diagrams with domain flavoring and 100% collision-free geometry.
+                        Synthesized {diagramSlotsList.length} architectural diagram{diagramSlotsList.length > 1 ? 's' : ''} with domain flavoring and 100% collision-free geometry.
                       </p>
                     </div>
                   </div>
@@ -2425,7 +2694,7 @@ function DocGenContent() {
                   {/* Standalone Diagram Action Toolbar */}
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      href={`/workspace?blueprint=${(slotCustomizations[activeDiagramSlotIndex + 1]?.templateId || activeMeta.blueprintPack[activeDiagramSlotIndex]?.recommendedTemplateId || '01')}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                      href={`/workspace?blueprint=${(diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '01')}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
                       className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-accent text-bg-dark hover:brightness-110 transition shadow-sm font-extrabold cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -2456,12 +2725,11 @@ function DocGenContent() {
                 </div>
 
                 {/* Diagram Slot Switcher Tabs */}
-                {activeMeta.blueprintPack.length > 1 && (
+                {diagramSlotsList.length > 1 && (
                   <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-                    {activeMeta.blueprintPack.map((slot, sIdx) => {
+                    {diagramSlotsList.map((slot, sIdx) => {
                       const isSlotActive = activeDiagramSlotIndex === sIdx;
-                      const currentTplId = slotCustomizations[sIdx + 1]?.templateId || slot.recommendedTemplateId;
-                      const tpl = CANONICAL_TEMPLATES.find((t) => t.id === currentTplId) || CANONICAL_TEMPLATES[0];
+                      const tpl = CANONICAL_TEMPLATES.find((t) => t.id === slot.templateId) || CANONICAL_TEMPLATES[0];
 
                       return (
                         <button
@@ -2470,14 +2738,14 @@ function DocGenContent() {
                           onClick={() => setActiveDiagramSlotIndex(sIdx)}
                           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             isSlotActive
-                              ? 'bg-sky-600 text-white shadow-md'
+                              ? 'bg-teal-600 text-white shadow-md'
                               : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800'
                           }`}
                         >
                           <span className="w-5 h-5 rounded-md bg-white/20 text-white flex items-center justify-center text-[10px] font-black">
                             #{sIdx + 1}
                           </span>
-                          <span>{slot.slotTitle}</span>
+                          <span>{slot.title}</span>
                           <span className="text-[9.5px] font-mono opacity-80">({tpl.id})</span>
                         </button>
                       );
@@ -2488,8 +2756,8 @@ function DocGenContent() {
                 {/* Active Diagram Inline Figure Rendering */}
                 <div className="pt-2">
                   <InlineDiagramFigure
-                    templateId={slotCustomizations[activeDiagramSlotIndex + 1]?.templateId || activeMeta.blueprintPack[activeDiagramSlotIndex]?.recommendedTemplateId || '01'}
-                    figureTitle={activeMeta.blueprintPack[activeDiagramSlotIndex]?.slotTitle || 'Architecture System Topology'}
+                    templateId={diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '01'}
+                    figureTitle={diagramSlotsList[activeDiagramSlotIndex]?.title || 'Architecture System Topology'}
                     isLight={isLight}
                     selectedDomain={selectedDomain}
                     projectTitle={projectTitle}
