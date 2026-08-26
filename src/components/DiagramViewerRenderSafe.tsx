@@ -118,22 +118,14 @@ export default function DiagramViewerRenderSafe({
 <meta charset="utf-8">
 <style>
   html, body { margin:0; padding:0; width:100%; height:100%; background:${bgColor}; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-  .canvas-container { position:absolute; inset:0; padding:6px; box-sizing:border-box; overflow:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; background:${bgColor}; }
+  .canvas-container { position:absolute; inset:0; padding:4px; box-sizing:border-box; overflow:hidden; background:${bgColor}; display:flex; align-items:center; justify-content:center; }
   .mxgraph { width:100%; height:100%; min-height:100%; display:flex; align-items:center; justify-content:center; background:transparent; }
 
   /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping */
   .mxgraph > svg,
-  .mxgraph > div > svg { width:100% !important; max-width:100% !important; height:auto !important; max-height:100% !important; margin:0 auto !important; display:block !important; }
-  .mxgraph > div { max-width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+  .mxgraph > div > svg { width:100% !important; max-width:100% !important; height:100% !important; max-height:100% !important; margin:auto !important; display:block !important; object-fit:contain !important; }
+  .mxgraph > div { width:100%; max-width:100%; height:100%; max-height:100%; display:flex; align-items:center; justify-content:center; }
   .geEditor { background-color:transparent !important; }
-
-  @media (max-width:1280px), (pointer:coarse) {
-    .canvas-container { padding:8px 16px; }
-  }
-
-  ::-webkit-scrollbar { width:6px; height:6px; }
-  ::-webkit-scrollbar-track { background:transparent; }
-  ::-webkit-scrollbar-thumb { background:rgba(100,116,139,.4); border-radius:9999px; }
 
   ${isLiveFlow ? `@keyframes flowPulse { 0% { stroke-dashoffset:48; } 100% { stroke-dashoffset:0; } }
   svg path[stroke-dasharray], svg g[data-cell-id] path[stroke], svg .geEdge path { animation:flowPulse 1.1s linear infinite !important; }` : ''}
@@ -150,24 +142,8 @@ export default function DiagramViewerRenderSafe({
     };
   }
 
-  const compactViewport = window.matchMedia('(max-width:1280px)').matches || window.matchMedia('(pointer:coarse)').matches;
   const canvasContainer = document.querySelector('.canvas-container');
-  const storageKey = 'pc_canvas_scroll_' + ${JSON.stringify(diagramId || 'default')};
   const aggressiveOverlayGuard = ${aggressiveOverlayGuard ? 'true' : 'false'};
-
-  if (canvasContainer) {
-    try {
-      const saved = sessionStorage.getItem(storageKey);
-      if (saved && !compactViewport) {
-        const pos = JSON.parse(saved);
-        canvasContainer.scrollLeft = pos.left || 0;
-        canvasContainer.scrollTop = pos.top || 0;
-      } else {
-        canvasContainer.scrollLeft = 0;
-        canvasContainer.scrollTop = 0;
-      }
-    } catch (e) {}
-  }
 
   function getCleanGraphXml(xmlStr) {
     if (!xmlStr) return '';
@@ -190,17 +166,17 @@ export default function DiagramViewerRenderSafe({
 
   const configObj = ${JSON.stringify({
     xml: translatedXml,
-    lightbox: true,
-    nav: true,
+    lightbox: false,
+    nav: false,
     resize: true,
-    toolbar: 'zoom layers tags',
-    edit: '_blank',
+    toolbar: '',
+    edit: '',
     border: 0,
     transparent: true,
     fit: true,
     'max-scale': 4.0,
   })};
-  if (compactViewport) configObj.fit = false;
+  configObj.fit = true;
   configObj.xml = getCleanGraphXml(configObj.xml);
 
   const root = document.getElementById('diagram-container');

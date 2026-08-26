@@ -1928,112 +1928,47 @@ function DocGenContent() {
           </div>
         </header>
 
-        {/* COMPACT HERO SECTION */}
-        <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
-          <div className="flex-1 min-w-0 space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-                {studioMode === 'diagrams' ? (
-                  <>
-                    <Network className="w-3 h-3 text-teal-500" />
-                    <span>Canonical Architecture Diagram Engine</span>
-                  </>
-                ) : studioMode === 'documents' ? (
-                  <>
-                    <FileText className="w-3 h-3 text-sky-500" />
-                    <span>Enterprise Specification &amp; Document Engine</span>
-                  </>
-                ) : (
-                  <>
-                    <Zap className="w-3 h-3 text-indigo-500" />
-                    <span>Multi-Blueprint Enterprise Document &amp; Diagram Engine</span>
-                  </>
-                )}
-              </span>
+        {/* COMPACT HERO SECTION (Catalog Tab Only) */}
+        <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8">
+        {activeTab === 'catalog' && (
+          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
+            <div className="flex-1 min-w-0 space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                  <FileText className="w-3 h-3 text-sky-500" />
+                  <span>Enterprise Specification &amp; Document Engine</span>
+                </span>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+                Architectural Grammar for{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
+                  Production-Ready Enterprise Docs
+                </span>
+              </h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-2xl line-clamp-1">
+                Synthesize 17 production document specifications (BRD, PRD, SDD, TDD, STRIDE, GRC) with attached canonical blueprint packs and Word export.
+              </p>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight">
-              {studioMode === 'diagrams' ? (
-                <>
-                  Canonical Architectural Grammar for{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-sky-500 to-indigo-500">
-                    High-Fidelity Cloud Topologies
-                  </span>
-                </>
-              ) : (
-                <>
-                  Architectural Grammar for{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
-                    Production-Ready Enterprise Docs
-                  </span>
-                </>
-              )}
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-2xl line-clamp-1">
-              {studioMode === 'diagrams'
-                ? 'Synthesize 50 canonical 16:9 widescreen cloud architectures, agentic meshes, and microservice topologies with 100% collision-free geometry.'
-                : studioMode === 'documents'
-                ? 'Synthesize 17 production document specifications (BRD, PRD, SDD, TDD, STRIDE, GRC) with full section controls and Word export.'
-                : 'Synthesize 17 production document goals, attach canonical blueprint packs, and export publication-ready Word and diagrams.'}
-            </p>
-          </div>
 
-          {/* Compact Stats Pill Strip */}
-          <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
-            {studioMode === 'diagrams' ? (
-              <>
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-teal-500">50</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-indigo-500">100%</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Collision Free</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-emerald-500">16:9</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Widescreen</div>
-                </div>
-              </>
-            ) : studioMode === 'documents' ? (
-              <>
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-sky-500">17</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-indigo-500">100%</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-emerald-500">ARB</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Sign-Off</div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-sky-500">17</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
-                </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
-                </div>
-              </>
-            )}
+            {/* Compact Stats Pill Strip */}
+            <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-sky-500">17</div>
+                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+              </div>
+              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
+                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+              </div>
+              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
+              <div className="text-center px-1.5">
+                <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
+                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* TAB 1: CATALOG VIEW (PREVIEW ALL 17 DOCUMENT BLUEPRINTS) */}
         {activeTab === 'catalog' && (
@@ -2245,15 +2180,15 @@ function DocGenContent() {
             {/* MAIN SPLIT-SCREEN COCKPIT */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               
-              {/* LEFT COLUMN (6 COLS): AI ARCHITECTURE CONFIGURATION */}
-              <div className="lg:col-span-6 space-y-6">
+              {/* LEFT COLUMN (6 COLS): AI ARCHITECTURE CONFIGURATION & PIPELINE */}
+              <div className="lg:col-span-6 space-y-5">
                 
                 {/* Step 1 Card: Core Configuration */}
-                <div className={`p-6 rounded-3xl border shadow-sm space-y-5 ${
-                  isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
+                  isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
                 }`}>
                   {/* Header & Categories */}
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
                         Step 1 &bull; Configuration
@@ -2308,7 +2243,7 @@ function DocGenContent() {
 
                   {/* Blueprint Selector (Diagrams Mode) */}
                   {studioMode === 'diagrams' && (
-                    <div className="p-4 rounded-2xl bg-teal-50/60 dark:bg-teal-950/20 border border-teal-200/80 dark:border-teal-800/40 space-y-3">
+                    <div className="p-3.5 rounded-2xl bg-teal-50/60 dark:bg-teal-950/20 border border-teal-200/80 dark:border-teal-800/40 space-y-2.5">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Network className="w-4 h-4 text-teal-600" />
@@ -2363,7 +2298,7 @@ function DocGenContent() {
                             prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: newTplId } : slot))
                           );
                         }}
-                        className={`w-full p-2.5 rounded-xl border text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer ${
+                        className={`w-full p-2 rounded-xl border text-xs font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer ${
                           isLight
                             ? 'bg-white border-teal-300 text-slate-900'
                             : 'bg-slate-900 border-teal-500/40 text-white'
@@ -2382,7 +2317,7 @@ function DocGenContent() {
 
                   {/* System Title */}
                   <div>
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1.5">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
                       1. System / Architecture Title
                     </label>
                     <input
@@ -2397,7 +2332,7 @@ function DocGenContent() {
                         }
                       }}
                       placeholder="e.g. AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh"
-                      className={`w-full px-4 py-2.5 rounded-xl border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                      className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                       }`}
                     />
@@ -2405,7 +2340,7 @@ function DocGenContent() {
 
                   {/* AI Scope Prompt Terminal */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
                         2. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
@@ -2414,7 +2349,7 @@ function DocGenContent() {
                       </span>
                     </div>
                     <textarea
-                      rows={4}
+                      rows={3}
                       value={projectScopePrompt}
                       onChange={(e) => {
                         const newScope = e.target.value;
@@ -2425,7 +2360,7 @@ function DocGenContent() {
                         }
                       }}
                       placeholder="Describe key Google Cloud services, data sources, security mandates, and integration endpoints..."
-                      className={`w-full p-3.5 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
+                      className={`w-full p-3 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
                         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                       }`}
                     />
@@ -2433,7 +2368,7 @@ function DocGenContent() {
 
                   {/* Enterprise Domain Flavor Selector */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
                         3. Enterprise Domain Flavor
                       </label>
@@ -2459,7 +2394,7 @@ function DocGenContent() {
                           setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
                         }
                       }}
-                      className={`w-full px-3 py-2.5 rounded-xl border text-xs font-bold text-teal-700 dark:text-teal-400 focus:outline-none cursor-pointer ${
+                      className={`w-full px-3 py-2 rounded-xl border text-xs font-bold text-teal-700 dark:text-teal-400 focus:outline-none cursor-pointer ${
                         isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
                       }`}
                     >
@@ -2472,7 +2407,7 @@ function DocGenContent() {
                   </div>
 
                   {/* Quick Load Industry Presets (Glass Tiles) */}
-                  <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="space-y-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-800">
                     <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                       ⚡ Quick Load Architecture Scenarios:
                     </span>
@@ -2484,13 +2419,13 @@ function DocGenContent() {
                           setProjectTitle('AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh');
                           setProjectScopePrompt('I want to architect a nationwide autonomous drone delivery and automated micro-hub fulfillment network called AeroNode. The system coordinates real-time collision-avoidance telemetry across 25,000+ autonomous delivery drones via 5G Ultra-Wideband and ADS-B mesh networks. It requires sub-20ms UTM (Unmanned Traffic Management) airspace routing, automated robotic payload swapping at local battery swap stations, dynamic weather radar ingestion via NOAA APIs, and FAA Part 135 continuous flight certification logging.');
                         }}
-                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                        className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
                         }`}
                       >
-                        <span className="text-base">🚁</span>
+                        <span className="text-sm">🚁</span>
                         <div className="min-w-0">
-                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">AeroNode Drone</div>
+                          <div className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">AeroNode Drone</div>
                           <div className="text-[9px] text-slate-400 truncate">5G UTM Airspace</div>
                         </div>
                       </button>
@@ -2502,13 +2437,13 @@ function DocGenContent() {
                           setProjectTitle('VoltGrid Autonomous EV Fleet Charging & Microgrid Energy Exchange');
                           setProjectScopePrompt('I want to architect a nationwide decentralized smart EV fast-charging network and dynamic microgrid energy trading platform called VoltGrid. The system must ingest high-frequency telemetry from 50,000+ DC fast chargers via OCPP 2.0.1 and ISO 15118 (Plug & Charge). It requires sub-50ms dynamic load balancing across local Battery Energy Storage Systems (BESS), solar microgrids, and the utility distribution grid.');
                         }}
-                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                        className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
                         }`}
                       >
-                        <span className="text-base">⚡</span>
+                        <span className="text-sm">⚡</span>
                         <div className="min-w-0">
-                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">VoltGrid Smart EV</div>
+                          <div className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">VoltGrid Smart EV</div>
                           <div className="text-[9px] text-slate-400 truncate">BESS Microgrid</div>
                         </div>
                       </button>
@@ -2520,13 +2455,13 @@ function DocGenContent() {
                           setProjectTitle('Bio-Pharma FDA 21 CFR Part 11 PV Platform');
                           setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
-                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                        className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
                         }`}
                       >
-                        <span className="text-base">🧬</span>
+                        <span className="text-sm">🧬</span>
                         <div className="min-w-0">
-                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">Bio-Pharma GxP</div>
+                          <div className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">Bio-Pharma GxP</div>
                           <div className="text-[9px] text-slate-400 truncate">FDA 21 CFR Part 11</div>
                         </div>
                       </button>
@@ -2538,14 +2473,14 @@ function DocGenContent() {
                           setProjectTitle('Autonomous Payments & Real-Time Fraud Hub');
                           setProjectScopePrompt('Real-time payment transaction monitoring, Flink stream clustering, ISO 20022 messaging, and automated SAR filing.');
                         }}
-                        className={`p-2.5 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
+                        className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
                           isLight ? 'bg-slate-50 hover:bg-teal-50 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/30 border-slate-800'
                         }`}
                       >
-                        <span className="text-base">💳</span>
+                        <span className="text-sm">💳</span>
                         <div className="min-w-0">
-                          <div className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">FinTech Fraud Hub</div>
-                          <div className="text-[9px] text-slate-400 truncate">ISO 20022 & Spanner</div>
+                          <div className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 truncate">FinTech Fraud Hub</div>
+                          <div className="text-[9px] text-slate-400 truncate">ISO 20022 &amp; Spanner</div>
                         </div>
                       </button>
                     </div>
@@ -2555,7 +2490,7 @@ function DocGenContent() {
                 {/* Step 2: Diagram Slots / Multi-Chapter Pipeline */}
                 {studioMode === 'diagrams' && (
                   <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                    isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
                   }`}>
                     <div className="flex items-center justify-between">
                       <div>
@@ -2647,44 +2582,53 @@ function DocGenContent() {
                   </div>
                 )}
 
-                {/* Step 2: Multi-Blueprint Architecture Pack (Both Mode) */}
+                {/* Step 2: Multi-Blueprint Architecture Pipeline (Both Mode) */}
                 {studioMode === 'both' && (
                   <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
-                    isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                    isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
                   }`}>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 block">
-                        Step 2 &bull; Attached Blueprint Architecture Pack
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-sky-600 block">
+                          Step 2 &bull; Multi-Chapter Blueprint Pipeline
+                        </span>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          Attached Chapters ({activeMeta.blueprintPack.length} Slots)
+                        </h3>
+                      </div>
+                      <span className="text-[10px] font-mono font-bold text-sky-600">
+                        {activeMeta.shortName} Spec
                       </span>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        Chapter Blueprint Pipeline ({activeMeta.blueprintPack.length} Chapters)
-                      </h3>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-3 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-sky-400 before:via-indigo-500 before:to-purple-500">
                       {activeMeta.blueprintPack.map((slot, sIdx) => {
                         const currentTplId = slotCustomizations[sIdx + 1]?.templateId || slot.recommendedTemplateId;
 
                         return (
                           <div
                             key={sIdx}
-                            className={`p-3.5 rounded-2xl border space-y-2 ${
-                              isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                            className={`p-3.5 rounded-2xl border space-y-2 relative ml-3 ${
+                              isLight ? 'bg-slate-50 border-slate-200 hover:border-sky-300' : 'bg-slate-900 border-slate-800 hover:border-sky-600'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-2">
-                                <span className="w-5 h-5 rounded-md bg-sky-600 text-white font-black text-[10px] flex items-center justify-center">
+                                <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-black text-[10px] flex items-center justify-center shadow-xs">
                                   Ch.{slot.chapterNumber}
                                 </span>
                                 <span className="text-xs font-bold text-slate-900 dark:text-white">
                                   {slot.slotTitle}
                                 </span>
                               </div>
-                              <span className="text-[10px] font-bold text-sky-600">Slot #{sIdx + 1}</span>
+                              <span className="text-[10px] font-mono font-bold text-sky-600">Slot #{sIdx + 1}</span>
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pl-8">
+                              {slot.description}
+                            </p>
+
+                            <div className="flex items-center gap-2 pl-8">
                               <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Assigned:</span>
                               <select
                                 value={currentTplId}
@@ -2710,9 +2654,9 @@ function DocGenContent() {
               </div>
 
               {/* RIGHT COLUMN (6 COLS): LIVE 16:9 INTERACTIVE PREVIEW & SPEC VIEWER */}
-              <div className="lg:col-span-6 sticky top-24 space-y-4">
+              <div className="lg:col-span-6 sticky top-20 space-y-4">
                 <div className={`rounded-3xl border shadow-xl overflow-hidden ${
-                  isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+                  isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
                 }`}>
                   {/* Viewport Window Bar */}
                   <div className={`px-5 py-3.5 border-b flex items-center justify-between ${
@@ -2745,27 +2689,93 @@ function DocGenContent() {
                   </div>
 
                   {/* Interactive Live Diagram Viewport */}
-                  <div className="p-4 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[460px]">
-                    {studioMode === 'diagrams' || studioMode === 'both' ? (
-                      <div className="w-full h-full flex items-center justify-center">
+                  <div className="p-3 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[460px] max-h-[580px] overflow-hidden">
+                    {studioMode === 'diagrams' ? (
+                      <div className="w-full h-full flex items-center justify-center aspect-[16/9] max-h-[520px]">
                         <DiagramViewerRenderSafe
                           xml={liveStudioDiagramXml}
-                          containerDimensions={{ width: 720, height: 440 }}
-                          aspectRatio="16:9"
-                          theme={isLight ? 'light' : 'dark'}
+                          aspectRatioId="16:9"
+                          bgTheme={isLight ? 'light' : 'dark'}
                         />
                       </div>
+                    ) : studioMode === 'both' ? (
+                      <div className="w-full p-5 text-left space-y-4 max-h-[540px] overflow-y-auto">
+                        <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-black text-sky-600 uppercase tracking-wider">{activeMeta.name}</span>
+                            <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">ARB Sign-Off Ready</span>
+                          </div>
+                          <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{projectTitle || 'Enterprise Architecture Specification'}</h3>
+                        </div>
+                        
+                        <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                          <div>
+                            <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ch. 1 &bull; Executive Overview &amp; Business Mandate</h4>
+                            <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
+                              {projectScopePrompt || 'Specifies core system requirements, regulatory governance policies, and latency targets...'}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-slate-900 dark:text-white mb-1.5 flex items-center justify-between">
+                              <span>Ch. 2 &bull; Target Google Cloud Architecture Topology</span>
+                              <span className="text-[10px] text-teal-600 font-mono">16:9 Vector</span>
+                            </h4>
+                            <div className="w-full h-52 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-950 flex items-center justify-center">
+                              <DiagramViewerRenderSafe
+                                xml={liveStudioDiagramXml}
+                                aspectRatioId="16:9"
+                                bgTheme={isLight ? 'light' : 'dark'}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="font-bold text-slate-900 dark:text-white mb-1">Ch. 3 &bull; Core Service Matrix &amp; Demarcation</h4>
+                            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] font-mono">
+                              <div className="flex justify-between border-b pb-1 border-slate-200 dark:border-slate-800 text-slate-400">
+                                <span>COMPONENT</span>
+                                <span>TIER / SERVICE</span>
+                                <span>SLA</span>
+                              </div>
+                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                <span>Ingress Perimeter</span>
+                                <span>Cloud Armor WAF</span>
+                                <span>99.99%</span>
+                              </div>
+                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                <span>Compute Engine</span>
+                                <span>GKE Autopilot / Cloud Run</span>
+                                <span>99.95%</span>
+                              </div>
+                              <div className="flex justify-between py-1 text-slate-700 dark:text-slate-300">
+                                <span>Data Storage</span>
+                                <span>Cloud Spanner Multi-Region</span>
+                                <span>99.999%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
-                      <div className="w-full p-6 text-left space-y-4">
+                      <div className="w-full p-6 text-left space-y-4 max-h-[540px] overflow-y-auto">
                         <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
                           <div className="text-xs font-bold text-sky-600 uppercase tracking-wider">{activeMeta.name}</div>
                           <h3 className="text-base font-black text-slate-900 dark:text-white">{projectTitle || 'Enterprise Architecture Specification'}</h3>
                         </div>
-                        <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                          <p className="font-semibold text-slate-800 dark:text-white">1. Executive Overview &amp; Business Objectives</p>
-                          <p>{projectScopePrompt || 'Specifies business goals, architectural constraints, and regulatory requirements...'}</p>
-                          <p className="font-semibold text-slate-800 dark:text-white">2. Architecture Demarcation &amp; Service Boundaries</p>
-                          <p>Encapsulates zero-trust ingress, Google Cloud compute clusters, and immutable compliance ledgers.</p>
+                        <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                          <div>
+                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">1. Executive Overview &amp; Business Objectives</h4>
+                            <p className="text-slate-500 dark:text-slate-400">{projectScopePrompt || 'Specifies business goals, architectural constraints, and regulatory requirements...'}</p>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">2. Architecture Demarcation &amp; Service Boundaries</h4>
+                            <p className="text-slate-500 dark:text-slate-400">Encapsulates zero-trust ingress, Google Cloud compute clusters, and immutable compliance ledgers.</p>
+                          </div>
+                          <div>
+                            <h4 className="font-bold text-slate-800 dark:text-white mb-1">3. Non-Functional Requirements &amp; SLA Compliance</h4>
+                            <p className="text-slate-500 dark:text-slate-400">RTO &lt; 5 minutes, RPO &lt; 1 minute, active-active multi-region failover.</p>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -2783,7 +2793,7 @@ function DocGenContent() {
                   </div>
                 </div>
 
-                {/* Floating Action Synthesizer Dock */}
+                {/* Floating Sticky Action Synthesizer Dock */}
                 <div className={`p-4 rounded-3xl border shadow-xl flex flex-col sm:flex-row items-center justify-between gap-3 ${
                   isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
                 }`}>
