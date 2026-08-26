@@ -211,6 +211,103 @@ async function runCanvasQualityAudits(): Promise<boolean> {
     }
   }
 
+  // =========================================================================
+  // PHASE 2: MULTI-TURN ITERATIVE REFINEMENT & PROMPT UPDATE QUALITY GATE
+  // Verifies that multi-turn prompt updates (v1 -> v2 -> v3 -> v4) preserve
+  // structural layout integrity, never collide, and never distort on aesthetic prompts.
+  // =========================================================================
+  console.log(`\n🔄 RUNNING MULTI-TURN ITERATIVE PROMPT REFINEMENT SUITE (2 chains, 7 turns)...`);
+  const { executeUnifiedDiagramPipeline } = await import('../src/lib/unifiedDiagramEngine');
+
+  const ITERATIVE_CHAINS = [
+    {
+      name: 'Deep-Ocean AUV Swarm Multi-Turn Evolution',
+      archType: 'unified_system_view',
+      turns: [
+        'Design a production-grade Autonomous Underwater Vehicle (AUV) Swarm Telemetry & Bathymetric Point Clouds Platform',
+        'Add Dim_Customer_Account & Dim_Merchant tables with PK/FK relationships',
+        'make it beautiful!',
+        'Enforce PCI-DSS & KYC Compliance Rules with Hardware Security Module'
+      ]
+    },
+    {
+      name: 'AWS Serverless EDA Multi-Turn Evolution',
+      archType: 'tech_event_driven_eda',
+      turns: [
+        'Design an AWS Serverless Event-Driven Platform with Route 53, AWS WAF, Amazon API Gateway, AWS Lambda, Amazon DynamoDB, and Amazon SQS',
+        'Add Redis ElastiCache cluster and Dead Letter Queue for Order Pods',
+        'polish'
+      ]
+    }
+  ];
+
+  for (const chain of ITERATIVE_CHAINS) {
+    let currentXml: string | undefined = undefined;
+
+    for (let turnIdx = 0; turnIdx < chain.turns.length; turnIdx++) {
+      const turnPrompt = chain.turns[turnIdx];
+      const versionLabel = `v${turnIdx + 1}`;
+
+      const res = await executeUnifiedDiagramPipeline({
+        prompt: turnPrompt,
+        architectureType: chain.archType,
+        existingXml: currentXml
+      });
+
+      currentXml = res.xml;
+
+      // 1. Enveloping Check
+      if (!currentXml.includes('<mxfile') || !currentXml.includes('<diagram') || !currentXml.includes('<mxGraphModel')) {
+        failures.push(`[${chain.name} | ${versionLabel}] Missing valid XML document envelope.`);
+        continue;
+      }
+
+      // 2. Zero External URL Check
+      if (/https?:\/\/(?!www\.w3\.org)[^\s"'>]+/i.test(currentXml) && !currentXml.includes('data:image/svg+xml')) {
+        const urlMatches = Array.from(currentXml.matchAll(/https?:\/\/[^\s"'>]+/gi)).map(m => m[0]);
+        failures.push(`[${chain.name} | ${versionLabel}] Contains unverified external URLs: ${urlMatches.slice(0, 3).join(', ')}`);
+      }
+
+      // 3. Hierarchical 2D Sibling AABB Collision Check
+      const nodes = parseGeometryNodes(currentXml);
+      const parentGroups = new Map<string, typeof nodes>();
+      for (const n of nodes) {
+        if (!parentGroups.has(n.parent)) parentGroups.set(n.parent, []);
+        parentGroups.get(n.parent)!.push(n);
+      }
+
+      let aabbCollisionCount = 0;
+      for (const [parent, siblings] of parentGroups.entries()) {
+        for (let j = 0; j < siblings.length; j++) {
+          for (let k = j + 1; k < siblings.length; k++) {
+            const a = siblings[j];
+            const b = siblings[k];
+
+            if (a.w > 800 && a.h > 400) continue;
+            if (b.w > 800 && b.h > 400) continue;
+            if (/swimlane/i.test(a.style) || /swimlane/i.test(b.style)) continue;
+
+            const aContainsB = a.x <= b.x && a.y <= b.y && (a.x + a.w) >= (b.x + b.w) && (a.y + a.h) >= (b.y + b.h);
+            const bContainsA = b.x <= a.x && b.y <= a.y && (b.x + b.w) >= (a.x + a.w) && (b.y + b.h) >= (a.y + a.h);
+            if (aContainsB || bContainsA) continue;
+
+            const overlapX = Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x));
+            const overlapY = Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+
+            if (overlapX > 8 && overlapY > 8) {
+              aabbCollisionCount++;
+              failures.push(`[${chain.name} | ${versionLabel} ("${turnPrompt.slice(0, 25)}...")] 2D AABB Collision between "${a.id}" (${a.x},${a.y},${a.w}x${a.h}) and "${b.id}" (${b.x},${b.y},${b.w}x${b.h}) overlap ${overlapX.toFixed(1)}x${overlapY.toFixed(1)}px.`);
+            }
+          }
+        }
+      }
+
+      if (aabbCollisionCount === 0) {
+        passes.push(`PASS: [${chain.name} | ${versionLabel}] -> Prompt: "${turnPrompt.slice(0, 35)}..." with 0 collisions.`);
+      }
+    }
+  }
+
   passes.forEach(p => console.log(`  ✓ ${p}`));
 
   if (failures.length > 0) {
@@ -219,7 +316,7 @@ async function runCanvasQualityAudits(): Promise<boolean> {
     return false;
   }
 
-  console.log(`\n✅ CANVAS GENERATOR QUALITY HARNESS PASSED: All ${CANVAS_TEST_SUITE.length} test prompts compiled cleanly with 0 defects.\n`);
+  console.log(`\n✅ CANVAS GENERATOR QUALITY HARNESS PASSED: All initial prompts and multi-turn iterative update chains compiled cleanly with 0 defects.\n`);
   return true;
 }
 

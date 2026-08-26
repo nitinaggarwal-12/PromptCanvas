@@ -2782,14 +2782,14 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
         <!-- ERD diagram container with generous wide column pitch -->
         <mxCell id="sw1_erd_mini_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1;strokeDashArray=3 3;" vertex="1" parent="1">
-          <mxGeometry x="615" y="110" width="890" height="110" as="geometry" />
+          <mxGeometry x="615" y="110" width="855" height="110" as="geometry" />
         </mxCell>
         <mxCell id="sw1_erd_t1" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Silence&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="635" y="125" width="115" height="28" as="geometry" /></mxCell>
         <mxCell id="sw1_erd_t2" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Source&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="775" y="125" width="115" height="28" as="geometry" /></mxCell>
         <mxCell id="sw1_erd_t3" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Staging&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="915" y="125" width="115" height="28" as="geometry" /></mxCell>
         <mxCell id="sw1_erd_t4" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Transform&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1055" y="125" width="115" height="28" as="geometry" /></mxCell>
-        <mxCell id="sw1_erd_t5" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Dim_Customer_Entity&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1195" y="125" width="145" height="28" as="geometry" /></mxCell>
-        <mxCell id="sw1_erd_t6" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Fact_Clinical&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1355" y="125" width="135" height="28" as="geometry" /></mxCell>
+        <mxCell id="sw1_erd_t5" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Dim_Customer_Entity&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1195" y="125" width="135" height="28" as="geometry" /></mxCell>
+        <mxCell id="sw1_erd_t6" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Fact_Clinical&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1335" y="125" width="130" height="28" as="geometry" /></mxCell>
         <mxCell id="sw1_erd_t7" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Raw Data&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="775" y="175" width="115" height="28" as="geometry" /></mxCell>
         <mxCell id="sw1_erd_t8" value="&lt;b style='font-size:9.5px;color:#1E3A8A;'&gt;Derived&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;spacingLeft=8;spacingRight=8;" vertex="1" parent="1"><mxGeometry x="1195" y="175" width="145" height="28" as="geometry" /></mxCell>
         <mxCell id="arr_m1" value="" style="endArrow=none;strokeColor=#94A3B8;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sw1_erd_t1" target="sw1_erd_t2"><mxGeometry relative="1" as="geometry" /></mxCell>
@@ -2872,7 +2872,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         </mxCell>
         <!-- Governance Boundary Box -->
         <mxCell id="t2c_gov_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;strokeDashArray=6 6;" vertex="1" parent="1">
-          <mxGeometry x="920" y="278" width="810" height="240" as="geometry" />
+          <mxGeometry x="920" y="278" width="985" height="240" as="geometry" />
         </mxCell>
         <mxCell id="t2c_gov_title" value="&lt;b style='font-size:11px;color:#1D4ED8;'&gt;Governance Boundary incorporating full automated security &amp;amp; ethical AI audits&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;padding=6;" vertex="1" parent="1">
           <mxGeometry x="935" y="285" width="600" height="25" as="geometry" />
@@ -2880,7 +2880,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
         <!-- Internal Flow inside Governance Boundary -->
         <mxCell id="t2c_cyl_gcs" value="&lt;b style='font-size:9px;color:#0369A1;'&gt;GCS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#0284C7;" vertex="1" parent="1"><mxGeometry x="935" y="325" width="65" height="35" as="geometry" /></mxCell>
         <mxCell id="t2c_cyl_bq" value="&lt;b style='font-size:9px;color:#15803D;'&gt;BigQuery&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;" vertex="1" parent="1"><mxGeometry x="935" y="380" width="65" height="35" as="geometry" /></mxCell>
-        <mxCell id="t2c_mod_reg" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Model Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1"><mxGeometry x="915" y="430" width="105" height="25" as="geometry" /></mxCell>
+        <mxCell id="t2c_mod_reg" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;Model Registry&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1"><mxGeometry x="925" y="430" width="105" height="25" as="geometry" /></mxCell>
 
         <mxCell id="t2c_vet" value="&lt;span style='font-size:24px;'&gt;🔍&lt;/span&gt;&lt;br&gt;&lt;b style='font-size:10px;color:#1E40AF;'&gt;DATA&lt;br&gt;VETTING&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=1.5;" vertex="1" parent="1">
           <mxGeometry x="1025" y="352" width="75" height="75" as="geometry" />
@@ -2972,7 +2972,7 @@ export function getExactUnifiedSystemViewReferenceXml(): string {
 
         <!-- Lane Header -->
         <mxCell id="sw3_hdr" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;COGNITIVE ARCHITECTURE &amp;amp; SECURE DEPLOYMENT (Logical Software Topology within VPC Perimeter)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="85" y="550" width="1500" height="20" as="geometry" />
+          <mxGeometry x="85" y="550" width="1420" height="20" as="geometry" />
         </mxCell>
 
         <!-- The Edge (Left side outside VPC) -->
