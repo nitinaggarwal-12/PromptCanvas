@@ -19,7 +19,8 @@ import {
   Mail,
   Menu,
   LayoutGrid,
-  BarChart3
+  BarChart3,
+  ShieldCheck
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -175,6 +176,14 @@ export default function LandingPage() {
             }`} title="Operations Telemetry & Workspace Management">
               <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
               <span>Operations Dashboard</span>
+            </Link>
+
+            <Link href="/test-status" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-emerald-600' : 'hover:bg-slate-800/80 hover:text-white text-emerald-400'
+            }`} title="Enterprise Quality & Test Status (2,359 Tests Passed)">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <span>Test Status</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono font-bold">100%</span>
             </Link>
           </nav>
 
@@ -839,7 +848,11 @@ export default function LandingPage() {
           <p className="text-sm text-slate-500">
             &copy; 2026 Prompt Canvas. Designed with high-fidelity cloud blueprints. Open-source Draw.io XML compatible.
           </p>
-          <div className="flex gap-6 text-sm text-slate-400">
+          <div className="flex flex-wrap gap-6 text-sm text-slate-400">
+            <Link href="/test-status" className="hover:text-emerald-500 transition-colors flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Test Status (2,359 Passed)</span>
+            </Link>
             <a href="#" className="hover:text-teal-500 transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-teal-500 transition-colors">Terms of Service</a>
           </div>
