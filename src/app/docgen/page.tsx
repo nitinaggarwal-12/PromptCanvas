@@ -314,7 +314,7 @@ function InlineDiagramFigure({
               className="px-3.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 border border-sky-500/30 text-xs font-bold flex items-center gap-1.5 transition-all hover:scale-105"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              <span>Open in Canvas Editor</span>
+              <span>Open Canonical Blueprint</span>
             </Link>
           )}
 
@@ -2131,7 +2131,7 @@ function DocGenContent() {
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canvas editor bridge.'}
+                  {studioMode === 'diagrams' && 'Synthesize standalone 16:9 architecture diagrams with domain flavoring, component matrices & Canonical Blueprints suite.'}
                   {studioMode === 'documents' && 'Synthesize 17 production-ready enterprise specifications (BRD, PRD, SDD, TDD, STRIDE) with full section controls.'}
                   {studioMode === 'both' && 'Generate multi-chapter enterprise specifications with live 16:9 interactive diagrams embedded in each chapter.'}
                 </p>

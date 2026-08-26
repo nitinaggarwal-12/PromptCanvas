@@ -1162,13 +1162,13 @@ export default function GuidePage() {
                       </button>
                     </div>
 
-                    {/* Open in Canvas Link */}
+                    {/* Open in Canonical Blueprint Link */}
                     <Link
-                      href={`/workspace?blueprint=${activeFrame.templateId || '01'}`}
+                      href={`/canonical/${activeFrame.templateId || '01'}`}
                       className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-[10px] transition-all flex items-center gap-1 shadow-sm shrink-0 cursor-pointer"
-                      title="Open full interactive blueprint in Canvas"
+                      title="Open full interactive blueprint in Canonical Blueprints Hub"
                     >
-                      <span>Open in Canvas</span>
+                      <span>Open Canonical Blueprint</span>
                       <ExternalLink className="w-3 h-3" />
                     </Link>
                   </div>
