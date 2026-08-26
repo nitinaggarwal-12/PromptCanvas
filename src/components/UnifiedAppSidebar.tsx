@@ -38,9 +38,9 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { id: 'workspace', name: 'Design Canvas', icon: Network, href: '/workspace' },
-  { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen', badge: 'PRO' },
+  { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen?tab=studio', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
-  { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
+  { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
   { id: 'history', name: 'Historical Canvases & Docs', icon: History, href: '/history' },
   { id: 'dashboard', name: 'Operations Dashboard', icon: BarChart3, href: '/dashboard' },
   { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },

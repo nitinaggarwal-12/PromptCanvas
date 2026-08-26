@@ -474,7 +474,23 @@ function DocGenContent() {
   const isLight = theme === 'light';
 
   // Navigation and active tabs
-  const [activeTab, setActiveTab] = useState<'catalog' | 'studio'>('catalog');
+  const tabParam = searchParams.get('tab');
+  const archParam = searchParams.get('archetype') || searchParams.get('arch');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'studio'>(() => {
+    if (tabParam === 'catalog') return 'catalog';
+    return 'studio';
+  });
+
+  useEffect(() => {
+    const currentTab = searchParams.get('tab');
+    const currentArch = searchParams.get('archetype') || searchParams.get('arch');
+    if (currentTab === 'catalog') {
+      setActiveTab('catalog');
+    } else if (currentTab === 'studio' || currentArch) {
+      setActiveTab('studio');
+    }
+  }, [searchParams]);
+
   const [selectedArchetypeId, setSelectedArchetypeId] = useState<ArchetypeId>('sdd');
   const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
   const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Genomics & Regulatory AI Platform');
