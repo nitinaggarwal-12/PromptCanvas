@@ -97,7 +97,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.startsWith('p4-') ||
       archType.startsWith('p5-') ||
       archType.startsWith('ind-') ||
-      archType.startsWith('arch-') ||
+      archType === 'unified_system_view' ||
+      archType.includes('unified') ||
       archType.startsWith('canonical') ||
       archType.includes('canonical') ||
       archType.includes('wbs') ||
@@ -109,6 +110,9 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('NOVACURA') ||
     inputXml.includes('template_') ||
     inputXml.includes('Template ') ||
+    inputXml.includes('TOTAL UNIFIED SYSTEM VIEW') ||
+    inputXml.includes('unified_system_view') ||
+    inputXml.includes('sw1_') ||
     inputXml.includes('02 — Capability Map') ||
     inputXml.includes('03 — Business Process') ||
     inputXml.includes('01 — System Context') ||
@@ -434,8 +438,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
         const currentW = Number(cell.mxGeometry['@_width']) || 120;
         const currentH = Number(cell.mxGeometry['@_height']) || 60;
 
-        // Apply only to component cards and boxes, not large outer containers
-        if (currentW < 380 && currentH < 280 && !id.startsWith('frame_') && !id.startsWith('col_') && !id.startsWith('box_')) {
+        // Apply only to component cards and boxes in unstructured sketches, never on calibrated master or canonical blueprints
+        if (!isMasterOrStructured && currentW < 380 && currentH < 280 && !id.startsWith('frame_') && !id.startsWith('col_') && !id.startsWith('box_')) {
           if (maxLineLen > 22 && currentW < 140) {
             const targetW = Math.min(220, Math.max(currentW, maxLineLen * 7.5 + 24));
             cell.mxGeometry['@_width'] = String(Math.round(targetW));
