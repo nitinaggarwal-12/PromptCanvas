@@ -1,10 +1,10 @@
-import { XMLParser } from '/Users/nitinagga/Documents/PromptCanvas/node_modules/fast-xml-parser';
-import { CANONICAL_TEMPLATES, DOMAIN_PRESETS, injectDomainFlavorXml } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/canonical/canonicalTemplates';
-import { injectUseCaseFlavor } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/diagramCleaner';
-import { DOC_ARCHETYPES_META, ArchetypeId } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/compose/archetypes';
-import { MASTER_DOCUMENTS, getDomainMasterDocument } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/compose/masterDocs';
-import { detectDomainFromPrompt } from '/Users/nitinagga/Documents/PromptCanvas/src/app/docgen/page';
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType } from '/Users/nitinagga/Documents/PromptCanvas/node_modules/docx';
+import { XMLParser } from 'fast-xml-parser';
+import { CANONICAL_TEMPLATES, DOMAIN_PRESETS, injectDomainFlavorXml } from '../src/lib/canonical/canonicalTemplates';
+import { injectUseCaseFlavor } from '../src/lib/diagramCleaner';
+import { DOC_ARCHETYPES_META, ArchetypeId } from '../src/lib/compose/archetypes';
+import { MASTER_DOCUMENTS, getDomainMasterDocument } from '../src/lib/compose/masterDocs';
+import { detectDomainFromPrompt } from '../src/app/docgen/page';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType } from 'docx';
 import {
   parseDocumentIntoSections,
   reconstructDocumentFromSections,
@@ -15,9 +15,9 @@ import {
   moveSectionUp,
   moveSectionDown,
   changeSectionHierarchy,
-} from '/Users/nitinagga/Documents/PromptCanvas/src/lib/versioning/docSectionEngine';
-import { generateSlideDeck } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/export/slideDeckEngine';
-import { generateTerraformBundle, simulateTerraformPlan } from '/Users/nitinagga/Documents/PromptCanvas/src/lib/iac/terraformEngine';
+} from '../src/lib/versioning/docSectionEngine';
+import { generateSlideDeck } from '../src/lib/export/slideDeckEngine';
+import { generateTerraformBundle, simulateTerraformPlan } from '../src/lib/iac/terraformEngine';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
