@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Sparkles,
   Network,
@@ -50,10 +50,34 @@ const CANVAS_SUB_ITEMS: NavItem[] = [
   { id: 'canvas_history', name: 'Canvas History', icon: History, href: '/history' },
 ];
 
-export default function UnifiedAppSidebar() {
+function UnifiedAppSidebarInner() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { theme } = useTheme();
   const isLight = theme === 'light';
+
+  const isItemActive = (href: string) => {
+    const [targetPath, targetQuery] = href.split('?');
+    if (targetPath !== pathname) return false;
+    if (!targetQuery) {
+      const hasSpecificMatch = CANONICAL_NAV_ITEMS.some((other) => {
+        if (other.href === href) return false;
+        const [oPath, oQuery] = other.href.split('?');
+        if (oPath !== pathname || !oQuery) return false;
+        const oParams = new URLSearchParams(oQuery);
+        for (const [k, v] of oParams.entries()) {
+          if (searchParams.get(k) === v) return true;
+        }
+        return false;
+      });
+      return !hasSpecificMatch;
+    }
+    const params = new URLSearchParams(targetQuery);
+    for (const [k, v] of params.entries()) {
+      if (searchParams.get(k) !== v) return false;
+    }
+    return true;
+  };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -65,7 +89,7 @@ export default function UnifiedAppSidebar() {
     return true;
   });
 
-  const isCanvasActive = pathname === '/workspace' && !pathname.includes('tab=settings') && !pathname.includes('tab=audit') || pathname.startsWith('/history');
+  const isCanvasActive = (pathname === '/workspace' && searchParams.get('tab') !== 'audit' && searchParams.get('tab') !== 'settings') || pathname.startsWith('/history');
   const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState<boolean>(true);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
@@ -148,7 +172,7 @@ export default function UnifiedAppSidebar() {
 
             {CANONICAL_NAV_ITEMS.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname.startsWith(item.href);
+              const isActive = isItemActive(item.href);
 
               return (
                 <Link key={item.id} href={item.href} className="block">
@@ -363,7 +387,7 @@ export default function UnifiedAppSidebar() {
 
                 {CANONICAL_NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
-                  const isActive = pathname.startsWith(item.href);
+                  const isActive = isItemActive(item.href);
 
                   return (
                     <Link
@@ -513,5 +537,13 @@ export default function UnifiedAppSidebar() {
         }}
       />
     </>
+  );
+}
+
+export default function UnifiedAppSidebar() {
+  return (
+    <React.Suspense fallback={null}>
+      <UnifiedAppSidebarInner />
+    </React.Suspense>
   );
 }
