@@ -11,7 +11,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   archType: string = 'unified_system_view'
 ): string {
   const isMasterOrStructured = (
-    archType !== undefined && archType !== null && (
+    xmlInput.includes('id="exact_unified_system_view"') ||
+    xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||
+    xmlInput.includes('id="unified_system_view"') ||
+    (archType !== undefined && archType !== null && (
+      archType === 'unified_system_view' ||
       archType === 'unified_flowchart' ||
       archType === 'tech_multi_region_dr' ||
       archType === 'tech_serverless_gcp' ||
@@ -112,7 +116,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       xmlInput.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
       xmlInput.includes('PromptCanvas-LayoutEngineV2')
     )
-  );
+  ));
 
   if (isMasterOrStructured) {
     return xmlInput.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
@@ -369,7 +373,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
 
   // 9b. DETERMINISTIC 3-STAGE CONCEPTUAL DIAGRAM CONTAINER BOUNDS ENFORCER:
   // If a diagram has Stage 1 (x=50..370), Stage 2 (x=430..810), Stage 3 (x=870..1230), ensure cards never escape:
-  if (xml.includes('col_ingestion') || xml.includes('col_processing') || xml.includes('col_delivery')) {
+  if (archType === 'conceptual_diagram' && (xml.includes('col_ingestion') || xml.includes('col_processing') || xml.includes('col_delivery'))) {
     // Stage 1 cards -> x="70", width="280"
     xml = xml.replace(/(<mxCell\s+id="(?:src_card|func_areas|user_node|sec_gateway)"[\s\S]*?<mxGeometry\s+[^>]*?\bx=")\d+("\s+[^>]*?\bwidth=")\d+(")/gi, '$170$2280"');
     // Stage 2 cards -> x="470", width="300"
@@ -378,9 +382,11 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xml = xml.replace(/(<mxCell\s+id="(?:out_1|out_2|out_3|exec_dash|comp_view|advisory)"[\s\S]*?<mxGeometry\s+[^>]*?\bx=")\d+("\s+[^>]*?\bwidth=")\d+(")/gi, '$1900$2300"');
   }
 
-  // Remove any legacy template_type_hdr or redundant standalone title banner nodes (only top corner UI badge is required)
-  xml = xml.replace(/<mxCell\s+id="(?:template_type_hdr|hdr_title|canvas_hdr|title_banner|hdr_banner|main_title|tenant_subtitle|gcp_logo_text|doc_title|header_title|title_main|diagram_header)"[\s\S]*?<\/mxCell>/gi, '');
-  xml = xml.replace(/<mxCell[^>]*value="(?:&lt;b&gt;|<b>)\s*\d+\.\s*[^<]+-\s*[^<]+(?:&lt;\/b&gt;|<\/b>)"[^>]*>[\s\S]*?<\/mxCell>/gi, '');
+  // Remove legacy template_type_hdr for non-master diagrams
+  if (!isMasterOrStructured) {
+    xml = xml.replace(/<mxCell\s+id="(?:template_type_hdr|hdr_title|canvas_hdr|hdr_banner|main_title|tenant_subtitle|gcp_logo_text|doc_title|header_title|title_main|diagram_header)"[\s\S]*?<\/mxCell>/gi, '');
+    xml = xml.replace(/<mxCell[^>]*value="(?:&lt;b&gt;|<b>)\s*\d+\.\s*[^<]+-\s*[^<]+(?:&lt;\/b&gt;|<\/b>)"[^>]*>[\s\S]*?<\/mxCell>/gi, '');
+  }
 
   xml = runZeroDefectTextAndTechnicalAccuracyPreflight(xml, archType);
 

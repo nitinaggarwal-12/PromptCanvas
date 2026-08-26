@@ -3,6 +3,7 @@ import { customizeDiagramTemplateWithGemini, CustomizationResult } from './gemin
 import { injectUseCaseFlavor } from './diagramCleaner';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
+import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from './db';
 
 export interface UnifiedDiagramRequest {
@@ -108,10 +109,15 @@ export async function executeUnifiedDiagramPipeline(
     if (latestVersion && latestVersion.xml_content && !isExistingXmlBlank) {
       targetXml = latestVersion.xml_content;
       existingPrompt = latestVersion.prompt || prompt;
+      if (!req.architectureType && latestVersion.architecture_type) {
+        effectiveArchType = latestVersion.architecture_type;
+      }
     } else {
       targetXml = baseTemplateXml;
     }
   }
+
+  const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
   if (isTrivialPrompt) {
@@ -120,6 +126,14 @@ export async function executeUnifiedDiagramPipeline(
       reasoning: `Master Reference Architecture Blueprint for ${effectiveArchType}.`,
       businessUsecase: `Canonical enterprise architecture model for ${effectiveArchType}.`,
       technicalUsecase: `Zero-collision calibrated widescreen 1400x800 2D layout.`
+    };
+  } else if (isAestheticPrompt) {
+    const polished = applyBlueprintVisualSystem(targetXml || baseTemplateXml || '', effectiveArchType);
+    customResult = {
+      xml: polished,
+      reasoning: `Applied boardroom-grade visual styling, typography scaling, and high-contrast styling.`,
+      businessUsecase: `Preserved all domain architecture entities with enhanced executive presentation aesthetics.`,
+      technicalUsecase: `Zero-distortion 2D bounding box layout with calibrated contrast and stroke hierarchy.`
     };
   } else {
     // 3. Prompt Gemini with Structured AST Schema to customize domain entities & text
@@ -132,12 +146,13 @@ export async function executeUnifiedDiagramPipeline(
     try {
       customResult = await customizeDiagramTemplateWithGemini(targetXml || baseTemplateXml || '', compositePrompt, effectiveArchType);
     } catch (err) {
-      console.warn('[Unified Diagram Engine Fallback] Gemini customizer failed, applying algorithmic injection:', err);
-      const flavoredXml = injectUseCaseFlavor(targetXml || baseTemplateXml || '', prompt, prompt);
-      const healed = preflightVerifyAndHealXmlAcrossAll6Audits(flavoredXml, effectiveArchType);
+      console.warn('[Unified Diagram Engine Fallback] Gemini customizer failed, applying visual polish:', err);
+      const fallbackXml = targetXml || baseTemplateXml || '';
+      const safeXml = diagramId ? fallbackXml : injectUseCaseFlavor(fallbackXml, prompt, prompt);
+      const healed = preflightVerifyAndHealXmlAcrossAll6Audits(safeXml, effectiveArchType);
       customResult = {
         xml: healed,
-        reasoning: `Tailored ${effectiveArchType} architecture for "${prompt}".`,
+        reasoning: `Preserved and refined ${effectiveArchType} architecture for "${prompt}".`,
         businessUsecase: `Consolidated enterprise architecture model for ${effectiveArchType}.`,
         technicalUsecase: `Zero-collision 2D layout with domain entity alignment.`
       };

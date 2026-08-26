@@ -214,29 +214,27 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
         const match = nodeRegex.exec(customizedXml);
         if (!match) continue;
 
-        const existingVal = match[2];
-        const isHeaderOrText = !existingVal.includes('&lt;table') && !existingVal.includes('<table');
+        const title = custom.title || (typeof custom === 'string' ? custom : '');
+        const subtitle = custom.subtitle || '';
         
-        if (isHeaderOrText) {
-          const newVal = custom.title || (typeof custom === 'string' ? custom : existingVal);
-          customizedXml = customizedXml.replace(nodeRegex, `$1${escapeXmlText(newVal)}$3`);
-        } else {
-          // It's a rich card! Use existing logo or Google Cloud logo
-          const existingLogo = logoMap.get(nodeId) || 'https://api.iconify.design/logos:google-cloud.svg';
-          const title = custom.title || 'Enterprise Service';
-          const subtitle = custom.subtitle || '';
-          const badgeText = custom.badge || (isIteration ? 'Refined' : '');
-          const badgeHtml = badgeText ? ` <span style="font-size:9px;background:#DCFCE7;color:#15803D;padding:2px 6px;border-radius:4px;font-weight:bold;">${badgeText}</span>` : '';
-
-          const rawHtml = `<table style="width:100%;"><tr><td style="width:38px;"><img src="${existingLogo}" width="28" height="28"/></td><td><b style="font-size:13px;color:#0F172A;">${title}</b>${badgeHtml}<br/><span style="font-size:10px;color:#334155;">${subtitle}</span></td></tr></table>`;
-          const encodedHtml = rawHtml
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
-
-          customizedXml = customizedXml.replace(nodeRegex, `$1${encodedHtml}$3`);
+        let newVal = existingVal;
+        if (title) {
+          if (/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i.test(newVal)) {
+            newVal = newVal.replace(/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (/<b\b[^>]*>(.*?)<\/b>/i.test(newVal)) {
+            newVal = newVal.replace(/(<b\b[^>]*>)(.*?)(<\/b>)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (isHeaderOrText) {
+            newVal = escapeXmlText(title);
+          }
         }
+        if (subtitle) {
+          if (/(&lt;span\b[^&]*?color:[^&]*?334155[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i.test(newVal)) {
+            newVal = newVal.replace(/(&lt;span\b[^&]*?color:[^&]*?334155[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
+          } else if (/<span\b[^>]*?color:[^>]*?334155[^>]*?>(.*?)<\/span>/i.test(newVal)) {
+            newVal = newVal.replace(/(<span\b[^>]*?color:[^>]*?334155[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(subtitle)}$3`);
+          }
+        }
+        customizedXml = customizedXml.replace(nodeRegex, `$1${newVal}$3`);
       }
     }
 
