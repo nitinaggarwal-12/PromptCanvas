@@ -242,19 +242,7 @@ ${origin ? `<base href="${origin}/">` : ''}
     if (document.getElementById('mxgraph-script-element')) return;
     const script = document.createElement('script');
     script.id = 'mxgraph-script-element';
-    
-    var originUrl = ${JSON.stringify(origin)};
-    if (!originUrl && typeof window !== 'undefined') {
-      try {
-        if (window.location && window.location.origin && window.location.origin !== 'null' && !window.location.origin.startsWith('about:')) {
-          originUrl = window.location.origin;
-        } else if (window.parent && window.parent.location && window.parent.location.origin && window.parent.location.origin !== 'null') {
-          originUrl = window.parent.location.origin;
-        }
-      } catch(e) {}
-    }
-    var fullScriptUrl = (originUrl ? originUrl.replace(/\/$/, '') : '') + '/viewer-static.min.js';
-    script.src = fullScriptUrl;
+    script.src = ${JSON.stringify(scriptUrl)};
     script.onload = function() {
       if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
         try { window.GraphViewer.processElements(); } catch(e) {}

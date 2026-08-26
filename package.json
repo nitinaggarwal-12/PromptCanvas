@@ -25,7 +25,8 @@
     "test:canonical": "tsx scripts/test_canonical_full_suite.ts",
     "test:docgen:master": "tsx scripts/master_docgen_audit_harness.ts",
     "test:enterprise:gaps": "tsx scripts/test_partial_gap_verification_suite.ts",
-    "test:pending:all": "tsx scripts/test_pending_gap_verification_suite.ts"
+    "test:pending:all": "tsx scripts/test_pending_gap_verification_suite.ts",
+    "test:e2e:browser": "tsx scripts/e2e_real_browser_journey.ts"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
