@@ -162,6 +162,53 @@ function DashboardContent() {
     };
   }, [diagrams, docProjects]);
 
+  // Helper to resolve authentic canonical Draw.io XML
+  const resolveCanonicalXml = (diag: DiagramRecord | null, verNumber?: number): string => {
+    if (!diag) return '';
+    
+    // 1. Check if architecture_type matches canonical template ID
+    const archType = diag.architecture_type || '';
+    if (archType.startsWith('canonical_')) {
+      const tplId = archType.replace('canonical_', '');
+      const tpl = CANONICAL_TEMPLATES.find(t => t.id === tplId);
+      if (tpl) return tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+    }
+
+    // 2. Check if name or prompt references a template number #XX or canonical title
+    const numMatch = diag.name.match(/#(\d+)/);
+    if (numMatch) {
+      const numStr = numMatch[1];
+      // e.g. 441 -> 44, 05 -> 05, 7 -> 07
+      const normalizedId = numStr.length === 3 ? numStr.slice(0, 2) : numStr.length === 1 ? `0${numStr}` : numStr.slice(-2);
+      const tpl = CANONICAL_TEMPLATES.find(t => t.id === normalizedId);
+      if (tpl) return tpl.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+    }
+
+    const tplByName = CANONICAL_TEMPLATES.find(t => 
+      diag.name.toLowerCase().includes(t.name.toLowerCase()) || 
+      (diag.prompt && diag.prompt.toLowerCase().includes(t.name.toLowerCase()))
+    );
+    if (tplByName) {
+      return tplByName.generateXml(selectedDomain !== 'All' ? selectedDomain : 'biopharma', isLight ? 'light' : 'dark');
+    }
+
+    // 3. Check version XML
+    if (verNumber && diag.versions) {
+      const ver = diag.versions.find(v => v.version_number === verNumber);
+      if (ver && ver.xml_content && ver.xml_content.includes('<mxfile')) {
+        return ver.xml_content;
+      }
+    }
+
+    // 4. Default to diag xml_content if present and valid
+    if (diag.xml_content && diag.xml_content.includes('<mxfile')) {
+      return diag.xml_content;
+    }
+
+    // 5. Fallback to Blueprint 01 or matching canonical
+    return CANONICAL_TEMPLATES[0].generateXml('biopharma', isLight ? 'light' : 'dark');
+  };
+
   // Filtered Diagrams
   const filteredDiagrams = useMemo(() => {
     return diagrams.filter((d) => {
@@ -904,11 +951,7 @@ function DashboardContent() {
                 {/* Right: Vector Canvas Preview */}
                 <div className="flex-1 bg-white relative overflow-hidden">
                   <DiagramViewerRenderSafe
-                    xml={
-                      inspectDiagram.versions?.find(v => v.version_number === selectedVersionNumber)?.xml_content ||
-                      inspectDiagram.xml_content ||
-                      ''
-                    }
+                    xml={resolveCanonicalXml(inspectDiagram, selectedVersionNumber)}
                     theme={theme as any}
                     zoomLevel={100}
                   />
