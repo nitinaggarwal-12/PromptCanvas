@@ -40,28 +40,18 @@ interface DocGenHistoryModalProps {
   isLight: boolean;
 }
 
-export default function DocGenHistoryModal({
-  isOpen,
-  onClose,
-  onSelectProject,
-  isLight,
-}: DocGenHistoryModalProps) {
-  const [projects, setProjects] = useState<HistoricalProjectItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+export function loadAllHistoricalProjects(): HistoricalProjectItem[] {
+  if (typeof window === 'undefined') return [];
 
-  // Scan localStorage for all saved promptcanvas_docgen_versions_* keys
-  useEffect(() => {
-    if (!isOpen || typeof window === 'undefined') return;
-
-    try {
-      const items: HistoricalProjectItem[] = [];
-      for (let i = 0; i < window.localStorage.length; i++) {
-        const key = window.localStorage.key(i);
-        if (key && key.startsWith('promptcanvas_docgen_versions_')) {
-          const projId = key.replace('promptcanvas_docgen_versions_', '');
-          const raw = window.localStorage.getItem(key);
-          if (raw) {
+  try {
+    const items: HistoricalProjectItem[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (key && key.startsWith('promptcanvas_docgen_versions_')) {
+        const projId = key.replace('promptcanvas_docgen_versions_', '');
+        const raw = window.localStorage.getItem(key);
+        if (raw) {
+          try {
             const snapshots = JSON.parse(raw);
             if (Array.isArray(snapshots) && snapshots.length > 0) {
               const latest = snapshots[0];
@@ -85,52 +75,71 @@ export default function DocGenHistoryModal({
                 scopeSummary,
               });
             }
-          }
+          } catch {}
         }
       }
-
-      // If no local history found, populate demo active historical projects
-      if (items.length === 0) {
-        items.push(
-          {
-            id: 'proj_aeronode_981',
-            title: 'AeroNode Autonomous Drone Delivery Fleet Mesh',
-            archetypeId: 'sdd',
-            domainId: 'manufacturing',
-            docVersion: 'v1.2',
-            snapshotCount: 4,
-            lastUpdated: new Date(Date.now() - 3600000).toISOString(),
-            scopeSummary: 'Autonomous telemetry, FAA Part 135 UTM airspace routing, and Spanner state mesh.',
-          },
-          {
-            id: 'proj_voltgrid_774',
-            title: 'VoltGrid Smart EV & Battery Storage (BESS / V2G)',
-            archetypeId: 'tdd',
-            domainId: 'energy',
-            docVersion: 'v1.0',
-            snapshotCount: 2,
-            lastUpdated: new Date(Date.now() - 86400000).toISOString(),
-            scopeSummary: 'NERC-CIP high impact BESS substation synchronization and automated frequency regulation.',
-          },
-          {
-            id: 'proj_apexpay_332',
-            title: 'ApexPay Ultra-Low Latency FX Settlement Mesh',
-            archetypeId: 'fdd',
-            domainId: 'fintech',
-            docVersion: 'v2.0',
-            snapshotCount: 6,
-            lastUpdated: new Date(Date.now() - 172800000).toISOString(),
-            scopeSummary: 'Sub-50ms ISO 20022 clearing saga, SEC 15c3-5 risk firewall, and Plaid wire routing.',
-          }
-        );
-      }
-
-      // Sort by lastUpdated descending
-      items.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
-      setProjects(items);
-    } catch (err) {
-      console.warn('Failed to load historical projects:', err);
     }
+
+    // If no local history found, populate demo active historical projects
+    if (items.length === 0) {
+      items.push(
+        {
+          id: 'proj_aeronode_981',
+          title: 'AeroNode Autonomous Drone Delivery Fleet Mesh',
+          archetypeId: 'sdd',
+          domainId: 'manufacturing',
+          docVersion: 'v1.2',
+          snapshotCount: 4,
+          lastUpdated: new Date(Date.now() - 3600000).toISOString(),
+          scopeSummary: 'Autonomous telemetry, FAA Part 135 UTM airspace routing, and Spanner state mesh.',
+        },
+        {
+          id: 'proj_voltgrid_774',
+          title: 'VoltGrid Smart EV & Battery Storage (BESS / V2G)',
+          archetypeId: 'tdd',
+          domainId: 'energy',
+          docVersion: 'v1.0',
+          snapshotCount: 2,
+          lastUpdated: new Date(Date.now() - 86400000).toISOString(),
+          scopeSummary: 'NERC-CIP high impact BESS substation synchronization and automated frequency regulation.',
+        },
+        {
+          id: 'proj_apexpay_332',
+          title: 'ApexPay Ultra-Low Latency FX Settlement Mesh',
+          archetypeId: 'fdd',
+          domainId: 'fintech',
+          docVersion: 'v2.0',
+          snapshotCount: 6,
+          lastUpdated: new Date(Date.now() - 172800000).toISOString(),
+          scopeSummary: 'Sub-50ms ISO 20022 clearing saga, SEC 15c3-5 risk firewall, and Plaid wire routing.',
+        }
+      );
+    }
+
+    // Sort by lastUpdated descending
+    items.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+    return items;
+  } catch (err) {
+    console.warn('Failed to load historical projects:', err);
+    return [];
+  }
+}
+
+export default function DocGenHistoryModal({
+  isOpen,
+  onClose,
+  onSelectProject,
+  isLight,
+}: DocGenHistoryModalProps) {
+  const [projects, setProjects] = useState<HistoricalProjectItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Scan localStorage for all saved promptcanvas_docgen_versions_* keys
+  useEffect(() => {
+    if (!isOpen) return;
+    const items = loadAllHistoricalProjects();
+    setProjects(items);
   }, [isOpen]);
 
   if (!isOpen) return null;
