@@ -2701,11 +2701,11 @@ function DocGenContent() {
                         16:9 GCP
                       </span>
                       <Link
-                        href={`/workspace?blueprint=${currentPreviewTemplateId}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                        href={`/canonical/${currentPreviewTemplateId}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
                         className="text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
-                        title="Open directly in Canvas Editor"
+                        title="Open in Canonical Blueprint Viewer"
                       >
-                        <span>Canvas</span>
+                        <span>Canonical #{currentPreviewTemplateId}</span>
                         <ExternalLink className="w-3 h-3" />
                       </Link>
                     </div>
@@ -3168,11 +3168,11 @@ function DocGenContent() {
                   {/* Standalone Diagram Action Toolbar */}
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      href={`/workspace?blueprint=${(diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '01')}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
+                      href={`/canonical/${(diagramSlotsList[activeDiagramSlotIndex]?.templateId || selectedDiagramTemplateId || '01')}?domain=${selectedDomain}&title=${encodeURIComponent(projectTitle)}`}
                       className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-teal-accent text-bg-dark hover:brightness-110 transition shadow-sm font-extrabold cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Open in Canvas Editor</span>
+                      <span>Open in Canonical Blueprints</span>
                     </Link>
                     <button
                       onClick={() => setIsSlideDeckOpen(true)}

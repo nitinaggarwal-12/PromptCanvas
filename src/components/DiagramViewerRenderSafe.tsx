@@ -226,7 +226,7 @@ export default function DiagramViewerRenderSafe({
   }
 
   function finishPresentation() {
-    if (canvasContainer && compactViewport) {
+    if (canvasContainer) {
       canvasContainer.scrollTop = 0;
       canvasContainer.scrollLeft = 0;
     }
