@@ -127,6 +127,24 @@ export const DIAGRAM_FAMILY_PRESETS = [
   { id: 'business', label: 'Value Stream & Capability', icon: '📊' },
 ];
 
+export const FAMILY_TO_TEMPLATE_IDS: Record<string, string[]> = {
+  all: CANONICAL_TEMPLATES.map(t => t.id),
+  structure: ['06', '07', '08', '12', '14', '46'],
+  flow: ['03', '05', '09', '10', '11', '13', '20', '43'],
+  infrastructure: ['15', '16', '19', '34', '37', '38', '48'],
+  data: ['09', '14', '29', '42', '43'],
+  ai: ['23', '24', '25', '26', '40', '41', '47'],
+  security: ['17', '18', '27', '39', '44'],
+  business: ['01', '02', '04', '30', '31', '32', '33', '35', '36', '49', '50'],
+};
+
+export function getTemplatesForFamily(familyId: string): CanonicalTemplate[] {
+  const ids = FAMILY_TO_TEMPLATE_IDS[familyId] || FAMILY_TO_TEMPLATE_IDS.all;
+  return ids
+    .map(id => CANONICAL_TEMPLATES.find(t => t.id === id))
+    .filter((t): t is CanonicalTemplate => t !== undefined);
+}
+
 export function detectDomainFromPrompt(title: string, prompt: string, fallbackDomain: string = 'general'): string {
   const combined = `${title} ${prompt}`.toLowerCase();
   
@@ -504,10 +522,41 @@ function DocGenContent() {
 
   const [selectedArchetypeId, setSelectedArchetypeId] = useState<ArchetypeId>('sdd');
   const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
-  const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Genomics & Regulatory AI Platform');
+  const [projectName, setProjectName] = useState<string>('Bio-Pharma Clinical Platform');
+  const [useCaseName, setUseCaseName] = useState<string>('Genomics Analysis & Regulatory AI');
+  const [projectTitle, setProjectTitle] = useState<string>('Bio-Pharma Clinical Platform — Genomics Analysis & Regulatory AI');
   const [projectScopePrompt, setProjectScopePrompt] = useState<string>(
     'An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.'
   );
+
+  const handleUpdateProjectName = (name: string) => {
+    setProjectName(name);
+    const combined = name && useCaseName ? `${name} — ${useCaseName}` : (name || useCaseName || 'Enterprise Architecture Platform');
+    setProjectTitle(combined);
+  };
+
+  const handleUpdateUseCaseName = (uc: string) => {
+    setUseCaseName(uc);
+    const combined = projectName && uc ? `${projectName} — ${uc}` : (projectName || uc || 'Enterprise Architecture Platform');
+    setProjectTitle(combined);
+  };
+
+  const handleUpdateProjectTitle = (title: string) => {
+    setProjectTitle(title);
+    if (title.includes('—')) {
+      const parts = title.split('—').map(p => p.trim());
+      if (parts.length >= 2) {
+        setProjectName(parts[0]);
+        setUseCaseName(parts.slice(1).join(' — '));
+      }
+    } else if (title.includes(' - ')) {
+      const parts = title.split(' - ').map(p => p.trim());
+      if (parts.length >= 2) {
+        setProjectName(parts[0]);
+        setUseCaseName(parts.slice(1).join(' - '));
+      }
+    }
+  };
 
   // Studio Scope Mode: 'both' | 'diagrams' | 'documents' (Defaults to 'diagrams')
   const modeParam = searchParams.get('mode');
@@ -751,14 +800,15 @@ function DocGenContent() {
     try {
       const rawXml = tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
       const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
-      if (projectTitle || projectScopePrompt) {
-        return injectUseCaseFlavor(domainCleaned, projectTitle || tpl.name, projectScopePrompt);
+      const titleToInject = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName || useCaseName || tpl.name);
+      if (titleToInject || projectScopePrompt) {
+        return injectUseCaseFlavor(domainCleaned, titleToInject || tpl.name, projectScopePrompt);
       }
       return domainCleaned;
     } catch {
       return tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
     }
-  }, [currentPreviewTemplateId, selectedDomain, isLight, projectTitle, projectScopePrompt]);
+  }, [currentPreviewTemplateId, selectedDomain, isLight, projectTitle, projectName, useCaseName, projectScopePrompt]);
 
   const handleOpenPreview = (meta: DocArchetypeMeta) => {
     setPreviewModalDoc(meta);
@@ -2207,7 +2257,9 @@ function DocGenContent() {
                         Step 1 &bull; Configuration
                       </span>
                       <span className="text-[10px] font-bold text-slate-400">
-                        {studioMode === 'diagrams' ? '50 Blueprints Available' : '17 Archetypes Available'}
+                        {studioMode === 'diagrams' 
+                          ? `${getTemplatesForFamily(selectedDiagramFamily).length} Blueprints in Category (${CANONICAL_TEMPLATES.length} Total)` 
+                          : '17 Archetypes Available'}
                       </span>
                     </div>
 
@@ -2220,7 +2272,7 @@ function DocGenContent() {
                             type="button"
                             onClick={() => {
                               setSelectedDiagramFamily(fam.id);
-                              const matchingTpls = CANONICAL_TEMPLATES.filter((t) => fam.id === 'all' || (t.family && t.family.toLowerCase().includes(fam.id.toLowerCase())));
+                              const matchingTpls = getTemplatesForFamily(fam.id);
                               if (matchingTpls.length > 0 && !matchingTpls.some(t => t.id === selectedDiagramTemplateId)) {
                                 const newId = matchingTpls[0].id;
                                 setSelectedDiagramTemplateId(newId);
@@ -2231,7 +2283,7 @@ function DocGenContent() {
                             }}
                             className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
                               selectedDiagramFamily === fam.id
-                                ? 'bg-teal-600 text-white shadow-sm font-black'
+                                ? 'bg-teal-600 text-white shadow-sm font-black ring-2 ring-teal-400/30'
                                 : isLight
                                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                                 : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
@@ -2278,21 +2330,13 @@ function DocGenContent() {
                           </span>
                         </div>
                         <span className="text-[11px] font-mono font-bold text-teal-700 dark:text-teal-400">
-                          #{selectedDiagramTemplateId || '01'}
+                          #{selectedDiagramTemplateId || '01'} &bull; {CANONICAL_TEMPLATES.find(t => t.id === selectedDiagramTemplateId)?.name || 'System Context'}
                         </span>
                       </div>
 
-                      {/* Popular Blueprint Quick Pills */}
+                      {/* Dynamic Blueprint Quick Pills for Selected Category */}
                       <div className="flex flex-wrap items-center gap-1">
-                        {[
-                          { id: '01', label: '#01 System Context' },
-                          { id: '08', label: '#08 Component Arch' },
-                          { id: '17', label: '#17 Landing Zone' },
-                          { id: '23', label: '#23 Zero-Trust' },
-                          { id: '29', label: '#29 Lakehouse' },
-                          { id: '34', label: '#34 Vertex RAG' },
-                          { id: '41', label: '#41 Multi-Agent' },
-                        ].map((bp) => (
+                        {getTemplatesForFamily(selectedDiagramFamily).slice(0, 8).map((bp) => (
                           <button
                             key={bp.id}
                             type="button"
@@ -2304,13 +2348,13 @@ function DocGenContent() {
                             }}
                             className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                               selectedDiagramTemplateId === bp.id
-                                ? 'bg-teal-600 text-white shadow-sm'
+                                ? 'bg-teal-600 text-white shadow-sm font-black'
                                 : isLight
                                 ? 'bg-white text-slate-700 hover:bg-teal-100 border border-slate-200'
                                 : 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
                             }`}
                           >
-                            {bp.label}
+                            #{bp.id} {bp.name.split(' ')[0]}
                           </button>
                         ))}
                       </div>
@@ -2330,34 +2374,63 @@ function DocGenContent() {
                             : 'bg-slate-900 border-teal-500/40 text-white'
                         }`}
                       >
-                        {CANONICAL_TEMPLATES
-                          .filter((t) => selectedDiagramFamily === 'all' || (t.family && t.family.toLowerCase().includes(selectedDiagramFamily.toLowerCase())))
-                          .map((t) => (
-                            <option key={t.id} value={t.id} className="py-1">
-                              {t.id} - {t.name} [{t.family || 'Canonical'}]
-                            </option>
-                          ))}
+                        {getTemplatesForFamily(selectedDiagramFamily).map((t) => (
+                          <option key={t.id} value={t.id} className="py-1">
+                            {t.id} - {t.name} [{t.family || 'Canonical'}]
+                          </option>
+                        ))}
                       </select>
                     </div>
                   )}
 
-                  {/* System Title */}
+                  {/* Connected Project Name & Use Case Name Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
+                        1. Project / Program Name
+                      </label>
+                      <input
+                        type="text"
+                        value={projectName}
+                        onChange={(e) => handleUpdateProjectName(e.target.value)}
+                        placeholder="e.g. Bio-Pharma Clinical Platform"
+                        className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                          isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
+                        2. Architectural Use Case Name
+                      </label>
+                      <input
+                        type="text"
+                        value={useCaseName}
+                        onChange={(e) => handleUpdateUseCaseName(e.target.value)}
+                        placeholder="e.g. Genomics Analysis & Regulatory AI"
+                        className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                          isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                        }`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Combined Architecture Title */}
                   <div>
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
-                      1. System / Architecture Title
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                        3. Combined Architecture Title
+                      </label>
+                      <span className="text-[10px] font-mono text-teal-600 font-bold">
+                        Auto-Synced &bull; Diagram Header Brand
+                      </span>
+                    </div>
                     <input
                       type="text"
                       value={projectTitle}
-                      onChange={(e) => {
-                        const newTitle = e.target.value;
-                        setProjectTitle(newTitle);
-                        const autoDomain = detectDomainFromPrompt(newTitle, projectScopePrompt, selectedDomain);
-                        if (autoDomain && autoDomain !== selectedDomain) {
-                          setSelectedDomain(autoDomain);
-                        }
-                      }}
-                      placeholder="e.g. AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh"
+                      onChange={(e) => handleUpdateProjectTitle(e.target.value)}
+                      placeholder="e.g. Bio-Pharma Clinical Platform — Genomics Analysis & Regulatory AI"
                       className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                       }`}
@@ -2368,7 +2441,7 @@ function DocGenContent() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                        2. Architectural Scope &amp; Topology Requirements Prompt
+                        4. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-400">
                         Gemini 3.7 &bull; Real-Time AST
@@ -2396,7 +2469,7 @@ function DocGenContent() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                        3. Enterprise Domain Flavor
+                        5. Enterprise Domain Flavor
                       </label>
                       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -2442,7 +2515,9 @@ function DocGenContent() {
                         type="button"
                         onClick={() => {
                           setSelectedDomain('manufacturing');
-                          setProjectTitle('AeroNode Autonomous Last-Mile Drone Delivery & Micro-Hub Fleet Mesh');
+                          setProjectName('AeroNode Aviation');
+                          setUseCaseName('Autonomous Drone Delivery & Airspace UTM');
+                          setProjectTitle('AeroNode Aviation — Autonomous Drone Delivery & Airspace UTM');
                           setProjectScopePrompt('I want to architect a nationwide autonomous drone delivery and automated micro-hub fulfillment network called AeroNode. The system coordinates real-time collision-avoidance telemetry across 25,000+ autonomous delivery drones via 5G Ultra-Wideband and ADS-B mesh networks. It requires sub-20ms UTM (Unmanned Traffic Management) airspace routing, automated robotic payload swapping at local battery swap stations, dynamic weather radar ingestion via NOAA APIs, and FAA Part 135 continuous flight certification logging.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
@@ -2459,8 +2534,10 @@ function DocGenContent() {
                       <button
                         type="button"
                         onClick={() => {
-                          setSelectedDomain('manufacturing');
-                          setProjectTitle('VoltGrid Autonomous EV Fleet Charging & Microgrid Energy Exchange');
+                          setSelectedDomain('energy');
+                          setProjectName('VoltGrid Energy Hub');
+                          setUseCaseName('Smart EV Microgrid & Battery Storage BESS');
+                          setProjectTitle('VoltGrid Energy Hub — Smart EV Microgrid & Battery Storage BESS');
                           setProjectScopePrompt('I want to architect a nationwide decentralized smart EV fast-charging network and dynamic microgrid energy trading platform called VoltGrid. The system must ingest high-frequency telemetry from 50,000+ DC fast chargers via OCPP 2.0.1 and ISO 15118 (Plug & Charge). It requires sub-50ms dynamic load balancing across local Battery Energy Storage Systems (BESS), solar microgrids, and the utility distribution grid.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
@@ -2478,7 +2555,9 @@ function DocGenContent() {
                         type="button"
                         onClick={() => {
                           setSelectedDomain('biopharma');
-                          setProjectTitle('Bio-Pharma FDA 21 CFR Part 11 PV Platform');
+                          setProjectName('Bio-Pharma Clinical Platform');
+                          setUseCaseName('FDA 21 CFR Part 11 PV Platform');
+                          setProjectTitle('Bio-Pharma Clinical Platform — FDA 21 CFR Part 11 PV Platform');
                           setProjectScopePrompt('Automated pharmacovigilance adverse event triage with Gemini 2.5 flash reasoning, GxP audit ledgers, and human-in-the-loop safety board review.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
@@ -2496,7 +2575,9 @@ function DocGenContent() {
                         type="button"
                         onClick={() => {
                           setSelectedDomain('fintech');
-                          setProjectTitle('Autonomous Payments & Real-Time Fraud Hub');
+                          setProjectName('NexusFin Global Wealth');
+                          setUseCaseName('Autonomous Payments & Real-Time Fraud Hub');
+                          setProjectTitle('NexusFin Global Wealth — Autonomous Payments & Real-Time Fraud Hub');
                           setProjectScopePrompt('Real-time payment transaction monitoring, Flink stream clustering, ISO 20022 messaging, and automated SAR filing.');
                         }}
                         className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center gap-2 cursor-pointer group ${
@@ -2721,13 +2802,15 @@ function DocGenContent() {
                   {/* Interactive Live Diagram Viewport */}
                   <div className="p-3 bg-white dark:bg-[#070A13] flex items-center justify-center min-h-[480px] h-[520px] max-h-[580px] overflow-hidden">
                     {studioMode === 'diagrams' ? (
-                      <div className="w-full h-full flex items-center justify-center aspect-[16/9] min-h-[460px]">
+                      <div className="w-full h-full min-h-[460px] flex items-center justify-center">
                         <DiagramViewerRenderSafe
+                          key={`docgen_studio_preview_${selectedDiagramTemplateId}_${selectedDomain}_${isLight ? 'light' : 'dark'}_${projectTitle.length}_${projectName.length}_${useCaseName.length}`}
                           diagramId={selectedDiagramTemplateId}
                           diagramType={`canonical_${selectedDiagramTemplateId || '01'}`}
                           xml={liveStudioDiagramXml}
                           aspectRatioId="16:9"
                           bgTheme={isLight ? 'light' : 'dark'}
+                          useCaseName={useCaseName || projectTitle}
                         />
                       </div>
                     ) : studioMode === 'both' ? (

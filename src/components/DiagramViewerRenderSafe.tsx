@@ -235,12 +235,26 @@ ${origin ? `<base href="${origin}/">` : ''}
     suppressOversizedBlackOverlay();
   }
 
+  let renderAttempts = 0;
+  let renderSucceeded = false;
+
   function triggerRender() {
+    renderAttempts++;
     if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
-      try { window.GraphViewer.processElements(); } catch(e) {}
+      try {
+        window.GraphViewer.processElements();
+        renderSucceeded = true;
+      } catch(e) {
+        console.warn('[DiagramViewer] processElements warning:', e);
+      }
     }
     requestAnimationFrame(finishPresentation);
     [20, 80, 200, 500, 1000].forEach(function(ms) { setTimeout(finishPresentation, ms); });
+
+    // Ensure asynchronous or slow script executions on cloud deployments are retried until rendered
+    if (!renderSucceeded && renderAttempts < 40) {
+      setTimeout(triggerRender, 50);
+    }
   }
 </script>
 <script src="${scriptUrl}" onload="triggerRender()" onerror="this.src='/viewer-static.min.js';"></script>
@@ -251,6 +265,9 @@ ${origin ? `<base href="${origin}/">` : ''}
     window.addEventListener('DOMContentLoaded', triggerRender);
     window.addEventListener('load', triggerRender);
   }
+  // Secondary fallback timer for slow mobile/cellular networks
+  setTimeout(triggerRender, 300);
+  setTimeout(triggerRender, 800);
 </script>
 </body>
 </html>`;
