@@ -1,4 +1,5 @@
 import { XMLParser, XMLBuilder } from 'fast-xml-parser';
+import { applyBlueprintSemanticIcons } from './blueprintSemanticIcons';
 
 export interface CleanVariantResult {
   success: boolean;
@@ -1681,7 +1682,7 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     }
   }
 
-  return sanitizeDrawioXmlAttributes(updatedXml);
+  return sanitizeDrawioXmlAttributes(applyBlueprintSemanticIcons(updatedXml));
 }
 
 /**

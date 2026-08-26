@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && NODE_OPTIONS=--max-old-space-size=4096 next build",
+    "build": "npm run validate:blueprints && npm run validate:blueprint61 && npm run validate:render-safety && npm run validate:canvas && NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "next start",
     "lint": "eslint",
     "validate": "npx tsx bin/validate-cli.ts",
@@ -15,6 +15,7 @@
     "validate:blueprints": "npx tsx scripts/check-blueprint-catalog-quality.ts",
     "validate:blueprint61": "npx tsx scripts/check-blueprint61-catalog.ts",
     "validate:render-safety": "npx tsx scripts/check-blueprint-render-safety.ts",
+    "validate:canvas": "npx tsx scripts/check-canvas-generator-quality.ts",
     "validate:visual": "npx tsx scripts/visual-qa-blueprints.ts",
     "test": "vitest run",
     "eval:geometry": "tsx evals/score_geometry.ts",
