@@ -686,10 +686,24 @@ function DocGenContent() {
 
     if (projParam) setProjectId(projParam);
 
+    const tplParam = searchParams.get('tpl') || searchParams.get('blueprint') || searchParams.get('template');
+    if (tplParam) {
+      setSelectedDiagramTemplateId(tplParam);
+      setDiagramSlotsList((prev) =>
+        prev.map((slot, idx) => (idx === 0 ? { ...slot, templateId: tplParam } : slot))
+      );
+      if (!modeParam) {
+        setStudioMode('diagrams');
+      }
+    }
+
     if (docParam) {
       const matched = DOC_ARCHETYPES_META.find((m) => m.id === docParam);
       if (matched) {
         setSelectedArchetypeId(docParam);
+        if (!modeParam) {
+          setStudioMode('both');
+        }
         if (tabParam === 'studio' || projParam || domainParam || titleParam) {
           setActiveTab('studio');
           // Auto-generate if custom project link
