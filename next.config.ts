@@ -55,7 +55,47 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/canonical-templates',
-        destination: '/canonical',
+        destination: '/diablueprint',
+        permanent: true,
+      },
+      {
+        source: '/Studio',
+        destination: '/studio',
+        permanent: true,
+      },
+      {
+        source: '/DiaGen',
+        destination: '/diagen',
+        permanent: true,
+      },
+      {
+        source: '/DocGen',
+        destination: '/docgen',
+        permanent: true,
+      },
+      {
+        source: '/DiaBluePrint',
+        destination: '/diablueprint',
+        permanent: true,
+      },
+      {
+        source: '/DocBluePrint',
+        destination: '/docblueprint',
+        permanent: true,
+      },
+      {
+        source: '/Audit',
+        destination: '/audit',
+        permanent: true,
+      },
+      {
+        source: '/Dashboard',
+        destination: '/dashboard',
+        permanent: true,
+      },
+      {
+        source: '/History',
+        destination: '/history',
         permanent: true,
       },
     ];
