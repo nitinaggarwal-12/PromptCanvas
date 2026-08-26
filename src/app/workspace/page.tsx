@@ -117,7 +117,7 @@ import { UseCaseIntakeModal } from '@/components/UseCaseIntakeModal';
 import { ExecutiveStrategicSummaryModal } from '@/components/ExecutiveStrategicSummaryModal';
 import { rearrangeDiagramForAspectRatio } from '@/lib/aspectRatioLayout';
 import { ARCHITECTURE_TYPES, BUSINESS_ARCHITECTURE_TYPES, TECHNICAL_ARCHITECTURE_TYPES, getArchitectureTypeById, getDefaultXmlForArchitecture, normalizeArchitectureId } from '@/lib/architectureTypes';
-import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
+import { CANONICAL_TEMPLATES, injectDomainFlavorXml } from '@/lib/canonical/canonicalTemplates';
 import { getExactAgenticMeshXml } from '@/lib/newEnterpriseReferenceXmls';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
@@ -1186,20 +1186,45 @@ function WorkspaceContent() {
     const promptParam = searchParams.get('prompt');
 
     if (archParam) {
-      const meta = getBlueprintMetadataById(archParam);
-      const targetCombinedId = meta ? meta.combinedId : archParam;
-      if (tabParam === 'templates') {
-        setPreviewModalTemplateId(targetCombinedId);
-      } else {
-        setSelectedArchType(targetCombinedId);
-        const defaultXml = getDefaultXmlForArchitecture(targetCombinedId, titleParam || domainParam || undefined, promptParam || titleParam || undefined);
-        if (defaultXml) {
-          activeXmlRef.current = defaultXml;
-          setCustomXml(defaultXml);
+      const canonicalMatch = CANONICAL_TEMPLATES.find(
+        (c) => c.id === archParam || c.id === archParam.padStart(2, '0') || c.id === `canonical_${archParam}`
+      );
+      if (canonicalMatch) {
+        setSelectedArchType(`canonical_${canonicalMatch.id}`);
+        setNewDiagramName(titleParam || canonicalMatch.name);
+        try {
+          const rawXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
+          const flavored = injectDomainFlavorXml(rawXml, domainParam || 'biopharma');
+          const finalXml = (titleParam || promptParam)
+            ? injectUseCaseFlavor(flavored, titleParam || canonicalMatch.name, promptParam)
+            : flavored;
+          activeXmlRef.current = finalXml;
+          setCustomXml(finalXml);
+        } catch {
+          const fallbackXml = canonicalMatch.generateXml(domainParam || 'biopharma', isLight ? 'light' : 'dark');
+          activeXmlRef.current = fallbackXml;
+          setCustomXml(fallbackXml);
         }
-        if (activeDiagram && activeDiagram.architecture_type !== targetCombinedId) {
+        if (activeDiagram && activeDiagram.architecture_type !== `canonical_${canonicalMatch.id}`) {
           setActiveDiagram(null);
           setActiveVersion(null);
+        }
+      } else {
+        const meta = getBlueprintMetadataById(archParam);
+        const targetCombinedId = meta ? meta.combinedId : archParam;
+        if (tabParam === 'templates') {
+          setPreviewModalTemplateId(targetCombinedId);
+        } else {
+          setSelectedArchType(targetCombinedId);
+          const defaultXml = getDefaultXmlForArchitecture(targetCombinedId, titleParam || domainParam || undefined, promptParam || titleParam || undefined);
+          if (defaultXml) {
+            activeXmlRef.current = defaultXml;
+            setCustomXml(defaultXml);
+          }
+          if (activeDiagram && activeDiagram.architecture_type !== targetCombinedId) {
+            setActiveDiagram(null);
+            setActiveVersion(null);
+          }
         }
       }
     }

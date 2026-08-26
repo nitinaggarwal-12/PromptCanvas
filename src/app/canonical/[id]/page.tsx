@@ -216,15 +216,15 @@ export default function CanonicalTemplateDetailPage() {
                 </select>
               </div>
 
-              {/* Open in Canvas Editor */}
+              {/* Launch Studio Button */}
               <Link
-                href={`/workspace?blueprint=${activeTemplate.id}&domain=${selectedDomain}&title=${encodeURIComponent(activeTemplate.name)}`}
+                href={`/docgen?tab=studio&doc=sdd&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02] shrink-0"
-                title="Open and edit this architecture blueprint in the Interactive Design Canvas"
+                title="Launch in Multi-Blueprint Studio & DocGen"
               >
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
-                <span className="hidden sm:inline">Open in Canvas</span>
-                <span className="sm:hidden">Canvas</span>
+                <span className="hidden sm:inline">Launch Studio</span>
+                <span className="sm:hidden">Studio</span>
               </Link>
 
               {/* Generate Docs Button */}
