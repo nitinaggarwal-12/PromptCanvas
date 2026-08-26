@@ -2712,7 +2712,7 @@ function DocGenContent() {
                       )}
                       {studioMode === 'both' && (
                         <span className="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950 dark:text-purple-400 dark:border-purple-800">
-                          {attachedSlots.length} Attached Blueprints
+                          {activeMeta.blueprintPack.length} Attached Blueprints
                         </span>
                       )}
                     </div>

@@ -87,7 +87,7 @@ export default function CanonicalTemplateDetailPage() {
     const rawXml = activeTemplate.generateXml(selectedDomain, themeMode);
     const domainCleaned = injectDomainFlavorXml(rawXml, selectedDomain);
     if (titleParam || promptParam) {
-      return injectUseCaseFlavor(domainCleaned, titleParam || activeTemplate.name, promptParam);
+      return injectUseCaseFlavor(domainCleaned, titleParam || activeTemplate.name, promptParam || undefined);
     }
     return domainCleaned;
   }, [activeTemplate, selectedDomain, themeMode, titleParam, promptParam]);
