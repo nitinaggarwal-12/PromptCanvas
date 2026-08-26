@@ -1,63 +1,34 @@
 export function buildMicroFrontendsXml(): string {
   return `<mxfile host="embed.diagrams.net">
   <diagram id="micro_frontends_ui" name="Micro-Frontend &amp; Modular UI Presentation">
+    <!-- pc-canvas-header-stripped -->
     <mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- TOP TITLE BANNER -->
-        <mxCell id="main_title_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="16" width="620" height="64" as="geometry"/>
-        </mxCell>
-        <mxCell id="main_title_text" value="&lt;b style=&quot;font-size:18px;color:#0F172A;&quot;&gt;Micro-Frontend &amp;amp; Modular UI Presentation&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:13px;color:#334155;&quot;&gt;Module Federation, Client Event Bus, Real-Time WebSockets &amp;amp; Zero-Trust APIs&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="35" y="20" width="610" height="56" as="geometry"/>
-        </mxCell>
-
-        <!-- TOP RIGHT METADATA CARD -->
-        <mxCell id="meta_table" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#0F172A;font-family:sans-serif;&quot;&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;width:34%;&quot;&gt;Diagram Name:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;Micro-Frontend &amp;amp; UI Presentation&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Architecture State:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;To-Be Cloud Native Target&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr style=&quot;border-bottom:1px solid #E2E8F0;&quot;&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Core Tech Stack:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;&quot;&gt;Next.js Host, Webpack 5 MFE, WebSockets, Cloud CDN&lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-    &lt;td style=&quot;font-weight:bold;padding:2px 6px;&quot;&gt;Blueprint ID:&lt;/td&gt;
-    &lt;td style=&quot;padding:2px 6px;font-family:monospace;color:#0284C7;font-weight:bold;&quot;&gt;P3-APP-L-08_micro_frontend_architecture&lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/table&gt;" style="html=1;whiteSpace=wrap;rounded=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;overflow=hidden;" vertex="1" parent="1">
-          <mxGeometry x="1100" y="16" width="470" height="74" as="geometry"/>
-        </mxCell>
-
         <!-- ================= LEFT: CLIENT ACTORS & STATIC CDN ================= -->
-        <!-- End Users -->
-        <mxCell id="actor_user" value="&lt;div style=&quot;font-size:28px;&quot;&gt;👤&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;End Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Web &amp;amp; Mobile Browsers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="380" width="140" height="90" as="geometry"/>
-        </mxCell>
-
         <!-- Cloud CDN Static Assets -->
         <mxCell id="box_cdn" value="&lt;div style=&quot;font-size:24px;&quot;&gt;☁️ 🌐&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Google Cloud CDN&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Edge Caching &amp;amp; SSL Offload&lt;br&gt;JS Bundles, CSS &amp;amp; Shared Assets&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="160" width="220" height="95" as="geometry"/>
+          <mxGeometry x="30" y="30" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- End Users -->
+        <mxCell id="actor_user" value="&lt;div style=&quot;font-size:28px;&quot;&gt;👤&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;End Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Web &amp;amp; Mobile Browsers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="150" width="140" height="90" as="geometry"/>
         </mxCell>
 
         <!-- Real-Time WebSocket Server -->
         <mxCell id="box_ws" value="&lt;div style=&quot;font-size:24px;&quot;&gt;📡&lt;/div&gt;&lt;b style=&quot;font-size:12px;color:#0F172A;&quot;&gt;Real-Time WebSocket Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Cloud Run (WSS bidirectional)&lt;br&gt;Sub-20ms Real-Time Push&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="30" y="600" width="220" height="95" as="geometry"/>
+          <mxGeometry x="30" y="265" width="220" height="95" as="geometry"/>
         </mxCell>
 
         <!-- ================= CENTER: HOST APPLICATION SHELL ================= -->
         <mxCell id="box_host_shell" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;arcSize=2;" vertex="1" parent="1">
-          <mxGeometry x="310" y="120" width="680" height="690" as="geometry"/>
+          <mxGeometry x="310" y="30" width="680" height="660" as="geometry"/>
         </mxCell>
         <mxCell id="title_host_shell" value="&lt;b style=&quot;font-size:14px;color:#0F172A;&quot;&gt;Enterprise Host Application Shell (Next.js / React 19)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;Dynamic Module Federation Runtime, Client Event Bus, Auth Boundary &amp;amp; Theme Provider&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="320" y="130" width="660" height="40" as="geometry"/>
+          <mxGeometry x="320" y="40" width="660" height="40" as="geometry"/>
         </mxCell>
 
         <!-- Sub-Module 1: Navigation & Global Header MFE -->

@@ -745,34 +745,24 @@ const TECH_XML_EVENT_DRIVEN_EDA = `<mxfile host="embed.diagrams.net">
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- TOP EXECUTIVE BOARDROOM TITLE BANNER & SUBTITLE -->
-        <mxCell id="title_banner" value="&lt;b&gt;Enterprise Event-Driven Microservices Architecture (EDA) Blueprint&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="30" y="8" width="1320" height="26" as="geometry" />
-        </mxCell>
-        <mxCell id="title_sub" value="Designed for Widescreen Boardroom Presentation Layout (1340px width)" style="text;html=1;align=center;verticalAlign=middle;fontSize=11;fontColor=#475569;" vertex="1" parent="1">
-          <mxGeometry x="30" y="32" width="1320" height="18" as="geometry" />
-        </mxCell>
-
-        <!-- ==================== TIER 1 ROW (y=55 .. 220) ==================== -->
+        <!-- ==================== TIER 1 ROW (y=15 .. 220) ==================== -->
         <!-- TIER 1 FULL-WIDTH GREY SWIMLANE HEADER BANNER -->
         <mxCell id="et1_hdr" value="&amp;nbsp;&amp;nbsp;&lt;b&gt;TIER 1&lt;/b&gt; &amp;nbsp;&lt;span style=&quot;font-weight:normal;&quot;&gt;(Transaction Producers, PCI-DSS Ledger &amp;amp; Schema Registry Gate)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#CBD5E1;fillColor=#F1F5F9;fontColor=#0F172A;fontStyle=1;fontSize=12;align=left;" vertex="1" parent="1">
-          <mxGeometry x="30" y="55" width="1320" height="26" as="geometry" />
+          <mxGeometry x="30" y="15" width="1320" height="26" as="geometry" />
         </mxCell>
-
-        <!-- TIER 1 CARD [1.1] Order & Checkout Microservices Pods -->
         <mxCell id="en1_1" value="&lt;font color=&quot;#0F172A&quot; style=&quot;font-size:12.5px;&quot;&gt;&lt;b&gt;[1.1] Order &amp;amp; Checkout Microservices Pods&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#1E293B&quot; style=&quot;font-size:11px;&quot;&gt;Emitting events&lt;br&gt;into Transactional&lt;br&gt;Outbox tables&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;strokeWidth=2;strokeColor=#94A3B8;fillColor=#F8FAFC;verticalAlign=top;spacing=10;align=left;" vertex="1" parent="1">
-          <mxGeometry x="30" y="90" width="410" height="135" as="geometry" />
+          <mxGeometry x="30" y="50" width="410" height="135" as="geometry" />
         </mxCell>
         <!-- Stacked Pods Icon inside [1.1] -->
         <mxCell id="p1_1_pod1" value="🛒" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1;strokeColor=#64748B;fillColor=#EFF6FF;fontSize=16;" vertex="1" parent="1">
-          <mxGeometry x="175" y="122" width="65" height="50" as="geometry" />
+          <mxGeometry x="175" y="82" width="65" height="50" as="geometry" />
         </mxCell>
         <mxCell id="p1_1_lbl" value="&lt;b&gt;OrderPlaced&lt;br&gt;&amp;amp; FraudScreened&lt;/b&gt;" style="text;html=1;align=center;fontSize=10;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="160" y="176" width="95" height="28" as="geometry" />
+          <mxGeometry x="160" y="136" width="95" height="28" as="geometry" />
         </mxCell>
         <!-- AlloyDB Transactional Outbox Box inside [1.1] -->
         <mxCell id="p1_1_db" value="&lt;b style=&quot;color:#1D4ED8;&quot;&gt;AlloyDB&lt;/b&gt;&lt;br&gt;🛢️&lt;br&gt;Transactional&lt;br&gt;Outbox" style="rounded=1;whiteSpace=wrap;html=1;strokeWidth=1.5;strokeColor=#2563EB;fillColor=#EFF6FF;fontSize=10;fontColor=#0F172A;align=center;" vertex="1" parent="1">
-          <mxGeometry x="300" y="122" width="125" height="75" as="geometry" />
+          <mxGeometry x="300" y="82" width="125" height="75" as="geometry" />
         </mxCell>
         <mxCell id="p1_1_arr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeWidth=1.5;strokeColor=#2563EB;" edge="1" parent="1" source="p1_1_pod1" target="p1_1_db">
           <mxGeometry relative="1" as="geometry" />

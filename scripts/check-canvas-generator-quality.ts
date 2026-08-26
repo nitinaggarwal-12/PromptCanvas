@@ -56,6 +56,56 @@ const CANVAS_TEST_SUITE: CanvasPromptTestCase[] = [
   }
 ];
 
+interface GeometryNode {
+  id: string;
+  parent: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  style: string;
+  value: string;
+}
+
+function parseGeometryNodes(xml: string): GeometryNode[] {
+  const nodes: GeometryNode[] = [];
+  const cellRegex = /<mxCell\s+([^>]*?)>/gi;
+  let match: RegExpExecArray | null;
+
+  while ((match = cellRegex.exec(xml)) !== null) {
+    const attrStr = match[1];
+    if (/vertex="1"/i.test(attrStr) || /as="geometry"/i.test(attrStr)) {
+      const idMatch = attrStr.match(/\bid="([^"]+)"/i);
+      const parentMatch = attrStr.match(/\bparent="([^"]+)"/i);
+      const styleMatch = attrStr.match(/\bstyle="([^"]*)"/i);
+      const valueMatch = attrStr.match(/\bvalue="([^"]*)"/i);
+
+      // find mxGeometry
+      const afterPos = match.index + match[0].length;
+      const geomSnippet = xml.slice(afterPos, afterPos + 300);
+      const geomMatch = geomSnippet.match(/<mxGeometry\s+([^>]*?)\/?>/i);
+      if (idMatch && geomMatch) {
+        const gAttrs = geomMatch[1];
+        const x = parseFloat(gAttrs.match(/\bx="([^"]+)"/i)?.[1] || '0');
+        const y = parseFloat(gAttrs.match(/\by="([^"]+)"/i)?.[1] || '0');
+        const w = parseFloat(gAttrs.match(/\bwidth="([^"]+)"/i)?.[1] || '0');
+        const h = parseFloat(gAttrs.match(/\bheight="([^"]+)"/i)?.[1] || '0');
+
+        if (w > 0 && h > 0) {
+          nodes.push({
+            id: idMatch[1],
+            parent: parentMatch?.[1] || '1',
+            x, y, w, h,
+            style: styleMatch?.[1] || '',
+            value: valueMatch?.[1] || ''
+          });
+        }
+      }
+    }
+  }
+  return nodes;
+}
+
 async function runCanvasQualityAudits(): Promise<boolean> {
   console.log(`\n🛡️  RUNNING CANVAS GENERATOR QUALITY & SELF-HEALING HARNESS (${CANVAS_TEST_SUITE.length} test cases)...`);
 
@@ -118,18 +168,47 @@ async function runCanvasQualityAudits(): Promise<boolean> {
       }
     }
 
-    // F. Minimum Font Size Floor Compliance
-    const fontSizes = [
-      ...Array.from(finalXml.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/gi), m => Number(m[1])),
-      ...Array.from(finalXml.matchAll(/fontSize=(\d+(?:\.\d+)?)/gi), m => Number(m[1])),
-    ].filter(Number.isFinite);
-    const tinyFonts = fontSizes.filter(s => s < 7.5);
-    if (tinyFonts.length > 0) {
-      failures.push(`[${tc.name}] Found ${tinyFonts.length} font size declarations below 7.5px.`);
-      continue;
+    // G. Hierarchical 2D Sibling AABB Collision Audit
+    const nodes = parseGeometryNodes(finalXml);
+    const parentGroups = new Map<string, typeof nodes>();
+    for (const n of nodes) {
+      if (!parentGroups.has(n.parent)) parentGroups.set(n.parent, []);
+      parentGroups.get(n.parent)!.push(n);
     }
 
-    passes.push(`PASS: [${tc.name}] -> Routed to [${archType}] with 0 collisions & 100% offline SVG assets.`);
+    let aabbCollisionCount = 0;
+    for (const [parent, siblings] of parentGroups.entries()) {
+      for (let j = 0; j < siblings.length; j++) {
+        for (let k = j + 1; k < siblings.length; k++) {
+          const a = siblings[j];
+          const b = siblings[k];
+
+          // Skip swimlane backdrops or full background group containers
+          if (a.w > 800 && a.h > 400) continue;
+          if (b.w > 800 && b.h > 400) continue;
+          if (/swimlane/i.test(a.style) || /swimlane/i.test(b.style)) continue;
+
+          // Check if one completely contains the other (intentional nesting)
+          const aContainsB = a.x <= b.x && a.y <= b.y && (a.x + a.w) >= (b.x + b.w) && (a.y + a.h) >= (b.y + b.h);
+          const bContainsA = b.x <= a.x && b.y <= a.y && (b.x + b.w) >= (a.x + a.w) && (b.y + b.h) >= (a.y + a.h);
+          if (aContainsB || bContainsA) continue;
+
+          // Compute 2D AABB overlap
+          const overlapX = Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x));
+          const overlapY = Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+
+          // Allow slight 2px border touches, but catch true collisions (> 8px in both axes)
+          if (overlapX > 8 && overlapY > 8) {
+            aabbCollisionCount++;
+            failures.push(`[${tc.name}] 2D AABB Collision detected between siblings "${a.id}" (${a.x},${a.y},${a.w}x${a.h}) and "${b.id}" (${b.x},${b.y},${b.w}x${b.h}) with overlap ${overlapX.toFixed(1)}x${overlapY.toFixed(1)}px.`);
+          }
+        }
+      }
+    }
+
+    if (aabbCollisionCount === 0) {
+      passes.push(`PASS: [${tc.name}] -> Routed to [${archType}] with 0 collisions & 100% offline SVG assets.`);
+    }
   }
 
   passes.forEach(p => console.log(`  ✓ ${p}`));

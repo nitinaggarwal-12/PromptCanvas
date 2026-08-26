@@ -58,7 +58,7 @@ function isCanvasHeaderCandidate(cell: Omit<TopLevelCell, 'isHeaderCandidate'>):
   if (!cell.vertex || cell.parent !== '1' || cell.y > 100) return false;
 
   const id = cell.id.toLowerCase();
-  const knownHeaderId = /^(?:bp\d*|bp_badge|blueprint_badge|title|main_title|main_subtitle|subtitle|gcp_logo|google_cloud_logo|top_logo|top_gemini_badge|traits|pill\d+|header_logo|header_title|header_subtitle)$/.test(id);
+  const knownHeaderId = /^(?:bp\d*|bp_badge|blueprint_badge|title.*|main_title.*|subtitle.*|gcp_logo|google_cloud_logo|top_logo|top_gemini_badge|traits|pill\d+|header_.*|meta_table.*)$/i.test(id);
   if (knownHeaderId) return true;
 
   const text = cell.value
@@ -66,7 +66,7 @@ function isCanvasHeaderCandidate(cell: Omit<TopLevelCell, 'isHeaderCandidate'>):
     .replace(/&[a-z]+;/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  const headerTextSignal = cell.y <= 80 && /(\bof\s*50\b|\bmaster blueprint\b|\bgoogle cloud\b)/i.test(text);
+  const headerTextSignal = cell.y <= 80 && /(\bof\s*50\b|\bmaster blueprint\b|\bgoogle cloud\b|\bblueprint id:\b)/i.test(text);
   if (headerTextSignal) return true;
 
   const fontSizes = [
@@ -74,7 +74,7 @@ function isCanvasHeaderCandidate(cell: Omit<TopLevelCell, 'isHeaderCandidate'>):
     ...Array.from(cell.value.matchAll(/font-size:\s*(\d+(?:\.\d+)?)px/gi), m => Number(m[1]))
   ].filter(Number.isFinite);
   const largestFont = fontSizes.length ? Math.max(...fontSizes) : 0;
-  return cell.y <= 70 && cell.width >= 360 && largestFont >= 17;
+  return cell.y <= 80 && cell.width >= 300 && (largestFont >= 17 || cell.id.includes('title_box') || cell.id.includes('meta_table'));
 }
 
 /**
