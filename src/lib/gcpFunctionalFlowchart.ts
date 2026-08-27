@@ -831,10 +831,10 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   edge('e5', '❹ NO', 'decision_con_top', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 440, y: 272 }]);
 
   // GCLB -> Path Based Routing & CDN Cache Hit
-  edge('e6', 'NO', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;');
-  edge('e7', 'NO', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;');
-  edge('e8', '❼ YES', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;');
-  edge('e9', 'YES', 'decision_cdn_cache', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;');
+  edge('e6', 'NO', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+  edge('e7', 'NO', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+  edge('e8', '❼ YES', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
+  edge('e9', 'YES', 'decision_cdn_cache', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
 
   // Decision CON Bottom -> Subnet B Compute MIG
   edge('e10', '⓲', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 440, y: 662 }, { x: 440, y: 620 }]);

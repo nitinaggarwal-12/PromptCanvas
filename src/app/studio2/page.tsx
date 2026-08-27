@@ -844,11 +844,11 @@ function Studio2Content() {
 
               {/* 5. Architectural Scope & Topology Requirements (Chatbox Area) */}
               <div className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                    5. Architectural Scope &amp; Topology Requirements
+                <div className="flex items-center justify-between gap-2">
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block truncate">
+                    5. Scope &amp; Topology Prompt
                   </label>
-                  <span className="text-[10px] font-mono text-slate-400">Gemini 3.7 &bull; Real-Time AST</span>
+                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Gemini 2.5 Pro</span>
                 </div>
 
                 {/* Scrollable Prompt & Enhancement History Feed */}
