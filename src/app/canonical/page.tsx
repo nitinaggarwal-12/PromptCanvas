@@ -291,7 +291,7 @@ function CanonicalContent() {
 
               {/* Quick Links & Launch Studio */}
               <Link
-                href="/workspace?new=true"
+                href="/studio"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
                 title="Launch Studio"
               >
@@ -670,7 +670,7 @@ function CanonicalContent() {
               <div className="flex items-center gap-1.5 md:gap-2">
                 {/* Launch Studio Button */}
                 <Link
-                  href={`/docgen?tab=studio&mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                  href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02]"
                   title="Launch in Multi-Blueprint Studio & DocGen"
                 >
