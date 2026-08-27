@@ -2010,43 +2010,105 @@ function DocGenContent() {
           </div>
         </header>
 
-        {/* COMPACT HERO SECTION (Catalog Tab Only) */}
+        {/* DYNAMIC HERO SECTION (Catalog Tab Only) */}
         <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8">
         {activeTab === 'catalog' && (
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
-            <div className="flex-1 min-w-0 space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gradient-to-r from-sky-500/10 to-indigo-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-                  <FileText className="w-3 h-3 text-sky-500" />
-                  <span>Enterprise Specification &amp; Document Engine</span>
-                </span>
-              </div>
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
-                Architectural Grammar for{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 via-indigo-500 to-cyan-400">
-                  Production-Ready Enterprise Docs
-                </span>
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-normal max-w-2xl line-clamp-1">
-                Synthesize 17 production document specifications (BRD, PRD, SDD, TDD, STRIDE, GRC) with attached canonical blueprint packs and Word export.
-              </p>
-            </div>
+          <div className="space-y-6 pb-6 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
+            {/* Top Hero Glass Banner */}
+            <div className={`p-6 sm:p-8 rounded-3xl border shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-6 relative overflow-hidden ${
+              isLight
+                ? 'bg-gradient-to-br from-white via-teal-50/30 to-sky-50/40 border-slate-200/90 shadow-slate-200/50'
+                : 'bg-gradient-to-br from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-2xl'
+            }`}>
+              {/* Background Ambient Glow Halo */}
+              <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {/* Compact Stats Pill Strip */}
-            <div className="flex items-center gap-3 sm:gap-4 p-2 px-3.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xs shrink-0">
-              <div className="text-center px-1.5">
-                <div className="text-base sm:text-lg font-black text-sky-500">17</div>
-                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+              <div className="flex-1 min-w-0 space-y-2 relative z-10">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 shadow-xs">
+                    <FileText className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                    <span>Enterprise Specification &amp; Document Engine</span>
+                  </span>
+                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+                    17 Master Archetypes
+                  </span>
+                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                    50 Canonical Blueprints
+                  </span>
+                </div>
+
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
+                  Architectural Grammar for{' '}
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-sky-600 to-indigo-600 dark:from-teal-400 dark:via-sky-400 dark:to-indigo-400">
+                    Production Enterprise Specifications
+                  </span>
+                </h1>
+
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
+                  Synthesize complete, multi-chapter engineering documents (BRD, PRD, SDD, TDD, STRIDE, GRC) with attached 16:9 Draw.io architecture diagrams, automated NIST/CIS compliance matrices, and 1-click Word/Markdown export.
+                </p>
+
+                {/* Real-Time Domain Quick Flavor Switcher */}
+                <div className="pt-2 flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <Sliders className="w-3.5 h-3.5 text-teal-500" />
+                    <span>Dynamic Domain Flavoring:</span>
+                  </span>
+                  {DOMAIN_PRESETS.slice(0, 6).map((dom) => {
+                    const isSelected = selectedDomain === dom.id;
+                    return (
+                      <button
+                        key={dom.id}
+                        type="button"
+                        onClick={() => setSelectedDomain(dom.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20 scale-105'
+                            : isLight
+                            ? 'bg-white/80 hover:bg-white text-slate-700 border border-slate-200 shadow-xs'
+                            : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                        }`}
+                      >
+                        {dom.name}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-              <div className="text-center px-1.5">
-                <div className="text-base sm:text-lg font-black text-indigo-500">50</div>
-                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
-              </div>
-              <div className="h-6 w-[1px] bg-slate-200 dark:border-slate-800" />
-              <div className="text-center px-1.5">
-                <div className="text-base sm:text-lg font-black text-emerald-500">100%</div>
-                <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+
+              {/* Right: Quick Telemetry & Launch Action */}
+              <div className="flex flex-col sm:flex-row xl:flex-col items-stretch gap-3 relative z-10 shrink-0">
+                <div className={`p-4 rounded-2xl border shadow-xs flex items-center justify-around gap-4 ${
+                  isLight ? 'bg-white/90 border-slate-200 backdrop-blur-md' : 'bg-[#090D18]/90 border-slate-800'
+                }`}>
+                  <div className="text-center px-2">
+                    <div className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400">17</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+                  </div>
+                  <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                  <div className="text-center px-2">
+                    <div className="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400">50</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+                  </div>
+                  <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                  <div className="text-center px-2">
+                    <div className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStudioMode('both');
+                    setActiveTab('studio');
+                  }}
+                  className="px-5 py-3 rounded-2xl font-black text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-lg shadow-teal-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span>Launch Unified Studio &rarr;</span>
+                </button>
               </div>
             </div>
           </div>
@@ -2054,53 +2116,46 @@ function DocGenContent() {
 
         {/* TAB 1: CATALOG VIEW (PREVIEW ALL 17 DOCUMENT BLUEPRINTS) */}
         {activeTab === 'catalog' && (
-          <div className="py-3 space-y-4">
+          <div className="py-4 space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                  Enterprise Document Archetypes Catalog
+                <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>17 Production Document Archetypes</span>
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                    Domain: {DOMAIN_PRESETS.find(d => d.id === selectedDomain)?.name || selectedDomain}
+                  </span>
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
-                  Preview full specifications, inspect attached blueprints, or launch the generation studio.
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Select any archetype to inspect its chapters, attached architecture blueprints, and preview complete generated specifications.
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <button
-                  onClick={() => setActiveTab('studio')}
-                  className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 text-white shadow-sm hover:scale-[1.02] transition-transform"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Launch Studio</span>
-                </button>
               </div>
             </div>
 
-            {/* 17 DOCUMENT ARCHETYPE CARDS GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-5">
+            {/* 17 DOCUMENT ARCHETYPE CARDS GRID (BEAUTIFIED) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-6">
               {DOC_ARCHETYPES_META.map((meta, idx) => {
                 const docNumber = String(idx + 1).padStart(2, '0');
                 return (
                   <div
                     key={meta.id}
-                    className={`rounded-3xl border p-6 flex flex-col justify-between transition-all hover:shadow-xl ${
+                    className={`rounded-3xl border p-6 flex flex-col justify-between transition-all duration-300 group hover:-translate-y-1 ${
                       isLight
-                        ? 'bg-white border-slate-200/90 shadow-slate-200/50 hover:border-sky-400'
-                        : 'bg-[#0B111E] border-slate-800/80 shadow-2xl hover:border-sky-500/50'
+                        ? 'bg-gradient-to-b from-white to-slate-50/60 border-slate-200/90 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[0_16px_36px_-6px_rgba(13,148,136,0.12)] hover:border-teal-400/80'
+                        : 'bg-gradient-to-b from-[#0B111E] to-[#070D18] border-slate-800 shadow-2xl hover:border-teal-500/50 hover:shadow-teal-500/10'
                     }`}
                   >
                     <div className="space-y-4">
                       {/* Top Row: Doc Number, Short Tag & Category Badge */}
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-10 h-10 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 font-black text-sm flex items-center justify-center shrink-0">
+                          <span className="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500/15 to-sky-500/15 text-teal-700 dark:text-teal-400 border border-teal-500/25 font-black text-sm flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
                             {docNumber}
                           </span>
                           <div className="min-w-0">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
-                              DOC {docNumber} &bull; <span className="text-sky-600 dark:text-sky-400 font-extrabold">{meta.shortName}</span>
+                              DOC {docNumber} &bull; <span className="text-teal-600 dark:text-teal-400 font-black">{meta.shortName}</span>
                             </span>
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">
+                            <h3 className="text-base font-black text-slate-900 dark:text-white leading-tight group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                               {meta.name}
                             </h3>
                           </div>
@@ -2112,39 +2167,47 @@ function DocGenContent() {
 
                       {/* Purpose */}
                       <div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-3 leading-relaxed">
+                        <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
                           {meta.primaryPurpose}
                         </p>
                       </div>
 
                       {/* Target Audience */}
-                      <div className="text-[11px] text-slate-400 pt-1">
-                        <span className="font-bold text-slate-500 dark:text-slate-400">Audience: </span>
-                        {meta.audience}
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                        <span className="font-bold text-slate-700 dark:text-slate-300">Audience:</span>
+                        <span className="truncate">{meta.audience}</span>
                       </div>
 
                       {/* Attached Blueprint Pack Slots */}
-                      <div className="space-y-2 pt-2">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                          <span>Attached Blueprint Pack ({meta.blueprintPack.length} Diagrams)</span>
-                          <span className="text-sky-500 font-mono">{meta.sectionsCount} Sections</span>
+                      <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                          <span className="flex items-center gap-1 font-bold">
+                            <Network className="w-3 h-3 text-teal-500" />
+                            <span>Attached Blueprints ({meta.blueprintPack.length})</span>
+                          </span>
+                          <span className="text-teal-600 dark:text-teal-400 font-mono font-bold">{meta.sectionsCount} Sections</span>
                         </div>
+
                         <div className="space-y-1.5">
                           {meta.blueprintPack.map((slot, sIdx) => {
                             return (
                               <div
                                 key={sIdx}
-                                className="flex items-center justify-between p-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800"
+                                className={`flex items-center justify-between p-2 rounded-xl text-xs border transition-colors ${
+                                  isLight
+                                    ? 'bg-white/80 border-slate-200/80 hover:bg-slate-50'
+                                    : 'bg-slate-900/80 border-slate-800 hover:bg-slate-800'
+                                }`}
                               >
                                 <div className="flex items-center gap-2 truncate">
-                                  <span className="w-5 h-5 rounded-md bg-sky-500/10 text-sky-500 font-black text-[10px] flex items-center justify-center shrink-0">
-                                    {slot.recommendedTemplateId}
+                                  <span className="w-5 h-5 rounded-md bg-teal-500/10 text-teal-600 dark:text-teal-400 font-black text-[10px] flex items-center justify-center shrink-0 border border-teal-500/20">
+                                    #{slot.recommendedTemplateId}
                                   </span>
-                                  <span className="text-slate-700 dark:text-slate-300 font-medium truncate text-[11px]">
+                                  <span className="text-slate-800 dark:text-slate-200 font-semibold truncate text-[11px]">
                                     {slot.slotTitle}
                                   </span>
                                 </div>
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
+                                <span className="text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 shrink-0">
                                   Ch. {slot.chapterNumber}
                                 </span>
                               </div>
@@ -2155,22 +2218,28 @@ function DocGenContent() {
                     </div>
 
                     {/* Card Actions */}
-                    <div className="pt-6 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
+                    <div className="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-2 gap-2">
                       <button
+                        type="button"
                         onClick={() => handleOpenPreview(meta)}
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all"
+                        className={`flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          isLight
+                            ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
+                            : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                        }`}
                       >
-                        <Eye className="w-3.5 h-3.5 text-sky-500" />
-                        <span>Preview Full Spec</span>
+                        <Eye className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                        <span>Preview Spec</span>
                       </button>
 
                       <button
+                        type="button"
                         onClick={() => {
                           setSelectedArchetypeId(meta.id);
                           setStudioMode('both');
                           setActiveTab('studio');
                         }}
-                        className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-sm shadow-sky-500/20 transition-all hover:scale-[1.02]"
+                        className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02] cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Build Document</span>
