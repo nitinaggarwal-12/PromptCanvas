@@ -502,21 +502,21 @@ function DocGenContent() {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  // Navigation and active tabs
+  // Navigation and active tabs (Defaults to 'catalog' so all 17 Document Archetypes load immediately)
   const tabParam = searchParams.get('tab');
   const archParam = searchParams.get('archetype') || searchParams.get('arch');
   const [activeTab, setActiveTab] = useState<'catalog' | 'studio'>(() => {
-    if (tabParam === 'catalog') return 'catalog';
-    return 'studio';
+    if (tabParam === 'studio' || archParam) return 'studio';
+    return 'catalog';
   });
 
   useEffect(() => {
     const currentTab = searchParams.get('tab');
     const currentArch = searchParams.get('archetype') || searchParams.get('arch');
-    if (currentTab === 'catalog') {
-      setActiveTab('catalog');
-    } else if (currentTab === 'studio' || currentArch) {
+    if (currentTab === 'studio' || currentArch) {
       setActiveTab('studio');
+    } else {
+      setActiveTab('catalog');
     }
   }, [searchParams]);
 
@@ -558,13 +558,13 @@ function DocGenContent() {
     }
   };
 
-  // Studio Scope Mode: 'both' | 'diagrams' | 'documents' (Defaults to 'diagrams')
+  // Studio Scope Mode: 'both' | 'diagrams' | 'documents' (Defaults to 'both')
   const modeParam = searchParams.get('mode');
   const [studioMode, setStudioMode] = useState<'both' | 'diagrams' | 'documents'>(() => {
     if (modeParam === 'diagrams' || modeParam === 'documents' || modeParam === 'both') {
       return modeParam;
     }
-    return 'diagrams';
+    return 'both';
   });
   const [activeDiagramSlotIndex, setActiveDiagramSlotIndex] = useState<number>(0);
   const [selectedDiagramFamily, setSelectedDiagramFamily] = useState<string>('all');
@@ -1937,15 +1937,30 @@ function DocGenContent() {
                 <button
                   type="button"
                   onClick={() => setActiveTab('catalog')}
-                  className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate cursor-pointer hover:opacity-80 transition-opacity"
-                  title="DocGen Studio & Specifications"
+                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
+                    activeTab === 'catalog'
+                      ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="17 Document Archetypes Catalog"
                 >
                   <FileText className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-                  <span>DocGen Studio &amp; Specifications</span>
+                  <span>17 Document Archetypes</span>
                 </button>
-                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
-                  {DOC_ARCHETYPES_META.length} Archetypes
-                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('studio')}
+                  className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
+                    activeTab === 'studio'
+                      ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30'
+                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                  title="Interactive Document Studio"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                  <span>Studio</span>
+                </button>
               </div>
             </div>
 
