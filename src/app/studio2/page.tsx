@@ -37,7 +37,8 @@ import {
   ChevronDown,
   Folder,
   FolderOpen,
-  History
+  History,
+  ArrowRight
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
@@ -157,6 +158,149 @@ interface StudioChatMessage {
   suggestedPrompts?: string[];
 }
 
+interface PendingVerificationState {
+  isPending: boolean;
+  prompt: string;
+  summary: string;
+  targetTier: string;
+  changedComponents: string[];
+  microVersionTag: string; // e.g. "v1.x"
+  proposedVersionTag: string; // e.g. "v2.0"
+  candidateXml: string;
+  previousXml: string;
+  previousDiagrams: StudioDiagramTab[];
+}
+
+// Helper to intelligently infer logical Project Name & Use Case Name if not provided
+function inferLogicalProjectAndUseCase(
+  prompt: string,
+  existingProject?: string,
+  existingUseCase?: string
+): { projectName: string; useCaseName: string; projectTitle: string } {
+  const p = prompt.toLowerCase();
+  let proj = existingProject?.trim() || '';
+  let uc = existingUseCase?.trim() || '';
+
+  if (!proj || !uc) {
+    if (p.includes('pharma') || p.includes('genom') || p.includes('clinical') || p.includes('hipaa') || p.includes('cleanroom') || p.includes('gxp')) {
+      if (!proj) proj = 'Bio-Pharma Clinical Platform';
+      if (!uc) uc = 'Genomics Analysis & Regulatory AI';
+    } else if (p.includes('fintech') || p.includes('payment') || p.includes('ledger') || p.includes('fraud') || p.includes('pci')) {
+      if (!proj) proj = 'Global Fintech Payments';
+      if (!uc) uc = 'Multi-Region Real-Time Transaction Engine';
+    } else if (p.includes('stream') || p.includes('pubsub') || p.includes('pub/sub') || p.includes('dataflow') || p.includes('kafka') || p.includes('event')) {
+      if (!proj) proj = 'Real-Time Event Data Platform';
+      if (!uc) uc = 'High-Throughput Pub/Sub Streaming Pipeline';
+    } else if (p.includes('rag') || p.includes('vertex') || p.includes('vector') || p.includes('scann') || p.includes('agent') || p.includes('gemini') || p.includes('llm')) {
+      if (!proj) proj = 'Cognitive AI Knowledge Engine';
+      if (!uc) uc = 'Vertex AI RAG & ScaNN Search Graph';
+    } else if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('truetime') || p.includes('oltp')) {
+      if (!proj) proj = 'Enterprise Distributed Database Core';
+      if (!uc) uc = 'Multi-Region Cloud Spanner Active-Active Replication';
+    } else if (p.includes('armor') || p.includes('security') || p.includes('waf') || p.includes('ddos') || p.includes('zero') || p.includes('iap')) {
+      if (!proj) proj = 'Zero-Trust Perimeter & Security Gateway';
+      if (!uc) uc = 'Cloud Armor Edge WAF & DDoS Mitigation';
+    } else if (p.includes('mig') || p.includes('gpu') || p.includes('gce') || p.includes('compute') || p.includes('scale') || p.includes('internal lb')) {
+      if (!proj) proj = 'High-Performance Cloud Compute';
+      if (!uc) uc = 'GPU-Accelerated MIG Autoscaling & Internal LB';
+    } else if (p.includes('supply') || p.includes('iot') || p.includes('telemetry') || p.includes('logistics') || p.includes('fleet')) {
+      if (!proj) proj = 'Autonomous Supply Chain & Logistics';
+      if (!uc) uc = 'Real-Time IoT Fleet Telemetry & Routing';
+    } else if (p.includes('commerce') || p.includes('retail') || p.includes('recommend') || p.includes('catalog')) {
+      if (!proj) proj = 'E-Commerce Omnichannel Platform';
+      if (!uc) uc = 'AI-Powered Personalized Recommendations';
+    } else if (p.includes('grid') || p.includes('energy') || p.includes('utility')) {
+      if (!proj) proj = 'Smart Grid Energy & Utilities';
+      if (!uc) uc = 'Edge Compute & GPU Anomaly Detection';
+    } else if (p.includes('telecom') || p.includes('5g') || p.includes('packet')) {
+      if (!proj) proj = 'Telecom 5G Core Network';
+      if (!uc) uc = 'Low-Latency Edge Packet Processing';
+    } else {
+      const clean = prompt.replace(/[^\w\s]/g, '').trim();
+      const words = clean.split(/\s+/).filter((w) => w.length > 2);
+      if (!proj) {
+        proj =
+          words.length >= 2
+            ? words.slice(0, 3).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Platform'
+            : 'Cloud Native Enterprise Platform';
+      }
+      if (!uc) {
+        uc =
+          words.length >= 3
+            ? words.slice(0, 4).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') + ' Architecture'
+            : 'Multi-Tier Cloud Functional Flowchart';
+      }
+    }
+  }
+
+  return {
+    projectName: proj,
+    useCaseName: uc,
+    projectTitle: `${proj}: ${uc}`
+  };
+}
+
+// Helper to compute dynamic next-step suggestions evolving after every prompt execution
+function computeDynamicNextSuggestions(prompt: string, projectName: string, changedComponents?: string[]): string[] {
+  const p = prompt.toLowerCase();
+  const proj = projectName || 'GCP Platform';
+
+  if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('oltp')) {
+    return [
+      `Add automated point-in-time recovery (PITR) and CMEK key rotation policies to ${proj}`,
+      `Connect BigQuery federated queries for real-time operational BI analytics on Spanner`,
+      `Deploy Vertex AI RAG embeddings pipeline on Spanner database tables`,
+      `Enforce VPC Service Controls and Private Service Connect for database endpoints`
+    ];
+  }
+  if (p.includes('rag') || p.includes('vector') || p.includes('vertex') || p.includes('agent') || p.includes('gemini') || p.includes('llm')) {
+    return [
+      `Add Gemini Agentic multimodal fine-tuning loop with Vertex AI Model Registry in ${proj}`,
+      `Configure Vertex ScaNN vector index caching with Cloud Spanner metadata sync`,
+      `Integrate ADK 2.0 Agentic tools with Identity-Aware Proxy authenticated endpoints`,
+      `Deploy LangChain / Vertex AI Agent reasoning evaluations for response groundedness`
+    ];
+  }
+  if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('pub/sub') || p.includes('dataflow') || p.includes('kafka')) {
+    return [
+      `Add BigQuery ML anomaly detection models on the real-time Dataflow stream for ${proj}`,
+      `Configure Cloud Storage Coldline archiving with CMEK encryption for raw events`,
+      `Enforce VPC Service Controls and private Google access for Dataflow workers`,
+      `Deploy Cloud Pub/Sub dead-letter queues and automated alerting metrics`
+    ];
+  }
+  if (p.includes('armor') || p.includes('security') || p.includes('waf') || p.includes('ddos') || p.includes('zero')) {
+    return [
+      `Configure rate limiting rules and geo-fencing on Cloud Armor WAF for ${proj}`,
+      `Add BeyondCorp Enterprise Zero-Trust context-aware access policies`,
+      `Implement Customer-Managed Encryption Keys (CMEK) across all storage and databases`,
+      `Enable Cloud IDS (Intrusion Detection System) deep packet inspection`
+    ];
+  }
+  if (p.includes('mig') || p.includes('gpu') || p.includes('scale') || p.includes('compute') || p.includes('instance')) {
+    return [
+      `Configure Prometheus metric alerts and dynamic autoscaling thresholds in ${proj}`,
+      `Deploy GKE Autopilot multi-cluster ingress across primary and secondary subnets`,
+      `Enforce cross-subnet egress firewalls with VPC Flow Logs network monitoring`,
+      `Optimize GPU MIG partitioning with Vertex AI model serving endpoints`
+    ];
+  }
+  if (p.includes('pharma') || p.includes('clinical') || p.includes('genom') || p.includes('gxp')) {
+    return [
+      `Add 21 CFR Part 11 audit trail logging and Cloud KMS CMEK encryption to ${proj}`,
+      `Integrate Vertex AI RAG clinical protocol search with FHIR / HL7 data lake`,
+      `Configure multi-region disaster recovery replication for electronic batch records (EBR)`,
+      `Scale GxP validation microservices with GKE Autopilot isolated node pools`
+    ];
+  }
+  return [
+    `Enhance ${proj} with automated disaster recovery and active-active replication`,
+    `Scale ${proj} with GPU acceleration and Vertex AI model endpoints`,
+    `Add strict zero-trust IAM policies and Cloud Armor DDoS security rules to ${proj}`,
+    `Configure real-time BigQuery analytical streaming for ${proj}`
+  ];
+}
+
 const MAX_ROLLING_VERSIONS = 20;
 
 function Studio2Content() {
@@ -220,6 +364,17 @@ function Studio2Content() {
   const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [toastNotification, setToastNotification] = useState<string | null>(null);
+
+  // Micro-Version Verification & Highlight State (v1.x -> v2.0 Quality Gate)
+  const [pendingVerification, setPendingVerification] = useState<PendingVerificationState | null>(null);
+
+  // Dynamic Next Architectural Iterations (Evolves dynamically after every prompt)
+  const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([
+    'Architect a high-throughput event streaming platform with Pub/Sub & Dataflow',
+    'Design a zero-trust multi-region microservices architecture with Cloud Spanner',
+    'Build a Vertex AI RAG knowledge graph with ScaNN vector search',
+    'Scale Regional Subnet B with GPU Managed Instance Groups & Internal LB'
+  ]);
 
   // DeepMind Architecture Vision Decompiler
   const [isDecompiling, setIsDecompiling] = useState<boolean>(false);
@@ -341,21 +496,22 @@ function Studio2Content() {
     setTimeout(() => setToastNotification(null), 3500);
   }, []);
 
-  // Snapshot Creation Helper
+  // Snapshot Creation Helper (supports explicit version override e.g. v2.0 promotion)
   const pushNewVersion = useCallback(
     (
       actionSummary: string,
       author: 'User' | 'AI Assistant' | 'System',
       updatedDiagrams?: StudioDiagramTab[],
       changedComponents?: string[],
-      targetTier?: string
+      targetTier?: string,
+      overrideVersionTag?: string
     ) => {
       const currentDiagramsState = updatedDiagrams || diagrams;
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      let nextTag = 'v1.0';
-      if (versionHistory.length > 0) {
+      let nextTag = overrideVersionTag || 'v1.0';
+      if (!overrideVersionTag && versionHistory.length > 0) {
         const lastTag = versionHistory[0].versionTag.replace(/^v/, '');
         const [maj, min] = lastTag.split('.').map(Number);
         nextTag = `v${maj || 1}.${(min || 0) + 1}`;
@@ -386,6 +542,66 @@ function Studio2Content() {
     },
     [diagrams, activeDiagramId, projectName, useCaseName, projectTitle, projectScopePrompt, versionHistory]
   );
+
+  // Accept & Promote Micro-Version (v1.x -> v2.0)
+  const handleAcceptAndPromoteVersion = useCallback(() => {
+    if (!pendingVerification || !pendingVerification.isPending) return;
+
+    const promotedTag = pendingVerification.proposedVersionTag || 'v2.0';
+
+    pushNewVersion(
+      `Promoted: ${pendingVerification.summary}`,
+      'AI Assistant',
+      diagrams,
+      pendingVerification.changedComponents,
+      pendingVerification.targetTier,
+      promotedTag
+    );
+
+    // Save project if new to pastProjects
+    if (projectName && useCaseName) {
+      setPastProjects((prev) => {
+        if (!prev.some((p) => p.name.toLowerCase() === projectName.toLowerCase())) {
+          const newProj: PastProject = {
+            id: `proj_${Date.now()}`,
+            name: projectName,
+            useCase: useCaseName,
+            category: pendingVerification.targetTier || 'Enterprise VPC',
+            description: pendingVerification.summary || 'Custom GCP Architecture Model',
+            tags: pendingVerification.changedComponents || ['GCP Architecture'],
+            suggestedPrompt: pendingVerification.prompt,
+            xml: activeDiagram.xml
+          };
+          const updated = [newProj, ...prev];
+          try {
+            localStorage.setItem('promptcanvas_studio2_past_projects', JSON.stringify(updated));
+          } catch (e) {}
+          return updated;
+        }
+        return prev;
+      });
+    }
+
+    setPendingVerification(null);
+    showToast(`🎉 Promoted architecture changes to official release ${promotedTag}!`);
+  }, [pendingVerification, pushNewVersion, diagrams, projectName, useCaseName, activeDiagram.xml, showToast]);
+
+  // Discard Micro-Version Changes & Restore Previous Official Version
+  const handleDiscardPendingChanges = useCallback(() => {
+    if (!pendingVerification || !pendingVerification.isPending) return;
+
+    if (pendingVerification.previousDiagrams && pendingVerification.previousDiagrams.length > 0) {
+      setDiagrams(pendingVerification.previousDiagrams);
+    } else if (pendingVerification.previousXml) {
+      setDiagrams((prev) =>
+        prev.map((d) => (d.id === activeDiagramId ? { ...d, xml: pendingVerification.previousXml } : d))
+      );
+    }
+
+    const currentOfficialTag = versionHistory[currentHistoryIndex]?.versionTag || 'v1.0';
+    setPendingVerification(null);
+    showToast(`↺ Discarded draft changes and restored ${currentOfficialTag}.`);
+  }, [pendingVerification, activeDiagramId, versionHistory, currentHistoryIndex, showToast]);
 
   // Handler to reload a past architecture project
   const handleSelectPastProject = useCallback(
@@ -661,7 +877,38 @@ function Studio2Content() {
   const handleSynthesizeArchitecture = useCallback(
     async (customPrompt?: string) => {
       const rawPrompt = (customPrompt || projectScopePrompt).trim();
-      const promptToUse = (rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || 'Enterprise Google Cloud Native Architecture').trim();
+      const basePrompt = rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || 'Enterprise Google Cloud Native Architecture';
+      const promptToUse = basePrompt.trim();
+
+      // Intelligently infer logical Project Name & Use Case Name if blank
+      const inferred = inferLogicalProjectAndUseCase(promptToUse, projectName, useCaseName);
+      const derivedProject = inferred.projectName;
+      const derivedUseCase = inferred.useCaseName;
+      const derivedTitle = inferred.projectTitle;
+
+      if (!projectName) {
+        setProjectName(derivedProject);
+        setProjectSearchQuery(derivedProject);
+      }
+      if (!useCaseName) {
+        setUseCaseName(derivedUseCase);
+        setUseCaseSearchQuery(derivedUseCase);
+      }
+      setProjectTitle(derivedTitle);
+
+      // Determine current baseline major version and micro-version tags
+      let currentMajor = 1;
+      if (versionHistory.length > 0) {
+        const rawTag = versionHistory[0].versionTag.replace(/^v/, '');
+        const [maj] = rawTag.split('.').map(Number);
+        if (!isNaN(maj) && maj > 0) currentMajor = maj;
+      }
+      const microVersionTag = `v${currentMajor}.x`;
+      const proposedVersionTag = `v${currentMajor + 1}.0`;
+
+      // Save snapshots for review/revert
+      const previousDiagramsSnapshot = JSON.parse(JSON.stringify(diagrams));
+      const previousXmlSnapshot = activeDiagram.xml;
 
       // Immediately post user prompt to chat thread and clear input
       if (rawPrompt) {
@@ -679,18 +926,9 @@ function Studio2Content() {
       setIsAiThinking(true);
 
       try {
-        let titleToUse = projectTitle;
-        if (!titleToUse) {
-          if (projectName && useCaseName) {
-            titleToUse = `${projectName}: ${useCaseName}`;
-          } else if (projectName) {
-            titleToUse = `${projectName} — GCP Architecture`;
-          } else {
-            titleToUse = 'GCP Cloud Architecture: Functional Flowchart Diagram';
-          }
-        }
+        const titleToUse = derivedTitle;
 
-        // Call Gemini 2.5 Architecture Validation & Correction API
+        // Call Gemini 3.1 Pro Architecture Validation & Correction API
         let finalXml = '';
         let geminiAudit: any = null;
 
@@ -699,8 +937,8 @@ function Studio2Content() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              projectName,
-              useCaseName,
+              projectName: derivedProject,
+              useCaseName: derivedUseCase,
               projectTitle: titleToUse,
               prompt: promptToUse,
               theme: isLight ? 'light' : 'dark'
@@ -721,14 +959,15 @@ function Studio2Content() {
         if (!finalXml) {
           const generatedXml = generateGcpFunctionalFlowchartXml({
             projectTitle: titleToUse,
-            projectName,
-            useCaseName,
+            projectName: derivedProject,
+            useCaseName: derivedUseCase,
             prompt: promptToUse,
             theme: isLight ? 'light' : 'dark'
           });
           finalXml = injectUseCaseFlavor(generatedXml, titleToUse, promptToUse);
         }
 
+        // Autosave mutated XML to active diagram in canvas immediately
         const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
           if (diag.id === activeDiagramId) {
             return {
@@ -745,23 +984,38 @@ function Studio2Content() {
         setDiagrams(updatedDiagrams);
 
         const analysis = analyzePromptChanges(promptToUse);
-        const tag = pushNewVersion(
-          `Synthesized: ${analysis.summary}`,
-          'AI Assistant',
-          updatedDiagrams,
-          analysis.changedComponents,
-          analysis.targetTier
-        );
 
-        // Assistant response message with Gemini Validation scorecard
+        // Put changes in pending review / micro-version state
+        setPendingVerification({
+          isPending: true,
+          prompt: promptToUse,
+          summary: analysis.summary,
+          targetTier: analysis.targetTier,
+          changedComponents: analysis.changedComponents,
+          microVersionTag,
+          proposedVersionTag,
+          candidateXml: finalXml,
+          previousXml: previousXmlSnapshot,
+          previousDiagrams: previousDiagramsSnapshot
+        });
+
+        // Compute dynamic next-step suggestions evolving from this prompt
+        const nextSuggestions = computeDynamicNextSuggestions(
+          promptToUse,
+          derivedProject,
+          analysis.changedComponents
+        );
+        setDynamicSuggestions(nextSuggestions);
+
+        // Assistant response message with Gemini Validation scorecard and micro-version review
         const assistantMsg: StudioChatMessage = {
           id: `ast_${Date.now()}`,
           sender: 'assistant',
-          text: `✨ Successfully validated and updated your architecture based on: "${promptToUse}"`,
+          text: `⚡ Autosaved architecture changes in micro-version **${microVersionTag} (Draft)** for "${analysis.summary}". Verify highlighted components and click "Accept & Promote to ${proposedVersionTag}" to seal official version release.`,
           timestamp: 'Just now',
           actionApplied: {
             summary: analysis.summary,
-            versionTag: tag,
+            versionTag: `${microVersionTag} (Draft)`,
             targetTier: analysis.targetTier,
             changedComponents: analysis.changedComponents
           },
@@ -773,20 +1027,15 @@ function Studio2Content() {
               'Ingress & Edge Security (Cloud Armor + IAP + VPC-SC)',
               'Regional Compute Subnet Isolation',
               'State & Storage Layer (Cloud SQL / Spanner + CMEK)',
-              'Agentic AI Services (Gemini 2.5 Pro + Vertex RAG Grounding)'
+              'Agentic AI Services (Gemini 3.1 Pro + Vertex RAG Grounding)'
             ],
-            aiReasoning: 'Validated by Gemini 2.5 against Google Cloud Well-Architected Framework.'
+            aiReasoning: 'Validated by Gemini 3.1 Pro against Google Cloud Well-Architected Framework.'
           },
-          suggestedPrompts: [
-            'Add Cloud Spanner with multi-region active-active replication',
-            'Add Vertex AI RAG knowledge retrieval pipeline',
-            'Enforce VPC Service Perimeters and Customer-Managed Encryption (CMEK)',
-            'Scale Regional Subnet B with GPU Managed Instance Groups'
-          ]
+          suggestedPrompts: nextSuggestions
         };
 
         setChatMessages((prev) => [...prev, assistantMsg]);
-        showToast(`⚡ Architecture validated & updated to ${tag}: ${analysis.summary}`);
+        showToast(`⚡ Changes autosaved in micro-version ${microVersionTag}! Click "Accept & Promote" to seal ${proposedVersionTag}.`);
       } catch (err: any) {
         console.error('[Studio2] Synthesis error:', err);
         showToast(`❌ Synthesis error: ${err?.message || 'Unknown error'}`);
@@ -795,7 +1044,27 @@ function Studio2Content() {
         setIsAiThinking(false);
       }
     },
-    [projectScopePrompt, projectName, useCaseName, projectTitle, isLight, diagrams, activeDiagramId, pushNewVersion, showToast]
+    [
+      projectScopePrompt,
+      projectName,
+      useCaseName,
+      projectTitle,
+      isLight,
+      diagrams,
+      activeDiagram,
+      activeDiagramId,
+      versionHistory,
+      showToast
+    ]
+  );
+
+  // Direct Execution Handler for Dynamic Suggestions
+  const handleExecuteSuggestion = useCallback(
+    (suggestionText: string) => {
+      setProjectScopePrompt(suggestionText);
+      handleSynthesizeArchitecture(suggestionText);
+    },
+    [handleSynthesizeArchitecture]
   );
 
   // Handle Architecture Image Decompilation via DeepMind Vision
@@ -952,11 +1221,21 @@ function Studio2Content() {
             <button
               type="button"
               onClick={() => setShowHistoryModal(true)}
-              className="px-3 py-1.5 rounded-xl border border-teal-500/30 bg-teal-500/10 text-teal-700 dark:text-teal-300 font-mono font-bold text-xs flex items-center gap-1.5 hover:bg-teal-500/20 transition-all cursor-pointer shadow-xs"
+              className={`px-3 py-1.5 rounded-xl border font-mono font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
+                pendingVerification?.isPending
+                  ? 'border-amber-500/50 bg-amber-500/15 text-amber-800 dark:text-amber-300 animate-pulse'
+                  : 'border-teal-500/30 bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20'
+              }`}
             >
-              <Clock className="w-3.5 h-3.5 text-teal-500" />
-              <span>{versionHistory[currentHistoryIndex]?.versionTag || 'v1.0'}</span>
-              <span className="text-[10px] opacity-70">({currentHistoryIndex + 1}/{versionHistory.length})</span>
+              <Clock className={`w-3.5 h-3.5 ${pendingVerification?.isPending ? 'text-amber-500' : 'text-teal-500'}`} />
+              <span>
+                {pendingVerification?.isPending
+                  ? `${pendingVerification.microVersionTag} (Draft)`
+                  : versionHistory[currentHistoryIndex]?.versionTag || 'v1.0'}
+              </span>
+              <span className="text-[10px] opacity-70">
+                ({currentHistoryIndex + 1}/{versionHistory.length})
+              </span>
             </button>
           </div>
         </div>
@@ -1449,6 +1728,38 @@ function Studio2Content() {
                     </>
                   )}
                 </button>
+
+                {/* Dynamic Next Architectural Iterations (Evolutionary Next Steps) */}
+                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                      <span>Suggested Next Iterations</span>
+                    </span>
+                    <span className="text-[9px] font-semibold text-teal-600 dark:text-teal-400 bg-teal-500/10 px-1.5 py-0.5 rounded">
+                      ⚡ Dynamic
+                    </span>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    {dynamicSuggestions.map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleExecuteSuggestion(suggestion)}
+                        disabled={isSynthesizing}
+                        className={`w-full text-left p-2.5 rounded-xl border text-xs font-medium transition-all group flex items-start gap-2 cursor-pointer disabled:opacity-50 ${
+                          isLight
+                            ? 'bg-slate-50/90 hover:bg-teal-50/50 border-slate-200/80 hover:border-teal-400/80 text-slate-800'
+                            : 'bg-slate-950/60 hover:bg-teal-950/30 border-slate-800 hover:border-teal-500/50 text-slate-200'
+                        }`}
+                      >
+                        <ArrowRight className="w-3.5 h-3.5 text-teal-500 shrink-0 mt-0.5 group-hover:translate-x-0.5 transition-transform" />
+                        <span className="leading-snug text-[11px] font-medium">{suggestion}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1552,6 +1863,66 @@ function Studio2Content() {
                   </Link>
                 </div>
               </div>
+
+              {/* Verification & Change Highlight Bar (Micro-Version Review) */}
+              {pendingVerification?.isPending && (
+                <div className="p-3.5 bg-gradient-to-r from-amber-500/10 via-teal-500/10 to-indigo-500/10 border-b border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40 text-[10.5px] font-mono font-bold flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-amber-500" />
+                        <span>Micro-Version {pendingVerification.microVersionTag} (In Review)</span>
+                      </span>
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                        {pendingVerification.summary}
+                      </span>
+                    </div>
+                    {pendingVerification.changedComponents.length > 0 && (
+                      <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                        <span className="text-[9.5px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                          ✨ Highlighted Nodes:
+                        </span>
+                        {pendingVerification.changedComponents.map((comp) => (
+                          <span
+                            key={comp}
+                            className="inline-flex items-center gap-1 text-[9.5px] font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded border border-emerald-400/50 shadow-xs"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            {comp.replace(/&amp;/g, '&')}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleAcceptAndPromoteVersion()}
+                      className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Accept &amp; Promote to {pendingVerification.proposedVersionTag}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDiscardPendingChanges()}
+                      className="px-2.5 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                      <span>Discard</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDiffModal(true)}
+                      className="px-2.5 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-300 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer"
+                    >
+                      <GitCompare className="w-3.5 h-3.5 text-teal-500" />
+                      <span>Diff</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Viewport Canvas Frame with Zoom Scaling & Auto-Fit */}
               <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80 overflow-auto relative">
