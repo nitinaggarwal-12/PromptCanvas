@@ -263,11 +263,11 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
     'rounded=1;fillColor=#E2ECE9;strokeColor=#99F6E4;strokeWidth=1;html=1;align=center;verticalAlign=top;dashed=1;'
   );
 
-  // Decision CON Node (Top)
+  // Decision CON Node (Top - perfectly aligned above GCLB to eliminate IAP box crossing)
   cell(
     'decision_con_top',
     `<div style="font-size:8px;font-weight:900;color:#1E3A8A;text-align:center;">CON</div>`,
-    305,
+    380,
     235,
     34,
     34,
@@ -824,11 +824,11 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   edge('e2', '❷', 'cloud_armor', 'iap_proxy', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
   edge('e3', '', 'iap_proxy', 'gclb_load_balancer', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;');
 
-  // GCLB -> Decision CON Top
-  edge('e4', '❸ YES', 'gclb_load_balancer', 'decision_con_top', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
+  // GCLB -> Decision CON Top (Direct straight vertical link with zero IAP overlap)
+  edge('e4', '❸ YES', 'gclb_load_balancer', 'decision_con_top', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
 
   // Decision CON Top -> Subnet A Primary App
-  edge('e5', '❹ NO', 'decision_con_top', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 440, y: 272 }]);
+  edge('e5', '❹ NO', 'decision_con_top', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 440, y: 252 }]);
 
   // GCLB -> Path Based Routing & CDN Cache Hit
   edge('e6', 'NO', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
@@ -860,8 +860,8 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   edge('e19', '', 'gce_mig_box', 'regional_ilb_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
   edge('e20', '', 'regional_ilb_box', 'gcs_storage_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
 
-  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning)
-  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;');
+  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via clear open corridor)
+  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 710, y: 245 }, { x: 1010, y: 245 }]);
   edge('e22', '', 'bigquery_replica', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;');
   edge('e23', '', 'ai_agent_designer', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
   edge('e24', '', 'ai_gemini_notebook', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
@@ -871,7 +871,7 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   edge('e26', '', 'ai_agent_platform_hub', 'train_model_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=2;');
   edge('e27', '', 'train_model_box', 'deploy_model_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
   edge('e28', '', 'deploy_model_box', 'online_prediction_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
-  edge('e29', 'FEEDBACK LOOP', 'online_prediction_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1245, y: 750 }, { x: 1245, y: 315 }]);
+  edge('e29', 'FEEDBACK LOOP', 'online_prediction_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1240, y: 750 }, { x: 1240, y: 315 }]);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="gcp_functional_flowchart" name="${E(projectName)} - ${E(useCaseName)}">
