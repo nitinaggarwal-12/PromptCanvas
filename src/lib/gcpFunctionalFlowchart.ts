@@ -519,7 +519,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Tier 1 Middle Sub-Frame: Relational Data Stack (Cloud SQL + Cloud Spanner + Replication)
+  // Tier 1 Middle Sub-Frame: Relational Data 2x2 Grid (Cloud SQL + Spanner on top, Data Replication below, BigQuery on right)
   cell(
     'relational_data_frame',
     `<div style="font-weight:900;font-size:9px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">RELATIONAL DATA</div>`,
@@ -530,58 +530,57 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FCE5CD;strokeColor=#FCD34D;strokeWidth=1.5;html=1;align=center;verticalAlign=top;'
   );
 
-  // Cloud SQL + CMEK
-  const sqlSub = isCmek ? '+ CMEK (Regional OLTP)' : '(Primary Regional OLTP)';
+  // Cloud SQL + CMEK (Top Left)
+  const sqlSub = isCmek ? '+ CMEK' : '(Regional OLTP)';
   cell(
     'cloud_sql_primary',
-    `<div style="display:flex;align-items:center;gap:6px;padding:3px 8px;">
+    `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudSql}
-      <div>
-        <div style="font-size:8.5px;font-weight:900;color:#0F172A;">CLOUD SQL</div>
-        <div style="font-size:6.5px;color:#2563EB;font-weight:700;">${sqlSub}</div>
-      </div>
+      <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD SQL</div>
+      <div style="font-size:7px;color:#2563EB;font-weight:700;">${sqlSub}</div>
     </div>`,
     862,
-    330,
-    155,
-    56,
-    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=left;verticalAlign=middle;'
+    325,
+    112,
+    64,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Cloud Spanner + CMEK (Multi-Region TrueTime)
-  const spannerSub = isCmek ? '+ CMEK (TrueTime Active-Active)' : '(Multi-Region TrueTime)';
+  // Cloud Spanner + CMEK (Top Right)
+  const spannerSub = isCmek ? '+ CMEK (Active-Active)' : '(Multi-Region TrueTime)';
   cell(
     'cloud_spanner_secondary',
-    `<div style="display:flex;align-items:center;gap:6px;padding:3px 8px;">
+    `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudSpanner}
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD SPANNER</div>
+      <div style="font-size:6.5px;color:#0284C7;font-weight:700;">${spannerSub}</div>
+    </div>`,
+    980,
+    325,
+    118,
+    64,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // Data Replication Hub (CDC / Batch) (Centered Bottom)
+  cell(
+    'data_replication_box',
+    `<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:4px;">
+      ${ICONS.replication}
       <div>
-        <div style="font-size:8.5px;font-weight:900;color:#0F172A;">CLOUD SPANNER</div>
-        <div style="font-size:6.5px;color:#0284C7;font-weight:700;">${spannerSub}</div>
+        <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.1;">DATA REPLICATION</div>
+        <div style="font-size:7px;color:#2563EB;font-weight:700;">(CDC / Batch Dataflow)</div>
       </div>
     </div>`,
     862,
     400,
-    155,
-    56,
-    'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=left;verticalAlign=middle;'
+    228,
+    58,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Centralized Replication Hub Node (Gemini 3.1 Pro Design)
-  cell(
-    'replication_hub_box',
-    `<div style="text-align:center;padding:2px;">
-      ${ICONS.replication}
-      <div style="font-size:7px;font-weight:900;color:#1E3A8A;line-height:1.1;margin-top:2px;">REPLICATION<br/><span style="font-size:5.5px;color:#64748B;">(CDC / Dataflow)</span></div>
-    </div>`,
-    1030,
-    350,
-    48,
-    85,
-    'rounded=1;fillColor=#EEF2FF;strokeColor=#818CF8;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
-  );
-
-  // BigQuery Analytical Data Lake
-  const bqSub = isCmek ? '+ CMEK (Data Lakehouse)' : '(Analytics DW / Lakehouse)';
+  // BigQuery Analytical Data Lake (Right Column)
+  const bqSub = isCmek ? '+ CMEK (Analytics DW)' : '(Analytics DW)';
   cell(
     'bigquery_replica',
     `<div style="text-align:center;padding:3px;">
@@ -589,10 +588,10 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">BIGQUERY</div>
       <div style="font-size:6.5px;color:#D97706;font-weight:700;">${bqSub}</div>
     </div>`,
-    1090,
-    345,
-    75,
-    95,
+    1096,
+    325,
+    68,
+    133,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
@@ -907,17 +906,17 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Subnet A App -> Async Tasks / Ingestion
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
-  edge('e15', '❺ PERSIST', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 935, y: 220 }]);
+  edge('e15', '❺ PERSIST', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 918, y: 220 }]);
 
-  // Dual Relational Stack: Cloud SQL & Cloud Spanner feed Centralized Replication Hub
-  edge('e_sql_rep', '', 'cloud_sql_primary', 'replication_hub_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;');
-  edge('e_spanner_rep', '', 'cloud_spanner_secondary', 'replication_hub_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;');
+  // Dual Relational Stack: Cloud SQL & Cloud Spanner feed Data Replication
+  edge('e_sql_rep', '', 'cloud_sql_primary', 'data_replication_box', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;');
+  edge('e_spanner_rep', '', 'cloud_spanner_secondary', 'data_replication_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;');
 
-  // Replication Hub -> BigQuery Analytics DW
-  edge('e_rep_bq', 'CDC REPLICATION', 'replication_hub_box', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7;fontStyle=1;');
+  // Data Replication Hub -> BigQuery Analytics DW
+  edge('e_rep_bq', 'CDC / BATCH', 'data_replication_box', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7;fontStyle=1;');
 
-  // Persist Data -> Cloud Storage & Lifecycle
-  edge('e17', '', 'cloud_spanner_secondary', 'gcs_storage_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
+  // Data Replication -> Cloud Storage & Lifecycle
+  edge('e17', '', 'data_replication_box', 'gcs_storage_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;', [{ x: 935, y: 480 }, { x: 935, y: 570 }]);
   edge('e18', '', 'gcs_storage_box', 'gcs_lifecycle_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
 
   // Subnet B MIG -> Internal LB -> Cloud Storage
