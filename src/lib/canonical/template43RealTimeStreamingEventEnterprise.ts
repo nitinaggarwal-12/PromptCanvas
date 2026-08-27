@@ -83,12 +83,17 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
     );
   };
 
+  const isMfg = /synactive|manufactur|iot|scada|factory|sensor|twin|telemetry|plcs|industrial/i.test(domainFlavor);
+
   // =========================================================================
   // 1. TOP HEADER BANNER (y: 12..62)
   // =========================================================================
   cell("hdr_num", "43", 16, 12, 54, 48, "shape=rectangle;rounded=1;arcSize=14;fillColor=#1D4ED8;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=26;fontStyle=1;align=center;verticalAlign=middle;");
 
-  const titleHtml = `<div style="font-size:20px;font-weight:900;color:#0F172A;letter-spacing:0.5px;">REAL-TIME STREAMING &amp; EVENT-DRIVEN ENTERPRISE</div>
+  const titleHtml = isMfg
+    ? `<div style="font-size:20px;font-weight:900;color:#0F172A;letter-spacing:0.5px;">SMART MANUFACTURING &amp; INDUSTRIAL IOT DIGITAL TWIN</div>
+    <div style="font-size:11px;color:#475569;font-weight:600;margin-top:2px;">Smart Factory • Real-Time SCADA • Predictive Maintenance • Low-Latency • Governed</div>`
+    : `<div style="font-size:20px;font-weight:900;color:#0F172A;letter-spacing:0.5px;">REAL-TIME STREAMING &amp; EVENT-DRIVEN ENTERPRISE</div>
     <div style="font-size:11px;color:#475569;font-weight:600;margin-top:2px;">Scalable • Event-Driven • Low-Latency • Resilient • Governed</div>`;
   cell("hdr_title", titleHtml, 78, 12, 750, 48, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
@@ -111,16 +116,27 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
   cell("t7_badge", "7", 22, 74, 24, 24, "rounded=1;arcSize=4;fillColor=#6D28D9;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
   cell("t7_lbl", "<b style=\"font-size:8.5px;color:#6D28D9;\">ENTERPRISE BUSINESS<br/>DOMAINS / USE CASES</b>", 50, 74, 105, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  const t7Domains = [
-    { t: "Fraud<br/>Detection", icon: "shieldCheck" },
-    { t: "Order<br/>Processing", icon: "cart" },
-    { t: "Customer<br/>360", icon: "users" },
-    { t: "Real-Time<br/>Personalization", icon: "sparkles" },
-    { t: "Supply Chain<br/>Visibility", icon: "truck" },
-    { t: "Industrial<br/>Telemetry", icon: "cpu" },
-    { t: "Observability<br/>Events", icon: "chart" },
-    { t: "Risk &amp;<br/>Compliance", icon: "scale" }
-  ];
+  const t7Domains = isMfg
+    ? [
+        { t: "Factory Floor<br/>OEE Tracking", icon: "activity" },
+        { t: "Predictive<br/>Maintenance", icon: "settings" },
+        { t: "Robotic Arm<br/>Telemetry", icon: "cpu" },
+        { t: "Digital Twin<br/>Sync", icon: "sparkles" },
+        { t: "Plant Supply<br/>Logistics", icon: "truck" },
+        { t: "Industrial<br/>SCADA Mesh", icon: "network" },
+        { t: "Safety &amp;<br/>Defect Alarms", icon: "bell" },
+        { t: "Environmental<br/>Compliance", icon: "shieldCheck" }
+      ]
+    : [
+        { t: "Fraud<br/>Detection", icon: "shieldCheck" },
+        { t: "Order<br/>Processing", icon: "cart" },
+        { t: "Customer<br/>360", icon: "users" },
+        { t: "Real-Time<br/>Personalization", icon: "sparkles" },
+        { t: "Supply Chain<br/>Visibility", icon: "truck" },
+        { t: "Industrial<br/>Telemetry", icon: "cpu" },
+        { t: "Observability<br/>Events", icon: "chart" },
+        { t: "Risk &amp;<br/>Compliance", icon: "scale" }
+      ];
   t7Domains.forEach((d, idx) => {
     const dx = 160 + idx * 133;
     const html = `<div style="display:flex;align-items:center;gap:6px;padding:2px 4px;">
@@ -135,15 +151,25 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
   cell("t6_badge", "6", 22, 154, 24, 24, "rounded=1;arcSize=4;fillColor=#4338CA;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
   cell("t6_lbl", "<b style=\"font-size:8.5px;color:#4338CA;\">EVENT CONSUMER &amp;<br/>APPLICATION LAYER</b>", 50, 154, 105, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  const t6Consumers = [
-    { t: "Microservices on<br/>GKE / Cloud Run", icon: "server" },
-    { t: "Serverless<br/>Consumers", icon: "cloud" },
-    { t: "Analytics<br/>Dashboards", icon: "chart" },
-    { t: "Alerting<br/>Apps", icon: "bell" },
-    { t: "AI / ML<br/>Applications", icon: "sparkles" },
-    { t: "Search /<br/>Personalization", icon: "search" },
-    { t: "Downstream<br/>Enterprise Systems", icon: "layers" }
-  ];
+  const t6Consumers = isMfg
+    ? [
+        { t: "Plant Edge Services<br/>on GKE / Cloud Run", icon: "server" },
+        { t: "Serverless<br/>Historians", icon: "cloud" },
+        { t: "Factory OEE<br/>Dashboards", icon: "chart" },
+        { t: "Predictive Defect<br/>Alerting", icon: "bell" },
+        { t: "Vertex AI<br/>Industrial Copilot", icon: "sparkles" },
+        { t: "Digital Twin<br/>Visualizer", icon: "search" },
+        { t: "MES &amp; ERP<br/>Enterprise Systems", icon: "layers" }
+      ]
+    : [
+        { t: "Microservices on<br/>GKE / Cloud Run", icon: "server" },
+        { t: "Serverless<br/>Consumers", icon: "cloud" },
+        { t: "Analytics<br/>Dashboards", icon: "chart" },
+        { t: "Alerting<br/>Apps", icon: "bell" },
+        { t: "AI / ML<br/>Applications", icon: "sparkles" },
+        { t: "Search /<br/>Personalization", icon: "search" },
+        { t: "Downstream<br/>Enterprise Systems", icon: "layers" }
+      ];
   t6Consumers.forEach((tc, idx) => {
     const cx = 160 + idx * 152;
     const html = `<div style="display:flex;align-items:center;gap:6px;padding:2px 4px;">
@@ -158,16 +184,27 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
   cell("t5_badge", "5", 22, 234, 24, 24, "rounded=1;arcSize=4;fillColor=#1D4ED8;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
   cell("t5_lbl", "<b style=\"font-size:8.5px;color:#1D4ED8;\">STATE, STORAGE &amp;<br/>ANALYTICS LAYER</b>", 50, 234, 105, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  const t5Stores = [
-    { t: "BigQuery<br/><span style=\"font-size:7px;color:#64748B;\">Analytics DW</span>", icon: "search" },
-    { t: "Bigtable<br/><span style=\"font-size:7px;color:#64748B;\">Wide-Column Store</span>", icon: "database" },
-    { t: "Spanner<br/><span style=\"font-size:7px;color:#64748B;\">Relational DB</span>", icon: "layers" },
-    { t: "Cloud Storage<br/><span style=\"font-size:7px;color:#64748B;\">Object Storage</span>", icon: "cloud" },
-    { t: "Memorystore<br/><span style=\"font-size:7px;color:#64748B;\">Cache (Redis)</span>", icon: "server" },
-    { t: "Operational<br/><span style=\"font-size:7px;color:#64748B;\">State Store</span>", icon: "database" },
-    { t: "Event Archive /<br/><span style=\"font-size:7px;color:#64748B;\">Replay Store</span>", icon: "folder" },
-    { t: "Feature /<br/><span style=\"font-size:7px;color:#64748B;\">Serving Store</span>", icon: "sparkles" }
-  ];
+  const t5Stores = isMfg
+    ? [
+        { t: "BigQuery<br/><span style=\"font-size:7px;color:#64748B;\">Industrial DW</span>", icon: "search" },
+        { t: "Bigtable<br/><span style=\"font-size:7px;color:#64748B;\">Sensor Streams</span>", icon: "database" },
+        { t: "Cloud Spanner<br/><span style=\"font-size:7px;color:#64748B;\">Global TrueTime MES</span>", icon: "layers" },
+        { t: "Cloud Storage<br/><span style=\"font-size:7px;color:#64748B;\">CAD &amp; Video Objects</span>", icon: "cloud" },
+        { t: "Memorystore<br/><span style=\"font-size:7px;color:#64748B;\">Redis State Cache</span>", icon: "server" },
+        { t: "Operational<br/><span style=\"font-size:7px;color:#64748B;\">Work-in-Progress</span>", icon: "database" },
+        { t: "Telemetry Archive<br/><span style=\"font-size:7px;color:#64748B;\">Historian Replay</span>", icon: "folder" },
+        { t: "Feature Store<br/><span style=\"font-size:7px;color:#64748B;\">Predictive Models</span>", icon: "sparkles" }
+      ]
+    : [
+        { t: "BigQuery<br/><span style=\"font-size:7px;color:#64748B;\">Analytics DW</span>", icon: "search" },
+        { t: "Bigtable<br/><span style=\"font-size:7px;color:#64748B;\">Wide-Column Store</span>", icon: "database" },
+        { t: "Spanner<br/><span style=\"font-size:7px;color:#64748B;\">Relational DB</span>", icon: "layers" },
+        { t: "Cloud Storage<br/><span style=\"font-size:7px;color:#64748B;\">Object Storage</span>", icon: "cloud" },
+        { t: "Memorystore<br/><span style=\"font-size:7px;color:#64748B;\">Cache (Redis)</span>", icon: "server" },
+        { t: "Operational<br/><span style=\"font-size:7px;color:#64748B;\">State Store</span>", icon: "database" },
+        { t: "Event Archive /<br/><span style=\"font-size:7px;color:#64748B;\">Replay Store</span>", icon: "folder" },
+        { t: "Feature /<br/><span style=\"font-size:7px;color:#64748B;\">Serving Store</span>", icon: "sparkles" }
+      ];
   t5Stores.forEach((ts, idx) => {
     const sx = 160 + idx * 133;
     const html = `<div style="display:flex;align-items:center;gap:6px;padding:2px 4px;">
@@ -254,17 +291,29 @@ export function generateTemplate43RealTimeStreamingEventEnterpriseXml(
   cell("t1_badge", "1", 22, 554, 24, 24, "rounded=1;arcSize=4;fillColor=#1E40AF;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
   cell("t1_lbl", "<b style=\"font-size:8.5px;color:#1E40AF;\">EVENT SOURCES<br/>LAYER</b>", 50, 554, 105, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
-  const t1Sources = [
-    { t: "On-prem<br/>Databases", icon: "database" },
-    { t: "Operational<br/>Applications", icon: "server" },
-    { t: "Web / Mobile<br/>Applications", icon: "smartphone" },
-    { t: "SaaS<br/>Applications", icon: "cloud" },
-    { t: "Partner<br/>Systems", icon: "users" },
-    { t: "APIs<br/>(External)", icon: "network" },
-    { t: "IoT Devices<br/>&amp; Sensors", icon: "activity" },
-    { t: "Clickstream /<br/>Events", icon: "chart" },
-    { t: "Logs /<br/>Telemetry", icon: "fileCode" }
-  ];
+  const t1Sources = isMfg
+    ? [
+        { t: "On-prem PLCs &amp;<br/>SCADA Historians", icon: "database" },
+        { t: "MES &amp; MOM<br/>Plant Applications", icon: "server" },
+        { t: "Mobile Scanners<br/>&amp; Shop Terminals", icon: "smartphone" },
+        { t: "ERP &amp; Supply<br/>Chain SaaS", icon: "cloud" },
+        { t: "Supplier Parts<br/>&amp; Logistics", icon: "users" },
+        { t: "Industrial OPC-UA<br/>&amp; MQTT Gateways", icon: "network" },
+        { t: "Robotic Arms &amp;<br/>IoT Sensors", icon: "activity" },
+        { t: "Assembly Line<br/>Vision Systems", icon: "chart" },
+        { t: "Vibration &amp;<br/>Thermal Telemetry", icon: "fileCode" }
+      ]
+    : [
+        { t: "On-prem<br/>Databases", icon: "database" },
+        { t: "Operational<br/>Applications", icon: "server" },
+        { t: "Web / Mobile<br/>Applications", icon: "smartphone" },
+        { t: "SaaS<br/>Applications", icon: "cloud" },
+        { t: "Partner<br/>Systems", icon: "users" },
+        { t: "APIs<br/>(External)", icon: "network" },
+        { t: "IoT Devices<br/>&amp; Sensors", icon: "activity" },
+        { t: "Clickstream /<br/>Events", icon: "chart" },
+        { t: "Logs /<br/>Telemetry", icon: "fileCode" }
+      ];
   t1Sources.forEach((ts, idx) => {
     const sx = 160 + idx * 118;
     const html = `<div style="text-align:center;padding:2px;">
