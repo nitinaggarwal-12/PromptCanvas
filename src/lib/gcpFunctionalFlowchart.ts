@@ -108,7 +108,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="border-left:1.5px solid #DADCE0;height:36px;margin:0 2px;"></div>
       <div style="flex:1;">
-        <div style="font-size:22px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">Enterprise Agentic AI Platform</div>
+        <div style="font-size:22px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">Agentic AI Harness</div>
         <div style="font-size:11.5px;font-weight:500;color:#1A73E8;margin-top:2px;">Production Reference Flow: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop</div>
       </div>
     </div>`,

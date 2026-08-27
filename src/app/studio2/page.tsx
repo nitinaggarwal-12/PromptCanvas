@@ -344,11 +344,11 @@ function Studio2Content() {
   const [activeDiagramId, setActiveDiagramId] = useState<string>('diag_1');
   const [diagrams, setDiagrams] = useState<StudioDiagramTab[]>(() => {
     const xmlGeneric = generateGenericArchitectureXml({
-      projectTitle: 'Enterprise Software Architecture — Generic System Process Flow',
+      projectTitle: 'Agentic AI Harness — Generic Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     const xmlGcp = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+      projectTitle: 'Google Cloud Agentic AI Harness — End-to-End Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     return [
@@ -408,11 +408,11 @@ function Studio2Content() {
   // Version History State
   const [versionHistory, setVersionHistory] = useState<StudioVersionSnapshot[]>(() => {
     const xmlGeneric = generateGenericArchitectureXml({
-      projectTitle: 'Enterprise Software Architecture — Generic System Process Flow',
+      projectTitle: 'Agentic AI Harness — Generic Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     const xmlGcp = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+      projectTitle: 'Google Cloud Agentic AI Harness — End-to-End Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     const now = new Date();
