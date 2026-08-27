@@ -40,6 +40,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import { Studio2VisualDiffModal } from '@/components/Studio2VisualDiffModal';
 import { generateGenericArchitectureXml } from '@/lib/genericArchitecture';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
 import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopology';
@@ -136,6 +137,19 @@ interface StudioVersionSnapshot {
   projectScopePrompt: string;
   changedComponents?: string[];
   targetTier?: string;
+  originType?: 'prompt' | 'manual' | 'system';
+  promptDetails?: {
+    promptText: string;
+    targetTier?: string;
+    model?: string;
+    summary?: string;
+    changedComponents?: string[];
+  };
+  manualDetails?: {
+    action: string;
+    summary: string;
+    timestamp?: string;
+  };
 }
 
 interface StudioChatMessage {
@@ -521,7 +535,20 @@ function Studio2Content() {
       updatedDiagrams?: StudioDiagramTab[],
       changedComponents?: string[],
       targetTier?: string,
-      overrideVersionTag?: string
+      overrideVersionTag?: string,
+      originType?: 'prompt' | 'manual' | 'system',
+      promptDetails?: {
+        promptText: string;
+        targetTier?: string;
+        model?: string;
+        summary?: string;
+        changedComponents?: string[];
+      },
+      manualDetails?: {
+        action: string;
+        summary: string;
+        timestamp?: string;
+      }
     ) => {
       const currentDiagramsState = updatedDiagrams || diagrams;
       const now = new Date();
@@ -547,7 +574,10 @@ function Studio2Content() {
         projectTitle,
         projectScopePrompt,
         changedComponents,
-        targetTier
+        targetTier,
+        originType: originType || (author === 'AI Assistant' ? 'prompt' : author === 'User' ? 'manual' : 'system'),
+        promptDetails,
+        manualDetails
       };
 
       setVersionHistory((prev) => {
@@ -572,7 +602,15 @@ function Studio2Content() {
       diagrams,
       pendingVerification.changedComponents,
       pendingVerification.targetTier,
-      promotedTag
+      promotedTag,
+      'prompt',
+      {
+        promptText: pendingVerification.prompt,
+        targetTier: pendingVerification.targetTier,
+        model: 'Gemini 3.1 Pro Architecture Compiler',
+        summary: pendingVerification.summary,
+        changedComponents: pendingVerification.changedComponents
+      }
     );
 
     // Save project if new to pastProjects
@@ -783,6 +821,17 @@ function Studio2Content() {
     }
   }, [currentHistoryIndex, versionHistory, showToast]);
 
+  // Restore snapshot from Diff Modal
+  const handleRestoreVersionFromDiff = useCallback((snap: StudioVersionSnapshot) => {
+    setDiagrams(JSON.parse(JSON.stringify(snap.diagrams)));
+    setActiveDiagramId(snap.activeDiagramId);
+    if (snap.projectName) setProjectName(snap.projectName);
+    if (snap.useCaseName) setUseCaseName(snap.useCaseName);
+    if (snap.projectTitle) setProjectTitle(snap.projectTitle);
+    setShowDiffModal(false);
+    showToast(`↺ Restored active canvas to version ${snap.versionTag}!`);
+  }, [showToast]);
+
   // Escape key handler for all modals
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -870,7 +919,21 @@ function Studio2Content() {
             return diag;
           });
           setDiagrams(updatedDiagrams);
-          const tag = pushNewVersion('Synced edits from Draw.io Editor', 'User', updatedDiagrams, ['User Draw.io Canvas Updates'], 'Canvas Workspace');
+          const tag = pushNewVersion(
+            'Synced edits from Draw.io Editor',
+            'User',
+            updatedDiagrams,
+            ['User Draw.io Canvas Updates'],
+            'Canvas Workspace',
+            undefined,
+            'manual',
+            undefined,
+            {
+              action: 'Manual Shape & Routing Synchronization',
+              summary: 'User refined diagram nodes, labels, or edge routing in Draw.io editor',
+              timestamp: new Date().toLocaleTimeString()
+            }
+          );
           showToast(`✅ Saved changes from Draw.io Editor as version ${tag}!`);
         }
       } else if (msg.event === 'exit') {
@@ -2013,76 +2076,15 @@ function Studio2Content() {
       )}
 
       {/* Visual Version Diff Modal */}
-      {showDiffModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-4xl max-h-[85vh] rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95">
-            <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <GitCompare className="w-5 h-5 text-teal-500" />
-                <h3 className="font-bold text-sm">
-                  Architecture Version Diff Comparison
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowDiffModal(false)}
-                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-4 overflow-y-auto space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                  <div className="text-xs font-bold text-slate-500 mb-1">Current State ({versionHistory[currentHistoryIndex]?.versionTag || 'v1.0'})</div>
-                  <div className="font-bold text-sm text-teal-600 dark:text-teal-400">
-                    {versionHistory[currentHistoryIndex]?.actionSummary || 'Initial baseline'}
-                  </div>
-                  <div className="mt-2 text-xs space-y-1">
-                    <div className="text-slate-500 font-medium">Target: {versionHistory[currentHistoryIndex]?.targetTier || 'Global VPC'}</div>
-                    <div className="text-slate-500 font-medium">Components: {versionHistory[currentHistoryIndex]?.changedComponents?.join(', ') || 'Base architecture'}</div>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                  <div className="text-xs font-bold text-slate-500 mb-1">Baseline Comparison</div>
-                  <select
-                    value={diffBaseIndex}
-                    onChange={(e) => setDiffBaseIndex(Number(e.target.value))}
-                    className="w-full p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-xs bg-white dark:bg-slate-900"
-                  >
-                    {versionHistory.map((v, idx) => (
-                      <option key={v.id} value={idx}>
-                        {v.versionTag} - {v.actionSummary} ({v.timestamp})
-                      </option>
-                    ))}
-                  </select>
-                  <div className="mt-2 text-xs space-y-1">
-                    <div className="text-slate-500 font-medium">Target: {versionHistory[diffBaseIndex]?.targetTier || 'Global VPC'}</div>
-                    <div className="text-slate-500 font-medium">Components: {versionHistory[diffBaseIndex]?.changedComponents?.join(', ') || 'Base architecture'}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Injected Delta Breakdown */}
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
-                <div className="text-xs font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
-                  <Plus className="w-4 h-4 text-emerald-500" />
-                  <span>Added / Enhanced Architecture Nodes in Current Snapshot:</span>
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {(versionHistory[currentHistoryIndex]?.changedComponents || ['GCP Functional Flowchart Base']).map((node) => (
-                    <span key={node} className="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200 text-xs font-semibold border border-emerald-300 dark:border-emerald-700">
-                      + {node}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <Studio2VisualDiffModal
+        isOpen={showDiffModal}
+        onClose={() => setShowDiffModal(false)}
+        versionHistory={versionHistory}
+        currentHistoryIndex={currentHistoryIndex}
+        activeDiagramId={activeDiagramId}
+        onRestoreVersion={handleRestoreVersionFromDiff}
+        isLight={isLight}
+      />
 
       {/* History Snapshots Modal */}
       {showHistoryModal && (
