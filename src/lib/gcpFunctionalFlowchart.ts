@@ -271,7 +271,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Decision Gate: Path-Based Routing?
   cell(
     'decision_path_routing',
-    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">PATH-BASED<br/>ROUTING?<br/><span style="color:#0284C7;">YES/NO</span></div>`,
+    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">PATH-BASED<br/>ROUTING?</div>`,
     345,
     530,
     64,
@@ -282,7 +282,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Decision Gate: CDN Cache Hit?
   cell(
     'decision_cdn_cache',
-    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">CDN CACHE<br/>HIT?<br/><span style="color:#0284C7;">YES/NO</span></div>`,
+    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">CDN CACHE<br/>HIT?</div>`,
     420,
     530,
     64,
@@ -502,7 +502,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // Tier 1 Middle Sub-Frame: Relational Data (y=290..480, h=190, w=320)
-  const relTitle = isSpanner ? 'RELATIONAL DATA (SPANNER MULTI-REGION)' : 'RELATIONAL DATA';
+  const relTitle = isSpanner ? 'RELATIONAL DATA (SPANNER MULTI-REGION)' : 'RELATIONAL DATA (CLOUD SQL &amp; SPANNER)';
   cell(
     'relational_data_frame',
     `<div style="font-weight:900;font-size:9px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">${relTitle}</div>`,
@@ -513,33 +513,50 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FCE5CD;strokeColor=#FCD34D;strokeWidth=1.5;html=1;align=center;verticalAlign=top;'
   );
 
-  const dbTitle = isSpanner ? 'CLOUD SPANNER' : 'CLOUD SQL';
-  const dbSub = isSpanner ? '(TrueTime Active-Active)' : isCmek ? '(CMEK Encrypted OLTP)' : '(Primary OLTP)';
+  // Cloud SQL Primary OLTP
+  const sqlSub = isCmek ? '(CMEK Encrypted OLTP)' : '(Primary OLTP)';
   cell(
     'cloud_sql_primary',
-    `<div style="text-align:center;padding:4px;">
+    `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudSql}
-      <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${dbTitle}</div>
-      <div style="font-size:7px;color:#D97706;font-weight:600;">${dbSub}</div>
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD SQL</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${sqlSub}</div>
     </div>`,
-    865,
+    862,
     340,
-    140,
+    95,
     80,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
+  // Cloud Spanner (Multi-Region / TrueTime)
+  const spannerSub = isCmek ? '(CMEK Multi-Region)' : '(TrueTime Active-Active)';
+  cell(
+    'cloud_spanner_secondary',
+    `<div style="text-align:center;padding:3px;">
+      ${ICONS.cloudSql}
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD SPANNER</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${spannerSub}</div>
+    </div>`,
+    962,
+    340,
+    100,
+    80,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // BigQuery Analytics DW
   const bqSub = isCmek ? '(CMEK Encrypted DW)' : '(Read Replica / DW)';
   cell(
     'bigquery_replica',
-    `<div style="text-align:center;padding:4px;">
+    `<div style="text-align:center;padding:3px;">
       ${ICONS.bigquery}
-      <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">BIGQUERY</div>
-      <div style="font-size:7px;color:#D97706;font-weight:600;">${bqSub}</div>
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">BIGQUERY</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${bqSub}</div>
     </div>`,
-    1018,
+    1068,
     340,
-    140,
+    95,
     80,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
@@ -838,11 +855,20 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Decision CON Top -> Subnet A Primary App
   edge('e5', '❹ ROUTE', 'decision_con_top', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 252 }]);
 
-  // GCLB -> Path Based Routing & CDN Cache Hit
-  edge('e6', 'NO', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e7', 'NO', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e8', '❼ YES', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e9', 'YES', 'decision_cdn_cache', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
+  // GCLB -> Decision Path Routing
+  edge('e6', 'PATH ROUTING', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+
+  // Path Routing: YES -> Subnet A Primary App
+  edge('e8', 'YES: APP ROUTE', 'decision_path_routing', 'decision_con_top', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 330, y: 530 }, { x: 330, y: 252 }]);
+
+  // Path Routing: NO -> CDN Cache Check
+  edge('e_path_no', 'NO: CHECK CDN', 'decision_path_routing', 'decision_cdn_cache', 'edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+
+  // CDN Cache Hit: YES -> Direct Edge Return to Public Internet (Bypasses Backend Compute!)
+  edge('e_cdn_hit', 'YES: CACHE HIT (RETURN EDGE)', 'decision_cdn_cache', 'public_internet', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 452, y: 495 }, { x: 45, y: 495 }]);
+
+  // CDN Cache Hit: NO (Cache Miss) -> Subnet B Backend Compute MIG
+  edge('e9', 'NO: CACHE MISS (TO MIG)', 'decision_cdn_cache', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 452, y: 630 }]);
 
   // Decision CON Bottom -> Subnet B Compute MIG
   edge('e10', '⓲', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 620 }]);
@@ -856,9 +882,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
   edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 935, y: 220 }]);
 
-  // Cloud SQL / Spanner -> BigQuery Replication
-  const repLabel = isSpanner ? 'TRUETIME SYNC' : 'REPLICATION';
-  edge('e16', repLabel, 'cloud_sql_primary', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7.5;fontStyle=1;');
+  // Cloud SQL -> Cloud Spanner -> BigQuery Replication
+  edge('e16_sql_spanner', 'ACTIVE-ACTIVE', 'cloud_sql_primary', 'cloud_spanner_secondary', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7;fontStyle=1;');
+  edge('e16_spanner_bq', 'TRUETIME SYNC', 'cloud_spanner_secondary', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7;fontStyle=1;');
 
   // Persist Data -> Cloud Storage & Lifecycle
   edge('e17', '', 'cloud_sql_primary', 'gcs_storage_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
