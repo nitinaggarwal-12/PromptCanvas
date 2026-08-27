@@ -147,7 +147,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // =========================================================================
   // 3. COLUMN 1: INGRESS & SECURITY (x=24, w=200)
-  // Clean top-to-bottom pipeline directly into Task Graph Router
   // =========================================================================
   node(
     "n_start_users",
@@ -211,7 +210,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // =========================================================================
   // 4. COLUMN 2: PLANNING, ROUTING & MEMORY (x=260, w=215)
-  // Perfectly organized with Task Graph Router as the central Ingress Fork!
   // =========================================================================
 
   // FAST PATH INFERENCE CARD (Top-aligned, y=105)
@@ -250,7 +248,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     { x: 238, y: 261 }
   ], -0.6, -10);
 
-  // ROUTER FORK 1: Simple Prompt -> Steps UP into Fast-Path (ZERO BACKTRACKING!)
+  // ROUTER FORK 1: Simple Prompt -> Steps UP into Fast-Path
   line(nid(), 'Simple Intent', 'gate_task_type', 'n_fast_path', 0.5, 0, 0.5, 1, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // SUPERVISOR AGENT CARD (Below Router, y=345)
@@ -290,7 +288,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // =========================================================================
   // 5. COLUMN 3: 3 PARALLEL SPECIALIST AGENTS (x=510, w=195)
-  // Perfectly aligned with Lane 1 (y=155), Lane 2 (y=285), Lane 3 (y=415)
   // =========================================================================
 
   // LANE 1: RAG AGENT (y=155)
@@ -379,7 +376,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // ASYNC INGESTION PIPELINE (Clearly labeled)
+  // ASYNC INGESTION PIPELINE
   node(
     "n_doc_ingestion",
     `<div style="padding:4px 8px;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Google Sans',Roboto,Arial,sans-serif;">
@@ -436,7 +433,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // SQL Agent queries BOTH BigQuery (OLAP) and Spanner (OLTP)
   line(nid(), 'OLAP SQL', 'n_sql_agent', 'n_bigquery_dw', 1, 0.35, 0, 0.5, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 720, y: 310 },
     { x: 720, y: 282 }
@@ -471,9 +467,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:7.5px;color:#0D9488;font-weight:600;margin-top:1px;">Google Workspace, Salesforce, SAP</div>
     </div>`,
-    860,
+    865,
     385,
-    145,
+    140,
     65,
     `fillColor=${cardBg};strokeColor=#0D9488;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
@@ -485,16 +481,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   ]);
   line(nid(), 'Approved', 'n_hitl_governance_node', 'n_vertex_extensions', 1, 0.5, 0, 0.5, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;');
 
-  // Standard Direct Tool Call routes under HITL directly to Extensions
+  // Standard Direct Tool Call routes under HITL directly to Extensions via clear waypoint at x=855
   line(nid(), 'Standard API', 'n_tool_agent', 'n_vertex_extensions', 1, 0.75, 0, 0.85, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 720, y: 469 },
-    { x: 845, y: 469 },
-    { x: 845, y: 440 }
+    { x: 855, y: 469 },
+    { x: 855, y: 440 }
   ]);
 
   // =========================================================================
   // 7. COLUMN 5: GEMINI 3.1 PRO / FLASH REASONING PLATFORM (x=1050, w=185)
-  // Clean, discrete horizontal connectors from all data & tool sources!
   // =========================================================================
   node(
     "n_gemini_core",
@@ -513,9 +508,10 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // 100% CLEAN DISCRETE HORIZONTAL CONNECTOR PORTS INTO GEMINI:
   
-  // Port 1 (y=195 = 175 + 240*0.08): Fast Path Direct Prompt
+  // Port 1 (y=195 = 175 + 240*0.08): Fast Path Direct Prompt (routes through open top channel y=96)
   line(nid(), 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 1, 0.5, 0, 0.08, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
-    { x: 1030, y: 141 },
+    { x: 485, y: 96 },
+    { x: 1030, y: 96 },
     { x: 1030, y: 195 }
   ]);
 
@@ -599,11 +595,12 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Delivery -> Logging (100% straight vertical at x=1375)
   line(nid(), '', 'n_delivery', 'n_audit_logging', 0.5, 1, 0.5, 0, 'strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;');
 
-  // CLOSED-LOOP PHYSICAL RETURN VECTOR (Cloud Logging & Eval -> Supervisor Agent)
-  line(nid(), 'Model Eval Feedback & Tuning Loop', 'n_audit_logging', 'n_supervisor', 0, 0.5, 0.5, 1, 'strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;endArrow=block;endSize=4;', [
+  // CLOSED-LOOP PHYSICAL RETURN VECTOR (Cloud Logging & Eval -> Supervisor Agent via open bottom channel y=560)
+  line(nid(), 'Model Eval Feedback & Tuning Loop', 'n_audit_logging', 'n_supervisor', 0, 0.5, 0, 0.75, 'strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;endArrow=block;endSize=4;', [
     { x: 1250, y: 520 },
-    { x: 1250, y: 565 },
-    { x: 367, y: 565 }
+    { x: 1250, y: 560 },
+    { x: 236, y: 560 },
+    { x: 236, y: 405 }
   ]);
 
   // =========================================================================

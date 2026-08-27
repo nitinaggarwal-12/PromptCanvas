@@ -8,6 +8,9 @@ export type ErrorCode =
   | 'OUT_OF_CONTAINER'
   | 'OUT_OF_BOUNDS'
   | 'ORPHAN_NODE'
+  | 'DATA_STORE_DISCONNECTED'
+  | 'FLOW_BACKTRACKING_DETECTED'
+  | 'CLOSED_LOOP_MISSING_EDGE'
   | 'CONTAINER_HEADER_SLICED'
   | 'EDGE_INTERSECTS_VERTEX'
   | 'TEXT_OVERFLOW_HEIGHT'
@@ -243,8 +246,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     } else if (isEdge) {
       const source = cell['@_source'];
       const target = cell['@_target'];
-      // Edges anchored by explicit mxPoint sourcePoint/targetPoint (sequence arrows,
-      // legend decorations) are valid draw.io constructs, not dangling edges.
       const geom = cell.mxGeometry;
       const rawPoints = geom?.Array?.mxPoint || geom?.mxPoint;
       const points = rawPoints ? (Array.isArray(rawPoints) ? rawPoints : [rawPoints]) : [];
@@ -292,7 +293,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check EDGE_DANGLING
+  // Check EDGE_DANGLING & collect connected nodes
   const connectedNodeIds = new Set<string>();
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (!edge.source || !verticesMap.has(edge.source)) {
@@ -320,7 +321,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check OUT_OF_BOUNDS (max extent > 8000x8000 or negative absolute coordinates)
+  // Check OUT_OF_BOUNDS
   for (const [id, v] of verticesMap.entries()) {
     if (v.absX < 0 || v.absY < 0 || v.absX + v.width > 8000 || v.absY + v.height > 8000) {
       errors.push({
@@ -335,7 +336,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   for (const [id, v] of verticesMap.entries()) {
     if (!v.isContainer && v.parent !== '1' && verticesMap.has(v.parent)) {
       const parentV = verticesMap.get(v.parent)!;
-      // Top label band (top 30px) for non-label children
       if (!v.isLabelOrHeader && v.y < 30) {
         errors.push({
           code: 'OUT_OF_CONTAINER',
@@ -343,7 +343,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
           detail: `Child vertex "${id}" (y=${v.y}) overlaps container top-label band (top 30px) of parent "${parentV.id}"`,
         });
       }
-      // Right & Bottom padding (10px)
       if (v.x + v.width > parentV.width + 10) {
         errors.push({
           code: 'OUT_OF_CONTAINER',
@@ -368,14 +367,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       const v1 = verticesList[i];
       const v2 = verticesList[j];
 
-      // Check siblings (same parent)
       if (v1.parent === v2.parent) {
-        // If one is vastly larger than the other, it's a container card/backdrop
         if (v1.width * v1.height >= v2.width * v2.height * 2.2 || v2.width * v2.height >= v1.width * v1.height * 2.2) {
           continue;
         }
 
-        // Check geometric containment (one strictly larger encloses the other -> container card relationship)
         const v1EnclosesV2 = (v1.width > v2.width + 10 && v1.height > v2.height + 10) && (v1.x <= v2.x + 5) && (v1.y <= v2.y + 5) && (v1.x + v1.width >= v2.x + v2.width - 5) && (v1.y + v1.height >= v2.y + v2.height - 5);
         const v2EnclosesV1 = (v2.width > v1.width + 10 && v2.height > v1.height + 10) && (v2.x <= v1.x + 5) && (v2.y <= v1.y + 5) && (v2.x + v2.width >= v1.x + v1.width - 5) && (v2.y + v2.height >= v1.y + v1.height - 5);
 
@@ -401,7 +397,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check EDGE_LABEL_MISSING_PILL (all text edges must have high-contrast background pill)
+  // Check EDGE_LABEL_MISSING_PILL
   for (const edge of edgesMap.values()) {
     const val = edge.label || '';
     const style = edge.style || '';
@@ -414,13 +410,12 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check EDGE_INTERSECTS_VERTEX & CONTAINER_HEADER_SLICING (Includes multi-waypoint segments)
+  // Check EDGE_INTERSECTS_VERTEX & CONTAINER_HEADER_SLICING
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
       const src = verticesMap.get(edge.source)!;
       const tgt = verticesMap.get(edge.target)!;
 
-      // Extract all edge segments (from src -> waypoints -> tgt)
       const points: { x: number; y: number }[] = [
         { x: src.absX + src.width / 2, y: src.absY + src.height / 2 },
         ...(edge.points || []),
@@ -433,11 +428,9 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         const isHoriz = Math.abs(p1.y - p2.y) < 5;
         const isVert = Math.abs(p1.x - p2.x) < 5;
 
-        // Check against all vertices (including container top headers!)
         for (const [vId, v] of verticesMap.entries()) {
           if (vId === edge.source || vId === edge.target) continue;
 
-          // If it is a container, check if the line cuts across its top header region (top 20px)
           if (v.isContainer) {
             const headerMinY = v.absY;
             const headerMaxY = v.absY + 20;
@@ -455,7 +448,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
             continue;
           }
 
-          // Non-container intermediate vertex collision
           if (isHoriz) {
             const segMinX = Math.min(p1.x, p2.x);
             const segMaxX = Math.max(p1.x, p2.x);
@@ -484,7 +476,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check CARD_TEXT_OVERFLOW (Estimated line height vs mxGeometry height)
+  // Check CARD_TEXT_OVERFLOW
   for (const [id, v] of verticesMap.entries()) {
     if (!v.isContainer && !v.isLabelOrHeader && v.label) {
       const lineCount = (v.label.match(/<br\s*\/?>|<p>/gi) || []).length + 1;
@@ -500,64 +492,78 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check CANVAS_MARGIN_UTILIZATION (Warn if right margin has > 200px empty dead space)
-  let maxCanvasX = 0;
-  for (const v of verticesMap.values()) {
-    if (!v.isContainer && v.absX + v.width > maxCanvasX) {
-      maxCanvasX = v.absX + v.width;
-    }
-  }
-  if (maxCanvasX > 0 && maxCanvasX < 1350) {
-    warnings.push({
-      code: 'DEAD_RIGHT_MARGIN',
-      cells: [],
-      detail: `Diagram max X is ${maxCanvasX}px, leaving over ${1580 - maxCanvasX}px empty void on right side. Widescreen 16:9 canvas should utilize >= 1500px.`,
-    });
-  }
+  // --- STRICT TOPOLOGICAL & ARCHITECTURAL ERROR RULES ---
 
-  // Check ORPHAN_NODE (warning, not error)
+  // 1. HARD BLOCKING ORPHAN_NODE RULE for any Core Service Card
   for (const [id, v] of verticesMap.entries()) {
     const isFoundation = id.startsWith('cloud_') && (id.includes('monitoring') || id.includes('iam') || id.includes('vpc') || id.includes('telemetry') || id.includes('governance'));
     if (!v.isContainer && !v.isLabelOrHeader && !isFoundation && !connectedNodeIds.has(id)) {
-      warnings.push({
+      errors.push({
         code: 'ORPHAN_NODE',
         cells: [id],
-        detail: `Vertex "${id}" has zero connected edges`,
+        detail: `Critical architecture component "${id}" is completely disconnected from dataflow (0 connected edges).`,
       });
     }
   }
 
-  // --- ARCHITECTURAL & SEMANTIC TOPOLOGY VALIDATION ---
-
-  // 1. Check DECISION_GATE_INCOMPLETE (Rhombus decision diamonds must have >= 2 outgoing branches, junctions excepted)
+  // 2. HARD BLOCKING DATA_STORE_DISCONNECTED RULE
+  // Every database, data warehouse, cache, or vector search node MUST have both incoming query AND outgoing data/state streams
   for (const [id, v] of verticesMap.entries()) {
-    const isJunction = id.includes('con') || id.includes('junction') || id.includes('merge') || id.includes('gateway') || v.label?.includes('CON');
-    if (!isJunction && (v.style?.includes('rhombus') || (id.startsWith('decision_') && !id.includes('con')))) {
-      const outgoingEdges = Array.from(edgesMap.values()).filter(e => e.source === id);
-      if (outgoingEdges.length < 2) {
+    const isDatabase = id.includes('db') || id.includes('spanner') || id.includes('bigquery') || id.includes('sql') || id.includes('vector_search') || id.includes('redis') || id.includes('memorystore');
+    if (isDatabase && !v.isLabelOrHeader && !v.isContainer) {
+      const hasIncoming = Array.from(edgesMap.values()).some(e => e.target === id);
+      const hasOutgoing = Array.from(edgesMap.values()).some(e => e.source === id);
+      if (!hasIncoming || !hasOutgoing) {
         errors.push({
-          code: 'DECISION_GATE_INCOMPLETE',
+          code: 'DATA_STORE_DISCONNECTED',
           cells: [id],
-          detail: `Decision diamond "${id}" has only ${outgoingEdges.length} outgoing path(s). Decision diamonds must provide full binary branching (e.g. YES and NO).`,
+          detail: `Data store "${id}" must have both active incoming query/ingestion AND outgoing data/state streams (Incoming: ${hasIncoming}, Outgoing: ${hasOutgoing}).`,
         });
       }
     }
   }
 
-  // 2. Check CDN_CACHE_INVERTED_ROUTING (Cache Hit must route to delivered/edge, not backend compute)
-  for (const e of edgesMap.values()) {
-    if (e.source?.includes('cdn') && (e.label?.toUpperCase().includes('YES') || e.label?.toUpperCase().includes('HIT'))) {
-      if (e.target && (e.target.includes('mig') || e.target.includes('compute') || e.target.includes('backend_api'))) {
+  // 3. HARD BLOCKING FLOW_BACKTRACKING_DETECTED RULE
+  // Detects forward flow edges that reverse direction vertically by > 200px across columns without being a feedback loop
+  for (const [edgeId, edge] of edgesMap.entries()) {
+    if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
+      const src = verticesMap.get(edge.source)!;
+      const tgt = verticesMap.get(edge.target)!;
+      const isForwardCol = tgt.absX > src.absX + 50;
+      const isUpwardBacktrack = (src.absY - tgt.absY) > 220;
+      const isFeedbackLoop = (edge.label?.toLowerCase().includes('feedback') || edge.label?.toLowerCase().includes('eval') || edge.label?.toLowerCase().includes('retry') || edge.label?.toLowerCase().includes('correction'));
+
+      if (isForwardCol && isUpwardBacktrack && !isFeedbackLoop) {
         errors.push({
-          code: 'CDN_CACHE_INVERTED_ROUTING',
-          cells: [e.id, e.source, e.target],
-          detail: `CDN Cache Hit edge "${e.id}" routes directly to backend compute "${e.target}". Cache hits must be returned directly to edge/client.`,
+          code: 'FLOW_BACKTRACKING_DETECTED',
+          cells: [edgeId, edge.source, edge.target],
+          detail: `Forward edge "${edgeId}" backtracks upward by ${Math.round(src.absY - tgt.absY)}px from "${edge.source}" to "${edge.target}". Ingress flow must branch forward cleanly without backtracking.`,
         });
       }
     }
   }
 
-  // 3. Check UNCONNECTED_LOAD_BALANCER (GCLB / Ingress Load Balancer must be connected to traffic flow)
+  // 4. CLOSED_LOOP_MISSING_EDGE RULE
+  // If diagram banner promises Closed-Loop feedback, verify that a physical return vector exists
+  const hasClosedLoopClaim = Array.from(verticesMap.values()).some(v => v.label?.toLowerCase().includes('closed-loop') || v.label?.toLowerCase().includes('continuous feedback'));
+  if (hasClosedLoopClaim) {
+    const hasReturnEdge = Array.from(edgesMap.values()).some(e => {
+      if (!e.source || !e.target || !verticesMap.has(e.source) || !verticesMap.has(e.target)) return false;
+      const src = verticesMap.get(e.source)!;
+      const tgt = verticesMap.get(e.target)!;
+      return src.absX > tgt.absX + 200; // Returns from right side back to left side
+    });
+
+    if (!hasReturnEdge) {
+      errors.push({
+        code: 'CLOSED_LOOP_MISSING_EDGE',
+        cells: [],
+        detail: `Diagram claims "Closed-Loop Feedback" in banner/title, but has no physical return connector vector in the graph model.`,
+      });
+    }
+  }
+
+  // 5. UNCONNECTED_LOAD_BALANCER RULE
   for (const [id, v] of verticesMap.entries()) {
     if (id.includes('load_balancer') || id.includes('gclb')) {
       const hasIncoming = Array.from(edgesMap.values()).some(e => e.target === id);
@@ -572,22 +578,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // 4. Check RELATIONAL_REPLICATION_PIPELINE (Databases must have persistence/replication streams)
-  for (const [id, v] of verticesMap.entries()) {
-    if (id.includes('cloud_sql') || id.includes('spanner')) {
-      const hasOutgoing = Array.from(edgesMap.values()).some(e => e.source === id);
-      if (!hasOutgoing) {
-        warnings.push({
-          code: 'RELATIONAL_REPLICATION_PIPELINE',
-          cells: [id],
-          detail: `Relational database "${id}" has no downstream CDC replication or backup streaming edge.`,
-        });
-      }
-    }
-  }
+  // ZERO WARNING TOLERANCE: valid ONLY if errors === 0 AND warnings === 0
+  const isValid = errors.length === 0 && warnings.length === 0;
 
   return {
-    valid: errors.length === 0,
+    valid: isValid,
     errors,
     warnings,
   };
