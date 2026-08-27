@@ -1697,18 +1697,39 @@ function Studio2Content() {
             <div className={`rounded-2xl border shadow-sm overflow-hidden flex flex-col ${
               isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
-              {/* Diagram Card Header */}
+              {/* Diagram Card Header with Interactive Mode Tabs */}
               <div className="p-3 md:px-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex items-center gap-1.5 mr-1">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
                   </div>
-                  <span className="px-2.5 py-1 rounded-lg bg-teal-500 text-white text-xs font-bold flex items-center gap-1 shadow-xs">
-                    <Layers className="w-3.5 h-3.5" />
-                    <span>Diagram 1</span>
-                  </span>
+
+                  {/* Interactive Dual-Mode Tabs */}
+                  <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+                    {diagrams.map((diag) => {
+                      const isActive = diag.id === activeDiagramId;
+                      return (
+                        <button
+                          key={diag.id}
+                          type="button"
+                          onClick={() => {
+                            setActiveDiagramId(diag.id);
+                            showToast(`Switched to: ${diag.title}`);
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                            isActive
+                              ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-xs border border-slate-200/80 dark:border-slate-700'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <Layers className={`w-3.5 h-3.5 ${isActive ? 'text-teal-500' : 'text-slate-400'}`} />
+                          <span>{diag.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2">
