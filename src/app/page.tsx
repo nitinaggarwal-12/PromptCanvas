@@ -20,7 +20,8 @@ import {
   Menu,
   LayoutGrid,
   BarChart3,
-  ShieldCheck
+  ShieldCheck,
+  Layers
 } from 'lucide-react';
 import { AuthModal } from '@/components/AuthModal';
 import { UserProfileModal } from '@/components/UserProfileModal';
@@ -148,6 +149,14 @@ export default function LandingPage() {
           <nav className={`hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
+            <Link href="/studio" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
+              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-teal-600' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'
+            }`} title="Conversational AI Architecture & Specification Studio">
+              <Layers className="w-3.5 h-3.5 text-teal-500" />
+              <span>Launch Studio</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-600 dark:text-teal-300 font-mono font-black">PRO</span>
+            </Link>
+
             <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
               isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-sky-600' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'
             }`} title="50 High-Contrast Architecture Blueprints">
@@ -208,7 +217,7 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/docgen?tab=studio"
+                  href="/studio"
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
                   <span>Launch Studio</span>
@@ -231,7 +240,7 @@ export default function LandingPage() {
                 </button>
                 <Link
                   id="header-launch-app-btn"
-                  href="/docgen?tab=studio"
+                  href="/studio"
                   className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-slate-950 font-black text-xs tracking-wide transition-all shadow-md shadow-teal-500/20 hover:scale-[1.02] flex items-center gap-1.5"
                 >
                   <span>Launch Studio</span>
@@ -347,7 +356,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center gap-4 w-full pt-2">
             <Link
               id="hero-build-diagram-btn"
-              href="/docgen?tab=studio"
+              href="/studio"
               className="px-8 py-4 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 hover:from-teal-300 hover:to-indigo-400 text-[#070a13] font-bold tracking-wide text-center transition-all shadow-xl shadow-teal-500/15 hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               <span>Start Building Free</span>
@@ -826,7 +835,7 @@ export default function LandingPage() {
 
           <div className="mt-8 flex justify-center">
             <Link
-              href="/docgen?tab=studio"
+              href="/studio"
               className="px-8 py-4 rounded-xl bg-teal-accent hover:bg-teal-hover text-[#070a13] font-bold tracking-wide transition-all shadow-xl shadow-teal-500/25 hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Launch Studio Free</span>

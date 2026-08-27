@@ -6248,7 +6248,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           </div>
 
           {[
-            { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/docgen?tab=studio', badge: 'PRO' },
+            { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
             { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
             { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
             { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },

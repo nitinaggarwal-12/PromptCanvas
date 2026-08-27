@@ -256,7 +256,7 @@ function DashboardContent() {
 
           <div className="flex items-center gap-3">
             <Link
-              href="/docgen?tab=studio"
+              href="/studio"
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
