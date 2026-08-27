@@ -463,14 +463,14 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#EFE6D5;strokeColor=#FDE68A;strokeWidth=1;html=1;align=center;verticalAlign=top;dashed=1;'
   );
 
-  // Tier 1 Top Sub-Frame: Async Ingestion & Tasks (y=150..250, h=100)
+  // Tier 1 Top Sub-Frame: Async Ingestion & Tasks (y=150..242, h=92)
   cell(
     'async_ingestion_frame',
     `<div style="font-weight:900;font-size:8px;color:#B45309;text-align:left;padding:2px 6px;letter-spacing:0.4px;">ASYNC INGESTION &amp; PERSISTENCE</div>`,
     745,
     150,
     245,
-    100,
+    92,
     'rounded=1;fillColor=#FDF6EC;strokeColor=#FCD34D;strokeWidth=1;html=1;align=left;verticalAlign=top;'
   );
 
@@ -482,7 +482,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.1;">${asyncTaskText}</div>
     </div>`,
     755,
-    185,
+    180,
     105,
     45,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
@@ -495,21 +495,21 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.1;">PERSIST<br/>DATA</div>
     </div>`,
     870,
-    185,
+    180,
     105,
     45,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Tier 1 Middle Sub-Frame: Relational Data (y=265..480, h=215)
+  // Tier 1 Middle Sub-Frame: Relational Data (y=290..480, h=190 - 48px open channel above!)
   const relTitle = isSpanner ? 'RELATIONAL DATA (SPANNER MULTI-REGION)' : 'RELATIONAL DATA';
   cell(
     'relational_data_frame',
     `<div style="font-weight:900;font-size:8.5px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">${relTitle}</div>`,
     745,
-    265,
+    290,
     245,
-    215,
+    190,
     'rounded=1;fillColor=#FCE5CD;strokeColor=#FCD34D;strokeWidth=1.5;html=1;align=center;verticalAlign=top;'
   );
 
@@ -523,7 +523,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:6.5px;color:#D97706;font-weight:600;">${dbSub}</div>
     </div>`,
     755,
-    325,
+    340,
     100,
     75,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
@@ -538,7 +538,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:6.5px;color:#D97706;font-weight:600;">${bqSub}</div>
     </div>`,
     870,
-    325,
+    340,
     100,
     75,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
@@ -853,7 +853,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Subnet A App -> Async Tasks / Ingestion
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
-  edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 805, y: 207 }]);
+  edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 805, y: 265 }]);
 
   // Cloud SQL / Spanner -> BigQuery Replication
   const repLabel = isSpanner ? 'TRUETIME SYNC' : 'REPLICATION';
@@ -867,8 +867,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e19', '', 'gce_mig_box', 'regional_ilb_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
   edge('e20', '', 'regional_ilb_box', 'gcs_storage_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
 
-  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via clear open corridor)
-  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 710, y: 277 }, { x: 1010, y: 277 }]);
+  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via wide 48px open channel at Y=265)
+  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 710, y: 265 }, { x: 1010, y: 265 }]);
   edge('e22', '', 'bigquery_replica', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;');
   edge('e23', '', 'ai_agent_designer', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
   edge('e24', '', 'ai_gemini_notebook', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
@@ -878,7 +878,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e26', '', 'ai_agent_platform_hub', 'train_model_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=2;');
   edge('e27', '', 'train_model_box', 'deploy_model_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
   edge('e28', '', 'deploy_model_box', 'online_prediction_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=1.5;');
-  edge('e29', 'FEEDBACK LOOP', 'online_prediction_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1240, y: 675 }, { x: 1240, y: 312 }]);
+  edge('e29', 'FEEDBACK LOOP', 'online_prediction_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1255, y: 645 }, { x: 1255, y: 440 }, { x: 1240, y: 312 }]);
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="gcp_functional_flowchart" name="${E(projectName)} - ${E(useCaseName)}">
