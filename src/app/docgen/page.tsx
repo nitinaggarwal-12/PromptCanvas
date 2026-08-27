@@ -2636,11 +2636,39 @@ function DocGenContent() {
                           setSelectedDomain(autoDomain);
                         }
                       }}
-                      placeholder="Describe key Google Cloud services, data sources, security mandates, and integration endpoints..."
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleStartGeneration();
+                        }
+                      }}
+                      placeholder="Describe key Google Cloud services, data sources, security mandates, and integration endpoints... (Press Enter to Synthesize)"
                       className={`w-full p-3 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
                         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                       }`}
                     />
+
+                    {/* Direct Enter / Synthesize Button */}
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={handleStartGeneration}
+                        disabled={isGenerating}
+                        className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                      >
+                        {isGenerating ? (
+                          <>
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                            <span>Synthesizing Architecture &amp; Artifacts...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4" />
+                            <span>⚡ Synthesize Architecture Now</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Quick Load Industry Presets (Glass Tiles) */}

@@ -945,9 +945,9 @@ function StudioContent() {
                   </select>
                 </div>
 
-                {/* 5. Architectural Scope & Topology Requirements (Moved to 5) */}
-                <div>
-                  <div className="flex items-center justify-between mb-1">
+                {/* 5. Architectural Scope & Topology Requirements */}
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
                     <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
                       5. Architectural Scope &amp; Topology Requirements
                     </label>
@@ -955,24 +955,101 @@ function StudioContent() {
                       Gemini 3.7 &bull; Real-Time AST
                     </span>
                   </div>
+
+                  {/* Scrollable Prompt & Enhancement History Feed */}
+                  {chatMessages.length > 0 && (
+                    <div className={`p-3 rounded-2xl border max-h-[220px] overflow-y-auto space-y-2.5 ${
+                      isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/80 border-slate-800'
+                    }`}>
+                      {chatMessages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                        >
+                          <div
+                            className={`p-2.5 rounded-xl text-xs max-w-[92%] leading-relaxed ${
+                              msg.sender === 'user'
+                                ? 'bg-teal-600 text-white font-medium rounded-tr-xs shadow-xs'
+                                : isLight
+                                ? 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/80 shadow-xs'
+                                : 'bg-slate-950 text-slate-200 rounded-tl-xs border border-slate-800'
+                            }`}
+                          >
+                            <p className="text-[11.5px]">{msg.text}</p>
+
+                            {/* Action Badge */}
+                            {msg.actionApplied && (
+                              <div className="mt-2 p-1.5 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-between gap-2 text-[10px]">
+                                <span className="font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                  <Check className="w-3 h-3 text-teal-500" />
+                                  {msg.actionApplied.summary}
+                                </span>
+                                <span className="font-mono font-bold text-slate-400">
+                                  {msg.actionApplied.versionTag}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Suggested Prompt Chips */}
+                            {msg.suggestedPrompts && (
+                              <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
+                                <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
+                                  Suggested Next Iterations:
+                                </span>
+                                <div className="flex flex-col gap-0.5">
+                                  {msg.suggestedPrompts.map((p) => (
+                                    <button
+                                      key={p}
+                                      type="button"
+                                      onClick={() => {
+                                        setProjectScopePrompt(p);
+                                        handleSendChatMessage(p);
+                                      }}
+                                      className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
+                                    >
+                                      &rarr; {p}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-[8.5px] text-slate-400 mt-0.5 px-1">{msg.timestamp}</span>
+                        </div>
+                      ))}
+
+                      {isAiThinking && (
+                        <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-2">
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>AI Assistant is analyzing context &amp; updating diagram...</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Prompt Textarea */}
                   <textarea
                     rows={3}
                     value={projectScopePrompt}
                     onChange={(e) => setProjectScopePrompt(e.target.value)}
-                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations..."
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSynthesizeArchitecture();
+                      }
+                    }}
+                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Synthesize)"
                     className={`w-full p-3 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
                       isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                     }`}
                   />
-                </div>
 
-                {/* Primary Submit / Synthesize Button */}
-                <div className="pt-2">
+                  {/* Enter Button directly under textarea */}
                   <button
                     type="button"
                     onClick={() => handleSynthesizeArchitecture()}
                     disabled={isSynthesizing}
-                    className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     {isSynthesizing ? (
                       <>
@@ -985,147 +1062,6 @@ function StudioContent() {
                         <span>⚡ Synthesize Architecture Now</span>
                       </>
                     )}
-                  </button>
-                </div>
-              </div>
-
-              {/* BOTTOM LEFT: ARCHITECTURAL COPILOT • PROMPT HISTORY & DIAGRAM ENHANCEMENT */}
-              <div className={`p-5 rounded-3xl border shadow-sm space-y-4 flex flex-col ${
-                isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
-              }`}>
-                <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <Bot className="w-4 h-4 text-teal-500" />
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                      AI Copilot &bull; Prompt History &amp; Diagram Enhancement
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-teal-600 dark:text-teal-400 font-bold px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800">
-                      Target: {activeDiagram.title.split('•')[0].trim()}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Gemini 3.7 Online
-                    </span>
-                  </div>
-                </div>
-
-                {/* Prompt History & Chat Messages Container */}
-                <div className="space-y-3.5 max-h-[340px] overflow-y-auto pr-1">
-                  {chatMessages.map((msg) => (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
-                    >
-                      <div
-                        className={`p-3.5 rounded-2xl text-xs max-w-[90%] leading-relaxed ${
-                          msg.sender === 'user'
-                            ? 'bg-teal-600 text-white font-medium rounded-tr-xs shadow-xs'
-                            : isLight
-                            ? 'bg-slate-100 text-slate-800 rounded-tl-xs border border-slate-200/80'
-                            : 'bg-slate-900 text-slate-200 rounded-tl-xs border border-slate-800'
-                        }`}
-                      >
-                        <p>{msg.text}</p>
-
-                        {/* Action Badge */}
-                        {msg.actionApplied && (
-                          <div className="mt-2.5 p-2 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-between gap-2 text-[10.5px]">
-                            <span className="font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                              <Check className="w-3 h-3 text-teal-500" />
-                              {msg.actionApplied.summary}
-                            </span>
-                            <span className="font-mono font-bold text-slate-400">
-                              {msg.actionApplied.versionTag}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Suggested Prompt Chips */}
-                        {msg.suggestedPrompts && (
-                          <div className="mt-3 pt-2 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
-                            <span className="text-[9.5px] font-black uppercase tracking-wider text-slate-400 block">
-                              Suggested Next Iterations:
-                            </span>
-                            <div className="flex flex-col gap-1">
-                              {msg.suggestedPrompts.map((p) => (
-                                <button
-                                  key={p}
-                                  type="button"
-                                  onClick={() => handleSendChatMessage(p)}
-                                  className="text-left text-[10.5px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
-                                >
-                                  &rarr; {p}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <span className="text-[9px] text-slate-400 mt-1 px-1">{msg.timestamp}</span>
-                    </div>
-                  ))}
-
-                  {isAiThinking && (
-                    <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-3">
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                      <span>AI Assistant is analyzing context &amp; enhancing diagram...</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Quick Scenario Starters */}
-                <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                    ⚡ Quick Scenario Prompts:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { label: '🚁 Drone Delivery UTM', prompt: 'Architect a nationwide drone delivery network with real-time 5G UTM airspace telemetry and FAA audit logging.' },
-                      { label: '⚡ Smart EV Microgrid', prompt: 'Architect a decentralized smart EV fast-charging network with OCPP 2.0.1 and BESS battery storage load balancing.' },
-                      { label: '🧬 Bio-Pharma Clinical', prompt: 'Architect an FDA 21 CFR Part 11 pharmacovigilance platform with automated adverse event triage and GxP audit ledgers.' },
-                      { label: '💳 Real-Time Fraud Hub', prompt: 'Architect a high-throughput ISO 20022 banking payment gateway with sub-5ms pre-trade risk and real-time fraud clustering.' },
-                      { label: '🧠 Vertex AI RAG Swarm', prompt: 'Architect an enterprise Vertex AI multi-agent orchestration platform with Redis semantic caching and vector grounding.' },
-                    ].map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => handleSendChatMessage(item.prompt)}
-                        className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold transition-all cursor-pointer ${
-                          isLight
-                            ? 'bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200'
-                            : 'bg-slate-900 hover:bg-teal-950/40 hover:text-teal-400 text-slate-300 border border-slate-800'
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Chat Input Box to Enhance Diagram */}
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="text"
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleSendChatMessage();
-                    }}
-                    placeholder="Ask AI to enhance diagram, add components, or modify topology..."
-                    className={`flex-1 px-3.5 py-2.5 rounded-xl border text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
-                    }`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleSendChatMessage()}
-                    disabled={!chatInput.trim() || isAiThinking}
-                    className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer shrink-0"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Enhance</span>
                   </button>
                 </div>
               </div>
