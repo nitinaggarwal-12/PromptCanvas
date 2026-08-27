@@ -227,15 +227,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   const cloudArmorSubtitle = isCmek ? '(WAF / CMEK Key Encrypted)' : '(WAF / DDoS protection)';
   cell(
     'cloud_armor',
-    `<div style="text-align:center;padding:3px;">
+    `<div style="text-align:center;padding:2px 3px;">
       ${ICONS.cloudArmor}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD ARMOR</div>
-      <div style="font-size:6.5px;color:#64748B;font-weight:600;">${cloudArmorSubtitle}</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">CLOUD ARMOR</div>
+      <div style="font-size:6px;color:#64748B;font-weight:600;line-height:1.1;">${cloudArmorSubtitle}</div>
     </div>`,
-    180,
-    415,
-    80,
-    62,
+    175,
+    405,
+    82,
+    78,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
@@ -243,27 +243,27 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   const iapSubtitle = isCmek ? 'IDENTITY-AWARE<br/>PROXY (IAP + VPC-SC)' : 'IDENTITY-AWARE<br/>PROXY (IAP)';
   cell(
     'iap_proxy',
-    `<div style="text-align:center;padding:3px;">
+    `<div style="text-align:center;padding:2px 3px;">
       ${ICONS.iapLock}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${iapSubtitle}</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${iapSubtitle}</div>
     </div>`,
-    270,
-    415,
-    80,
-    62,
+    265,
+    405,
+    88,
+    78,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
   // Global External HTTP(S) Load Balancer
   cell(
     'gclb_load_balancer',
-    `<div style="text-align:center;padding:3px;">
+    `<div style="text-align:center;padding:2px 3px;">
       ${ICONS.gclb}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">GLOBAL EXTERNAL<br/>HTTP(S) LOAD<br/>BALANCER</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">GLOBAL EXTERNAL<br/>HTTP(S) LOAD<br/>BALANCER</div>
     </div>`,
     360,
     405,
-    75,
+    78,
     78,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
@@ -853,7 +853,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Subnet A App -> Async Tasks / Ingestion
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
-  edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 805, y: 265 }]);
+  edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 805, y: 220 }]);
 
   // Cloud SQL / Spanner -> BigQuery Replication
   const repLabel = isSpanner ? 'TRUETIME SYNC' : 'REPLICATION';
@@ -867,15 +867,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e19', '', 'gce_mig_box', 'regional_ilb_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
   edge('e20', '', 'regional_ilb_box', 'gcs_storage_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
 
-  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via wide 48px open channel at Y=265)
-  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 710, y: 265 }, { x: 1010, y: 265 }]);
+  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via wide 48px open channel at Y=268)
+  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 710, y: 268 }, { x: 1010, y: 268 }]);
   edge('e22', '', 'bigquery_replica', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;');
   edge('e23', '', 'ai_agent_designer', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
   edge('e24', '', 'ai_gemini_notebook', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
   edge('e25', '', 'ai_adk_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
 
-  // Agent Platform -> Model Management & Training Loop
-  edge('e26', '', 'ai_agent_platform_hub', 'train_model_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=2;');
+  // Agent Platform -> Model Management & Training Loop (Enters from left side to never cross Model Management header text)
+  edge('e26', '', 'ai_agent_platform_hub', 'train_model_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=2;', [{ x: 1025, y: 390 }, { x: 1025, y: 584 }]);
   edge('e27', '', 'train_model_box', 'deploy_model_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
   edge('e28', '', 'deploy_model_box', 'online_prediction_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#D97706;strokeWidth=1.5;');
   edge('e29', 'FEEDBACK LOOP', 'online_prediction_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1255, y: 645 }, { x: 1255, y: 440 }, { x: 1240, y: 312 }]);
