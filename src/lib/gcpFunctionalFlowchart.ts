@@ -1,7 +1,7 @@
 /**
- * GCP Functional Flowchart Architecture Blueprint Generator
- * Full 16:9 Ultra-Widescreen Calibrated Master Layout (1600x960)
- * Reclaimed Empty Right Margins: 4 Spacious 320-360px Zones + Full-Width Foundation Bar
+ * GCP Functional Flowchart Architecture Blueprint Generator v1.2
+ * Master 16:9 Ultra-Widescreen Calibrated Layout (1600x960)
+ * Gemini 3.1 Pro Optimized: Edge CDN Ingress, Complete Decision Tree, Dual Cloud SQL + Spanner Stack
  */
 
 export interface GCPFunctionalFlowchartOptions {
@@ -16,7 +16,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   const {
     projectName = 'Enterprise GCP Architecture',
     useCaseName = 'GCP Cloud Native Architecture',
-    projectTitle = 'GCP Cloud Architecture: Functional Flowchart Diagram',
+    projectTitle = 'GCP Cloud Architecture: Functional Flowchart Diagram v1.2',
     prompt = '',
     theme = 'light'
   } = options;
@@ -72,7 +72,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     pubsub: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 17.93V18a1 1 0 0 1-2 0v-.07A8 8 0 0 1 4.07 13H6a1 1 0 0 1 0-2H4.07A8 8 0 0 1 11 4.07V6a1 1 0 0 1 2 0V4.07A8 8 0 0 1 19.93 11H18a1 1 0 0 1 0 2h1.93A8 8 0 0 1 13 19.93z"/></svg>`,
     computeEngine: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`,
     loadBalancer: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>`,
-    cloudSql: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 2c4.42 0 8 1.79 8 3s-3.58 3-8 3-8-1.79-8-3 3.58-3 8-3zm8 13c0 1.21-3.58 3-8 3s-8-1.79-8-3v-2.12c1.84 1.31 4.79 2.12 8 2.12s6.16-.81 8-2.12V17zm0-4c0 1.21-3.58 3-8 3s-8-1.79-8-3v-2.12c1.84 1.31 4.79 2.12 8 2.12s6.16-.81 8-2.12V13z"/></svg>`,
+    cloudSql: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#2563EB"><path d="M12 2C6.48 2 2 4.24 2 7v10c0 2.76 4.48 5 10 5s10-2.24 10-5V7c0-2.76-4.48-5-10-5zm0 2c4.42 0 8 1.79 8 3s-3.58 3-8 3-8-1.79-8-3 3.58-3 8-3zm8 13c0 1.21-3.58 3-8 3s-8-1.79-8-3v-2.12c1.84 1.31 4.79 2.12 8 2.12s6.16-.81 8-2.12V17zm0-4c0 1.21-3.58 3-8 3s-8-1.79-8-3v-2.12c1.84 1.31 4.79 2.12 8 2.12s6.16-.81 8-2.12V13z"/></svg>`,
+    cloudSpanner: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M12 2L2 7l10 5 10-5-10-5zm0 8.5L4.5 7 12 3.5 19.5 7 12 10.5zm0 3L2 8.5V17l10 5 10-5V8.5L12 13.5z"/></svg>`,
     bigquery: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>`,
     cloudStorage: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM19 18H6c-2.21 0-4-1.79-4-4 0-2.05 1.53-3.76 3.56-3.97l1.07-.11.5-.95C8.08 7.14 9.94 6 12 6c2.62 0 4.88 1.86 5.39 4.43l.3 1.5 1.53.11c1.56.1 2.78 1.41 2.78 2.96 0 1.65-1.35 3-3 3z"/></svg>`,
     lifecycle: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#D97706"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`,
@@ -86,10 +87,11 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     monitoringPulse: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-2.5l-1.5 4.5-3-9L8.5 13H7v-2h2.5l1.5-4.5 3 9 1.5-4.5H17v2z"/></svg>`,
     iamShield: `<svg width="20" height="20" viewBox="0 0 24 24" fill="#0284C7"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>`,
     documentTask: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#D97706"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>`,
-    persistData: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#D97706"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`
+    persistData: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#D97706"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>`,
+    replication: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#2563EB"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>`
   };
 
-  // Header Title & Brand Block (Full 1600px Widescreen)
+  // Header Title & Brand Block (Full 1600px Widescreen v1.2)
   cell(
     'hdr_brand_block',
     `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:4px 10px;">
@@ -177,19 +179,19 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'legend_box',
     `<div style="font-size:7.5px;line-height:1.35;color:#1E293B;padding:4px;">
       <div style="font-weight:900;font-size:8.5px;color:#0F172A;border-bottom:1px solid #CBD5E1;padding-bottom:2px;margin-bottom:3px;letter-spacing:0.5px;">LEGEND</div>
-      <div style="margin-bottom:2px;"><span style="color:#2563EB;font-weight:900;">❶</span> 1. External Request</div>
+      <div style="margin-bottom:2px;"><span style="color:#2563EB;font-weight:900;">❶</span> 1. External Ingress</div>
       <div style="margin-bottom:2px;"><span style="color:#2563EB;font-weight:900;">❷</span> 2. WAF &amp; Perimeter</div>
-      <div style="margin-bottom:2px;"><span style="color:#2563EB;font-weight:900;">❸</span> 3. IAP Auth</div>
-      <div style="margin-bottom:2px;"><span style="color:#0284C7;font-weight:900;">❹</span> 4. Subnet Routing</div>
-      <div style="margin-bottom:2px;"><span style="color:#059669;font-weight:900;">❺</span> 5. Persist &amp; Store</div>
-      <div style="margin-bottom:2px;"><span style="color:#15803D;font-weight:900;">❻</span> 6. DeepMind Vertex AI</div>
+      <div style="margin-bottom:2px;"><span style="color:#15803D;font-weight:900;">❸</span> 3. Edge CDN Return</div>
+      <div style="margin-bottom:2px;"><span style="color:#0284C7;font-weight:900;">❹</span> 4. Subnet A Route</div>
+      <div style="margin-bottom:2px;"><span style="color:#059669;font-weight:900;">❺</span> 5. Persist &amp; Replicate</div>
+      <div style="margin-bottom:2px;"><span style="color:#7C3AED;font-weight:900;">❻</span> 6. DeepMind AI Platform</div>
       <div style="margin-bottom:4px;"><span style="color:#D97706;font-weight:900;">❼</span> 7. Auto-Scale MIG</div>
       ${isCmek ? `<div style="margin-bottom:3px;padding:2px;background:#CCFBF1;border-radius:3px;color:#0F766E;font-weight:800;">🛡️ CMEK Encrypted</div>` : ''}
       <div style="font-weight:800;font-size:7.5px;color:#64748B;border-top:1px dashed #CBD5E1;padding-top:3px;margin-top:2px;">Line Types:</div>
       <div style="color:#2563EB;">— Direct API / Ingress</div>
-      <div style="color:#D97706;">--- Async / Event Stream</div>
+      <div style="color:#15803D;">-- Edge Cache Return</div>
+      <div style="color:#D97706;">--- Replication / Stream</div>
       <div style="color:#7C3AED;">- - DeepMind Reasoning</div>
-      <div style="color:#15803D;">--- AI Feedback Loop</div>
     </div>`,
     10,
     495,
@@ -200,6 +202,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // =========================================================================
   // ZONE 1: INGRESS & SECURITY (x=160..485, w=325, y=120..760, h=640)
+  // Gemini 3.1 Pro Edge Ingress Hierarchy
   // =========================================================================
   const ingressZoneTitle = isCmek ? 'INGRESS &amp; PERIMETER SECURITY (VPC-SC + CMEK)' : 'INGRESS &amp; SECURITY';
   cell(
@@ -212,15 +215,26 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#E2ECE9;strokeColor=#99F6E4;strokeWidth=1;html=1;align=center;verticalAlign=top;dashed=1;'
   );
 
-  // Decision CON Node (Top - perfectly aligned above GCLB)
+  // Decision Gate 1: CDN Cache Hit? (Edge Level POP Gate)
   cell(
-    'decision_con_top',
-    `<div style="font-size:8.5px;font-weight:900;color:#1E3A8A;text-align:center;">CON</div>`,
-    410,
-    235,
-    36,
-    36,
-    'rhombus;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+    'decision_cdn_cache',
+    `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;line-height:1.15;">CDN CACHE<br/>HIT?</div>`,
+    400,
+    220,
+    68,
+    46,
+    'rhombus;fillColor=#FFFFFF;strokeColor=#15803D;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // Decision Gate 2: Path-Based Routing?
+  cell(
+    'decision_path_routing',
+    `<div style="font-size:7px;font-weight:900;color:#0F172A;text-align:center;line-height:1.15;">PATH-BASED<br/>ROUTING?</div>`,
+    400,
+    315,
+    68,
+    46,
+    'rhombus;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
   // Cloud Armor (WAF/DDoS Protection)
@@ -268,28 +282,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Decision Gate: Path-Based Routing?
-  cell(
-    'decision_path_routing',
-    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">PATH-BASED<br/>ROUTING?<br/><span style="color:#0284C7;">YES/NO</span></div>`,
-    345,
-    530,
-    64,
-    46,
-    'rhombus;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
-  );
-
-  // Decision Gate: CDN Cache Hit?
-  cell(
-    'decision_cdn_cache',
-    `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;">CDN CACHE<br/>HIT?<br/><span style="color:#0284C7;">YES/NO</span></div>`,
-    420,
-    530,
-    64,
-    46,
-    'rhombus;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
-  );
-
   // Decision CON Node (Bottom)
   cell(
     'decision_con_bottom',
@@ -325,21 +317,35 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#EDF2F8;strokeColor=#7DD3FC;strokeWidth=1.5;html=1;align=left;verticalAlign=top;'
   );
 
-  // User Auth (Firebase Auth / IAP Linked)
+  // User Auth
   cell(
     'user_auth_box',
-    `<div style="display:flex;align-items:center;gap:8px;padding:4px 8px;">
+    `<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;">
       ${ICONS.firebaseAuth}
       <div>
-        <div style="font-size:8.5px;font-weight:900;color:#0F172A;">USER AUTHENTICATION</div>
-        <div style="font-size:7px;color:#0284C7;font-weight:600;">(Firebase Auth &amp; IAP Identity)</div>
+        <div style="font-size:8px;font-weight:900;color:#0F172A;">USER AUTHENTICATION</div>
+        <div style="font-size:6.5px;color:#0284C7;font-weight:600;">(Firebase Auth &amp; IAP Identity)</div>
       </div>
     </div>`,
     524,
     180,
-    276,
+    180,
     44,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1.5;html=1;align=left;verticalAlign=middle;'
+  );
+
+  // Edge Cache Delivered Node (Gemini 3.1 Pro Edge Return Terminal)
+  cell(
+    'delivered_edge_node',
+    `<div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:2px 4px;">
+      <div style="font-size:14px;">🟢</div>
+      <div style="font-size:7.5px;font-weight:900;color:#15803D;line-height:1.1;">DELIVERED<br/><span style="font-size:6px;color:#16A34A;font-weight:700;">(Edge CDN Return)</span></div>
+    </div>`,
+    714,
+    180,
+    88,
+    44,
+    'rounded=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
   // Agentic Enterprise App (GKE Pods)
@@ -417,7 +423,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     582,
     525,
     160,
-    24,
+    22,
     'rounded=1;fillColor=#E0F2FE;strokeColor=#BAE6FD;html=1;align=center;verticalAlign=middle;'
   );
 
@@ -430,9 +436,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${migTitle}</div>
     </div>`,
     526,
-    570,
+    555,
     130,
-    100,
+    90,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
@@ -444,14 +450,26 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">REGIONAL<br/>INTERNAL LOAD<br/>BALANCER</div>
     </div>`,
     668,
-    570,
+    555,
     130,
-    100,
+    90,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // Default Path Backend Pill (Gemini 3.1 Pro Reorganization)
+  cell(
+    'default_path_backend_pill',
+    `<div style="text-align:center;font-size:7.5px;font-weight:900;color:#1E3A8A;">DEFAULT PATH BACKEND (/*)</div>`,
+    565,
+    655,
+    195,
+    26,
+    'rounded=1;fillColor=#E0E7FF;strokeColor=#A5B4FC;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
   // =========================================================================
   // ZONE 3: APPLICATION & DATA (x=840..1185, w=345, y=120..760, h=640)
+  // Gemini 3.1 Pro Dual Cloud SQL + Cloud Spanner Stack & Centralized Replication
   // =========================================================================
   cell(
     'zone_data_frame',
@@ -501,11 +519,10 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Tier 1 Middle Sub-Frame: Relational Data (y=290..480, h=190, w=320)
-  const relTitle = isSpanner ? 'RELATIONAL DATA (SPANNER MULTI-REGION)' : 'RELATIONAL DATA';
+  // Tier 1 Middle Sub-Frame: Relational Data Stack (Cloud SQL + Cloud Spanner + Replication)
   cell(
     'relational_data_frame',
-    `<div style="font-weight:900;font-size:9px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">${relTitle}</div>`,
+    `<div style="font-weight:900;font-size:9px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">RELATIONAL DATA</div>`,
     852,
     290,
     320,
@@ -513,34 +530,69 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     'rounded=1;fillColor=#FCE5CD;strokeColor=#FCD34D;strokeWidth=1.5;html=1;align=center;verticalAlign=top;'
   );
 
-  const dbTitle = isSpanner ? 'CLOUD SPANNER' : 'CLOUD SQL';
-  const dbSub = isSpanner ? '(TrueTime Active-Active)' : isCmek ? '(CMEK Encrypted OLTP)' : '(Primary OLTP)';
+  // Cloud SQL + CMEK
+  const sqlSub = isCmek ? '+ CMEK (Regional OLTP)' : '(Primary Regional OLTP)';
   cell(
     'cloud_sql_primary',
-    `<div style="text-align:center;padding:4px;">
+    `<div style="display:flex;align-items:center;gap:6px;padding:3px 8px;">
       ${ICONS.cloudSql}
-      <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${dbTitle}</div>
-      <div style="font-size:7px;color:#D97706;font-weight:600;">${dbSub}</div>
+      <div>
+        <div style="font-size:8.5px;font-weight:900;color:#0F172A;">CLOUD SQL</div>
+        <div style="font-size:6.5px;color:#2563EB;font-weight:700;">${sqlSub}</div>
+      </div>
     </div>`,
-    865,
-    340,
-    140,
-    80,
-    'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+    862,
+    330,
+    155,
+    56,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=left;verticalAlign=middle;'
   );
 
-  const bqSub = isCmek ? '(CMEK Encrypted DW)' : '(Read Replica / DW)';
+  // Cloud Spanner + CMEK (Multi-Region TrueTime)
+  const spannerSub = isCmek ? '+ CMEK (TrueTime Active-Active)' : '(Multi-Region TrueTime)';
+  cell(
+    'cloud_spanner_secondary',
+    `<div style="display:flex;align-items:center;gap:6px;padding:3px 8px;">
+      ${ICONS.cloudSpanner}
+      <div>
+        <div style="font-size:8.5px;font-weight:900;color:#0F172A;">CLOUD SPANNER</div>
+        <div style="font-size:6.5px;color:#0284C7;font-weight:700;">${spannerSub}</div>
+      </div>
+    </div>`,
+    862,
+    400,
+    155,
+    56,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=left;verticalAlign=middle;'
+  );
+
+  // Centralized Replication Hub Node (Gemini 3.1 Pro Design)
+  cell(
+    'replication_hub_box',
+    `<div style="text-align:center;padding:2px;">
+      ${ICONS.replication}
+      <div style="font-size:7px;font-weight:900;color:#1E3A8A;line-height:1.1;margin-top:2px;">REPLICATION<br/><span style="font-size:5.5px;color:#64748B;">(CDC / Dataflow)</span></div>
+    </div>`,
+    1030,
+    350,
+    48,
+    85,
+    'rounded=1;fillColor=#EEF2FF;strokeColor=#818CF8;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // BigQuery Analytical Data Lake
+  const bqSub = isCmek ? '+ CMEK (Data Lakehouse)' : '(Analytics DW / Lakehouse)';
   cell(
     'bigquery_replica',
-    `<div style="text-align:center;padding:4px;">
+    `<div style="text-align:center;padding:3px;">
       ${ICONS.bigquery}
       <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">BIGQUERY</div>
-      <div style="font-size:7px;color:#D97706;font-weight:600;">${bqSub}</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:700;">${bqSub}</div>
     </div>`,
-    1018,
-    340,
-    140,
-    80,
+    1090,
+    345,
+    75,
+    95,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
@@ -586,7 +638,6 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
 
   // =========================================================================
   // ZONE 4: AGENTIC AI & MODEL MANAGEMENT (x=1200..1555, w=355, y=120..760, h=640)
-  // Reclaimed Full Right Margin!
   // =========================================================================
   const aiZoneTitle = isRag ? 'AGENTIC AI &amp; VERTEX RAG' : 'AGENTIC AI SERVICES';
   cell(
@@ -817,7 +868,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // =========================================================================
-  // 4. CONNECTING FLOW ARROWS & PILL LABELS (Spacious, Zero Collision)
+  // 4. CONNECTING FLOW ARROWS & PILL LABELS (Gemini 3.1 Pro Edge Routing Architecture)
   // =========================================================================
   // 1. Users & Public Internet -> Ingress
   edge('e1', '❶ INGRESS', 'public_internet', 'cloud_armor', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;');
@@ -825,27 +876,30 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e1_vpn_iap', '', 'ext_vpn_gateway', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;');
 
   // Cloud Armor -> IAP -> GCLB
-  edge('e2', '❷', 'cloud_armor', 'iap_proxy', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
+  edge('e2', '❷ WAF', 'cloud_armor', 'iap_proxy', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
   edge('e3', '', 'iap_proxy', 'gclb_load_balancer', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;');
 
-  // IAP -> User Auth (Direct Connected Ingress Authentication)
+  // IAP -> User Auth
   edge('e_iap_auth', '❸ AUTH', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 326, y: 202 }]);
   edge('e_auth_app', '', 'user_auth_box', 'agentic_app_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
 
-  // GCLB -> Decision CON Top (Direct straight vertical link with zero IAP overlap)
-  edge('e4', 'YES', 'gclb_load_balancer', 'decision_con_top', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
+  // GCLB -> Decision CDN Cache Gate (Edge Level Inspection)
+  edge('e_gclb_cdn', '', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;');
 
-  // Decision CON Top -> Subnet A Primary App
-  edge('e5', '❹ ROUTE', 'decision_con_top', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 252 }]);
+  // CDN Cache Hit: YES -> Direct Edge Return to Delivered Node (Bypasses Backend Origin via top open channel at Y=155)
+  edge('e_cdn_yes', 'YES (HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 155 }, { x: 758, y: 155 }]);
 
-  // GCLB -> Path Based Routing & CDN Cache Hit
-  edge('e6', 'NO', 'gclb_load_balancer', 'decision_path_routing', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e7', 'NO', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e8', '❼ YES', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
-  edge('e9', 'YES', 'decision_cdn_cache', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;');
+  // CDN Cache Hit: NO (Miss) -> Path-Based Routing Gate
+  edge('e_cdn_no', 'NO (MISS)', 'decision_cdn_cache', 'decision_path_routing', 'edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+
+  // Path-Based Routing: YES -> Subnet A Primary App (GKE Pods)
+  edge('e_path_yes', 'YES (/api/*)', 'decision_path_routing', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 278 }]);
+
+  // Path-Based Routing: NO -> Default Path Backend (Compute MIG in Subnet B)
+  edge('e_path_no', 'NO (DEFAULT /*)', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 370, y: 338 }, { x: 370, y: 648 }]);
 
   // Decision CON Bottom -> Subnet B Compute MIG
-  edge('e10', '⓲', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 620 }]);
+  edge('e10', '⓲', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 600 }]);
 
   // Subnet A: App -> Backend API -> Pub/Sub
   edge('e11', '⓿', 'agentic_app_box', 'backend_api_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
@@ -854,14 +908,17 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Subnet A App -> Async Tasks / Ingestion
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
-  edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 935, y: 220 }]);
+  edge('e15', '❺ PERSIST', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 935, y: 220 }]);
 
-  // Cloud SQL / Spanner -> BigQuery Replication
-  const repLabel = isSpanner ? 'TRUETIME SYNC' : 'REPLICATION';
-  edge('e16', repLabel, 'cloud_sql_primary', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7.5;fontStyle=1;');
+  // Dual Relational Stack: Cloud SQL & Cloud Spanner feed Centralized Replication Hub
+  edge('e_sql_rep', '', 'cloud_sql_primary', 'replication_hub_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;');
+  edge('e_spanner_rep', '', 'cloud_spanner_secondary', 'replication_hub_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;');
+
+  // Replication Hub -> BigQuery Analytics DW
+  edge('e_rep_bq', 'CDC REPLICATION', 'replication_hub_box', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7;fontStyle=1;');
 
   // Persist Data -> Cloud Storage & Lifecycle
-  edge('e17', '', 'cloud_sql_primary', 'gcs_storage_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
+  edge('e17', '', 'cloud_spanner_secondary', 'gcs_storage_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
   edge('e18', '', 'gcs_storage_box', 'gcs_lifecycle_box', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;');
 
   // Subnet B MIG -> Internal LB -> Cloud Storage
