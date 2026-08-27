@@ -377,6 +377,64 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
+  // Check EDGE_LABEL_MISSING_PILL (all text edges must have high-contrast background pill)
+  for (const cell of rawCells) {
+    if (cell['@_edge'] === '1' || cell['@_edge'] === 1) {
+      const val = cell['@_value'] || '';
+      const style = cell['@_style'] || '';
+      if (val && val.trim().length > 0 && !style.includes('labelBackgroundColor=')) {
+        warnings.push({
+          code: 'EDGE_LABEL_MISSING_PILL' as any,
+          cells: [cell['@_id']],
+          detail: `Edge "${cell['@_id']}" has label "${val.trim()}" but is missing high-contrast pill styling (labelBackgroundColor / labelBorderColor)`,
+        });
+      }
+    }
+  }
+
+  // Check EDGE_INTERSECTS_VERTEX (Prevent connector lines from slicing across intermediate vertices)
+  for (const [edgeId, edge] of edgesMap.entries()) {
+    if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
+      const src = verticesMap.get(edge.source)!;
+      const tgt = verticesMap.get(edge.target)!;
+
+      // Check all other intermediate vertices
+      for (const [vId, v] of verticesMap.entries()) {
+        if (vId === edge.source || vId === edge.target || v.isContainer || v.isLabelOrHeader) {
+          continue;
+        }
+
+        // Direct straight horizontal or vertical line slice detection
+        const sameY = Math.abs(src.absY + src.height / 2 - (tgt.absY + tgt.height / 2)) < 15;
+        const sameX = Math.abs(src.absX + src.width / 2 - (tgt.absX + tgt.width / 2)) < 15;
+
+        if (sameY) {
+          const minX = Math.min(src.absX + src.width, tgt.absX + tgt.width);
+          const maxX = Math.max(src.absX, tgt.absX);
+          if (v.absX > minX && v.absX + v.width < maxX && Math.abs(v.absY + v.height / 2 - (src.absY + src.height / 2)) < v.height / 2) {
+            warnings.push({
+              code: 'EDGE_INTERSECTS_VERTEX' as any,
+              cells: [edgeId, vId],
+              detail: `Horizontal edge "${edgeId}" slices directly through intermediate vertex "${vId}"`,
+            });
+          }
+        }
+
+        if (sameX) {
+          const minY = Math.min(src.absY + src.height, tgt.absY + tgt.height);
+          const maxY = Math.max(src.absY, tgt.absY);
+          if (v.absY > minY && v.absY + v.height < maxY && Math.abs(v.absX + v.width / 2 - (src.absX + src.width / 2)) < v.width / 2) {
+            warnings.push({
+              code: 'EDGE_INTERSECTS_VERTEX' as any,
+              cells: [edgeId, vId],
+              detail: `Vertical edge "${edgeId}" slices directly through intermediate vertex "${vId}"`,
+            });
+          }
+        }
+      }
+    }
+  }
+
   // Check ORPHAN_NODE (warning, not error)
   for (const [id, v] of verticesMap.entries()) {
     if (!v.isContainer && !v.isLabelOrHeader && !connectedNodeIds.has(id)) {
