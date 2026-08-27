@@ -754,7 +754,7 @@ function Studio2Content() {
                     type="text"
                     value={projectName}
                     onChange={(e) => setProjectName(e.target.value)}
-                    placeholder="e.g. Bio-Pharma Clinical Platform"
+                    placeholder="e.g. Bio-Pharma Platform"
                     className={`w-full px-3 py-2 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                       isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                     }`}
@@ -769,7 +769,7 @@ function Studio2Content() {
                     type="text"
                     value={useCaseName}
                     onChange={(e) => setUseCaseName(e.target.value)}
-                    placeholder="e.g. Genomics Analysis &amp; Regulatory AI"
+                    placeholder="e.g. Genomics &amp; AI Pipeline"
                     className={`w-full px-3 py-2 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                       isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                     }`}
@@ -842,13 +842,13 @@ function Studio2Content() {
                 </div>
               </div>
 
-              {/* 5. Architectural Scope & Topology Requirements (Chatbox Area) */}
+              {/* 4. Architectural Scope & Topology Requirements (Chatbox Area) */}
               <div className="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between gap-2">
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block truncate">
-                    5. Scope &amp; Topology Prompt
+                    4. Scope &amp; Topology Prompt
                   </label>
-                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Gemini 2.5 Pro</span>
+                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Gemini 3.1 Pro Engine</span>
                 </div>
 
                 {/* Scrollable Prompt & Enhancement History Feed */}
@@ -921,13 +921,13 @@ function Studio2Content() {
                             </div>
                           )}
 
-                          {/* Gemini 2.5 Architecture Audit & Quality Gate */}
+                          {/* Gemini 3.1 Pro Architecture Audit & Quality Gate */}
                           {msg.geminiAudit && (
                             <div className="mt-2 p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 space-y-1.5 text-xs">
                               <div className="flex items-center justify-between gap-2">
                                 <span className="font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-1 text-[10.5px]">
                                   <Shield className="w-3.5 h-3.5 text-indigo-500" />
-                                  <span>Gemini 2.5 Well-Architected Gate</span>
+                                  <span>Gemini 3.1 Pro Well-Architected Gate</span>
                                 </span>
                                 <div className="flex items-center gap-1 font-mono text-[9.5px] font-bold">
                                   <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
@@ -974,7 +974,7 @@ function Studio2Content() {
                                     type="button"
                                     onClick={() => {
                                       setProjectScopePrompt(p);
-                                      showToast('💡 Loaded prompt into scope editor. Press "⚡ Synthesize Architecture Now" to apply.');
+                                      showToast('💡 Loaded prompt into scope editor. Press "Synthesize Architecture Now" to apply.');
                                     }}
                                     className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
                                   >
@@ -1031,7 +1031,7 @@ function Studio2Content() {
                   ) : (
                     <>
                       <Zap className="w-4 h-4 text-amber-300" />
-                      <span>⚡ Synthesize Architecture Now</span>
+                      <span>Synthesize Architecture Now</span>
                     </>
                   )}
                 </button>
