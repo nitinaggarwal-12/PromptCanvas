@@ -869,19 +869,19 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // =========================================================================
   // 4. CONNECTING FLOW ARROWS & PILL LABELS (Gemini 3.1 Pro Edge Routing Architecture)
   // =========================================================================
-  // 1. Users & Public Internet -> Ingress
+  // 1. Users & Public Internet -> Ingress (Step ❶)
   edge('e1', '❶ INGRESS', 'public_internet', 'cloud_armor', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;');
   edge('e1_vpn', '', 'users_icon', 'ext_vpn_gateway', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;dashed=1;');
   edge('e1_vpn_iap', '', 'ext_vpn_gateway', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;');
 
-  // Cloud Armor -> GCLB Load Balancer (Direct 1st-Class Ingress into GCLB Anycast VIP)
+  // Cloud Armor -> GCLB Load Balancer (Step ❷ WAF & Perimeter Ingress)
   edge('e2', '❷ WAF / L7', 'cloud_armor', 'gclb_load_balancer', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
 
   // GCLB Load Balancer -> CDN Cache Gate (Edge Inspection)
-  edge('e_gclb_cdn', '❸ EVALUATE', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 325, y: 243 }]);
+  edge('e_gclb_cdn', 'EVALUATE', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 325, y: 243 }]);
 
-  // CDN Cache Hit: YES -> Direct Edge Return to Delivered Node (Bypasses Backend Origin via top open channel at Y=155)
-  edge('e_cdn_yes', 'YES (HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 155 }, { x: 758, y: 155 }]);
+  // CDN Cache Hit: YES -> Direct Edge Return to Delivered Node (Step ❸ Edge CDN Return)
+  edge('e_cdn_yes', '❸ YES (CDN HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 155 }, { x: 758, y: 155 }]);
 
   // CDN Cache Hit: NO (Miss) -> Path-Based Routing Gate (URL Map Evaluation)
   edge('e_cdn_no', 'NO (MISS)', 'decision_cdn_cache', 'decision_path_routing', 'edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
@@ -889,18 +889,18 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Path-Based Routing: YES (/api/*) -> IAP Proxy (Identity & Credential Verification)
   edge('e_path_iap', 'YES (/api/*)', 'decision_path_routing', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
 
-  // IAP Proxy -> User Authentication -> Subnet A Primary App
-  edge('e_iap_auth', '❹ AUTH', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 430, y: 202 }]);
+  // IAP Proxy -> User Authentication -> Subnet A Primary App (Step ❹ Subnet A Route)
+  edge('e_iap_auth', '❹ AUTH ROUTE', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 430, y: 202 }]);
   edge('e_auth_app', '', 'user_auth_box', 'agentic_app_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
 
   // Path-Based Routing: NO -> Default Path Backend (Compute MIG in Subnet B)
   edge('e_path_no', 'NO (DEFAULT /*)', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 370, y: 338 }, { x: 370, y: 648 }]);
 
-  // Decision CON Bottom -> Subnet B Compute MIG
-  edge('e10', '⓲', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 600 }]);
+  // Decision CON Bottom -> Subnet B Compute MIG (Step ❼ Auto-Scale MIG)
+  edge('e10', '❼ AUTO-SCALE', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 600 }]);
 
   // Subnet A: App -> Backend API -> Pub/Sub
-  edge('e11', '⓿', 'agentic_app_box', 'backend_api_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
+  edge('e11', '', 'agentic_app_box', 'backend_api_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
   edge('e12', '', 'backend_api_box', 'pubsub_queue_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
 
   // Subnet A App -> Async Tasks / Ingestion
@@ -923,8 +923,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e19', '', 'gce_mig_box', 'regional_ilb_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
   edge('e20', '', 'regional_ilb_box', 'gcs_storage_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
 
-  // Relational Data & Backend -> Gemini Agent Platform Hub (DeepMind Reasoning via wide 48px open channel at Y=268)
-  edge('e21', '', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;', [{ x: 815, y: 268 }, { x: 1190, y: 268 }]);
+  // Relational Data & Backend -> Gemini Agent Platform Hub (Step ❻ DeepMind AI Platform)
+  edge('e21', '❻ AI REASONING', 'agentic_app_box', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#D8B4FE;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 815, y: 268 }, { x: 1190, y: 268 }]);
   edge('e22', '', 'bigquery_replica', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;');
   edge('e23', '', 'ai_agent_designer', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
   edge('e24', '', 'ai_gemini_notebook', 'ai_agent_platform_hub', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#16A34A;strokeWidth=1.5;');
