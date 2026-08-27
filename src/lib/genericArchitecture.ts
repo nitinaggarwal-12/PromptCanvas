@@ -86,11 +86,12 @@ export function generateGenericArchitecture(options: GenericArchitectureOptions 
   // =========================================================================
   // 1. MASTER HEADER & BRAND (x=24, y=14..60)
   // =========================================================================
+  const mainTitle = projectName === "Enterprise System" ? "Enterprise Agentic AI Platform" : `${projectName} — Agentic AI Platform`;
   node(
     "lbl_hdr_main",
     `<div style="width:100%;padding:4px 8px;font-family:system-ui,-apple-system,sans-serif;">
-      <div style="font-size:22px;font-weight:900;color:${textDark};letter-spacing:-0.4px;">${projectName} — System Architecture</div>
-      <div style="font-size:11.5px;font-weight:600;color:#4F46E5;margin-top:2px;">Cloud-Agnostic Reference Flow: Perimeter Ingress → Intent Planning → Parallel Specialist Services → AI Core → Safety Gate</div>
+      <div style="font-size:22px;font-weight:800;color:${textDark};letter-spacing:-0.4px;">${mainTitle}</div>
+      <div style="font-size:11.5px;font-weight:600;color:#4F46E5;margin-top:2px;">Cloud-Agnostic Reference Architecture: Perimeter Ingress → Intent Planning → Parallel Specialist Services → AI Core → Safety Gate</div>
     </div>`,
     24,
     14,
