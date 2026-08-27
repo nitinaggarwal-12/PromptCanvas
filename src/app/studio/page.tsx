@@ -120,7 +120,21 @@ export function analyzePromptChanges(prompt: string, templateName: string): { ch
   let targetTier = 'Core Architecture Layer';
   let summary = `Updated with requirements: ${prompt.slice(0, 50)}...`;
 
-  if (/notebook|workbench|colab|jupyter/i.test(lower)) {
+  if (/medicine|pharma.*(?:plant|manufactur|design)|drug.*(?:plant|manufactur|design)|cleanroom|gxp|batch recipe|ebr/i.test(lower)) {
+    changed.push('Shop Floor Cleanroom OT Channels & IoT Sensors');
+    changed.push('MES / MOM GxP Batch Recipe & Electronic Records (EBR)');
+    changed.push('Industrial Edge Gateway & SCADA Historians');
+    changed.push('AI Quality Inspection & Cleanroom Compliance');
+    targetTier = 'Layer 1 & 3: Shop Floor OT, Cleanroom Ingress & GxP MES';
+    summary = 'Synthesized Pharmaceutical & Medicine Manufacturing IT Architecture';
+  } else if (/manufactur|factory|plant|scada|plc|opc|industrial/i.test(lower)) {
+    changed.push('Shop Floor OT Channels & Industrial CNC/PLCs');
+    changed.push('MES / MOM Production Scheduling & OEE Monitoring');
+    changed.push('Industrial Edge Gateway & MQTT Collectors');
+    changed.push('Predictive Maintenance & Digital Twin Sync');
+    targetTier = 'Shop Floor OT, MES & Cloud Industrial Intelligence';
+    summary = 'Synthesized Smart Manufacturing & Industrial IoT Architecture';
+  } else if (/notebook|workbench|colab|jupyter/i.test(lower)) {
     changed.push('Vertex AI Gemini Enterprise Notebooks (Workbench)');
     changed.push('MLOps Model Garden & Agent Tooling');
     targetTier = 'Layer 3: AI Core, Agent Reasoning & Developer Workbenches';
@@ -460,29 +474,50 @@ function StudioContent() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleUndo, handleRedo]);
 
+  // Ref for chat auto-scroll
+  const chatMessagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages.length, isSynthesizing]);
+
   // ==========================================
   // 1. PRIMARY SYNTHESIZE ACTION
   // ==========================================
   const handleSynthesizeArchitecture = (customPrompt?: string, domainOverride?: string, forceTemplateId?: string) => {
     const domainToUse = domainOverride || selectedDomain;
     const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === domainToUse) || EXTENDED_DOMAIN_OPTIONS[0];
-    const promptToUse = (customPrompt || projectScopePrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || domainObj.description || domainObj.name).trim();
+    const rawPrompt = (customPrompt || projectScopePrompt).trim();
+    const promptToUse = (rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || domainObj.description || domainObj.name).trim();
+
+    // 1. Immediately push user message to chat feed and clear textarea
+    if (rawPrompt) {
+      const userMsg: StudioChatMessage = {
+        id: String(Date.now()),
+        sender: 'user',
+        text: rawPrompt,
+        timestamp: 'Just now'
+      };
+      setChatMessages((prev) => [...prev, userMsg]);
+      setProjectScopePrompt('');
+    }
+
     setIsSynthesizing(true);
 
     setTimeout(() => {
-      // 1. Determine blueprint ID:
-      let targetTemplateId = forceTemplateId || activeDiagram.templateId;
-      if (!targetTemplateId || activeDiagram.source === 'placeholder' || targetTemplateId === 'custom' || targetTemplateId === 'scratch' || domainOverride) {
-        const lower = (promptToUse + ' ' + domainToUse).toLowerCase();
-        if (domainToUse === 'synactive' || lower.includes('drone') || lower.includes('iot') || lower.includes('scada') || lower.includes('telemetry') || lower.includes('manufactur') || lower.includes('factory')) {
+      // 2. Intelligent Blueprint Matcher from prompt content
+      let targetTemplateId = forceTemplateId;
+      const lower = (promptToUse + ' ' + domainToUse).toLowerCase();
+
+      if (!targetTemplateId) {
+        if (lower.includes('manufactur') || lower.includes('plant') || lower.includes('factory') || lower.includes('medicine') || lower.includes('iot') || lower.includes('scada') || lower.includes('plc') || lower.includes('mes')) {
           targetTemplateId = lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') ? '43' : '36';
         } else if (lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('dataflow')) {
           targetTemplateId = '43'; // Real-Time Streaming Event Enterprise
         } else if (lower.includes('mesh') || lower.includes('lakehouse') || lower.includes('bigquery') || lower.includes('dataplex')) {
           targetTemplateId = '42'; // Modern Data Lakehouse Data Mesh
-        } else if (lower.includes('agent') || lower.includes('rag') || lower.includes('vertex') || lower.includes('genai') || lower.includes('llm')) {
+        } else if (lower.includes('agent') || lower.includes('rag') || lower.includes('vertex') || lower.includes('genai') || lower.includes('llm') || lower.includes('assistant')) {
           targetTemplateId = '40'; // Enterprise GenAI Platform
-        } else if (lower.includes('zero') || lower.includes('trust') || lower.includes('soc') || lower.includes('security') || lower.includes('threat')) {
+        } else if (lower.includes('zero') || lower.includes('trust') || lower.includes('soc') || lower.includes('security') || lower.includes('threat') || lower.includes('armor')) {
           targetTemplateId = '44'; // Zero Trust Cybersecurity SOC Platform
         } else if (lower.includes('k8s') || lower.includes('kubernetes') || lower.includes('gke') || lower.includes('container') || lower.includes('cluster')) {
           targetTemplateId = '46'; // Enterprise Kubernetes Platform Engineering
@@ -491,15 +526,29 @@ function StudioContent() {
         } else if (lower.includes('pharma') || lower.includes('clinical') || lower.includes('genom') || lower.includes('fda') || lower.includes('gxp')) {
           targetTemplateId = '01'; // System Context / Clinical AI
         } else {
-          targetTemplateId = targetTemplateId && targetTemplateId !== 'custom' && targetTemplateId !== 'scratch' ? targetTemplateId : '01';
+          targetTemplateId = activeDiagram.templateId && activeDiagram.templateId !== 'custom' && activeDiagram.templateId !== 'scratch' ? activeDiagram.templateId : '01';
         }
       }
 
       const template = CANONICAL_TEMPLATES.find((t) => t.id === targetTemplateId) || CANONICAL_TEMPLATES[0];
       const baseXml = template.generateXml(domainToUse, isLight ? 'light' : 'dark');
-      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : `${domainObj.name}`);
-      const flavoredXml = injectUseCaseFlavor(baseXml, titleToUse, promptToUse);
 
+      let titleToUse = projectTitle;
+      if (!titleToUse) {
+        if (/medicine.*(?:plant|manufactur|design)|pharma.*(?:plant|manufactur|design)/i.test(lower)) {
+          titleToUse = 'Pharmaceutical & Medicine Manufacturing IT Platform';
+        } else if (/manufactur|plant|factory|scada|plc/i.test(lower)) {
+          titleToUse = 'Smart Manufacturing & Industrial IoT Digital Twin';
+        } else if (projectName && useCaseName) {
+          titleToUse = `${projectName} — ${useCaseName}`;
+        } else if (projectName) {
+          titleToUse = `${projectName} • ${domainObj.name}`;
+        } else {
+          titleToUse = domainObj.name;
+        }
+      }
+
+      const flavoredXml = injectUseCaseFlavor(baseXml, titleToUse, promptToUse);
       const changeAnalysis = analyzePromptChanges(promptToUse, template.name);
 
       const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
@@ -507,7 +556,7 @@ function StudioContent() {
           return {
             ...diag,
             title: `${titleToUse} • ${template.name}`,
-            templateId: targetTemplateId,
+            templateId: targetTemplateId!,
             xml: flavoredXml,
             source: 'blueprint',
             lastPrompt: promptToUse
@@ -531,7 +580,7 @@ function StudioContent() {
       const assistantMsg: StudioChatMessage = {
         id: String(Date.now()),
         sender: 'assistant',
-        text: `✨ Successfully tailored **${template.name} (#${template.id})** for **${titleToUse}** with: **${promptToUse}**! Committed as version **${tag}**.`,
+        text: `✨ Successfully synthesized **${template.name} (#${template.id})** for **${titleToUse}** with: **"${promptToUse}"**! Committed as version **${tag}**.`,
         timestamp: 'Just now',
         actionApplied: {
           type: 'diagram_synthesized',
@@ -1105,6 +1154,7 @@ function StudioContent() {
                           <span>AI Assistant is analyzing context &amp; updating diagram...</span>
                         </div>
                       )}
+                      <div ref={chatMessagesEndRef} />
                     </div>
                   )}
 

@@ -837,10 +837,30 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/Raw Telemetry &amp; Field Ingestion/gi, `${topicCleanXml} Raw Telemetry &amp; Ingestion`)
     .replace(/Vertex AI Vector Search &amp; Reasoning Core/gi, `${topicCleanXml} Vertex AI Reasoning Core`);
 
+  const isMedicineMfg = /medicine|pharma.*(?:plant|manufactur|design)|drug.*(?:plant|manufactur|design)|cleanroom|gxp|bioreactor|batch recipe/i.test(topicClean + ' ' + (userPrompt || ''));
   const isManufacturing = /manufactur|iot|scada|factory|sensor|twin|synactive|telemetry|plcs|opc|industrial/i.test(topicClean + ' ' + (userPrompt || ''));
   const isSupplyChain = /supply|logistics|warehouse|quantumflow|fleet|inventory|chain|drone/i.test(topicClean + ' ' + (userPrompt || ''));
 
-  if (isManufacturing) {
+  if (isMedicineMfg) {
+    updatedXml = updatedXml
+      .replace(/Smart Manufacturing &amp; Industrial IoT/gi, 'Pharmaceutical &amp; Medicine Manufacturing IT Platform')
+      .replace(/Smart Manufacturing & Industrial IoT/gi, 'Pharmaceutical & Medicine Manufacturing IT Platform')
+      .replace(/SHOP FLOOR \/\s*<br\s*\/?>OT CHANNELS/gi, 'CLEANROOM &amp;<br/>SHOP FLOOR OT')
+      .replace(/Machines &amp; CNC/gi, 'Sterile Bioreactors &amp; Isolators')
+      .replace(/Machines & CNC/gi, 'Sterile Bioreactors & Isolators')
+      .replace(/Sensors &amp; IoT/gi, 'Cleanroom IoT Sensors')
+      .replace(/Sensors & IoT/gi, 'Cleanroom IoT Sensors')
+      .replace(/Quality Inspection/gi, 'GxP Analytical Testing')
+      .replace(/Batch Recipe Mgmt/gi, 'Electronic Batch Records (EBR)')
+      .replace(/Work Orders/gi, 'GxP Batch Dispensing')
+      .replace(/Asset Maintenance/gi, 'Sterilization &amp; Calibration')
+      .replace(/Fraud<br\s*\/?>Detection/gi, 'Batch Yield<br/>Optimization')
+      .replace(/Order<br\s*\/?>Processing/gi, 'GxP Batch<br/>Release Engine')
+      .replace(/Customer<br\s*\/?>360/gi, 'Cleanroom<br/>Environmental Sync')
+      .replace(/Real-Time<br\s*\/?>Personalization/gi, 'Sterile Plant<br/>Digital Twin')
+      .replace(/Industrial<br\s*\/?>Telemetry/gi, 'Bioreactor SCADA<br/>Historian Mesh')
+      .replace(/End-to-end industrial IoT intelligence connecting plant floor OT telemetry to cloud AI, MES, and predictive analytics on Google Cloud\./gi, 'End-to-end pharmaceutical manufacturing IT architecture connecting cleanroom OT telemetry, GxP MES, and AI batch analytics on Google Cloud.');
+  } else if (isManufacturing) {
     updatedXml = updatedXml
       .replace(/Fraud<br\s*\/?>Detection/gi, 'Factory Floor<br/>OEE')
       .replace(/Order<br\s*\/?>Processing/gi, 'Predictive<br/>Maintenance')
