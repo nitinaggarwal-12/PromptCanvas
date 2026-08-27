@@ -345,14 +345,14 @@ export function SearchablePromptSuggestionsDropdown({
       {/* Popover / Dropdown Menu */}
       {isOpen && (
         <div
-          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[380px] ${
+          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[460px] ${
             isLight
-              ? 'bg-white border-slate-200 shadow-slate-300/60'
+              ? 'bg-white border-slate-200 shadow-slate-400/30'
               : 'bg-[#0F172A] border-slate-800 shadow-2xl shadow-black/80'
           }`}
         >
           {/* Search Header */}
-          <div className={`p-2.5 border-b flex items-center gap-2 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+          <div className={`p-3 border-b flex items-center gap-2.5 shrink-0 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
             <Search className="w-4 h-4 text-slate-400 shrink-0" />
             <input
               type="text"
@@ -360,13 +360,13 @@ export function SearchablePromptSuggestionsDropdown({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search prompts (e.g. drone, fraud, fhir, kafka, spanner, zero-trust)..."
-              className={`w-full bg-transparent text-xs focus:outline-none ${isLight ? 'text-slate-900' : 'text-white'}`}
+              className={`w-full bg-transparent text-xs focus:outline-none placeholder-slate-400 ${isLight ? 'text-slate-900' : 'text-white'}`}
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -374,20 +374,20 @@ export function SearchablePromptSuggestionsDropdown({
           </div>
 
           {/* Category Filter Chips */}
-          <div className={`px-2.5 py-1.5 border-b flex items-center gap-1 overflow-x-auto text-[10px] ${
-            isLight ? 'bg-slate-100/60 border-slate-200' : 'bg-slate-950/60 border-slate-800/80'
+          <div className={`px-3 py-2 border-b flex items-center gap-1.5 overflow-x-auto text-[11px] shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+            isLight ? 'bg-slate-100/90 border-slate-200' : 'bg-slate-950 border-slate-800'
           }`}>
             {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-2 py-0.5 rounded-md font-bold whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg font-bold whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-teal-600 text-white shadow-xs'
                     : isLight
-                    ? 'text-slate-600 hover:bg-slate-200'
-                    : 'text-slate-400 hover:bg-slate-800'
+                    ? 'text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                 }`}
               >
                 {cat}
@@ -396,9 +396,11 @@ export function SearchablePromptSuggestionsDropdown({
           </div>
 
           {/* Scrollable List of Prompts */}
-          <div className="flex-1 overflow-y-auto p-1.5 space-y-1 divide-y divide-slate-100 dark:divide-slate-800/50">
+          <div className={`flex-1 overflow-y-auto p-2 space-y-1.5 divide-y ${
+            isLight ? 'divide-slate-100' : 'divide-slate-800/60'
+          }`}>
             {filteredPrompts.length === 0 ? (
-              <div className="p-6 text-center text-xs text-slate-400">
+              <div className="p-8 text-center text-xs text-slate-400">
                 No matching prompts found for &ldquo;{searchQuery}&rdquo;.
               </div>
             ) : (
@@ -410,23 +412,25 @@ export function SearchablePromptSuggestionsDropdown({
                     onSelectPrompt(item);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left p-2.5 rounded-xl transition-all flex flex-col gap-1 cursor-pointer group ${
+                  className={`w-full text-left p-3 rounded-xl transition-all flex flex-col gap-1.5 cursor-pointer group ${
                     isLight
                       ? 'hover:bg-teal-50/80 text-slate-800'
                       : 'hover:bg-teal-950/40 text-slate-200'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 font-bold text-xs group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                      <span>{item.icon}</span>
+                    <div className="flex items-center gap-2 font-bold text-xs group-hover:text-teal-600 dark:group-hover:text-teal-400">
+                      <span className="text-sm">{item.icon}</span>
                       <span>{item.label}</span>
                     </div>
-                    <span className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 shrink-0">
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded shrink-0 ${
+                      isLight ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-slate-800 text-slate-300 border border-slate-700'
+                    }`}>
                       {item.domainName.split(' ')[0]}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                  <p className="text-[11.5px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
                     {item.prompt}
                   </p>
 
@@ -434,7 +438,7 @@ export function SearchablePromptSuggestionsDropdown({
                     {item.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[9px] font-semibold px-1.5 py-0.2 rounded-md bg-teal-500/10 text-teal-700 dark:text-teal-300"
+                        className="text-[9.5px] font-semibold px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20"
                       >
                         #{tag}
                       </span>
@@ -527,14 +531,14 @@ export function SearchableDomainFlavorDropdown({
       {/* Popover / Dropdown Menu */}
       {isOpen && (
         <div
-          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[340px] ${
+          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[420px] ${
             isLight
-              ? 'bg-white border-slate-200 shadow-slate-300/60'
+              ? 'bg-white border-slate-200 shadow-slate-400/30'
               : 'bg-[#0F172A] border-slate-800 shadow-2xl shadow-black/80'
           }`}
         >
           {/* Search Header */}
-          <div className={`p-2.5 border-b flex items-center gap-2 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+          <div className={`p-3 border-b flex items-center gap-2.5 shrink-0 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
             <Search className="w-4 h-4 text-slate-400 shrink-0" />
             <input
               type="text"
@@ -542,13 +546,13 @@ export function SearchableDomainFlavorDropdown({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search 16+ enterprise domain flavors (e.g. biotech, fintech, iot, defense)..."
-              className={`w-full bg-transparent text-xs focus:outline-none ${isLight ? 'text-slate-900' : 'text-white'}`}
+              className={`w-full bg-transparent text-xs focus:outline-none placeholder-slate-400 ${isLight ? 'text-slate-900' : 'text-white'}`}
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -556,9 +560,11 @@ export function SearchableDomainFlavorDropdown({
           </div>
 
           {/* Scrollable Domain List */}
-          <div className="flex-1 overflow-y-auto p-1.5 space-y-1">
+          <div className={`flex-1 overflow-y-auto p-2 space-y-1.5 divide-y ${
+            isLight ? 'divide-slate-100' : 'divide-slate-800/60'
+          }`}>
             {filteredDomains.length === 0 ? (
-              <div className="p-6 text-center text-xs text-slate-400">
+              <div className="p-8 text-center text-xs text-slate-400">
                 No matching domain found for &ldquo;{searchQuery}&rdquo;.
               </div>
             ) : (
@@ -572,13 +578,13 @@ export function SearchableDomainFlavorDropdown({
                       onSelectDomain(domain);
                       setIsOpen(false);
                     }}
-                    className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
+                    className={`w-full text-left p-3 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       isSelected
                         ? isLight
                           ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
                           : 'bg-teal-950/60 text-teal-300 font-bold border border-teal-800'
                         : isLight
-                        ? 'hover:bg-slate-100 text-slate-700'
+                        ? 'hover:bg-slate-50 text-slate-700'
                         : 'hover:bg-slate-900 text-slate-300'
                     }`}
                   >
@@ -589,7 +595,7 @@ export function SearchableDomainFlavorDropdown({
                           <span>{domain.name}</span>
                         </div>
                         {domain.description && (
-                          <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                          <div className="text-[10.5px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                             {domain.description}
                           </div>
                         )}
@@ -598,7 +604,7 @@ export function SearchableDomainFlavorDropdown({
 
                     <div className="flex items-center gap-1.5 shrink-0">
                       {domain.prefix && (
-                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
+                        <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
                           {domain.prefix}
                         </span>
                       )}

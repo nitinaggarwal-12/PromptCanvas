@@ -463,16 +463,20 @@ function StudioContent() {
   // ==========================================
   // 1. PRIMARY SYNTHESIZE ACTION
   // ==========================================
-  const handleSynthesizeArchitecture = (customPrompt?: string) => {
-    const promptToUse = (customPrompt || projectScopePrompt || `${projectName} ${useCaseName}`).trim();
+  const handleSynthesizeArchitecture = (customPrompt?: string, domainOverride?: string, forceTemplateId?: string) => {
+    const domainToUse = domainOverride || selectedDomain;
+    const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === domainToUse) || EXTENDED_DOMAIN_OPTIONS[0];
+    const promptToUse = (customPrompt || projectScopePrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || domainObj.description || domainObj.name).trim();
     setIsSynthesizing(true);
 
     setTimeout(() => {
-      // 1. Determine blueprint ID: preserve currently chosen diagram blueprint if set!
-      let targetTemplateId = activeDiagram.templateId;
-      if (!targetTemplateId || activeDiagram.source === 'placeholder' || targetTemplateId === 'custom' || targetTemplateId === 'scratch') {
-        const lower = promptToUse.toLowerCase();
-        if (lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('dataflow')) {
+      // 1. Determine blueprint ID:
+      let targetTemplateId = forceTemplateId || activeDiagram.templateId;
+      if (!targetTemplateId || activeDiagram.source === 'placeholder' || targetTemplateId === 'custom' || targetTemplateId === 'scratch' || domainOverride) {
+        const lower = (promptToUse + ' ' + domainToUse).toLowerCase();
+        if (domainToUse === 'synactive' || lower.includes('drone') || lower.includes('iot') || lower.includes('scada') || lower.includes('telemetry') || lower.includes('manufactur') || lower.includes('factory')) {
+          targetTemplateId = lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') ? '43' : '36';
+        } else if (lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('dataflow')) {
           targetTemplateId = '43'; // Real-Time Streaming Event Enterprise
         } else if (lower.includes('mesh') || lower.includes('lakehouse') || lower.includes('bigquery') || lower.includes('dataplex')) {
           targetTemplateId = '42'; // Modern Data Lakehouse Data Mesh
@@ -484,18 +488,16 @@ function StudioContent() {
           targetTemplateId = '46'; // Enterprise Kubernetes Platform Engineering
         } else if (lower.includes('dr') || lower.includes('bcdr') || lower.includes('disaster') || lower.includes('multi-region') || lower.includes('failover')) {
           targetTemplateId = '48'; // BCDR Cyber Recovery Resilience
-        } else if (lower.includes('drone') || lower.includes('iot') || lower.includes('scada') || lower.includes('telemetry')) {
-          targetTemplateId = '36'; // Smart Manufacturing & IoT
         } else if (lower.includes('pharma') || lower.includes('clinical') || lower.includes('genom') || lower.includes('fda') || lower.includes('gxp')) {
           targetTemplateId = '01'; // System Context / Clinical AI
         } else {
-          targetTemplateId = '01'; // System Context
+          targetTemplateId = targetTemplateId && targetTemplateId !== 'custom' && targetTemplateId !== 'scratch' ? targetTemplateId : '01';
         }
       }
 
       const template = CANONICAL_TEMPLATES.find((t) => t.id === targetTemplateId) || CANONICAL_TEMPLATES[0];
-      const baseXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
-      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : template.name);
+      const baseXml = template.generateXml(domainToUse, isLight ? 'light' : 'dark');
+      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : `${domainObj.name}`);
       const flavoredXml = injectUseCaseFlavor(baseXml, titleToUse, promptToUse);
 
       const changeAnalysis = analyzePromptChanges(promptToUse, template.name);
@@ -529,7 +531,7 @@ function StudioContent() {
       const assistantMsg: StudioChatMessage = {
         id: String(Date.now()),
         sender: 'assistant',
-        text: `✨ Successfully updated **${template.name} (#${template.id})** for **${titleToUse}** with: **${promptToUse}**! It has been committed as version **${tag}** in your rolling version control.`,
+        text: `✨ Successfully tailored **${template.name} (#${template.id})** for **${titleToUse}** with: **${promptToUse}**! Committed as version **${tag}**.`,
         timestamp: 'Just now',
         actionApplied: {
           type: 'diagram_synthesized',
@@ -546,7 +548,7 @@ function StudioContent() {
         ]
       };
       setChatMessages((prev) => [...prev, assistantMsg]);
-    }, 900);
+    }, 600);
   };
 
   // ==========================================
@@ -709,13 +711,16 @@ function StudioContent() {
 
   const handleSelectBlueprintToReplace = (templateId: string) => {
     const template = CANONICAL_TEMPLATES.find((t) => t.id === templateId) || CANONICAL_TEMPLATES[0];
-    const newXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+    const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === selectedDomain) || EXTENDED_DOMAIN_OPTIONS[0];
+    const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : domainObj.name);
+    const baseXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+    const newXml = injectUseCaseFlavor(baseXml, titleToUse, projectScopePrompt);
 
     const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
       if (diag.id === activeDiagramId) {
         return {
           ...diag,
-          title: `${projectTitle || 'GCP Architecture'} • ${template.name}`,
+          title: `${titleToUse} • ${template.name}`,
           templateId,
           xml: newXml,
           source: 'blueprint'
@@ -977,6 +982,7 @@ function StudioContent() {
                     onSelectDomain={(domain: DomainOption) => {
                       setSelectedDomain(domain.id);
                       showToast(`🏢 Switched domain flavor: "${domain.name}"`);
+                      handleSynthesizeArchitecture(undefined, domain.id);
                     }}
                   />
                 </div>
