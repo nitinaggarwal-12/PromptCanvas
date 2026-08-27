@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
-import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
 
 function getAiClient(customKey?: string): GoogleGenAI {
   const apiKey = customKey || process.env.GEMINI_API_KEY || '';
@@ -49,12 +48,12 @@ export async function POST(request: Request) {
       aiReasoning: 'Diagram topology strictly adheres to Google Cloud Well-Architected Framework with zero-collision orthogonal vector routing.'
     };
 
-    // 3. Gemini 2.5 Architecture Quality & Correction Audit
+    // 3. Gemini 3.1 Pro Architecture Quality & Security Critic Audit
     const apiKey = process.env.GEMINI_API_KEY;
     if (apiKey && prompt && prompt.length > 5) {
       try {
         const ai = getAiClient(apiKey);
-        const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-2.5-flash';
+        const modelName = getGeminiModel('critic');
 
         const auditPrompt = `
 You are a Principal Google Cloud Solutions Architect and Draw.io XML Auditor.
@@ -77,10 +76,12 @@ Respond in JSON format:
 }
 `;
 
+        const genConfig = getGenConfig('audit');
         const response = await ai.models.generateContent({
           model: modelName,
           contents: [{ role: 'user', parts: [{ text: auditPrompt }] }],
           config: {
+            ...genConfig,
             responseMimeType: 'application/json',
             temperature: 0.1,
           }
