@@ -248,12 +248,26 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     </div>`,
     175,
     405,
-    92,
+    90,
     80,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Identity-Aware Proxy (IAP)
+  // Global External HTTP(S) Load Balancer (Primary Ingress Router & Anycast VIP)
+  cell(
+    'gclb_load_balancer',
+    `<div style="text-align:center;padding:4px;">
+      ${ICONS.gclb}
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">GLOBAL EXTERNAL<br/>HTTP(S) LOAD<br/>BALANCER</div>
+    </div>`,
+    278,
+    405,
+    95,
+    80,
+    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
+  );
+
+  // Identity-Aware Proxy (IAP) (Protected App Route Authenticator)
   const iapSubtitle = isCmek ? 'IDENTITY-AWARE<br/>PROXY (IAP + VPC-SC)' : 'IDENTITY-AWARE<br/>PROXY (IAP)';
   cell(
     'iap_proxy',
@@ -261,23 +275,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       ${ICONS.iapLock}
       <div style="font-size:8.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${iapSubtitle}</div>
     </div>`,
-    278,
-    405,
-    96,
-    80,
-    'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
-  );
-
-  // Global External HTTP(S) Load Balancer
-  cell(
-    'gclb_load_balancer',
-    `<div style="text-align:center;padding:4px;">
-      ${ICONS.gclb}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">GLOBAL EXTERNAL<br/>HTTP(S) LOAD<br/>BALANCER</div>
-    </div>`,
     385,
     405,
-    88,
+    90,
     80,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
@@ -875,25 +875,24 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e1_vpn', '', 'users_icon', 'ext_vpn_gateway', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#64748B;strokeWidth=1.5;dashed=1;');
   edge('e1_vpn_iap', '', 'ext_vpn_gateway', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;');
 
-  // Cloud Armor -> IAP -> GCLB
-  edge('e2', '❷ WAF', 'cloud_armor', 'iap_proxy', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
-  edge('e3', '', 'iap_proxy', 'gclb_load_balancer', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;');
+  // Cloud Armor -> GCLB Load Balancer (Direct 1st-Class Ingress into GCLB Anycast VIP)
+  edge('e2', '❷ WAF / L7', 'cloud_armor', 'gclb_load_balancer', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;');
 
-  // IAP -> User Auth
-  edge('e_iap_auth', '❸ AUTH', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 326, y: 202 }]);
-  edge('e_auth_app', '', 'user_auth_box', 'agentic_app_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
-
-  // GCLB -> Decision CDN Cache Gate (Edge Level Inspection)
-  edge('e_gclb_cdn', '', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;');
+  // GCLB Load Balancer -> CDN Cache Gate (Edge Inspection)
+  edge('e_gclb_cdn', '❸ EVALUATE', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 325, y: 243 }]);
 
   // CDN Cache Hit: YES -> Direct Edge Return to Delivered Node (Bypasses Backend Origin via top open channel at Y=155)
   edge('e_cdn_yes', 'YES (HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 155 }, { x: 758, y: 155 }]);
 
-  // CDN Cache Hit: NO (Miss) -> Path-Based Routing Gate
+  // CDN Cache Hit: NO (Miss) -> Path-Based Routing Gate (URL Map Evaluation)
   edge('e_cdn_no', 'NO (MISS)', 'decision_cdn_cache', 'decision_path_routing', 'edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
 
-  // Path-Based Routing: YES -> Subnet A Primary App (GKE Pods)
-  edge('e_path_yes', 'YES (/api/*)', 'decision_path_routing', 'agentic_app_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 278 }]);
+  // Path-Based Routing: YES (/api/*) -> IAP Proxy (Identity & Credential Verification)
+  edge('e_path_iap', 'YES (/api/*)', 'decision_path_routing', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
+
+  // IAP Proxy -> User Authentication -> Subnet A Primary App
+  edge('e_iap_auth', '❹ AUTH', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 430, y: 202 }]);
+  edge('e_auth_app', '', 'user_auth_box', 'agentic_app_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
 
   // Path-Based Routing: NO -> Default Path Backend (Compute MIG in Subnet B)
   edge('e_path_no', 'NO (DEFAULT /*)', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 370, y: 338 }, { x: 370, y: 648 }]);
