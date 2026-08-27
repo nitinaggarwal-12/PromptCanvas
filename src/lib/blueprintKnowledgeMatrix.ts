@@ -61,7 +61,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Discovery Lead / Solutions Arch. | Consumers: Cloud Migration Team | Stakeholders: Legacy App Owners / CTO",
     "salesStage": "Presales Pitch",
     "lifecyclePhase": "Assessment",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P1-APP-L-01_legacy_data_dependency_map"
+    "liveRailwayLink": "/workspace?blueprint=P1-APP-L-01_legacy_data_dependency_map"
   },
   {
     "combinedId": "P1-APP-L-02_hybrid_strangler_fig_transition",
@@ -92,7 +92,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Discovery Lead / Solutions Arch. | Consumers: Cloud Migration Team | Stakeholders: Legacy App Owners / CTO",
     "salesStage": "Presales Pitch",
     "lifecyclePhase": "Assessment",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P1-APP-L-02_hybrid_strangler_fig_transition"
+    "liveRailwayLink": "/workspace?blueprint=P1-APP-L-02_hybrid_strangler_fig_transition"
   },
   {
     "combinedId": "P1-GOV-C-03_value_stream_map_vsm",
@@ -124,7 +124,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lean/Agile Coach / Enterprise Arch. | Consumers: Business Unit Leaders | Stakeholders: Chief AI Officer / VP Engineering",
     "salesStage": "Presales Pitch",
     "lifecyclePhase": "Assessment",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P1-GOV-C-03_value_stream_map_vsm"
+    "liveRailwayLink": "/workspace?blueprint=P1-GOV-C-03_value_stream_map_vsm"
   },
   {
     "combinedId": "P1-GOV-C-04_as_is_vs_to_be_process_flow",
@@ -156,7 +156,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Solutions Architect | Consumers: C-Suite & Board Members | Stakeholders: CIO, CFO, Business Sponsors",
     "salesStage": "Presales Pitch",
     "lifecyclePhase": "Assessment",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P1-GOV-C-04_as_is_vs_to_be_process_flow"
+    "liveRailwayLink": "/workspace?blueprint=P1-GOV-C-04_as_is_vs_to_be_process_flow"
   },
   {
     "combinedId": "P2-GOV-C-01_cloud_finops_chargeback_model",
@@ -188,7 +188,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: FinOps Lead Architect | Consumers: Department Budget Owners | Stakeholders: Finance, VP Cloud Infrastructure",
     "salesStage": "Executive Workshop",
     "lifecyclePhase": "Planning → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P2-GOV-C-01_cloud_finops_chargeback_model"
+    "liveRailwayLink": "/workspace?blueprint=P2-GOV-C-01_cloud_finops_chargeback_model"
   },
   {
     "combinedId": "P3-APP-C-01_total_unified_system_view",
@@ -221,7 +221,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Chief Enterprise Architect | Consumers: All Technical & Business Teams | Stakeholders: CTO, CISO, Chief Data Officer",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-APP-C-01_total_unified_system_view"
+    "liveRailwayLink": "/workspace?blueprint=P3-APP-C-01_total_unified_system_view"
   },
   {
     "combinedId": "P3-AI-L-02_cognitive_architecture_agentic_rag",
@@ -252,7 +252,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal AI Architect | Consumers: AI Application Developers | Stakeholders: Head of AI / Product Management",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-AI-L-02_cognitive_architecture_agentic_rag"
+    "liveRailwayLink": "/workspace?blueprint=P3-AI-L-02_cognitive_architecture_agentic_rag"
   },
   {
     "combinedId": "P3-AI-L-03_hub_and_spoke_agent_mesh",
@@ -282,7 +282,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: AI Systems Architect | Consumers: Agent Engineers | Stakeholders: Chief AI Architect",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-AI-L-03_hub_and_spoke_agent_mesh"
+    "liveRailwayLink": "/workspace?blueprint=P3-AI-L-03_hub_and_spoke_agent_mesh"
   },
   {
     "combinedId": "P3-DAT-L-04_gcp_enterprise_data_lakehouse",
@@ -314,7 +314,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Data Platform Architect | Consumers: Data Engineers & Analytics Teams | Stakeholders: Chief Data Officer",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-DAT-L-04_gcp_enterprise_data_lakehouse"
+    "liveRailwayLink": "/workspace?blueprint=P3-DAT-L-04_gcp_enterprise_data_lakehouse"
   },
   {
     "combinedId": "P3-DAT-L-05_dimensional_data_model_erd",
@@ -344,7 +344,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Database Modeler | Consumers: Backend & Data Engineers | Stakeholders: Data Engineering Lead",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-DAT-L-05_dimensional_data_model_erd"
+    "liveRailwayLink": "/workspace?blueprint=P3-DAT-L-05_dimensional_data_model_erd"
   },
   {
     "combinedId": "P3-DAT-C-06_unified_data_governance",
@@ -375,7 +375,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Data Governance Officer | Consumers: Data Stewards & SREs | Stakeholders: Chief Compliance Officer / CISO",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-DAT-C-06_unified_data_governance"
+    "liveRailwayLink": "/workspace?blueprint=P3-DAT-C-06_unified_data_governance"
   },
   {
     "combinedId": "P3-SEC-L-07_federated_iam_sso",
@@ -406,7 +406,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Identity & Access Architect | Consumers: Cloud Security Engineers | Stakeholders: CISO / Identity Operations Lead",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-SEC-L-07_federated_iam_sso"
+    "liveRailwayLink": "/workspace?blueprint=P3-SEC-L-07_federated_iam_sso"
   },
   {
     "combinedId": "P3-APP-L-08_micro_frontend_architecture",
@@ -436,7 +436,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Frontend Architect | Consumers: UI/UX & Frontend Engineers | Stakeholders: VP Engineering / Head of Product",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-APP-L-08_micro_frontend_architecture"
+    "liveRailwayLink": "/workspace?blueprint=P3-APP-L-08_micro_frontend_architecture"
   },
   {
     "combinedId": "P3-GOV-L-09_logical_ai_config_tenant",
@@ -467,7 +467,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Cloud Platform Foundations Lead | Consumers: Platform Engineers & Tenant Admins | Stakeholders: Head of Infrastructure",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-GOV-L-09_logical_ai_config_tenant"
+    "liveRailwayLink": "/workspace?blueprint=P3-GOV-L-09_logical_ai_config_tenant"
   },
   {
     "combinedId": "P3-APP-L-10_multi_agent_sequence_flow",
@@ -498,7 +498,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal API Architect | Consumers: Backend Developers & Auditors | Stakeholders: Product Managers / Lead Developers",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Requirements → Design",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P3-APP-L-10_multi_agent_sequence_flow"
+    "liveRailwayLink": "/workspace?blueprint=P3-APP-L-10_multi_agent_sequence_flow"
   },
   {
     "combinedId": "P4-SEC-P-01_secure_deployment_topology_map",
@@ -531,7 +531,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Cloud Security Architect | Consumers: DevSecOps & Network Engineers | Stakeholders: CISO / Head of Security",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-SEC-P-01_secure_deployment_topology_map"
+    "liveRailwayLink": "/workspace?blueprint=P4-SEC-P-01_secure_deployment_topology_map"
   },
   {
     "combinedId": "P4-SEC-P-02_gcp_landing_zone_vpc_map",
@@ -569,7 +569,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Network Architect | Consumers: CISO & SecOps Leads | Stakeholders: VP Cloud Infrastructure",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-SEC-P-02_gcp_landing_zone_vpc_map"
+    "liveRailwayLink": "/workspace?blueprint=P4-SEC-P-02_gcp_landing_zone_vpc_map"
   },
   {
     "combinedId": "P4-SEC-P-03_data_residency_sovereign_map",
@@ -600,7 +600,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Sovereign Cloud Architect | Consumers: Compliance & Security Leads | Stakeholders: CISO / Data Protection Officer",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-SEC-P-03_data_residency_sovereign_map"
+    "liveRailwayLink": "/workspace?blueprint=P4-SEC-P-03_data_residency_sovereign_map"
   },
   {
     "combinedId": "P4-AI-P-04_enterprise_agent_runtime_platform",
@@ -632,7 +632,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: AI Systems Architect | Consumers: ML Engineers & DevSecOps | Stakeholders: CTO / Head of AI Platforms",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-AI-P-04_enterprise_agent_runtime_platform"
+    "liveRailwayLink": "/workspace?blueprint=P4-AI-P-04_enterprise_agent_runtime_platform"
   },
   {
     "combinedId": "P4-SEC-P-05_tech_agentic_mesh",
@@ -663,7 +663,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Network Architect | Consumers: Multi-Cloud Network Engineers | Stakeholders: VP Infrastructure / CISO",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-SEC-P-05_tech_agentic_mesh"
+    "liveRailwayLink": "/workspace?blueprint=P4-SEC-P-05_tech_agentic_mesh"
   },
   {
     "combinedId": "P4-GOV-L-06_tech_eval_safety",
@@ -695,7 +695,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead AI Safety Researcher | Consumers: MLOps & Governance Teams | Stakeholders: Chief AI Officer / AI Ethics Board",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-GOV-L-06_tech_eval_safety"
+    "liveRailwayLink": "/workspace?blueprint=P4-GOV-L-06_tech_eval_safety"
   },
   {
     "combinedId": "P4-GOV-L-07_ai_trism_guardrails",
@@ -726,7 +726,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: AI Security Architect | Consumers: CISO & Legal Officers | Stakeholders: Risk Management / Ethics Board",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-GOV-L-07_ai_trism_guardrails"
+    "liveRailwayLink": "/workspace?blueprint=P4-GOV-L-07_ai_trism_guardrails"
   },
   {
     "combinedId": "P4-GOV-L-08_ai_agent_approval_workflow",
@@ -758,7 +758,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: AI Governance Architect | Consumers: DevSecOps & Legal Teams | Stakeholders: Chief Compliance Officer / CISO",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-GOV-L-08_ai_agent_approval_workflow"
+    "liveRailwayLink": "/workspace?blueprint=P4-GOV-L-08_ai_agent_approval_workflow"
   },
   {
     "combinedId": "P4-GOV-P-09_devsecops_ci_cd_pipeline",
@@ -790,7 +790,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead DevSecOps Engineer | Consumers: Software Engineering Teams | Stakeholders: VP Engineering / Platform Lead",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-GOV-P-09_devsecops_ci_cd_pipeline"
+    "liveRailwayLink": "/workspace?blueprint=P4-GOV-P-09_devsecops_ci_cd_pipeline"
   },
   {
     "combinedId": "P4-APP-L-10_enterprise_event_driven_eda_mesh",
@@ -821,7 +821,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Integration Architect | Consumers: Backend & Event Stream Developers | Stakeholders: Application Architecture Lead",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-APP-L-10_enterprise_event_driven_eda_mesh"
+    "liveRailwayLink": "/workspace?blueprint=P4-APP-L-10_enterprise_event_driven_eda_mesh"
   },
   {
     "combinedId": "P4-APP-L-11_serverless_eda_architecture",
@@ -854,7 +854,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Serverless Architect | Consumers: Cloud Native Developers | Stakeholders: Head of Cloud Engineering",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-APP-L-11_serverless_eda_architecture"
+    "liveRailwayLink": "/workspace?blueprint=P4-APP-L-11_serverless_eda_architecture"
   },
   {
     "combinedId": "P4-DAT-P-12_multimodal_ingestion_flow",
@@ -886,7 +886,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Data Pipeline Architect | Consumers: AI / ML Engineers | Stakeholders: Chief Data Architect",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-DAT-P-12_multimodal_ingestion_flow"
+    "liveRailwayLink": "/workspace?blueprint=P4-DAT-P-12_multimodal_ingestion_flow"
   },
   {
     "combinedId": "P4-DAT-P-13_real_time_streaming_analytics",
@@ -917,7 +917,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Streaming Architect | Consumers: Data Engineers & Analytics Teams | Stakeholders: Head of Data Engineering",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Verification",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P4-DAT-P-13_real_time_streaming_analytics"
+    "liveRailwayLink": "/workspace?blueprint=P4-DAT-P-13_real_time_streaming_analytics"
   },
   {
     "combinedId": "P5-APP-L-01_six_rs_migration_matrix",
@@ -947,7 +947,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Cloud Migration Architect | Consumers: Migration PMO & Engineering Leads | Stakeholders: CIO / Cloud Transformation Steering Committee",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-APP-L-01_six_rs_migration_matrix"
+    "liveRailwayLink": "/workspace?blueprint=P5-APP-L-01_six_rs_migration_matrix"
   },
   {
     "combinedId": "P5-SEC-P-02_enterprise_sre_observability",
@@ -978,7 +978,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Site Reliability Engineer (SRE) | Consumers: NOC, SRE & DevSecOps Teams | Stakeholders: VP Engineering / Head of SRE",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-SEC-P-02_enterprise_sre_observability"
+    "liveRailwayLink": "/workspace?blueprint=P5-SEC-P-02_enterprise_sre_observability"
   },
   {
     "combinedId": "P5-GOV-P-03_golive_warroom_runbook",
@@ -1009,7 +1009,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Release Lead / Cutover Commander | Consumers: War Room SREs & Support Staff | Stakeholders: CIO, VP Engineering, Business Unit Heads",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-GOV-P-03_golive_warroom_runbook"
+    "liveRailwayLink": "/workspace?blueprint=P5-GOV-P-03_golive_warroom_runbook"
   },
   {
     "combinedId": "P5-GOV-L-04_incident_triage_swimlane",
@@ -1040,7 +1040,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Incident Commander / Lead SRE | Consumers: NOC & On-Call Engineers | Stakeholders: VP Reliability / Head of Infrastructure",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-GOV-L-04_incident_triage_swimlane"
+    "liveRailwayLink": "/workspace?blueprint=P5-GOV-L-04_incident_triage_swimlane"
   },
   {
     "combinedId": "P5-AI-L-05_llm_capacity_quota_management",
@@ -1071,7 +1071,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal FinOps & AI Architect | Consumers: AI Application SREs | Stakeholders: VP Engineering / Head of AI",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-AI-L-05_llm_capacity_quota_management"
+    "liveRailwayLink": "/workspace?blueprint=P5-AI-L-05_llm_capacity_quota_management"
   },
   {
     "combinedId": "P5-AI-L-06_ai_coe_operating_model",
@@ -1102,7 +1102,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Chief AI Strategist / CoE Lead | Consumers: Enterprise AI Stakeholders | Stakeholders: Chief AI Officer / CEO / CTO",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-AI-L-06_ai_coe_operating_model"
+    "liveRailwayLink": "/workspace?blueprint=P5-AI-L-06_ai_coe_operating_model"
   },
   {
     "combinedId": "P5-AI-P-07_tech_llmops_lifecycle",
@@ -1134,7 +1134,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal MLOps Engineer | Consumers: Prompt Engineers & Data Scientists | Stakeholders: Head of AI Engineering",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-AI-P-07_tech_llmops_lifecycle"
+    "liveRailwayLink": "/workspace?blueprint=P5-AI-P-07_tech_llmops_lifecycle"
   },
   {
     "combinedId": "P5-DAT-P-08_dataops_anomaly_detection",
@@ -1165,7 +1165,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Data Reliability Engineer | Consumers: Data Engineers & Stewards | Stakeholders: Chief Data Officer",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-DAT-P-08_dataops_anomaly_detection"
+    "liveRailwayLink": "/workspace?blueprint=P5-DAT-P-08_dataops_anomaly_detection"
   },
   {
     "combinedId": "P5-GOV-P-09_bcdr_multi_region_failover",
@@ -1196,7 +1196,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Cloud DR Architect | Consumers: SREs & Business Continuity Leads | Stakeholders: CISO / Risk Management Committee",
     "salesStage": "Implementation & Handoff",
     "lifecyclePhase": "Operations → Maintenance",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=P5-GOV-P-09_bcdr_multi_region_failover"
+    "liveRailwayLink": "/workspace?blueprint=P5-GOV-P-09_bcdr_multi_region_failover"
   },
   {
     "combinedId": "IND-FINTECH-01_IND-FINTECH-03_automated_personalized_financial_advising",
@@ -1229,7 +1229,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal FinTech Architect | Consumers: Wealth Management Developers | Stakeholders: Chief Risk Officer / Head of Wealth",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-FINTECH-01_IND-FINTECH-03_automated_personalized_financial_advising"
+    "liveRailwayLink": "/workspace?blueprint=IND-FINTECH-01_IND-FINTECH-03_automated_personalized_financial_advising"
   },
   {
     "combinedId": "IND-MFG-02_ge_equipment_optimization_gemini",
@@ -1263,7 +1263,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Industrial Architect | Consumers: Plant Reliability Engineers | Stakeholders: VP Manufacturing Operations",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-MFG-02_ge_equipment_optimization_gemini"
+    "liveRailwayLink": "/workspace?blueprint=IND-MFG-02_ge_equipment_optimization_gemini"
   },
   {
     "combinedId": "IND-PHARMA-03_IND-PHARMA-01_pharma_genomics_pipeline",
@@ -1294,7 +1294,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Bioinformatics Architect | Consumers: Drug Discovery Researchers | Stakeholders: Chief Scientific Officer / VP Research",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-PHARMA-03_IND-PHARMA-01_pharma_genomics_pipeline"
+    "liveRailwayLink": "/workspace?blueprint=IND-PHARMA-03_IND-PHARMA-01_pharma_genomics_pipeline"
   },
   {
     "combinedId": "IND-RETAIL-04_omnichannel_ecommerce_retail",
@@ -1330,7 +1330,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Retail Architect | Consumers: E-Commerce App Developers | Stakeholders: Chief Digital Officer / Head of E-Commerce",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-RETAIL-04_omnichannel_ecommerce_retail"
+    "liveRailwayLink": "/workspace?blueprint=IND-RETAIL-04_omnichannel_ecommerce_retail"
   },
   {
     "combinedId": "IND-MFG-05_smart_manufacturing_iot",
@@ -1363,7 +1363,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal IoT Solutions Architect | Consumers: Factory Automation Engineers | Stakeholders: VP Plant Operations / Manufacturing CIO",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-MFG-05_smart_manufacturing_iot"
+    "liveRailwayLink": "/workspace?blueprint=IND-MFG-05_smart_manufacturing_iot"
   },
   {
     "combinedId": "IND-HR-06_workforce_talent_ai",
@@ -1396,7 +1396,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead HR Tech Solutions Architect | Consumers: HR Application Developers | Stakeholders: Chief People Officer / VP Talent Acquisition",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-HR-06_workforce_talent_ai"
+    "liveRailwayLink": "/workspace?blueprint=IND-HR-06_workforce_talent_ai"
   },
   {
     "combinedId": "IND-HEALTH-07_IND-HEALTH-01_healthcare_fhir_hl7",
@@ -1431,7 +1431,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Chief Healthcare AI Architect | Consumers: BioInformatics Engineers & Clinical Informaticists | Stakeholders: CMO / Chief Medical Officer",
     "salesStage": "Industry Solution Pitch",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=IND-HEALTH-07_IND-HEALTH-01_healthcare_fhir_hl7"
+    "liveRailwayLink": "/workspace?blueprint=IND-HEALTH-07_IND-HEALTH-01_healthcare_fhir_hl7"
   },
   {
     "combinedId": "ARCH-C4-01_c4_system_context_container",
@@ -1462,7 +1462,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Enterprise Software Architect | Consumers: Full-Stack Engineers & Reviewers | Stakeholders: Architecture Review Board (ARB)",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-C4-01_c4_system_context_container"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-C4-01_c4_system_context_container"
   },
   {
     "combinedId": "ARCH-C4-02_ARCH-C4-03_c4_component_lld",
@@ -1494,7 +1494,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Software Architect | Consumers: Backend Developers & Tech Leads | Stakeholders: Engineering Managers / Head of Engineering",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-C4-02_ARCH-C4-03_c4_component_lld"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-C4-02_ARCH-C4-03_c4_component_lld"
   },
   {
     "combinedId": "ARCH-BPMN-03_ARCH-BPMN-01_bpmn_process_workflow",
@@ -1524,7 +1524,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Business Process Architect | Consumers: Business Analysts & Ops Teams | Stakeholders: COO / Head of Operations",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-BPMN-03_ARCH-BPMN-01_bpmn_process_workflow"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-BPMN-03_ARCH-BPMN-01_bpmn_process_workflow"
   },
   {
     "combinedId": "ARCH-SEC-04_ARCH-SEC-01_threat_modeling_stride",
@@ -1556,7 +1556,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Chief Information Security Officer (CISO) | Consumers: SecOps Engineers & AppSec Teams | Stakeholders: Board Audit Committee",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-SEC-04_ARCH-SEC-01_threat_modeling_stride"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-SEC-04_ARCH-SEC-01_threat_modeling_stride"
   },
   {
     "combinedId": "ARCH-DAT-05_ARCH-DAT-01_data_lineage_provenance",
@@ -1588,7 +1588,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Data Governance Architect | Consumers: Data Engineers & Analytics Engineers | Stakeholders: External Financial Auditors / CDO",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-DAT-05_ARCH-DAT-01_data_lineage_provenance"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-DAT-05_ARCH-DAT-01_data_lineage_provenance"
   },
   {
     "combinedId": "ARCH-MCP-06_ARCH-MCP-02_model_context_protocol_gateway",
@@ -1620,7 +1620,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal AI Integration Architect | Consumers: AI Application & Tool Developers | Stakeholders: Head of AI Infrastructure",
     "salesStage": "Enterprise Architecture Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=ARCH-MCP-06_ARCH-MCP-02_model_context_protocol_gateway"
+    "liveRailwayLink": "/workspace?blueprint=ARCH-MCP-06_ARCH-MCP-02_model_context_protocol_gateway"
   },
   {
     "combinedId": "NEW-APP-01_enterprise_api_management",
@@ -1651,7 +1651,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal API Architect | Consumers: Integration Engineers, Security Leads | Stakeholders: VP Engineering, CTO",
     "salesStage": "Technical Deep-Dive",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-APP-01_enterprise_api_management"
+    "liveRailwayLink": "/workspace?blueprint=NEW-APP-01_enterprise_api_management"
   },
   {
     "combinedId": "NEW-PLAT-02_gke_enterprise_platform",
@@ -1682,7 +1682,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Platform Engineering Lead | Consumers: DevOps/SRE, Developers | Stakeholders: Head of Infrastructure",
     "salesStage": "Technical Deep-Dive",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-PLAT-02_gke_enterprise_platform"
+    "liveRailwayLink": "/workspace?blueprint=NEW-PLAT-02_gke_enterprise_platform"
   },
   {
     "combinedId": "NEW-REL-03_ha_multi_region_application",
@@ -1713,7 +1713,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Reliability Architect | Consumers: SRE Leads, App Architects | Stakeholders: VP Operations, CISO",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Design → Production",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-REL-03_ha_multi_region_application"
+    "liveRailwayLink": "/workspace?blueprint=NEW-REL-03_ha_multi_region_application"
   },
   {
     "combinedId": "NEW-DAT-04_etl_elt_cdc_pipeline",
@@ -1744,7 +1744,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Lead Data Engineer / Architect | Consumers: Analytics Engineers, BI Leads | Stakeholders: Chief Data Officer (CDO)",
     "salesStage": "Technical Deep-Dive",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-DAT-04_etl_elt_cdc_pipeline"
+    "liveRailwayLink": "/workspace?blueprint=NEW-DAT-04_etl_elt_cdc_pipeline"
   },
   {
     "combinedId": "NEW-SEC-05_workload_identity_authorization",
@@ -1775,7 +1775,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Cloud Security Architect | Consumers: DevOps Engineers, SecOps | Stakeholders: CISO, Compliance Officer",
     "salesStage": "Security Review / ARB Sign-Off",
     "lifecyclePhase": "Design → Implementation",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-SEC-05_workload_identity_authorization"
+    "liveRailwayLink": "/workspace?blueprint=NEW-SEC-05_workload_identity_authorization"
   },
   {
     "combinedId": "NEW-NET-06_private_ingress_egress_connectivity",
@@ -1806,7 +1806,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal Network Architect | Consumers: SecOps, Platform Engineers | Stakeholders: Head of Infrastructure",
     "salesStage": "Technical Deep-Dive",
     "lifecyclePhase": "Design → Implementation",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-NET-06_private_ingress_egress_connectivity"
+    "liveRailwayLink": "/workspace?blueprint=NEW-NET-06_private_ingress_egress_connectivity"
   },
   {
     "combinedId": "NEW-AI-07_enterprise_mlops_lifecycle",
@@ -1837,7 +1837,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal MLOps Engineer / Lead AI Architect | Consumers: Data Scientists, ML Engineers | Stakeholders: Head of AI / VP Data",
     "salesStage": "Technical Deep-Dive",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-AI-07_enterprise_mlops_lifecycle"
+    "liveRailwayLink": "/workspace?blueprint=NEW-AI-07_enterprise_mlops_lifecycle"
   },
   {
     "combinedId": "NEW-AI-08_graphrag_knowledge_graph",
@@ -1868,7 +1868,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal AI Architect / Graph Specialist | Consumers: GenAI Engineers, Data Scientists | Stakeholders: Chief AI Officer",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-AI-08_graphrag_knowledge_graph"
+    "liveRailwayLink": "/workspace?blueprint=NEW-AI-08_graphrag_knowledge_graph"
   },
   {
     "combinedId": "NEW-APP-09_saas_multi_tenant",
@@ -1899,7 +1899,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal SaaS Architect | Consumers: Backend Engineers, Security Leads | Stakeholders: VP Product, CTO",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-APP-09_saas_multi_tenant"
+    "liveRailwayLink": "/workspace?blueprint=NEW-APP-09_saas_multi_tenant"
   },
   {
     "combinedId": "NEW-AI-10_intelligent_document_processing",
@@ -1930,7 +1930,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "primaryPersonas": "Creator: Principal AI & Automation Architect | Consumers: ML Engineers, Business Ops | Stakeholders: Head of Operations, CDO",
     "salesStage": "Architecture Design / Review",
     "lifecyclePhase": "Design → Build",
-    "liveRailwayLink": "https://promptcanvas-production-235c.up.railway.app/workspace?blueprint=NEW-AI-10_intelligent_document_processing"
+    "liveRailwayLink": "/workspace?blueprint=NEW-AI-10_intelligent_document_processing"
   }
 ];
 

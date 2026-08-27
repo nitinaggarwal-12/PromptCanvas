@@ -862,8 +862,8 @@ export default function LandingPage() {
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Test Status (2,359 Passed)</span>
             </Link>
-            <a href="#" className="hover:text-teal-500 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-teal-500 transition-colors">Terms of Service</a>
+            <Link href="/privacy" className="hover:text-teal-500 transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-teal-500 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </footer>

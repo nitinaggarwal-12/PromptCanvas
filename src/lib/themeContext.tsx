@@ -20,53 +20,51 @@ const ThemeContext = createContext<ThemeContextType>({
   toggleTheme: () => {},
 });
 
+function applyThemeToDocument(newTheme: ThemeMode) {
+  if (typeof document !== 'undefined') {
+    const root = document.documentElement;
+    if (newTheme === 'dark') {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    }
+  }
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>('light');
+  const [theme, setThemeState] = useState<ThemeMode>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedTheme = localStorage.getItem('promptcanvas_theme') as ThemeMode;
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          return savedTheme;
+        }
+      } catch {}
+    }
+    return 'light';
+  });
 
   useEffect(() => {
-    try {
-      const savedTheme = localStorage.getItem('promptcanvas_theme') as ThemeMode;
-      if (savedTheme === 'light' || savedTheme === 'dark') {
-        setThemeState(savedTheme);
-        applyTheme(savedTheme);
-      } else {
-        setThemeState('light');
-        applyTheme('light');
-      }
-    } catch {
-      setThemeState('light');
-      applyTheme('light');
-    }
+    applyThemeToDocument(theme);
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'promptcanvas_theme' && (e.newValue === 'light' || e.newValue === 'dark')) {
         setThemeState(e.newValue);
-        applyTheme(e.newValue);
+        applyThemeToDocument(e.newValue);
       }
     };
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
-  }, []);
-
-  const applyTheme = (newTheme: ThemeMode) => {
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      if (newTheme === 'dark') {
-        root.classList.add('dark');
-        root.classList.remove('light');
-        root.setAttribute('data-theme', 'dark');
-      } else {
-        root.classList.add('light');
-        root.classList.remove('dark');
-        root.setAttribute('data-theme', 'light');
-      }
-    }
-  };
+  }, [theme]);
 
   const setTheme = (newTheme: ThemeMode) => {
     setThemeState(newTheme);
-    applyTheme(newTheme);
+    applyThemeToDocument(newTheme);
     try {
       localStorage.setItem('promptcanvas_theme', newTheme);
     } catch {}

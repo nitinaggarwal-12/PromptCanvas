@@ -2,6 +2,7 @@ import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
 import { buildCompleteWellArchitectedGcpDrMasterXml } from './masterBuilders/master_builder';
+import { getDefaultXmlForArchitecture } from './architectureTypes';
 
 export interface XmlHealerResult {
   isValid: boolean;
@@ -299,7 +300,7 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     healingLog.push('Injected missing root to mxGraphModel AST.');
   }
 
-  let root = model.root;
+  const root = model.root;
   let cells: any[] = [];
 
   if (root.mxCell) {
@@ -588,7 +589,6 @@ function autoRepairXmlSyntax(xml: string): string {
  */
 function createFallbackDrawioXml(archType?: string): string {
   try {
-    const { getDefaultXmlForArchitecture } = require('./architectureTypes');
     const xml = getDefaultXmlForArchitecture(archType || 'unified_system_view');
     if (xml && xml.length > 500) return xml;
   } catch {

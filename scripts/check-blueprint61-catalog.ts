@@ -71,7 +71,7 @@ if (edges < 18) failures.push(`runtime diagram too sparse: ${edges} edges`);
 if (decisions < 3) failures.push(`runtime diagram missing decision depth: ${decisions} diamonds`);
 
 const liveLink = bp61?.liveRailwayLink || '';
-if (!liveLink.includes('promptcanvas-production-235c.up.railway.app') || !liveLink.includes(`blueprint=${ID}`)) {
+if (!liveLink.includes(`blueprint=${ID}`)) {
   failures.push('Blueprint 61 Railway deep link is missing or incorrect');
 }
 

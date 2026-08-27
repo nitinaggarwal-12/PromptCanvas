@@ -210,7 +210,7 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     .replace(/(<mxCell\s+[^>]*\bvalue=")[^"]*?(?:End-to-End Enterprise Architecture across major phases|सभी प्रमुख चरणों)[^"]*?("\s+style=")/gi, `$1$2`) // Blank colliding secondary subheaders
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*style=")[^"]*(")/gi, '$1rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;fontFamily=Helvetica;$2')
     .replace(/(<mxCell\s+id="(?:main_title_bar_uv|main_title_bar)"[^>]*value=")([\s\S]*?)(")/gi, (m, p1, p2, p3) => {
-      let lightVal = p2
+      const lightVal = p2
         .replace(/color:#FFFFFF/gi, 'color:#0F172A')
         .replace(/color:\s*#FFFFFF/gi, 'color:#0F172A')
         .replace(/color:#F8FAFC/gi, 'color:#0F172A')
