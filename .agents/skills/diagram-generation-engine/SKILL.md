@@ -163,3 +163,19 @@ Every master template MUST undergo a structural ground-truth feature audit again
 4. **Cross-Cutting Control Bars & CIDR Annotations**: Confirm all full-width enabler banners, VPC CIDRs (`10.10.0.0/16`), and subnet annotations are fully articulated.
 5. **Direct Visual Review**: Inspect the rendered PNG against the reference image before marking complete.
 
+---
+
+## 🏛️ Pillar 8: Official Google Cloud Architecture Center Vector Icons Mandate
+
+For all Google Cloud Platform (GCP) architectures, diagrams, and components:
+1. **Zero Generic Emoji Substitution**: Never use generic emojis (such as `👑`, `⚡`, `🔑`, `🛡️`, `📊`, `🚀`, `🗄️`, `✨`) as service icons.
+2. **Mandatory Official Vector SVGs**: Import and use authentic vector SVGs from `src/lib/gcpIcons.ts` (`GCP_OFFICIAL_ICONS` / `renderGcpIconHtml`):
+   - **Gemini / DeepMind Core**: Official 4-point gradient Gemini diamond (`gemini`).
+   - **Vertex AI / Vector Search**: Official Vertex AI (`vertex_ai`) and ScaNN Vector Search (`vertex_vector_search`).
+   - **Document AI / GCS**: Official Document AI (`document_ai`) and Cloud Storage (`cloud_storage`).
+   - **Compute & Orchestration**: Official GKE Autopilot (`gke_autopilot`), Cloud Run (`cloud_run`), and Compute Engine (`compute_engine`).
+   - **Databases & Cache**: Official BigQuery (`bigquery`), Cloud Spanner (`spanner`), and Cloud Memorystore (`memorystore`).
+   - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
+   - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
+
+
