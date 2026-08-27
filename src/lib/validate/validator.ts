@@ -11,6 +11,7 @@ export type ErrorCode =
   | 'DATA_STORE_DISCONNECTED'
   | 'FLOW_BACKTRACKING_DETECTED'
   | 'CLOSED_LOOP_MISSING_EDGE'
+  | 'NON_ORTHOGONAL_EDGE_SEGMENT'
   | 'CONTAINER_HEADER_SLICED'
   | 'EDGE_INTERSECTS_VERTEX'
   | 'TEXT_OVERFLOW_HEIGHT'
@@ -42,7 +43,6 @@ interface ParsedVertex {
   y: number;
   width: number;
   height: number;
-  // Computed absolute coordinates on canvas
   absX: number;
   absY: number;
   label?: string;
@@ -58,6 +58,10 @@ interface ParsedEdge {
   label?: string;
   style?: string;
   points?: { x: number; y: number }[];
+  exitX?: number;
+  exitY?: number;
+  entryX?: number;
+  entryY?: number;
 }
 
 export function validateDrawioXml(xmlString: string): ValidationResult {
@@ -246,6 +250,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     } else if (isEdge) {
       const source = cell['@_source'];
       const target = cell['@_target'];
+      const style = cell['@_style'] || '';
       const geom = cell.mxGeometry;
       const rawPoints = geom?.Array?.mxPoint || geom?.mxPoint;
       const points = rawPoints ? (Array.isArray(rawPoints) ? rawPoints : [rawPoints]) : [];
@@ -255,6 +260,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         .filter((pt: any) => !pt?.['@_as'])
         .map((pt: any) => ({ x: parseFloat(pt['@_x'] || '0'), y: parseFloat(pt['@_y'] || '0') }));
 
+      const exitXMatch = style.match(/exitX=([0-9.]+)/);
+      const exitYMatch = style.match(/exitY=([0-9.]+)/);
+      const entryXMatch = style.match(/entryX=([0-9.]+)/);
+      const entryYMatch = style.match(/entryY=([0-9.]+)/);
+
       edgesMap.set(id, {
         id,
         source,
@@ -262,8 +272,12 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         hasSourcePoint,
         hasTargetPoint,
         label: cell['@_value'] || '',
-        style: cell['@_style'] || '',
+        style,
         points: waypoints,
+        exitX: exitXMatch ? parseFloat(exitXMatch[1]) : undefined,
+        exitY: exitYMatch ? parseFloat(exitYMatch[1]) : undefined,
+        entryX: entryXMatch ? parseFloat(entryXMatch[1]) : undefined,
+        entryY: entryYMatch ? parseFloat(entryYMatch[1]) : undefined,
       });
     }
   }
@@ -410,23 +424,45 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check EDGE_INTERSECTS_VERTEX & CONTAINER_HEADER_SLICING
+  // Check EDGE_INTERSECTS_VERTEX & NON_ORTHOGONAL_EDGE_SEGMENT
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
       const src = verticesMap.get(edge.source)!;
       const tgt = verticesMap.get(edge.target)!;
 
+      const srcPt = {
+        x: edge.exitX !== undefined ? src.absX + src.width * edge.exitX : src.absX + src.width / 2,
+        y: edge.exitY !== undefined ? src.absY + src.height * edge.exitY : src.absY + src.height / 2,
+      };
+      const tgtPt = {
+        x: edge.entryX !== undefined ? tgt.absX + tgt.width * edge.entryX : tgt.absX + tgt.width / 2,
+        y: edge.entryY !== undefined ? tgt.absY + tgt.height * edge.entryY : tgt.absY + tgt.height / 2,
+      };
+
       const points: { x: number; y: number }[] = [
-        { x: src.absX + src.width / 2, y: src.absY + src.height / 2 },
+        srcPt,
         ...(edge.points || []),
-        { x: tgt.absX + tgt.width / 2, y: tgt.absY + tgt.height / 2 },
+        tgtPt,
       ];
 
       for (let i = 0; i < points.length - 1; i++) {
         const p1 = points[i];
         const p2 = points[i + 1];
-        const isHoriz = Math.abs(p1.y - p2.y) < 5;
-        const isVert = Math.abs(p1.x - p2.x) < 5;
+        const dx = Math.abs(p1.x - p2.x);
+        const dy = Math.abs(p1.y - p2.y);
+
+        // NON-ORTHOGONAL SLANTED SEGMENT CHECK:
+        // A segment must be strictly horizontal (dy <= 3) or strictly vertical (dx <= 3)
+        if (dx > 3 && dy > 3) {
+          errors.push({
+            code: 'NON_ORTHOGONAL_EDGE_SEGMENT',
+            cells: [edgeId],
+            detail: `Edge "${edgeId}" has a slanted diagonal segment from (${p1.x}, ${p1.y}) to (${p2.x}, ${p2.y}) (dx=${dx}px, dy=${dy}px). All architecture connectors must be strictly orthogonal (90-degree right angles).`,
+          });
+        }
+
+        const isHoriz = dy < 5;
+        const isVert = dx < 5;
 
         for (const [vId, v] of verticesMap.entries()) {
           if (vId === edge.source || vId === edge.target) continue;
@@ -494,7 +530,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
   // --- STRICT TOPOLOGICAL & ARCHITECTURAL ERROR RULES ---
 
-  // 1. HARD BLOCKING ORPHAN_NODE RULE for any Core Service Card
+  // 1. HARD BLOCKING ORPHAN_NODE RULE
   for (const [id, v] of verticesMap.entries()) {
     const isFoundation = id.startsWith('cloud_') && (id.includes('monitoring') || id.includes('iam') || id.includes('vpc') || id.includes('telemetry') || id.includes('governance'));
     if (!v.isContainer && !v.isLabelOrHeader && !isFoundation && !connectedNodeIds.has(id)) {
@@ -507,7 +543,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
 
   // 2. HARD BLOCKING DATA_STORE_DISCONNECTED RULE
-  // Every database, data warehouse, cache, or vector search node MUST have both incoming query AND outgoing data/state streams
   for (const [id, v] of verticesMap.entries()) {
     const isDatabase = id.includes('db') || id.includes('spanner') || id.includes('bigquery') || id.includes('sql') || id.includes('vector_search') || id.includes('redis') || id.includes('memorystore');
     if (isDatabase && !v.isLabelOrHeader && !v.isContainer) {
@@ -524,7 +559,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
 
   // 3. HARD BLOCKING FLOW_BACKTRACKING_DETECTED RULE
-  // Detects forward flow edges that reverse direction vertically by > 200px across columns without being a feedback loop
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
       const src = verticesMap.get(edge.source)!;
@@ -544,14 +578,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
 
   // 4. CLOSED_LOOP_MISSING_EDGE RULE
-  // If diagram banner promises Closed-Loop feedback, verify that a physical return vector exists
   const hasClosedLoopClaim = Array.from(verticesMap.values()).some(v => v.label?.toLowerCase().includes('closed-loop') || v.label?.toLowerCase().includes('continuous feedback'));
   if (hasClosedLoopClaim) {
     const hasReturnEdge = Array.from(edgesMap.values()).some(e => {
       if (!e.source || !e.target || !verticesMap.has(e.source) || !verticesMap.has(e.target)) return false;
       const src = verticesMap.get(e.source)!;
       const tgt = verticesMap.get(e.target)!;
-      return src.absX > tgt.absX + 200; // Returns from right side back to left side
+      return src.absX > tgt.absX + 200;
     });
 
     if (!hasReturnEdge) {
@@ -578,7 +611,6 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // ZERO WARNING TOLERANCE: valid ONLY if errors === 0 AND warnings === 0
   const isValid = errors.length === 0 && warnings.length === 0;
 
   return {

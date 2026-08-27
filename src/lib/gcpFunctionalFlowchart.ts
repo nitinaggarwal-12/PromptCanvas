@@ -10,7 +10,7 @@
  * - GOVERNANCE: Standard Tool Execution + Privileged HITL Approval Gate
  * - ASYNC RAG: Clearly annotated Document AI knowledge ingestion pipeline
  * - CLOSED LOOP: Physical return vector from Cloud Logging & Eval -> Supervisor
- * - 100% Anchor-Locked Laser-Straight Orthogonal Manhattan Connectors
+ * - 100% Anchor-Locked Laser-Straight Orthogonal Manhattan Connectors (ZERO SLANTS)
  */
 
 import { renderGcpIconHtml, GCP_OFFICIAL_ICONS } from './gcpIcons';
@@ -341,7 +341,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // Supervisor Dispatch Connectors
+  // Supervisor Dispatch Connectors (100% strict orthogonal steps)
   line(nid(), 'Parallel RAG', 'n_supervisor', 'n_rag_agent', 1, 0.25, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 492, y: 365 },
     { x: 492, y: 191 }
@@ -413,7 +413,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     260,
     235,
     44,
-    `fillColor=${cardBg};strokeColor=#FBBC04;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
+    `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
   // DATA SOURCE 2B: CLOUD SPANNER (OLTP Transactional DB)
@@ -437,10 +437,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     { x: 720, y: 310 },
     { x: 720, y: 282 }
   ]);
-  line(nid(), 'OLTP CRUD', 'n_sql_agent', 'n_spanner_db', 1, 0.65, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
-    { x: 720, y: 332 },
-    { x: 720, y: 334 }
-  ]);
+  line(nid(), 'OLTP CRUD', 'n_sql_agent', 'n_spanner_db', 1, 0.68, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // GOVERNANCE & PRIVILEGED HITL APPROVAL GATE
   node(
@@ -506,11 +503,12 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1E8E3E;strokeWidth=2;shadow=1;rounded=1;arcSize=10;`
   );
 
-  // 100% CLEAN DISCRETE HORIZONTAL CONNECTOR PORTS INTO GEMINI:
+  // 100% STRICT ORTHOGONAL CONNECTOR PORTS INTO GEMINI:
   
-  // Port 1 (y=195 = 175 + 240*0.08): Fast Path Direct Prompt (routes through open top channel y=96)
+  // Port 1 (y=195 = 175 + 240*0.08): Fast Path Direct Prompt (Strict 90-degree Manhattan routing)
   line(nid(), 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 1, 0.5, 0, 0.08, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
-    { x: 485, y: 96 },
+    { x: 490, y: 141 },
+    { x: 490, y: 96 },
     { x: 1030, y: 96 },
     { x: 1030, y: 195 }
   ]);
