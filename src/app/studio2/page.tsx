@@ -1653,30 +1653,6 @@ function Studio2Content() {
                               )}
                             </div>
                           )}
-
-                          {/* Suggested Next Iterations */}
-                          {msg.suggestedPrompts && (
-                            <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
-                              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
-                                Suggested Next Iterations (Click to Load):
-                              </span>
-                              <div className="flex flex-col gap-0.5">
-                                {msg.suggestedPrompts.map((p) => (
-                                  <button
-                                    key={p}
-                                    type="button"
-                                    onClick={() => {
-                                      setProjectScopePrompt(p);
-                                      showToast('💡 Loaded prompt into scope editor. Press "Synthesize Architecture Now" to apply.');
-                                    }}
-                                    className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
-                                  >
-                                    &rarr; {p}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          )}
                         </div>
                         <span className="text-[8.5px] text-slate-400 mt-0.5 px-1">{msg.timestamp}</span>
                       </div>
