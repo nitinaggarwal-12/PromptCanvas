@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
+import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopology';
 import { sanitizeDrawioXmlAttributes, injectUseCaseFlavor } from '@/lib/diagramCleaner';
 
 interface PastProject {
@@ -341,17 +342,28 @@ function Studio2Content() {
   // Multi-Diagram Management
   const [activeDiagramId, setActiveDiagramId] = useState<string>('diag_1');
   const [diagrams, setDiagrams] = useState<StudioDiagramTab[]>(() => {
-    const initialXml = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'GCP Cloud Architecture: Functional Flowchart Diagram',
+    const xmlSet1 = generateGcpFunctionalFlowchartXml({
+      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+      theme: isLight ? 'light' : 'dark'
+    });
+    const xmlSet2 = generateGCPInfrastructureTopology({
+      projectTitle: 'Google Cloud Platform — Enterprise Multi-Tier Infrastructure Reference Topology',
       theme: isLight ? 'light' : 'dark'
     });
     return [
       {
         id: 'diag_1',
-        title: 'Diagram 1 • GCP Functional Flowchart',
+        title: '🤖 Set 1: Agentic AI Process Flow',
         templateId: 'gcp_functional_flowchart',
-        xml: initialXml,
+        xml: xmlSet1,
         source: 'functional_flowchart'
+      },
+      {
+        id: 'diag_2',
+        title: '☁️ Set 2: Infrastructure Topology',
+        templateId: 'gcp_infrastructure_topology',
+        xml: xmlSet2,
+        source: 'custom'
       }
     ];
   });
@@ -394,34 +406,46 @@ function Studio2Content() {
 
   // Version History State
   const [versionHistory, setVersionHistory] = useState<StudioVersionSnapshot[]>(() => {
-    const initialXml = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'GCP Cloud Architecture: Functional Flowchart Diagram',
+    const xmlSet1 = generateGcpFunctionalFlowchartXml({
+      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+      theme: isLight ? 'light' : 'dark'
+    });
+    const xmlSet2 = generateGCPInfrastructureTopology({
+      projectTitle: 'Google Cloud Platform — Enterprise Multi-Tier Infrastructure Reference Topology',
       theme: isLight ? 'light' : 'dark'
     });
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const initDiagrams: StudioDiagramTab[] = [
+      {
+        id: 'diag_1',
+        title: '🤖 Set 1: Agentic AI Process Flow',
+        templateId: 'gcp_functional_flowchart',
+        xml: xmlSet1,
+        source: 'functional_flowchart'
+      },
+      {
+        id: 'diag_2',
+        title: '☁️ Set 2: Infrastructure Topology',
+        templateId: 'gcp_infrastructure_topology',
+        xml: xmlSet2,
+        source: 'custom'
+      }
+    ];
     return [
       {
         id: 'snap_init',
         versionTag: 'v1.0',
         timestamp: timeStr,
         author: 'System',
-        actionSummary: 'Default Baseline: GCP Functional Flowchart Topology',
+        actionSummary: 'Default Baseline: GCP Agentic AI & Multi-Tier Infrastructure Blueprints',
         activeDiagramId: 'diag_1',
-        diagrams: [
-          {
-            id: 'diag_1',
-            title: 'Diagram 1 • GCP Functional Flowchart',
-            templateId: 'gcp_functional_flowchart',
-            xml: initialXml,
-            source: 'functional_flowchart'
-          }
-        ],
+        diagrams: initDiagrams,
         projectName: '',
         useCaseName: '',
         projectTitle: '',
         projectScopePrompt: '',
-        changedComponents: ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services (Vertex AI)'],
+        changedComponents: ['Ingress & Security', 'Planning & Routing', 'Parallel Multi-Agent Swarm', 'Vertex AI & Lakehouse', 'VPC Service Controls'],
         targetTier: 'Enterprise Global VPC'
       }
     ];
