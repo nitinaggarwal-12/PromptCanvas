@@ -30,7 +30,10 @@ import {
   Code,
   UploadCloud,
   Image as ImageIcon,
-  Loader2
+  Loader2,
+  ZoomIn,
+  ZoomOut,
+  Maximize
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
@@ -119,6 +122,9 @@ function Studio2Content() {
   const [isDecompiling, setIsDecompiling] = useState<boolean>(false);
   const [uploadedImagePreview, setUploadedImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Zoom & Viewport Scaling State
+  const [zoomLevel, setZoomLevel] = useState<number>(1.0);
 
   // Draw.io Inline Modal & Window Refs
   const [showInlineDrawioModal, setShowInlineDrawioModal] = useState<boolean>(false);
@@ -960,9 +966,46 @@ function Studio2Content() {
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[10px] font-bold">
-                    16:9 VECTOR GCP • FULL SCALE SCROLL
+                <div className="flex items-center gap-2">
+                  {/* Zoom Controls Bar */}
+                  <div className="flex items-center gap-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-0.5 shadow-xs">
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel((prev) => Math.max(0.4, +(prev - 0.1).toFixed(2)))}
+                      className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded transition-colors cursor-pointer"
+                      title="Zoom Out (-10%)"
+                    >
+                      <ZoomOut className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel(1.0)}
+                      className="px-1.5 py-0.5 text-[10px] font-mono font-bold text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-colors cursor-pointer"
+                      title="Reset Zoom to 100%"
+                    >
+                      {Math.round(zoomLevel * 100)}%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel((prev) => Math.min(2.5, +(prev + 0.1).toFixed(2)))}
+                      className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded transition-colors cursor-pointer"
+                      title="Zoom In (+10%)"
+                    >
+                      <ZoomIn className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoomLevel(1.0)}
+                      className="px-1.5 py-0.5 text-[10px] font-bold text-teal-600 dark:text-teal-400 hover:bg-teal-500/10 rounded transition-colors flex items-center gap-0.5 border-l border-slate-200 dark:border-slate-800 cursor-pointer"
+                      title="Fit Diagram to Viewport"
+                    >
+                      <Maximize className="w-3 h-3" />
+                      <span>Fit</span>
+                    </button>
+                  </div>
+
+                  <span className="hidden sm:inline-block px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[10px] font-bold">
+                    16:9 VECTOR GCP
                   </span>
                 </div>
               </div>
@@ -1004,9 +1047,17 @@ function Studio2Content() {
                 </div>
               </div>
 
-              {/* Viewport Canvas Frame */}
-              <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80">
-                <div className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative">
+              {/* Viewport Canvas Frame with Zoom Scaling & Auto-Fit */}
+              <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80 overflow-auto relative">
+                <div
+                  className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative transition-transform duration-150 origin-top-center"
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: 'top center',
+                    width: zoomLevel !== 1.0 ? `${(100 / zoomLevel).toFixed(2)}%` : '100%',
+                    height: zoomLevel !== 1.0 ? `${(100 / zoomLevel).toFixed(2)}%` : '100%',
+                  }}
+                >
                   <DiagramViewerRenderSafe
                     key={`studio2_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
                     diagramId="gcp_functional_flowchart"
@@ -1014,8 +1065,37 @@ function Studio2Content() {
                     xml={activeDiagram.xml}
                     aspectRatioId="16:9"
                     bgTheme={isLight ? 'light' : 'dark'}
-                    allowFullScaleScroll={true}
+                    allowFullScaleScroll={false}
                   />
+                </div>
+
+                {/* Floating Bottom-Right Quick Zoom Pill */}
+                <div className="absolute bottom-5 right-5 z-20 flex items-center gap-1 px-2.5 py-1.5 bg-slate-900/90 dark:bg-slate-800/95 text-white rounded-xl shadow-xl border border-slate-700 backdrop-blur-md">
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel((prev) => Math.max(0.4, +(prev - 0.1).toFixed(2)))}
+                    className="p-1 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[11px] font-mono font-bold px-1.5">{Math.round(zoomLevel * 100)}%</span>
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel((prev) => Math.min(2.5, +(prev + 0.1).toFixed(2)))}
+                    className="p-1 hover:bg-slate-700 rounded text-slate-300 hover:text-white transition-colors cursor-pointer"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setZoomLevel(1.0)}
+                    className="px-2 py-0.5 ml-1 text-[10px] font-bold bg-teal-500 hover:bg-teal-400 text-white rounded transition-colors cursor-pointer"
+                    title="Fit to Viewport"
+                  >
+                    Fit
+                  </button>
                 </div>
               </div>
 
