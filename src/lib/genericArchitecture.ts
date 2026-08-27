@@ -88,16 +88,9 @@ export function generateGenericArchitecture(options: GenericArchitectureOptions 
   // =========================================================================
   node(
     "lbl_hdr_main",
-    `<div style="display:flex;align-items:center;gap:16px;width:100%;padding:4px 8px;font-family:system-ui,-apple-system,sans-serif;">
-      <div style="display:flex;align-items:center;gap:8px;background:#FFFFFF;padding:6px 16px;border-radius:9999px;border:1px solid #CBD5E1;box-shadow:0 1px 3px rgba(0,0,0,0.06);flex-shrink:0;">
-        <span style="font-size:18px;">🌐</span>
-        <span style="font-size:11.5px;font-weight:800;color:#1E293B;">Generic Reference Architecture</span>
-      </div>
-      <div style="border-left:1.5px solid #CBD5E1;height:36px;margin:0 2px;"></div>
-      <div style="flex:1;">
-        <div style="font-size:22px;font-weight:900;color:${textDark};letter-spacing:-0.4px;">${projectName} — System Architecture</div>
-        <div style="font-size:11.5px;font-weight:600;color:#4F46E5;margin-top:2px;">Cloud-Agnostic Reference Flow: Perimeter Ingress → Intent Planning → Parallel Specialist Services → AI Core → Safety Gate</div>
-      </div>
+    `<div style="width:100%;padding:4px 8px;font-family:system-ui,-apple-system,sans-serif;">
+      <div style="font-size:22px;font-weight:900;color:${textDark};letter-spacing:-0.4px;">${projectName} — System Architecture</div>
+      <div style="font-size:11.5px;font-weight:600;color:#4F46E5;margin-top:2px;">Cloud-Agnostic Reference Flow: Perimeter Ingress → Intent Planning → Parallel Specialist Services → AI Core → Safety Gate</div>
     </div>`,
     24,
     14,
