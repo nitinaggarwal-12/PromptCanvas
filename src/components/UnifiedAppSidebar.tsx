@@ -42,7 +42,7 @@ const CANONICAL_NAV_ITEMS: NavItem[] = [
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
   { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
   { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },
-  { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/workspace?tab=audit' },
+  { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/audit' },
   { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
 ];
 
