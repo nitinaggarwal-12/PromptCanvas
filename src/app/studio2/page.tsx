@@ -247,57 +247,57 @@ function computeDynamicNextSuggestions(prompt: string, projectName: string, chan
 
   if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('oltp')) {
     return [
-      `Add automated point-in-time recovery (PITR) and CMEK key rotation policies to ${proj}`,
-      `Connect BigQuery federated queries for real-time operational BI analytics on Spanner`,
-      `Deploy Vertex AI RAG embeddings pipeline on Spanner database tables`,
-      `Enforce VPC Service Controls and Private Service Connect for database endpoints`
+      `Deploy Gemini 3.1 Pro NL-to-SQL Copilot on Vertex AI for real-time Spanner query optimization in ${proj}`,
+      `Upgrade to Multi-Region Dual-Ingress Global Load Balancing with Spanner TrueTime 99.999% SLA active-active replication`,
+      `Stream Spanner CDC mutations directly into Vertex AI Vector Search (ScaNN Index) for real-time RAG`,
+      `Enforce VPC Service Controls and Customer-Managed Encryption Keys (CMEK) with automated rotation`
     ];
   }
   if (p.includes('rag') || p.includes('vector') || p.includes('vertex') || p.includes('agent') || p.includes('gemini') || p.includes('llm')) {
     return [
-      `Add Gemini Agentic multimodal fine-tuning loop with Vertex AI Model Registry in ${proj}`,
-      `Configure Vertex ScaNN vector index caching with Cloud Spanner metadata sync`,
-      `Integrate ADK 2.0 Agentic tools with Identity-Aware Proxy authenticated endpoints`,
-      `Deploy LangChain / Vertex AI Agent reasoning evaluations for response groundedness`
+      `Deploy Autonomous Gemini 3.1 Pro Multi-Agent Reasoning Loop with Vertex AI Model Registry in ${proj}`,
+      `Configure Vertex ScaNN Vector Index with sub-millisecond similarity caching and Spanner metadata sync`,
+      `Integrate ADK 2.0 Agentic Tools with BeyondCorp Zero-Trust and Identity-Aware Proxy (IAP)`,
+      `Add Real-Time Vertex AI LLM Grounding & Hallucination Guardrail Evaluators`
     ];
   }
   if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('pub/sub') || p.includes('dataflow') || p.includes('kafka')) {
     return [
+      `Deploy Gemini 3.1 Pro Live Event Analysis Agent on Vertex AI for real-time telemetry reasoning in ${proj}`,
+      `Stream events into Vertex AI Vector Search (ScaNN index) for real-time similarity retrieval & RAG grounding`,
       `Add BigQuery ML anomaly detection models on the real-time Dataflow stream for ${proj}`,
-      `Configure Cloud Storage Coldline archiving with CMEK encryption for raw events`,
-      `Enforce VPC Service Controls and private Google access for Dataflow workers`,
-      `Deploy Cloud Pub/Sub dead-letter queues and automated alerting metrics`
+      `Upgrade to multi-region active-active Pub/Sub geo-replication with automated dead-letter alerting`
     ];
   }
   if (p.includes('armor') || p.includes('security') || p.includes('waf') || p.includes('ddos') || p.includes('zero')) {
     return [
-      `Configure rate limiting rules and geo-fencing on Cloud Armor WAF for ${proj}`,
-      `Add BeyondCorp Enterprise Zero-Trust context-aware access policies`,
-      `Implement Customer-Managed Encryption Keys (CMEK) across all storage and databases`,
-      `Enable Cloud IDS (Intrusion Detection System) deep packet inspection`
+      `Attach Security Command Center Enterprise with Gemini SecOps for automated threat mitigation in ${proj}`,
+      `Configure Cloud Armor Adaptive ML Rate Limiting and Geo-Fencing DDoS rules at the global edge`,
+      `Enforce BeyondCorp Context-Aware Zero-Trust perimeters with VPC Service Controls (VPC-SC)`,
+      `Enable Cloud IDS (Intrusion Detection System) deep packet inspection with automated SIEM export`
     ];
   }
   if (p.includes('mig') || p.includes('gpu') || p.includes('scale') || p.includes('compute') || p.includes('instance')) {
     return [
-      `Configure Prometheus metric alerts and dynamic autoscaling thresholds in ${proj}`,
-      `Deploy GKE Autopilot multi-cluster ingress across primary and secondary subnets`,
-      `Enforce cross-subnet egress firewalls with VPC Flow Logs network monitoring`,
-      `Optimize GPU MIG partitioning with Vertex AI model serving endpoints`
+      `Deploy GKE Autopilot GPU MIG Partitioning (NVIDIA H100/L4) with Vertex AI model serving in ${proj}`,
+      `Trigger Cloud Run GPU Serverless Microservices via Eventarc for instantaneous event-driven inference bursts`,
+      `Configure Prometheus metric alerts and dynamic predictive autoscaling thresholds`,
+      `Enforce cross-subnet egress firewalls with VPC Flow Logs network telemetry monitoring`
     ];
   }
   if (p.includes('pharma') || p.includes('clinical') || p.includes('genom') || p.includes('gxp')) {
     return [
-      `Add 21 CFR Part 11 audit trail logging and Cloud KMS CMEK encryption to ${proj}`,
-      `Integrate Vertex AI RAG clinical protocol search with FHIR / HL7 data lake`,
-      `Configure multi-region disaster recovery replication for electronic batch records (EBR)`,
-      `Scale GxP validation microservices with GKE Autopilot isolated node pools`
+      `Integrate Vertex AI RAG Clinical Knowledge Graph with FHIR / HL7 multi-omics data lake in ${proj}`,
+      `Add 21 CFR Part 11 cryptographic audit logging with Cloud KMS CMEK hardware security modules`,
+      `Configure multi-region disaster recovery replication for Electronic Batch Records (EBR)`,
+      `Scale GxP validation microservices with GKE Autopilot isolated confidential computing node pools`
     ];
   }
   return [
-    `Enhance ${proj} with automated disaster recovery and active-active replication`,
-    `Scale ${proj} with GPU acceleration and Vertex AI model endpoints`,
-    `Add strict zero-trust IAM policies and Cloud Armor DDoS security rules to ${proj}`,
-    `Configure real-time BigQuery analytical streaming for ${proj}`
+    `Deploy Gemini 3.1 Pro Autonomous Agent on Vertex AI for intelligent reasoning in ${proj}`,
+    `Upgrade ${proj} with Multi-Region Active-Active Ingress and Cloud Spanner TrueTime replication`,
+    `Stream events to Vertex AI Vector Search (ScaNN) for real-time enterprise RAG grounding`,
+    `Enforce Zero-Trust VPC Service Controls, CMEK encryption, and Cloud Armor adaptive defense`
   ];
 }
 
@@ -576,15 +576,27 @@ function Studio2Content() {
     }
 
     setPendingVerification(null);
-    setChatMessages((prev) => [
-      ...prev,
-      {
-        id: `ast_${Date.now()}`,
-        sender: 'assistant',
-        text: `✅ Promoted to official release ${promotedTag}`,
-        timestamp: 'Just now'
+    setChatMessages((prev) => {
+      const updated = [...prev];
+      for (let i = updated.length - 1; i >= 0; i--) {
+        if (updated[i].sender === 'assistant' && updated[i].text.includes('Applied to canvas')) {
+          updated[i] = {
+            ...updated[i],
+            text: `✅ Applied to canvas • Promoted to official release ${promotedTag}`
+          };
+          return updated;
+        }
       }
-    ]);
+      return [
+        ...updated,
+        {
+          id: `ast_${Date.now()}`,
+          sender: 'assistant',
+          text: `✅ Promoted to official release ${promotedTag}`,
+          timestamp: 'Just now'
+        }
+      ];
+    });
     showToast(`🎉 Promoted to official release ${promotedTag}!`);
   }, [pendingVerification, pushNewVersion, diagrams, projectName, useCaseName, activeDiagram.xml, showToast]);
 
@@ -602,15 +614,27 @@ function Studio2Content() {
 
     const currentOfficialTag = versionHistory[currentHistoryIndex]?.versionTag || 'v1.0';
     setPendingVerification(null);
-    setChatMessages((prev) => [
-      ...prev,
-      {
-        id: `ast_${Date.now()}`,
-        sender: 'assistant',
-        text: `↺ Discarded draft • Restored ${currentOfficialTag}`,
-        timestamp: 'Just now'
+    setChatMessages((prev) => {
+      const updated = [...prev];
+      for (let i = updated.length - 1; i >= 0; i--) {
+        if (updated[i].sender === 'assistant' && updated[i].text.includes('Applied to canvas')) {
+          updated[i] = {
+            ...updated[i],
+            text: `↺ Draft discarded • Restored ${currentOfficialTag}`
+          };
+          return updated;
+        }
       }
-    ]);
+      return [
+        ...updated,
+        {
+          id: `ast_${Date.now()}`,
+          sender: 'assistant',
+          text: `↺ Discarded draft • Restored ${currentOfficialTag}`,
+          timestamp: 'Just now'
+        }
+      ];
+    });
     showToast(`↺ Discarded draft changes and restored ${currentOfficialTag}.`);
   }, [pendingVerification, activeDiagramId, versionHistory, currentHistoryIndex, showToast]);
 
