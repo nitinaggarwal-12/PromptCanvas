@@ -32,10 +32,8 @@ export async function POST(request: Request) {
     });
 
     // 2. Preflight Geometric & Structural Validation
-    const healedXml = validateAndHealDrawioXml(baseXml, 'canonical_gcp_functional_flowchart');
-    const preflight = preflightVerifyAndHealXmlAcrossAll6Audits(healedXml, 'canonical_gcp_functional_flowchart');
-
-    let finalXml = preflight.healedXml || healedXml;
+    const healerResult = validateAndHealDrawioXml(baseXml, 'canonical_gcp_functional_flowchart');
+    const finalXml = preflightVerifyAndHealXmlAcrossAll6Audits(healerResult.xml, 'canonical_gcp_functional_flowchart');
     let geminiAudit = {
       isValid: true,
       securityScore: 98,
