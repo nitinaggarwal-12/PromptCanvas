@@ -2504,32 +2504,122 @@ function DocGenContent() {
                     </div>
                   </div>
 
-                  {/* Combined Architecture Title */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
+                  {/* 3. Dynamic Prompt Suggestions */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                        3. Combined Architecture Title
+                        3. Dynamic Prompt Suggestions
                       </label>
-                      <span className="text-[10px] font-mono text-teal-600 font-bold">
-                        Auto-Synced &bull; Diagram Header Brand
+                      <span className="text-[10px] font-mono text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-amber-500" />
+                        Domain-Tailored &bull; Click to Populate
                       </span>
                     </div>
-                    <input
-                      type="text"
-                      value={projectTitle}
-                      onChange={(e) => handleUpdateProjectTitle(e.target.value)}
-                      placeholder="e.g. Bio-Pharma Clinical Platform — Genomics Analysis & Regulatory AI"
-                      className={`w-full px-3.5 py-2 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                        isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
-                      }`}
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {[
+                        ...(selectedDomain === 'biopharma' ? [
+                          { label: '🧬 FDA 21 CFR Part 11 Adverse Event Triage', prompt: 'Automated pharmacovigilance adverse event triage with Gemini 2.5 flash reasoning, GxP audit ledgers, and human-in-the-loop safety review.' },
+                          { label: '🔬 Clinical Genomics Knowledge Graph', prompt: 'Decentralized clinical genomics analysis platform with automated FDA electronic signature audits, Spanner knowledge graphs, and zero-trust VPC-SC.' },
+                          { label: '🛡️ GxP Audit Ledger & Vertex Grounding', prompt: 'Real-time GxP electronic batch record verification pipeline with immutable Cloud KMS signing and ScaNN vector grounding.' },
+                          { label: '📊 Real-Time Patient Telemetry Stream', prompt: 'Sub-15ms patient vital stream ingestion with Dataflow CDC, BigQuery BigLake Iceberg lakehouse, and emergency alert escalation.' },
+                        ] : selectedDomain === 'fintech' ? [
+                          { label: '💳 ISO 20022 Sub-5ms Fraud Detection', prompt: 'High-throughput payment transaction monitoring, Flink stream clustering, ISO 20022 messaging, and automated SAR filing with sub-5ms latency.' },
+                          { label: '📈 Spanner Active-Active Global Ledger', prompt: 'Globally distributed multi-region Spanner double-entry accounting ledger with 99.999% availability and zero-data-loss failover.' },
+                          { label: '⚡ Pre-Trade Risk & Liquidity Engine', prompt: 'High-frequency algorithmic pre-trade risk evaluation with in-memory Redis clustering and sub-millisecond execution gates.' },
+                          { label: '🔒 PCI-DSS & STIG Zero-Trust Perimeter', prompt: 'Zero-trust banking perimeter with mTLS 1.3, Cloud Armor WAF, HSM key rotation, and automated STIG compliance auditing.' },
+                        ] : selectedDomain === 'manufacturing' ? [
+                          { label: '🚁 AeroNode 5G UTM Airspace Telemetry', prompt: 'Nationwide autonomous drone delivery network coordinating real-time collision-avoidance telemetry across 25,000+ delivery drones via 5G and FAA Part 135 logging.' },
+                          { label: '⚡ Sub-20ms SCADA Edge Ingestion', prompt: 'Mission-critical industrial SCADA/PLC telemetry ingestion with sub-20ms real-time control loops, Spanner state store, and automated safety interlocks.' },
+                          { label: '🤖 Automated Robotic Battery Swapping', prompt: 'Decentralized automated robotic payload and battery swapping stations with distributed edge MQTT gateways and predictive maintenance.' },
+                          { label: '🏭 Smart Factory 3D Digital Twin Stream', prompt: 'Real-time 3D factory floor digital twin orchestration with Vertex AI anomaly detection and BigQuery time-series forecasting.' },
+                        ] : selectedDomain === 'energy' ? [
+                          { label: '⚡ VoltGrid OCPP 2.0.1 EV Load Balancing', prompt: 'Nationwide decentralized smart EV fast-charging network ingesting high-frequency telemetry from 50,000+ DC chargers with sub-50ms dynamic BESS battery load balancing.' },
+                          { label: '🔋 Solar Microgrid & BESS Energy Trading', prompt: 'Decentralized P2P microgrid energy trading exchange with smart contract settlements, Spanner ledger, and real-time grid frequency stabilization.' },
+                          { label: '📊 Smart Meter AMI Ingestion Bus', prompt: 'High-concurrency AMI smart meter telemetry pipeline processing 10M+ events/min with Pub/Sub, Dataflow, and BigQuery analytics.' },
+                          { label: '🛡️ NERC-CIP Grid Security Perimeter', prompt: 'NERC-CIP compliant critical infrastructure enclave with hardware-isolated OT/IT bridges and continuous anomalous pattern detection.' },
+                        ] : selectedDomain === 'retail' ? [
+                          { label: '🛍️ Omnichannel Catalog & Dynamic Pricing', prompt: 'Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency.' },
+                          { label: '📦 Sub-50ms Global Inventory Allocation', prompt: 'Distributed multi-warehouse inventory reservation system with distributed locking and real-time supply chain telemetry.' },
+                          { label: '🧠 Vertex AI Semantic Product Search', prompt: 'Hyper-personalized product recommendation engine powered by ScaNN vector search, Gemini multimodal embeddings, and Redis caching.' },
+                          { label: '🛒 High-Volume Flash Sale Ingress', prompt: 'Scalable burst architecture for flash sales handling 500k req/sec with Cloud CDN edge caching, Cloud Armor, and Cloud Run autoscaling.' },
+                        ] : [
+                          { label: '🏢 Multi-Tenant Workspace Sharding', prompt: 'Enterprise multi-tenant workflow orchestration, isolated workspace tenant database sharding, and distributed Redis rate limiting.' },
+                          { label: '🚀 Distributed Asynchronous CDC Engine', prompt: 'High-throughput event-driven microservices with Debezium CDC, Kafka/PubSub streaming, and BigQuery analytics data warehouse.' },
+                          { label: '🛡️ Immutable SOC 2 & HIPAA Audit Trail', prompt: 'Tamper-evident SOC 2 Type II audit logging pipeline with Cloud Logging export to write-once GCS bucket and KMS encryption.' },
+                          { label: '🧠 Multi-Agent Vertex RAG Knowledge Swarm', prompt: 'Enterprise AI knowledge assistant with multi-agent orchestration, Redis semantic caching, vector grounding, and STIG guardrails.' },
+                        ])
+                      ].map((item) => (
+                        <button
+                          key={item.label}
+                          type="button"
+                          onClick={() => {
+                            setProjectScopePrompt(item.prompt);
+                            const autoDomain = detectDomainFromPrompt(projectTitle, item.prompt, selectedDomain);
+                            if (autoDomain && autoDomain !== selectedDomain) {
+                              setSelectedDomain(autoDomain);
+                            }
+                          }}
+                          className={`p-2 rounded-xl border text-left transition-all hover:border-teal-400 flex items-center justify-between gap-1.5 cursor-pointer group ${
+                            isLight ? 'bg-slate-50 hover:bg-teal-50/80 border-slate-200' : 'bg-slate-900 hover:bg-teal-950/40 border-slate-800'
+                          }`}
+                          title={item.prompt}
+                        >
+                          <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 truncate">
+                            {item.label}
+                          </span>
+                          <span className="text-[9.5px] font-bold text-teal-600 dark:text-teal-400 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                            Use &rarr;
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
-                  {/* AI Scope Prompt Terminal */}
+                  {/* 4. Enterprise Domain Flavor Selector (Moved to 4) */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                        4. Architectural Scope &amp; Topology Requirements Prompt
+                        4. Enterprise Domain Flavor
+                      </label>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Live Domain Sync
+                      </span>
+                    </div>
+                    <select
+                      value={selectedDomain}
+                      onChange={(e) => {
+                        const newDom = e.target.value;
+                        setSelectedDomain(newDom);
+                        if (newDom === 'manufacturing') {
+                          setProjectScopePrompt(`Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${projectTitle}.`);
+                        } else if (newDom === 'fintech') {
+                          setProjectScopePrompt(`High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${projectTitle}.`);
+                        } else if (newDom === 'retail') {
+                          setProjectScopePrompt(`Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${projectTitle}.`);
+                        } else if (newDom === 'saas') {
+                          setProjectScopePrompt(`Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${projectTitle}.`);
+                        } else if (newDom === 'biopharma') {
+                          setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
+                        }
+                      }}
+                      className={`w-full px-3 py-2.5 rounded-xl border text-xs font-bold text-teal-700 dark:text-teal-400 focus:outline-none cursor-pointer ${
+                        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
+                      }`}
+                    >
+                      {DOMAIN_PRESETS.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 5. AI Scope Prompt Terminal (Moved to 5) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                        5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-400">
                         Gemini 3.7 &bull; Real-Time AST
@@ -2551,46 +2641,6 @@ function DocGenContent() {
                         isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
                       }`}
                     />
-                  </div>
-
-                  {/* Enterprise Domain Flavor Selector */}
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                        5. Enterprise Domain Flavor
-                      </label>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Live Prompt Sync
-                      </span>
-                    </div>
-                    <select
-                      value={selectedDomain}
-                      onChange={(e) => {
-                        const newDom = e.target.value;
-                        setSelectedDomain(newDom);
-                        if (newDom === 'manufacturing') {
-                          setProjectScopePrompt(`Mission-critical autonomous telemetry, SCADA/PLC edge ingestion, sub-20ms real-time control loops, Spanner state store, and automated safety interlocks for ${projectTitle}.`);
-                        } else if (newDom === 'fintech') {
-                          setProjectScopePrompt(`High-throughput transaction orchestration, sub-5ms pre-trade risk evaluation, ISO 20022 messaging, Spanner double-entry ledger, and real-time fraud anomaly detection for ${projectTitle}.`);
-                        } else if (newDom === 'retail') {
-                          setProjectScopePrompt(`Omnichannel marketplace catalog, real-time inventory allocation, event-driven order orchestration, and dynamic pricing with sub-50ms latency for ${projectTitle}.`);
-                        } else if (newDom === 'saas') {
-                          setProjectScopePrompt(`Enterprise multi-tenant workflow orchestration, isolated workspace sharding, distributed Redis rate limiting, and immutable SOC 2 audit telemetry for ${projectTitle}.`);
-                        } else if (newDom === 'biopharma') {
-                          setProjectScopePrompt(`An enterprise-grade decentralized clinical genomics analysis and regulatory pharmacovigilance platform with automated FDA electronic signature audits, Spanner knowledge graphs, multi-region active-active disaster recovery, and zero-trust VPC Service Perimeters.`);
-                        }
-                      }}
-                      className={`w-full px-3 py-2 rounded-xl border text-xs font-bold text-teal-700 dark:text-teal-400 focus:outline-none cursor-pointer ${
-                        isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
-                      }`}
-                    >
-                      {DOMAIN_PRESETS.map((d) => (
-                        <option key={d.id} value={d.id}>
-                          {d.name}
-                        </option>
-                      ))}
-                    </select>
                   </div>
 
                   {/* Quick Load Industry Presets (Glass Tiles) */}
