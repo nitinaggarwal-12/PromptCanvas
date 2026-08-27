@@ -45,6 +45,8 @@ import {
   type BlueprintSlot
 } from '@/lib/compose/archetypes';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
+import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
+import { injectDomainFlavorXml } from '@/lib/canonical/canonicalTemplates';
 import {
   SearchablePromptSuggestionsDropdown,
   SearchableDomainFlavorDropdown,
@@ -404,40 +406,43 @@ function StudioContent() {
     setIsSynthesizing(true);
 
     setTimeout(() => {
-      const lower = promptToUse.toLowerCase();
-      let detectedBp = '01';
-      let detectedArchetype: ArchetypeId = 'sdd';
-
-      if (lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('dataflow')) {
-        detectedBp = '43'; // Real-Time Streaming Event Enterprise
-      } else if (lower.includes('mesh') || lower.includes('lakehouse') || lower.includes('bigquery') || lower.includes('dataplex')) {
-        detectedBp = '42'; // Modern Data Lakehouse Data Mesh
-      } else if (lower.includes('agent') || lower.includes('rag') || lower.includes('vertex') || lower.includes('genai') || lower.includes('llm')) {
-        detectedBp = '40'; // Enterprise GenAI Platform
-      } else if (lower.includes('zero') || lower.includes('trust') || lower.includes('soc') || lower.includes('security') || lower.includes('threat')) {
-        detectedBp = '44'; // Zero Trust Cybersecurity SOC Platform
-      } else if (lower.includes('k8s') || lower.includes('kubernetes') || lower.includes('gke') || lower.includes('container') || lower.includes('cluster')) {
-        detectedBp = '46'; // Enterprise Kubernetes Platform Engineering
-      } else if (lower.includes('dr') || lower.includes('bcdr') || lower.includes('disaster') || lower.includes('multi-region') || lower.includes('failover')) {
-        detectedBp = '48'; // BCDR Cyber Recovery Resilience
-      } else if (lower.includes('drone') || lower.includes('iot') || lower.includes('scada') || lower.includes('telemetry')) {
-        detectedBp = '36'; // Smart Manufacturing & IoT
-      } else if (lower.includes('pharma') || lower.includes('clinical') || lower.includes('genom') || lower.includes('fda') || lower.includes('gxp')) {
-        detectedBp = '01'; // System Context / Clinical AI
-      } else {
-        detectedBp = '08'; // Component Architecture
+      // 1. Determine blueprint ID: preserve currently chosen diagram blueprint if set!
+      let targetTemplateId = activeDiagram.templateId;
+      if (!targetTemplateId || activeDiagram.source === 'placeholder' || targetTemplateId === 'custom' || targetTemplateId === 'scratch') {
+        const lower = promptToUse.toLowerCase();
+        if (lower.includes('event') || lower.includes('stream') || lower.includes('kafka') || lower.includes('pubsub') || lower.includes('dataflow')) {
+          targetTemplateId = '43'; // Real-Time Streaming Event Enterprise
+        } else if (lower.includes('mesh') || lower.includes('lakehouse') || lower.includes('bigquery') || lower.includes('dataplex')) {
+          targetTemplateId = '42'; // Modern Data Lakehouse Data Mesh
+        } else if (lower.includes('agent') || lower.includes('rag') || lower.includes('vertex') || lower.includes('genai') || lower.includes('llm')) {
+          targetTemplateId = '40'; // Enterprise GenAI Platform
+        } else if (lower.includes('zero') || lower.includes('trust') || lower.includes('soc') || lower.includes('security') || lower.includes('threat')) {
+          targetTemplateId = '44'; // Zero Trust Cybersecurity SOC Platform
+        } else if (lower.includes('k8s') || lower.includes('kubernetes') || lower.includes('gke') || lower.includes('container') || lower.includes('cluster')) {
+          targetTemplateId = '46'; // Enterprise Kubernetes Platform Engineering
+        } else if (lower.includes('dr') || lower.includes('bcdr') || lower.includes('disaster') || lower.includes('multi-region') || lower.includes('failover')) {
+          targetTemplateId = '48'; // BCDR Cyber Recovery Resilience
+        } else if (lower.includes('drone') || lower.includes('iot') || lower.includes('scada') || lower.includes('telemetry')) {
+          targetTemplateId = '36'; // Smart Manufacturing & IoT
+        } else if (lower.includes('pharma') || lower.includes('clinical') || lower.includes('genom') || lower.includes('fda') || lower.includes('gxp')) {
+          targetTemplateId = '01'; // System Context / Clinical AI
+        } else {
+          targetTemplateId = '01'; // System Context
+        }
       }
 
-      const template = CANONICAL_TEMPLATES.find((t) => t.id === detectedBp) || CANONICAL_TEMPLATES[0];
-      const newXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const template = CANONICAL_TEMPLATES.find((t) => t.id === targetTemplateId) || CANONICAL_TEMPLATES[0];
+      const baseXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : template.name);
+      const flavoredXml = injectUseCaseFlavor(baseXml, titleToUse, promptToUse);
 
       const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
         if (diag.id === activeDiagramId) {
           return {
             ...diag,
-            title: `${projectTitle || projectName || 'GCP Architecture'} • ${template.name}`,
-            templateId: detectedBp,
-            xml: newXml,
+            title: `${titleToUse} • ${template.name}`,
+            templateId: targetTemplateId,
+            xml: flavoredXml,
             source: 'blueprint',
             lastPrompt: promptToUse
           };
@@ -447,7 +452,6 @@ function StudioContent() {
 
       setDiagrams(updatedDiagrams);
       setHasSynthesized(true);
-      setSelectedArchetypeId(detectedArchetype);
       setIsSynthesizing(false);
 
       const tag = pushNewVersion(`Synthesized Architecture: ${template.name} (#${template.id})`, 'System', updatedDiagrams);
@@ -455,7 +459,7 @@ function StudioContent() {
       const assistantMsg: StudioChatMessage = {
         id: String(Date.now()),
         sender: 'assistant',
-        text: `✨ Successfully synthesized **${template.name} (#${template.id})** for **${projectTitle || 'Your Architecture'}** under domain **${selectedDomain.toUpperCase()}**! It has been committed as version **${tag}** in the rolling version control.`,
+        text: `✨ Successfully synthesized **${template.name} (#${template.id})** for **${titleToUse}** under domain **${selectedDomain.toUpperCase()}**! It has been committed as version **${tag}** in your rolling version control.`,
         timestamp: 'Just now',
         actionApplied: {
           type: 'diagram_synthesized',
@@ -470,7 +474,7 @@ function StudioContent() {
         ]
       };
       setChatMessages((prev) => [...prev, assistantMsg]);
-    }, 1100);
+    }, 900);
   };
 
   // ==========================================
@@ -535,7 +539,7 @@ function StudioContent() {
         actionSummary = 'Reset to Pure Google Cloud Native Topology Canvas';
         changeType = 'reset_scratch';
       }
-      // 3. User wants to switch or replace blueprint
+      // 3. User wants to switch or replace blueprint explicitly
       else if (lower.includes('blueprint') || lower.includes('switch to') || lower.includes('replace with')) {
         let bpId = '08';
         if (lower.includes('c4') || lower.includes('container')) bpId = '07';
@@ -545,13 +549,13 @@ function StudioContent() {
         else if (lower.includes('data') || lower.includes('lakehouse')) bpId = '42';
 
         const template = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
-        updatedXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+        const baseXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+        updatedXml = injectUseCaseFlavor(baseXml, projectTitle || template.name, text);
         actionSummary = `Replaced with Blueprint #${bpId} (${template.name})`;
         changeType = 'diagram_replaced';
       }
-      // 4. Diagram mutation / enhancement
+      // 4. Diagram mutation / enhancement of the active diagram
       else {
-        // Mutate the active diagram based on user specifications
         actionSummary = `Updated diagram: ${text.slice(0, 60)}...`;
         if (lower.includes('spanner')) {
           actionSummary = 'Added Cloud Spanner TrueTime Multi-Region Ledger';
@@ -563,10 +567,11 @@ function StudioContent() {
           actionSummary = 'Enforced Zero-Trust VPC Service Perimeters & Cloud Armor Rules';
         }
 
-        // Re-flavor with active project context
+        // Apply prompt enhancement to current active XML
         const currentTplId = activeDiagram.templateId;
         const template = CANONICAL_TEMPLATES.find((t) => t.id === currentTplId) || CANONICAL_TEMPLATES[0];
-        updatedXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+        const base = activeDiagram.xml || template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+        updatedXml = injectUseCaseFlavor(base, projectTitle || `${projectName} — ${useCaseName}` || template.name, text);
       }
 
       const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
@@ -951,7 +956,7 @@ function StudioContent() {
                             {msg.suggestedPrompts && (
                               <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
                                 <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
-                                  Suggested Next Iterations:
+                                  Suggested Next Iterations (Click to Load):
                                 </span>
                                 <div className="flex flex-col gap-0.5">
                                   {msg.suggestedPrompts.map((p) => (
@@ -960,7 +965,7 @@ function StudioContent() {
                                       type="button"
                                       onClick={() => {
                                         setProjectScopePrompt(p);
-                                        handleSendChatMessage(p);
+                                        showToast(`💡 Loaded prompt into scope editor. Press "⚡ Synthesize Architecture Now" to apply.`);
                                       }}
                                       className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
                                     >
