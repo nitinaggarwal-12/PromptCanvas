@@ -100,6 +100,9 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.startsWith('ind-') ||
       archType === 'unified_system_view' ||
       archType.includes('unified') ||
+      archType.includes('flowchart') ||
+      archType.includes('functional') ||
+      archType.includes('gcp') ||
       archType.startsWith('canonical') ||
       archType.includes('canonical') ||
       archType.includes('wbs') ||
