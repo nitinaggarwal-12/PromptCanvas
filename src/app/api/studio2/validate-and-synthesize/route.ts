@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
+import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
 
 function getAiClient(customKey?: string): GoogleGenAI {
