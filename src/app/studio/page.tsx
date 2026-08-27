@@ -43,6 +43,7 @@ import {
   type ArchetypeId,
   type BlueprintSlot
 } from '@/lib/compose/archetypes';
+import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
 
 // ==========================================
 // DATA TYPES FOR STUDIO MULTI-DIAGRAM & VCS
@@ -96,74 +97,12 @@ export interface StudioChatMessage {
 const MAX_ROLLING_VERSIONS = 10;
 
 // Generic Blank Architecture Canvas XML for "Design from Scratch"
-function generateBlankScratchXml(title: string = 'Custom Google Cloud Architecture', theme: 'light' | 'dark' = 'light'): string {
-  const isDark = theme === 'dark';
-  const bg = isDark ? '#0F172A' : '#FFFFFF';
-  const stroke = isDark ? '#334155' : '#E2E8F0';
-  const text = isDark ? '#F8FAFC' : '#0F172A';
-  const subtext = isDark ? '#94A3B8' : '#64748B';
-
-  return `<mxfile host="embed.diagrams.net">
-  <diagram id="scratch_diagram" name="${title}">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="${bg}" math="0" shadow="0">
-      <root>
-        <mxCell id="0"/>
-        <mxCell id="1" parent="0"/>
-        
-        <!-- Canvas Frame & Brand Header -->
-        <mxCell id="frame_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#090E17' : '#F8FAFC'};strokeColor=${stroke};strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="40" y="40" width="1520" height="920" as="geometry"/>
-        </mxCell>
-        
-        <!-- Header Banner -->
-        <mxCell id="header_title" value="&lt;b style=&quot;font-size: 20px; color: ${text};&quot;&gt;${title}&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 12px; color: ${subtext};&quot;&gt;Generic Google Cloud Platform Architecture &amp;bull; Custom Scratch Canvas&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="70" y="60" width="900" height="50" as="geometry"/>
-        </mxCell>
-        
-        <!-- Brand Block -->
-        <mxCell id="brand_block" value="&lt;span style=&quot;font-size: 11px; font-weight: bold; color: #0EA5E9;&quot;&gt;☁️ Google Cloud Reference Architecture&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#0F172A' : '#FFFFFF'};strokeColor=#0EA5E9;strokeWidth=1;align=center;" vertex="1" parent="1">
-          <mxGeometry x="1250" y="65" width="280" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- Initial Core Cloud Services Subsystems -->
-        <mxCell id="box_ingress" value="&lt;b style=&quot;color: #0284C7;&quot;&gt;1. Edge &amp;amp; Ingress&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 10px; color: ${subtext};&quot;&gt;Cloud CDN • Cloud Armor • Cloud Load Balancing&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#1E293B' : '#F0F9FF'};strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="80" y="180" width="300" height="200" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="box_compute" value="&lt;b style=&quot;color: #7C3AED;&quot;&gt;2. Application &amp;amp; Microservices&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 10px; color: ${subtext};&quot;&gt;Google Kubernetes Engine (GKE Autopilot) • Cloud Run&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#1E1B4B' : '#F5F3FF'};strokeColor=#7C3AED;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="460" y="180" width="340" height="200" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="box_ai" value="&lt;b style=&quot;color: #D97706;&quot;&gt;3. Vertex AI &amp;amp; Cognitive Engine&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 10px; color: ${subtext};&quot;&gt;Gemini 2.5 Flash • Vector Search • Model Armor&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#451A03' : '#FFFBEB'};strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="880" y="180" width="320" height="200" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="box_data" value="&lt;b style=&quot;color: #059669;&quot;&gt;4. Data &amp;amp; Storage Layer&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 10px; color: ${subtext};&quot;&gt;Cloud Spanner • BigQuery • Cloud Storage (CMEK)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#064E3B' : '#ECFDF5'};strokeColor=#059669;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1260" y="180" width="270" height="200" as="geometry"/>
-        </mxCell>
-
-        <!-- Governance & Security Zone -->
-        <mxCell id="box_security" value="&lt;b style=&quot;color: #475569;&quot;&gt;5. Sovereign Security &amp;amp; Zero-Trust Control Plane&lt;/b&gt;&lt;br/&gt;&lt;span style=&quot;font-size: 10px; color: ${subtext};&quot;&gt;VPC Service Perimeters • IAM Workload Identity • Cloud KMS • Security Command Center (SCC)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#0F172A' : '#F1F5F9'};strokeColor=#64748B;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="80" y="440" width="1450" height="140" as="geometry"/>
-        </mxCell>
-
-        <!-- Connectors -->
-        <mxCell id="conn_1" value="HTTPS / TLS 1.3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0284C7;strokeWidth=2;fontSize=10;fontColor=#0284C7;labelBackgroundColor=${bg};" edge="1" parent="1" source="box_ingress" target="box_compute">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="conn_2" value="gRPC / RAG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2;fontSize=10;fontColor=#7C3AED;labelBackgroundColor=${bg};" edge="1" parent="1" source="box_compute" target="box_ai">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="conn_3" value="CDC / Storage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;fontSize=10;fontColor=#059669;labelBackgroundColor=${bg};" edge="1" parent="1" source="box_ai" target="box_data">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+function generateBlankScratchXml(title: string = 'Custom Google Cloud Architecture', theme: 'light' | 'dark' = 'light', domain: string = 'enterprise'): string {
+  return generateGcpNativeArchitectureXml({
+    projectTitle: title,
+    domain,
+    theme
+  });
 }
 
 function StudioContent() {
@@ -192,14 +131,17 @@ function StudioContent() {
   // Multi-Diagram Management
   const [activeDiagramId, setActiveDiagramId] = useState<string>('diag_1');
   const [diagrams, setDiagrams] = useState<StudioDiagramTab[]>(() => {
-    // Initial placeholder diagram: Generic GCP Reference Architecture
-    const genericTemplate = CANONICAL_TEMPLATES.find((t) => t.id === '08') || CANONICAL_TEMPLATES[0];
-    const initialXml = genericTemplate.generateXml('saas', isLight ? 'light' : 'dark');
+    // Initial placeholder diagram: Brand-New Pure GCP Native Reference Architecture
+    const initialXml = generateGcpNativeArchitectureXml({
+      projectTitle: 'Enterprise Google Cloud Native Architecture',
+      domain: 'enterprise',
+      theme: isLight ? 'light' : 'dark'
+    });
     return [
       {
         id: 'diag_1',
-        title: 'Diagram 1 • GCP Architecture',
-        templateId: '08',
+        title: 'Diagram 1 • GCP Native Topology',
+        templateId: 'gcp_native',
         xml: initialXml,
         source: 'placeholder'
       }
@@ -511,8 +453,8 @@ function StudioContent() {
 
       // 2. Check if user wants to design from scratch or delete
       if (lower.includes('scratch') || lower.includes('blank canvas') || lower.includes('reset to scratch') || lower.includes('delete diagram')) {
-        updatedXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark');
-        actionSummary = 'Reset to Generic Custom Scratch Canvas';
+        updatedXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark', selectedDomain);
+        actionSummary = 'Reset to Pure Google Cloud Native Topology Canvas';
         changeType = 'reset_scratch';
       }
       // 3. User wants to switch or replace blueprint
@@ -631,13 +573,13 @@ function StudioContent() {
   };
 
   const handleResetToScratch = () => {
-    const scratchXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark');
+    const scratchXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark', selectedDomain);
     const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
       if (diag.id === activeDiagramId) {
         return {
           ...diag,
-          title: `${projectTitle || 'Custom Architecture'} • Generic Scratch Canvas`,
-          templateId: 'scratch',
+          title: `${projectTitle || 'Custom Architecture'} • GCP Native Topology`,
+          templateId: 'gcp_native',
           xml: scratchXml,
           source: 'scratch'
         };
