@@ -392,47 +392,105 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     }
   }
 
-  // Check EDGE_INTERSECTS_VERTEX (Prevent connector lines from slicing across intermediate vertices)
+  // Check EDGE_INTERSECTS_VERTEX & CONTAINER_HEADER_SLICING (Includes multi-waypoint segments)
   for (const [edgeId, edge] of edgesMap.entries()) {
     if (edge.source && edge.target && verticesMap.has(edge.source) && verticesMap.has(edge.target)) {
       const src = verticesMap.get(edge.source)!;
       const tgt = verticesMap.get(edge.target)!;
 
-      // Check all other intermediate vertices
-      for (const [vId, v] of verticesMap.entries()) {
-        if (vId === edge.source || vId === edge.target || v.isContainer || v.isLabelOrHeader) {
-          continue;
-        }
+      // Extract all edge segments (from src -> waypoints -> tgt)
+      const points: { x: number; y: number }[] = [
+        { x: src.absX + src.width / 2, y: src.absY + src.height / 2 },
+        ...(edge.points || []),
+        { x: tgt.absX + tgt.width / 2, y: tgt.absY + tgt.height / 2 },
+      ];
 
-        // Direct straight horizontal or vertical line slice detection
-        const sameY = Math.abs(src.absY + src.height / 2 - (tgt.absY + tgt.height / 2)) < 15;
-        const sameX = Math.abs(src.absX + src.width / 2 - (tgt.absX + tgt.width / 2)) < 15;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p1 = points[i];
+        const p2 = points[i + 1];
+        const isHoriz = Math.abs(p1.y - p2.y) < 5;
+        const isVert = Math.abs(p1.x - p2.x) < 5;
 
-        if (sameY) {
-          const minX = Math.min(src.absX + src.width, tgt.absX + tgt.width);
-          const maxX = Math.max(src.absX, tgt.absX);
-          if (v.absX > minX && v.absX + v.width < maxX && Math.abs(v.absY + v.height / 2 - (src.absY + src.height / 2)) < v.height / 2) {
-            warnings.push({
-              code: 'EDGE_INTERSECTS_VERTEX' as any,
-              cells: [edgeId, vId],
-              detail: `Horizontal edge "${edgeId}" slices directly through intermediate vertex "${vId}"`,
-            });
+        // Check against all vertices (including container top headers!)
+        for (const [vId, v] of verticesMap.entries()) {
+          if (vId === edge.source || vId === edge.target) continue;
+
+          // If it is a container, check if the line cuts across its top header region (top 28px)
+          if (v.isContainer) {
+            const headerMinY = v.absY;
+            const headerMaxY = v.absY + 28;
+            if (isHoriz && p1.y >= headerMinY && p1.y <= headerMaxY) {
+              const segMinX = Math.min(p1.x, p2.x);
+              const segMaxX = Math.max(p1.x, p2.x);
+              if (segMaxX > v.absX + 20 && segMinX < v.absX + v.width - 20) {
+                errors.push({
+                  code: 'CONTAINER_HEADER_SLICED' as any,
+                  cells: [edgeId, vId],
+                  detail: `Edge segment on "${edgeId}" slices directly through the header text zone of container "${vId}" (Y=${p1.y})`,
+                });
+              }
+            }
+            continue;
           }
-        }
 
-        if (sameX) {
-          const minY = Math.min(src.absY + src.height, tgt.absY + tgt.height);
-          const maxY = Math.max(src.absY, tgt.absY);
-          if (v.absY > minY && v.absY + v.height < maxY && Math.abs(v.absX + v.width / 2 - (src.absX + src.width / 2)) < v.width / 2) {
-            warnings.push({
-              code: 'EDGE_INTERSECTS_VERTEX' as any,
-              cells: [edgeId, vId],
-              detail: `Vertical edge "${edgeId}" slices directly through intermediate vertex "${vId}"`,
-            });
+          // Non-container intermediate vertex collision
+          if (isHoriz) {
+            const segMinX = Math.min(p1.x, p2.x);
+            const segMaxX = Math.max(p1.x, p2.x);
+            if (p1.y > v.absY && p1.y < v.absY + v.height && segMaxX > v.absX + 5 && segMinX < v.absX + v.width - 5) {
+              errors.push({
+                code: 'EDGE_INTERSECTS_VERTEX' as any,
+                cells: [edgeId, vId],
+                detail: `Horizontal edge segment on "${edgeId}" (Y=${p1.y}) slices through vertex "${vId}"`,
+              });
+            }
+          }
+
+          if (isVert) {
+            const segMinY = Math.min(p1.y, p2.y);
+            const segMaxY = Math.max(p1.y, p2.y);
+            if (p1.x > v.absX && p1.x < v.absX + v.width && segMaxY > v.absY + 5 && segMinY < v.absY + v.height - 5) {
+              errors.push({
+                code: 'EDGE_INTERSECTS_VERTEX' as any,
+                cells: [edgeId, vId],
+                detail: `Vertical edge segment on "${edgeId}" (X=${p1.x}) slices through vertex "${vId}"`,
+              });
+            }
           }
         }
       }
     }
+  }
+
+  // Check CARD_TEXT_OVERFLOW (Estimated line height vs mxGeometry height)
+  for (const [id, v] of verticesMap.entries()) {
+    if (!v.isContainer && !v.isLabelOrHeader && v.label) {
+      const lineCount = (v.label.match(/<br|\n/g) || []).length + 1;
+      const hasIcon = v.label.includes('<svg') || v.label.includes('ICONS');
+      const minRequiredHeight = (hasIcon ? 28 : 10) + lineCount * 14;
+      if (v.height < minRequiredHeight) {
+        errors.push({
+          code: 'TEXT_OVERFLOW_HEIGHT' as any,
+          cells: [id],
+          detail: `Node "${id}" height (${v.height}px) is insufficient for ${lineCount} text lines with icon (requires >= ${minRequiredHeight}px)`,
+        });
+      }
+    }
+  }
+
+  // Check CANVAS_MARGIN_UTILIZATION (Warn if right margin has > 200px empty dead space)
+  let maxCanvasX = 0;
+  for (const v of verticesMap.values()) {
+    if (!v.isContainer && v.absX + v.width > maxCanvasX) {
+      maxCanvasX = v.absX + v.width;
+    }
+  }
+  if (maxCanvasX > 0 && maxCanvasX < 1350) {
+    warnings.push({
+      code: 'DEAD_RIGHT_MARGIN' as any,
+      cells: [],
+      detail: `Diagram max X is ${maxCanvasX}px, leaving over ${1580 - maxCanvasX}px empty void on right side. Widescreen 16:9 canvas should utilize >= 1500px.`,
+    });
   }
 
   // Check ORPHAN_NODE (warning, not error)
