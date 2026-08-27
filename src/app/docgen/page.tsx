@@ -1934,58 +1934,62 @@ function DocGenContent() {
                   PromptCanvas
                 </Link>
                 <span className="text-slate-400">/</span>
-                <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('catalog')}
+                  className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate cursor-pointer hover:opacity-80 transition-opacity"
+                  title="DocGen Studio & Specifications"
+                >
                   <FileText className="w-3.5 h-3.5 text-sky-500 shrink-0" />
                   <span>DocGen Studio &amp; Specifications</span>
-                </span>
+                </button>
                 <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
                   {DOC_ARCHETYPES_META.length} Archetypes
                 </span>
               </div>
             </div>
 
-            {/* Center View Selector Tabs */}
-            <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold">
-              <button
-                onClick={() => setActiveTab('catalog')}
-                className={`px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'catalog'
-                    ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
-                    : isLight
-                    ? 'hover:bg-slate-200 text-slate-600'
-                    : 'hover:bg-slate-800 text-slate-400'
-                }`}
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Document Standards Catalog</span>
-              </button>
+            {/* Right: Controls & Canonical Blueprints Quick Links */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Domain Preset Selector */}
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+                <Sliders className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                <span className="text-slate-500 dark:text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+                <select
+                  value={selectedDomain}
+                  onChange={(e) => setSelectedDomain(e.target.value)}
+                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                >
+                  {DOMAIN_PRESETS.map((d) => (
+                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              <button
-                onClick={() => setActiveTab('studio')}
-                className={`px-3.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeTab === 'studio'
-                    ? 'bg-sky-600 text-white shadow-md shadow-sky-500/20'
-                    : isLight
-                    ? 'hover:bg-slate-200 text-slate-600'
-                    : 'hover:bg-slate-800 text-slate-400'
-                }`}
+              {/* Quick Links & Launch Studio */}
+              <Link
+                href="/studio"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
+                title="Launch Studio"
               >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Multi-Blueprint Studio</span>
-              </button>
-            </nav>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Launch Studio</span>
+              </Link>
 
-            {/* Right Controls */}
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => setIsDocHistoryModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/10 to-orange-500/10 hover:from-amber-500/20 hover:to-orange-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer shadow-xs hover:scale-[1.02]"
-                title="Open Historical Projects & Document Specifications"
+              {/* Canonical Blueprints Link */}
+              <Link
+                href="/canonical"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs shrink-0"
+                title="Canonical Blueprints Master Catalog"
               >
-                <History className="w-3.5 h-3.5 text-amber-500" />
-                <span className="hidden sm:inline">Project History</span>
-              </button>
+                <Zap className="w-3.5 h-3.5 text-sky-500" />
+                <span className="hidden sm:inline">Canonical Blueprints</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold">{CANONICAL_TEMPLATES.length}</span>
+              </Link>
 
+              {/* Standardized Theme Toggle */}
               <ThemeToggleBtn id="docgen-theme-toggle-btn" />
             </div>
           </div>

@@ -309,15 +309,6 @@ function CanonicalContent() {
                 <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold">17</span>
               </Link>
 
-              <Link
-                href="/workspace"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shrink-0"
-                title="Design Canvas Workspace"
-              >
-                <LayoutGrid className="w-3.5 h-3.5 text-teal-500" />
-                <span className="hidden sm:inline">Workspace</span>
-              </Link>
-
               {/* Standardized Theme Toggle */}
               <ThemeToggleBtn id="canonical-theme-toggle-btn" />
             </div>
