@@ -1167,9 +1167,9 @@ function StudioContent() {
 
                     {/* Open in Canvas Link */}
                     <Link
-                      href="/canvas"
+                      href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
                       className="px-2.5 py-1 rounded-lg font-bold text-[11px] bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1"
-                      title="Open full interactive Design Canvas"
+                      title="Open active architecture diagram in full interactive Design Canvas Workspace"
                     >
                       <Edit3 className="w-3 h-3 text-teal-500" />
                       <span>Edit in Canvas</span>
