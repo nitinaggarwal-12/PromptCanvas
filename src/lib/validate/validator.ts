@@ -7,7 +7,15 @@ export type ErrorCode =
   | 'OVERLAP'
   | 'OUT_OF_CONTAINER'
   | 'OUT_OF_BOUNDS'
-  | 'ORPHAN_NODE';
+  | 'ORPHAN_NODE'
+  | 'CONTAINER_HEADER_SLICED'
+  | 'EDGE_INTERSECTS_VERTEX'
+  | 'TEXT_OVERFLOW_HEIGHT'
+  | 'DEAD_RIGHT_MARGIN'
+  | 'DECISION_GATE_INCOMPLETE'
+  | 'CDN_CACHE_INVERTED_ROUTING'
+  | 'UNCONNECTED_LOAD_BALANCER'
+  | 'RELATIONAL_REPLICATION_PIPELINE';
 
 export interface ValidationError {
   code: ErrorCode;
@@ -33,6 +41,8 @@ interface ParsedVertex {
   // Computed absolute coordinates on canvas
   absX: number;
   absY: number;
+  label?: string;
+  style?: string;
 }
 
 interface ParsedEdge {
@@ -41,6 +51,9 @@ interface ParsedEdge {
   target: string;
   hasSourcePoint?: boolean;
   hasTargetPoint?: boolean;
+  label?: string;
+  style?: string;
+  points?: { x: number; y: number }[];
 }
 
 export function validateDrawioXml(xmlString: string): ValidationResult {
@@ -229,6 +242,8 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         height,
         absX: x,
         absY: y,
+        label: cell['@_value'] || '',
+        style,
       });
     } else if (isEdge) {
       const source = cell['@_source'];
@@ -236,10 +251,24 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       // Edges anchored by explicit mxPoint sourcePoint/targetPoint (sequence arrows,
       // legend decorations) are valid draw.io constructs, not dangling edges.
       const geom = cell.mxGeometry;
-      const points = geom?.mxPoint ? (Array.isArray(geom.mxPoint) ? geom.mxPoint : [geom.mxPoint]) : [];
+      const rawPoints = geom?.Array?.mxPoint || geom?.mxPoint;
+      const points = rawPoints ? (Array.isArray(rawPoints) ? rawPoints : [rawPoints]) : [];
       const hasSourcePoint = points.some((pt: any) => pt?.['@_as'] === 'sourcePoint');
       const hasTargetPoint = points.some((pt: any) => pt?.['@_as'] === 'targetPoint');
-      edgesMap.set(id, { id, source, target, hasSourcePoint, hasTargetPoint });
+      const waypoints = points
+        .filter((pt: any) => !pt?.['@_as'])
+        .map((pt: any) => ({ x: parseFloat(pt['@_x'] || '0'), y: parseFloat(pt['@_y'] || '0') }));
+
+      edgesMap.set(id, {
+        id,
+        source,
+        target,
+        hasSourcePoint,
+        hasTargetPoint,
+        label: cell['@_value'] || '',
+        style: cell['@_style'] || '',
+        points: waypoints,
+      });
     }
   }
 
@@ -501,6 +530,64 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         cells: [id],
         detail: `Vertex "${id}" has zero connected edges`,
       });
+    }
+  }
+
+  // --- ARCHITECTURAL & SEMANTIC TOPOLOGY VALIDATION ---
+
+  // 1. Check DECISION_GATE_INCOMPLETE (Rhombus decision diamonds must have >= 2 outgoing branches)
+  for (const [id, v] of verticesMap.entries()) {
+    if (v.style?.includes('rhombus') || id.startsWith('decision_')) {
+      const outgoingEdges = Array.from(edgesMap.values()).filter(e => e.source === id);
+      if (outgoingEdges.length < 2) {
+        errors.push({
+          code: 'DECISION_GATE_INCOMPLETE',
+          cells: [id],
+          detail: `Decision diamond "${id}" has only ${outgoingEdges.length} outgoing path(s). Decision diamonds must provide full binary branching (e.g. YES and NO).`,
+        });
+      }
+    }
+  }
+
+  // 2. Check CDN_CACHE_INVERTED_ROUTING (Cache Hit must route to delivered/edge, not backend compute)
+  for (const e of edgesMap.values()) {
+    if (e.source?.includes('cdn') && (e.label?.toUpperCase().includes('YES') || e.label?.toUpperCase().includes('HIT'))) {
+      if (e.target && (e.target.includes('mig') || e.target.includes('compute') || e.target.includes('backend_api'))) {
+        errors.push({
+          code: 'CDN_CACHE_INVERTED_ROUTING',
+          cells: [e.id, e.source, e.target],
+          detail: `CDN Cache Hit edge "${e.id}" routes directly to backend compute "${e.target}". Cache hits must be returned directly to edge/client.`,
+        });
+      }
+    }
+  }
+
+  // 3. Check UNCONNECTED_LOAD_BALANCER (GCLB / Ingress Load Balancer must be connected to traffic flow)
+  for (const [id, v] of verticesMap.entries()) {
+    if (id.includes('load_balancer') || id.includes('gclb')) {
+      const hasIncoming = Array.from(edgesMap.values()).some(e => e.target === id);
+      const hasOutgoing = Array.from(edgesMap.values()).some(e => e.source === id);
+      if (!hasIncoming || !hasOutgoing) {
+        errors.push({
+          code: 'UNCONNECTED_LOAD_BALANCER',
+          cells: [id],
+          detail: `Load balancer "${id}" is disconnected from ingress flow (Incoming: ${hasIncoming}, Outgoing: ${hasOutgoing}).`,
+        });
+      }
+    }
+  }
+
+  // 4. Check RELATIONAL_REPLICATION_PIPELINE (Databases must have persistence/replication streams)
+  for (const [id, v] of verticesMap.entries()) {
+    if (id.includes('cloud_sql') || id.includes('spanner')) {
+      const hasOutgoing = Array.from(edgesMap.values()).some(e => e.source === id);
+      if (!hasOutgoing) {
+        warnings.push({
+          code: 'RELATIONAL_REPLICATION_PIPELINE',
+          cells: [id],
+          detail: `Relational database "${id}" has no downstream CDC replication or backup streaming edge.`,
+        });
+      }
     }
   }
 
