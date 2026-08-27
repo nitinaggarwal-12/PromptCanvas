@@ -21,6 +21,7 @@ export interface DiagramViewerRenderSafeProps {
   diagramType?: string;
   description?: string;
   isLiveFlow?: boolean;
+  allowFullScaleScroll?: boolean;
 }
 
 /**
@@ -45,6 +46,7 @@ export default function DiagramViewerRenderSafe({
   bgTheme = 'light',
   diagramType,
   isLiveFlow = false,
+  allowFullScaleScroll = false,
 }: DiagramViewerRenderSafeProps) {
   const [mounted, setMounted] = React.useState(false);
   const [isCompactViewport, setIsCompactViewport] = React.useState(false);
@@ -99,6 +101,7 @@ export default function DiagramViewerRenderSafe({
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
     height: '100%',
+    minHeight: allowFullScaleScroll ? '760px' : '450px',
     width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
@@ -122,15 +125,45 @@ export default function DiagramViewerRenderSafe({
 <meta charset="utf-8">
 ${origin ? `<base href="${origin}/">` : ''}
 <style>
-  html, body { margin:0; padding:0; width:100%; height:100%; background:${bgColor}; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-  .canvas-container { position:absolute; inset:0; padding:4px; box-sizing:border-box; overflow:hidden; background:${bgColor}; display:flex; align-items:center; justify-content:center; }
-  .mxgraph { width:100%; height:100%; min-height:100%; display:flex; align-items:center; justify-content:center; background:transparent; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: ${bgColor};
+    overflow: ${allowFullScaleScroll ? 'auto' : 'hidden'};
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .canvas-container {
+    ${allowFullScaleScroll
+      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`
+      : `position: absolute; inset: 0; padding: 4px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
+  }
+  .mxgraph {
+    ${allowFullScaleScroll
+      ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block !important; margin: 0 auto; background: transparent;`
+      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent;`}
+  }
 
-  /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping */
+  /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping or distortion */
   .mxgraph > svg,
-  .mxgraph > div > svg { width:100% !important; max-width:100% !important; height:100% !important; max-height:100% !important; margin:auto !important; display:block !important; object-fit:contain !important; }
-  .mxgraph > div { width:100%; max-width:100%; height:100%; max-height:100%; display:flex; align-items:center; justify-content:center; }
-  .geEditor { background-color:transparent !important; }
+  .mxgraph > div > svg {
+    ${allowFullScaleScroll
+      ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; margin: auto !important; display: block !important;`
+      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: auto !important; display: block !important; object-fit: contain !important;`}
+  }
+  .mxgraph > div {
+    ${allowFullScaleScroll
+      ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block;`
+      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;`}
+  }
+  .geEditor { background-color: transparent !important; }
+
+  /* Smooth customized scrollbars */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: ${bgColor}; }
+  ::-webkit-scrollbar-thumb { background: ${bgTheme === 'dark' ? '#334155' : '#CBD5E1'}; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: ${bgTheme === 'dark' ? '#475569' : '#94A3B8'}; }
 
   ${isLiveFlow ? `@keyframes flowPulse { 0% { stroke-dashoffset:48; } 100% { stroke-dashoffset:0; } }
   svg path[stroke-dasharray], svg g[data-cell-id] path[stroke], svg .geEdge path { animation:flowPulse 1.1s linear infinite !important; }` : ''}
@@ -175,15 +208,15 @@ ${origin ? `<base href="${origin}/">` : ''}
     xml: translatedXml,
     lightbox: false,
     nav: false,
-    resize: true,
+    resize: !allowFullScaleScroll,
     toolbar: '',
     edit: '',
-    border: 0,
+    border: allowFullScaleScroll ? 10 : 0,
     transparent: true,
-    fit: true,
+    fit: !allowFullScaleScroll,
     'max-scale': 4.0,
   })};
-  configObj.fit = true;
+  configObj.fit = ${allowFullScaleScroll ? 'false' : 'true'};
   configObj.xml = getCleanGraphXml(configObj.xml);
 
   const root = document.getElementById('diagram-container');
@@ -299,7 +332,7 @@ ${origin ? `<base href="${origin}/">` : ''}
         <iframe
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
-          className="w-full h-full border-0 bg-transparent"
+          className="w-full h-full min-h-[760px] border-0 bg-transparent"
           title="PromptCanvas Draw.io Diagram Viewer"
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />

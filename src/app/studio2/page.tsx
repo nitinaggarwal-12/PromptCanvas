@@ -508,7 +508,7 @@ function Studio2Content() {
       )}
 
       {/* Main Studio Viewport */}
-      <div className="max-w-[1680px] mx-auto p-4 md:p-6 space-y-4">
+      <div className="max-w-[1920px] w-full mx-auto p-3 md:p-5 space-y-3">
         {/* Top Header Bar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
           <div>
@@ -577,10 +577,10 @@ function Studio2Content() {
           </div>
         </div>
 
-        {/* 2-Column Split Workspace */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          {/* Left Column: Scope & Conversational Requirements (Width 5/12) */}
-          <div className="lg:col-span-5 space-y-4">
+        {/* 2-Column Split Workspace: 25% Left Chat, 75% Right Diagram */}
+        <div className="flex flex-col lg:flex-row gap-4 items-start w-full">
+          {/* Left Column: Scope & Conversational Requirements (25% Width) */}
+          <div className="w-full lg:w-[25%] lg:min-w-[320px] flex-shrink-0 space-y-4">
             <div className={`p-4 md:p-5 rounded-2xl border shadow-sm space-y-4 ${
               isLight ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
             }`}>
@@ -785,8 +785,8 @@ function Studio2Content() {
             </div>
           </div>
 
-          {/* Right Column: Live Diagram Canvas & Actions (Width 7/12) */}
-          <div className="lg:col-span-7 space-y-3">
+          {/* Right Column: Live Diagram Canvas & Actions (75% Width) */}
+          <div className="w-full lg:w-[75%] flex-1 min-w-0 space-y-3">
             <div className={`rounded-2xl border shadow-sm overflow-hidden flex flex-col ${
               isLight ? 'bg-white border-slate-200' : 'bg-slate-900 border-slate-800'
             }`}>
@@ -806,7 +806,7 @@ function Studio2Content() {
 
                 <div className="flex items-center gap-1.5">
                   <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[10px] font-bold">
-                    16:9 VECTOR GCP
+                    16:9 VECTOR GCP • FULL SCALE SCROLL
                   </span>
                 </div>
               </div>
@@ -849,8 +849,8 @@ function Studio2Content() {
               </div>
 
               {/* Viewport Canvas Frame */}
-              <div className="p-3 flex-1 min-h-[720px] h-[750px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80">
-                <div className="w-full h-full min-h-[700px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80">
+                <div className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative">
                   <DiagramViewerRenderSafe
                     key={`studio2_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
                     diagramId="gcp_functional_flowchart"
@@ -858,6 +858,7 @@ function Studio2Content() {
                     xml={activeDiagram.xml}
                     aspectRatioId="16:9"
                     bgTheme={isLight ? 'light' : 'dark'}
+                    allowFullScaleScroll={true}
                   />
                 </div>
               </div>
