@@ -1,7 +1,7 @@
 /**
  * Master Enterprise Google Cloud Agentic AI Process Flow Diagram
  * Complete Production Reference Architecture preserving the Clean Floating Layout,
- * Decision Diamonds, 3 Parallel Execution Lanes, Fork/Join Synchronization,
+ * Decision Diamonds, 3 Parallel Execution Lanes, Symmetrical Fork/Join Synchronization,
  * Conversational Memory, Document Ingestion Pipeline, Cloud DLP, and Guardrails.
  * Master 16:9 Ultra-Widescreen Canvas (1600x900)
  */
@@ -389,24 +389,29 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   line(nid(), 'NO (Safe)', 925, 507, 985, 507, 'strokeColor=#16A34A;strokeWidth=1.8;endArrow=block;endSize=4;');
 
   // -------------------------------------------------------------------------
-  // PARALLEL EXECUTION JOIN BAR (x=1030, y=140..420)
+  // PARALLEL EXECUTION JOIN BAR (x=1160, y=140..540) - Extended symmetrically to capture all 3 lanes!
   // -------------------------------------------------------------------------
   node(
     "join_bar",
     `<div style="text-align:center;font-size:8px;font-weight:900;color:#FFFFFF;writing-mode:vertical-rl;transform:rotate(180deg);">PARALLEL RESULTS CONVERGENCE &amp; SYNTHESIS</div>`,
-    1035,
+    1160,
     140,
     14,
-    260,
+    400,
     "fillColor=#0F2A4A;strokeColor=#0F2A4A;rounded=1;"
   );
 
-  line(nid(), 'Context', 985, 172, 1035, 172, 'strokeColor=#0284C7;strokeWidth=1.8;endArrow=block;endSize=4;');
-  line(nid(), 'SQL Records', 985, 347, 1035, 347, 'strokeColor=#D97706;strokeWidth=1.8;endArrow=block;endSize=4;');
-  line(nid(), 'Action Payload', 1065, 475, 1065, 400, 'strokeColor=#0F766E;strokeWidth=1.8;endArrow=block;endSize=4;');
+  // Lane 1: RAG Context connects cleanly into Join Bar
+  line(nid(), 'Context', 985, 172, 1160, 172, 'strokeColor=#0284C7;strokeWidth=1.8;endArrow=block;endSize=4;');
+  
+  // Lane 2: SQL Records connects cleanly into Join Bar
+  line(nid(), 'SQL Records', 985, 347, 1160, 347, 'strokeColor=#D97706;strokeWidth=1.8;endArrow=block;endSize=4;');
+  
+  // Lane 3: MCP Action Payload connects cleanly into Join Bar (Direct horizontal connection!)
+  line(nid(), 'Action Payload', 1145, 507, 1160, 507, 'strokeColor=#0F766E;strokeWidth=1.8;endArrow=block;endSize=4;');
 
   // =========================================================================
-  // 5. STAGE 5: GEMINI 3.1 PRO / FLASH REASONING CORE (x=1085, y=205)
+  // 5. STAGE 5: GEMINI 3.1 PRO / FLASH REASONING CORE (x=1195, y=205)
   // =========================================================================
   node(
     "n_gemini_core",
@@ -416,7 +421,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:8.5px;color:#166534;font-weight:700;margin-top:2px;">Multimodal Reasoning &amp; Synthesis Core</div>
       <div style="font-size:7.5px;color:#4B5563;font-weight:600;margin-top:4px;">2M Token Context • CoT Self-Reflection</div>
     </div>`,
-    1085,
+    1195,
     205,
     215,
     135,
@@ -424,71 +429,71 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // Fast-path inference connects cleanly above the parallel lanes into Gemini Core
-  line(nid(), 'Direct Prompt', 395, 177, 1085, 235, 'strokeColor=#16A34A;strokeWidth=1.8;endArrow=block;endSize=4;', [
+  line(nid(), 'Direct Prompt', 395, 177, 1195, 235, 'strokeColor=#16A34A;strokeWidth=1.8;endArrow=block;endSize=4;', [
     { x: 395, y: 95 },
-    { x: 1060, y: 95 },
-    { x: 1060, y: 235 }
+    { x: 1180, y: 95 },
+    { x: 1180, y: 235 }
   ]);
 
-  // Joined parallel results feed into Gemini Core
-  line(nid(), '❻ Grounded Synthesis', 1049, 270, 1085, 270, 'strokeColor=#15803D;strokeWidth=2.2;endArrow=block;endSize=4;');
+  // Joined parallel results feed from Join Bar into Gemini Core
+  line(nid(), '❻ Grounded Synthesis', 1174, 270, 1195, 270, 'strokeColor=#15803D;strokeWidth=2.2;endArrow=block;endSize=4;');
 
   // =========================================================================
-  // 6. DECISION GATE 3: FACTUALITY & CITATION GUARDRAIL (x=1335, y=225)
+  // 6. DECISION GATE 3: FACTUALITY & CITATION GUARDRAIL (x=1430, y=222)
   // =========================================================================
   node(
     "gate_factuality",
     `<div style="font-size:10px;font-weight:900;color:#991B1B;text-align:center;line-height:1.2;">Passed<br/>Factuality &amp;<br/>Safety Gate?</div>`,
-    1335,
+    1430,
     222,
     130,
     100,
     "shape=rhombus;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=2;align=center;verticalAlign=middle;"
   );
 
-  line(nid(), '❼ Verify', 1300, 272, 1335, 272, 'strokeColor=#DC2626;strokeWidth=2;endArrow=block;endSize=4;');
+  line(nid(), '❼ Verify', 1410, 272, 1430, 272, 'strokeColor=#DC2626;strokeWidth=2;endArrow=block;endSize=4;');
 
   // SELF-CORRECTION LOOP: If factuality fails, loop back to Gemini Core (with Max 3 Retries SLA)
-  line(nid(), 'NO (Self-Correction • Max 3 Retries)', 1400, 222, 1192, 205, 'strokeColor=#DC2626;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;', [
-    { x: 1400, y: 140 },
-    { x: 1192, y: 140 }
+  line(nid(), 'NO (Self-Correction • Max 3 Retries)', 1495, 222, 1302, 205, 'strokeColor=#DC2626;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;', [
+    { x: 1495, y: 140 },
+    { x: 1302, y: 140 }
   ]);
 
   // =========================================================================
-  // 7. STAGE 7: GROUNDED DELIVERY & OBSERVABILITY (x=1335..1575)
+  // 7. STAGE 7: GROUNDED DELIVERY & OBSERVABILITY (x=1430..1575)
   // =========================================================================
   node(
     "n_delivery",
-    `<div style="padding:10px;text-align:center;">
-      <div style="font-size:28px;">✅</div>
-      <div style="font-size:12px;font-weight:900;color:#14532D;margin-top:2px;">Grounded Response Streamed</div>
-      <div style="font-size:8px;color:#166534;font-weight:700;margin-top:2px;">Verified Citations • Sub-Second TTFT</div>
+    `<div style="padding:8px;text-align:center;">
+      <div style="font-size:26px;">✅</div>
+      <div style="font-size:11.5px;font-weight:900;color:#14532D;margin-top:2px;">Grounded Response Streamed</div>
+      <div style="font-size:7.5px;color:#166534;font-weight:700;margin-top:2px;">Verified Citations • Sub-Second TTFT</div>
     </div>`,
-    1335,
-    370,
-    240,
+    1430,
+    360,
+    140,
     95,
     "fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=2;rounded=1;shadow=0;"
   );
 
   // YES (Verified Grounded) branches DOWN to Streamed Delivery
-  line(nid(), 'YES (Grounded)', 1400, 322, 1400, 370, 'strokeColor=#16A34A;strokeWidth=2.2;endArrow=block;endSize=4;');
+  line(nid(), 'YES (Grounded)', 1495, 322, 1495, 360, 'strokeColor=#16A34A;strokeWidth=2.2;endArrow=block;endSize=4;');
 
   node(
     "n_audit_logging",
-    `<div style="padding:8px 10px;text-align:center;">
-      <div style="font-size:20px;">📊</div>
-      <div style="font-size:10.5px;font-weight:900;color:#1E3A8A;margin-top:2px;">Cloud Logging &amp; GenAI Eval</div>
-      <div style="font-size:8px;color:#64748B;margin-top:2px;">Audit Trail • Token FinOps • Latency Telemetry</div>
+    `<div style="padding:6px;text-align:center;">
+      <div style="font-size:18px;">📊</div>
+      <div style="font-size:10px;font-weight:900;color:#1E3A8A;margin-top:2px;">Cloud Logging &amp; Eval</div>
+      <div style="font-size:7.5px;color:#64748B;margin-top:1px;">Audit Trail • FinOps</div>
     </div>`,
-    1335,
-    490,
-    240,
-    75,
+    1430,
+    480,
+    140,
+    65,
     "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;rounded=1;shadow=0;"
   );
 
-  line(nid(), 'Log Audit & Telemetry', 1455, 465, 1455, 490, 'strokeColor=#1E40AF;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;');
+  line(nid(), '', 1495, 455, 1495, 480, 'strokeColor=#1E40AF;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;');
 
   // =========================================================================
   // 8. BOTTOM OBSERVABILITY & GOVERNANCE BANNER (FLOATING, NO BOX LAYER)
