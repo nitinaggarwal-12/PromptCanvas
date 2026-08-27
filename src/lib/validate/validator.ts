@@ -12,6 +12,7 @@ export type ErrorCode =
   | 'EDGE_INTERSECTS_VERTEX'
   | 'TEXT_OVERFLOW_HEIGHT'
   | 'DEAD_RIGHT_MARGIN'
+  | 'EDGE_LABEL_MISSING_PILL'
   | 'DECISION_GATE_INCOMPLETE'
   | 'CDN_CACHE_INVERTED_ROUTING'
   | 'UNCONNECTED_LOAD_BALANCER'
@@ -407,17 +408,15 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
 
   // Check EDGE_LABEL_MISSING_PILL (all text edges must have high-contrast background pill)
-  for (const cell of rawCells) {
-    if (cell['@_edge'] === '1' || cell['@_edge'] === 1) {
-      const val = cell['@_value'] || '';
-      const style = cell['@_style'] || '';
-      if (val && val.trim().length > 0 && !style.includes('labelBackgroundColor=')) {
-        warnings.push({
-          code: 'EDGE_LABEL_MISSING_PILL' as any,
-          cells: [cell['@_id']],
-          detail: `Edge "${cell['@_id']}" has label "${val.trim()}" but is missing high-contrast pill styling (labelBackgroundColor / labelBorderColor)`,
-        });
-      }
+  for (const edge of edgesMap.values()) {
+    const val = edge.label || '';
+    const style = edge.style || '';
+    if (val && val.trim().length > 0 && !style.includes('labelBackgroundColor=')) {
+      warnings.push({
+        code: 'EDGE_LABEL_MISSING_PILL',
+        cells: [edge.id],
+        detail: `Edge "${edge.id}" has label "${val.trim()}" but is missing high-contrast pill styling (labelBackgroundColor / labelBorderColor)`,
+      });
     }
   }
 
@@ -453,7 +452,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
               const segMaxX = Math.max(p1.x, p2.x);
               if (segMaxX > v.absX + 20 && segMinX < v.absX + v.width - 20) {
                 errors.push({
-                  code: 'CONTAINER_HEADER_SLICED' as any,
+                  code: 'CONTAINER_HEADER_SLICED',
                   cells: [edgeId, vId],
                   detail: `Edge segment on "${edgeId}" slices directly through the header text zone of container "${vId}" (Y=${p1.y})`,
                 });
@@ -468,7 +467,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
             const segMaxX = Math.max(p1.x, p2.x);
             if (p1.y > v.absY && p1.y < v.absY + v.height && segMaxX > v.absX + 5 && segMinX < v.absX + v.width - 5) {
               errors.push({
-                code: 'EDGE_INTERSECTS_VERTEX' as any,
+                code: 'EDGE_INTERSECTS_VERTEX',
                 cells: [edgeId, vId],
                 detail: `Horizontal edge segment on "${edgeId}" (Y=${p1.y}) slices through vertex "${vId}"`,
               });
@@ -480,7 +479,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
             const segMaxY = Math.max(p1.y, p2.y);
             if (p1.x > v.absX && p1.x < v.absX + v.width && segMaxY > v.absY + 5 && segMinY < v.absY + v.height - 5) {
               errors.push({
-                code: 'EDGE_INTERSECTS_VERTEX' as any,
+                code: 'EDGE_INTERSECTS_VERTEX',
                 cells: [edgeId, vId],
                 detail: `Vertical edge segment on "${edgeId}" (X=${p1.x}) slices through vertex "${vId}"`,
               });
@@ -499,7 +498,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       const minRequiredHeight = (hasIcon ? 28 : 10) + lineCount * 14;
       if (v.height < minRequiredHeight) {
         errors.push({
-          code: 'TEXT_OVERFLOW_HEIGHT' as any,
+          code: 'TEXT_OVERFLOW_HEIGHT',
           cells: [id],
           detail: `Node "${id}" height (${v.height}px) is insufficient for ${lineCount} text lines with icon (requires >= ${minRequiredHeight}px)`,
         });
@@ -516,7 +515,7 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   }
   if (maxCanvasX > 0 && maxCanvasX < 1350) {
     warnings.push({
-      code: 'DEAD_RIGHT_MARGIN' as any,
+      code: 'DEAD_RIGHT_MARGIN',
       cells: [],
       detail: `Diagram max X is ${maxCanvasX}px, leaving over ${1580 - maxCanvasX}px empty void on right side. Widescreen 16:9 canvas should utilize >= 1500px.`,
     });
