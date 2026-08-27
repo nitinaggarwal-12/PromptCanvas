@@ -1,22 +1,15 @@
 /**
  * GCP Cloud Architecture: Functional Flowchart Diagram
- * 100% Exact Ground-Truth Master Blueprint Replication + Latest DeepMind Tech
+ * 100% Exact Ground-Truth Master Blueprint Replication + Dynamic Architectural Intent Synthesis + DeepMind Tech
  *
- * Ground-Truth Parity:
- * 1. Exact Layered Pastel Fills:
- *    - Global Region: #E5E7EB with slate border
- *    - Google Cloud Project: #DBEAFE
- *    - Zone 1 Ingress & Security: #E2ECE9
- *    - Zone 2 Load Balancing & Compute: #CFE2F3 (Subnets #EDF2F8)
- *    - Zone 3 Application & Data: #EFE6D5 (Sub-Frames #FCE5CD)
- *    - Zone 4 Agentic AI Services: #D9EAD3 (Model Mgmt #FCE5CD)
- * 2. Bottom-Left Stacked Enablers:
- *    - CLOUD MONITORING (Logging, Tracing, Alerts) & CLOUD IAM (Identity & Access Management)
- * 3. Exact Decision Gate Routing:
- *    - Decision CON (Top) -> Subnet A
- *    - GCLB -> PATH-BASED ROUTING? & CDN CACHE HIT? -> Decision CON (Bottom) -> Subnet B MIG
- * 4. DeepMind Gemini 2.5 Tech Stack:
- *    - Agent Designer, Gemini Notebook, ADK 2.0, Gemini Agent Platform, Train/Deploy/Prediction Feedback Loop
+ * Capabilities:
+ * - Dynamic prompt-driven functional synthesis across all 4 tiers & cross-cutting services
+ * - Security & CMEK / VPC Service Controls support (KMS HSM, Context-Aware Ingress, Encrypted Buckets & DBs)
+ * - Cloud Spanner TrueTime Multi-Region Active-Active support
+ * - GPU MIG Auto-Scaling (NVIDIA H100 Cluster) support
+ * - Vertex AI RAG Knowledge Graph & ScaNN Vector Search support
+ * - Cloud Pub/Sub & Dataflow Real-Time Stream Ingestion support
+ * - Bio-Pharma & Industrial GxP manufacturing domain flavoring
  */
 
 export interface GCPFlowchartProps {
@@ -41,12 +34,23 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
     projectName = 'Enterprise GCP Architecture',
     useCaseName = 'Agentic AI Functional Flowchart',
     projectTitle,
+    prompt = '',
     theme = 'light',
   } = props;
 
   const isDark = theme === 'dark';
   const bg = isDark ? '#0F172A' : '#FFFFFF';
   const E = escapeXml;
+
+  // Analyze prompt keywords for dynamic architectural mutations
+  const rawPrompt = `${prompt} ${projectName} ${useCaseName}`.toLowerCase();
+
+  const isCmek = rawPrompt.includes('cmek') || rawPrompt.includes('encryption') || rawPrompt.includes('kms') || rawPrompt.includes('perimeter') || rawPrompt.includes('vpc service') || rawPrompt.includes('vpc-sc') || rawPrompt.includes('zero-trust');
+  const isSpanner = rawPrompt.includes('spanner') || rawPrompt.includes('active-active') || rawPrompt.includes('truetime') || rawPrompt.includes('multi-region') || rawPrompt.includes('globally distributed');
+  const isGpu = rawPrompt.includes('gpu') || rawPrompt.includes('h100') || rawPrompt.includes('a100') || rawPrompt.includes('t4') || rawPrompt.includes('accelerator');
+  const isRag = rawPrompt.includes('rag') || rawPrompt.includes('vector') || rawPrompt.includes('scann') || rawPrompt.includes('knowledge') || rawPrompt.includes('embedding') || rawPrompt.includes('retrieval');
+  const isStream = rawPrompt.includes('stream') || rawPrompt.includes('dataflow') || rawPrompt.includes('pubsub') || rawPrompt.includes('kafka') || rawPrompt.includes('real-time') || rawPrompt.includes('event');
+  const isPharma = rawPrompt.includes('pharma') || rawPrompt.includes('medicine') || rawPrompt.includes('cleanroom') || rawPrompt.includes('gxp') || rawPrompt.includes('clinical') || rawPrompt.includes('genomics') || rawPrompt.includes('bioreactor');
 
   // Modern Vector SVG Icons (Zero external URL dependencies / 100% offline)
   const ICONS = {
@@ -117,7 +121,23 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   };
 
   // Main Master Title
-  const titleText = projectTitle || (projectName && useCaseName ? `${projectName}: ${useCaseName}` : 'GCP Cloud Architecture: Functional Flowchart Diagram');
+  let titleText = projectTitle;
+  if (!titleText) {
+    if (isCmek) {
+      titleText = `${projectName}: VPC Service Controls &amp; CMEK Security Flowchart`;
+    } else if (isSpanner) {
+      titleText = `${projectName}: Cloud Spanner TrueTime Multi-Region Flowchart`;
+    } else if (isGpu) {
+      titleText = `${projectName}: GPU Accelerated Auto-Scaling MIG Flowchart`;
+    } else if (isRag) {
+      titleText = `${projectName}: Vertex AI RAG Knowledge Graph Flowchart`;
+    } else if (projectName && useCaseName) {
+      titleText = `${projectName}: ${useCaseName}`;
+    } else {
+      titleText = 'GCP Cloud Architecture: Functional Flowchart Diagram';
+    }
+  }
+
   cell(
     'title_header',
     `<div style="font-size:22px;font-weight:900;color:#1E293B;letter-spacing:-0.5px;text-align:center;">${titleText}</div>`,
@@ -149,6 +169,7 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
       ${ICONS.gcpLogo}
       <div style="font-weight:900;font-size:11px;color:#1E3A8A;letter-spacing:0.8px;">GOOGLE CLOUD PROJECT</div>
       <div style="font-size:9px;color:#64748B;font-weight:700;margin-left:12px;padding:2px 8px;background:#FFFFFF;border-radius:4px;border:1px solid #CBD5E1;">GLOBAL REGION</div>
+      ${isCmek ? `<div style="font-size:8px;color:#0F766E;font-weight:800;padding:2px 8px;background:#CCFBF1;border-radius:4px;border:1px solid #99F6E4;">🛡️ VPC-SC + CMEK PERIMETER</div>` : ''}
     </div>`,
     150,
     85,
@@ -214,6 +235,7 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
       <div style="margin-bottom:2px;"><span style="color:#059669;font-weight:900;">❺</span> 5. Persist &amp; Store</div>
       <div style="margin-bottom:2px;"><span style="color:#15803D;font-weight:900;">❻</span> 6. DeepMind Vertex AI</div>
       <div style="margin-bottom:4px;"><span style="color:#D97706;font-weight:900;">❼</span> 7. Auto-Scale MIG</div>
+      ${isCmek ? `<div style="margin-bottom:3px;padding:2px;background:#CCFBF1;border-radius:3px;color:#0F766E;font-weight:800;">🛡️ CMEK Encrypted</div>` : ''}
       <div style="font-weight:800;font-size:7.5px;color:#64748B;border-top:1px dashed #CBD5E1;padding-top:3px;margin-top:2px;">Line Types:</div>
       <div style="color:#2563EB;">— Direct API / Ingress</div>
       <div style="color:#D97706;">--- Async / Event Stream</div>
@@ -230,9 +252,10 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   // =========================================================================
   // ZONE 1: INGRESS & SECURITY (x=165..445)
   // =========================================================================
+  const ingressZoneTitle = isCmek ? 'INGRESS &amp; PERIMETER SECURITY (VPC-SC + CMEK)' : 'INGRESS &amp; SECURITY';
   cell(
     'zone_ingress_frame',
-    `<div style="font-weight:900;font-size:10px;color:#0F766E;text-align:center;padding-top:4px;letter-spacing:0.5px;">INGRESS &amp; SECURITY</div>`,
+    `<div style="font-weight:900;font-size:10px;color:#0F766E;text-align:center;padding-top:4px;letter-spacing:0.5px;">${ingressZoneTitle}</div>`,
     165,
     120,
     275,
@@ -252,12 +275,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Cloud Armor (WAF/DDoS Protection)
+  const cloudArmorSubtitle = isCmek ? '(WAF / CMEK Key Encrypted)' : '(WAF / DDoS protection)';
   cell(
     'cloud_armor',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudArmor}
       <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD ARMOR</div>
-      <div style="font-size:6.5px;color:#64748B;font-weight:600;">(WAF / DDoS protection)</div>
+      <div style="font-size:6.5px;color:#64748B;font-weight:600;">${cloudArmorSubtitle}</div>
     </div>`,
     180,
     415,
@@ -267,11 +291,12 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Identity-Aware Proxy (IAP)
+  const iapSubtitle = isCmek ? 'IDENTITY-AWARE<br/>PROXY (IAP + VPC-SC)' : 'IDENTITY-AWARE<br/>PROXY (IAP)';
   cell(
     'iap_proxy',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.iapLock}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">IDENTITY-AWARE<br/>PROXY (IAP)</div>
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${iapSubtitle}</div>
     </div>`,
     270,
     415,
@@ -344,13 +369,15 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
     'rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1.5;html=1;align=left;verticalAlign=middle;'
   );
 
+  const iamTitle = isCmek ? 'CLOUD KMS &amp; IAM' : 'CLOUD IAM';
+  const iamSub = isCmek ? '(CMEK Keys &amp; VPC-SC Policies)' : '(Identity &amp; Access Mgmt)';
   cell(
     'cloud_iam_box',
     `<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;">
       ${ICONS.iamShield}
       <div>
-        <div style="font-size:7.5px;font-weight:900;color:#0F172A;">CLOUD IAM</div>
-        <div style="font-size:6.5px;color:#0284C7;font-weight:600;">(Identity &amp; Access Mgmt)</div>
+        <div style="font-size:7.5px;font-weight:900;color:#0F172A;">${iamTitle}</div>
+        <div style="font-size:6.5px;color:#0284C7;font-weight:600;">${iamSub}</div>
       </div>
     </div>`,
     175,
@@ -402,12 +429,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Agentic Enterprise App (GKE Pods)
+  const appTitle = isPharma ? 'GXP BATCH MANUFACTURING APP' : 'AGENTIC ENTERPRISE APP';
   cell(
     'agentic_app_box',
     `<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;">
       ${ICONS.kubernetes}
       <div>
-        <div style="font-size:8px;font-weight:900;color:#0F172A;">AGENTIC ENTERPRISE APP</div>
+        <div style="font-size:8px;font-weight:900;color:#0F172A;">${appTitle}</div>
         <div style="font-size:6.5px;color:#0284C7;font-weight:600;">(GKE Pods / Autopilot)</div>
       </div>
     </div>`,
@@ -419,12 +447,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Backend API (GKE Pods)
+  const apiTitle = isPharma ? 'EBR &amp; MES COMPLIANCE API' : 'BACKEND API';
   cell(
     'backend_api_box',
     `<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;">
       ${ICONS.kubernetes}
       <div>
-        <div style="font-size:8px;font-weight:900;color:#0F172A;">BACKEND API</div>
+        <div style="font-size:8px;font-weight:900;color:#0F172A;">${apiTitle}</div>
         <div style="font-size:6.5px;color:#0284C7;font-weight:600;">(GKE Pods / Microservices)</div>
       </div>
     </div>`,
@@ -436,13 +465,15 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Message Queueing (Pub/Sub)
+  const pubsubTitle = isStream ? 'CLOUD PUB/SUB STREAMING BUS' : 'MESSAGE QUEUEING';
+  const pubsubSub = isStream ? '(High-Throughput Ingestion Bus)' : '(Google Cloud Pub/Sub)';
   cell(
     'pubsub_queue_box',
     `<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;">
       ${ICONS.pubsub}
       <div>
-        <div style="font-size:8px;font-weight:900;color:#0F172A;">MESSAGE QUEUEING</div>
-        <div style="font-size:6.5px;color:#0284C7;font-weight:600;">(Google Cloud Pub/Sub)</div>
+        <div style="font-size:8px;font-weight:900;color:#0F172A;">${pubsubTitle}</div>
+        <div style="font-size:6.5px;color:#0284C7;font-weight:600;">${pubsubSub}</div>
       </div>
     </div>`,
     478,
@@ -453,9 +484,10 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Subnet B Secondary Frame
+  const subnetBTitle = isGpu ? 'REGIONAL SUBNET B (GPU ACCELERATOR MIG)' : 'REGIONAL SUBNET B (SECONDARY)';
   cell(
     'subnet_b_frame',
-    `<div style="font-weight:900;font-size:8.5px;color:#0369A1;text-align:left;padding:3px 6px;letter-spacing:0.5px;">REGIONAL SUBNET B (SECONDARY)</div>`,
+    `<div style="font-weight:900;font-size:8.5px;color:#0369A1;text-align:left;padding:3px 6px;letter-spacing:0.5px;">${subnetBTitle}</div>`,
     468,
     510,
     240,
@@ -464,9 +496,10 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Auto-Scaling Pill
+  const autoScalingText = isGpu ? 'GPU AUTO-SCALING (H100)' : 'AUTO-SCALING';
   cell(
     'auto_scaling_pill',
-    `<div style="text-align:center;font-size:7.5px;font-weight:900;color:#0284C7;letter-spacing:0.5px;">AUTO-SCALING</div>`,
+    `<div style="text-align:center;font-size:7.5px;font-weight:900;color:#0284C7;letter-spacing:0.5px;">${autoScalingText}</div>`,
     523,
     535,
     130,
@@ -475,11 +508,12 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Compute Engine MIG
+  const migTitle = isGpu ? 'COMPUTE ENGINE<br/>GPU MIG CLUSTER<br/><span style="font-size:6px;color:#0284C7;">(NVIDIA H100)</span>' : 'COMPUTE ENGINE<br/>MANAGED INSTANCE<br/>GROUP (MIG)';
   cell(
     'gce_mig_box',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.computeEngine}
-      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">COMPUTE ENGINE<br/>MANAGED INSTANCE<br/>GROUP (MIG)</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${migTitle}</div>
     </div>`,
     478,
     580,
@@ -516,11 +550,12 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Async Tasks & Persist Data
+  const asyncTaskText = isStream ? 'DATAFLOW<br/>STREAM PIPELINE' : 'PROCESS<br/>ASYNC TASKS';
   cell(
     'async_tasks_box',
     `<div style="display:flex;align-items:center;justify-content:center;gap:4px;padding:2px 4px;">
       ${ICONS.documentTask}
-      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.1;">PROCESS<br/>ASYNC TASKS</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.1;">${asyncTaskText}</div>
     </div>`,
     748,
     185,
@@ -543,9 +578,10 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Relational Data Sub-Frame
+  const relTitle = isSpanner ? 'RELATIONAL DATA (SPANNER MULTI-REGION)' : 'RELATIONAL DATA';
   cell(
     'relational_data_frame',
-    `<div style="font-weight:900;font-size:8.5px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">RELATIONAL DATA</div>`,
+    `<div style="font-weight:900;font-size:8.5px;color:#B45309;text-align:center;padding:3px;letter-spacing:0.5px;">${relTitle}</div>`,
     745,
     275,
     245,
@@ -553,13 +589,15 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
     'rounded=1;fillColor=#FCE5CD;strokeColor=#FCD34D;strokeWidth=1.5;html=1;align=center;verticalAlign=top;'
   );
 
-  // Cloud SQL Primary
+  // Cloud SQL / Cloud Spanner Primary
+  const dbTitle = isSpanner ? 'CLOUD SPANNER' : 'CLOUD SQL';
+  const dbSub = isSpanner ? '(TrueTime Active-Active)' : isCmek ? '(CMEK Encrypted OLTP)' : '(Primary OLTP)';
   cell(
     'cloud_sql_primary',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudSql}
-      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD SQL</div>
-      <div style="font-size:6.5px;color:#D97706;font-weight:600;">(Primary OLTP)</div>
+      <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">${dbTitle}</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${dbSub}</div>
     </div>`,
     755,
     320,
@@ -569,12 +607,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // BigQuery Read Replica
+  const bqSub = isCmek ? '(CMEK Encrypted DW)' : '(Read Replica / DW)';
   cell(
     'bigquery_replica',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.bigquery}
       <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">BIGQUERY</div>
-      <div style="font-size:6.5px;color:#D97706;font-weight:600;">(Read Replica / DW)</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${bqSub}</div>
     </div>`,
     878,
     320,
@@ -595,12 +634,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Cloud Storage
+  const gcsSub = isCmek ? '(CMEK Dual-Region Bucket)' : '(GCS Multi-Region)';
   cell(
     'gcs_storage_box',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.cloudStorage}
       <div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.2;margin-top:2px;">CLOUD STORAGE</div>
-      <div style="font-size:6.5px;color:#D97706;font-weight:600;">(GCS Multi-Region)</div>
+      <div style="font-size:6.5px;color:#D97706;font-weight:600;">${gcsSub}</div>
     </div>`,
     755,
     600,
@@ -627,12 +667,13 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   // =========================================================================
   // ZONE 4: AGENTIC AI SERVICES (Vertex AI & DeepMind) (x=1015..1285)
   // =========================================================================
+  const aiZoneTitle = isRag ? 'AGENTIC AI &amp; VERTEX RAG' : 'AGENTIC AI SERVICES';
   cell(
     'zone_ai_frame',
     `<div style="display:flex;align-items:center;justify-content:center;gap:6px;padding-top:4px;">
       ${ICONS.deepmindGemini}
       <div style="text-align:left;">
-        <div style="font-weight:900;font-size:9.5px;color:#15803D;letter-spacing:0.5px;">AGENTIC AI SERVICES</div>
+        <div style="font-weight:900;font-size:9.5px;color:#15803D;letter-spacing:0.5px;">${aiZoneTitle}</div>
         <div style="font-size:7.5px;font-weight:700;color:#16A34A;">(Vertex AI &amp; DeepMind)</div>
       </div>
     </div>`,
@@ -658,12 +699,15 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
     'rounded=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;'
   );
 
-  // Gemini Notebook
+  // Gemini Notebook / ScaNN Vector Search
+  const notebookTitle = isRag ? 'VERTEX VECTOR<br/>SEARCH' : 'GEMINI<br/>NOTEBOOK';
+  const notebookSub = isRag ? '(ScaNN Knowledge)' : '(Vertex AI Workbench)';
   cell(
     'ai_gemini_notebook',
     `<div style="text-align:center;padding:3px;">
       ${ICONS.notebook}
-      <div style="font-size:7.5px;font-weight:900;color:#0F172A;margin-top:2px;">GEMINI<br/>NOTEBOOK</div>
+      <div style="font-size:7.5px;font-weight:900;color:#0F172A;margin-top:2px;">${notebookTitle}</div>
+      <div style="font-size:6px;color:#16A34A;font-weight:600;">${notebookSub}</div>
     </div>`,
     1105,
     190,
@@ -688,13 +732,15 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   );
 
   // Gemini Agent Platform Hub
+  const platformTitle = isRag ? 'GEMINI AGENT PLATFORM' : 'GEMINI AGENT PLATFORM';
+  const platformSub = isRag ? '(Gemini 2.5 Pro + Vertex RAG Grounding)' : '(Gemini 2.5 Pro / Flash Reasoning)';
   cell(
     'ai_agent_platform_hub',
     `<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:4px;">
       ${ICONS.deepmindGemini}
       <div style="text-align:left;">
-        <div style="font-size:9px;font-weight:900;color:#15803D;line-height:1.2;">GEMINI AGENT PLATFORM</div>
-        <div style="font-size:7px;color:#16A34A;font-weight:700;">(Gemini 2.5 Pro / Flash Reasoning)</div>
+        <div style="font-size:9px;font-weight:900;color:#15803D;line-height:1.2;">${platformTitle}</div>
+        <div style="font-size:7px;color:#16A34A;font-weight:700;">${platformSub}</div>
       </div>
     </div>`,
     1028,
@@ -797,13 +843,14 @@ export function generateGCPFunctionalFlowchart(props: GCPFlowchartProps = {}): s
   edge('e11', '⓿', 'agentic_app_box', 'backend_api_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
   edge('e12', '', 'backend_api_box', 'pubsub_queue_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=2;');
 
-  // Subnet A App -> Relational Data (Cloud SQL)
+  // Subnet A App -> Relational Data (Cloud SQL / Spanner)
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
   edge('e15', '❺ STORE &amp; SERVE', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;', [{ x: 805, y: 205 }]);
 
-  // Cloud SQL -> BigQuery Replication
-  edge('e16', 'REPLICATION', 'cloud_sql_primary', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7.5;fontStyle=1;');
+  // Cloud SQL / Spanner -> BigQuery Replication
+  const repLabel = isSpanner ? 'TRUETIME SYNC' : 'REPLICATION';
+  edge('e16', repLabel, 'cloud_sql_primary', 'bigquery_replica', 'edgeStyle=none;strokeColor=#D97706;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#FCD34D;padding=2;fontSize=7.5;fontStyle=1;');
 
   // Persist Data -> Cloud Storage & Lifecycle
   edge('e17', '', 'cloud_sql_primary', 'gcs_storage_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
