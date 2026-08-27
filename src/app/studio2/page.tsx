@@ -41,6 +41,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import { generateGenericArchitectureXml } from '@/lib/genericArchitecture';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
 import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopology';
 import { sanitizeDrawioXmlAttributes, injectUseCaseFlavor } from '@/lib/diagramCleaner';
@@ -342,27 +343,27 @@ function Studio2Content() {
   // Multi-Diagram Management
   const [activeDiagramId, setActiveDiagramId] = useState<string>('diag_1');
   const [diagrams, setDiagrams] = useState<StudioDiagramTab[]>(() => {
-    const xmlSet1 = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+    const xmlGeneric = generateGenericArchitectureXml({
+      projectTitle: 'Enterprise Software Architecture — Generic System Process Flow',
       theme: isLight ? 'light' : 'dark'
     });
-    const xmlSet2 = generateGCPInfrastructureTopology({
-      projectTitle: 'Google Cloud Platform — Enterprise Multi-Tier Infrastructure Reference Topology',
+    const xmlGcp = generateGcpFunctionalFlowchartXml({
+      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     return [
       {
         id: 'diag_1',
-        title: '🤖 Set 1: Agentic AI Process Flow',
-        templateId: 'gcp_functional_flowchart',
-        xml: xmlSet1,
+        title: '🌐 Option 1: Generic Architecture',
+        templateId: 'generic_architecture',
+        xml: xmlGeneric,
         source: 'functional_flowchart'
       },
       {
         id: 'diag_2',
-        title: '☁️ Set 2: Infrastructure Topology',
-        templateId: 'gcp_infrastructure_topology',
-        xml: xmlSet2,
+        title: '☁️ Option 2: GCP Native Architecture',
+        templateId: 'gcp_native_architecture',
+        xml: xmlGcp,
         source: 'custom'
       }
     ];
@@ -406,12 +407,12 @@ function Studio2Content() {
 
   // Version History State
   const [versionHistory, setVersionHistory] = useState<StudioVersionSnapshot[]>(() => {
-    const xmlSet1 = generateGcpFunctionalFlowchartXml({
-      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
+    const xmlGeneric = generateGenericArchitectureXml({
+      projectTitle: 'Enterprise Software Architecture — Generic System Process Flow',
       theme: isLight ? 'light' : 'dark'
     });
-    const xmlSet2 = generateGCPInfrastructureTopology({
-      projectTitle: 'Google Cloud Platform — Enterprise Multi-Tier Infrastructure Reference Topology',
+    const xmlGcp = generateGcpFunctionalFlowchartXml({
+      projectTitle: 'Google Cloud Agentic AI Platform — End-to-End Enterprise Process Architecture',
       theme: isLight ? 'light' : 'dark'
     });
     const now = new Date();
@@ -419,16 +420,16 @@ function Studio2Content() {
     const initDiagrams: StudioDiagramTab[] = [
       {
         id: 'diag_1',
-        title: '🤖 Set 1: Agentic AI Process Flow',
-        templateId: 'gcp_functional_flowchart',
-        xml: xmlSet1,
+        title: '🌐 Option 1: Generic Architecture',
+        templateId: 'generic_architecture',
+        xml: xmlGeneric,
         source: 'functional_flowchart'
       },
       {
         id: 'diag_2',
-        title: '☁️ Set 2: Infrastructure Topology',
-        templateId: 'gcp_infrastructure_topology',
-        xml: xmlSet2,
+        title: '☁️ Option 2: GCP Native Architecture',
+        templateId: 'gcp_native_architecture',
+        xml: xmlGcp,
         source: 'custom'
       }
     ];
@@ -438,15 +439,15 @@ function Studio2Content() {
         versionTag: 'v1.0',
         timestamp: timeStr,
         author: 'System',
-        actionSummary: 'Default Baseline: GCP Agentic AI & Multi-Tier Infrastructure Blueprints',
+        actionSummary: 'Default Baseline: Option 1 Generic & Option 2 GCP Native Blueprints',
         activeDiagramId: 'diag_1',
         diagrams: initDiagrams,
         projectName: '',
         useCaseName: '',
         projectTitle: '',
         projectScopePrompt: '',
-        changedComponents: ['Ingress & Security', 'Planning & Routing', 'Parallel Multi-Agent Swarm', 'Vertex AI & Lakehouse', 'VPC Service Controls'],
-        targetTier: 'Enterprise Global VPC'
+        changedComponents: ['Perimeter & Ingress', 'Planning & Routing', 'Service Swarm', 'Data & Integration', 'AI Core & Safety'],
+        targetTier: 'Enterprise Architecture'
       }
     ];
   });
