@@ -27,7 +27,10 @@ import {
   X,
   Code2,
   Check,
-  BookOpen
+  BookOpen,
+  GitCompare,
+  ArrowRight,
+  Search
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -81,6 +84,8 @@ export interface StudioVersionSnapshot {
   projectTitle: string;
   projectScopePrompt: string;
   selectedDomain: string;
+  changedComponents?: string[];
+  targetTier?: string;
 }
 
 export interface StudioChatMessage {
@@ -92,6 +97,8 @@ export interface StudioChatMessage {
     type: 'diagram_synthesized' | 'diagram_mutated' | 'diagram_replaced' | 'diagram_added' | 'version_restored' | 'reset_scratch';
     versionTag: string;
     summary: string;
+    changedComponents?: string[];
+    targetTier?: string;
   };
   recommendation?: {
     projectName: string;
@@ -105,6 +112,52 @@ export interface StudioChatMessage {
 }
 
 const MAX_ROLLING_VERSIONS = 10;
+
+// Helper to extract changed components and affected layer from prompt
+export function analyzePromptChanges(prompt: string, templateName: string): { changedComponents: string[]; targetTier: string; summary: string } {
+  const lower = prompt.toLowerCase();
+  const changed: string[] = [];
+  let targetTier = 'Core Architecture Layer';
+  let summary = `Updated with requirements: ${prompt.slice(0, 50)}...`;
+
+  if (/notebook|workbench|colab|jupyter/i.test(lower)) {
+    changed.push('Vertex AI Gemini Enterprise Notebooks (Workbench)');
+    changed.push('MLOps Model Garden & Agent Tooling');
+    targetTier = 'Layer 3: AI Core, Agent Reasoning & Developer Workbenches';
+    summary = 'Added Gemini Enterprise Notebooks (Vertex AI Workbench)';
+  } else if (/spanner|truetime|active-active/i.test(lower)) {
+    changed.push('Cloud Spanner Global TrueTime Active-Active');
+    changed.push('Multi-Region Distributed State Store');
+    targetTier = 'Layer 5: Database & Lakehouse Storage';
+    summary = 'Added Cloud Spanner TrueTime Multi-Region Ledger';
+  } else if (/pubsub|kafka|stream|event/i.test(lower)) {
+    changed.push('Cloud Pub/Sub & Kafka High-Throughput Event Mesh');
+    changed.push('Dataflow Real-Time Stream Processor');
+    targetTier = 'Layer 4: Event Mesh & Ingestion Pipelines';
+    summary = 'Added Pub/Sub & Kafka Real-Time Event Streaming Mesh';
+  } else if (/vector|rag|scann|embedding/i.test(lower)) {
+    changed.push('Vertex AI Vector Search (ScaNN 768-dim Embeddings)');
+    changed.push('Document Retrieval & Grounding Service');
+    targetTier = 'Layer 3: AI Reasoning & Vector Store';
+    summary = 'Configured Vertex AI Vector Search & ScaNN Grounding';
+  } else if (/armor|perimeter|vpc|zero trust|beyondcorp/i.test(lower)) {
+    changed.push('BeyondCorp Zero-Trust Ingress & Cloud Armor WAF');
+    changed.push('VPC Service Perimeters & CMEK Key Protection');
+    targetTier = 'Layer 1 & 6: Ingress Security & Sovereign Governance';
+    summary = 'Enforced Zero-Trust Security Perimeters & Cloud Armor';
+  } else if (/lakehouse|bigquery|dataplex/i.test(lower)) {
+    changed.push('BigQuery Studio Analytics Engine');
+    changed.push('Dataplex Universal Data Governance & Catalog');
+    targetTier = 'Layer 5: Lakehouse & Multi-Region Data Mesh';
+    summary = 'Configured BigQuery Studio & Dataplex Lakehouse';
+  } else {
+    changed.push(`Customized ${templateName} components with project scope`);
+    targetTier = 'Domain Architecture Systems';
+    summary = `Synthesized architecture for ${templateName}`;
+  }
+
+  return { changedComponents: changed, targetTier, summary };
+}
 
 // Generic Blank Architecture Canvas XML for "Design from Scratch"
 function generateBlankScratchXml(title: string = 'Custom Google Cloud Architecture', theme: 'light' | 'dark' = 'light', domain: string = 'enterprise'): string {
@@ -165,6 +218,8 @@ function StudioContent() {
   const [showReplaceModal, setShowReplaceModal] = useState<boolean>(false);
   const [replaceModalTab, setReplaceModalTab] = useState<'diagrams' | 'documents'>('diagrams');
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
+  const [showDiffModal, setShowDiffModal] = useState<boolean>(false);
+  const [diffBaseIndex, setDiffBaseIndex] = useState<number>(1);
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [toastNotification, setToastNotification] = useState<string | null>(null);
@@ -247,12 +302,17 @@ function StudioContent() {
 
   // Helper to push a new version snapshot into the rolling 10-item buffer
   const pushNewVersion = useCallback(
-    (actionSummary: string, author: 'User' | 'AI Assistant' | 'System', updatedDiagrams?: StudioDiagramTab[]) => {
+    (
+      actionSummary: string,
+      author: 'User' | 'AI Assistant' | 'System',
+      updatedDiagrams?: StudioDiagramTab[],
+      changedComponents?: string[],
+      targetTier?: string
+    ) => {
       const currentDiagramsState = updatedDiagrams || diagrams;
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-      const nextMajor = versionHistory.length === 0;
       let nextTag = 'v1.0';
       if (versionHistory.length > 0) {
         const lastTag = versionHistory[0].versionTag.replace(/^v/, '');
@@ -272,7 +332,9 @@ function StudioContent() {
         useCaseName,
         projectTitle,
         projectScopePrompt,
-        selectedDomain
+        selectedDomain,
+        changedComponents,
+        targetTier
       };
 
       setVersionHistory((prev) => {
@@ -436,6 +498,8 @@ function StudioContent() {
       const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : template.name);
       const flavoredXml = injectUseCaseFlavor(baseXml, titleToUse, promptToUse);
 
+      const changeAnalysis = analyzePromptChanges(promptToUse, template.name);
+
       const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
         if (diag.id === activeDiagramId) {
           return {
@@ -454,17 +518,25 @@ function StudioContent() {
       setHasSynthesized(true);
       setIsSynthesizing(false);
 
-      const tag = pushNewVersion(`Synthesized Architecture: ${template.name} (#${template.id})`, 'System', updatedDiagrams);
+      const tag = pushNewVersion(
+        changeAnalysis.summary,
+        'System',
+        updatedDiagrams,
+        changeAnalysis.changedComponents,
+        changeAnalysis.targetTier
+      );
 
       const assistantMsg: StudioChatMessage = {
         id: String(Date.now()),
         sender: 'assistant',
-        text: `✨ Successfully synthesized **${template.name} (#${template.id})** for **${titleToUse}** under domain **${selectedDomain.toUpperCase()}**! It has been committed as version **${tag}** in your rolling version control.`,
+        text: `✨ Successfully updated **${template.name} (#${template.id})** for **${titleToUse}** with: **${promptToUse}**! It has been committed as version **${tag}** in your rolling version control.`,
         timestamp: 'Just now',
         actionApplied: {
           type: 'diagram_synthesized',
           versionTag: tag,
-          summary: `Synthesized Blueprint #${template.id} (${template.name})`
+          summary: changeAnalysis.summary,
+          changedComponents: changeAnalysis.changedComponents,
+          targetTier: changeAnalysis.targetTier
         },
         suggestedPrompts: [
           'Add Cloud Spanner with multi-region active-active replication',
@@ -500,6 +572,8 @@ function StudioContent() {
       let updatedXml = activeDiagram.xml;
       let actionSummary = '';
       let changeType: NonNullable<StudioChatMessage['actionApplied']>['type'] = 'diagram_mutated';
+      let changedComps: string[] = [];
+      let targetTierStr: string | undefined = undefined;
 
       // 1. Check if user wants to create a new diagram tab
       if (lower.includes('add another diagram') || lower.includes('create another diagram') || lower.includes('new diagram tab')) {
@@ -515,7 +589,7 @@ function StudioContent() {
         const nextDiagrams = [...diagrams, newTab];
         setDiagrams(nextDiagrams);
         setActiveDiagramId(newId);
-        const tag = pushNewVersion(`Added Diagram ${diagrams.length + 1} (Network Topology)`, 'AI Assistant', nextDiagrams);
+        const tag = pushNewVersion(`Added Diagram ${diagrams.length + 1} (Network Topology)`, 'AI Assistant', nextDiagrams, ['New Tab: Network Topology (#15)'], 'Layer 1: Network Ingress & Topology');
 
         const assistantMsg: StudioChatMessage = {
           id: String(Date.now() + 1),
@@ -525,7 +599,9 @@ function StudioContent() {
           actionApplied: {
             type: 'diagram_added',
             versionTag: tag,
-            summary: `Created Diagram ${diagrams.length + 1}`
+            summary: `Created Diagram ${diagrams.length + 1}`,
+            changedComponents: ['Network Topology (#15) Tab Added'],
+            targetTier: 'Layer 1: Network & Ingress Subsystem'
           }
         };
         setChatMessages((prev) => [...prev, assistantMsg]);
@@ -538,6 +614,8 @@ function StudioContent() {
         updatedXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark', selectedDomain);
         actionSummary = 'Reset to Pure Google Cloud Native Topology Canvas';
         changeType = 'reset_scratch';
+        changedComps = ['Clean GCP Blank Canvas'];
+        targetTierStr = 'All Architectural Layers';
       }
       // 3. User wants to switch or replace blueprint explicitly
       else if (lower.includes('blueprint') || lower.includes('switch to') || lower.includes('replace with')) {
@@ -553,25 +631,20 @@ function StudioContent() {
         updatedXml = injectUseCaseFlavor(baseXml, projectTitle || template.name, text);
         actionSummary = `Replaced with Blueprint #${bpId} (${template.name})`;
         changeType = 'diagram_replaced';
+        changedComps = [`Replaced Blueprint with #${bpId} (${template.name})`];
+        targetTierStr = 'Full Diagram Architecture Model';
       }
       // 4. Diagram mutation / enhancement of the active diagram
       else {
-        actionSummary = `Updated diagram: ${text.slice(0, 60)}...`;
-        if (lower.includes('spanner')) {
-          actionSummary = 'Added Cloud Spanner TrueTime Multi-Region Ledger';
-        } else if (lower.includes('pubsub') || lower.includes('kafka')) {
-          actionSummary = 'Added Pub/Sub High-Throughput Event Streaming Mesh';
-        } else if (lower.includes('vertex') || lower.includes('rag')) {
-          actionSummary = 'Configured Vertex AI ScaNN Vector Grounding & Model Armor';
-        } else if (lower.includes('armor') || lower.includes('perimeter') || lower.includes('vpc')) {
-          actionSummary = 'Enforced Zero-Trust VPC Service Perimeters & Cloud Armor Rules';
-        }
-
-        // Apply prompt enhancement to current active XML
         const currentTplId = activeDiagram.templateId;
         const template = CANONICAL_TEMPLATES.find((t) => t.id === currentTplId) || CANONICAL_TEMPLATES[0];
         const base = activeDiagram.xml || template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
         updatedXml = injectUseCaseFlavor(base, projectTitle || `${projectName} — ${useCaseName}` || template.name, text);
+
+        const changeAnalysis = analyzePromptChanges(text, template.name);
+        actionSummary = changeAnalysis.summary;
+        changedComps = changeAnalysis.changedComponents;
+        targetTierStr = changeAnalysis.targetTier;
       }
 
       const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
@@ -587,7 +660,7 @@ function StudioContent() {
 
       setDiagrams(updatedDiagrams);
       setHasSynthesized(true);
-      const tag = pushNewVersion(actionSummary, 'AI Assistant', updatedDiagrams);
+      const tag = pushNewVersion(actionSummary, 'AI Assistant', updatedDiagrams, changedComps, targetTierStr);
 
       const assistantMsg: StudioChatMessage = {
         id: String(Date.now() + 1),
@@ -597,7 +670,9 @@ function StudioContent() {
         actionApplied: {
           type: changeType,
           versionTag: tag,
-          summary: actionSummary
+          summary: actionSummary,
+          changedComponents: changedComps,
+          targetTier: targetTierStr
         },
         suggestedPrompts: [
           'Enforce strict RTO=0 multi-region failover rules',
@@ -605,10 +680,9 @@ function StudioContent() {
           'Export as Draw.io XML for enterprise documentation'
         ]
       };
-
       setChatMessages((prev) => [...prev, assistantMsg]);
       setIsAiThinking(false);
-    }, 1000);
+    }, 800);
   };
 
   // ==========================================
@@ -939,16 +1013,55 @@ function StudioContent() {
                           >
                             <p className="text-[11.5px]">{msg.text}</p>
 
-                            {/* Action Badge */}
+                            {/* Action Badge & Change Verification Breakdown */}
                             {msg.actionApplied && (
-                              <div className="mt-2 p-1.5 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-between gap-2 text-[10px]">
-                                <span className="font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                                  <Check className="w-3 h-3 text-teal-500" />
-                                  {msg.actionApplied.summary}
-                                </span>
-                                <span className="font-mono font-bold text-slate-400">
-                                  {msg.actionApplied.versionTag}
-                                </span>
+                              <div className="mt-2.5 p-2 rounded-xl bg-teal-500/10 border border-teal-500/30 space-y-1.5 text-xs">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1 text-[11px]">
+                                    <Check className="w-3.5 h-3.5 text-teal-500" />
+                                    {msg.actionApplied.summary}
+                                  </span>
+                                  <span className="font-mono font-bold text-teal-700 dark:text-teal-300 px-1.5 py-0.5 rounded bg-teal-500/20 text-[10px]">
+                                    {msg.actionApplied.versionTag}
+                                  </span>
+                                </div>
+
+                                {/* Where the change happened */}
+                                {msg.actionApplied.targetTier && (
+                                  <div className="text-[10px] text-slate-600 dark:text-slate-300 flex items-center gap-1 font-semibold">
+                                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">📍 Target Tier:</span>
+                                    <span>{msg.actionApplied.targetTier}</span>
+                                  </div>
+                                )}
+
+                                {/* Specific components modified */}
+                                {msg.actionApplied.changedComponents && msg.actionApplied.changedComponents.length > 0 && (
+                                  <div className="space-y-0.5 pt-1 border-t border-teal-500/20">
+                                    <span className="text-[9px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 block">
+                                      ✨ Injected / Updated Nodes:
+                                    </span>
+                                    <div className="flex flex-wrap gap-1">
+                                      {msg.actionApplied.changedComponents.map((comp) => (
+                                        <span key={comp} className="inline-flex items-center gap-1 text-[9.5px] font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700">
+                                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                          {comp.replace(/&amp;/g, '&')}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Direct Button to open Visual Diff */}
+                                <div className="pt-1 flex items-center justify-end">
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowDiffModal(true)}
+                                    className="text-[10px] font-bold text-teal-700 dark:text-teal-300 hover:text-teal-900 dark:hover:text-white flex items-center gap-1 px-2 py-1 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 transition-all cursor-pointer"
+                                  >
+                                    <GitCompare className="w-3 h-3 text-teal-500" />
+                                    <span>🔍 Verify &amp; Compare Changes (Diff)</span>
+                                  </button>
+                                </div>
                               </div>
                             )}
 
@@ -1143,6 +1256,20 @@ function StudioContent() {
                   </div>
 
                   <div className="flex items-center gap-1.5">
+                    {/* Compare Versions / Visual Diff Button */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDiffBaseIndex(versionHistory.length > 1 ? 1 : 0);
+                        setShowDiffModal(true);
+                      }}
+                      className="px-2.5 py-1 rounded-lg font-bold text-[11px] bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
+                      title="Compare current diagram against previous version (Visual Diff)"
+                    >
+                      <GitCompare className="w-3 h-3 text-teal-500" />
+                      <span>Compare Diff ({currentVersionTag})</span>
+                    </button>
+
                     {/* Replace Blueprint Button */}
                     <button
                       type="button"
@@ -1518,33 +1645,266 @@ function StudioContent() {
                       <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
                         {snap.actionSummary}
                       </p>
-                      <span className="text-[10px] text-slate-400">
+                      {snap.targetTier && (
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-mono">
+                          <span>📍 Tier:</span> {snap.targetTier}
+                        </div>
+                      )}
+                      {snap.changedComponents && snap.changedComponents.length > 0 && (
+                        <div className="flex flex-wrap gap-1 pt-0.5">
+                          {snap.changedComponents.map((c) => (
+                            <span key={c} className="text-[9px] font-medium px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                              +{c.replace(/&amp;/g, '&')}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <span className="text-[10px] text-slate-400 block">
                         {snap.diagrams.length} Diagram(s) &bull; {snap.selectedDomain.toUpperCase()}
                       </span>
                     </div>
 
-                    {currentHistoryIndex !== index && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCurrentHistoryIndex(index);
-                          setDiagrams(snap.diagrams);
-                          setActiveDiagramId(snap.activeDiagramId);
-                          setProjectName(snap.projectName);
-                          setUseCaseName(snap.useCaseName);
-                          setProjectTitle(snap.projectTitle);
-                          setProjectScopePrompt(snap.projectScopePrompt);
-                          setSelectedDomain(snap.selectedDomain);
-                          setShowHistoryModal(false);
-                        }}
-                        className="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 text-white hover:bg-teal-500 transition-all cursor-pointer"
-                      >
-                        Restore
-                      </button>
-                    )}
+                    <div className="flex items-center gap-1.5">
+                      {currentHistoryIndex !== index && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setDiffBaseIndex(index);
+                              setShowHistoryModal(false);
+                              setShowDiffModal(true);
+                            }}
+                            className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-teal-50 dark:hover:bg-teal-950/40 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
+                            title="Compare this snapshot with current version"
+                          >
+                            <GitCompare className="w-3 h-3 text-teal-500" />
+                            <span>Diff</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCurrentHistoryIndex(index);
+                              setDiagrams(snap.diagrams);
+                              setActiveDiagramId(snap.activeDiagramId);
+                              setProjectName(snap.projectName);
+                              setUseCaseName(snap.useCaseName);
+                              setProjectTitle(snap.projectTitle);
+                              setProjectScopePrompt(snap.projectScopePrompt);
+                              setSelectedDomain(snap.selectedDomain);
+                              setShowHistoryModal(false);
+                              showToast(`⏪ Restored snapshot ${snap.versionTag}!`);
+                            }}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-600 text-white hover:bg-teal-500 transition-all cursor-pointer"
+                          >
+                            Restore
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==========================================
+          MODAL 3: VISUAL VERSION DIFF & CHANGE VERIFICATION
+      ========================================== */}
+      {showDiffModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-6 bg-black/75 backdrop-blur-md">
+          <div className={`w-full max-w-7xl max-h-[92vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden ${
+            isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+          }`}>
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b flex items-center justify-between gap-4 bg-slate-50/80 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400">
+                  <GitCompare className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>Visual Architecture Version Diff</span>
+                    <span className="text-xs px-2 py-0.5 rounded-md font-mono bg-teal-500/20 text-teal-600 dark:text-teal-400">
+                      {versionHistory[diffBaseIndex]?.versionTag || 'Base'} &harr; {currentVersionTag}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Side-by-side visual inspection of injected components, routing, and tier changes
+                  </p>
+                </div>
+              </div>
+
+              {/* Version Comparison Selector */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-500">Compare with:</span>
+                <select
+                  value={diffBaseIndex}
+                  onChange={(e) => setDiffBaseIndex(Number(e.target.value))}
+                  className={`px-3 py-1.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer ${
+                    isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-700 text-white'
+                  }`}
+                >
+                  {versionHistory.map((snap, idx) => (
+                    <option key={snap.id} value={idx} disabled={idx === currentHistoryIndex}>
+                      {snap.versionTag} &bull; {snap.actionSummary.slice(0, 35)} ({snap.timestamp})
+                    </option>
+                  ))}
+                </select>
+
+                <button
+                  type="button"
+                  onClick={() => setShowDiffModal(false)}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Changed Components Summary Box */}
+            <div className="px-6 py-3 border-b bg-teal-500/5 dark:bg-teal-950/20 border-teal-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-4">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Action Applied:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    {versionHistory[0]?.actionSummary || 'Initial Blueprint Synthesis'}
+                  </span>
+                </div>
+                {versionHistory[0]?.targetTier && (
+                  <div>
+                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">Target Architecture Tier:</span>
+                    <span className="font-mono text-teal-600 dark:text-teal-400 font-semibold">
+                      {versionHistory[0].targetTier}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Badges of Modified Components */}
+              {versionHistory[0]?.changedComponents && versionHistory[0].changedComponents.length > 0 && (
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold mr-1">Injected Nodes:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {versionHistory[0].changedComponents.map((comp) => (
+                      <span key={comp} className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        {comp.replace(/&amp;/g, '&')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Side-by-Side Dual Viewport Grid */}
+            <div className="p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 overflow-y-auto">
+              
+              {/* LEFT VIEWPORT: BASE / PREVIOUS VERSION */}
+              <div className="flex flex-col space-y-2 border rounded-2xl p-3 bg-slate-50/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded font-mono font-bold text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                      {versionHistory[diffBaseIndex]?.versionTag || 'Base Version'}
+                    </span>
+                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 truncate max-w-[240px]">
+                      {versionHistory[diffBaseIndex]?.actionSummary || 'Previous Snapshot'}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {versionHistory[diffBaseIndex]?.timestamp || ''}
+                  </span>
+                </div>
+
+                <div className="h-[360px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#070A13] flex items-center justify-center relative">
+                  {versionHistory[diffBaseIndex]?.diagrams?.[0]?.xml ? (
+                    <DiagramViewerRenderSafe
+                      key={`diff_base_${diffBaseIndex}_${versionHistory[diffBaseIndex].versionTag}`}
+                      diagramId={versionHistory[diffBaseIndex].diagrams[0].templateId}
+                      diagramType="custom"
+                      xml={versionHistory[diffBaseIndex].diagrams[0].xml}
+                      aspectRatioId="16:9"
+                      bgTheme={isLight ? 'light' : 'dark'}
+                      useCaseName={versionHistory[diffBaseIndex].projectTitle || 'Base Version'}
+                    />
+                  ) : (
+                    <div className="text-xs text-slate-400">No XML in snapshot</div>
+                  )}
+                </div>
+
+                {/* Rollback to this version action */}
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="text-[10.5px] text-slate-400">
+                    Revert entire diagram to this point
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const snap = versionHistory[diffBaseIndex];
+                      if (snap) {
+                        setCurrentHistoryIndex(diffBaseIndex);
+                        setDiagrams(snap.diagrams);
+                        setActiveDiagramId(snap.activeDiagramId);
+                        setProjectName(snap.projectName);
+                        setUseCaseName(snap.useCaseName);
+                        setProjectTitle(snap.projectTitle);
+                        setProjectScopePrompt(snap.projectScopePrompt);
+                        setSelectedDomain(snap.selectedDomain);
+                        setShowDiffModal(false);
+                        showToast(`⏪ Reverted to ${snap.versionTag}!`);
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                  >
+                    Restore {versionHistory[diffBaseIndex]?.versionTag}
+                  </button>
+                </div>
+              </div>
+
+              {/* RIGHT VIEWPORT: CURRENT MODIFIED VERSION */}
+              <div className="flex flex-col space-y-2 border rounded-2xl p-3 bg-teal-500/5 dark:bg-teal-950/20 border-teal-500/30 ring-2 ring-teal-500/20">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded font-mono font-black text-xs bg-teal-500 text-white shadow-xs">
+                      {currentVersionTag} (ACTIVE)
+                    </span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate max-w-[240px]">
+                      {versionHistory[currentHistoryIndex]?.actionSummary || activeDiagram.title}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-emerald-500 font-bold">
+                    ✨ Modified
+                  </span>
+                </div>
+
+                <div className="h-[360px] rounded-xl overflow-hidden border border-teal-500/30 bg-white dark:bg-[#070A13] flex items-center justify-center relative">
+                  <DiagramViewerRenderSafe
+                    key={`diff_current_${currentVersionTag}_${activeDiagram.xml.length}`}
+                    diagramId={activeDiagram.templateId}
+                    diagramType="custom"
+                    xml={activeDiagram.xml}
+                    aspectRatioId="16:9"
+                    bgTheme={isLight ? 'light' : 'dark'}
+                    useCaseName={projectTitle || 'Current Version'}
+                  />
+                </div>
+
+                {/* Confirm and keep current */}
+                <div className="pt-1 flex items-center justify-between">
+                  <span className="text-[10.5px] text-teal-600 dark:text-teal-400 font-semibold">
+                    Current active version is rendered in workspace
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowDiffModal(false)}
+                    className="px-4 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all cursor-pointer"
+                  >
+                    Keep &amp; Close Diff
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>

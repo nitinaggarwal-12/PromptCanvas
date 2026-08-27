@@ -937,8 +937,36 @@ export function injectUseCaseFlavor(xml: string, useCaseTitle: string, userPromp
     .replace(/Jun 8, 2025/g, 'Q4 2026')
     .replace(/&amp;amp;/g, '&amp;');
 
-  // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine
+  // 1a. Smart Prompt Component Hydration (Notebooks, Spanner, PubSub, Vector Search, etc.)
   const promptLower = ((userPrompt || '') + ' ' + (useCaseTitle || '')).toLowerCase();
+  if (/notebook|workbench|colab|jupyter/i.test(promptLower)) {
+    updatedXml = updatedXml
+      .replace(/Vertex AI Reasoning Engine/gi, 'Vertex AI Reasoning Engine &amp; Gemini Notebooks (Workbench)')
+      .replace(/Developer &amp; Platform Engineers/gi, 'Data Scientists, ML Engineers &amp; Gemini Notebooks')
+      .replace(/Developer Workstations/gi, 'Vertex AI Gemini Notebooks &amp; Workstations')
+      .replace(/Cloud Shell \/ Workstations/gi, 'Gemini Enterprise Notebooks (Vertex AI Workbench)')
+      .replace(/Platform Engineering Portal/gi, 'Gemini Notebooks &amp; AI Platform Portal')
+      .replace(/Data Science Workstation/gi, 'Vertex AI Gemini Enterprise Notebooks (Workbench)');
+  }
+  if (/spanner|truetime|active-active/i.test(promptLower)) {
+    updatedXml = updatedXml
+      .replace(/Cloud SQL \((?:DB Core|OLTP|PostgreSQL)[^)]*\)/gi, 'Cloud Spanner (Global TrueTime Active-Active)')
+      .replace(/PostgreSQL \/ MySQL OLTP Core/gi, 'Cloud Spanner TrueTime Multi-Region Ledger')
+      .replace(/Production Operational OLTP Core/gi, 'Cloud Spanner Distributed DB Core')
+      .replace(/Cloud SQL PostgreSQL 15/gi, 'Cloud Spanner Multi-Region Instance');
+  }
+  if (/pubsub|kafka|event mesh|stream/i.test(promptLower)) {
+    updatedXml = updatedXml
+      .replace(/Cloud Pub\/Sub Topics/gi, 'Cloud Pub/Sub &amp; Kafka Event Stream Mesh')
+      .replace(/Batch &amp; Stream Ingestion/gi, 'Pub/Sub Real-Time Streaming Mesh');
+  }
+  if (/vector|rag|scann|embedding/i.test(promptLower)) {
+    updatedXml = updatedXml
+      .replace(/Vertex AI Matching Engine/gi, 'Vertex AI Vector Search (ScaNN 768-dim)')
+      .replace(/Vector Database/gi, 'Vertex AI Vector Search &amp; Knowledge Graph');
+  }
+
+  // 1b. Domain-Aware Dynamic Enterprise Governance Header Engine
   let dynPersonas = 'Enterprise Architect, AI Systems Engineer';
   let dynStakeholders = 'Governance Board, Platform SRE';
   let dynDefinition = 'Unified Logical Flow, Technology Stack, Security Boundaries, &amp; Operational Lifecycles';
