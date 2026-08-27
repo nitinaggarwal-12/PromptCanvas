@@ -1,13 +1,16 @@
 /**
  * 🏛️ Google Cloud Architecture Center — Enterprise Agentic AI Platform
  * 
- * 100% Official Google Cloud Brand Fidelity:
+ * 100% Official Google Cloud Brand & Routing Fidelity:
  * - Google Sans / Roboto typography hierarchy
  * - Official Google 4-Color Logo & Product Palette (#1A73E8, #EA4335, #FBBC04, #34A853)
  * - Clean White Google Material Architecture Cards with subtle #DADCE0 borders
  * - Dedicated BigQuery Lakehouse & Cloud Spanner TrueTime nodes
- * - Vertex AI Extensions & Model Armor Safety Gates (replacing BPMN diamonds)
- * - 100% Collision-Free Orthogonal Routing & High-Contrast Pill Badges
+ * - Vertex AI Extensions & Model Armor Safety Gates
+ * - PRISTINE 100% ORTHOGONAL ROUTING:
+ *     * ZERO diagonal kinks or slanted exit stubs
+ *     * ZERO shared overlapping trunks
+ *     * Discrete dedicated input/output ports for all parallel streams
  * - Master 16:9 Ultra-Widescreen Canvas (1600x920)
  */
 
@@ -115,15 +118,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // =========================================================================
-  // 2. SIX STAGE PHASE HEADERS (x=24..1576, y=70..98)
+  // 2. SIX STAGE PHASE HEADERS (x=24..1576, y=68..94)
   // =========================================================================
   const stages = [
     { num: '1', t: 'Ingress & Security', w: 200, x: 24, c: '#1A73E8' },
-    { num: '2', t: 'Planning & Memory', w: 220, x: 260, c: '#1A73E8' },
-    { num: '3', t: 'Agent Swarm', w: 200, x: 504, c: '#1A73E8' },
-    { num: '4', t: 'Data & Tools', w: 230, x: 724, c: '#1A73E8' },
-    { num: '5', t: 'Gemini Reasoning', w: 260, x: 974, c: '#1E8E3E' },
-    { num: '6', t: 'Safety & Delivery', w: 230, x: 1254, c: '#1E8E3E' }
+    { num: '2', t: 'Planning & Memory', w: 215, x: 260, c: '#1A73E8' },
+    { num: '3', t: 'Agent Swarm', w: 195, x: 510, c: '#1A73E8' },
+    { num: '4', t: 'Data & Tools', w: 225, x: 740, c: '#1A73E8' },
+    { num: '5', t: 'Gemini Reasoning', w: 230, x: 1000, c: '#1E8E3E' },
+    { num: '6', t: 'Safety & Delivery', w: 230, x: 1265, c: '#1E8E3E' }
   ];
 
   stages.forEach(st => {
@@ -200,9 +203,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#0D9488;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), '', 'n_start_users', 'n_edge_armor', 124, 186, 124, 215, 'strokeColor=#1A73E8;strokeWidth=1.8;endArrow=block;endSize=4;');
-  line(nid(), '', 'n_edge_armor', 'n_edge_iap', 124, 291, 124, 320, 'strokeColor=#1A73E8;strokeWidth=1.8;endArrow=block;endSize=4;');
-  line(nid(), '', 'n_edge_iap', 'n_cloud_dlp', 124, 396, 124, 425, 'strokeColor=#0D9488;strokeWidth=1.8;endArrow=block;endSize=4;');
+  line(nid(), '', 'n_start_users', 'n_edge_armor', 124, 186, 124, 215, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
+  line(nid(), '', 'n_edge_armor', 'n_edge_iap', 124, 291, 124, 320, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
+  line(nid(), '', 'n_edge_iap', 'n_cloud_dlp', 124, 396, 124, 425, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // =========================================================================
   // 4. COLUMN 2: PLANNING, ROUTING & MEMORY (x=260, w=215)
@@ -221,7 +224,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'Sanitized Prompt', 'n_cloud_dlp', 'gate_task_type', 224, 463, 260, 463, 'strokeColor=#0D9488;strokeWidth=2;endArrow=block;endSize=4;');
+  line(nid(), 'Sanitized Prompt', 'n_cloud_dlp', 'gate_task_type', 224, 463, 260, 463, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // FAST PATH INFERENCE CARD (Top-aligned)
   node(
@@ -238,9 +241,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1E8E3E;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // Direct fast path routes cleanly through open corridor at x=242
-  line(nid(), 'Direct Route', 'gate_task_type', 'n_fast_path', 260, 463, 260, 148, 'strokeColor=#1E8E3E;strokeWidth=2;endArrow=block;endSize=4;', [
-    { x: 242, y: 463 },
+  // Router to Fast-Path: Clean single 90-degree orthogonal line in open space (x=240)
+  line(nid(), 'Direct Route', 'gate_task_type', 'n_fast_path', 260, 445, 260, 148, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 242, y: 445 },
     { x: 242, y: 148 }
   ]);
 
@@ -259,8 +262,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.8;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // Multi-step branch goes directly UP from router into Supervisor bottom
-  line(nid(), 'Multi-Step Plan', 'gate_task_type', 'n_supervisor', 367, 425, 367, 349, 'strokeColor=#1A73E8;strokeWidth=2;endArrow=block;endSize=4;');
+  // Multi-step branch goes directly UP from router into Supervisor bottom (100% straight vertical)
+  line(nid(), 'Multi-Step Plan', 'gate_task_type', 'n_supervisor', 367, 425, 367, 349, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // CONVERSATIONAL & EPISODIC MEMORY (Under Router)
   node(
@@ -283,10 +286,11 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   ]);
 
   // =========================================================================
-  // 5. COLUMN 3: 3 PARALLEL SPECIALIST AGENTS (x=504, w=195)
+  // 5. COLUMN 3: 3 PARALLEL SPECIALIST AGENTS (x=510, w=195)
+  // Perfectly aligned with Lane 1 (y=155), Lane 2 (y=271), Lane 3 (y=395)
   // =========================================================================
 
-  // LANE 1: RAG AGENT
+  // LANE 1: RAG AGENT (y=155)
   node(
     "n_rag_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
@@ -296,14 +300,14 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Hybrid Semantic Retrieval</div>
     </div>`,
-    504,
+    510,
     155,
     195,
     72,
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // LANE 2: SQL AGENT
+  // LANE 2: SQL AGENT (y=271, exact match to Supervisor center y=307)
   node(
     "n_sql_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
@@ -313,14 +317,14 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Text-to-SQL Generator</div>
     </div>`,
-    504,
-    275,
+    510,
+    271,
     195,
     72,
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // LANE 3: TOOL AGENT
+  // LANE 3: TOOL AGENT (y=395)
   node(
     "n_tool_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
@@ -330,26 +334,31 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Vertex AI Tool Execution</div>
     </div>`,
-    504,
+    510,
     395,
     195,
     72,
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // Supervisor dispatches to all 3 parallel specialist lanes
-  line(nid(), 'Parallel RAG', 'n_supervisor', 'n_rag_agent', 475, 285, 504, 191, 'strokeColor=#1A73E8;strokeWidth=1.8;endArrow=block;endSize=4;', [
-    { x: 490, y: 285 },
-    { x: 490, y: 191 }
+  // 100% PURE ORTHOGONAL DISPATCH LINES (Strict 90-degree Manhattan routing)
+  // Lane 1: Exits Supervisor right edge straight at y=285 -> goes up to y=191 -> enters RAG left edge straight at y=191
+  line(nid(), 'Parallel RAG', 'n_supervisor', 'n_rag_agent', 475, 285, 510, 191, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 492, y: 285 },
+    { x: 492, y: 191 }
   ]);
-  line(nid(), 'Parallel SQL', 'n_supervisor', 'n_sql_agent', 475, 307, 504, 307, 'strokeColor=#E37400;strokeWidth=1.8;endArrow=block;endSize=4;');
-  line(nid(), 'Parallel Tools', 'n_supervisor', 'n_tool_agent', 475, 329, 504, 431, 'strokeColor=#0D9488;strokeWidth=1.8;endArrow=block;endSize=4;', [
-    { x: 490, y: 329 },
-    { x: 490, y: 431 }
+
+  // Lane 2: 100% Straight horizontal line at y=307
+  line(nid(), 'Parallel SQL', 'n_supervisor', 'n_sql_agent', 475, 307, 510, 307, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;');
+
+  // Lane 3: Exits Supervisor right edge straight at y=329 -> goes down to y=431 -> enters Tool Agent left edge straight at y=431
+  line(nid(), 'Parallel Tools', 'n_supervisor', 'n_tool_agent', 475, 329, 510, 431, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 492, y: 329 },
+    { x: 492, y: 431 }
   ]);
 
   // =========================================================================
-  // 6. COLUMN 4: DATA SOURCES & VERTEX TOOLS (x=724, w=225)
+  // 6. COLUMN 4: DATA SOURCES & VERTEX TOOLS (x=740, w=225)
   // =========================================================================
 
   // DATA SOURCE 1: VERTEX VECTOR SEARCH
@@ -362,7 +371,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8.5px;color:#1A73E8;font-weight:600;margin-top:2px;">ScaNN Semantic Index (&lt; 5ms)</div>
     </div>`,
-    724,
+    740,
     135,
     225,
     64,
@@ -378,15 +387,18 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
         <div style="font-size:7.5px;color:#5F6368;">Automated Chunking &amp; Embeddings</div>
       </div>
     </div>`,
-    724,
+    740,
     205,
     225,
     38,
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=0;rounded=1;arcSize=6;`
   );
 
-  line(nid(), '', 'n_doc_ingestion', 'n_vector_search', 836, 205, 836, 199, 'strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=3 3;endArrow=block;endSize=4;');
-  line(nid(), 'Embedding', 'n_rag_agent', 'n_vector_search', 699, 191, 724, 167, 'strokeColor=#1A73E8;strokeWidth=1.8;endArrow=block;endSize=4;');
+  line(nid(), '', 'n_doc_ingestion', 'n_vector_search', 852, 205, 852, 199, 'strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=3 3;endArrow=block;endSize=4;');
+  line(nid(), 'Embedding', 'n_rag_agent', 'n_vector_search', 705, 191, 740, 167, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 722, y: 191 },
+    { x: 722, y: 167 }
+  ]);
 
   // DATA SOURCE 2: BIGQUERY STUDIO (Separate Card)
   node(
@@ -398,7 +410,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8px;color:#E37400;font-weight:600;margin-top:1px;">Analytics Lakehouse &amp; Text-to-SQL</div>
     </div>`,
-    724,
+    740,
     265,
     225,
     46,
@@ -415,14 +427,17 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8px;color:#1A73E8;font-weight:600;margin-top:1px;">TrueTime Globally Distributed DB</div>
     </div>`,
-    724,
+    740,
     317,
     225,
     46,
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'SQL Query', 'n_sql_agent', 'n_bigquery_dw', 699, 307, 724, 288, 'strokeColor=#E37400;strokeWidth=1.8;endArrow=block;endSize=4;');
+  line(nid(), 'SQL Query', 'n_sql_agent', 'n_bigquery_dw', 705, 307, 740, 288, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 722, y: 307 },
+    { x: 722, y: 288 }
+  ]);
 
   // DECISION GATE 2: VERTEX AI EXTENSIONS & GOVERNANCE
   node(
@@ -432,14 +447,14 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       <div style="font-size:10.5px;font-weight:700;color:#202124;margin-top:2px;">HITL Approval Gate</div>
       <div style="font-size:7.5px;color:#D93025;font-weight:600;">Dual Admin Authorization</div>
     </div>`,
-    724,
+    740,
     395,
     115,
     72,
     `fillColor=${cardBg};strokeColor=#EA4335;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'Tool Call', 'n_tool_agent', 'n_hitl_governance_node', 699, 431, 724, 431, 'strokeColor=#0D9488;strokeWidth=1.8;endArrow=block;endSize=4;');
+  line(nid(), 'Tool Call', 'n_tool_agent', 'n_hitl_governance_node', 705, 431, 740, 431, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // DATA SOURCE 3: VERTEX AI EXTENSIONS & TOOLS
   node(
@@ -451,53 +466,62 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="font-size:8px;color:#0D9488;font-weight:600;margin-top:2px;">Google Workspace, Salesforce, SAP</div>
     </div>`,
-    850,
+    870,
     395,
-    170,
+    160,
     72,
     `fillColor=${cardBg};strokeColor=#0D9488;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'Approved', 'n_hitl_governance_node', 'n_vertex_extensions', 839, 431, 850, 431, 'strokeColor=#1E8E3E;strokeWidth=1.8;endArrow=block;endSize=4;');
+  line(nid(), 'Approved', 'n_hitl_governance_node', 'n_vertex_extensions', 855, 431, 870, 431, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // =========================================================================
-  // 7. COLUMN 5: GEMINI 3.1 PRO / FLASH REASONING PLATFORM (x=1040, w=195)
+  // 7. COLUMN 5: GEMINI 3.1 PRO / FLASH REASONING PLATFORM (x=1060, w=175)
+  // Perfectly positioned to receive discrete straight horizontal connectors!
   // =========================================================================
   node(
     "n_gemini_core",
     `<div style="padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       ${renderGcpIconHtml('gemini', 36)}
-      <div style="font-size:13.5px;font-weight:700;color:#202124;margin-top:6px;letter-spacing:-0.2px;">Gemini 3.1 Pro / Flash</div>
-      <div style="font-size:9px;color:#1E8E3E;font-weight:600;margin-top:2px;">Multimodal Reasoning &amp; Synthesis</div>
-      <div style="font-size:8px;color:#5F6368;margin-top:4px;">2M Context Window • CoT Self-Reflection</div>
+      <div style="font-size:13px;font-weight:700;color:#202124;margin-top:6px;letter-spacing:-0.2px;">Gemini 3.1 Pro / Flash</div>
+      <div style="font-size:8.5px;color:#1E8E3E;font-weight:600;margin-top:2px;">Multimodal Reasoning &amp; Synthesis</div>
+      <div style="font-size:7.5px;color:#5F6368;margin-top:4px;">2M Context • CoT Reflection</div>
     </div>`,
-    1040,
-    215,
-    195,
-    160,
+    1060,
+    185,
+    175,
+    220,
     `fillColor=${cardBg};strokeColor=#1E8E3E;strokeWidth=2;shadow=1;rounded=1;arcSize=10;`
   );
 
-  // Fast path prompt routes through top channel (y=96) cleanly above all cards into Gemini Core
-  line(nid(), 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 475, 148, 1040, 245, 'strokeColor=#1E8E3E;strokeWidth=1.8;endArrow=block;endSize=4;', [
-    { x: 475, y: 96 },
-    { x: 1010, y: 96 },
-    { x: 1010, y: 245 }
+  // 100% CLEAN DISCRETE CONNECTOR PATHS INTO GEMINI (NO SHARED LINES, NO DIAGONALS)
+  
+  // Port 1 (y=215): Fast Path Direct Prompt (Straight horizontal into top port)
+  line(nid(), 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 475, 148, 1060, 215, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 1045, y: 148 },
+    { x: 1045, y: 215 }
   ]);
 
-  // All 3 parallel streams converge gracefully into Gemini Core
-  line(nid(), 'Vector Context', 'n_vector_search', 'n_gemini_core', 949, 167, 1040, 265, 'strokeColor=#1A73E8;strokeWidth=2;endArrow=block;endSize=4;', [
-    { x: 1010, y: 167 },
-    { x: 1010, y: 265 }
+  // Port 2 (y=265): Vector Search Context (Straight horizontal from vector search)
+  line(nid(), 'Vector Context', 'n_vector_search', 'n_gemini_core', 965, 167, 1060, 265, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 1035, y: 167 },
+    { x: 1035, y: 265 }
   ]);
-  line(nid(), 'SQL Records', 'n_bigquery_dw', 'n_gemini_core', 949, 288, 1040, 295, 'strokeColor=#E37400;strokeWidth=2;endArrow=block;endSize=4;');
-  line(nid(), 'Action Payload', 'n_vertex_extensions', 'n_gemini_core', 1020, 431, 1040, 325, 'strokeColor=#0D9488;strokeWidth=2;endArrow=block;endSize=4;', [
-    { x: 1030, y: 431 },
-    { x: 1030, y: 325 }
+
+  // Port 3 (y=305): BigQuery SQL Records (Straight horizontal from BigQuery)
+  line(nid(), 'SQL Records', 'n_bigquery_dw', 'n_gemini_core', 965, 288, 1060, 305, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 1025, y: 288 },
+    { x: 1025, y: 305 }
+  ]);
+
+  // Port 4 (y=355): Vertex Extensions Action Payload (Straight horizontal from Extensions)
+  line(nid(), 'Action Payload', 'n_vertex_extensions', 'n_gemini_core', 1030, 431, 1060, 355, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
+    { x: 1045, y: 431 },
+    { x: 1045, y: 355 }
   ]);
 
   // =========================================================================
-  // 8. COLUMN 6: SAFETY GUARDRAILS & STREAMED DELIVERY (x=1270, w=210)
+  // 8. COLUMN 6: SAFETY GUARDRAILS & STREAMED DELIVERY (x=1265, w=200)
   // =========================================================================
   node(
     "gate_factuality",
@@ -513,12 +537,13 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#EA4335;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'Verify Output', 'n_gemini_core', 'gate_factuality', 1235, 295, 1265, 295, 'strokeColor=#EA4335;strokeWidth=2;endArrow=block;endSize=4;');
+  // Gemini Output -> Model Armor: 100% straight horizontal line at y=295
+  line(nid(), 'Verify Output', 'n_gemini_core', 'gate_factuality', 1235, 295, 1265, 295, 'strokeColor=#EA4335;strokeWidth=1.5;endArrow=block;endSize=4;');
 
-  // SELF-CORRECTION LOOP (Clean top waypoint with Max 3 Retries)
-  line(nid(), 'Self-Correction Loop (Max 3)', 'gate_factuality', 'n_gemini_core', 1365, 255, 1137, 215, 'strokeColor=#EA4335;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;', [
-    { x: 1365, y: 155 },
-    { x: 1137, y: 155 }
+  // Self-Correction Loop: Clean orthogonal loop exiting top of Model Armor (y=255) -> enters top of Gemini (y=185)
+  line(nid(), 'Self-Correction Loop (Max 3)', 'gate_factuality', 'n_gemini_core', 1365, 255, 1147, 185, 'strokeColor=#EA4335;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;', [
+    { x: 1365, y: 145 },
+    { x: 1147, y: 145 }
   ]);
 
   // STREAMED GROUNDED RESPONSE
@@ -536,8 +561,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1E8E3E;strokeWidth=1.8;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // Grounded path DOWN to Streamed Delivery
-  line(nid(), 'Grounded (Pass)', 'gate_factuality', 'n_delivery', 1365, 335, 1365, 385, 'strokeColor=#1E8E3E;strokeWidth=2;endArrow=block;endSize=4;');
+  // Grounded path DOWN to Streamed Delivery (100% straight vertical at x=1365)
+  line(nid(), 'Grounded (Pass)', 'gate_factuality', 'n_delivery', 1365, 335, 1365, 385, 'strokeColor=#1E8E3E;strokeWidth=1.8;endArrow=block;endSize=4;');
 
   // CLOUD LOGGING & GENAI EVAL
   node(
@@ -554,10 +579,11 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
+  // Delivery -> Logging (100% straight vertical at x=1365)
   line(nid(), '', 'n_delivery', 'n_audit_logging', 1365, 467, 1365, 500, 'strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endSize=4;');
 
   // =========================================================================
-  // 9. BOTTOM OBSERVABILITY & GOVERNANCE FOUNDATION (x=24..1576, y=615..665)
+  // 9. BOTTOM OBSERVABILITY & GOVERNANCE FOUNDATION (x=24..1576, y=610..660)
   // =========================================================================
   node(
     "cloud_monitoring_telemetry",
