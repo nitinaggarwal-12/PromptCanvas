@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, Suspense, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
@@ -26,7 +26,8 @@ import {
   Info,
   X,
   Code2,
-  Check
+  Check,
+  BookOpen
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -153,9 +154,22 @@ function StudioContent() {
 
   // UI Modals & Menus
   const [showReplaceModal, setShowReplaceModal] = useState<boolean>(false);
+  const [replaceModalTab, setReplaceModalTab] = useState<'diagrams' | 'documents'>('diagrams');
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
+  const [toastNotification, setToastNotification] = useState<string | null>(null);
+
+  // Draw.io Child Window Ref for live Bidirectional postMessage Sync
+  const drawioChildWindowRef = useRef<Window | null>(null);
+
+  // Helper to show transient toast message
+  const showToast = useCallback((msg: string) => {
+    setToastNotification(msg);
+    setTimeout(() => {
+      setToastNotification(null);
+    }, 3500);
+  }, []);
 
   // Rolling 10-Version History Buffer
   const [versionHistory, setVersionHistory] = useState<StudioVersionSnapshot[]>([]);
@@ -297,6 +311,63 @@ function StudioContent() {
       }
     }
   }, [currentHistoryIndex, versionHistory]);
+
+  // Open in Draw.io with Live Bidirectional Sync
+  const handleOpenInDrawio = useCallback(() => {
+    const url = 'https://app.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
+    const child = window.open(url, '_blank');
+    if (child) {
+      drawioChildWindowRef.current = child;
+      showToast('🚀 Opened in Draw.io Editor with live bidirectional sync!');
+    }
+  }, [showToast]);
+
+  // Bidirectional Draw.io PostMessage Integration
+  useEffect(() => {
+    const handleMessage = (evt: MessageEvent) => {
+      if (!evt.data) return;
+      let msg: any = {};
+      try {
+        msg = typeof evt.data === 'string' ? JSON.parse(evt.data) : evt.data;
+      } catch {
+        return;
+      }
+
+      if (msg.event === 'init') {
+        const target = drawioChildWindowRef.current || (evt.source as Window);
+        if (target) {
+          target.postMessage(
+            JSON.stringify({
+              action: 'load',
+              xml: activeDiagram.xml,
+              fit: false
+            }),
+            '*'
+          );
+        }
+      } else if (msg.event === 'save' || msg.event === 'export') {
+        const xml = msg.xml || msg.data;
+        if (xml && typeof xml === 'string' && xml.includes('<mxfile')) {
+          const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
+            if (diag.id === activeDiagramId) {
+              return {
+                ...diag,
+                xml,
+                source: 'blueprint'
+              };
+            }
+            return diag;
+          });
+          setDiagrams(updatedDiagrams);
+          const tag = pushNewVersion(`Synced edits from Draw.io Editor`, 'User', updatedDiagrams);
+          showToast(`✅ Saved changes from Draw.io Editor as version ${tag}!`);
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [activeDiagram.xml, activeDiagramId, diagrams, pushNewVersion, showToast]);
 
   // Keyboard Shortcuts for Undo (Cmd+Z / Ctrl+Z) and Redo (Cmd+Shift+Z / Ctrl+Y)
   useEffect(() => {
@@ -1209,9 +1280,18 @@ function StudioContent() {
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
+                      onClick={handleOpenInDrawio}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-teal-500/20"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Open in Draw.io</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => {
                         navigator.clipboard.writeText(activeDiagram.xml);
                         setCopiedXml(true);
+                        showToast('📋 Copied Draw.io XML to clipboard!');
                         setTimeout(() => setCopiedXml(false), 2000);
                       }}
                       className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
@@ -1234,8 +1314,16 @@ function StudioContent() {
         </div>
       </main>
 
+      {/* FLOATING TOAST NOTIFICATION */}
+      {toastNotification && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 dark:bg-slate-800/95 border border-teal-500/40 text-white text-xs font-bold shadow-2xl backdrop-blur-md flex items-center gap-2 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <Sparkles className="w-4 h-4 text-teal-400 animate-pulse" />
+          <span>{toastNotification}</span>
+        </div>
+      )}
+
       {/* ==========================================
-          MODAL 1: REPLACE BLUEPRINT PICKER
+          MODAL 1: REPLACE BLUEPRINT OR ARCHETYPE PICKER
       ========================================== */}
       {showReplaceModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
@@ -1246,7 +1334,7 @@ function StudioContent() {
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-teal-500" />
                 <h3 className="text-base font-black text-slate-900 dark:text-white">
-                  Replace Diagram with Blueprint or Generic Model
+                  Replace Diagram with Blueprint or Document Archetype
                 </h3>
               </div>
               <button
@@ -1258,76 +1346,160 @@ function StudioContent() {
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Select a canonical blueprint template to replace the diagram shown in <b>{activeDiagram.title}</b>, or choose generic design from scratch.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 overflow-y-auto p-1 flex-1">
-              {/* Option 0: Generic Design from Scratch */}
+            {/* TAB SELECTOR: DIAGRAMS VS DOCUMENTS */}
+            <div className="flex items-center gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
               <button
                 type="button"
-                onClick={() => {
-                  handleResetToScratch();
-                  setShowReplaceModal(false);
-                }}
-                className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                  isLight
-                    ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 hover:border-indigo-400'
-                    : 'bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border-indigo-800 hover:border-indigo-500'
+                onClick={() => setReplaceModalTab('diagrams')}
+                className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  replaceModalTab === 'diagrams'
+                    ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block mb-1">
-                    ✨ Blank Canvas
-                  </span>
-                  <h4 className="text-xs font-black text-slate-900 dark:text-white">
-                    Design from Scratch
-                  </h4>
-                  <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                    Generic Google Cloud architecture canvas ready for direct AI modifications.
-                  </p>
-                </div>
-                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mt-2">
-                  Select Scratch &rarr;
-                </span>
+                <Layers className="w-4 h-4" />
+                <span>Architecture Diagrams ({CANONICAL_TEMPLATES.length + 1})</span>
               </button>
-
-              {/* All 50 Canonical Blueprints */}
-              {CANONICAL_TEMPLATES.map((tpl: CanonicalTemplate) => (
-                <button
-                  key={tpl.id}
-                  type="button"
-                  onClick={() => handleSelectBlueprintToReplace(tpl.id)}
-                  className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                    activeDiagram.templateId === tpl.id
-                      ? 'bg-teal-50 dark:bg-teal-950/40 border-teal-500 ring-2 ring-teal-500/30'
-                      : isLight
-                      ? 'bg-slate-50 hover:bg-teal-50/50 border-slate-200'
-                      : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-mono font-bold text-teal-600">
-                        #{tpl.id}
-                      </span>
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-500">
-                        {tpl.family}
-                      </span>
-                    </div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                      {tpl.name}
-                    </h4>
-                    <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
-                      {tpl.primaryPurpose}
-                    </p>
-                  </div>
-                  <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-2">
-                    Apply Blueprint &rarr;
-                  </span>
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => setReplaceModalTab('documents')}
+                className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  replaceModalTab === 'documents'
+                    ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                }`}
+              >
+                <FileText className="w-4 h-4" />
+                <span>Specification Archetypes ({DOC_ARCHETYPES_META.length})</span>
+              </button>
             </div>
+
+            {replaceModalTab === 'diagrams' ? (
+              <>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Select a canonical blueprint template to replace the diagram shown in <b>{activeDiagram.title}</b>, or choose generic design from scratch.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 overflow-y-auto p-1 flex-1">
+                  {/* Option 0: Generic Design from Scratch */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleResetToScratch();
+                      setShowReplaceModal(false);
+                    }}
+                    className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                      isLight
+                        ? 'bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200 hover:border-indigo-400'
+                        : 'bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border-indigo-800 hover:border-indigo-500'
+                    }`}
+                  >
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 block mb-1">
+                        ✨ Blank Canvas
+                      </span>
+                      <h4 className="text-xs font-black text-slate-900 dark:text-white">
+                        Design from Scratch
+                      </h4>
+                      <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                        Generic Google Cloud architecture canvas ready for direct AI modifications.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mt-2">
+                      Select Scratch &rarr;
+                    </span>
+                  </button>
+
+                  {/* All 50 Canonical Blueprints */}
+                  {CANONICAL_TEMPLATES.map((tpl: CanonicalTemplate) => (
+                    <button
+                      key={tpl.id}
+                      type="button"
+                      onClick={() => handleSelectBlueprintToReplace(tpl.id)}
+                      className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        activeDiagram.templateId === tpl.id
+                          ? 'bg-teal-50 dark:bg-teal-950/40 border-teal-500 ring-2 ring-teal-500/30'
+                          : isLight
+                          ? 'bg-slate-50 hover:bg-teal-50/50 border-slate-200'
+                          : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[10px] font-mono font-bold text-teal-600">
+                            #{tpl.id}
+                          </span>
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-500">
+                            {tpl.family}
+                          </span>
+                        </div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                          {tpl.name}
+                        </h4>
+                        <p className="text-[10.5px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                          {tpl.primaryPurpose}
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-2">
+                        Apply Blueprint &rarr;
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Select an enterprise architecture document archetype to view structured design specs, ADRs, or deployment runbooks.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto p-1 flex-1">
+                  {DOC_ARCHETYPES_META.map((meta: DocArchetypeMeta) => (
+                    <button
+                      key={meta.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedArchetypeId(meta.id);
+                        setPreviewTab('spec');
+                        setShowReplaceModal(false);
+                        pushNewVersion(`Switched specification archetype to ${meta.name}`, 'User');
+                        showToast(`📑 Switched to ${meta.name} Archetype!`);
+                      }}
+                      className={`p-4 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        selectedArchetypeId === meta.id
+                          ? 'bg-teal-50 dark:bg-teal-950/40 border-teal-500 ring-2 ring-teal-500/30'
+                          : isLight
+                          ? 'bg-slate-50 hover:bg-teal-50/50 border-slate-200'
+                          : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-600 dark:text-teal-400">
+                            {meta.badge}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {meta.blueprintPack.length} Blueprint Slots
+                          </span>
+                        </div>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {meta.name}
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                          {meta.primaryPurpose}
+                        </p>
+                        <div className="mt-2 text-[10.5px] text-slate-400">
+                          <b>Target Audience:</b> {meta.audience}
+                        </div>
+                      </div>
+                      <span className="text-xs font-bold text-teal-600 dark:text-teal-400 mt-3 flex items-center gap-1">
+                        Select Archetype &rarr;
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
