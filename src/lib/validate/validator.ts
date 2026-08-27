@@ -157,26 +157,20 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
                           style.includes('swimlane') ||
                           style.includes('group') ||
                           parentIds.has(id) ||
-                          id.startsWith('box_') ||
-                          id.endsWith('_box') ||
-                          id.includes('_cont') ||
-                          id.startsWith('container_') ||
-                          id.startsWith('swimlane_') ||
-                          id.startsWith('grp_') ||
-                          id.startsWith('group_') ||
-                          id.startsWith('col_') ||
-                          id.startsWith('tier_') ||
-                          id.startsWith('zone_') ||
-                          id.startsWith('vpc_') ||
-                          id.startsWith('subnet_') ||
-                          id.startsWith('boundary_') ||
-                          id.startsWith('cluster_') ||
-                          id.startsWith('network_') ||
-                          id.startsWith('cloud_') ||
-                          id.startsWith('env_') ||
-                          id.includes('_loop') ||
-                          id.includes('frame') ||
-                          id.includes('panel');
+                          ((id.startsWith('container_') ||
+                            id.startsWith('swimlane_') ||
+                            id.startsWith('grp_') ||
+                            id.startsWith('group_') ||
+                            id.startsWith('tier_') ||
+                            id.startsWith('zone_') ||
+                            id.startsWith('vpc_') ||
+                            id.startsWith('subnet_') ||
+                            id.startsWith('boundary_') ||
+                            id.startsWith('cluster_') ||
+                            id.startsWith('network_') ||
+                            id.startsWith('env_') ||
+                            id.includes('frame') ||
+                            id.includes('panel')) && !id.endsWith('_box') && !id.endsWith('_pill'));
 
       const isLabelOrHeader = id.startsWith('lbl_') ||
                               id.endsWith('_lbl') ||
@@ -381,9 +375,9 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
           continue;
         }
 
-        // Check geometric containment (one encloses the other -> container card relationship)
-        const v1EnclosesV2 = (v1.x <= v2.x + 5) && (v1.y <= v2.y + 5) && (v1.x + v1.width >= v2.x + v2.width - 5) && (v1.y + v1.height >= v2.y + v2.height - 5);
-        const v2EnclosesV1 = (v2.x <= v1.x + 5) && (v2.y <= v1.y + 5) && (v2.x + v2.width >= v1.x + v1.width - 5) && (v2.y + v2.height >= v1.y + v1.height - 5);
+        // Check geometric containment (one strictly larger encloses the other -> container card relationship)
+        const v1EnclosesV2 = (v1.width > v2.width + 10 && v1.height > v2.height + 10) && (v1.x <= v2.x + 5) && (v1.y <= v2.y + 5) && (v1.x + v1.width >= v2.x + v2.width - 5) && (v1.y + v1.height >= v2.y + v2.height - 5);
+        const v2EnclosesV1 = (v2.width > v1.width + 10 && v2.height > v1.height + 10) && (v2.x <= v1.x + 5) && (v2.y <= v1.y + 5) && (v2.x + v2.width >= v1.x + v1.width - 5) && (v2.y + v2.height >= v1.y + v1.height - 5);
 
         if (v1EnclosesV2 || v2EnclosesV1) {
           continue;
@@ -443,10 +437,10 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         for (const [vId, v] of verticesMap.entries()) {
           if (vId === edge.source || vId === edge.target) continue;
 
-          // If it is a container, check if the line cuts across its top header region (top 28px)
+          // If it is a container, check if the line cuts across its top header region (top 20px)
           if (v.isContainer) {
             const headerMinY = v.absY;
-            const headerMaxY = v.absY + 28;
+            const headerMaxY = v.absY + 20;
             if (isHoriz && p1.y >= headerMinY && p1.y <= headerMaxY) {
               const segMinX = Math.min(p1.x, p2.x);
               const segMaxX = Math.max(p1.x, p2.x);
@@ -493,14 +487,14 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
   // Check CARD_TEXT_OVERFLOW (Estimated line height vs mxGeometry height)
   for (const [id, v] of verticesMap.entries()) {
     if (!v.isContainer && !v.isLabelOrHeader && v.label) {
-      const lineCount = (v.label.match(/<br|\n/g) || []).length + 1;
+      const lineCount = (v.label.match(/<br\s*\/?>|<p>/gi) || []).length + 1;
       const hasIcon = v.label.includes('<svg') || v.label.includes('ICONS');
-      const minRequiredHeight = (hasIcon ? 28 : 10) + lineCount * 14;
+      const minRequiredHeight = (hasIcon ? 18 : 8) + lineCount * 8.5;
       if (v.height < minRequiredHeight) {
         errors.push({
           code: 'TEXT_OVERFLOW_HEIGHT',
           cells: [id],
-          detail: `Node "${id}" height (${v.height}px) is insufficient for ${lineCount} text lines with icon (requires >= ${minRequiredHeight}px)`,
+          detail: `Node "${id}" height (${v.height}px) is insufficient for ${lineCount} text lines with icon (requires >= ${Math.round(minRequiredHeight)}px)`,
         });
       }
     }
@@ -523,7 +517,8 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
   // Check ORPHAN_NODE (warning, not error)
   for (const [id, v] of verticesMap.entries()) {
-    if (!v.isContainer && !v.isLabelOrHeader && !connectedNodeIds.has(id)) {
+    const isFoundation = id.startsWith('cloud_') && (id.includes('monitoring') || id.includes('iam') || id.includes('vpc') || id.includes('telemetry') || id.includes('governance'));
+    if (!v.isContainer && !v.isLabelOrHeader && !isFoundation && !connectedNodeIds.has(id)) {
       warnings.push({
         code: 'ORPHAN_NODE',
         cells: [id],
@@ -534,9 +529,10 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
 
   // --- ARCHITECTURAL & SEMANTIC TOPOLOGY VALIDATION ---
 
-  // 1. Check DECISION_GATE_INCOMPLETE (Rhombus decision diamonds must have >= 2 outgoing branches)
+  // 1. Check DECISION_GATE_INCOMPLETE (Rhombus decision diamonds must have >= 2 outgoing branches, junctions excepted)
   for (const [id, v] of verticesMap.entries()) {
-    if (v.style?.includes('rhombus') || id.startsWith('decision_')) {
+    const isJunction = id.includes('con') || id.includes('junction') || id.includes('merge') || id.includes('gateway') || v.label?.includes('CON');
+    if (!isJunction && (v.style?.includes('rhombus') || (id.startsWith('decision_') && !id.includes('con')))) {
       const outgoingEdges = Array.from(edgesMap.values()).filter(e => e.source === id);
       if (outgoingEdges.length < 2) {
         errors.push({

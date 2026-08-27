@@ -557,7 +557,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     </div>`,
     980,
     325,
-    118,
+    112,
     64,
     'rounded=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;html=1;align=center;verticalAlign=middle;'
   );
@@ -881,7 +881,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e_gclb_cdn', 'EVALUATE', 'gclb_load_balancer', 'decision_cdn_cache', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 325, y: 243 }]);
 
   // CDN Cache Hit: YES -> Direct Edge Return to Delivered Node (Step ❸ Edge CDN Return)
-  edge('e_cdn_yes', '❸ YES (CDN HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 155 }, { x: 758, y: 155 }]);
+  edge('e_cdn_yes', '❸ YES (CDN HIT)', 'decision_cdn_cache', 'delivered_edge_node', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#15803D;strokeWidth=2;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#86EFAC;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 434, y: 172 }, { x: 758, y: 172 }]);
 
   // CDN Cache Hit: NO (Miss) -> Path-Based Routing Gate (URL Map Evaluation)
   edge('e_cdn_no', 'NO (MISS)', 'decision_cdn_cache', 'decision_path_routing', 'edgeStyle=none;strokeColor=#64748B;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
@@ -890,11 +890,11 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   edge('e_path_iap', 'YES (/api/*)', 'decision_path_routing', 'iap_proxy', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;');
 
   // IAP Proxy -> User Authentication -> Subnet A Primary App (Step ❹ Subnet A Route)
-  edge('e_iap_auth', '❹ AUTH ROUTE', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 430, y: 202 }]);
+  edge('e_iap_auth', '❹ AUTH ROUTE', 'iap_proxy', 'user_auth_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 495, y: 450 }, { x: 495, y: 180 }]);
   edge('e_auth_app', '', 'user_auth_box', 'agentic_app_box', 'edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;');
 
   // Path-Based Routing: NO -> Default Path Backend (Compute MIG in Subnet B)
-  edge('e_path_no', 'NO (DEFAULT /*)', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 370, y: 338 }, { x: 370, y: 648 }]);
+  edge('e_path_no', 'NO (DEFAULT /*)', 'decision_path_routing', 'decision_con_bottom', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 265, y: 338 }, { x: 265, y: 648 }]);
 
   // Decision CON Bottom -> Subnet B Compute MIG (Step ❼ Auto-Scale MIG)
   edge('e10', '❼ AUTO-SCALE', 'decision_con_bottom', 'gce_mig_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 470, y: 648 }, { x: 470, y: 600 }]);
@@ -906,7 +906,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Subnet A App -> Async Tasks / Ingestion
   edge('e13', '', 'agentic_app_box', 'async_tasks_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2;');
   edge('e14', '', 'async_tasks_box', 'persist_data_box', 'edgeStyle=none;strokeColor=#059669;strokeWidth=2;');
-  edge('e15', '❺ PERSIST', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 918, y: 220 }]);
+  edge('e15', '❺ PERSIST', 'persist_data_box', 'cloud_sql_primary', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#059669;strokeWidth=2.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=7.5;fontStyle=1;', [{ x: 1088, y: 255 }, { x: 918, y: 255 }]);
 
   // Dual Relational Stack: Cloud SQL & Cloud Spanner feed Data Replication
   edge('e_sql_rep', '', 'cloud_sql_primary', 'data_replication_box', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;');
