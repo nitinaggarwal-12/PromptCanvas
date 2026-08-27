@@ -1315,7 +1315,7 @@ function StudioContent() {
                   {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) ? (
                     <div className="w-full h-full min-h-[460px] flex items-center justify-center">
                       <DiagramViewerRenderSafe
-                        key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${isLight ? 'light' : 'dark'}_${activeDiagram.xml.length}`}
+                        key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
                         diagramId={activeDiagram.templateId}
                         diagramType={activeDiagram.source === 'scratch' ? 'custom' : `canonical_${activeDiagram.templateId}`}
                         xml={activeDiagram.xml}
