@@ -98,17 +98,18 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // =========================================================================
   node(
     "lbl_hdr_main",
-    `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:4px 8px;font-family:'Google Sans',Roboto,Arial,sans-serif;">
-      <div>
-        <div style="font-size:22px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">Google Cloud Agentic AI Platform</div>
-        <div style="font-size:11.5px;font-weight:500;color:#1A73E8;margin-top:2px;">Enterprise Reference Architecture: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;padding:6px 18px;border-radius:8px;border:1px solid #DADCE0;box-shadow:0 1px 2px rgba(60,64,67,0.1);">
+    `<div style="display:flex;align-items:center;gap:16px;width:100%;padding:4px 8px;font-family:'Google Sans',Roboto,Arial,sans-serif;">
+      <div style="display:flex;align-items:center;gap:10px;background:#FFFFFF;padding:6px 16px;border-radius:8px;border:1px solid #DADCE0;box-shadow:0 1px 2px rgba(60,64,67,0.08);flex-shrink:0;">
         ${GOOGLE_CLOUD_LOGO}
         <div>
-          <div style="font-size:12px;font-weight:700;color:#202124;letter-spacing:-0.1px;">Google Cloud</div>
-          <div style="font-size:9px;color:#5F6368;font-weight:500;">Architecture Center</div>
+          <div style="font-size:11.5px;font-weight:700;color:#202124;letter-spacing:-0.1px;">Google Cloud</div>
+          <div style="font-size:8.5px;color:#5F6368;font-weight:500;">Architecture Center</div>
         </div>
+      </div>
+      <div style="border-left:1.5px solid #DADCE0;height:36px;margin:0 2px;"></div>
+      <div style="flex:1;">
+        <div style="font-size:22px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">Google Cloud Agentic AI Platform</div>
+        <div style="font-size:11.5px;font-weight:500;color:#1A73E8;margin-top:2px;">Enterprise Reference Architecture: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop</div>
       </div>
     </div>`,
     24,
