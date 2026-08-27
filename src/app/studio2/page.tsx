@@ -433,15 +433,8 @@ function Studio2Content() {
     {
       id: 'msg_welcome',
       sender: 'assistant',
-      text: '👋 Welcome to Launch Studio 2! Fill out your project name and use case above, then describe what to build or modify directly in chat. The right pane shows the live GCP Cloud Architecture functional flowchart model.',
-      timestamp: 'Just now',
-      suggestedPrompts: [
-        'Architect a high-throughput event streaming platform with Pub/Sub & Dataflow',
-        'Design a zero-trust multi-region microservices architecture with Cloud Spanner',
-        'Build a Vertex AI RAG knowledge graph with ScaNN vector search',
-        'Scale Regional Subnet B with GPU Managed Instance Groups & Internal LB',
-        'Add Cloud Armor security rules & DDoS protection policies'
-      ]
+      text: '⚡ Live GCP architecture canvas ready. Enter a prompt or select a suggested step below to update.',
+      timestamp: 'Just now'
     }
   ]);
 
@@ -583,7 +576,16 @@ function Studio2Content() {
     }
 
     setPendingVerification(null);
-    showToast(`🎉 Promoted architecture changes to official release ${promotedTag}!`);
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        id: `ast_${Date.now()}`,
+        sender: 'assistant',
+        text: `✅ Promoted to official release ${promotedTag}`,
+        timestamp: 'Just now'
+      }
+    ]);
+    showToast(`🎉 Promoted to official release ${promotedTag}!`);
   }, [pendingVerification, pushNewVersion, diagrams, projectName, useCaseName, activeDiagram.xml, showToast]);
 
   // Discard Micro-Version Changes & Restore Previous Official Version
@@ -600,6 +602,15 @@ function Studio2Content() {
 
     const currentOfficialTag = versionHistory[currentHistoryIndex]?.versionTag || 'v1.0';
     setPendingVerification(null);
+    setChatMessages((prev) => [
+      ...prev,
+      {
+        id: `ast_${Date.now()}`,
+        sender: 'assistant',
+        text: `↺ Discarded draft • Restored ${currentOfficialTag}`,
+        timestamp: 'Just now'
+      }
+    ]);
     showToast(`↺ Discarded draft changes and restored ${currentOfficialTag}.`);
   }, [pendingVerification, activeDiagramId, versionHistory, currentHistoryIndex, showToast]);
 
@@ -1007,35 +1018,16 @@ function Studio2Content() {
         );
         setDynamicSuggestions(nextSuggestions);
 
-        // Assistant response message with Gemini Validation scorecard and micro-version review
+        // Crisp, ultra-concise assistant confirmation status (no repetitive regurgitation)
         const assistantMsg: StudioChatMessage = {
           id: `ast_${Date.now()}`,
           sender: 'assistant',
-          text: `⚡ Autosaved architecture changes in micro-version **${microVersionTag} (Draft)** for "${analysis.summary}". Verify highlighted components and click "Accept & Promote to ${proposedVersionTag}" to seal official version release.`,
-          timestamp: 'Just now',
-          actionApplied: {
-            summary: analysis.summary,
-            versionTag: `${microVersionTag} (Draft)`,
-            targetTier: analysis.targetTier,
-            changedComponents: analysis.changedComponents
-          },
-          geminiAudit: geminiAudit || {
-            securityScore: 98,
-            topologyScore: 100,
-            complianceStandard: 'GCP Well-Architected + CIS Security Benchmark',
-            verifiedControls: [
-              'Ingress & Edge Security (Cloud Armor + IAP + VPC-SC)',
-              'Regional Compute Subnet Isolation',
-              'State & Storage Layer (Cloud SQL / Spanner + CMEK)',
-              'Agentic AI Services (Gemini 3.1 Pro + Vertex RAG Grounding)'
-            ],
-            aiReasoning: 'Validated by Gemini 3.1 Pro against Google Cloud Well-Architected Framework.'
-          },
-          suggestedPrompts: nextSuggestions
+          text: `⚡ Applied to canvas • ${microVersionTag} (Draft)`,
+          timestamp: 'Just now'
         };
 
         setChatMessages((prev) => [...prev, assistantMsg]);
-        showToast(`⚡ Changes autosaved in micro-version ${microVersionTag}! Click "Accept & Promote" to seal ${proposedVersionTag}.`);
+        showToast(`⚡ Canvas updated • ${microVersionTag} (Draft)`);
       } catch (err: any) {
         console.error('[Studio2] Synthesis error:', err);
         showToast(`❌ Synthesis error: ${err?.message || 'Unknown error'}`);
