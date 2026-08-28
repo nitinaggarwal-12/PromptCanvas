@@ -1050,24 +1050,318 @@ export function renderTripleFlowDeepArchitectureXml(
 }
 
 
+export function renderBespokeConceptualRoadmapXml(
+  roadmap: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const isDark = theme === 'dark';
+  const c: string[] = [];
+  let cellId = 2;
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const title = roadmap.title || 'CONCEPTUAL LEARNING ROADMAP';
+  const subtitle = roadmap.subtitle || 'First-Principles Visual Intuition, Formulations, Architecture & Execution Pipeline';
+
+  // 1. TOP HEADER BANNER (y=12..62, x=30..1570)
+  const hdrHtml = `<div style="background:${isDark ? '#0F1E36' : 'linear-gradient(90deg, #0F172A 0%, #1E293B 100%)'};border-radius:10px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,0.15);border:1px solid ${isDark ? '#1E3A8A' : '#334155'};">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="background:#2563EB;border-radius:8px;padding:6px 12px;font-size:20px;">🧭</div>
+      <div>
+        <div style="font-family:Impact,Arial Black,sans-serif;letter-spacing:1px;font-size:22px;text-transform:uppercase;color:#FFFFFF;line-height:1.1;">
+          ${escapeXml(title)}
+        </div>
+        <div style="font-size:11px;color:#94A3B8;font-weight:600;margin-top:2px;">
+          ${escapeXml(subtitle)}
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(59,130,246,0.15);border:1px solid #3B82F6;padding:5px 14px;border-radius:20px;font-size:10.5px;font-weight:800;color:#60A5FA;letter-spacing:0.05em;text-transform:uppercase;">
+      BESPOKE GENERATIVE
+    </div>
+  </div>`;
+  cell('main_hdr', hdrHtml, 20, 10, 1560, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 2. 4 TOP MILESTONES (y=68..112, h=44)
+  const milestones = Array.isArray(roadmap.milestones) && roadmap.milestones.length > 0 ? roadmap.milestones : [
+    { title: '1. CORE INTUITION & VISUAL ANALOGY', color: 'blue' as const, icon: '💡' },
+    { title: '2. MATHEMATICAL FORMULATION & LAWS', color: 'green' as const, icon: '📐' },
+    { title: '3. ARCHITECTURE TAXONOMY & VARIANTS', color: 'orange' as const, icon: '🏗️' },
+    { title: '4. REAL-WORLD PRODUCTION FRONTIERS', color: 'yellow' as const, icon: '🚀' }
+  ];
+
+  const mColors: Record<string, { bg: string; border: string }> = {
+    blue: { bg: '#2563EB', border: '#1D4ED8' },
+    green: { bg: '#16A34A', border: '#15803D' },
+    orange: { bg: '#EA580C', border: '#C2410C' },
+    yellow: { bg: '#CA8A04', border: '#A16207' },
+    purple: { bg: '#7C3AED', border: '#6D28D9' },
+    teal: { bg: '#0D9488', border: '#0F766E' }
+  };
+
+  milestones.slice(0, 4).forEach((m, idx) => {
+    const mx = 20 + idx * 395;
+    const col = mColors[m.color] || mColors.blue;
+    const mHtml = `<div style="background:${col.bg};color:#FFFFFF;border-radius:6px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Impact,Arial Black,sans-serif;font-size:13.5px;letter-spacing:0.4px;text-transform:uppercase;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+      <span>${escapeXml(m.icon || '📌')}</span>
+      <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(m.title)}</span>
+    </div>`;
+    cell(`m_${idx}`, mHtml, mx, 68, 380, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  });
+
+  // 3. TIER 1 (y=116..545, h=428): 4 Quadrants
+  // Quadrant 1: Section 1 Analogy (x=20..395, w=375)
+  const s1 = roadmap.section1Analogy || {
+    title: 'First-Principles Visual Metaphor',
+    actors: [{ id: 'a1', name: 'Input Source', avatar: '📥' }, { id: 'a2', name: 'Core Engine', avatar: '⚡' }, { id: 'a3', name: 'Output State', avatar: '🎯' }],
+    relations: [{ from: 'a1', to: 'a2', label: 'Transforms' }, { from: 'a2', to: 'a3', label: 'Emits' }],
+    legend: [{ icon: '⚡', label: 'Execution' }],
+    challengeCallout: 'Core Challenge: Ensuring sub-second latency and zero loss under high concurrency.'
+  };
+
+  const s1Html = `<div style="background:#EFF6FF;border:1.5px solid #93C5FD;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#1D4ED8;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+        <span>💡</span> <span>${escapeXml(s1.title)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        ${(s1.actors || []).map(a => `
+          <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:6px;padding:6px 10px;display:flex;align-items:center;gap:10px;">
+            <span style="font-size:18px;">${escapeXml(a.avatar || '📦')}</span>
+            <div style="font-size:11px;font-weight:800;color:#0F172A;">${escapeXml(a.name)}</div>
+          </div>
+        `).join('')}
+      </div>
+      ${(s1.relations || []).length > 0 ? `
+        <div style="background:#DBEAFE;border-radius:6px;padding:6px 8px;font-size:9.5px;color:#1E40AF;font-weight:700;margin-bottom:8px;">
+          ${s1.relations.map(r => `• ${escapeXml(r.from)} ➔ ${escapeXml(r.to)}: <em>${escapeXml(r.label)}</em>`).join('<br/>')}
+        </div>
+      ` : ''}
+    </div>
+    <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:6px;padding:8px 10px;font-size:10px;color:#92400E;font-weight:800;">
+      ⚠️ ${escapeXml(s1.challengeCallout)}
+    </div>
+  </div>`;
+  cell('quad_1', s1Html, 20, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Quadrant 2: Section 2 Prerequisites & Formulas (x=405..780, w=375)
+  const s2 = roadmap.section2Prerequisites || {
+    title: 'Mathematical & Theoretical Foundations',
+    mathFormulas: [{ name: 'State Transfer Function', formula: 'S(t+1) = f(S(t), Input)', icon: '📐' }],
+    checklist: ['☑ Deterministic execution', '☑ Convergence guarantee']
+  };
+
+  const s2Html = `<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#15803D;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+        <span>📐</span> <span>${escapeXml(s2.title)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
+        ${(s2.mathFormulas || []).map(f => `
+          <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:8px 10px;">
+            <div style="font-size:10px;font-weight:800;color:#15803D;margin-bottom:3px;">${escapeXml(f.name)}</div>
+            <div style="font-family:monospace;font-size:11px;font-weight:900;color:#0F172A;background:#F8FAFC;padding:4px 6px;border-radius:4px;">${escapeXml(f.formula)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:8px 10px;">
+      <div style="font-size:10px;font-weight:900;color:#15803D;margin-bottom:4px;">VERIFICATION CHECKLIST</div>
+      ${(s2.checklist || []).map(c => `
+        <div style="font-size:9.5px;color:#334155;font-weight:700;margin-bottom:3px;">${escapeXml(c)}</div>
+      `).join('')}
+    </div>
+  </div>`;
+  cell('quad_2', s2Html, 405, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Quadrant 3: Section 3 Taxonomy & Variants (x=790..1165, w=375)
+  const s3 = roadmap.section3Taxonomy || {
+    title: 'Architecture Taxonomy & Variants',
+    variants: [
+      { name: 'SYNCHRONOUS PIPELINE', subtext: 'Low latency blocking execution' },
+      { name: 'EVENT-DRIVEN MESH', subtext: 'Decoupled asynchronous message queue' }
+    ]
+  };
+
+  const s3Html = `<div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#C2410C;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+        <span>🏗️</span> <span>${escapeXml(s3.title)}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        ${(s3.variants || []).map((v, vIdx) => `
+          <div style="background:#FFFFFF;border:1px solid #FFEDD5;border-radius:6px;padding:8px 10px;">
+            <div style="font-size:10.5px;font-weight:900;color:#C2410C;">${vIdx + 1}. ${escapeXml(v.name)}</div>
+            <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-top:2px;">${escapeXml(v.subtext || '')}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="background:#FFEDD5;border-radius:6px;padding:6px 10px;font-size:9.5px;font-weight:800;color:#C2410C;text-align:center;">
+      Taxonomy Verified &amp; Standardized
+    </div>
+  </div>`;
+  cell('quad_3', s3Html, 790, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Quadrant 4: Section 4 Modern Frontiers (x=1175..1580, w=405)
+  const s4 = roadmap.section4ModernFrontiers || {
+    title: 'Modern Scientific & Cloud Frontiers',
+    knowledgeGraphNodes: [{ id: 'kg1', label: 'Cloud Native', color: '#38BDF8' }, { id: 'kg2', label: 'Zero Trust', color: '#10B981' }],
+    frameworkBullets: ['🔬 Continuous telemetry streaming', '🚀 Multi-region high availability']
+  };
+
+  const s4Html = `<div style="background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#6D28D9;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+        <span>🚀</span> <span>${escapeXml(s4.title)}</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+        ${(s4.knowledgeGraphNodes || []).map(n => `
+          <span style="background:#FFFFFF;border:1px solid #E9D5FF;color:#6D28D9;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:800;">${escapeXml(n.label.replace('\n', ' '))}</span>
+        `).join('')}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${(s4.frameworkBullets || []).map(b => `
+          <div style="font-size:9.5px;color:#475569;font-weight:700;line-height:1.35;">${escapeXml(b)}</div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="background:#F3E8FF;border-radius:6px;padding:6px 10px;font-size:9.5px;font-weight:800;color:#6D28D9;text-align:center;">
+      Production-Grade Industry Alignment
+    </div>
+  </div>`;
+  cell('quad_4', s4Html, 1175, 116, 405, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 4. TIER 2: BOTTOM WORKFLOW PIPELINE (y=552..915, h=363)
+  const wf = roadmap.bottomWorkflow || {
+    title: 'END-TO-END EXECUTION WORKFLOW PIPELINE',
+    step1Problem: { title: 'STEP 1: Ingestion', subtitle: 'Raw Input Stream', icon: '📥', bullets: ['• Validates input schema', '• Tokenizes payload'] },
+    step2Execution: { title: 'STEP 2: Transformation', input: 'Normalized Stream', phases: [{ name: 'Phase 1', desc: 'Core Processing' }] },
+    step3Engine: { title: 'STEP 3: Processing Engine', subtitle: 'High Concurrency Core', engines: [{ name: 'Engine Core', complexity: 'O(N)', items: ['Sub-second latency'] }] },
+    step4Applications: [{ title: 'Application 1', subtitle: 'Production', icon: '🚀', detail: 'Real-time serving' }]
+  };
+
+  // Workflow Header
+  const wfHdrHtml = `<div style="background:#0F172A;color:#FFFFFF;border-top-left-radius:8px;border-top-right-radius:8px;padding:6px 16px;font-family:Impact,Arial Black,sans-serif;font-size:13px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
+    <span>⚡ ${escapeXml(wf.title || 'END-TO-END EXECUTION WORKFLOW PIPELINE')}</span>
+    <span style="font-size:9px;background:#2563EB;padding:2px 8px;border-radius:3px;">Deterministic 4-Stage Execution</span>
+  </div>`;
+  cell('wf_hdr', wfHdrHtml, 20, 552, 1560, 28, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 4 Workflow Stage Boxes (y=582, h=330, w=375)
+  // Step 1:
+  const st1 = wf.step1Problem || { title: 'STEP 1: Ingestion', subtitle: '', icon: '📥', bullets: [] };
+  const st1Html = `<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:12px;font-weight:900;color:#1D4ED8;margin-bottom:2px;">${escapeXml(st1.title)}</div>
+      <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-bottom:6px;">${escapeXml(st1.subtitle)}</div>
+      <div style="display:flex;flex-direction:column;gap:3px;">
+        ${(st1.bullets || []).map(b => `<div style="font-size:9px;color:#1E293B;font-weight:700;">${escapeXml(b)}</div>`).join('')}
+      </div>
+    </div>
+    ${st1.formula ? `<div style="background:#FFFFFF;border:1px solid #93C5FD;border-radius:4px;padding:4px 6px;font-family:monospace;font-size:9px;color:#1D4ED8;font-weight:bold;">${escapeXml(st1.formula)}</div>` : ''}
+  </div>`;
+  cell('wf_st1', st1Html, 20, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Step 2:
+  const st2 = wf.step2Execution || { title: 'STEP 2: Execution', input: '', phases: [] };
+  const st2Html = `<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:12px;font-weight:900;color:#15803D;margin-bottom:2px;">${escapeXml(st2.title)}</div>
+      ${st2.input ? `<div style="font-size:9px;color:#166534;font-weight:700;background:#DCFCE7;padding:2px 6px;border-radius:4px;margin-bottom:6px;">Input: ${escapeXml(st2.input)}</div>` : ''}
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${(st2.phases || []).map(p => `
+          <div style="background:#FFFFFF;border:1px solid #86EFAC;border-radius:4px;padding:4px 6px;">
+            <div style="font-size:9.5px;font-weight:800;color:#15803D;">${escapeXml(p.name)}</div>
+            <div style="font-size:8.5px;color:#64748B;">${escapeXml(p.desc)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="background:#DCFCE7;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#15803D;text-align:center;">Transformation Stage Validated</div>
+  </div>`;
+  cell('wf_st2', st2Html, 405, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Step 3:
+  const st3 = wf.step3Engine || { title: 'STEP 3: Engine Optimization', subtitle: '', engines: [] };
+  const st3Html = `<div style="background:#FAF5FF;border:1px solid #E9D5FF;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:12px;font-weight:900;color:#7C3AED;margin-bottom:2px;">${escapeXml(st3.title)}</div>
+      <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-bottom:6px;">${escapeXml(st3.subtitle)}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${(st3.engines || []).map(eng => `
+          <div style="background:#FFFFFF;border:1px solid #D8B4FE;border-radius:4px;padding:4px 6px;">
+            <div style="font-size:9.5px;font-weight:800;color:#7C3AED;display:flex;justify-content:space-between;">
+              <span>${escapeXml(eng.name)}</span>
+              <span style="font-size:8px;background:#F3E8FF;padding:1px 4px;border-radius:2px;">${escapeXml(eng.complexity)}</span>
+            </div>
+            ${(eng.items || []).map(it => `<div style="font-size:8.5px;color:#475569;">• ${escapeXml(it)}</div>`).join('')}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    ${st3.callout ? `<div style="background:#F3E8FF;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#6D28D9;text-align:center;">${escapeXml(st3.callout)}</div>` : ''}
+  </div>`;
+  cell('wf_st3', st3Html, 790, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Step 4:
+  const st4Apps = wf.step4Applications || [];
+  const st4Html = `<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:12px;font-weight:900;color:#D97706;margin-bottom:6px;">STEP 4: APPLICATIONS</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${st4Apps.map(ap => `
+          <div style="background:#FFFFFF;border:1px solid #FCD34D;border-radius:4px;padding:4px 6px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:14px;">${escapeXml(ap.icon || '🚀')}</span>
+            <div>
+              <div style="font-size:9.5px;font-weight:800;color:#92400E;">${escapeXml(ap.title)}</div>
+              <div style="font-size:8.5px;color:#78350F;">${escapeXml(ap.detail)}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="background:#FEF3C7;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#92400E;text-align:center;">Production Ready</div>
+  </div>`;
+  cell('wf_st4', st4Html, 1175, 582, 405, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 5. FOOTER (y=920, h=40)
+  const footerTenets = Array.isArray(roadmap.footerTenets) && roadmap.footerTenets.length > 0
+    ? roadmap.footerTenets.join('  •  ')
+    : 'FIRST-PRINCIPLES INTUITION  •  MATHEMATICAL FORMULATIONS  •  PRODUCTION PROVEN';
+
+  const ftrHtml = `<div style="background:#0F172A;color:#94A3B8;border-radius:6px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;font-size:10px;font-weight:800;letter-spacing:0.05em;border:1px solid #1E293B;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span>🧬</span>
+      <span>${escapeXml(footerTenets)}</span>
+    </div>
+    <div style="color:#38BDF8;font-weight:900;">
+      Google Cloud &amp; DeepMind Architecture Stage
+    </div>
+  </div>`;
+  cell('main_ftr', ftrHtml, 20, 920, 1560, 36, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="bespoke_roadmap" name="${escapeXml(title)}">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
 export function renderUniversalConceptualRoadmapXml(
   roadmap: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
 ): string {
-  const titleLower = (roadmap.title || '').toLowerCase();
-  
-  const isNeural = titleLower.includes('neural') || titleLower.includes('transformer') || titleLower.includes('deep learning') || titleLower.includes('attention') || titleLower.includes('backpropagation') || titleLower.includes('mlp') || titleLower.includes('llm') || titleLower.includes('cnn') || titleLower.includes('rnn') || titleLower.includes('network arch');
-  if (isNeural) {
-    return renderTripleFlowDeepArchitectureXml(roadmap, theme);
-  }
-
-  const isCentripetal = titleLower.includes('centripetal') || titleLower.includes('centrifugal') || titleLower.includes('spinning');
-  if (isCentripetal) {
-    return renderTwoSidesOfTheSpinInfographicXml(roadmap, theme);
-  }
-
-  const spec = synthesizeVisualConceptSpecFromPrompt(roadmap.title || '');
-  return compileVisualConceptSpecToXml(spec);
+  return renderBespokeConceptualRoadmapXml(roadmap, theme);
 }
 
 /**
@@ -1281,19 +1575,11 @@ export function solveAndRenderStudio3Xml(
 ): string {
   const { theme = 'dark', canvasWidth = 1600, canvasHeight = 1000 } = options;
 
-  // 0. Universal Conceptual Roadmap Passthrough (Applied for any topic!)
+  // 0. Dynamic Bespoke Conceptual Roadmap Renderer (if conceptual roadmap graph provided)
   if (graph?.conceptualRoadmap) {
     return renderUniversalConceptualRoadmapXml(graph.conceptualRoadmap, theme);
   }
 
-  // Master Canonical Passthrough for Template 51 (Graph Theory)
-  if (
-    graph?.templateId === '51' ||
-    (graph?.title || '').toLowerCase().includes('graph theory') ||
-    (graph?.title || '').toLowerCase().includes('learning roadmap')
-  ) {
-    return generateTemplate51GraphTheoryLearningRoadmapXml('graph_theory', theme);
-  }
   const isDark = theme === 'dark';
 
   const bgCanvas = isDark ? '#0B111E' : '#FFFFFF';
