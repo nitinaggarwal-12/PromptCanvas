@@ -753,6 +753,7 @@ export function renderSpeedVelocityAccelerationInfographicXml(
 }
 
 
+
 export function renderNeuralNetworkArchitectureXml(
   roadmap?: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
@@ -764,12 +765,12 @@ export function renderNeuralNetworkArchitectureXml(
       `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  const edge = (id: string, src: string, trg: string, style = 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=6;') =>
+  const edge = (id: string, src: string, trg: string, style = 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=6;flowAnimation=1;') =>
     c.push(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
 
-  // 1. TOP HEADER BANNER (y=10..68)
+  // 1. TOP HEADER BANNER (y=12..66)
   const hdrHtml = `<div style="background:#0F1E36;border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;color:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
     <div style="display:flex;align-items:center;gap:14px;">
       <div style="background:#2563EB;border-radius:8px;padding:8px 12px;font-size:20px;display:flex;align-items:center;justify-content:center;">🧠</div>
@@ -777,255 +778,371 @@ export function renderNeuralNetworkArchitectureXml(
         <div style="font-family:Impact,Arial Black,sans-serif;letter-spacing:1px;font-size:24px;text-transform:uppercase;color:#FFFFFF;line-height:1.1;">
           DEEP NEURAL NETWORK &amp; TRANSFORMER ARCHITECTURE
         </div>
-        <div style="font-size:11.5px;color:#94A3B8;font-weight:600;margin-top:2px;">
-          Token Ingestion • Multi-Head Self-Attention (MHA) • SwiGLU Feed-Forward Blocks • Autograd Backpropagation
+        <div style="font-size:11px;color:#94A3B8;font-weight:600;margin-top:2px;">
+          Token Ingestion ➔ Multi-Head Self-Attention (MHA) ➔ SwiGLU Dense Expansion ➔ KV-Cache Autoregression ➔ Reverse-Mode Autograd
         </div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#38BDF8;">d_model = 4096</span>
-      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#FBBF24;">Layers N = 32</span>
-      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#34D399;">FlashAttention-3</span>
+      <span style="background:#1E293B;border:1px solid #38BDF8;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:900;color:#38BDF8;">d_model = 4096</span>
+      <span style="background:#1E293B;border:1px solid #FBBF24;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:900;color:#FBBF24;">Layers N = 32</span>
+      <span style="background:#1E293B;border:1px solid #34D399;padding:5px 12px;border-radius:6px;font-size:10px;font-weight:900;color:#34D399;">⚡ FlashAttention-3</span>
     </div>
   </div>`;
-  cell('main_header', hdrHtml, 25, 10, 1550, 58, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('main_header', hdrHtml, 25, 12, 1550, 54, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 2. ZONE 1: INPUT INGESTION & EMBEDDING PIPELINE (x=25..365, y=78..780)
-  cell('z1_box', '', 25, 78, 340, 702, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  // ============================================================================
+  // ZONE 1: INPUT INGESTION & EMBEDDING PIPELINE (x=25..365, y=74..860, h=786)
+  // ============================================================================
+  cell('z1_box', '', 25, 74, 340, 786, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#93C5FD;strokeWidth=2;');
   const z1HdrHtml = `<div style="background:#2563EB;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 14px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
     <span>📥 1. INPUT &amp; EMBEDDINGS</span>
     <span style="font-size:10px;background:#1D4ED8;padding:2px 8px;border-radius:4px;">X ∈ ℝ^(B×T×D)</span>
   </div>`;
-  cell('z1_hdr', z1HdrHtml, 25, 78, 340, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('z1_hdr', z1HdrHtml, 25, 74, 340, 40, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  const z1ContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;">
-    <!-- Card 1: Tokenizer -->
-    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">1. Byte-Pair Tokenizer (BPE)</span>
-        <span style="background:#EFF6FF;font-size:8.5px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">Vocab V=32k</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Raw string converted into discrete integer token sequences: ["The", " neural", " network"].</div>
-      <div style="background:#F1F5F9;border-radius:4px;padding:4px 8px;font-family:monospace;font-size:8.5px;color:#0F172A;margin-top:6px;font-weight:700;">tokens = [464, 15729, 2642]</div>
+  // Card 1: Raw String Tokenizer (y=122..245, h=123)
+  cell('c_tok', '', 38, 122, 314, 125, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.5;');
+  const cTokHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#1E3A8A;">❶ Byte-Pair Tokenizer (BPE)</span>
+      <span style="background:#EFF6FF;font-size:8px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">Vocab V=32k</span>
     </div>
-
-    <!-- Card 2: Token Embedding Matrix -->
-    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">2. Embedding Matrix W_E</span>
-        <span style="background:#EFF6FF;font-size:8.5px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">ℝ^(32000 × 4096)</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Learned dense look-up table mapping token IDs to continuous latent representation space.</div>
-      <div style="background:#EFF6FF;border:1px solid #DBEAFE;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#1D4ED8;margin-top:6px;font-weight:800;text-align:center;">X_emb = Lookup(W_E, tokens)</div>
-    </div>
-
-    <!-- Card 3: Rotary Position Embedding -->
-    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">3. Rotary Pos Embedding (RoPE)</span>
-        <span style="background:#FEF3C7;font-size:8.5px;font-weight:800;color:#92400E;padding:2px 6px;border-radius:4px;">Relative Angles</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Applies complex 2D planar rotation matrices to Q/K pairs to encode token sequence order.</div>
-      <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#B45309;margin-top:6px;font-weight:800;text-align:center;">x_m' = R_(Θ,m)^d · x_m</div>
-    </div>
-
-    <!-- Card 4: Pre-Layer RMSNorm -->
-    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">4. Pre-Layer RMSNorm</span>
-        <span style="background:#ECFDF5;font-size:8.5px;font-weight:800;color:#065F46;padding:2px 6px;border-radius:4px;">Zero Variance Drift</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Root-mean-square normalization scales activations for extreme gradient stability in 70B+ scales.</div>
-      <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#15803D;margin-top:6px;font-weight:800;text-align:center;">RMS(x) = √(1/d ∑ x_i² + ε)</div>
-    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Converts raw UTF-8 string into sequence of discrete vocabulary IDs.</div>
+    <div style="background:#F1F5F9;border:1px solid #E2E8F0;border-radius:4px;padding:4px 8px;font-family:monospace;font-size:9px;color:#0F172A;margin-top:6px;font-weight:800;">tokens = ["The", " neural", " net"] ➔ [464, 15729, 2642]</div>
   </div>`;
-  cell('z1_content', z1ContentHtml, 25, 122, 340, 658, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('c_tok_txt', cTokHtml, 38, 122, 314, 125, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 3. ZONE 2: TRANSFORMER REPEATED LAYER STACK (x=380..1205, y=78..780)
-  cell('z2_box', '', 380, 78, 825, 702, 'rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;');
+  // Card 2: Learned Word Embedding Matrix (y=265..395, h=130)
+  cell('c_emb', '', 38, 265, 314, 130, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.5;');
+  const cEmbHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#1E3A8A;">❷ Embedding Matrix W_E</span>
+      <span style="background:#EFF6FF;font-size:8px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">ℝ^(32000 × 4096)</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Lookup projection mapping discrete token indices to 4096-dim dense semantic vector space.</div>
+    <div style="background:#EFF6FF;border:1px solid #DBEAFE;border-radius:4px;padding:4px 8px;font-size:9px;color:#1D4ED8;margin-top:6px;font-weight:900;text-align:center;">X_emb = Lookup(W_E, tokens) ∈ ℝ^(B×T×4096)</div>
+  </div>`;
+  cell('c_emb_txt', cEmbHtml, 38, 265, 314, 130, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 3: Rotary Positional Encoding (RoPE) (y=415..550, h=135)
+  cell('c_rope', '', 38, 415, 314, 135, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FED7AA;strokeWidth=1.5;');
+  const cRopeHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#9A3412;">❸ Rotary Pos Encoding (RoPE)</span>
+      <span style="background:#FFF7ED;font-size:8px;font-weight:800;color:#C2410C;padding:2px 6px;border-radius:4px;">2D Rotation</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Rotates 2D coordinate pairs by position angle θ_m to preserve relative token distances.</div>
+    <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px 8px;font-size:9px;color:#B45309;margin-top:6px;font-weight:900;text-align:center;">x_m' = R_(Θ,m)^d · x_m  (Relative Invariant)</div>
+  </div>`;
+  cell('c_rope_txt', cRopeHtml, 38, 415, 314, 135, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 4: Pre-Layer RMSNorm (y=570..710, h=140)
+  cell('c_norm1', '', 38, 570, 314, 140, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1.5;');
+  const cNorm1Html = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#065F46;">❹ Pre-Layer RMSNorm</span>
+      <span style="background:#ECFDF5;font-size:8px;font-weight:800;color:#047857;padding:2px 6px;border-radius:4px;">Zero Drift</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Scales activations by root-mean-square norm to eliminate exploding gradients.</div>
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:4px 8px;font-size:9px;color:#15803D;margin-top:6px;font-weight:900;text-align:center;">RMS(x) = √( 1/d ∑ x_i² + ε )  •  x̂ = (x / RMS(x)) ⊙ γ</div>
+  </div>`;
+  cell('c_norm1_txt', cNorm1Html, 38, 570, 314, 140, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 5: Tensor Dimension Indicator (y=730..845, h=115)
+  cell('c_dim1', '', 38, 730, 314, 115, 'rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;');
+  const cDim1Html = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:10.5px;font-weight:900;color:#1D4ED8;margin-bottom:3px;">Normalized Tensor Ready for Layer Stack</div>
+    <div style="font-family:monospace;font-size:11px;font-weight:900;color:#0F172A;">X_0 ∈ ℝ^(Batch × 2048 × 4096)</div>
+    <div style="font-size:8.5px;color:#3B82F6;margin-top:4px;font-weight:700;">⚡ 100% FP8 / bfloat16 Memory Resident</div>
+  </div>`;
+  cell('c_dim1_txt', cDim1Html, 38, 730, 314, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Zone 1 Internal Vertical Animated Arrows
+  edge('e1_tok_emb', 'c_tok', 'c_emb', 'strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;');
+  edge('e1_emb_rope', 'c_emb', 'c_rope', 'strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;');
+  edge('e1_rope_norm', 'c_rope', 'c_norm1', 'strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;');
+  edge('e1_norm_dim', 'c_norm1', 'c_dim1', 'strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;');
+
+  // ============================================================================
+  // ZONE 2: TRANSFORMER BLOCK STACK (REPEATED × N = 32) (x=380..1205, y=74..860, h=786)
+  // ============================================================================
+  cell('z2_box', '', 380, 74, 825, 786, 'rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C084FC;strokeWidth=2;');
   const z2HdrHtml = `<div style="background:#7C3AED;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 18px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
-    <span>⚡ 2. TRANSFORMER BLOCK STACK (REPEATED × N = 32 LAYERS)</span>
-    <span style="font-size:10px;background:#6D28D9;padding:2px 10px;border-radius:4px;">Pre-Norm Residual Topology</span>
+    <span>⚡ 2. TRANSFORMER BLOCK CORE (REPEATED × N = 32 LAYERS)</span>
+    <span style="font-size:10px;background:#6D28D9;padding:2px 10px;border-radius:4px;">Pre-Norm Dual Residual Highway</span>
   </div>`;
-  cell('z2_hdr', z2HdrHtml, 380, 78, 825, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('z2_hdr', z2HdrHtml, 380, 74, 825, 40, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // SUB-PANEL 2A: MULTI-HEAD SELF-ATTENTION (MHA / GQA) (x=395..780, y=128..765)
-  cell('z2a_box', '', 395, 128, 385, 638, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
-  const z2aContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box;">
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #F3E8FF;padding-bottom:6px;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:900;color:#6D28D9;">A. Grouped-Query Attention (GQA)</span>
-        <span style="background:#F3E8FF;font-size:9px;font-weight:800;color:#7C3AED;padding:2px 8px;border-radius:4px;">32 Q Heads • 8 KV Heads</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;margin-bottom:8px;">
-        Computes pairwise inter-token correlation weights across the sequence window using linear projections:
-      </div>
+  // SUB-CONTAINER 2A: MULTI-HEAD SELF-ATTENTION (MHA / GQA) (x=395..780, y=122..845)
+  cell('z2a_box', '', 395, 122, 385, 723, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
+  const z2aHdrHtml = `<div style="background:#6D28D9;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:8px 12px;font-family:Impact,Arial Black,sans-serif;font-size:13px;display:flex;align-items:center;justify-content:space-between;">
+    <span>A. GROUPED-QUERY ATTENTION (GQA)</span>
+    <span style="font-size:8.5px;background:#5B21B6;padding:2px 6px;border-radius:3px;">32 Q Heads • 8 KV Heads</span>
+  </div>`;
+  cell('z2a_hdr', z2aHdrHtml, 395, 122, 385, 34, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-      <!-- Q, K, V Projection Matrix -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
-        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:6px;text-align:center;">
-          <div style="font-size:11px;font-weight:900;color:#1D4ED8;">Q (Query)</div>
-          <div style="font-size:7.5px;color:#3B82F6;">Q = X · W_Q</div>
-        </div>
-        <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:6px;padding:6px;text-align:center;">
-          <div style="font-size:11px;font-weight:900;color:#065F46;">K (Key)</div>
-          <div style="font-size:7.5px;color:#10B981;">K = X · W_K</div>
-        </div>
-        <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:6px;padding:6px;text-align:center;">
-          <div style="font-size:11px;font-weight:900;color:#9A3412;">V (Value)</div>
-          <div style="font-size:7.5px;color:#F97316;">V = X · W_V</div>
-        </div>
+  // Card 2A.1: Linear Q, K, V Projections (y=162..285, h=123)
+  cell('c_qkv', '', 405, 162, 365, 123, 'rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const cQkvHtml = `<div style="padding:8px 10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:10.5px;font-weight:900;color:#1E293B;margin-bottom:6px;">❺ Linear Projections (Q, K, V)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:4px;text-align:center;">
+        <div style="font-size:9.5px;font-weight:900;color:#1D4ED8;">Q (Query)</div>
+        <div style="font-size:7.5px;font-family:monospace;color:#3B82F6;">Q = X · W_Q</div>
       </div>
-
-      <!-- Scaled Dot-Product Attention Equation Box -->
-      <div style="background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;">
-        <div style="font-size:9.5px;font-weight:800;color:#6B21A8;margin-bottom:4px;">Scaled Dot-Product Attention Core</div>
-        <div style="background:#FFFFFF;border:1px solid #E9D5FF;border-radius:6px;padding:6px;font-family:monospace;font-size:10px;font-weight:900;color:#7C3AED;">
-          Attn(Q,K,V) = Softmax((QK^T)/√d_k + M) · V
-        </div>
+      <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:4px;padding:4px;text-align:center;">
+        <div style="font-size:9.5px;font-weight:900;color:#065F46;">K (Key)</div>
+        <div style="font-size:7.5px;font-family:monospace;color:#10B981;">K = X · W_K</div>
       </div>
-
-      <!-- FlashAttention Kernel Box -->
-      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:8px;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
-          <span style="font-size:12px;">⚡</span>
-          <span style="font-size:10px;font-weight:900;color:#0F172A;">FlashAttention-3 IO Kernel</span>
-        </div>
-        <div style="font-size:8.5px;color:#64748B;line-height:1.3;">
-          Tiled online softmax avoids materializing N×N attention matrix in HBM; runs entirely in GPU SRAM.
-        </div>
+      <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;padding:4px;text-align:center;">
+        <div style="font-size:9.5px;font-weight:900;color:#9A3412;">V (Value)</div>
+        <div style="font-size:7.5px;font-family:monospace;color:#F97316;">V = X · W_V</div>
       </div>
-    </div>
-
-    <!-- Output Projection & Residual Add -->
-    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:8px;text-align:center;">
-      <div style="font-size:9.5px;font-weight:900;color:#15803D;">Residual Bypass Connection 1</div>
-      <div style="font-size:8.5px;color:#166534;font-family:monospace;">X_mid = X_in + Linear(Attn(Q, K, V)) · W_O</div>
     </div>
   </div>`;
-  cell('z2a_content', z2aContentHtml, 395, 128, 385, 638, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('c_qkv_txt', cQkvHtml, 405, 162, 365, 123, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // SUB-PANEL 2B: FEED-FORWARD NETWORK (SwiGLU FFN / MLP) (x=800..1185, y=128..765)
-  cell('z2b_box', '', 800, 128, 385, 638, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
-  const z2bContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box;">
-    <div>
-      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #F3E8FF;padding-bottom:6px;margin-bottom:8px;">
-        <span style="font-size:12px;font-weight:900;color:#6D28D9;">B. SwiGLU Feed-Forward Network</span>
-        <span style="background:#F3E8FF;font-size:9px;font-weight:800;color:#7C3AED;padding:2px 8px;border-radius:4px;">Hidden Dim 14336</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;margin-bottom:8px;">
-        Pointwise non-linear dimension expansion for knowledge recall and deep contextual reasoning:
-      </div>
-
-      <!-- Projection Layers -->
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
-        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:9.5px;font-weight:900;color:#0F172A;">1. Gate Projection W_gate</span>
-          <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(4096 ➔ 14336)</span>
-        </div>
-        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:9.5px;font-weight:900;color:#0F172A;">2. Up Projection W_up</span>
-          <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(4096 ➔ 14336)</span>
-        </div>
-      </div>
-
-      <!-- SwiGLU Gated Activation Box -->
-      <div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;">
-        <div style="font-size:9.5px;font-weight:800;color:#9A3412;margin-bottom:4px;">SwiGLU Non-Linear Gating</div>
-        <div style="background:#FFFFFF;border:1px solid #FFEDD5;border-radius:6px;padding:6px;font-family:monospace;font-size:10px;font-weight:900;color:#C2410C;">
-          h = Swish(x · W_gate) ⊗ (x · W_up)
-        </div>
-      </div>
-
-      <!-- Down Projection -->
-      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <span style="font-size:9.5px;font-weight:900;color:#0F172A;">3. Down Projection W_down</span>
-        <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(14336 ➔ 4096)</span>
-      </div>
+  // Card 2A.2: Scaled Dot-Product Core (y=295..440, h=145)
+  cell('c_attn_core', '', 405, 295, 365, 145, 'rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;');
+  const cAttnCoreHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:10.5px;font-weight:900;color:#6B21A8;margin-bottom:4px;">❻ Scaled Dot-Product Attention Core</div>
+    <div style="background:#FFFFFF;border:1.5px solid #D8B4FE;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;font-weight:900;color:#7C3AED;margin-bottom:6px;">
+      Attention(Q,K,V) = Softmax( (Q · K^T)/√d_k + M_causal ) · V
     </div>
+    <div style="font-size:8px;color:#7E22CE;">Causal Mask M ensures token t only attends to previous tokens &lt;= t</div>
+  </div>`;
+  cell('c_attn_core_txt', cAttnCoreHtml, 405, 295, 365, 145, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-    <!-- Output Projection & Residual Add -->
-    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:8px;text-align:center;">
-      <div style="font-size:9.5px;font-weight:900;color:#15803D;">Residual Bypass Connection 2</div>
-      <div style="font-size:8.5px;color:#166534;font-family:monospace;">X_out = X_mid + FFN(RMSNorm(X_mid))</div>
+  // Card 2A.3: FlashAttention-3 Kernel (y=450..585, h=135)
+  cell('c_flash', '', 405, 450, 365, 135, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1.5;');
+  const cFlashHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+      <span style="font-size:13px;">⚡</span>
+      <span style="font-size:10.5px;font-weight:900;color:#92400E;">❼ FlashAttention-3 GPU Kernel</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Tiled matrix multiplication with online softmax normalization. Avoids reading/writing N×N attention matrix to GPU HBM.</div>
+    <div style="background:#FEF3C7;border-radius:4px;padding:3px 6px;font-size:8px;font-weight:800;color:#B45309;margin-top:4px;text-align:center;">IO Complexity: O(N) SRAM transfers (3x Faster Inference)</div>
+  </div>`;
+  cell('c_flash_txt', cFlashHtml, 405, 450, 365, 135, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2A.4: Linear Output Projection W_O (y=595..710, h=115)
+  cell('c_proj_o', '', 405, 595, 365, 115, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.5;');
+  const cProjOHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:3px;">❽ Output Projection W_O</div>
+    <div style="font-size:8.5px;color:#475569;">Concatenates 32 attention head outputs and maps back to model dimension:</div>
+    <div style="background:#EFF6FF;border:1px solid #DBEAFE;border-radius:4px;padding:4px;font-family:monospace;font-size:8.5px;color:#1D4ED8;margin-top:4px;font-weight:800;text-align:center;">MHA_Out = Concat(head_1, ..., head_32) · W_O</div>
+  </div>`;
+  cell('c_proj_o_txt', cProjOHtml, 405, 595, 365, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2A.5: Residual Add & RMSNorm 2 (y=720..835, h=115)
+  cell('c_res1', '', 405, 720, 365, 115, 'rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;');
+  const cRes1Html = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:10.5px;font-weight:900;color:#15803D;margin-bottom:3px;">❾ Residual Bypass Highway 1</div>
+    <div style="font-family:monospace;font-size:9.5px;font-weight:900;color:#166534;">X_mid = X_in + MHA_Out  ➔  RMSNorm(X_mid)</div>
+    <div style="font-size:8px;color:#15803D;margin-top:2px;">Direct uninterrupted identity gradient backpropagation</div>
+  </div>`;
+  cell('c_res1_txt', cRes1Html, 405, 720, 365, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Zone 2A Internal Connectors
+  edge('e2a_qkv_core', 'c_qkv', 'c_attn_core', 'strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2a_core_flash', 'c_attn_core', 'c_flash', 'strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2a_flash_proj', 'c_flash', 'c_proj_o', 'strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2a_proj_res', 'c_proj_o', 'c_res1', 'strokeColor=#16A34A;strokeWidth=2.5;flowAnimation=1;');
+
+  // SUB-CONTAINER 2B: FEED-FORWARD DENSE NETWORK (SwiGLU FFN) (x=800..1185, y=122..845)
+  cell('z2b_box', '', 800, 122, 385, 723, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
+  const z2bHdrHtml = `<div style="background:#9333EA;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:8px 12px;font-family:Impact,Arial Black,sans-serif;font-size:13px;display:flex;align-items:center;justify-content:space-between;">
+    <span>B. SwiGLU FEED-FORWARD DENSE NETWORK</span>
+    <span style="font-size:8.5px;background:#7E22CE;padding:2px 6px;border-radius:3px;">Hidden Dim = 14,336</span>
+  </div>`;
+  cell('z2b_hdr', z2bHdrHtml, 800, 122, 385, 34, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2B.1: Dual Projections (W_gate, W_up) (y=162..285, h=123)
+  cell('c_gate_up', '', 810, 162, 365, 123, 'rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const cGateUpHtml = `<div style="padding:8px 10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:10.5px;font-weight:900;color:#1E293B;margin-bottom:6px;">❿ Expansion Projections (W_gate, W_up)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;padding:6px;text-align:center;">
+        <div style="font-size:9.5px;font-weight:900;color:#9A3412;">W_gate Projection</div>
+        <div style="font-size:7.5px;font-family:monospace;color:#C2410C;">Linear(4096 ➔ 14336)</div>
+      </div>
+      <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;padding:6px;text-align:center;">
+        <div style="font-size:9.5px;font-weight:900;color:#9A3412;">W_up Projection</div>
+        <div style="font-size:7.5px;font-family:monospace;color:#C2410C;">Linear(4096 ➔ 14336)</div>
+      </div>
     </div>
   </div>`;
-  cell('z2b_content', z2bContentHtml, 800, 128, 385, 638, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('c_gate_up_txt', cGateUpHtml, 810, 162, 365, 123, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 4. ZONE 3: OUTPUT PROJECTION, LOGITS & LOSS (x=1220..1575, y=78..780)
-  cell('z3_box', '', 1220, 78, 355, 702, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  // Card 2B.2: SwiGLU Gated Activation (y=295..440, h=145)
+  cell('c_swiglu', '', 810, 295, 365, 145, 'rounded=1;arcSize=6;fillColor=#FFF7ED;strokeColor=#FED7AA;strokeWidth=1.5;');
+  const cSwigluHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:10.5px;font-weight:900;color:#9A3412;margin-bottom:4px;">⓫ SwiGLU Gated Non-Linear Activation</div>
+    <div style="background:#FFFFFF;border:1.5px solid #FED7AA;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;font-weight:900;color:#C2410C;margin-bottom:6px;">
+      h = (x · W_gate ⊙ σ(x · W_gate)) ⊗ (x · W_up)
+    </div>
+    <div style="font-size:8px;color:#9A3412;">Non-monotonic Swish gate outperforms legacy ReLU/GELU in knowledge recall</div>
+  </div>`;
+  cell('c_swiglu_txt', cSwigluHtml, 810, 295, 365, 145, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2B.3: Down Projection W_down (y=450..585, h=135)
+  cell('c_down', '', 810, 450, 365, 135, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.5;');
+  const cDownHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:3px;">⓬ Contraction Projection W_down</div>
+    <div style="font-size:8.5px;color:#475569;">Compresses 14,336 hidden features back to standard 4096-dim model dimension:</div>
+    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:4px;padding:4px;font-family:monospace;font-size:8.5px;color:#1D4ED8;margin-top:4px;font-weight:800;text-align:center;">FFN_Out = h · W_down ∈ ℝ^(B×T×4096)</div>
+  </div>`;
+  cell('c_down_txt', cDownHtml, 810, 450, 365, 135, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2B.4: Residual Add 2 (y=595..710, h=115)
+  cell('c_res2', '', 810, 595, 365, 115, 'rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;');
+  const cRes2Html = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:10.5px;font-weight:900;color:#15803D;margin-bottom:3px;">⓭ Residual Bypass Highway 2</div>
+    <div style="font-family:monospace;font-size:9.5px;font-weight:900;color:#166534;">X_out = X_mid + FFN_Out</div>
+    <div style="font-size:8px;color:#15803D;margin-top:2px;">Feeds into next layer stack (Layer l+1)</div>
+  </div>`;
+  cell('c_res2_txt', cRes2Html, 810, 595, 365, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2B.5: Stack Loop Repeater Badge (y=720..835, h=115)
+  cell('c_rep', '', 810, 720, 365, 115, 'rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#C084FC;strokeWidth=1.5;');
+  const cRepHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;text-align:center;">
+    <div style="font-size:11px;font-weight:900;color:#6D28D9;margin-bottom:3px;">🔄 Layer Loop Counter (l = 1 .. 32)</div>
+    <div style="font-size:8.5px;color:#7C3AED;">If layer &lt; 32, route X_out into Layer l+1; else route to Final Logits</div>
+    <div style="background:#F3E8FF;border-radius:4px;padding:3px 6px;font-size:8px;font-weight:800;color:#5B21B6;margin-top:4px;">Zero Degradation with Deep Residual Normalization</div>
+  </div>`;
+  cell('c_rep_txt', cRepHtml, 810, 720, 365, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Zone 2B Internal Connectors
+  edge('e2b_res1_gate', 'c_res1', 'c_gate_up', 'strokeColor=#9333EA;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2b_gate_swiglu', 'c_gate_up', 'c_swiglu', 'strokeColor=#EA580C;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2b_swiglu_down', 'c_swiglu', 'c_down', 'strokeColor=#EA580C;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2b_down_res2', 'c_down', 'c_res2', 'strokeColor=#16A34A;strokeWidth=2.5;flowAnimation=1;');
+  edge('e2b_res2_rep', 'c_res2', 'c_rep', 'strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;');
+
+  // ============================================================================
+  // ZONE 3: OUTPUT PROJECTION, LOGITS & LOSS (x=1220..1575, y=74..860, h=786)
+  // ============================================================================
+  cell('z3_box', '', 1220, 74, 355, 786, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#86EFAC;strokeWidth=2;');
   const z3HdrHtml = `<div style="background:#059669;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 14px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
-    <span>🎯 3. LOGITS &amp; LOSS</span>
+    <span>🎯 3. LOGITS, LOSS &amp; KV-CACHE</span>
     <span style="font-size:10px;background:#047857;padding:2px 8px;border-radius:4px;">Softmax Probability</span>
   </div>`;
-  cell('z3_hdr', z3HdrHtml, 1220, 78, 355, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('z3_hdr', z3HdrHtml, 1220, 74, 355, 40, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  const z3ContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;">
-    <!-- Final RMSNorm -->
-    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
-      <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">1. Final Layer RMSNorm</div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Final normalization before projection into unconstrained vocabulary logit dimensions.</div>
-    </div>
-
-    <!-- Unembedding Linear Head -->
-    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
-        <span style="font-size:11px;font-weight:900;color:#065F46;">2. Unembedding Head W_U</span>
-        <span style="background:#ECFDF5;font-size:8px;font-weight:800;color:#047857;padding:2px 6px;border-radius:4px;">ℝ^(4096 × 32k)</span>
-      </div>
-      <div style="font-size:9px;color:#475569;line-height:1.35;">Projects hidden state vector into unnormalized logit scores z_i for all 32,000 dictionary tokens.</div>
-    </div>
-
-    <!-- Softmax Temperature Sampling -->
-    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
-      <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">3. Softmax &amp; Sampling</div>
-      <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:4px;padding:4px;font-family:monospace;font-size:9px;font-weight:800;color:#047857;text-align:center;margin-bottom:4px;">
-        P(w_i) = exp(z_i / T) / ∑ exp(z_j / T)
-      </div>
-      <div style="font-size:8.5px;color:#64748B;">Top-P (Nucleus = 0.95), Top-K = 40, Min-P = 0.05 sampling filters.</div>
-    </div>
-
-    <!-- Cross-Entropy Loss & Autograd -->
-    <div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:8px;padding:10px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
-        <span style="font-size:11px;font-weight:900;color:#B91C1C;">4. Cross-Entropy Loss</span>
-        <span style="background:#FEE2E2;font-size:8px;font-weight:800;color:#991B1B;padding:2px 6px;border-radius:4px;">Backprop Flow</span>
-      </div>
-      <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:4px;padding:4px;font-family:monospace;font-size:9px;font-weight:900;color:#DC2626;text-align:center;margin-bottom:4px;">
-        ℒ = -∑ y_i log(ŷ_i)  •  ∇_θ ℒ = ∂ℒ / ∂W
-      </div>
-      <div style="font-size:8.5px;color:#991B1B;">Reverse-mode autodiff propagates gradient tensors backward to update all weights W_ij.</div>
-    </div>
+  // Card 3.1: Final RMSNorm (y=122..245, h=123)
+  cell('c_final_norm', '', 1232, 122, 331, 125, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1.5;');
+  const cFinalNormHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">⓮ Final Layer RMSNorm</div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Final normalization of the 32nd layer output vector before vocab projection.</div>
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:4px;font-size:8.5px;color:#15803D;margin-top:6px;font-weight:800;text-align:center;">X_final = RMSNorm(X_32) ∈ ℝ^(B×T×4096)</div>
   </div>`;
-  cell('z3_content', z3ContentHtml, 1220, 122, 355, 658, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('c_final_norm_txt', cFinalNormHtml, 1232, 122, 331, 125, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 5. INTER-ZONE ORTHOGONAL CONNECTORS
-  edge('edge_z1_z2', 'z1_box', 'z2_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;endArrow=classic;endSize=6;');
-  edge('edge_z2_z3', 'z2_box', 'z3_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;endArrow=classic;endSize=6;');
+  // Card 3.2: Unembedding Matrix W_U (y=265..395, h=130)
+  cell('c_unemb', '', 1232, 265, 331, 130, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1.5;');
+  const cUnembHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#065F46;">⓯ Unembedding Head W_U</span>
+      <span style="background:#ECFDF5;font-size:8px;font-weight:800;color:#047857;padding:2px 6px;border-radius:4px;">ℝ^(4096 × 32k)</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Linear projection mapping latent vectors into raw logit scores z for all 32,000 dictionary tokens.</div>
+    <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:4px;padding:4px;font-family:monospace;font-size:8.5px;color:#047857;margin-top:6px;font-weight:800;text-align:center;">logits z = X_final · W_U ∈ ℝ^(B×T×32000)</div>
+  </div>`;
+  cell('c_unemb_txt', cUnembHtml, 1232, 265, 331, 130, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 6. ZONE 4: BOTTOM DISTRIBUTED TRAINING & HARDWARE TELEMETRY (y=790..870)
-  const btmTelemetryHtml = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:8px 18px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  // Card 3.3: Softmax & Temperature Sampling (y=415..550, h=135)
+  cell('c_softmax', '', 1232, 415, 331, 135, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1.5;');
+  const cSoftmaxHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">⓰ Softmax Temperature Sampling</div>
+    <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:4px;padding:4px;font-family:monospace;font-size:9px;font-weight:900;color:#047857;text-align:center;margin-bottom:4px;">
+      P(w_i) = exp(z_i / T) / ∑ exp(z_j / T)
+    </div>
+    <div style="font-size:8px;color:#64748B;">Top-P (Nucleus = 0.95), Top-K = 40, Min-P = 0.05 sampling filters</div>
+    <div style="background:#F0FDF4;border-radius:4px;padding:3px 6px;font-size:8.5px;font-weight:800;color:#15803D;margin-top:4px;text-align:center;">Generated Token: " learning" (ID: 4672)</div>
+  </div>`;
+  cell('c_softmax_txt', cSoftmaxHtml, 1232, 415, 331, 135, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 3.4: Dynamic KV-Cache Store (y=570..710, h=140)
+  cell('c_kv', '', 1232, 570, 331, 140, 'rounded=1;arcSize=6;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1.5;');
+  const cKvHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#0F766E;">⓱ Dynamic KV-Cache Buffer</span>
+      <span style="background:#CCFBF1;font-size:8px;font-weight:800;color:#0F766E;padding:2px 6px;border-radius:4px;">PagedAttention</span>
+    </div>
+    <div style="font-size:8.5px;color:#475569;line-height:1.3;">Stores previous Key/Value tensors in high-speed GPU VRAM to avoid recomputing past tokens during generation.</div>
+    <div style="background:#CCFBF1;border:1px solid #5EEAD4;border-radius:4px;padding:4px;font-size:8.5px;color:#0F766E;margin-top:6px;font-weight:900;text-align:center;">⚡ Autoregressive Feedback Loop</div>
+  </div>`;
+  cell('c_kv_txt', cKvHtml, 1232, 570, 331, 140, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 3.5: Cross-Entropy Loss & Backprop Autograd (y=730..845, h=115)
+  cell('c_loss', '', 1232, 730, 331, 115, 'rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1.5;');
+  const cLossHtml = `<div style="padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+      <span style="font-size:11px;font-weight:900;color:#B91C1C;">⓲ Cross-Entropy Loss</span>
+      <span style="background:#FEE2E2;font-size:8px;font-weight:800;color:#991B1B;padding:2px 6px;border-radius:4px;">Autograd Backprop</span>
+    </div>
+    <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:4px;padding:3px;font-family:monospace;font-size:8.5px;font-weight:900;color:#DC2626;text-align:center;margin-bottom:3px;">
+      ℒ = -∑ y_i log(ŷ_i)  •  ∇_θ ℒ = ∂ℒ / ∂W
+    </div>
+    <div style="font-size:8px;color:#991B1B;">Reverse-mode autodiff propagates gradient tensors backward</div>
+  </div>`;
+  cell('c_loss_txt', cLossHtml, 1232, 730, 331, 115, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Zone 3 Internal Connectors
+  edge('e3_norm_unemb', 'c_final_norm', 'c_unemb', 'strokeColor=#059669;strokeWidth=2.5;flowAnimation=1;');
+  edge('e3_unemb_soft', 'c_unemb', 'c_softmax', 'strokeColor=#059669;strokeWidth=2.5;flowAnimation=1;');
+  edge('e3_soft_kv', 'c_softmax', 'c_kv', 'strokeColor=#0D9488;strokeWidth=2.5;flowAnimation=1;');
+  edge('e3_soft_loss', 'c_softmax', 'c_loss', 'strokeColor=#DC2626;strokeWidth=2.5;flowAnimation=1;');
+
+  // ============================================================================
+  // MAJOR INTER-ZONE CONNECTOR HIGHWAYS
+  // ============================================================================
+  // 1. Zone 1 ➔ Zone 2 (Forward Tensor Stream)
+  edge('e_z1_z2', 'c_dim1', 'c_qkv', 'strokeColor=#2563EB;strokeWidth=3;flowAnimation=1;');
+
+  // 2. Zone 2 ➔ Zone 3 (Block Output ➔ Final Norm)
+  edge('e_z2_z3', 'c_rep', 'c_final_norm', 'strokeColor=#7C3AED;strokeWidth=3;flowAnimation=1;');
+
+  // 3. Autoregressive KV-Cache Feedback Loop (Zone 3 ➔ Zone 2 KV Buffer)
+  edge('e_kv_loop', 'c_kv', 'c_qkv', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0D9488;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;');
+
+  // 4. Backward Gradient Backpropagation Flow (Zone 3 Loss ➔ Zone 2 FFN ➔ Zone 1 Embeddings)
+  edge('e_backprop_z3_z2', 'c_loss', 'c_down', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#DC2626;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;');
+  edge('e_backprop_z2_z1', 'c_res1', 'c_emb', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#DC2626;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;');
+
+  // ============================================================================
+  // ZONE 4: DISTRIBUTED ACCELERATOR HARDWARE CLUSTER (y=870..942, h=72)
+  // ============================================================================
+  const btmTelemetryHtml = `<div style="background:#0F172A;border:1.5px solid #334155;border-radius:8px;padding:8px 20px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.2);">
     <div>
-      <div style="font-size:11px;font-weight:900;color:#0F172A;text-transform:uppercase;">🚀 Distributed Accelerators &amp; 3D Parallelism</div>
-      <div style="font-size:9px;color:#64748B;">Google TPU v5p Pods (8,960 Chips) • NVIDIA H100 SXM5 80GB • Megatron-LM Parallel Mesh</div>
+      <div style="font-size:12px;font-weight:900;color:#38BDF8;text-transform:uppercase;letter-spacing:0.5px;">🚀 Distributed Hardware Accelerators &amp; 3D Parallelism Mesh</div>
+      <div style="font-size:9.5px;color:#94A3B8;margin-top:2px;">Google TPU v5p Pods (8,960 Chips) • NVIDIA H100 SXM5 80GB • Megatron-LM Parallel Mesh</div>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <span style="background:#EFF6FF;border:1px solid #BFDBFE;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#1D4ED8;">Tensor Parallel TP=8</span>
-      <span style="background:#F0FDF4;border:1px solid #BBF7D0;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#15803D;">Pipeline Parallel PP=4</span>
-      <span style="background:#FAF5FF;border:1px solid #E9D5FF;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#7C3AED;">ZeRO-3 Data Parallel DP=64</span>
-      <span style="background:#FFFBEB;border:1px solid #FDE68A;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#B45309;">FP8 Mixed Precision</span>
+      <span style="background:#1E293B;border:1px solid #3B82F6;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:900;color:#60A5FA;">Tensor Parallel TP=8</span>
+      <span style="background:#1E293B;border:1px solid #10B981;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:900;color:#34D399;">Pipeline Parallel PP=4</span>
+      <span style="background:#1E293B;border:1px solid #8B5CF6;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:900;color:#C084FC;">ZeRO-3 Data Parallel DP=64</span>
+      <span style="background:#1E293B;border:1px solid #F59E0B;padding:4px 10px;border-radius:4px;font-size:10px;font-weight:900;color:#FBBF24;">⚡ FP8 Tensor Core Engine</span>
     </div>
   </div>`;
-  cell('btm_telemetry', btmTelemetryHtml, 25, 790, 1550, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('btm_telemetry', btmTelemetryHtml, 25, 870, 1550, 72, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 7. FOOTER (y=850..885)
+  // ============================================================================
+  // ZONE 5: FOOTER (y=950..980, h=30)
+  // ============================================================================
   const ftrHtml = `<div style="display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-family:system-ui,-apple-system,sans-serif;font-size:10.5px;font-weight:800;color:#64748B;">
-    <div>FORWARD INFERENCE ➔ | BACKPROPAGATION GRADIENTS ⬅ | LOSS OPTIMIZATION</div>
+    <div style="display:flex;align-items:center;gap:18px;">
+      <span style="color:#2563EB;">➔ FORWARD INFERENCE (Solid Blue)</span>
+      <span style="color:#16A34A;">➔ RESIDUAL BYPASS (Solid Green)</span>
+      <span style="color:#0D9488;">➔ AUTOREGRESSIVE KV LOOP (Dashed Teal)</span>
+      <span style="color:#DC2626;">⬅ AUTOGRAD BACKPROPAGATION (Dashed Red)</span>
+    </div>
     <div style="display:flex;align-items:center;gap:6px;color:#0F172A;font-weight:900;">
       <span>Google Cloud Vertex AI &amp; DeepMind Core</span>
     </div>
   </div>`;
-  cell('main_footer', ftrHtml, 25, 850, 1550, 26, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('main_footer', ftrHtml, 25, 950, 1550, 30, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="neural_network_transformer_architecture" name="Deep Neural Network &amp; Transformer Architecture">
@@ -1039,6 +1156,7 @@ export function renderNeuralNetworkArchitectureXml(
   </diagram>
 </mxfile>`;
 }
+
 
 export function renderUniversalConceptualRoadmapXml(
   roadmap: Studio3ConceptualRoadmap,
