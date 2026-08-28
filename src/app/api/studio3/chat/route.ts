@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { messages, currentXml, previousGraph, theme = 'light', userApiKey } = body;
+    const { messages, currentXml, previousGraph, theme = 'dark', userApiKey } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -90,7 +90,14 @@ export async function POST(req: NextRequest) {
       xml,
       graph,
       qualityReport,
-      logs: logger.getLogs()
+      logs: logger.getLogs(),
+      stats: {
+        bandsCount: Array.isArray(graph?.bands) ? graph.bands.length : 1,
+        abstractionLevel: graph?.abstractionLevel || intent.abstractionLevel,
+        connectionsCount: Array.isArray(graph?.connections) ? graph.connections.length : 0,
+        qualityScore: qualityReport.overallScore,
+        certified: qualityReport.certified
+      }
     });
   } catch (error: any) {
     logger.log({

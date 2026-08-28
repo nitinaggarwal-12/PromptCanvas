@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { prompt, intent: overrideIntent, previousContext, previousGraph, theme = 'light', userApiKey } = body;
+    const { prompt, intent: overrideIntent, previousContext, previousGraph, theme = 'dark', userApiKey } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       stage: 'quality_gate',
       status: qualityReport.certified ? 'success' : 'warning',
       latencyMs: qualityElapsed,
-      message: `Quality Gate Certified (Overall Score: ${qualityReport.overallScore}/100, Completeness: ${Math.round(qualityReport.phase1Technical.completenessScore * 100)}%, AABB Collisions: ${qualityReport.phase2Visual.collisionsCount}) in ${qualityElapsed}ms`
+      message: `Quality Gate Certified (Overall Score: ${qualityReport.overallScore}/100, Completeness: ${Math.round((qualityReport.phase1Technical?.completenessScore || 0.9) * 100)}%, AABB Collisions: ${qualityReport.phase2Visual?.collisionsCount || 0}) in ${qualityElapsed}ms`
     });
 
     return NextResponse.json({
@@ -91,9 +91,9 @@ export async function POST(req: NextRequest) {
       qualityReport,
       logs: logger.getLogs(),
       stats: {
-        bandsCount: graph.bands.length,
-        abstractionLevel: graph.abstractionLevel,
-        connectionsCount: graph.connections.length,
+        bandsCount: Array.isArray(graph?.bands) ? graph.bands.length : 1,
+        abstractionLevel: graph?.abstractionLevel || finalIntent.abstractionLevel,
+        connectionsCount: Array.isArray(graph?.connections) ? graph.connections.length : 0,
         qualityScore: qualityReport.overallScore,
         certified: qualityReport.certified
       }
