@@ -45,6 +45,7 @@ import { generateGenericArchitectureXml } from '@/lib/genericArchitecture';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
 import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopology';
 import { sanitizeDrawioXmlAttributes, injectUseCaseFlavor } from '@/lib/diagramCleaner';
+import { compileArchitectureFromPrompt } from '@/lib/dynamicArchitectureCompiler';
 
 interface PastProject {
   id: string;
@@ -948,53 +949,11 @@ function Studio2Content() {
 
   // Prompt Intelligence & Change Detection
   const analyzePromptChanges = (prompt: string): { summary: string; targetTier: string; changedComponents: string[] } => {
-    const p = prompt.toLowerCase();
-    if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('replica') || p.includes('persist')) {
-      return {
-        summary: 'Provisioned High-Availability Database Layer & TrueTime Replication',
-        targetTier: 'Application & Data (Tier 3)',
-        changedComponents: ['Cloud Spanner / Cloud SQL HA', 'BigQuery Analytical Warehouse', 'Data Lifecycle Storage Policies']
-      };
-    }
-    if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('kafka') || p.includes('dataflow') || p.includes('queue')) {
-      return {
-        summary: 'Configured Low-Latency Pub/Sub Messaging & Event Orchestration',
-        targetTier: 'Load Balancing & Compute (Tier 2)',
-        changedComponents: ['Cloud Pub/Sub Message Bus', 'Async Task Processors', 'Regional Subnet A Queue Workers']
-      };
-    }
-    if (p.includes('rag') || p.includes('vector') || p.includes('vertex') || p.includes('agent') || p.includes('gemini') || p.includes('ai') || p.includes('llm')) {
-      return {
-        summary: 'Integrated Vertex AI Agent Platform & Knowledge Graph Reasoning',
-        targetTier: 'Agentic AI Services (Tier 4)',
-        changedComponents: ['Gemini Agent Platform Core', 'Vertex AI Vector Search / ScaNN', 'ADK 2.0 Agent Development Kit', 'Model Management & Serving Loop']
-      };
-    }
-    if (p.includes('armor') || p.includes('security') || p.includes('waf') || p.includes('zero') || p.includes('iap') || p.includes('vpn') || p.includes('ddos')) {
-      return {
-        summary: 'Enforced Edge Security, Cloud Armor WAF & Identity-Aware Proxy',
-        targetTier: 'Ingress & Security (Tier 1)',
-        changedComponents: ['Cloud Armor DDoS/WAF Filtering', 'Identity-Aware Proxy (IAP)', 'Global External HTTP(S) Load Balancer']
-      };
-    }
-    if (p.includes('mig') || p.includes('gpu') || p.includes('scale') || p.includes('instance') || p.includes('gce') || p.includes('internal lb')) {
-      return {
-        summary: 'Configured Auto-Scaling Compute Engine MIGs & Internal Load Balancer',
-        targetTier: 'Load Balancing & Compute (Tier 2)',
-        changedComponents: ['Compute Engine MIG (Subnet B)', 'Regional Internal Load Balancer', 'Dynamic Capacity Autoscaler']
-      };
-    }
-    if (p.includes('medicine') || p.includes('pharma') || p.includes('cleanroom') || p.includes('gxp') || p.includes('plant')) {
-      return {
-        summary: 'Configured Pharmaceutical & Cleanroom Manufacturing IT Platform',
-        targetTier: 'End-to-End GCP Industrial Topology',
-        changedComponents: ['Cleanroom OT Gateway', 'GxP Batch Application (GKE)', 'EBR & MES API', 'Sterile Bioreactor Sync']
-      };
-    }
+    const arch = compileArchitectureFromPrompt(prompt);
     return {
-      summary: 'Updated Google Cloud Functional Flowchart Topology',
-      targetTier: 'Global Multi-Tier VPC',
-      changedComponents: ['Ingress & Perimeter Security', 'Regional Compute Subnets', 'Application State & Analytics Stores', 'Agentic Vertex AI Foundation']
+      summary: arch.summary,
+      targetTier: arch.targetTier,
+      changedComponents: arch.changedComponents
     };
   };
 
