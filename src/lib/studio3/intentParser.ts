@@ -3,7 +3,7 @@ import { GEMINI_MODEL_ID } from '../geminiConfig';
 import { Studio3ExecutionLogger } from './telemetryLogger';
 import { parseJsonSafely } from './jsonRepair';
 
-export type AbstractionLevel = 'conceptual' | 'logical' | 'technical';
+export type AbstractionLevel = 'logical' | 'technical';
 
 export type TopologyGrammar =
   | 'horizontal_pipeline'
@@ -72,29 +72,29 @@ export function parseStudio3IntentHeuristics(
     requestedSlideCount = 10;
   }
 
-  // 2. Abstraction Level detection: Default to technical/logical for engineering/cloud/protocol systems
-  let abstractionLevel: AbstractionLevel = 'technical';
+  // 2. Abstraction Level detection: Default to logical/technical for all architectures
+  let abstractionLevel: AbstractionLevel = 'logical';
   if (
-    p.includes('analogy') ||
-    p.includes('simple terms') ||
-    p.includes('kid') ||
-    p.includes('5th grade') ||
-    p.includes('high-level concept') ||
-    p.includes('for executives') ||
-    p.includes('business outcome')
+    p.includes('technical') ||
+    p.includes('protocol') ||
+    p.includes('packet') ||
+    p.includes('tcp') ||
+    p.includes('icmp') ||
+    p.includes('ip header') ||
+    p.includes('sql') ||
+    p.includes('schema') ||
+    p.includes('ddl') ||
+    p.includes('gcp') ||
+    p.includes('aws') ||
+    p.includes('infrastructure') ||
+    p.includes('kubernetes') ||
+    p.includes('gke') ||
+    p.includes('port') ||
+    p.includes('cidr')
   ) {
-    abstractionLevel = 'conceptual';
-  } else if (
-    p.includes('logical') ||
-    p.includes('microservice') ||
-    p.includes('service mesh') ||
-    p.includes('api gateway') ||
-    p.includes('component model') ||
-    p.includes('domain model')
-  ) {
-    abstractionLevel = 'logical';
-  } else {
     abstractionLevel = 'technical';
+  } else {
+    abstractionLevel = 'logical';
   }
 
   // 3. Multi-Band / Composite expansion detection
@@ -262,10 +262,8 @@ Your task is to analyze the user's natural language request and classify its arc
 
 MANDATORY RULES:
 1. Abstraction Level:
-   - For all networking protocols (ping, icmp, tcp, dns, http, tls, socket), cloud architectures, pipelines, and engineering systems, classify as "technical" or "logical" with realistic step flows, network channels, and data packets.
-   - "technical": Concrete protocols, cloud services, packet headers, subnets, ports, sequence numbers, "How it works internally".
-   - "logical": Functional component boundaries, microservices, database interfaces, message buses.
-   - "conceptual": High-level educational analogies, foundational philosophy, user journey, "Why/What" for non-technical stakeholders.
+   - "technical": Concrete cloud services (GCP/AWS), protocols, packet headers, subnets, ports, sequence numbers, data schemas, "How it works internally".
+   - "logical": Functional component boundaries, microservices, database interfaces, event streams, message queues, lifecycle maps.
 2. Topology Grammar:
    - "horizontal_pipeline": Left-to-right stages with sequential step badges.
    - "hierarchical_tiers": Stacked vertical tiers (Ingress -> Compute -> Data -> Governance).

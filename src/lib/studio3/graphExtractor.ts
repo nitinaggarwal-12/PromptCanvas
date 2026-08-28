@@ -162,7 +162,7 @@ export interface Studio3SemanticGraph {
   title: string;
   subtitle: string;
   tenets: string[];
-  abstractionLevel: 'conceptual' | 'logical' | 'technical';
+  abstractionLevel: 'logical' | 'technical';
   layoutType?: 'freeform' | 'bands' | 'matrix' | 'conceptual_roadmap' | 'slide_deck';
   templateId?: string;
   slides?: Studio3Slide[];
@@ -919,27 +919,6 @@ export function generateDynamicFirstPrinciplesGraph(
     };
   }
 
-  // 0B. UNIVERSAL CONCEPTUAL LEARNING ROADMAP (APPLIES TO ANY TOPIC UNDER THE SUN!)
-  if (
-    intent.abstractionLevel === 'conceptual' ||
-    p.startsWith('teach me') ||
-    p.startsWith('explain') ||
-    p.includes('roadmap') ||
-    p.includes('how does') ||
-    p.includes('concepts')
-  ) {
-    const conceptualRoadmap = generateGenericConceptualRoadmap(prompt, intent);
-    return {
-      title: conceptualRoadmap.title,
-      subtitle: conceptualRoadmap.subtitle || 'Conceptual Learning Roadmap',
-      tenets: conceptualRoadmap.footerTenets,
-      abstractionLevel: 'conceptual',
-      layoutType: 'conceptual_roadmap',
-      conceptualRoadmap,
-      bands: [],
-      connections: []
-    };
-  }
   // 1. FINANCIAL / LEDGER DOMAIN
   if (p.includes('ledger') || p.includes('financial') || p.includes('spanner') || p.includes('payment') || p.includes('transaction')) {
     const rawGraph: Studio3SemanticGraph = {
@@ -1478,8 +1457,8 @@ JSON Schema:
   "title": "TITLE IN ALL CAPS",
   "subtitle": "Informative Subtitle",
   "tenets": ["TENET 1", "TENET 2", "TENET 3"],
-  "abstractionLevel": "conceptual" | "logical" | "technical",
-  "layoutType": "slide_deck" | "bands" | "conceptual_roadmap" | "freeform",
+  "abstractionLevel": "logical" | "technical",
+  "layoutType": "slide_deck" | "bands" | "matrix" | "freeform",
   "slides": [
     {
       "slideNumber": 1,
@@ -1630,15 +1609,6 @@ JSON Schema:
     const rawText = response.text || '';
     const fallbackGraph = generateDynamicFirstPrinciplesGraph(prompt, intent);
     const parsed = parseJsonSafely<Studio3SemanticGraph>(rawText, fallbackGraph);
-
-    // If conceptual abstraction level is requested, guarantee a conceptualRoadmap is populated
-    if (
-      (intent.abstractionLevel === 'conceptual' || parsed.layoutType === 'conceptual_roadmap') &&
-      !parsed.conceptualRoadmap
-    ) {
-      parsed.conceptualRoadmap = fallbackGraph.conceptualRoadmap || generateGenericConceptualRoadmap(prompt, intent);
-      parsed.layoutType = 'conceptual_roadmap';
-    }
 
     // Run semantic post-processor & auto-enricher to guarantee 100% icon & item completeness
     const enriched = enrichAndSanitizeSemanticGraph(parsed, intent);

@@ -117,14 +117,6 @@ export function verifyPhase1Technical(
   const combinedCorpus = `${graph?.title || ''} ${graph?.subtitle || ''} ${allCardTitles.join(' ')} ${allItems.join(' ')}`.toLowerCase();
 
   // 1. Abstraction Level Ontology Check
-  if (graph?.abstractionLevel === 'conceptual') {
-    const lowLevelTerms = ['/24', '/16', 'port 443', '10.0.0.', 'tcp/ip', 'cidr'];
-    lowLevelTerms.forEach(term => {
-      if (combinedCorpus.includes(term)) {
-        ontologyErrors.push(`Conceptual abstraction contains low-level technical parameter: "${term}"`);
-      }
-    });
-  }
 
   // 2. Entity Completeness Score safely
   const rawEntities = Array.isArray(intent?.inferredEntities) ? intent.inferredEntities : [];

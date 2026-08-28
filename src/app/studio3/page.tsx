@@ -114,7 +114,7 @@ export default function Studio3Page() {
   const [currentGraph, setCurrentGraph] = useState<Studio3SemanticGraph | null>(null);
   const [currentQuality, setCurrentQuality] = useState<Studio3QualityReport | null>(null);
   const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
-  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('conceptual');
+  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
 
   // Multi-page Slide Deck Parser & Active Slide Selector
@@ -561,7 +561,7 @@ export default function Studio3Page() {
             <div className={`hidden md:flex items-center p-0.5 rounded-lg border text-xs font-bold ${
               theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
             }`}>
-              {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
+              {(['logical', 'technical'] as AbstractionLevel[]).map(lvl => (
                 <button
                   key={lvl}
                   onClick={() => handleOverrideAbstraction(lvl)}
@@ -745,7 +745,7 @@ export default function Studio3Page() {
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
+                {(['logical', 'technical'] as AbstractionLevel[]).map(lvl => (
                   <button
                     key={lvl}
                     onClick={() => handleOverrideAbstraction(lvl)}
