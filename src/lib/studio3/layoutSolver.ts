@@ -378,13 +378,370 @@ export function renderTwoSidesOfTheSpinInfographicXml(
 </mxfile>`;
 }
 
+// ============================================================================
+// SPEED VS. VELOCITY VS. ACCELERATION: THE TRIAD OF KINEMATICS MASTER RENDERER
+// ============================================================================
+export function renderSpeedVelocityAccelerationInfographicXml(
+  roadmap: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const c: string[] = [];
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  // 1. HEADER (y=15..65)
+  const hdrHtml = `<div style="text-align:center;font-family:Impact,Arial Black,sans-serif;font-size:38px;font-weight:900;color:#0F172A;letter-spacing:1.5px;text-transform:uppercase;line-height:1.1;padding-top:4px;">
+    SPEED VS. VELOCITY VS. ACCELERATION: THE TRIAD OF MOTION
+  </div>`;
+  cell('main_header', hdrHtml, 40, 15, 1520, 55, 'text;html=1;whiteSpace=wrap;overflow=hidden;align=center;');
+
+  // 2. TOP ROW: 3 CORE CONCEPT COMPARISON CARDS (y=80..380, h=300)
+
+  // Card 1: SPEED (Scalar) (x=40..520, w=480)
+  const speedHtml = `<div style="background:#FFFFFF;border:2px solid #3B82F6;border-radius:12px;overflow:hidden;height:100%;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(59,130,246,0.08);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="background:#1D70B8;color:#FFFFFF;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:24px;">🏎️</span>
+        <span style="font-size:18px;font-weight:900;letter-spacing:0.5px;">SPEED</span>
+      </div>
+      <span style="background:#DBEAFE;color:#1E40AF;font-size:11px;font-weight:900;padding:3px 8px;border-radius:6px;text-transform:uppercase;">Scalar Quantity</span>
+    </div>
+    
+    <div style="padding:14px;display:flex;flex-direction:column;justify-content:space-between;flex-grow:1;background:#F0F7FF;">
+      <div style="font-size:12.5px;color:#1E293B;line-height:1.45;font-weight:700;">
+        <strong>SPEED</strong> measures <em>how fast</em> an object is moving. It has <strong>magnitude only</strong> and completely ignores direction.
+      </div>
+
+      <!-- Speedometer Gauge SVG -->
+      <div style="display:flex;align-items:center;justify-content:center;margin:6px 0;">
+        <svg viewBox="0 0 220 110" width="180" height="90">
+          <path d="M 20 100 A 90 90 0 0 1 200 100" stroke="#CBD5E1" stroke-width="14" fill="none"/>
+          <path d="M 20 100 A 90 90 0 0 1 145 25" stroke="#3B82F6" stroke-width="14" fill="none"/>
+          <circle cx="110" cy="100" r="10" fill="#1D4ED8"/>
+          <!-- Needle at 65 MPH -->
+          <line x1="110" y1="100" x2="140" y2="35" stroke="#DC2626" stroke-width="3.5" stroke-linecap="round"/>
+          <circle cx="110" cy="100" r="4" fill="#FFFFFF"/>
+          <text x="110" y="85" text-anchor="middle" font-size="16" font-weight="900" fill="#0F172A">65 MPH</text>
+          <text x="50" y="105" font-size="9" font-weight="700" fill="#64748B">0</text>
+          <text x="170" y="105" font-size="9" font-weight="700" fill="#64748B">120</text>
+        </svg>
+      </div>
+
+      <div style="background:#FFFFFF;border:1.5px solid #93C5FD;border-radius:8px;padding:6px 10px;text-align:center;">
+        <div style="font-size:13px;font-weight:900;color:#1D4ED8;">s = Distance / Time = d / t</div>
+        <div style="font-size:9.5px;color:#2563EB;font-weight:700;margin-top:2px;">Always positive (≥ 0) • Measured in m/s or mph</div>
+      </div>
+    </div>
+  </div>`;
+  cell('card_speed', speedHtml, 40, 80, 480, 300, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2: VELOCITY (Vector) (x=560..1040, w=480)
+  const velHtml = `<div style="background:#FFFFFF;border:2px solid #10B981;border-radius:12px;overflow:hidden;height:100%;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(16,185,129,0.08);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="background:#059669;color:#FFFFFF;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:24px;">🧭</span>
+        <span style="font-size:18px;font-weight:900;letter-spacing:0.5px;">VELOCITY</span>
+      </div>
+      <span style="background:#D1FAE5;color:#065F46;font-size:11px;font-weight:900;padding:3px 8px;border-radius:6px;text-transform:uppercase;">Vector Quantity</span>
+    </div>
+    
+    <div style="padding:14px;display:flex;flex-direction:column;justify-content:space-between;flex-grow:1;background:#F0FDF4;">
+      <div style="font-size:12.5px;color:#1E293B;line-height:1.45;font-weight:700;">
+        <strong>VELOCITY</strong> is speed <em>in a specific direction</em>. It measures the <strong>rate of change of displacement</strong> (Δx⃗ / Δt).
+      </div>
+
+      <!-- Compass Rose Vector SVG -->
+      <div style="display:flex;align-items:center;justify-content:center;margin:6px 0;">
+        <svg viewBox="0 0 220 110" width="180" height="90">
+          <!-- Compass Outer Ring -->
+          <circle cx="110" cy="55" r="45" stroke="#CBD5E1" stroke-width="2" stroke-dasharray="4 3" fill="#FFFFFF"/>
+          <text x="110" y="18" text-anchor="middle" font-size="10" font-weight="900" fill="#047857">N</text>
+          <text x="110" y="105" text-anchor="middle" font-size="10" font-weight="900" fill="#64748B">S</text>
+          <text x="60" y="58" text-anchor="middle" font-size="10" font-weight="900" fill="#64748B">W</text>
+          <text x="160" y="58" text-anchor="middle" font-size="10" font-weight="900" fill="#64748B">E</text>
+          
+          <!-- Directional Velocity Arrow pointing North-East -->
+          <line x1="110" y1="55" x2="142" y2="23" stroke="#059669" stroke-width="4.5"/>
+          <polygon points="148,17 136,25 145,34" fill="#059669"/>
+          <circle cx="110" cy="55" r="4" fill="#047857"/>
+          <text x="155" y="42" font-size="11" font-weight="900" fill="#059669">v⃗ = 65 mph [NE]</text>
+        </svg>
+      </div>
+
+      <div style="background:#FFFFFF;border:1.5px solid #6EE7B7;border-radius:8px;padding:6px 10px;text-align:center;">
+        <div style="font-size:13px;font-weight:900;color:#047857;">v⃗ = Displacement / Time = Δx⃗ / Δt</div>
+        <div style="font-size:9.5px;color:#059669;font-weight:700;margin-top:2px;">Magnitude + Direction • Can be positive, negative, or zero</div>
+      </div>
+    </div>
+  </div>`;
+  cell('card_velocity', velHtml, 560, 80, 480, 300, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 3: ACCELERATION (Rate of Change) (x=1080..1560, w=480)
+  const accHtml = `<div style="background:#FFFFFF;border:2px solid #EA580C;border-radius:12px;overflow:hidden;height:100%;box-sizing:border-box;display:flex;flex-direction:column;box-shadow:0 4px 12px rgba(234,88,12,0.08);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="background:#C2410C;color:#FFFFFF;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:24px;">🚀</span>
+        <span style="font-size:18px;font-weight:900;letter-spacing:0.5px;">ACCELERATION</span>
+      </div>
+      <span style="background:#FFEDD5;color:#9A3412;font-size:11px;font-weight:900;padding:3px 8px;border-radius:6px;text-transform:uppercase;">Rate of Change</span>
+    </div>
+    
+    <div style="padding:14px;display:flex;flex-direction:column;justify-content:space-between;flex-grow:1;background:#FFF7ED;">
+      <div style="font-size:12.5px;color:#1E293B;line-height:1.45;font-weight:700;">
+        <strong>ACCELERATION</strong> is the rate at which velocity changes: <strong>speeding up</strong>, <strong>slowing down</strong> (braking), OR <strong>changing direction</strong>!
+      </div>
+
+      <!-- Acceleration Thrust Vector SVG -->
+      <div style="display:flex;align-items:center;justify-content:center;margin:6px 0;">
+        <svg viewBox="0 0 220 110" width="180" height="90">
+          <!-- 3 Modes of Acceleration Badges -->
+          <rect x="15" y="10" width="190" height="24" rx="4" fill="#FEE2E2" stroke="#EF4444"/>
+          <text x="110" y="26" text-anchor="middle" font-size="10" font-weight="900" fill="#DC2626">1. SPEED UP (+a) | 2. SLOW DOWN (-a)</text>
+          
+          <rect x="15" y="42" width="190" height="24" rx="4" fill="#FEF3C7" stroke="#F59E0B"/>
+          <text x="110" y="58" text-anchor="middle" font-size="10" font-weight="900" fill="#B45309">3. CHANGE DIRECTION (Turn a = v²/r)</text>
+
+          <!-- Acceleration Arrow -->
+          <line x1="40" y1="90" x2="170" y2="90" stroke="#EA580C" stroke-width="4"/>
+          <polygon points="182,90 168,83 168,97" fill="#EA580C"/>
+          <text x="110" y="84" text-anchor="middle" font-size="11" font-weight="900" fill="#C2410C">a⃗ = Δv⃗ / Δt = 5.0 m/s²</text>
+        </svg>
+      </div>
+
+      <div style="background:#FFFFFF;border:1.5px solid #FDBA74;border-radius:8px;padding:6px 10px;text-align:center;">
+        <div style="font-size:13px;font-weight:900;color:#C2410C;">a⃗ = (vf - vi) / t = Δv⃗ / Δt</div>
+        <div style="font-size:9.5px;color:#EA580C;font-weight:700;margin-top:2px;">Measured in m/s² • You accelerate while turning at constant speed!</div>
+      </div>
+    </div>
+  </div>`;
+  cell('card_accel', accHtml, 1080, 80, 480, 300, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 3. CENTER HERO: LIVE INTERACTIVE KINEMATICS MOTION SIMULATOR (y=400..660, h=260)
+  const heroSimulatorHtml = `<div style="background:#FFFFFF;border:2px solid #CBD5E1;border-radius:12px;padding:12px 18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.05);font-family:system-ui,-apple-system,sans-serif;">
+    
+    <!-- Top Simulator Control Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #E2E8F0;padding-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:14px;font-weight:900;color:#0F172A;">🎮 LIVE KINEMATICS MOTION SANDBOX</span>
+        <span style="background:#EFF6FF;color:#1D4ED8;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;">Interactive Physics Engine</span>
+      </div>
+
+      <!-- Real-Time Telemetry Gauges -->
+      <div style="display:flex;align-items:center;gap:14px;font-size:11px;font-weight:800;">
+        <div style="color:#1D4ED8;">Speed: <span id="k_spd">65 MPH</span></div>
+        <div style="color:#047857;">Velocity: <span id="k_vel">65 MPH [East]</span></div>
+        <div style="color:#DC2626;">Acceleration: <span id="k_acc">0.0 m/s² (Cruise)</span></div>
+      </div>
+
+      <!-- Simulator Buttons -->
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button style="background:#10B981;color:#FFFFFF;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;" onclick="
+          var c = document.getElementById('sim_car');
+          if(c) c.style.animationDuration = '2s';
+          var sp = document.getElementById('k_spd'); if(sp) sp.innerText = '90 MPH';
+          var acc = document.getElementById('k_acc'); if(acc) acc.innerText = '+4.5 m/s² (Accelerating!)';
+        ">⚡ Accelerate</button>
+        <button style="background:#EF4444;color:#FFFFFF;border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:800;cursor:pointer;" onclick="
+          var c = document.getElementById('sim_car');
+          if(c) c.style.animationDuration = '8s';
+          var sp = document.getElementById('k_spd'); if(sp) sp.innerText = '25 MPH';
+          var acc = document.getElementById('k_acc'); if(acc) acc.innerText = '-6.2 m/s² (Braking!)';
+        ">🛑 Hit Brakes</button>
+        <button style="background:#64748B;color:#FFFFFF;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;" onclick="
+          var c = document.getElementById('sim_car');
+          if(c) c.style.animationDuration = '4s';
+          var sp = document.getElementById('k_spd'); if(sp) sp.innerText = '65 MPH';
+          var acc = document.getElementById('k_acc'); if(acc) acc.innerText = '0.0 m/s² (Cruise)';
+        ">🔄 Reset</button>
+      </div>
+    </div>
+
+    <!-- Highway Canvas with Moving Car and Direction Vectors -->
+    <div style="position:relative;width:100%;height:140px;display:flex;align-items:center;justify-content:center;background:#F8FAFC;border-radius:8px;overflow:hidden;">
+      <svg viewBox="0 0 1480 140" width="100%" height="140">
+        <defs>
+          <style>
+            @keyframes carDrive {
+              0% { transform: translateX(0px); }
+              100% { transform: translateX(1300px); }
+            }
+            .driving-car {
+              animation: carDrive 4s linear infinite;
+            }
+          </style>
+        </defs>
+
+        <!-- Grass Verge Top/Bottom -->
+        <rect x="0" y="0" width="1480" height="20" fill="#86EFAC"/>
+        <rect x="0" y="120" width="1480" height="20" fill="#86EFAC"/>
+
+        <!-- Asphalt Road Surface -->
+        <rect x="0" y="20" width="1480" height="100" fill="#334155"/>
+
+        <!-- Dashed Highway Center Line -->
+        <line x1="0" y1="70" x2="1480" y2="70" stroke="#FBBF24" stroke-width="4" stroke-dasharray="30 20"/>
+
+        <!-- Animated Driving Car Group with Vectors -->
+        <g id="sim_car" class="driving-car" transform="translate(60, 42)">
+          <!-- Car Body (Top-Down Sports Car) -->
+          <rect x="0" y="0" width="76" height="42" rx="10" fill="#3B82F6" stroke="#1D4ED8" stroke-width="2.5"/>
+          <!-- Windshield & Roof -->
+          <rect x="20" y="6" width="22" height="30" rx="3" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+          <rect x="46" y="8" width="14" height="26" rx="2" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+          <rect x="28" y="10" width="18" height="22" fill="#2563EB"/>
+          <!-- Wheels -->
+          <rect x="10" y="-4" width="16" height="5" rx="1.5" fill="#0F172A"/>
+          <rect x="52" y="-4" width="16" height="5" rx="1.5" fill="#0F172A"/>
+          <rect x="10" y="41" width="16" height="5" rx="1.5" fill="#0F172A"/>
+          <rect x="52" y="41" width="16" height="5" rx="1.5" fill="#0F172A"/>
+
+          <!-- Green Velocity Vector (Forward) -->
+          <line x1="76" y1="21" x2="140" y2="21" stroke="#10B981" stroke-width="4"/>
+          <polygon points="148,21 138,15 138,27" fill="#10B981"/>
+          <text x="105" y="12" text-anchor="middle" font-size="10.5" font-weight="900" fill="#10B981">v⃗ (Velocity)</text>
+
+          <!-- Orange Acceleration Vector (Rear Thrust) -->
+          <line x1="-5" y1="21" x2="-45" y2="21" stroke="#F97316" stroke-width="4"/>
+          <polygon points="-52,21 -42,15 -42,27" fill="#F97316"/>
+          <text x="-26" y="12" text-anchor="middle" font-size="10.5" font-weight="900" fill="#F97316">a⃗ (Thrust)</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Bottom Explanatory Caption -->
+    <div style="font-size:11.5px;font-weight:700;color:#475569;text-align:center;">
+      💡 <strong>Key Takeaway:</strong> Speed is the speedometer number ($65\text{ mph}$). Velocity is speed + heading ($65\text{ mph East}$). Acceleration is any pedal press, brake hit, or steering turn!
+    </div>
+  </div>`;
+  cell('center_simulator', heroSimulatorHtml, 40, 400, 1520, 260, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 4. BOTTOM ROW: 3 REAL-WORLD MASTER SCENARIOS (y=680..960, h=280)
+
+  // Scenario 1: Straight Highway Cruise (x=40..520, w=480)
+  const sc1Html = `<div style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px 14px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">1. STRAIGHT HIGHWAY CRUISE</div>
+      <span style="background:#DCFCE7;color:#15803D;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;">a⃗ = 0</span>
+    </div>
+
+    <!-- Scenario 1 Vector SVG -->
+    <div style="display:flex;align-items:center;justify-content:center;margin:4px 0;">
+      <svg viewBox="0 0 380 110" width="340" height="95">
+        <rect x="0" y="30" width="380" height="50" fill="#94A3B8"/>
+        <line x1="0" y1="55" x2="380" y2="55" stroke="#FBBF24" stroke-width="2.5" stroke-dasharray="15 10"/>
+        <!-- Car moving straight -->
+        <rect x="140" y="40" width="50" height="28" rx="6" fill="#3B82F6" stroke="#1D4ED8" stroke-width="2"/>
+        <line x1="190" y1="54" x2="260" y2="54" stroke="#059669" stroke-width="4"/>
+        <polygon points="270,54 258,48 258,60" fill="#059669"/>
+        <text x="230" y="44" text-anchor="middle" font-size="11" font-weight="900" fill="#059669">v⃗ = 60 mph Constant</text>
+      </svg>
+    </div>
+
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:8px 10px;font-size:11px;color:#334155;line-height:1.4;font-weight:700;">
+      • Speed: <strong>Constant (60 mph)</strong><br/>
+      • Direction: <strong>Constant (Straight)</strong><br/>
+      • Result: <strong>Zero Acceleration (a = 0)</strong>
+    </div>
+  </div>`;
+  cell('scenario_1', sc1Html, 40, 680, 480, 280, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Scenario 2: Roundabout Turning (x=560..1040, w=480)
+  const sc2Html = `<div style="background:#FFFFFF;border:1.5px solid #FDE68A;border-radius:12px;padding:12px 14px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;font-weight:900;color:#92400E;">2. ROUNDABOUT / CORNERING</div>
+      <span style="background:#FEF3C7;color:#B45309;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;">a⃗ ≠ 0 (Centripetal)</span>
+    </div>
+
+    <!-- Scenario 2 Vector SVG -->
+    <div style="display:flex;align-items:center;justify-content:center;margin:4px 0;">
+      <svg viewBox="0 0 380 110" width="340" height="95">
+        <circle cx="190" cy="55" r="42" stroke="#94A3B8" stroke-width="18" fill="none"/>
+        <!-- Car on curved path -->
+        <g transform="translate(190, 13)">
+          <rect x="-16" y="-9" width="32" height="18" rx="4" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+          <!-- Tangent Velocity -->
+          <line x1="16" y1="0" x2="60" y2="0" stroke="#059669" stroke-width="3"/>
+          <polygon points="66,0 58,-4 58,4" fill="#059669"/>
+          <!-- Inward Centripetal Accel -->
+          <line x1="0" y1="9" x2="0" y2="35" stroke="#EA580C" stroke-width="3"/>
+          <polygon points="0,40 -4,32 4,32" fill="#EA580C"/>
+        </g>
+        <text x="190" y="80" text-anchor="middle" font-size="10" font-weight="900" fill="#EA580C">a⃗ points to center</text>
+      </svg>
+    </div>
+
+    <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:6px;padding:8px 10px;font-size:11px;color:#92400E;line-height:1.4;font-weight:700;">
+      • Speed: <strong>Constant (30 mph)</strong><br/>
+      • Direction: <strong>Continuously Turning</strong><br/>
+      • Result: <strong>Accelerating! (Centripetal a = v²/r)</strong>
+    </div>
+  </div>`;
+  cell('scenario_2', sc2Html, 560, 680, 480, 280, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Scenario 3: Emergency Braking (x=1080..1560, w=480)
+  const sc3Html = `<div style="background:#FFFFFF;border:1.5px solid #FECACA;border-radius:12px;padding:12px 14px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);font-family:system-ui,-apple-system,sans-serif;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;font-weight:900;color:#991B1B;">3. EMERGENCY BRAKING</div>
+      <span style="background:#FEE2E2;color:#DC2626;font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;">a⃗ &lt; 0 (Deceleration)</span>
+    </div>
+
+    <!-- Scenario 3 Vector SVG -->
+    <div style="display:flex;align-items:center;justify-content:center;margin:4px 0;">
+      <svg viewBox="0 0 380 110" width="340" height="95">
+        <rect x="0" y="30" width="380" height="50" fill="#94A3B8"/>
+        <!-- Red Stoplight on right -->
+        <rect x="340" y="10" width="16" height="40" rx="3" fill="#0F172A"/>
+        <circle cx="348" cy="22" r="5" fill="#EF4444"/>
+        <!-- Braking Car with tire marks -->
+        <line x1="80" y1="46" x2="160" y2="46" stroke="#0F172A" stroke-width="2" stroke-dasharray="4 2"/>
+        <line x1="80" y1="64" x2="160" y2="64" stroke="#0F172A" stroke-width="2" stroke-dasharray="4 2"/>
+        <rect x="160" y="40" width="50" height="28" rx="6" fill="#3B82F6" stroke="#DC2626" stroke-width="2"/>
+        <!-- Forward Velocity (shrinking) -->
+        <line x1="210" y1="54" x2="250" y2="54" stroke="#059669" stroke-width="3"/>
+        <polygon points="256,54 248,50 248,58" fill="#059669"/>
+        <!-- Backward Deceleration -->
+        <line x1="160" y1="54" x2="110" y2="54" stroke="#DC2626" stroke-width="4"/>
+        <polygon points="102,54 112,48 112,60" fill="#DC2626"/>
+        <text x="135" y="44" text-anchor="middle" font-size="10" font-weight="900" fill="#DC2626">a⃗ &lt; 0 (Braking)</text>
+      </svg>
+    </div>
+
+    <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:6px;padding:8px 10px;font-size:11px;color:#991B1B;line-height:1.4;font-weight:700;">
+      • Speed: <strong>Decreasing (50 → 0 mph)</strong><br/>
+      • Direction: <strong>Forward</strong><br/>
+      • Result: <strong>Negative Acceleration (Deceleration opposing motion)</strong>
+    </div>
+  </div>`;
+  cell('scenario_3', sc3Html, 1080, 680, 480, 280, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="speed_velocity_acceleration" name="Speed vs Velocity vs Acceleration">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
 export function renderUniversalConceptualRoadmapXml(
   roadmap: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
 ): string {
-  const isPhysics = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('spinning') || (roadmap.title || '').toLowerCase().includes('force');
-  if (isPhysics) {
+  const isCentripetal = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('centrifugal') || (roadmap.title || '').toLowerCase().includes('spinning');
+  if (isCentripetal) {
     return renderTwoSidesOfTheSpinInfographicXml(roadmap, theme);
+  }
+
+  const isKinematics = (roadmap.title || '').toLowerCase().includes('speed') || (roadmap.title || '').toLowerCase().includes('velocity') || (roadmap.title || '').toLowerCase().includes('acceleration') || (roadmap.title || '').toLowerCase().includes('kinematics') || (roadmap.title || '').toLowerCase().includes('motion');
+  if (isKinematics) {
+    return renderSpeedVelocityAccelerationInfographicXml(roadmap, theme);
   }
 
   const isDark = theme === 'dark';
@@ -538,75 +895,64 @@ export function renderUniversalConceptualRoadmapXml(
   </div>`;
   cell('sec2_content', mathHtml, 405, 126, 375, 374, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 5. TOP SECTION 3: Taxonomy & Variants (x=790..1165)
+  // 5. TOP SECTION 3: Taxonomy & Variants (x=790..1165, y=126..500)
   const sec3 = roadmap.section3Taxonomy;
   cell('sec3_bg', '', 790, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#FFF7ED;strokeColor=#FED7AA;strokeWidth=1.5;');
-  const variants = sec3?.variants || [
-    { name: 'HOMOGENEOUS / SIMPLE', subtext: 'Symmetric connections', diagramType: 'nodes' as const },
-    { name: 'DIRECTED FLOW', subtext: 'Asymmetric state transfers', diagramType: 'directed' as const },
-    { name: 'WEIGHTED METRIC', subtext: 'Cost/Latency parameterized', diagramType: 'weighted' as const },
-    { name: 'HIERARCHICAL / TREE', subtext: 'Rooted acyclic structure', diagramType: 'tree' as const }
-  ];
-  variants.forEach((v, vIdx) => {
-    const py = 142 + vIdx * 64;
-    cell(`t_v_${vIdx}`, `${v.name}\n${v.subtext || ''}`, 805, py, 140, 42, 'rounded=1;arcSize=10;fillColor=#FDBA74;strokeColor=#EA580C;fontColor=#7C2D12;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;');
-    if (vIdx === 0) {
-      cell('vg0_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
-      cell('vg0_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
-      cell('vg0_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
-      edge('vge0_1', 'vg0_1', 'vg0_2', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
-      edge('vge0_2', 'vg0_2', 'vg0_3', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
-      edge('vge0_3', 'vg0_3', 'vg0_1', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
-    } else if (vIdx === 1) {
-      cell('vg1_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
-      cell('vg1_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
-      cell('vg1_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
-      edge('vge1_1', 'vg1_1', 'vg1_2', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
-      edge('vge1_2', 'vg1_2', 'vg1_3', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
-      edge('vge1_3', 'vg1_3', 'vg1_1', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
-    } else if (vIdx === 2) {
-      cell('vg2_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
-      cell('vg2_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
-      cell('vg2_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
-      edge('vge2_1', 'vg2_1', 'vg2_2', 'strokeColor=#4338CA;strokeWidth=1.2;endArrow=none;');
-      edge('vge2_2', 'vg2_2', 'vg2_3', 'strokeColor=#4338CA;strokeWidth=1.2;endArrow=none;');
-      cell('lbl_w1', 'w=5', 996, py - 2, 24, 10, 'text;fontColor=#4338CA;fontSize=7.5;fontStyle=1;');
-    } else {
-      cell('vg3_r', '', 1002, py + 2, 14, 14, 'ellipse;fillColor=#F59E0B;strokeColor=#B45309;strokeWidth=1.2;');
-      cell('vg3_l', '', 980, py + 22, 12, 12, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
-      cell('vg3_rg', '', 1024, py + 22, 12, 12, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
-      edge('vge3_1', 'vg3_r', 'vg3_l', 'strokeColor=#B45309;strokeWidth=1.2;endArrow=none;');
-      edge('vge3_2', 'vg3_r', 'vg3_rg', 'strokeColor=#B45309;strokeWidth=1.2;endArrow=none;');
-    }
-  });
+  cell('sec3_title', `<div style="text-align:center;font-weight:900;font-size:12.5px;color:#9A3412;padding-top:8px;text-transform:uppercase;">${escapeXml(sec3?.title || 'System Taxonomy & Variants')}</div>`, 795, 130, 365, 24, 'text;html=1;whiteSpace=wrap;');
 
-  // 6. TOP SECTION 4: Modern Graph Science / Frontiers (x=1175..1580)
+  const variants = sec3?.variants || [
+    { name: '1. Instantaneous vs. Average', subtext: 'Exact point in time vs. interval rate of change', icon: '⏱️' },
+    { name: '2. Constant vs. Variable', subtext: 'Uniform motion vs. dynamic acceleration curves', icon: '📈' },
+    { name: '3. Linear vs. Rotational', subtext: 'Translational displacement vs. angular trajectory', icon: '🔄' },
+    { name: '4. Relative Frame Motion', subtext: 'Motion relative to stationary or moving observer', icon: '⚖️' }
+  ];
+
+  const taxonomyHtml = `<div style="padding:10px 12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-around;">
+    ${variants.map((v, vIdx) => `
+      <div style="background:#FFFFFF;border:1.5px solid #FED7AA;border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+        <div style="flex-grow:1;padding-right:8px;overflow:hidden;">
+          <div style="font-size:11px;font-weight:900;color:#9A3412;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(v.name)}</div>
+          <div style="font-size:9px;color:#7C2D12;margin-top:2px;line-height:1.3;">${escapeXml(v.subtext || '')}</div>
+        </div>
+        <div style="background:#FFEDD5;border-radius:6px;padding:4px 8px;font-size:14px;display:flex;align-items:center;justify-content:center;">
+          ${(v as any).icon || (vIdx === 0 ? '⏱️' : vIdx === 1 ? '📈' : vIdx === 2 ? '🔄' : '⚖️')}
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+  cell('sec3_content', taxonomyHtml, 790, 155, 375, 335, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 6. TOP SECTION 4: Modern Scientific & Industrial Frontiers (x=1175..1580, y=126..500)
   const sec4 = roadmap.section4ModernFrontiers;
   cell('sec4_bg', '', 1175, 126, 405, 374, 'rounded=1;arcSize=8;fillColor=#FEFCE8;strokeColor=#FEF08A;strokeWidth=1.5;');
-  cell('sec4_title', `<div style="text-align:center;font-weight:900;font-size:12.5px;color:#854D0E;padding-top:8px;text-transform:uppercase;">${escapeXml(sec4?.title || 'Traversable Knowledge Architecture')}</div>`, 1180, 130, 395, 24, 'text;html=1;whiteSpace=wrap;');
+  cell('sec4_title', `<div style="text-align:center;font-weight:900;font-size:12.5px;color:#854D0E;padding-top:8px;text-transform:uppercase;">${escapeXml(sec4?.title || 'Scientific & Industrial Frontiers')}</div>`, 1180, 130, 395, 24, 'text;html=1;whiteSpace=wrap;');
 
   const kgNodes = sec4?.knowledgeGraphNodes || [
-    { id: 'kgn_1', label: 'Semantic\nMesh', color: '#38BDF8' },
-    { id: 'kgn_2', label: 'Neural\nVector', color: '#F59E0B' },
-    { id: 'kgn_3', label: 'Domain\nOntology', color: '#10B981' },
-    { id: 'kgn_4', label: 'Inference\nGraph', color: '#A855F7' }
+    { id: 'kgn_1', label: 'GPS & Satellite Tracking', color: '#38BDF8', icon: '🛰️' },
+    { id: 'kgn_2', label: 'Autonomous Vehicle Nav', color: '#F59E0B', icon: '🚗' },
+    { id: 'kgn_3', label: 'Aerospace & Rocketry', color: '#10B981', icon: '🚀' },
+    { id: 'kgn_4', label: 'Sports Biomechanics', color: '#A855F7', icon: '🏃' }
   ];
-  cell('kg_c', 'Core', 1345, 195, 48, 48, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;');
-  kgNodes.forEach((kgn, idx) => {
-    const kx = idx === 0 ? 1195 : idx === 1 ? 1495 : idx === 2 ? 1335 : 1480;
-    const ky = idx === 0 ? 175 : idx === 1 ? 175 : idx === 2 ? 290 : 290;
-    cell(`kgn_${idx}`, kgn.label, kx, ky, 54, 54, `ellipse;fillColor=${kgn.color || '#38BDF8'};strokeColor=#0284C7;fontColor=#FFFFFF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;`);
-    edge(`kge_${idx}`, `kgn_${idx}`, 'kg_c', 'strokeColor=#94A3B8;strokeWidth=1.5;endArrow=none;');
-  });
 
-  const bulletsHtml = `<div style="padding:10px 14px;font-family:system-ui,-apple-system,sans-serif;color:#713F12;font-size:10px;line-height:1.45;font-weight:700;">
-    ${(sec4?.frameworkBullets || [
-      '🔬 • High-dimensional Embedding & Spectral Analysis',
-      '🧠 • Graph Neural Networks (GNN) & Message Passing',
-      '💻 • Distributed Scalable Cloud Runtime (Vertex AI / GKE)'
-    ]).map(b => `<div style="margin-bottom:4px;">${escapeXml(b)}</div>`).join('')}
+  const frontiersHtml = `<div style="padding:10px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+      ${kgNodes.slice(0, 4).map(kgn => `
+        <div style="background:#FFFFFF;border:1.5px solid #FDE68A;border-radius:8px;padding:8px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+          <div style="font-size:18px;margin-bottom:2px;">${(kgn as any).icon || '🔬'}</div>
+          <div style="font-size:10px;font-weight:900;color:#713F12;line-height:1.2;">${escapeXml(kgn.label.replace('\n', ' '))}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="background:#FEF9C3;border:1px dashed #CA8A04;border-radius:8px;padding:8px 12px;font-size:9.5px;color:#713F12;line-height:1.45;font-weight:700;">
+      ${(sec4?.frameworkBullets || [
+        '🔬 • Precision kinematic telemetry & inertial navigation',
+        '🧠 • High-frequency sensor fusion (IMU / Kalman filter)',
+        '🚀 • Real-time trajectory optimization at scale'
+      ]).map(b => `<div style="margin-bottom:3px;">${escapeXml(b)}</div>`).join('')}
+    </div>
   </div>`;
-  cell('sec4_bullets', bulletsHtml, 1180, 365, 395, 80, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('sec4_content', frontiersHtml, 1175, 155, 405, 335, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
   // 7. BOTTOM WORKFLOW & EXECUTION PIPELINE (y=512..890)
   const wf = roadmap.bottomWorkflow;
