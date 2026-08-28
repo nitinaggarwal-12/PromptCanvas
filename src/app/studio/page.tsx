@@ -30,7 +30,10 @@ import {
   BookOpen,
   GitCompare,
   ArrowRight,
-  Search
+  Search,
+  FolderOpen,
+  CopyPlus,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -252,6 +255,75 @@ function StudioContent() {
   // Rolling 10-Version History Buffer
   const [versionHistory, setVersionHistory] = useState<StudioVersionSnapshot[]>([]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(0);
+
+  // Saved Historical Canvases Drawer (Filtered to Studio 1)
+  const [showSavedDrawer, setShowSavedDrawer] = useState<boolean>(false);
+  const [savedHistoryList, setSavedHistoryList] = useState<any[]>([]);
+  const [loadingSavedHistory, setLoadingSavedHistory] = useState<boolean>(false);
+  const [savedSearchQuery, setSavedSearchQuery] = useState<string>('');
+
+  const openSavedHistoryDrawer = async () => {
+    setShowSavedDrawer(true);
+    setLoadingSavedHistory(true);
+    try {
+      const res = await fetch('/api/diagrams');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        const studio1Items = data.filter(d => 
+          d.created_studio === 'studio1' ||
+          !d.created_studio ||
+          (d.architecture_type && (d.architecture_type.startsWith('canonical') || d.architecture_type.includes('unified'))) ||
+          (d.name && d.name.toLowerCase().includes('studio 1'))
+        );
+        setSavedHistoryList(studio1Items);
+      }
+    } catch (e) {
+      console.error('Failed to fetch Studio 1 history:', e);
+    } finally {
+      setLoadingSavedHistory(false);
+    }
+  };
+
+  const handleCloneSavedDiagram = async (d: any) => {
+    try {
+      let xmlToClone = d.xml_content;
+      if (!xmlToClone) {
+        const fullRes = await fetch(`/api/diagrams/${d.id}`);
+        const fullData = await fullRes.json();
+        xmlToClone = fullData.xml_content || fullData.versions?.[0]?.xml_content || '';
+      }
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${d.name || 'Architecture'} (Clone)`,
+          architecture_type: d.architecture_type || 'canonical_diagram',
+          xml_content: xmlToClone,
+          created_studio: 'studio1'
+        })
+      });
+      const newDiag = await res.json();
+      if (newDiag && newDiag.id) {
+        await openSavedHistoryDrawer();
+        showToast(`Cloned diagram "${newDiag.diagram.name}" successfully!`);
+      }
+    } catch (e) {
+      console.error('Failed to clone diagram:', e);
+    }
+  };
+
+  const handleDeleteSavedDiagram = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm('Are you sure you want to delete this diagram from history?')) return;
+    try {
+      await fetch(`/api/diagrams/${id}`, { method: 'DELETE' });
+      setSavedHistoryList(prev => prev.filter(item => item.id !== id));
+      showToast('Diagram deleted successfully.');
+    } catch (e) {
+      console.error('Failed to delete diagram:', e);
+    }
+  };
 
   // Chat State
   const [chatInput, setChatInput] = useState<string>('');
@@ -878,6 +950,26 @@ function StudioContent() {
                   </span>
                 </button>
               </div>
+
+              {/* Saved Canvases Drawer & History Manager Links */}
+              <button
+                type="button"
+                onClick={openSavedHistoryDrawer}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-slate-300/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-teal-500 shadow-xs transition cursor-pointer"
+                title="Open saved Studio 1 architecture history"
+              >
+                <History className="w-3.5 h-3.5 text-blue-500" />
+                <span>Saved Canvases</span>
+              </button>
+
+              <Link
+                href="/history?studio=studio1"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-teal-50 hover:bg-teal-100 text-teal-800 dark:bg-teal-950/80 dark:hover:bg-teal-900 dark:text-teal-300 border border-teal-300 dark:border-teal-500/50 shadow-xs transition"
+                title="Full Canvas History Page filtered to Studio 1"
+              >
+                <FolderOpen className="w-3.5 h-3.5 text-teal-500" />
+                <span>History Manager ➔</span>
+              </Link>
 
               {/* View Mode Switcher */}
               <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
@@ -1961,6 +2053,171 @@ function StudioContent() {
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Saved Canvases History Drawer (Studio 1 Specific) */}
+      {showSavedDrawer && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in">
+          <div className="absolute inset-0" onClick={() => setShowSavedDrawer(false)} />
+          <div className={`relative z-10 w-full max-w-md h-full shadow-2xl flex flex-col border-l transition-transform ${
+            isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-[#0B111E] border-slate-800 text-slate-100'
+          }`}>
+            <div className={`p-4 border-b flex items-center justify-between ${
+              isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
+            }`}>
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-teal-600" />
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-wider">Studio 1 Architecture History</h3>
+                  <p className="text-[10px] text-slate-400">Saved canonical blueprints &amp; prompt canvases</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/history?studio=studio1"
+                  className="px-2.5 py-1 bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-black rounded-lg shadow-xs transition flex items-center gap-1"
+                  title="Open full page canvas manager filtered to Studio 1"
+                >
+                  <FolderOpen className="w-3 h-3" />
+                  <span>Full Manager ➔</span>
+                </Link>
+                <button
+                  onClick={() => setShowSavedDrawer(false)}
+                  className={`p-1.5 rounded-lg border transition ${
+                    isLight ? 'border-slate-300 hover:bg-slate-200 text-slate-700' : 'border-slate-700 hover:bg-slate-800 text-slate-300'
+                  }`}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <div className={`p-3 border-b ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={savedSearchQuery}
+                  onChange={e => setSavedSearchQuery(e.target.value)}
+                  placeholder="Search Studio 1 saved architectures..."
+                  className={`w-full pl-9 pr-3 py-2 text-xs rounded-xl border font-medium focus:outline-none transition ${
+                    isLight
+                      ? 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-teal-600'
+                      : 'bg-slate-900 border-slate-700 text-white placeholder-slate-500 focus:border-teal-500'
+                  }`}
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+              {loadingSavedHistory ? (
+                <div className="flex items-center justify-center py-12 text-xs font-mono text-teal-600 gap-2">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Loading Studio 1 architectures...</span>
+                </div>
+              ) : savedHistoryList.length === 0 ? (
+                <div className="text-center py-12 text-xs text-slate-400">
+                  <FolderOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                  <p>No saved Studio 1 diagrams found.</p>
+                </div>
+              ) : (
+                savedHistoryList
+                  .filter(d => (d.name || '').toLowerCase().includes(savedSearchQuery.toLowerCase()) || (d.architecture_type || '').toLowerCase().includes(savedSearchQuery.toLowerCase()))
+                  .map(d => (
+                    <div
+                      key={d.id}
+                      className={`p-3.5 rounded-xl border transition flex flex-col gap-2 group ${
+                        isLight
+                          ? 'bg-white hover:bg-teal-50/50 border-slate-200 hover:border-teal-400 shadow-xs'
+                          : 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-teal-500/60'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`text-xs font-black truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                            {d.name || 'Untitled Blueprint'}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono uppercase font-bold bg-teal-600/10 text-teal-600 dark:text-teal-400">
+                              {d.architecture_type || 'canonical'}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {d.created_at ? new Date(d.created_at).toLocaleDateString() : 'Recent'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <button
+                          onClick={() => {
+                            if (d.xml_content) {
+                              setDiagrams(prev => [{
+                                id: 'diag_restored_' + Date.now(),
+                                title: d.name,
+                                templateId: d.architecture_type || 'custom',
+                                xml: d.xml_content,
+                                source: 'blueprint'
+                              }]);
+                              setShowSavedDrawer(false);
+                              showToast(`Loaded "${d.name}" into Studio 1!`);
+                            } else {
+                              window.location.href = `/studio?diagram=${d.id}`;
+                            }
+                          }}
+                          className="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-black bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition active:scale-95 text-center flex items-center justify-center gap-1 cursor-pointer"
+                          title="Open & Load in Studio 1"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Open</span>
+                        </button>
+                        <button
+                          onClick={() => handleCloneSavedDiagram(d)}
+                          className={`p-1.5 rounded-lg border transition cursor-pointer ${
+                            isLight ? 'border-slate-300 hover:bg-slate-200 text-amber-600' : 'border-slate-700 hover:bg-slate-800 text-amber-300'
+                          }`}
+                          title="Clone / Duplicate Diagram"
+                        >
+                          <CopyPlus className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteSavedDiagram(d.id, e)}
+                          className={`p-1.5 rounded-lg border transition cursor-pointer ${
+                            isLight ? 'border-slate-300 hover:bg-red-50 text-red-600' : 'border-slate-700 hover:bg-red-950 text-red-400'
+                          }`}
+                          title="Delete Diagram"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/studio?diagram=${d.id}`);
+                            showToast('Copied share link!');
+                          }}
+                          className={`p-1.5 rounded-lg border transition cursor-pointer ${
+                            isLight ? 'border-slate-300 hover:bg-slate-200 text-slate-700' : 'border-slate-700 hover:bg-slate-800 text-slate-300'
+                          }`}
+                          title="Copy Share Link"
+                        >
+                          <LinkIcon className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            <div className={`p-3 border-t flex items-center justify-between text-[11px] font-bold ${
+              isLight ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-slate-950 border-slate-800 text-slate-400'
+            }`}>
+              <span>Manage all Studio 1 canvases</span>
+              <Link href="/history?studio=studio1" className="text-teal-500 hover:underline font-black flex items-center gap-1">
+                <span>Open History Page</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
           </div>
         </div>

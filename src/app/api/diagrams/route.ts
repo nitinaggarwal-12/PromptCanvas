@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const technicalUsecase = body.technicalUsecase || body.technical_usecase;
     const architectureType = body.architectureType || body.architecture_type;
     const isPrivate = body.isPrivate ?? body.is_private;
+    const createdStudio = body.createdStudio || body.created_studio || 'studio1';
 
     if (!name || typeof name !== 'string') {
       return NextResponse.json(
@@ -57,7 +58,8 @@ export async function POST(request: Request) {
       technicalUsecase,
       user?.id || null,
       effectiveArchType,
-      Boolean(isPrivate)
+      Boolean(isPrivate),
+      createdStudio
     );
 
     return NextResponse.json({ diagram, version }, { status: 201 });

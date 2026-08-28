@@ -122,6 +122,7 @@ export interface Diagram {
   updated_at: string | Date;
   access_level?: 'Viewer' | 'Editor' | 'Owner' | null;
   architecture_type?: string | null;
+  created_studio?: string | null;
   is_private?: boolean | number | null;
   versions?: DiagramVersion[];
   xml_content?: string;
@@ -498,6 +499,9 @@ export async function ensureTablesExist(): Promise<void> {
       ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS is_private BOOLEAN DEFAULT FALSE;
     `);
     await pool.query(`
+      ALTER TABLE diagrams ADD COLUMN IF NOT EXISTS created_studio TEXT DEFAULT 'studio1';
+    `);
+    await pool.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS global_role TEXT DEFAULT 'Author';
     `);
     await pool.query(`
@@ -732,6 +736,11 @@ export async function ensureTablesExist(): Promise<void> {
     }
     try {
       db.exec('ALTER TABLE diagrams ADD COLUMN is_private INTEGER DEFAULT 0;');
+    } catch {
+      // Ignored if column already exists
+    }
+    try {
+      db.exec('ALTER TABLE diagrams ADD COLUMN created_studio TEXT DEFAULT "studio1";');
     } catch {
       // Ignored if column already exists
     }
@@ -1081,7 +1090,8 @@ export async function createDiagram(
   technicalUsecase?: string | null,
   userId?: string | null,
   architectureType?: string | null,
-  isPrivate?: boolean
+  isPrivate?: boolean,
+  createdStudio: string = 'studio1'
 ): Promise<{ diagram: Diagram; version: DiagramVersion | null }> {
   await ensureTablesExist();
   const diagramId = uuidv4();
@@ -1094,7 +1104,7 @@ export async function createDiagram(
     const client = await pool.connect();
     try {
       await client.query('BEGIN');
-      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES ($1, $2, $3, $4, $5)', [diagramId, name, userId || null, architectureType || 'unified_system_view', privateValPg]);
+      await client.query('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio) VALUES ($1, $2, $3, $4, $5, $6)', [diagramId, name, userId || null, architectureType || 'unified_system_view', privateValPg, createdStudio || 'studio1']);
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {
@@ -1131,8 +1141,8 @@ export async function createDiagram(
     }
   } else {
     return await runSqliteTransaction(async (db) => {
-      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private) VALUES (?, ?, ?, ?, ?)');
-      insertDiagram.run(diagramId, name, userId || null, architectureType || 'unified_system_view', privateValSqlite);
+      const insertDiagram = db.prepare('INSERT INTO diagrams (id, name, user_id, architecture_type, is_private, created_studio) VALUES (?, ?, ?, ?, ?, ?)');
+      insertDiagram.run(diagramId, name, userId || null, architectureType || 'unified_system_view', privateValSqlite, createdStudio || 'studio1');
 
       let version: DiagramVersion | null = null;
       if (initialXml !== undefined) {

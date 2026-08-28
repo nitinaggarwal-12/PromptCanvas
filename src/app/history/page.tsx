@@ -74,6 +74,7 @@ interface CanvasDiagramItem {
   id: string;
   name: string;
   architecture_type?: string | null;
+  created_studio?: string | null;
   is_private?: boolean | number | null;
   created_at: string;
   updated_at: string;
@@ -111,9 +112,21 @@ export default function CanvasHistoryPage() {
   const [scopeTab, setScopeTab] = useState<'my_canvases' | 'community'>('my_canvases');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedStudioFilter, setSelectedStudioFilter] = useState<string>('all');
   const [selectedPhase, setSelectedPhase] = useState<string>('all');
   const [selectedArchFilter, setSelectedArchFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'versions' | 'oldest' | 'name' | 'starred'>('recent');
+
+  // URL query parameter synchronization on load (e.g. ?studio=studio3)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const studio = params.get('studio');
+      if (studio) {
+        setSelectedStudioFilter(studio);
+      }
+    }
+  }, []);
 
   // Starred Canvases Set (Local state persisted across session)
   const [starredIds, setStarredIds] = useState<Set<string>>(() => {
@@ -364,6 +377,8 @@ export default function CanvasHistoryPage() {
       if (user?.id && (d as any).user_id === user.id) return true;
       if (user?.email && (d as any).created_by === user.email) return true;
       if (starredIds.has(d.id)) return true;
+      // Include non-preseeded custom created diagrams in workspace list
+      if (!d.id.startsWith('bp_') && !d.id.startsWith('sample_')) return true;
       return false;
     });
   }, [diagrams, user, starredIds]);
@@ -411,6 +426,16 @@ export default function CanvasHistoryPage() {
       });
     }
 
+    // Studio Filter
+    if (selectedStudioFilter !== 'all') {
+      list = list.filter(d => {
+        const s = d.created_studio || 
+          (d.architecture_type && d.architecture_type.includes('studio3') ? 'studio3' : 
+           d.name && d.name.toLowerCase().includes('studio 2') ? 'studio2' : 'studio1');
+        return s === selectedStudioFilter;
+      });
+    }
+
     // Architecture Type Filter
     if (selectedArchFilter !== 'all') {
       list = list.filter(d => (d.architecture_type || '') === selectedArchFilter);
@@ -441,7 +466,7 @@ export default function CanvasHistoryPage() {
     });
 
     return list;
-  }, [diagrams, myCanvasesList, scopeTab, searchQuery, selectedPhase, selectedArchFilter, sortBy, starredIds]);
+  }, [diagrams, myCanvasesList, scopeTab, searchQuery, selectedStudioFilter, selectedPhase, selectedArchFilter, sortBy, starredIds]);
 
   // Summary Metrics
   const totalCanvases = diagrams.length;
@@ -734,6 +759,27 @@ export default function CanvasHistoryPage() {
                     ))}
                   </div>
 
+                  {/* Studio Filter Dropdown */}
+                  <div className="relative inline-flex items-center">
+                    <select
+                      value={selectedStudioFilter}
+                      onChange={(e) => setSelectedStudioFilter(e.target.value)}
+                      className={`border text-xs font-black rounded-xl px-3.5 py-2 outline-none cursor-pointer transition ${
+                        selectedStudioFilter !== 'all'
+                          ? 'bg-teal-500 text-slate-950 border-teal-400 font-black shadow-sm'
+                          : isLight
+                          ? 'bg-slate-50 border-slate-300 text-slate-800 focus:border-teal-500'
+                          : 'bg-slate-950 border-slate-700/80 text-slate-200 focus:border-teal-400'
+                      }`}
+                    >
+                      <option value="all">🎨 All Studios &amp; Canvases</option>
+                      <option value="studio1">Studio 1 (Prompt &amp; Canonical)</option>
+                      <option value="studio2">Studio 2 (Multi-Agent Flowcharts)</option>
+                      <option value="studio3">Studio 3 (First-Principles Stage)</option>
+                      <option value="workspace">Workspace &amp; Direct Imports</option>
+                    </select>
+                  </div>
+
                   {/* Sort By Dropdown */}
                   <div className="relative inline-flex items-center">
                     <select
@@ -853,6 +899,34 @@ export default function CanvasHistoryPage() {
               const verCount = diagram.version_count || diagram.versions?.length || 1;
               const dateStr = diagram.updated_at || diagram.created_at;
               const isStarred = starredIds.has(diagram.id);
+              
+              // Intelligent Studio Identification
+              const rawStudio = diagram.created_studio ||
+                (diagram.architecture_type && diagram.architecture_type.includes('studio3') ? 'studio3' :
+                 diagram.name && diagram.name.toLowerCase().includes('studio 2') ? 'studio2' : 'studio1');
+              
+              const studioLabel = 
+                rawStudio === 'studio3' ? 'Studio 3' :
+                rawStudio === 'studio2' ? 'Studio 2' :
+                rawStudio === 'workspace' ? 'Workspace' : 'Studio 1';
+
+              const studioBadgeStyle = 
+                rawStudio === 'studio3' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' :
+                rawStudio === 'studio2' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30' :
+                rawStudio === 'workspace' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30' :
+                'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30';
+
+              const handleLaunchNativeStudio = () => {
+                if (rawStudio === 'studio3') {
+                  router.push(`/studio3?id=${diagram.id}`);
+                } else if (rawStudio === 'studio2') {
+                  router.push(`/studio2?diagram=${diagram.id}`);
+                } else if (rawStudio === 'studio1') {
+                  router.push(`/studio?diagram=${diagram.id}`);
+                } else {
+                  router.push(`/workspace?diagram=${diagram.id}&tab=editor`);
+                }
+              };
 
               return (
                 <div
@@ -867,16 +941,21 @@ export default function CanvasHistoryPage() {
                       : 'border-slate-800 bg-slate-900/70 hover:border-teal-500/50 hover:shadow-teal-500/5'
                   }`}
                 >
-                  {/* Top Header Strip with Star Icon */}
+                  {/* Top Header Strip with Star Icon & Studio Badge */}
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className={`text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-md border truncate max-w-[180px] ${
-                        isLight
-                          ? 'bg-teal-50 text-teal-800 border-teal-200'
-                          : 'bg-teal-950/80 text-teal-300 border border-teal-800/80'
-                      }`}>
-                        {archMeta?.name || diagram.architecture_type || 'Custom Canvas'}
-                      </span>
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className={`text-[10px] font-mono font-black px-2 py-0.5 rounded-md border ${studioBadgeStyle}`}>
+                          {studioLabel}
+                        </span>
+                        <span className={`text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md border truncate max-w-[140px] ${
+                          isLight
+                            ? 'bg-teal-50 text-teal-800 border-teal-200'
+                            : 'bg-teal-950/80 text-teal-300 border border-teal-800/80'
+                        }`}>
+                          {archMeta?.name || diagram.architecture_type || 'Custom Canvas'}
+                        </span>
+                      </div>
                       
                       <div className="flex items-center gap-2">
                         {diagram.is_private ? (
@@ -937,12 +1016,16 @@ export default function CanvasHistoryPage() {
                   <div className={`pt-4 border-t flex flex-col gap-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => handleLaunchStudio3(diagram.id)}
-                        className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95"
-                        title="Open directly in Studio 3 Generative Stage"
+                        onClick={handleLaunchNativeStudio}
+                        className={`flex-1 py-2 px-3 rounded-xl text-white text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95 ${
+                          rawStudio === 'studio3' ? 'bg-emerald-600 hover:bg-emerald-500' :
+                          rawStudio === 'studio2' ? 'bg-purple-600 hover:bg-purple-500' :
+                          'bg-blue-600 hover:bg-blue-500'
+                        }`}
+                        title={`Open directly in ${studioLabel}`}
                       >
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>Studio 3</span>
+                        <span>Open in {studioLabel}</span>
                       </button>
 
                       <button

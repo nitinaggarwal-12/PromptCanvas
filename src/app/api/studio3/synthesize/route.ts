@@ -127,7 +127,8 @@ export async function POST(req: NextRequest) {
         null,
         null,
         'studio3_generative',
-        false
+        false,
+        'studio3'
       );
       diagramId = dbRes.diagram.id;
       versionId = dbRes.version?.id || null;

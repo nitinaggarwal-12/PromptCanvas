@@ -160,7 +160,13 @@ export default function Studio3Page() {
       const res = await fetch('/api/diagrams');
       const data = await res.json();
       if (Array.isArray(data)) {
-        setHistoryList(data);
+        // Filter to items created in Studio 3 or synthesized with studio3 architecture types
+        const studio3Items = data.filter(
+          d => d.created_studio === 'studio3' ||
+               (d.architecture_type && d.architecture_type.includes('studio3')) ||
+               (d.name && d.name.toLowerCase().includes('studio 3'))
+        );
+        setHistoryList(studio3Items.length > 0 ? studio3Items : data.filter(d => d.created_studio === 'studio3'));
       }
     } catch (e) {
       console.error('Failed to fetch diagram history:', e);
@@ -185,8 +191,9 @@ export default function Studio3Page() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: `${d.name || 'Architecture'} (Clone)`,
-          architecture_type: d.architecture_type || 'custom',
-          xml_content: xmlToClone
+          architecture_type: d.architecture_type || 'studio3_generative',
+          xml_content: xmlToClone,
+          created_studio: 'studio3'
         })
       });
       const newDiag = await res.json();
@@ -492,7 +499,7 @@ export default function Studio3Page() {
               </button>
 
               <Link
-                href="/history"
+                href="/history?studio=studio3"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-xs ${
                   theme === 'dark'
                     ? 'bg-teal-950/80 hover:bg-teal-900 text-teal-300 border border-teal-500/50'
@@ -1223,7 +1230,7 @@ export default function Studio3Page() {
               theme === 'dark' ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
             }`}>
               <span>Manage all architectures</span>
-              <Link href="/history" className="text-teal-500 hover:underline font-black flex items-center gap-1">
+              <Link href="/history?studio=studio3" className="text-teal-500 hover:underline font-black flex items-center gap-1">
                 <span>Open History Page</span>
                 <ExternalLink className="w-3 h-3" />
               </Link>
