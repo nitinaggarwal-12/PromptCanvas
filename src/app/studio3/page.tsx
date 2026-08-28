@@ -104,7 +104,7 @@ export default function Studio3Page() {
   const [currentGraph, setCurrentGraph] = useState<Studio3SemanticGraph | null>(null);
   const [currentQuality, setCurrentQuality] = useState<Studio3QualityReport | null>(null);
   const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
-  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
+  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('conceptual');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 

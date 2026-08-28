@@ -51,22 +51,11 @@ export function parseStudio3IntentHeuristics(
   const p = safePrompt.toLowerCase();
   const isFollowUp = Boolean(previousContext && String(previousContext).trim().length > 0);
 
-  // 1. Abstraction Level detection
-  let abstractionLevel: AbstractionLevel = 'logical';
+  // 1. Abstraction Level detection (Default: conceptual unless specifically asked for logical/technical)
+  let abstractionLevel: AbstractionLevel = 'conceptual';
   if (
-    p.includes('concept') ||
-    p.includes('overview') ||
-    p.includes('idea') ||
-    p.includes('journey') ||
-    p.includes('value stream') ||
-    p.includes('why') ||
-    p.includes('high level') ||
-    p.includes('high-level') ||
-    p.includes('business') ||
-    p.includes('stakeholder')
-  ) {
-    abstractionLevel = 'conceptual';
-  } else if (
+    p.includes('technical') ||
+    p.includes('infrastructure') ||
     p.includes('kubernetes') ||
     p.includes('gke') ||
     p.includes('subnet') ||
@@ -84,6 +73,14 @@ export function parseStudio3IntentHeuristics(
     p.includes('ledger')
   ) {
     abstractionLevel = 'technical';
+  } else if (
+    p.includes('logical') ||
+    p.includes('microservice') ||
+    p.includes('service mesh') ||
+    p.includes('api gateway') ||
+    p.includes('component model')
+  ) {
+    abstractionLevel = 'logical';
   }
 
   // 2. Multi-Band / Composite expansion detection
@@ -238,11 +235,12 @@ export async function parseStudio3IntentWithLLM(params: {
     const systemInstruction = `You are Google DeepMind's Premier Intent & Architecture Grammar Classifier for Studio 3.
 Your task is to analyze the user's natural language request and classify its architectural abstraction level and visual grammar BEFORE any diagram is drawn.
 
-Rules:
+MANDATORY RULES:
 1. Abstraction Level:
-   - "conceptual": High-level idea, business outcome, value stream, user journey, "Why/What" for non-technical stakeholders.
-   - "logical": Functional components, microservices, API gateways, database roles, technology-agnostic "What".
-   - "technical": Infrastructure, concrete cloud services (GCP/AWS), VPCs, subnets, ports, protocols, "How".
+   - Unless the user specifically asks for "technical" (VPCs, subnets, CIDR, ports, Kubernetes pods, IAM roles) or "logical" (microservice boundaries, service mesh), ALWAYS default to "conceptual" (high-level flow, business outcomes, foundational concept stages, why & what).
+   - "conceptual": High-level workflow, foundational principles, user journey, "Why/What" for stakeholders.
+   - "logical": Functional component boundaries, microservices, database interfaces.
+   - "technical": Infrastructure, concrete cloud services, subnets, ports, protocols, "How".
 2. Topology Grammar:
    - "horizontal_pipeline": Left-to-right stages with sequential step badges.
    - "hierarchical_tiers": Stacked vertical tiers (Ingress -> Compute -> Data -> Governance).
