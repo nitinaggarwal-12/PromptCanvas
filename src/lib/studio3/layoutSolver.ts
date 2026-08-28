@@ -120,7 +120,7 @@ export function solveAndRenderStudio3Xml(
         const colX = bandX + innerPadding + colIndex * (colW + colGap);
         const colY = bandY + innerPadding;
         const colH = bandH - innerPadding * 2;
-        const colorKey = (col.headerColor || 'blue').toLowerCase();
+        const colorKey = String(col.headerColor || 'blue').trim().toLowerCase();
         const colColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
 
         // Column Box
@@ -209,7 +209,7 @@ export function solveAndRenderStudio3Xml(
         const stageX = bandX + innerPadding + sIndex * (stageW + stageGap);
         const stageY = bandY + innerPadding;
         const stageH = bandH - innerPadding * 2;
-        const colorKey = (stage.color || 'blue').toLowerCase();
+        const colorKey = String(stage.color || 'blue').trim().toLowerCase();
         const stageColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
 
         // Stage Box
@@ -219,8 +219,8 @@ export function solveAndRenderStudio3Xml(
           </mxCell>
         `);
 
-        // Stage Header
-        const stepIcons = ['❶', '❷', '❸', '❹', '❺', '❻'];
+        // Stage Header with 20 Step Badges ❶..⓴
+        const stepIcons = ['❶', '❷', '❸', '❹', '❺', '❻', '❼', '❽', '❾', '❿', '⓫', '⓬', '⓭', '⓮', '⓯', '⓰', '⓱', '⓲', '⓳', '⓴'];
         const stepBadge = stepIcons[(stage.stepNumber || 1) - 1] || `${stage.stepNumber || 1}.`;
 
         const stageHeaderHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 12px;width:100%;height:100%;background:${stageColor.bg};color:${stageColor.text};font-weight:800;font-size:11.5px;letter-spacing:0.03em;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;">
@@ -271,7 +271,7 @@ export function solveAndRenderStudio3Xml(
     // C. Matrix Evaluation Band
     else if (band.matrixRows && band.matrixRows.length > 0) {
       const headers = band.matrixHeaders || ['DIMENSION / TOOL', 'CAPABILITY', 'INTEGRATION', 'STANDARD'];
-      const numCols = headers.length;
+      const numCols = Math.max(1, headers.length);
       const innerPadding = 18;
       const tableW = bandW - innerPadding * 2;
       const colW = tableW / numCols;
@@ -299,7 +299,7 @@ export function solveAndRenderStudio3Xml(
         
         // Col 0: Dimension Name
         const dimCellHtml = `<div style="display:flex;align-items:center;padding:0 12px;width:100%;height:100%;background:${isDark ? '#0C1322' : '#F8FAFC'};color:${textPrimary};font-weight:700;font-size:11px;border:1px solid ${cardBorder};box-sizing:border-box;">
-          ${escapeXml(row.dimension)}
+          ${escapeXml(row.dimension || 'Dimension')}
         </div>`;
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(dimCellHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
@@ -311,8 +311,8 @@ export function solveAndRenderStudio3Xml(
         (row.cols || []).forEach((c, cIdx) => {
           const colX = bandX + innerPadding + (cIdx + 1) * colW;
           const colCellHtml = `<div style="display:flex;flex-direction:column;justify-content:center;padding:0 12px;width:100%;height:100%;background:${isDark ? '#131D31' : '#FFFFFF'};color:${textSecondary};font-size:10.5px;border:1px solid ${cardBorder};box-sizing:border-box;">
-            <div style="font-weight:700;color:${textPrimary};">${escapeXml(c.toolName || '')}</div>
-            <div style="margin-top:2px;">${escapeXml(c.value || '')}</div>
+            <div style="font-weight:700;color:${textPrimary};">${escapeXml(c?.toolName || '')}</div>
+            <div style="margin-top:2px;">${escapeXml(c?.value || '')}</div>
           </div>`;
           addCell(`
             <mxCell id="${cellId++}" value="${escapeXml(colCellHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
@@ -351,8 +351,12 @@ export function solveAndRenderStudio3Xml(
   const footerW = 1520;
   const footerH = 45;
 
-  const tenetsString = graph?.tenets && graph.tenets.length > 0
-    ? graph.tenets.join('  |  ')
+  const rawTenets = Array.isArray(graph?.tenets)
+    ? graph.tenets.filter(t => typeof t === 'string' && t.trim().length > 0)
+    : [];
+
+  const tenetsString = rawTenets.length > 0
+    ? rawTenets.join('  |  ')
     : 'PRODUCER INDEPENDENCE  |  CONSUMER INDEPENDENCE  |  FORMAT, NOT PLATFORM';
 
   const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:8px;background:${isDark ? '#0F172A' : '#F1F5F9'};border:1px solid ${containerBorder};color:${textSecondary};font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;">

@@ -44,7 +44,10 @@ export function parseStudio3IntentHeuristics(
   prompt: string,
   previousContext?: string
 ): Studio3Intent {
-  const safePrompt = String(prompt || '').trim();
+  // Strip zero-width spaces, non-breaking spaces, and normalize Unicode
+  const safePrompt = String(prompt || '')
+    .replace(/[\u200B-\u200D\uFEFF\u00A0]/g, ' ')
+    .trim();
   const p = safePrompt.toLowerCase();
   const isFollowUp = Boolean(previousContext && String(previousContext).trim().length > 0);
 
@@ -191,11 +194,13 @@ export function parseStudio3IntentHeuristics(
 
 function extractKeywords(prompt: string): string[] {
   const stopWords = new Set(['the', 'and', 'with', 'for', 'how', 'what', 'this', 'that', 'show', 'explain', 'diagram', 'help', 'from', 'into', 'architect', 'design', 'build']);
-  const words = (prompt || '')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+  const clean = (prompt || '')
+    .replace(/[\u200B-\u200D\uFEFF\u00A0]/g, ' ')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ');
+  const words = clean
     .split(/\s+/)
     .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
-  return Array.from(new Set(words)).slice(0, 10);
+  return Array.from(new Set(words.map(w => w.toLowerCase()))).slice(0, 10);
 }
 
 export async function parseStudio3IntentWithLLM(params: {
