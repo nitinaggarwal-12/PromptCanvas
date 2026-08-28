@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: blob: https:",
               "frame-src 'self' https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net",
-              "connect-src 'self' https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com"
+              "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com"
             ].join('; ')
           }
         ]
