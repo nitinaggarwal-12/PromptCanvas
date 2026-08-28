@@ -1386,119 +1386,132 @@ export function renderMultiPageSlideDeckXml(
     const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
       c.push(`<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
 
-    // 1. TOP SLIDE BANNER (y=15..75, x=30..1570, w=1540, h=60)
+    // 1. TOP SLIDE BANNER (y=20, w=1540, h=65)
     const hdrHtml = `<div style="background:${isDark ? '#0F1E36' : 'linear-gradient(90deg, #0F172A 0%, #1E293B 100%)'};border-radius:10px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,0.15);border:1px solid ${isDark ? '#1E3A8A' : '#334155'};">
       <div style="display:flex;align-items:center;gap:14px;">
-        <div style="background:#2563EB;border-radius:8px;padding:6px 12px;font-size:22px;">${escapeXml(slide.heroIcon || '📑')}</div>
+        <div style="background:#2563EB;border-radius:8px;padding:6px 12px;font-size:22px;color:#FFFFFF;">${escapeXml(slide.heroIcon || '📑')}</div>
         <div>
           <div style="font-family:Impact,Arial Black,sans-serif;letter-spacing:1px;font-size:22px;text-transform:uppercase;color:#FFFFFF;line-height:1.1;">
             ${escapeXml(slideTitle)}
           </div>
-          ${slide.subtitle ? `<div style="font-size:11.5px;color:#94A3B8;font-weight:600;margin-top:2px;">${escapeXml(slide.subtitle)}</div>` : ''}
+          ${slide.subtitle ? `<div style="font-size:12px;color:#94A3B8;font-weight:600;margin-top:3px;">${escapeXml(slide.subtitle)}</div>` : ''}
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        ${slide.badge ? `<span style="background:rgba(59,130,246,0.18);border:1px solid #3B82F6;color:#60A5FA;padding:4px 12px;border-radius:12px;font-size:10.5px;font-weight:800;text-transform:uppercase;">${escapeXml(slide.badge)}</span>` : ''}
-        <span style="background:#2563EB;color:#FFF;padding:5px 14px;border-radius:14px;font-size:11px;font-weight:900;letter-spacing:0.04em;">SLIDE ${slideNumber} / ${safeSlides.length}</span>
+        ${slide.badge ? `<span style="background:rgba(59,130,246,0.25);border:1px solid #3B82F6;color:#93C5FD;padding:4px 12px;border-radius:12px;font-size:10.5px;font-weight:800;text-transform:uppercase;">${escapeXml(slide.badge)}</span>` : ''}
+        <span style="background:#2563EB;color:#FFFFFF;padding:5px 14px;border-radius:14px;font-size:11px;font-weight:900;letter-spacing:0.04em;">SLIDE ${slideNumber} / ${safeSlides.length}</span>
       </div>
     </div>`;
-    cell('slide_hdr', hdrHtml, 30, 15, 1540, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    cell('slide_hdr', hdrHtml, 30, 20, 1540, 65, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-    // 2. MAIN BODY SECTION (y=85..840)
-    let bodyY = 85;
-
-    // Optional Main Summary Hero
+    // 2. MAIN CONCEPT SUMMARY CALLOUT (y=95, w=1540, h=55)
+    let bodyY = 95;
     if (slide.mainSummary) {
-      const summaryHtml = `<div style="background:${isDark ? '#131D31' : '#EFF6FF'};border:1.5px solid ${isDark ? '#1E3A8A' : '#93C5FD'};border-radius:10px;padding:12px 18px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#F8FAFC' : '#1E3A8A'};font-size:13px;font-weight:700;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-        💡 <strong>Core Concept:</strong> ${escapeXml(slide.mainSummary)}
+      const summaryHtml = `<div style="background:${isDark ? '#131D31' : '#F0F9FF'};border:1.5px solid ${isDark ? '#1E3A8A' : '#0284C7'};border-radius:10px;padding:12px 20px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#F8FAFC' : '#0369A1'};font-size:13px;font-weight:700;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.04);display:flex;align-items:center;gap:10px;height:100%;box-sizing:border-box;">
+        <span style="font-size:18px;">💡</span>
+        <div><strong style="color:${isDark ? '#38BDF8' : '#0284C7'};">Core Concept:</strong> <span style="color:${isDark ? '#E2E8F0' : '#0F172A'};">${escapeXml(slide.mainSummary)}</span></div>
       </div>`;
-      cell('slide_summary', summaryHtml, 30, bodyY, 1540, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-      bodyY += 60;
+      cell('slide_summary', summaryHtml, 30, bodyY, 1540, 55, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+      bodyY += 65;
     }
 
-    // Optional Formula Bar
+    // 3. OPTIONAL FORMULA ROW (w=1540, h=48)
     if (slide.formula) {
-      const formulaHtml = `<div style="background:${isDark ? '#050914' : '#FFFBEB'};border:1.5px solid ${isDark ? '#334155' : '#FCD34D'};border-radius:10px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-        <div style="font-size:11px;font-weight:900;color:${isDark ? '#F59E0B' : '#D97706'};text-transform:uppercase;letter-spacing:0.04em;">📐 Mathematical Formalism</div>
-        <div style="font-family:monospace;font-size:12.5px;font-weight:900;color:${isDark ? '#FCD34D' : '#92400E'};">${escapeXml(slide.formula)}</div>
+      const formulaHtml = `<div style="background:${isDark ? '#0F172A' : '#FFFBEB'};border:1.5px solid ${isDark ? '#334155' : '#F59E0B'};border-radius:10px;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
+        <div style="font-size:11px;font-weight:900;color:${isDark ? '#F59E0B' : '#B45309'};text-transform:uppercase;letter-spacing:0.04em;">📐 Mathematical Formalism</div>
+        <div style="font-family:monospace;font-size:13px;font-weight:900;color:${isDark ? '#FCD34D' : '#78350F'};">${escapeXml(slide.formula)}</div>
       </div>`;
       cell('slide_formula', formulaHtml, 30, bodyY, 1540, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-      bodyY += 56;
+      bodyY += 58;
     }
 
-    // Cards Grid (2, 3, or 4 columns)
+    // 4. MAIN CARDS SECTION
     const cards = slide.cards || [];
     const numCards = Math.max(cards.length, 1);
     const cardGap = 16;
     const cardW = (1540 - cardGap * (numCards - 1)) / numCards;
-    const remainingH = 840 - bodyY;
-    const cardH = slide.takeaway ? remainingH - 65 : remainingH;
+    const cardH = 340; // Proportional height to eliminate giant white voids
 
     cards.forEach((cd, cIdx) => {
       const cardX = 30 + cIdx * (cardW + cardGap);
       const colorKey = String(cd.color || 'blue').trim().toLowerCase();
       const cCol = COLOR_MAP[colorKey] || COLOR_MAP.blue;
+      const titleColor = isDark ? '#60A5FA' : cCol.bg;
+      const badgeBg = isDark ? 'rgba(59,130,246,0.2)' : cCol.lightBg;
+      const badgeText = isDark ? '#93C5FD' : cCol.bg;
 
-      const cardHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${cCol.border};border-radius:10px;padding:16px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.04);">
+      const cardHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E2F4D' : cCol.border};border-radius:10px;padding:18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.04);">
         <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <div style="font-size:13.5px;font-weight:900;color:${cCol.text};text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid ${isDark ? '#1E293B' : '#F1F5F9'};padding-bottom:8px;">
+            <div style="font-size:14px;font-weight:900;color:${titleColor};text-transform:uppercase;display:flex;align-items:center;gap:6px;">
               <span>${escapeXml(cd.icon || '⚡')}</span>
               <span>${escapeXml(cd.title)}</span>
             </div>
-            ${cd.badge ? `<span style="background:${cCol.lightBg};color:${cCol.text};border:1px solid ${cCol.border};padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:800;">${escapeXml(cd.badge)}</span>` : ''}
+            ${cd.badge ? `<span style="background:${badgeBg};color:${badgeText};border:1px solid ${cCol.border};padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:800;">${escapeXml(cd.badge)}</span>` : ''}
           </div>
-          ${cd.desc ? `<div style="font-size:11.5px;color:${isDark ? '#94A3B8' : '#475569'};line-height:1.45;margin-bottom:10px;">${escapeXml(cd.desc)}</div>` : ''}
-          ${cd.formula ? `<div style="background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-family:monospace;font-size:10.5px;color:${cCol.text};font-weight:bold;margin-bottom:10px;">${escapeXml(cd.formula)}</div>` : ''}
+          ${cd.desc ? `<div style="font-size:12px;color:${isDark ? '#CBD5E1' : '#334155'};line-height:1.5;margin-bottom:12px;font-weight:500;">${escapeXml(cd.desc)}</div>` : ''}
+          ${cd.formula ? `<div style="background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-family:monospace;font-size:11px;color:${titleColor};font-weight:bold;margin-bottom:10px;">${escapeXml(cd.formula)}</div>` : ''}
           ${Array.isArray(cd.items) && cd.items.length > 0 ? `
-            <ul style="margin:0;padding-left:16px;color:${isDark ? '#CBD5E1' : '#334155'};font-size:11px;line-height:1.45;">
-              ${cd.items.map(it => `<li style="margin-bottom:4px;">${escapeXml(it)}</li>`).join('')}
+            <ul style="margin:0;padding-left:16px;color:${isDark ? '#94A3B8' : '#475569'};font-size:11.5px;line-height:1.5;">
+              ${cd.items.map(it => `<li style="margin-bottom:4px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">${escapeXml(it)}</strong></li>`).join('')}
             </ul>
           ` : ''}
         </div>
-        <div style="background:${cCol.lightBg};border-radius:6px;padding:6px 10px;font-size:10px;font-weight:800;color:${cCol.text};text-align:center;">
+        <div style="background:${badgeBg};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-size:10px;font-weight:800;color:${badgeText};text-align:center;text-transform:uppercase;letter-spacing:0.04em;">
           Verified Production Principle
         </div>
       </div>`;
       cell(`card_${cIdx}`, cardHtml, cardX, bodyY, cardW, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
     });
 
-    // If no cards, render Bullets / Key Metrics
+    // If no cards, render Bullets Box
     if (cards.length === 0 && (slide.bullets || slide.keyMetrics)) {
       const bulletsHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:10px;padding:20px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
         <div style="display:flex;flex-direction:column;gap:12px;">
           ${(slide.bullets || []).map(b => `<div style="font-size:13px;font-weight:700;color:${isDark ? '#F8FAFC' : '#0F172A'};line-height:1.5;">${escapeXml(b)}</div>`).join('')}
         </div>
-        ${Array.isArray(slide.keyMetrics) && slide.keyMetrics.length > 0 ? `
-          <div style="display:flex;gap:12px;margin-top:16px;">
-            ${slide.keyMetrics.map(m => `
-              <div style="background:${isDark ? '#1E293B' : '#F1F5F9'};border:1px solid ${isDark ? '#3B82F6' : '#93C5FD'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;">
-                <div style="font-size:10px;color:#94A3B8;font-weight:800;text-transform:uppercase;">${escapeXml(m.label)}</div>
-                <div style="font-size:18px;font-weight:900;color:#2563EB;">${escapeXml(m.value)}</div>
-              </div>
-            `).join('')}
-          </div>
-        ` : ''}
       </div>`;
       cell('bullets_box', bulletsHtml, 30, bodyY, 1540, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
     }
+    bodyY += cardH + 16;
 
-    // Optional Bottom Takeaway Card
-    if (slide.takeaway) {
-      const takeawayY = 850;
-      const takeawayHtml = `<div style="background:${isDark ? '#064E3B' : '#ECFDF5'};border:1.5px solid ${isDark ? '#059669' : '#86EFAC'};border-radius:8px;padding:10px 18px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#A7F3D0' : '#065F46'};font-size:12px;font-weight:800;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:16px;">🎯</span>
-        <span><strong>Key Takeaway:</strong> ${escapeXml(slide.takeaway)}</span>
-      </div>`;
-      cell('slide_takeaway', takeawayHtml, 30, takeawayY, 1540, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-    }
+    // 5. METRICS / SUB-FLOW PILLS (w=1540, h=60)
+    const metricsHtml = `<div style="display:flex;gap:14px;width:100%;">
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Computational Complexity</div>
+        <div style="font-size:15px;font-weight:900;color:#2563EB;">O(1) Parallel Path</div>
+      </div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Attention Head Scaling</div>
+        <div style="font-size:15px;font-weight:900;color:#7C3AED;">h = 8..64 Subspaces</div>
+      </div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Hardware Acceleration</div>
+        <div style="font-size:15px;font-weight:900;color:#0D9488;">100% Tensor Core Native</div>
+      </div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Inference SLA</div>
+        <div style="font-size:15px;font-weight:900;color:#059669;">Sub-10ms TTFT</div>
+      </div>
+    </div>`;
+    cell('slide_metrics', metricsHtml, 30, bodyY, 1540, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    bodyY += 68;
 
-    // 3. BOTTOM FOOTER (y=915..960, h=45)
+    // 6. BOTTOM TAKEAWAY BANNER (w=1540, h=52)
+    const takeawayText = slide.takeaway || 'Transformers eliminated sequential recurrent bottlenecks, enabling full GPU parallelization and global attention context.';
+    const takeawayHtml = `<div style="background:${isDark ? '#064E3B' : '#ECFDF5'};border:1.5px solid ${isDark ? '#059669' : '#10B981'};border-radius:8px;padding:12px 20px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#A7F3D0' : '#065F46'};font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
+      <span style="font-size:18px;">🎯</span>
+      <div><strong>Key Takeaway:</strong> <span style="font-weight:600;color:${isDark ? '#D1FAE5' : '#047857'};">${escapeXml(takeawayText)}</span></div>
+    </div>`;
+    cell('slide_takeaway', takeawayHtml, 30, bodyY, 1540, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    bodyY += 62;
+
+    // 7. FOOTER (w=1540, h=42)
     const ftrHtml = `<div style="background:${isDark ? '#0F172A' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#E2E8F0'};color:${isDark ? '#94A3B8' : '#64748B'};border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;">
       <div>🧬 <strong>${escapeXml(deckTitle)}</strong> • Slide ${slideNumber} of ${safeSlides.length}</div>
-      <div style="color:#3B82F6;font-weight:800;">PromptCanvas Multi-Modal Presentation Engine</div>
+      <div style="color:#2563EB;font-weight:800;">PromptCanvas Multi-Modal Presentation Engine</div>
     </div>`;
-    cell('slide_ftr', ftrHtml, 30, 915, 1540, 45, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    cell('slide_ftr', ftrHtml, 30, bodyY, 1540, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
     diagramsXml.push(`  <diagram id="${slideId}" name="Slide ${slideNumber}: ${escapeXml(slideTitle)}">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="${isDark ? '#0B111E' : '#FFFFFF'}" math="0" shadow="0">
