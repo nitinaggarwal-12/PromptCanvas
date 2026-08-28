@@ -43,15 +43,15 @@ export function renderTwoSidesOfTheSpinInfographicXml(
       `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
 
-  // 1. TOP TITLE BANNER (y=20..75) - Matching exact high-impact typography
-  const titleHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:Impact,'Arial Black',system-ui,-apple-system,sans-serif;box-sizing:border-box;">
-    <div style="font-size:46px;font-weight:900;letter-spacing:1px;color:#000000;text-transform:uppercase;text-align:center;line-height:1;">
+  // 1. TOP TITLE BANNER (y=20..75) - Centered, massive, high-impact headline
+  const titleHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;font-family:Impact,'Arial Black',-apple-system,sans-serif;box-sizing:border-box;">
+    <div style="font-size:42px;font-weight:900;letter-spacing:1.5px;color:#0F172A;text-transform:uppercase;text-align:center;line-height:1.1;">
       CENTRIPETAL VS CENTRIFUGAL FORCE: TWO SIDES OF THE SPIN
     </div>
   </div>`;
-  cell('hdr_title', titleHtml, 20, 20, 1560, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('hdr_title', titleHtml, 20, 15, 1560, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 2. LEFT PANEL: CENTRIPETAL FORCE (x=40..410, y=95..575)
+  // 2. LEFT PANEL: CENTRIPETAL FORCE (x=40..420, y=85..565)
   const leftHdrHtml = `<div style="background:#1D70B8;color:#FFFFFF;border-top-left-radius:12px;border-top-right-radius:12px;padding:12px 18px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
     <span style="font-size:32px;">👁️</span>
     <div>
@@ -59,73 +59,88 @@ export function renderTwoSidesOfTheSpinInfographicXml(
       <div style="font-size:12px;opacity:0.95;font-weight:600;margin-top:2px;">(View from Outside / Ground Observer)</div>
     </div>
   </div>`;
-  cell('left_hdr', leftHdrHtml, 40, 95, 370, 72, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('left_hdr', leftHdrHtml, 40, 85, 380, 72, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  const leftBodyHtml = `<div style="background:#DBEDFA;border-bottom-left-radius:12px;border-bottom-right-radius:12px;padding:20px 18px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#0B2144;">
-    <div style="font-size:13.5px;font-weight:800;color:#0B2144;line-height:1.45;margin-bottom:14px;">
-      <strong>CENTRIPETAL FORCE</strong> is repeated by a real inward force and a force derived from sources:
+  const leftBodyHtml = `<div style="background:#DBEDFA;border-bottom-left-radius:12px;border-bottom-right-radius:12px;padding:18px 20px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#0B2144;display:flex;flex-direction:column;justify-content:space-between;">
+    <div>
+      <div style="font-size:13.5px;font-weight:800;color:#0B2144;line-height:1.45;margin-bottom:12px;">
+        <strong>CENTRIPETAL FORCE</strong> is a <em>real physical force</em> that acts continuously on an object in circular motion, pulling it inward toward the center:
+      </div>
+
+      <div style="font-size:12.5px;line-height:1.65;color:#0B2144;font-weight:700;">
+        <div style="margin-bottom:4px;">• <strong>String Tension:</strong> Taut rope pulling swinging mass</div>
+        <div style="margin-bottom:4px;">• <strong>Tire Friction:</strong> Road grip pushing car inward into turn</div>
+        <div style="margin-bottom:4px;">• <strong>Gravity:</strong> Pulling planets &amp; satellites into orbit</div>
+        <div style="margin-bottom:4px;">• <strong>Normal Force:</strong> Curved track banking pushes inwards</div>
+      </div>
     </div>
 
-    <div style="font-size:13px;line-height:1.7;color:#0B2144;font-weight:700;">
-      <div>• String tension or strings</div>
-      <div>• String tension or such as rans atorn string friction</div>
-      <div>• Tire friction force or tire friction, aposums to classe back on inrting or aquarents</div>
+    <div style="background:#FFFFFF;border:1.5px solid #93C5FD;border-radius:8px;padding:8px 12px;text-align:center;margin-top:10px;">
+      <div style="font-size:13px;font-weight:900;color:#1D70B8;">Fc = m · v² / r = m · ω² · r</div>
+      <div style="font-size:10px;font-weight:700;color:#2563EB;margin-top:2px;">Real Inward Force Vector (Perpendicular to v)</div>
     </div>
   </div>`;
-  cell('left_body', leftBodyHtml, 40, 167, 370, 390, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('left_body', leftBodyHtml, 40, 157, 380, 395, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 3. CENTER HERO VISUAL ILLUSTRATION (x=430..1150, y=80..575)
+  // 3. CENTER HERO VISUAL ILLUSTRATION (x=440..1140, y=80..565)
   const centerHeroHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
     
-    <svg viewBox="0 0 520 480" width="520" height="480" style="overflow:visible;">
+    <svg viewBox="0 0 540 470" width="540" height="470" style="overflow:visible;">
       <!-- Top Green Tangential Velocity Vector -->
-      <text x="290" y="24" text-anchor="middle" font-size="16" font-weight="900" fill="#059669">Velocity v</text>
-      <text x="290" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#059669">(Inertia wants straight line)</text>
-      <line x1="210" y1="56" x2="380" y2="56" stroke="#059669" stroke-width="6"/>
-      <polygon points="394,56 376,47 376,65" fill="#059669"/>
+      <g transform="translate(270, 42)">
+        <text x="0" y="-18" text-anchor="middle" font-size="16" font-weight="900" fill="#059669">Velocity v</text>
+        <text x="0" y="-2" text-anchor="middle" font-size="12.5" font-weight="700" fill="#059669">(Inertia wants straight line)</text>
+        <line x1="-90" y1="12" x2="90" y2="12" stroke="#059669" stroke-width="6"/>
+        <polygon points="104,12 86,3 86,21" fill="#059669"/>
+      </g>
 
       <!-- Circular Orbit Track -->
-      <circle cx="260" cy="270" r="160" stroke="#000000" stroke-width="2.5" fill="none"/>
+      <circle cx="270" cy="260" r="165" stroke="#0F172A" stroke-width="2.5" fill="none"/>
 
       <!-- Rotational Direction Arrows on Track -->
-      <path d="M 120 340 Q 140 380 170 405" stroke="#000000" stroke-width="2" fill="none"/>
-      <polygon points="120,340 128,348 116,354" fill="#000000"/>
+      <path d="M 125 330 Q 145 375 180 400" stroke="#0F172A" stroke-width="2.5" fill="none"/>
+      <polygon points="125,330 134,338 122,344" fill="#0F172A"/>
 
       <!-- Center Person (Top-Down Avatar) -->
-      <g transform="translate(260, 270)">
+      <g transform="translate(270, 260)">
         <!-- Head -->
-        <circle cx="0" cy="0" r="14" fill="#92400E" stroke="#000000" stroke-width="2"/>
+        <circle cx="0" cy="0" r="15" fill="#92400E" stroke="#0F172A" stroke-width="2.5"/>
         <!-- Shoulders / Torso -->
-        <ellipse cx="0" cy="6" rx="20" ry="12" fill="#2563EB" stroke="#000000" stroke-width="2"/>
+        <ellipse cx="0" cy="6" rx="22" ry="13" fill="#2563EB" stroke="#0F172A" stroke-width="2.5"/>
         <!-- Arms extending to hold string -->
-        <path d="M -16 8 Q -24 24 -14 30 L -12 30" stroke="#2563EB" stroke-width="5" fill="none"/>
-        <path d="M 16 8 Q 0 24 -10 30 L -12 30" stroke="#2563EB" stroke-width="5" fill="none"/>
-        <circle cx="-12" cy="30" r="4" fill="#FBBF24"/>
+        <path d="M -18 8 Q -26 26 -15 32 L -12 32" stroke="#2563EB" stroke-width="5.5" fill="none"/>
+        <path d="M 18 8 Q 2 26 -9 32 L -12 32" stroke="#2563EB" stroke-width="5.5" fill="none"/>
+        <circle cx="-12" cy="32" r="4.5" fill="#FBBF24"/>
       </g>
 
       <!-- Taut String Line -->
-      <line x1="248" y1="300" x2="160" y2="395" stroke="#000000" stroke-width="3.5"/>
+      <line x1="258" y1="292" x2="162" y2="390" stroke="#0F172A" stroke-width="3.5"/>
 
       <!-- Red Ball (Mass m) -->
-      <circle cx="160" cy="395" r="20" fill="#DC2626" stroke="#000000" stroke-width="2.5"/>
+      <circle cx="162" cy="390" r="22" fill="#DC2626" stroke="#0F172A" stroke-width="2.5"/>
+      <text x="162" y="396" text-anchor="middle" font-size="13" font-weight="900" fill="#FFFFFF">m</text>
 
       <!-- Blue Inward Centripetal Force Vector -->
-      <text x="250" y="140" text-anchor="middle" font-size="17" font-weight="900" fill="#1D70B8">Centripetal Force Fc</text>
-      <text x="250" y="160" text-anchor="middle" font-size="13" font-weight="700" fill="#1D70B8">(Real inward pull)</text>
-      <line x1="330" y1="130" x2="280" y2="240" stroke="#1D70B8" stroke-width="6"/>
-      <polygon points="274,248 278,232 292,242" fill="#1D70B8"/>
+      <g>
+        <text x="270" y="125" text-anchor="middle" font-size="17" font-weight="900" fill="#1D70B8">Centripetal Force Fc</text>
+        <text x="270" y="145" text-anchor="middle" font-size="13" font-weight="700" fill="#1D70B8">(Real inward pull)</text>
+        <line x1="365" y1="125" x2="300" y2="230" stroke="#1D70B8" stroke-width="6"/>
+        <polygon points="292,238 296,222 310,232" fill="#1D70B8"/>
+      </g>
 
       <!-- Red Outward Centrifugal Force Vector (Dashed) -->
-      <line x1="270" y1="270" x2="420" y2="270" stroke="#DC2626" stroke-width="6" stroke-dasharray="10 6"/>
-      <polygon points="436,270 418,258 418,282" fill="#DC2626"/>
-      <text x="345" y="305" text-anchor="middle" font-size="16" font-weight="900" fill="#DC2626">Centrifugal Force</text>
-      <text x="345" y="325" text-anchor="middle" font-size="13" font-weight="700" fill="#DC2626">(Perceived outward push)</text>
+      <g>
+        <line x1="270" y1="260" x2="435" y2="260" stroke="#DC2626" stroke-width="6" stroke-dasharray="10 6"/>
+        <polygon points="451,260 433,248 433,272" fill="#DC2626"/>
+        <text x="360" y="295" text-anchor="middle" font-size="16" font-weight="900" fill="#DC2626">Centrifugal Force</text>
+        <text x="360" y="315" text-anchor="middle" font-size="13" font-weight="700" fill="#DC2626">(Perceived outward push)</text>
+      </g>
     </svg>
 
   </div>`;
-  cell('center_hero', centerHeroHtml, 430, 80, 720, 480, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('center_hero', centerHeroHtml, 435, 75, 710, 480, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 4. RIGHT PANEL: CENTRIFUGAL FORCE (x=1170..1540, y=95..575)
+  // 4. RIGHT PANEL: CENTRIFUGAL FORCE (x=1160..1540, y=85..565)
   const rightHdrHtml = `<div style="background:#E03131;color:#FFFFFF;border-top-left-radius:12px;border-top-right-radius:12px;padding:12px 18px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
     <span style="font-size:32px;">🏍️</span>
     <div>
@@ -133,141 +148,159 @@ export function renderTwoSidesOfTheSpinInfographicXml(
       <div style="font-size:12px;opacity:0.95;font-weight:600;margin-top:2px;">(View from Inside / Rider)</div>
     </div>
   </div>`;
-  cell('right_hdr', rightHdrHtml, 1170, 95, 370, 72, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('right_hdr', rightHdrHtml, 1160, 85, 380, 72, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  const rightBodyHtml = `<div style="background:#FFE6D9;border-bottom-left-radius:12px;border-bottom-right-radius:12px;padding:20px 18px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#491203;">
-    <div style="font-size:13.5px;font-weight:800;color:#491203;line-height:1.45;margin-bottom:14px;">
-      <strong>CENTRIFUGAL FORCE</strong> is an apparent feeling in volunts the rider is an apparent feeling caused by inertia:
+  const rightBodyHtml = `<div style="background:#FFE6D9;border-bottom-left-radius:12px;border-bottom-right-radius:12px;padding:18px 20px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#491203;display:flex;flex-direction:column;justify-content:space-between;">
+    <div>
+      <div style="font-size:13.5px;font-weight:800;color:#491203;line-height:1.45;margin-bottom:12px;">
+        <strong>CENTRIFUGAL FORCE</strong> is an <em>apparent feeling</em> where the rider perceives an outward push caused by <strong>INERTIA</strong> resisting the turn:
+      </div>
+
+      <div style="font-size:12.5px;line-height:1.65;color:#491203;font-weight:700;">
+        <div style="margin-bottom:4px;">• <strong>No Physical Agent:</strong> No outward push exists in reality!</div>
+        <div style="margin-bottom:4px;">• <strong>Inertia (Newton's 1st Law):</strong> Body wants to go straight</div>
+        <div style="margin-bottom:4px;">• <strong>Frame Acceleration:</strong> Car turns beneath you, making you hit door</div>
+        <div style="margin-bottom:4px;">• <strong>Fictitious Sensation:</strong> Only felt within rotating frames</div>
+      </div>
     </div>
 
-    <div style="font-size:13px;line-height:1.7;color:#491203;font-weight:700;">
-      <div>• Inertia</div>
-      <div>• An abracle</div>
-      <div>• An apparent feeling caused by inertia to are apparernt from nnusarants and a rolller manganded tanring objective</div>
+    <div style="background:#FFFFFF;border:1.5px solid #FCA5A5;border-radius:8px;padding:8px 12px;text-align:center;margin-top:10px;">
+      <div style="font-size:13px;font-weight:900;color:#DC2626;">Fcf = - m · (ω × (ω × r)) = m · ω² · r</div>
+      <div style="font-size:10px;font-weight:700;color:#B91C1C;margin-top:2px;">Apparent Outward Force in Rotating Coordinates</div>
     </div>
   </div>`;
-  cell('right_body', rightBodyHtml, 1170, 167, 370, 390, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('right_body', rightBodyHtml, 1160, 157, 380, 395, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 5. BOTTOM 4 REAL-WORLD GRAPHICAL VIGNETTES (y=590..960)
+  // 5. BOTTOM 4 REAL-WORLD GRAPHICAL VIGNETTES (y=570..950)
   
-  // Vignette 1: Car Turning Corner (x=40..390)
-  const v1Html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;box-sizing:border-box;">
-    <svg viewBox="0 0 320 220" width="300" height="200">
+  // Vignette 1: Car Turning Corner (x=40..395)
+  const v1Html = `<div style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <svg viewBox="0 0 320 200" width="300" height="180" style="border-radius:8px;overflow:hidden;">
       <!-- Grass Field -->
-      <rect x="0" y="0" width="320" height="220" fill="#86EFAC" stroke="#4ADE80" stroke-width="2"/>
+      <rect x="0" y="0" width="320" height="200" fill="#86EFAC"/>
       <!-- Gray Road Surface -->
-      <path d="M 0 220 L 0 110 Q 0 40 70 40 L 320 40 L 320 120 L 140 120 Q 80 120 80 160 L 80 220 Z" fill="#94A3B8"/>
+      <path d="M 0 200 L 0 100 Q 0 35 65 35 L 320 35 L 320 115 L 135 115 Q 75 115 75 155 L 75 200 Z" fill="#94A3B8"/>
       <!-- Road Outer Border -->
-      <path d="M 0 110 Q 0 40 70 40 L 320 40" stroke="#000000" stroke-width="3" fill="none"/>
-      <path d="M 80 220 L 80 160 Q 80 120 140 120 L 320 120" stroke="#000000" stroke-width="3" fill="none"/>
+      <path d="M 0 100 Q 0 35 65 35 L 320 35" stroke="#0F172A" stroke-width="3" fill="none"/>
+      <path d="M 75 200 L 75 155 Q 75 115 135 115 L 320 115" stroke="#0F172A" stroke-width="3" fill="none"/>
       
       <!-- Green Turning Path Vector -->
-      <path d="M 40 220 L 40 130 Q 40 80 110 80 L 300 80" stroke="#059669" stroke-width="5" fill="none"/>
-      <polygon points="312,80 296,72 296,88" fill="#059669"/>
+      <path d="M 38 200 L 38 120 Q 38 75 105 75 L 300 75" stroke="#059669" stroke-width="5" fill="none"/>
+      <polygon points="312,75 296,67 296,83" fill="#059669"/>
 
       <!-- Blue Car on Curve -->
-      <g transform="translate(60, 105) rotate(45)">
-        <!-- Car Body -->
-        <rect x="-18" y="-30" width="36" height="60" rx="8" fill="#3B82F6" stroke="#1D4ED8" stroke-width="2"/>
-        <!-- Rear & Front Windshield -->
-        <rect x="-12" y="-12" width="24" height="18" rx="2" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
-        <rect x="-12" y="10" width="24" height="12" rx="2" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
-        <!-- Roof -->
-        <rect x="-10" y="-4" width="20" height="16" fill="#2563EB"/>
-        <!-- Wheels -->
-        <rect x="-22" y="-24" width="4" height="12" rx="2" fill="#0F172A"/>
-        <rect x="18" y="-24" width="4" height="12" rx="2" fill="#0F172A"/>
-        <rect x="-22" y="12" width="4" height="12" rx="2" fill="#0F172A"/>
-        <rect x="18" y="12" width="4" height="12" rx="2" fill="#0F172A"/>
+      <g transform="translate(62, 100) rotate(45)">
+        <rect x="-18" y="-28" width="36" height="56" rx="8" fill="#3B82F6" stroke="#1D4ED8" stroke-width="2"/>
+        <rect x="-12" y="-12" width="24" height="16" rx="2" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+        <rect x="-12" y="8" width="24" height="12" rx="2" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+        <rect x="-10" y="-4" width="20" height="14" fill="#2563EB"/>
+        <rect x="-21" y="-22" width="4" height="10" rx="2" fill="#0F172A"/>
+        <rect x="17" y="-22" width="4" height="10" rx="2" fill="#0F172A"/>
+        <rect x="-21" y="10" width="4" height="10" rx="2" fill="#0F172A"/>
+        <rect x="17" y="10" width="4" height="10" rx="2" fill="#0F172A"/>
       </g>
     </svg>
+    <div style="text-align:center;margin-top:6px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">1. CAR TURNING A CORNER</div>
+      <div style="font-size:10px;color:#475569;font-weight:700;margin-top:2px;">Tires push car inward; passenger inertia hits door</div>
+    </div>
   </div>`;
-  cell('vignette_1', v1Html, 40, 590, 350, 240, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('vignette_1', v1Html, 40, 575, 360, 260, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // Vignette 2: Swinging Ball on String / Pendulum (x=410..760)
-  const v2Html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;box-sizing:border-box;">
-    <svg viewBox="0 0 320 220" width="300" height="200">
+  // Vignette 2: Swinging Ball on String / Pendulum (x=420..775)
+  const v2Html = `<div style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <svg viewBox="0 0 320 200" width="300" height="180">
       <!-- Top Fixed Pivot -->
-      <line x1="140" y1="10" x2="180" y2="10" stroke="#000000" stroke-width="4"/>
-      <circle cx="160" cy="10" r="4" fill="#000000"/>
+      <line x1="130" y1="12" x2="190" y2="12" stroke="#0F172A" stroke-width="4"/>
+      <circle cx="160" cy="12" r="5" fill="#0F172A"/>
 
       <!-- Dashed Initial Position -->
-      <line x1="160" y1="10" x2="90" y2="130" stroke="#000000" stroke-width="2" stroke-dasharray="4 4"/>
-      <circle cx="90" cy="130" r="22" fill="#FCA5A5" stroke="#EF4444" stroke-width="2" stroke-dasharray="3 3"/>
+      <line x1="160" y1="12" x2="85" y2="125" stroke="#0F172A" stroke-width="2" stroke-dasharray="4 4"/>
+      <circle cx="85" cy="125" r="22" fill="#FCA5A5" stroke="#EF4444" stroke-width="2" stroke-dasharray="3 3"/>
 
       <!-- Curved Swing Path Arc -->
-      <path d="M 90 130 Q 130 170 170 170" stroke="#000000" stroke-width="2" stroke-dasharray="4 3" fill="none"/>
-      <!-- Swing Arrow -->
-      <polygon points="172,170 160,163 162,174" fill="#000000"/>
+      <path d="M 85 125 Q 125 165 160 165" stroke="#0F172A" stroke-width="2" stroke-dasharray="4 3" fill="none"/>
+      <polygon points="163,165 151,158 153,169" fill="#0F172A"/>
 
       <!-- Solid Current Position -->
-      <line x1="160" y1="10" x2="160" y2="170" stroke="#000000" stroke-width="3"/>
-      <circle cx="160" cy="170" r="24" fill="#DC2626" stroke="#000000" stroke-width="2.5"/>
+      <line x1="160" y1="12" x2="160" y2="160" stroke="#0F172A" stroke-width="3"/>
+      <circle cx="160" cy="160" r="24" fill="#DC2626" stroke="#0F172A" stroke-width="2.5"/>
     </svg>
+    <div style="text-align:center;margin-top:6px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">2. BALL ON A STRING</div>
+      <div style="font-size:10px;color:#475569;font-weight:700;margin-top:2px;">Rope tension pulls ball in; if cut, flies straight tangent</div>
+    </div>
   </div>`;
-  cell('vignette_2', v2Html, 410, 590, 350, 240, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('vignette_2', v2Html, 420, 575, 360, 260, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // Vignette 3: Washing Machine (x=780..1130)
-  const v3Html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;box-sizing:border-box;">
-    <svg viewBox="0 0 320 220" width="300" height="200">
+  // Vignette 3: Washing Machine (x=800..1155)
+  const v3Html = `<div style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <svg viewBox="0 0 320 200" width="300" height="180">
       <!-- Machine Outer Frame -->
-      <rect x="80" y="10" width="160" height="200" rx="10" fill="#F8FAFC" stroke="#000000" stroke-width="3"/>
+      <rect x="90" y="8" width="140" height="180" rx="10" fill="#F8FAFC" stroke="#0F172A" stroke-width="3"/>
       <!-- Top Control Panel Line -->
-      <line x1="80" y1="55" x2="240" y2="55" stroke="#000000" stroke-width="2.5"/>
+      <line x1="90" y1="48" x2="230" y2="48" stroke="#0F172A" stroke-width="2.5"/>
       <!-- Dial Knob -->
-      <circle cx="215" cy="32" r="10" fill="#E2E8F0" stroke="#000000" stroke-width="2"/>
-      <line x1="215" y1="32" x2="220" y2="26" stroke="#000000" stroke-width="2"/>
+      <circle cx="205" cy="28" r="9" fill="#E2E8F0" stroke="#0F172A" stroke-width="2"/>
+      <line x1="205" y1="28" x2="209" y2="23" stroke="#0F172A" stroke-width="2"/>
       <!-- Detergent Drawer -->
-      <rect x="100" y="24" width="45" height="18" rx="2" fill="#FFFFFF" stroke="#000000" stroke-width="1.5"/>
+      <rect x="106" y="20" width="40" height="16" rx="2" fill="#FFFFFF" stroke="#0F172A" stroke-width="1.5"/>
 
       <!-- Circular Outer Door Ring -->
-      <circle cx="160" cy="128" r="54" fill="#E2E8F0" stroke="#000000" stroke-width="3"/>
+      <circle cx="160" cy="116" r="48" fill="#E2E8F0" stroke="#0F172A" stroke-width="3"/>
       <!-- Glass Window -->
-      <circle cx="160" cy="128" r="44" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+      <circle cx="160" cy="116" r="39" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
       
       <!-- Water Waves inside Drum -->
-      <path d="M 125 136 Q 145 116 160 136 Q 175 156 195 136 Q 185 162 160 166 Q 135 162 125 136 Z" fill="#38BDF8" stroke="#0284C7" stroke-width="1.5"/>
-      <path d="M 132 144 Q 146 130 160 144 Q 174 158 188 144" stroke="#0369A1" stroke-width="2" fill="none"/>
+      <path d="M 130 122 Q 146 104 160 122 Q 174 140 190 122 Q 182 145 160 149 Q 138 145 130 122 Z" fill="#38BDF8" stroke="#0284C7" stroke-width="1.5"/>
+      <path d="M 136 130 Q 148 116 160 130 Q 172 144 184 130" stroke="#0369A1" stroke-width="2" fill="none"/>
     </svg>
+    <div style="text-align:center;margin-top:6px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">3. WASHING MACHINE SPIN</div>
+      <div style="font-size:10px;color:#475569;font-weight:700;margin-top:2px;">Drum wall pushes clothes in; water escapes out holes</div>
+    </div>
   </div>`;
-  cell('vignette_3', v3Html, 780, 590, 350, 240, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('vignette_3', v3Html, 800, 575, 360, 260, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // Vignette 4: Roller Coaster Loop (x=1150..1560)
-  const v4Html = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;box-sizing:border-box;">
-    <svg viewBox="0 0 380 220" width="360" height="200">
+  // Vignette 4: Roller Coaster Loop (x=1180..1560)
+  const v4Html = `<div style="background:#FFFFFF;border:1.5px solid #E2E8F0;border-radius:12px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+    <svg viewBox="0 0 380 200" width="360" height="180">
       <!-- Ground Support Base -->
-      <line x1="20" y1="195" x2="360" y2="195" stroke="#000000" stroke-width="3"/>
+      <line x1="20" y1="180" x2="360" y2="180" stroke="#0F172A" stroke-width="3"/>
 
       <!-- Vertical Support Trusses -->
-      <line x1="70" y1="195" x2="70" y2="120" stroke="#64748B" stroke-width="2"/>
-      <line x1="120" y1="195" x2="120" y2="70" stroke="#64748B" stroke-width="2"/>
-      <line x1="190" y1="195" x2="190" y2="20" stroke="#64748B" stroke-width="2.5"/>
-      <line x1="260" y1="195" x2="260" y2="70" stroke="#64748B" stroke-width="2"/>
-      <line x1="310" y1="195" x2="310" y2="120" stroke="#64748B" stroke-width="2"/>
+      <line x1="70" y1="180" x2="70" y2="110" stroke="#64748B" stroke-width="2"/>
+      <line x1="120" y1="180" x2="120" y2="65" stroke="#64748B" stroke-width="2"/>
+      <line x1="190" y1="180" x2="190" y2="18" stroke="#64748B" stroke-width="2.5"/>
+      <line x1="260" y1="180" x2="260" y2="65" stroke="#64748B" stroke-width="2"/>
+      <line x1="310" y1="180" x2="310" y2="110" stroke="#64748B" stroke-width="2"/>
 
       <!-- Cross Bracing Ties -->
-      <line x1="50" y1="195" x2="70" y2="140" stroke="#94A3B8" stroke-width="1.5"/>
-      <line x1="70" y1="140" x2="90" y2="195" stroke="#94A3B8" stroke-width="1.5"/>
-      <line x1="100" y1="195" x2="120" y2="100" stroke="#94A3B8" stroke-width="1.5"/>
-      <line x1="120" y1="100" x2="140" y2="195" stroke="#94A3B8" stroke-width="1.5"/>
-      <line x1="240" y1="195" x2="260" y2="100" stroke="#94A3B8" stroke-width="1.5"/>
-      <line x1="260" y1="100" x2="280" y2="195" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="50" y1="180" x2="70" y2="130" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="70" y1="130" x2="90" y2="180" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="100" y1="180" x2="120" y2="90" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="120" y1="90" x2="140" y2="180" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="240" y1="180" x2="260" y2="90" stroke="#94A3B8" stroke-width="1.5"/>
+      <line x1="260" y1="90" x2="280" y2="180" stroke="#94A3B8" stroke-width="1.5"/>
 
       <!-- Red Coaster Track Loop Curve -->
-      <path d="M 20 180 Q 70 180 100 120 Q 130 50 160 20 Q 190 0 220 20 Q 250 50 280 120 Q 310 180 360 180" stroke="#DC2626" stroke-width="4.5" fill="none"/>
-      <path d="M 20 186 Q 70 186 100 126 Q 130 56 160 26 Q 190 6 220 26 Q 250 56 280 126 Q 310 186 360 186" stroke="#991B1B" stroke-width="2" fill="none"/>
+      <path d="M 20 165 Q 70 165 100 110 Q 130 45 160 18 Q 190 0 220 18 Q 250 45 280 110 Q 310 165 360 165" stroke="#DC2626" stroke-width="4.5" fill="none"/>
+      <path d="M 20 171 Q 70 171 100 116 Q 130 51 160 24 Q 190 6 220 24 Q 250 51 280 116 Q 310 171 360 171" stroke="#991B1B" stroke-width="2" fill="none"/>
 
       <!-- Blue Coaster Cart Climbing Track -->
-      <g transform="translate(105, 105) rotate(-55)">
-        <rect x="-14" y="-8" width="28" height="16" rx="3" fill="#2563EB" stroke="#000000" stroke-width="1.5"/>
-        <circle cx="-8" cy="10" r="3.5" fill="#000000"/>
-        <circle cx="8" cy="10" r="3.5" fill="#000000"/>
-        <!-- Rider Head -->
+      <g transform="translate(105, 96) rotate(-55)">
+        <rect x="-14" y="-8" width="28" height="16" rx="3" fill="#2563EB" stroke="#0F172A" stroke-width="1.5"/>
+        <circle cx="-8" cy="10" r="3.5" fill="#0F172A"/>
+        <circle cx="8" cy="10" r="3.5" fill="#0F172A"/>
         <circle cx="0" cy="-2" r="3" fill="#FBBF24"/>
       </g>
     </svg>
+    <div style="text-align:center;margin-top:6px;">
+      <div style="font-size:13px;font-weight:900;color:#0F172A;">4. ROLLER COASTER LOOP</div>
+      <div style="font-size:10px;color:#475569;font-weight:700;margin-top:2px;">Track pushes inward; inertia presses rider into seat</div>
+    </div>
   </div>`;
-  cell('vignette_4', v4Html, 1150, 590, 390, 240, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('vignette_4', v4Html, 1180, 575, 360, 260, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="centripetal_vs_centrifugal" name="Centripetal vs Centrifugal Forces">
