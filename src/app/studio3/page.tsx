@@ -29,7 +29,9 @@ import {
   Play,
   RotateCcw,
   Link as LinkIcon,
-  Share2
+  Share2,
+  PlusCircle,
+  Plus
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
@@ -384,52 +386,58 @@ export default function Studio3Page() {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#060A14] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-200`}>
       {/* 1. TOP GLOBAL NAVIGATION & TELEMETRY HEADER */}
-      <header className={`sticky top-0 z-30 border-b backdrop-blur-md ${theme === 'dark' ? 'bg-[#0B111E]/90 border-slate-800/80 shadow-lg shadow-black/20' : 'bg-white/90 border-slate-200 shadow-sm'}`}>
+      <header className={`sticky top-0 z-30 border-b backdrop-blur-md ${theme === 'dark' ? 'bg-[#0B111E]/95 border-slate-800 shadow-lg shadow-black/20 text-slate-100' : 'bg-white/95 border-slate-200 shadow-sm text-slate-900'}`}>
         <div className="max-w-[1920px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           {/* Logo & Brand Block */}
           <div className="flex items-center gap-3">
             <Link href="/studio3" className="flex items-center gap-2 group">
-              <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Prompt<span className="text-blue-500">Canvas</span></span>
+              <span className={`text-xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Prompt<span className="text-blue-600">Canvas</span></span>
               <span className="px-2 py-0.5 text-[11px] font-black rounded-md bg-blue-600 text-white shadow-sm">Studio 3</span>
             </Link>
-            <div className="hidden xl:flex items-center gap-2 text-xs font-semibold text-slate-400 pl-3 border-l border-slate-700/60">
-              <span className="text-amber-400">✨</span>
+            <div className={`hidden xl:flex items-center gap-2 text-xs font-semibold pl-3 border-l ${theme === 'dark' ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-600'}`}>
+              <span className="text-amber-500">✨</span>
               <span>Zero Predefined Blueprints • Single-Session Generative Architecture Stage</span>
             </div>
           </div>
 
           {/* Abstraction Level Selector & Action Controls */}
           <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Prominent + New Diagram Button */}
+            <button
+              onClick={handleResetStage}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-md transition active:scale-95"
+              title="Start a fresh new diagram from scratch"
+            >
+              <PlusCircle className="w-3.5 h-3.5" />
+              <span>+ New Diagram</span>
+            </button>
+
             {/* Shareable Unique Link & ID Badge */}
             {diagramId && (
               <button
                 onClick={handleCopyShareLink}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-blue-950/90 hover:bg-blue-900 border border-blue-500/60 text-blue-200 transition shadow-sm"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-sm ${
+                  theme === 'dark'
+                    ? 'bg-blue-950/90 hover:bg-blue-900 border border-blue-500/60 text-blue-200'
+                    : 'bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-700 font-bold'
+                }`}
                 title="Click to copy unique shareable link"
               >
-                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <LinkIcon className="w-3.5 h-3.5 text-blue-400" />}
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <LinkIcon className="w-3.5 h-3.5 text-blue-600" />}
                 <span>{copiedLink ? 'Copied Link!' : `ID: ${diagramId.slice(0, 8)}...`}</span>
-              </button>
-            )}
-
-            {/* Reset Stage Button */}
-            {currentXml && (
-              <button
-                onClick={handleResetStage}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"
-                title="Reset stage and clear session"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Reset</span>
               </button>
             )}
 
             {/* Live Logs Indicator */}
             <button
               onClick={() => setActiveTab('logs')}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition hover:bg-slate-800 shadow-sm"
+              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition shadow-sm ${
+                theme === 'dark'
+                  ? 'bg-slate-900 text-cyan-300 border border-cyan-500/40 hover:bg-slate-800'
+                  : 'bg-slate-100 text-cyan-800 border border-slate-300 hover:bg-slate-200'
+              }`}
             >
-              <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+              <Terminal className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
               <span>Gemini: {allLogs.length} Events</span>
             </button>
 
@@ -437,23 +445,33 @@ export default function Studio3Page() {
             {currentQuality && (
               <button
                 onClick={() => setActiveTab('quality')}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-black transition hover:bg-emerald-900 shadow-sm"
+                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-sm ${
+                  theme === 'dark'
+                    ? 'bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-900'
+                    : 'bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100'
+                }`}
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>{currentQuality.overallScore}/100</span>
               </button>
             )}
 
             {/* Abstraction Level Chips */}
-            <div className="hidden lg:flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-700/80 text-xs">
+            <div className={`hidden lg:flex items-center p-1 rounded-xl border text-xs ${
+              theme === 'dark'
+                ? 'bg-slate-900/90 border-slate-700/80'
+                : 'bg-slate-100 border-slate-300'
+            }`}>
               {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
                 <button
                   key={lvl}
                   onClick={() => handleOverrideAbstraction(lvl)}
-                  className={`px-3 py-1.5 rounded-lg font-bold capitalize transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-black capitalize transition-all ${
                     selectedAbstraction === lvl
                       ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      : theme === 'dark'
+                      ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                   }`}
                 >
                   {lvl} View
@@ -462,27 +480,35 @@ export default function Studio3Page() {
             </div>
 
             {/* Navigation to other studios */}
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-              <Link href="/" className="px-2.5 py-1 rounded hover:bg-slate-800 hover:text-white transition">Studio 1</Link>
-              <Link href="/studio2" className="px-2.5 py-1 rounded hover:bg-slate-800 hover:text-white transition">Studio 2</Link>
+            <div className={`flex items-center gap-2 text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+              <Link href="/" className={`px-2.5 py-1 rounded transition ${theme === 'dark' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-slate-200 hover:text-slate-900'}`}>Studio 1</Link>
+              <Link href="/studio2" className={`px-2.5 py-1 rounded transition ${theme === 'dark' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-slate-200 hover:text-slate-900'}`}>Studio 2</Link>
             </div>
 
             {/* Theme Switcher */}
             <button
               onClick={() => setTheme(t => (t === 'light' ? 'dark' : 'light'))}
-              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
-              title="Toggle theme"
+              className={`p-2 rounded-lg border transition ${
+                theme === 'dark'
+                  ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                  : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+              }`}
+              title="Toggle light/dark canvas theme"
             >
-              {theme === 'light' ? <Moon className="w-4 h-4 text-slate-200" /> : <Sun className="w-4 h-4 text-amber-400" />}
+              {theme === 'light' ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
             </button>
 
             {/* Export & Edit Buttons */}
             <button
               onClick={handleCopyXml}
               disabled={!currentXml}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 transition disabled:opacity-40"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition disabled:opacity-40 ${
+                theme === 'dark'
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-100 border-slate-600'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+              }`}
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied XML' : 'Copy XML'}</span>
             </button>
 
@@ -501,31 +527,49 @@ export default function Studio3Page() {
       {/* 2. MAIN PROPORTIONAL WORKSPACE: 30% CHATBOX & 70% CANVAS STAGE */}
       <main className="w-full max-w-[1920px] mx-auto px-4 md:px-6 py-4 flex flex-col lg:flex-row gap-5 h-[calc(100vh-76px)]">
         {/* LEFT PANE: CONVERSATIONAL CHAT & INTENT CONTROLLER (30% WIDTH) */}
-        <div className={`w-full lg:w-[30%] min-w-[320px] max-w-[480px] flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-200 bg-white shadow-md'} overflow-hidden`}>
+        <div className={`w-full lg:w-[30%] min-w-[320px] max-w-[480px] flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-300 bg-white shadow-md'} overflow-hidden`}>
           {/* Header */}
-          <div className={`p-3.5 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50'} flex items-center justify-between`}>
+          <div className={`p-3.5 border-b flex items-center justify-between ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-slate-100'}`}>
             <div className="flex items-center gap-2">
-              <Clapperboard className="w-4 h-4 text-blue-500" />
-              <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+              <Clapperboard className="w-4 h-4 text-blue-600" />
+              <span className={`text-xs font-black uppercase tracking-wider ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
                 Architecture Director
               </span>
             </div>
-            {currentIntent && (
-              <span className="text-[10.5px] font-black px-2 py-0.5 rounded-md bg-blue-900/80 border border-blue-600 text-blue-200 uppercase tracking-wide">
-                {currentIntent.abstractionLevel}
-              </span>
-            )}
+            <div className="flex items-center gap-2">
+              {currentIntent && (
+                <span className="text-[10.5px] font-black px-2 py-0.5 rounded-md bg-blue-600 text-white uppercase tracking-wide">
+                  {currentIntent.abstractionLevel}
+                </span>
+              )}
+              <button
+                onClick={handleResetStage}
+                className={`text-[10.5px] font-bold px-2 py-0.5 rounded border transition flex items-center gap-1 ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                    : 'bg-white hover:bg-slate-200 text-slate-800 border-slate-300'
+                }`}
+                title="Clear and start new"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>New</span>
+              </button>
+            </div>
           </div>
 
           {/* Quick Starter Chips */}
-          <div className={`px-3 py-2 border-b ${theme === 'dark' ? 'border-slate-800/80 bg-slate-950/60' : 'border-slate-100 bg-slate-50/60'} flex items-center gap-1.5 overflow-x-auto text-[11px]`}>
-            <span className="text-slate-400 font-bold whitespace-nowrap text-[10.5px]">Starters:</span>
+          <div className={`px-3 py-2 border-b flex items-center gap-1.5 overflow-x-auto text-[11px] ${theme === 'dark' ? 'border-slate-800 bg-slate-950/60' : 'border-slate-200 bg-slate-50'}`}>
+            <span className={`font-bold whitespace-nowrap text-[10.5px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>Starters:</span>
             {STARTER_PROMPTS.map((sp, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSynthesize(sp.prompt, sp.abstraction)}
                 disabled={loading}
-                className="whitespace-nowrap px-2.5 py-1 rounded-md bg-slate-900 hover:bg-blue-900/60 hover:text-white text-slate-300 border border-slate-700/80 transition text-[10.5px] font-medium"
+                className={`whitespace-nowrap px-2.5 py-1 rounded-md border transition text-[10.5px] font-bold shadow-xs ${
+                  theme === 'dark'
+                    ? 'bg-slate-900 hover:bg-blue-900 hover:text-white text-slate-300 border-slate-700'
+                    : 'bg-white hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 text-slate-800 border-slate-300'
+                }`}
               >
                 {sp.title}
               </button>
@@ -533,7 +577,7 @@ export default function Studio3Page() {
           </div>
 
           {/* Messages Scroll Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className={`flex-1 overflow-y-auto p-4 space-y-4 ${theme === 'dark' ? 'bg-[#0B111E]' : 'bg-slate-50/50'}`}>
             {messages.map(msg => (
               <div
                 key={msg.id}
@@ -542,16 +586,16 @@ export default function Studio3Page() {
                 <div
                   className={`max-w-[90%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none shadow-md font-medium'
+                      ? 'bg-blue-600 text-white rounded-br-none shadow-md font-bold'
                       : theme === 'dark'
-                      ? 'bg-slate-900 text-slate-100 border border-slate-700/80 rounded-bl-none shadow-sm'
-                      : 'bg-slate-100 text-slate-900 border border-slate-200 rounded-bl-none'
+                      ? 'bg-slate-900 text-slate-100 border border-slate-700/80 rounded-bl-none shadow-sm font-medium'
+                      : 'bg-white text-slate-900 border border-slate-300 rounded-bl-none shadow-sm font-medium'
                   }`}
                 >
                   <div className="whitespace-pre-wrap">
                     {msg.content.split(/(\*\*.*?\*\*)/g).map((part, i) => {
                       if (part.startsWith('**') && part.endsWith('**')) {
-                        return <strong key={i} className="font-black text-sky-300">{part.slice(2, -2)}</strong>;
+                        return <strong key={i} className={`font-black ${theme === 'dark' ? 'text-sky-300' : 'text-blue-700'}`}>{part.slice(2, -2)}</strong>;
                       }
                       return part;
                     })}
@@ -559,15 +603,15 @@ export default function Studio3Page() {
 
                   {/* Inline Telemetry Snippet (Collapsible Accordion) */}
                   {msg.logs && msg.logs.length > 0 && (
-                    <details className="mt-2.5 pt-2 border-t border-slate-700/60 text-[10.5px] font-mono group">
-                      <summary className="cursor-pointer text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5 select-none py-1 font-bold">
-                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                    <details className={`mt-2.5 pt-2 border-t text-[10.5px] font-mono group ${theme === 'dark' ? 'border-slate-700' : 'border-slate-200'}`}>
+                      <summary className={`cursor-pointer flex items-center gap-1.5 select-none py-1 font-bold ${theme === 'dark' ? 'text-cyan-300 hover:text-cyan-200' : 'text-cyan-800 hover:text-cyan-900'}`}>
+                        <Terminal className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                         <span>⚡ View Gemini Trace ({msg.logs.length} events)</span>
                       </summary>
-                      <div className="mt-2 space-y-1.5 bg-black/70 p-2.5 rounded-lg border border-slate-800">
+                      <div className="mt-2 space-y-1.5 bg-black/90 p-2.5 rounded-lg border border-slate-800 text-slate-100">
                         {msg.logs.map(l => (
                           <div key={l.id} className="flex items-center gap-1.5 text-cyan-300">
-                            <span className="text-slate-500">[{l.timestamp}]</span>
+                            <span className="text-slate-400">[{l.timestamp}]</span>
                             <span className="font-bold uppercase text-[9px] px-1 rounded bg-slate-800 border border-slate-700 text-amber-300">{l.stage}</span>
                             <span className="truncate">{l.message}</span>
                           </div>
@@ -576,14 +620,18 @@ export default function Studio3Page() {
                     </details>
                   )}
                 </div>
-                <span className="text-[10px] text-slate-500 mt-1 px-1">{msg.timestamp}</span>
+                <span className={`text-[10px] mt-1 px-1 font-semibold ${theme === 'dark' ? 'text-slate-500' : 'text-slate-500'}`}>{msg.timestamp}</span>
               </div>
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-blue-400 p-3 bg-blue-950/40 rounded-xl border border-blue-800 font-mono">
-                <RefreshCw className="w-4 h-4 animate-spin text-blue-400" />
-                <span>[Stage Director] Synthesizing first-principles architecture...</span>
+              <div className={`flex items-center gap-2 text-xs p-3 rounded-xl border font-mono ${
+                theme === 'dark'
+                  ? 'text-blue-400 bg-blue-950/40 border-blue-800'
+                  : 'text-blue-800 bg-blue-50 border-blue-300'
+              }`}>
+                <RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
+                <span className="font-bold">[Stage Director] Synthesizing first-principles architecture...</span>
               </div>
             )}
             <div ref={chatEndRef} />
@@ -591,12 +639,14 @@ export default function Studio3Page() {
 
           {/* Active Intent Status Bar */}
           {currentIntent && (
-            <div className={`p-3 border-t ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-blue-50/40'} text-xs`}>
+            <div className={`p-3 border-t text-xs ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-200 bg-slate-100'}`}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10.5px] font-black text-slate-400 uppercase tracking-wider">
-                  Active Mode: <span className="text-blue-400">{currentIntent.abstractionLevel}</span>
+                <span className={`text-[10.5px] font-black uppercase tracking-wider ${theme === 'dark' ? 'text-slate-400' : 'text-slate-700'}`}>
+                  Active Mode: <span className="text-blue-600 font-bold">{currentIntent.abstractionLevel}</span>
                 </span>
-                <span className="text-[10px] text-slate-400 font-semibold">{(currentIntent.bands || []).length} Bands • {currentGraph?.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones</span>
+                <span className={`text-[10px] font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                  {(currentIntent.bands || []).length} Bands • {currentGraph?.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
@@ -606,7 +656,9 @@ export default function Studio3Page() {
                     className={`text-[10px] font-bold px-2 py-1 rounded border transition capitalize ${
                       selectedAbstraction === lvl
                         ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                        : theme === 'dark'
+                        ? 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                        : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-200 hover:text-slate-900'
                     }`}
                   >
                     {lvl}
@@ -631,12 +683,16 @@ export default function Studio3Page() {
                 onChange={e => setPromptInput(e.target.value)}
                 placeholder="Describe your system or expand the active diagram..."
                 disabled={loading}
-                className="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
+                className={`flex-1 rounded-xl px-3.5 py-2.5 text-xs transition font-medium focus:outline-none ${
+                  theme === 'dark'
+                    ? 'bg-slate-950 border border-slate-700/80 text-white placeholder-slate-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500'
+                    : 'bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 shadow-inner'
+                }`}
               />
               <button
                 type="submit"
                 disabled={!promptInput.trim() || loading}
-                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition disabled:opacity-40 flex items-center justify-center shadow-md"
+                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition disabled:opacity-40 flex items-center justify-center shadow-md active:scale-95"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -645,16 +701,18 @@ export default function Studio3Page() {
         </div>
 
         {/* RIGHT PANE: PRE-SHOW CURTAIN STAGE & DRAW.IO VIEWPORT (70% WIDTH) */}
-        <div className={`w-full lg:w-[70%] flex-1 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-200 bg-white shadow-md'} overflow-hidden`}>
+        <div className={`w-full lg:w-[70%] flex-1 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-300 bg-white shadow-md'} overflow-hidden`}>
           {/* Canvas Header */}
-          <div className={`p-3 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50'} flex items-center justify-between`}>
+          <div className={`p-3 border-b flex items-center justify-between ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-200 bg-slate-100'}`}>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveTab('canvas')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'canvas'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : theme === 'dark'
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200 font-bold'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -665,10 +723,12 @@ export default function Studio3Page() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'logs'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : theme === 'dark'
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200 font-bold'
                 }`}
               >
-                <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                <Terminal className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
                 <span>Gemini Logs ({allLogs.length})</span>
               </button>
               <button
@@ -676,10 +736,12 @@ export default function Studio3Page() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'quality'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : theme === 'dark'
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200 font-bold'
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Quality Gate</span>
               </button>
               <button
@@ -687,7 +749,9 @@ export default function Studio3Page() {
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'xml'
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : theme === 'dark'
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200 font-bold'
                 }`}
               >
                 <Code className="w-3.5 h-3.5" />
@@ -695,16 +759,16 @@ export default function Studio3Page() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-400 font-mono text-[11px]">
+            <div className={`flex items-center gap-2 text-xs font-mono text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
               {currentXml ? '16:9 • 1600x1000px' : 'STAGE CURTAIN CLOSED'}
             </div>
           </div>
 
           {/* Canvas Display Area */}
-          <div className="flex-1 relative overflow-hidden bg-slate-950 flex items-center justify-center p-3">
+          <div className={`flex-1 relative overflow-hidden flex items-center justify-center p-3 ${theme === 'dark' ? 'bg-slate-950' : 'bg-slate-100'}`}>
             {/* Draw.io Canvas View OR Pre-Show Curtain Stage */}
             {activeTab === 'canvas' && (
-              <div className="w-full h-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner relative flex items-center justify-center">
+              <div className={`w-full h-full rounded-xl overflow-hidden border shadow-inner relative flex items-center justify-center ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-300 bg-white'}`}>
                 {currentXml ? (
                   <DiagramViewerRenderSafe
                     xml={currentXml}
