@@ -162,106 +162,118 @@ export function generateGenericConceptualRoadmap(
   const cleanTitle = (prompt || 'CONCEPTUAL LEARNING ROADMAP').toUpperCase();
 
   // 0. CLASSICAL MECHANICS: CENTRIPETAL VS CENTRIFUGAL FORCES & ROTATING FRAMES
-  if (p.includes('centripetal') || p.includes('centrifugal') || (p.includes('circular') && p.includes('motion')) || p.includes('coriolis') || p.includes('rotating frame')) {
+  if (p.includes('centripetal') || p.includes('centrifugal') || (p.includes('circular') && p.includes('motion')) || p.includes('coriolis') || p.includes('rotating frame') || p.includes('5th') || p.includes('6 yr') || p.includes('kid')) {
+    const isKid = p.includes('6 yr') || p.includes('kid') || p.includes('5th') || p.includes('child') || p.includes('simple');
     return {
-      title: 'CENTRIPETAL VS. CENTRIFUGAL FORCES: INERTIAL & ROTATING REFERENCE FRAMES',
-      subtitle: 'Kinematics, Fictitious Inertial Forces, Rotating Coordinate Transformations & Circular Dynamics',
+      title: isKid
+        ? 'SPINNING FORCES: CENTRIPETAL VS. CENTRIFUGAL FORCES EXPLAINED'
+        : 'CENTRIPETAL VS. CENTRIFUGAL FORCES: INERTIAL & ROTATING REFERENCE FRAMES',
+      subtitle: isKid
+        ? 'Understanding Why Things Spin, Why You Feel Pushed Outward & How Inertia Works in Everyday Life'
+        : 'Kinematics, Fictitious Inertial Forces, Rotating Coordinate Transformations & Circular Dynamics',
       milestones: [
-        { title: '🔄 CIRCULAR MOTION INTUITION', color: 'blue', icon: '🔄' },
-        { title: 'KINEMATICS & DYNAMICS', color: 'green', icon: '📐' },
-        { title: 'REFERENCE FRAME TAXONOMY', color: 'orange', icon: '⚖️' },
-        { title: '🔬 MODERN SCIENTIFIC FRONTIERS 🌐', color: 'yellow', icon: '🚀' }
+        { title: isKid ? '🎠 SPINNING INTUITION' : '🔄 CIRCULAR MOTION INTUITION', color: 'blue', icon: '🔄' },
+        { title: isKid ? '🎈 INERTIA & WHY OBJECTS FLY' : 'KINEMATICS & DYNAMICS', color: 'green', icon: '📐' },
+        { title: isKid ? '🎢 EVERYDAY SPINNING EXAMPLES' : 'REFERENCE FRAME TAXONOMY', color: 'orange', icon: '⚖️' },
+        { title: isKid ? '🚀 SPACE & ROLLER COASTERS 🌐' : '🔬 MODERN SCIENTIFIC FRONTIERS 🌐', color: 'yellow', icon: '🚀' }
       ],
       section1Analogy: {
-        title: 'The Rotating Carousel & Tetherball Analogy',
+        title: isKid ? 'The Spinning Bucket & Carousel Analogy' : 'The Rotating Carousel & Tetherball Analogy',
         actors: [
-          { id: 'ground', name: 'Ground Observer (Inertial Frame)', avatar: '🧍', x: 50, y: 170 },
-          { id: 'pivot', name: 'Center Pivot / Axis', avatar: '🎯', x: 170, y: 220 },
-          { id: 'rider', name: 'Rotating Observer (Carousel Rider)', avatar: '🎠', x: 290, y: 170 }
+          { id: 'ground', name: isKid ? 'Friend on Ground (Watching)' : 'Ground Observer (Inertial Frame)', avatar: '🧍', x: 50, y: 170 },
+          { id: 'pivot', name: isKid ? 'Center Pole / Your Hand' : 'Center Pivot / Axis', avatar: '🎯', x: 170, y: 220 },
+          { id: 'rider', name: isKid ? 'You (Riding Carousel / Swinging Bucket)' : 'Rotating Observer (Carousel Rider)', avatar: '🎠', x: 290, y: 170 }
         ],
         relations: [
-          { from: 'rider', to: 'pivot', label: 'Real Centripetal Tension T' },
-          { from: 'ground', to: 'rider', label: 'Views Circular Trajectory' }
+          { from: 'rider', to: 'pivot', label: isKid ? 'Inward Pull (String Tension)' : 'Real Centripetal Tension T' },
+          { from: 'ground', to: 'rider', label: isKid ? 'Watches You Go in a Circle' : 'Views Circular Trajectory' }
         ],
         legend: [
-          { icon: '🎯', label: 'Center Axis' },
-          { icon: '➡️', label: 'Real Inward Force (Fc)' },
-          { icon: '⬅️', label: 'Apparent Outward Push' },
-          { icon: '⚖️', label: 'Inertial Reference Frame' }
+          { icon: '🎯', label: 'Center Pivot' },
+          { icon: '➡️', label: 'Real Inward Pull' },
+          { icon: '⬅️', label: 'Apparent Outward Feeling' },
+          { icon: '⚖️', label: 'Inertia (Straight Line)' }
         ],
-        challengeCallout: "The Challenge: Differentiating Real Forces (Newton's 3rd Law) from Non-Inertial Fictitious Forces"
+        challengeCallout: isKid
+          ? "The Big Secret: There is NO outward force! Your body wants to go STRAIGHT, but the seat pulls you IN!"
+          : "The Challenge: Differentiating Real Forces (Newton's 3rd Law) from Non-Inertial Fictitious Forces"
       },
       section2Prerequisites: {
-        title: 'Kinematics & Frame Transformation Physics',
+        title: isKid ? 'The Science Rules of Spinning' : 'Kinematics & Frame Transformation Physics',
         mathFormulas: [
-          { name: 'Centripetal Force & Acceleration', formula: 'F_c = m · a_c = m · (v² / r) = m · ω² r  (Radially Inward)', icon: '📐' },
-          { name: 'Rotating Frame Equation of Motion', formula: 'F_eff = F_real - m A_0 - m ω×(ω×r) - 2m(ω×v_rot)', icon: '🔄' },
-          { name: 'Centrifugal Fictitious Term', formula: 'F_centrifugal = m · ω² r  (Apparent Outward Push)', icon: '⚡' }
+          { name: isKid ? 'Inward Centripetal Force' : 'Centripetal Force & Acceleration', formula: 'F_c = m · (v² / r)  (Pull towards center)', icon: '📐' },
+          { name: isKid ? "Newton's First Law (Inertia)" : 'Rotating Frame Equation of Motion', formula: 'Objects keep moving in a straight line unless pulled!', icon: '🔄' },
+          { name: isKid ? 'The Outward Feeling (Centrifugal)' : 'Centrifugal Fictitious Term', formula: 'F_centrifugal = m · ω² r  (The apparent push you feel)', icon: '⚡' }
         ],
         checklist: [
-          "☑ Inertial Frame: Only Real Forces Exist (Tension, Gravity, Friction; ∑F = ma)",
-          "☑ Non-Inertial Rotating Frame: D'Alembert Inertial Centrifugal Force Added",
-          '☑ Coriolis Force Term: F_cor = -2m(ω × v_rel) for Moving Bodies in Rotating Frames'
+          isKid ? '☑ Faster speed (v) means WAY more inward force needed (v²)' : "☑ Inertial Frame: Only Real Forces Exist (Tension, Gravity, Friction; ∑F = ma)",
+          isKid ? '☑ Tighter turn (smaller radius r) means stronger pull needed' : "☑ Non-Inertial Rotating Frame: D'Alembert Inertial Centrifugal Force Added",
+          isKid ? '☑ If you let go of the string, the ball flies STRAIGHT, not outward!' : '☑ Coriolis Force Term: F_cor = -2m(ω × v_rel) for Moving Bodies in Rotating Frames'
         ]
       },
       section3Taxonomy: {
-        title: 'Reference Frame & Dynamics Taxonomy',
+        title: isKid ? '4 Real-Life Spinning Examples' : 'Reference Frame & Dynamics Taxonomy',
         variants: [
-          { name: 'INERTIAL FRAME (GROUND)', subtext: "Newton's Laws Hold • Pure Inward F_c", diagramType: 'directed' },
-          { name: 'ROTATING FRAME (NON-INERTIAL)', subtext: 'Accelerating Frame • Apparent Outward F_cf', diagramType: 'nodes' },
-          { name: 'BANKED CURVES & ROADS', subtext: 'Normal Force Tilt • v = √(r g tan θ)', diagramType: 'layers' },
-          { name: 'ARTIFICIAL GRAVITY HABITAT', subtext: 'Rotating Hull • g_eff = ω² R', diagramType: 'weighted' }
+          { name: 'SWINGING BALL ON STRING', subtext: isKid ? 'String pulls inward • Ball circles' : "Newton's Laws Hold • Pure Inward F_c", diagramType: 'directed' },
+          { name: 'CAR TURNING A CORNER', subtext: isKid ? 'Tires push car in • You slide out' : 'Accelerating Frame • Apparent Outward F_cf', diagramType: 'nodes' },
+          { name: 'SPINNING CLOTHES DRYER', subtext: isKid ? 'Drum pushes clothes • Water flies through holes' : 'Normal Force Tilt • v = √(r g tan θ)', diagramType: 'layers' },
+          { name: 'MERRY-GO-ROUND / ROLLER COASTER', subtext: isKid ? 'Hold on tight! Inward pull keeps you on' : 'Rotating Hull • g_eff = ω² R', diagramType: 'weighted' }
         ]
       },
       section4ModernFrontiers: {
-        title: 'Modern Engineering & Astrophysical Applications',
+        title: isKid ? 'Cool Real-World Inventions' : 'Modern Engineering & Astrophysical Applications',
         knowledgeGraphNodes: [
-          { id: 'kg_cent', label: 'Ultra\nCentrifuges', color: '#38BDF8' },
-          { id: 'kg_atm', label: 'Atmospheric\nCyclones', color: '#F59E0B' },
-          { id: 'kg_space', label: 'Space Habitat\nGravity', color: '#10B981' },
-          { id: 'kg_gyro', label: 'MEMS\nGyroscopes', color: '#A855F7' }
+          { id: 'kg_cent', label: isKid ? 'Hospital\nCentrifuge' : 'Ultra\nCentrifuges', color: '#38BDF8' },
+          { id: 'kg_atm', label: isKid ? 'Spinning\nHurricanes' : 'Atmospheric\nCyclones', color: '#F59E0B' },
+          { id: 'kg_space', label: isKid ? 'Space Station\nGravity' : 'Space Habitat\nGravity', color: '#10B981' },
+          { id: 'kg_gyro', label: isKid ? 'Phone Motion\nSensors' : 'MEMS\nGyroscopes', color: '#A855F7' }
         ],
         frameworkBullets: [
-          '🔬 • Analytical Ultracentrifugation (Isotope & DNA Density Gradient Separation)',
-          '🌪️ • Atmospheric Geostrophic Wind Balance & Cyclonic Vortex Formation',
-          '🚀 • Rotating O\'Neill Cylinders for Deep-Space Interplanetary Habitats'
+          isKid ? '🔬 • Medical Centrifuges spinning blood at 10,000 RPM to separate plasma' : '🔬 • Analytical Ultracentrifugation (Isotope & DNA Density Gradient Separation)',
+          isKid ? '🌪️ • Giant swirling hurricanes powered by Earth spinning underneath' : '🌪️ • Atmospheric Geostrophic Wind Balance & Cyclonic Vortex Formation',
+          isKid ? '🚀 • Giant rotating space wheels that create fake gravity for astronauts!' : '🚀 • Rotating O\'Neill Cylinders for Deep-Space Interplanetary Habitats'
         ]
       },
       bottomWorkflow: {
-        title: 'CIRCULAR MOTION & DYNAMICS ANALYSIS PIPELINE',
+        title: isKid ? 'HOW SPINNING FORCES WORK STEP-BY-STEP' : 'CIRCULAR MOTION & DYNAMICS ANALYSIS PIPELINE',
         step1Problem: {
-          title: 'STEP 1: Coordinate System Setup',
-          subtitle: 'Define Reference Frame & Motion Parameters',
+          title: isKid ? 'STEP 1: Pick Your Spinning Object' : 'STEP 1: Coordinate System Setup',
+          subtitle: isKid ? 'Mass (m), Circle Size (r), Speed (v)' : 'Define Reference Frame & Motion Parameters',
           icon: '🎯 🔄',
-          formula: 'Radius r, Tangential Speed v = ω r, Mass m',
-          bullets: ['• Choose reference frame: Ground Inertial vs. Co-Rotating', '• Identify physical force origins (Tension, Gravity, Friction, Normal)']
+          formula: 'Speed v, Radius r, Mass m',
+          bullets: [
+            isKid ? '• The heavier the object, the harder you must pull inward' : '• Choose reference frame: Ground Inertial vs. Co-Rotating',
+            isKid ? '• The faster it spins, the force multiplies by speed squared (v²)' : '• Identify physical force origins (Tension, Gravity, Friction, Normal)'
+          ]
         },
         step2Execution: {
-          title: 'STEP 2: Free-Body Diagram (FBD) Resolution',
-          input: 'Force Vectors Acting on Mass m',
+          title: isKid ? 'STEP 2: The Inward Pull (Centripetal)' : 'STEP 2: Free-Body Diagram (FBD) Resolution',
+          input: isKid ? 'Inward Force Vectors' : 'Force Vectors Acting on Mass m',
           phases: [
-            { name: '1. Radial Vector Resolution', desc: 'Sum real physical inward components: ∑ F_r = T + f_s + mg sin θ' },
-            { name: '2. Tangential & Vertical Balance', desc: 'Ensure orthogonal equilibrium: ∑ F_z = 0 (Normal vs Gravity)' },
-            { name: '3. Speed Limit Calculation', desc: 'Determine max speed before slip: v_max = √(μ_s g r)' }
+            { name: isKid ? '1. Grip / String / Friction Holds On' : '1. Radial Vector Resolution', desc: isKid ? 'Provides the real inward force pulling towards center' : 'Sum real physical inward components: ∑ F_r = T + f_s + mg sin θ' },
+            { name: isKid ? '2. Path Bends into a Circle' : '2. Tangential & Vertical Balance', desc: isKid ? 'Continuous inward tug prevents object from flying straight' : 'Ensure orthogonal equilibrium: ∑ F_z = 0 (Normal vs Gravity)' },
+            { name: isKid ? '3. What if the String Snaps?' : '3. Speed Limit Calculation', desc: isKid ? 'Object flies off in a straight tangent line!' : 'Determine max speed before slip: v_max = √(μ_s g r)' }
           ]
         },
         step3Engine: {
-          title: 'STEP 3: Frame Transformation Engine',
-          subtitle: 'Inertial vs. Non-Inertial Mathematical Equivalence',
+          title: isKid ? 'STEP 3: The Two Ways to View It' : 'STEP 3: Frame Transformation Engine',
+          subtitle: isKid ? 'Standing Outside vs. Riding Inside' : 'Inertial vs. Non-Inertial Mathematical Equivalence',
           engines: [
-            { name: 'INERTIAL OBSERVER ENGINE', complexity: '∑ F_radial = m v²/r', items: ['Real inward acceleration causes continuous direction change', 'No outward force exists in free-body diagram'] },
-            { name: 'CO-ROTATING OBSERVER ENGINE', complexity: '∑ F_radial - m ω² r = 0', items: ['Object appears stationary; centrifugal force balances inward tension', 'Valid only inside non-inertial accelerating reference frame'] }
+            { name: isKid ? 'PERSON ON THE GROUND' : 'INERTIAL OBSERVER ENGINE', complexity: isKid ? 'Sees Real Physics' : '∑ F_radial = m v²/r', items: [isKid ? 'Sees the string pulling the ball inward every millisecond' : 'Real inward acceleration causes continuous direction change', isKid ? 'Knows there is NO mysterious outward pushing force' : 'No outward force exists in free-body diagram'] },
+            { name: isKid ? 'PERSON RIDING INSIDE' : 'CO-ROTATING OBSERVER ENGINE', complexity: isKid ? 'Feels Fake Push' : '∑ F_radial - m ω² r = 0', items: [isKid ? 'Feels pushed against the door because their body wants to go straight' : 'Object appears stationary; centrifugal force balances inward tension', isKid ? 'Calls this feeling "Centrifugal Force" (an inertia illusion)' : 'Valid only inside non-inertial accelerating reference frame'] }
           ],
-          callout: '⚡ Both Frames Predict Identical Physical Measurements & String Tension'
+          callout: isKid ? '⚡ Both Views Agree: You Must Hold On Tight To Stay In The Circle!' : '⚡ Both Frames Predict Identical Physical Measurements & String Tension'
         },
         step4Applications: [
-          { title: 'Automotive Safety', subtitle: 'Banked Highway Turns', icon: '🚗', detail: 'Frictionless speed limit' },
-          { title: 'Medical Centrifuges', subtitle: 'Blood Plasma Separation', icon: '🧪', detail: '10,000+ g sedimentation' },
-          { title: 'Orbital Satellites', subtitle: 'Geostationary Orbits', icon: '🛰️', detail: 'Gravity = Centripetal force' },
-          { title: 'Roller Coasters', subtitle: 'Clothoid Inversion Loops', icon: '🎢', detail: 'Smooth g-force transition' }
+          { title: isKid ? 'Roller Coaster Loops' : 'Automotive Safety', subtitle: isKid ? 'Tear-Drop Clothoid Loops' : 'Banked Highway Turns', icon: '🎢', detail: isKid ? 'Keeps you in your seat even upside down!' : 'Frictionless speed limit' },
+          { title: isKid ? 'Washing Machine Dryer' : 'Medical Centrifuges', subtitle: isKid ? 'Spin Cycle Drying' : 'Blood Plasma Separation', icon: '🌀', detail: isKid ? 'Water flies through holes while clothes stay in' : '10,000+ g sedimentation' },
+          { title: isKid ? 'Car Highway Turn' : 'Orbital Satellites', subtitle: isKid ? 'Banked Curve Safety' : 'Geostationary Orbits', icon: '🚗', detail: isKid ? 'Tilted road helps tires push car inward' : 'Gravity = Centripetal force' },
+          { title: isKid ? 'Artificial Gravity Space Station' : 'Space Station Habitat', subtitle: isKid ? 'Sci-Fi Spinning Ring' : 'Rotating Space Wheel', icon: '🛰️', detail: isKid ? 'Spinning creates fake gravity for astronauts!' : 'Smooth g-force transition' }
         ]
       },
-      footerTenets: ['FRAME DEPENDENCE IS MATHEMATICAL', 'PHYSICAL INVARIANTS ARE ABSOLUTE', 'NET FORCE DIRECTS ACCELERATION']
+      footerTenets: isKid
+        ? ['INERTIA WANTS STRAIGHT LINES', 'CENTRIPETAL PULLS INWARD', 'CENTRIFUGAL IS THE INERTIA YOU FEEL']
+        : ['FRAME DEPENDENCE IS MATHEMATICAL', 'PHYSICAL INVARIANTS ARE ABSOLUTE', 'NET FORCE DIRECTS ACCELERATION']
     };
   }
 
@@ -1372,6 +1384,15 @@ JSON Schema:
     const rawText = response.text || '';
     const fallbackGraph = generateDynamicFirstPrinciplesGraph(prompt, intent);
     const parsed = parseJsonSafely<Studio3SemanticGraph>(rawText, fallbackGraph);
+
+    // If conceptual abstraction level is requested, guarantee a conceptualRoadmap is populated
+    if (
+      (intent.abstractionLevel === 'conceptual' || parsed.layoutType === 'conceptual_roadmap') &&
+      !parsed.conceptualRoadmap
+    ) {
+      parsed.conceptualRoadmap = fallbackGraph.conceptualRoadmap || generateGenericConceptualRoadmap(prompt, intent);
+      parsed.layoutType = 'conceptual_roadmap';
+    }
 
     // Run semantic post-processor & auto-enricher to guarantee 100% icon & item completeness
     const enriched = enrichAndSanitizeSemanticGraph(parsed, intent);

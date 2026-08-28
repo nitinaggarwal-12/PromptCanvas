@@ -1,4 +1,4 @@
-import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage, Studio3ConceptualRoadmap } from './graphExtractor';
+import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage, Studio3ConceptualRoadmap, Studio3FreeformElement } from './graphExtractor';
 import { renderGcpIconHtml } from '../gcpIcons';
 import { generateTemplate51GraphTheoryLearningRoadmapXml } from '../canonical/template51GraphTheoryLearningRoadmap';
 
@@ -339,6 +339,211 @@ export function renderUniversalConceptualRoadmapXml(
 </mxfile>`;
 }
 
+/**
+ * 2D Non-Colliding Geometric Layout Solver for Freeform Elements
+ * Prevents overlapping nodes, auto-spaces concept tiers, and organizes full-width comparative diagrams
+ */
+export function autoSolveFreeformElements(
+  elements: Studio3FreeformElement[],
+  canvasWidth = 1600,
+  canvasHeight = 1000
+): Studio3FreeformElement[] {
+  if (!elements || elements.length === 0) return [];
+  const clones = elements.map(e => ({ ...e }));
+
+  // Check for 2-column comparative / dichotomy structure (e.g. Centripetal vs Centrifugal)
+  const leftGroup: Studio3FreeformElement[] = [];
+  const rightGroup: Studio3FreeformElement[] = [];
+  let topCoordinator: Studio3FreeformElement | null = null;
+  let bottomDistinction: Studio3FreeformElement | null = null;
+
+  const promptOrNames = clones.map(e => e.name.toLowerCase()).join(' ');
+  const isComparative = (
+    promptOrNames.includes('centripetal') && promptOrNames.includes('centrifugal')
+  ) || (
+    clones.filter(e => e.name.toLowerCase().includes(' vs ') || e.name.toLowerCase().includes('comparison')).length > 0
+  );
+
+  if (isComparative) {
+    clones.forEach(e => {
+      const name = e.name.toLowerCase();
+      if (name.includes('object') || name.includes('circular motion') || name.includes('context') || name.includes('system') || e.id === 'top_context') {
+        topCoordinator = e;
+      } else if (name.includes('distinction') || name.includes('key distinction') || name.includes('summary') || name.includes('conclusion')) {
+        bottomDistinction = e;
+      } else if (name.includes('centripetal') || name.includes('inertial') || name.includes('left') || e.color === 'blue') {
+        leftGroup.push(e);
+      } else {
+        rightGroup.push(e);
+      }
+    });
+
+    if (leftGroup.length > 0 && rightGroup.length > 0) {
+      // 1. Position Top Coordinator Card
+      const startY = topCoordinator ? 220 : 120;
+      if (topCoordinator) {
+        (topCoordinator as Studio3FreeformElement).w = 640;
+        (topCoordinator as Studio3FreeformElement).h = 90;
+        (topCoordinator as Studio3FreeformElement).x = Math.floor((canvasWidth - 640) / 2);
+        (topCoordinator as Studio3FreeformElement).y = 110;
+      }
+
+      // 2. Position Left Column Elements
+      const leftColW = 680;
+      const leftColX = 80;
+      let leftY = startY;
+      leftGroup.forEach(elem => {
+        if (elem.shape === 'circle') {
+          elem.w = 180;
+          elem.h = 70;
+          elem.x = leftColX + Math.floor((leftColW - 180) / 2);
+          elem.y = leftY;
+          leftY += 85;
+        } else {
+          elem.w = leftColW;
+          elem.h = elem.details && elem.details.length > 3 ? 280 : 200;
+          elem.x = leftColX;
+          elem.y = leftY;
+          leftY += elem.h + 20;
+        }
+      });
+
+      // 3. Position Right Column Elements
+      const rightColW = 680;
+      const rightColX = 840;
+      let rightY = startY;
+      rightGroup.forEach(elem => {
+        if (elem.shape === 'circle') {
+          elem.w = 180;
+          elem.h = 70;
+          elem.x = rightColX + Math.floor((rightColW - 180) / 2);
+          elem.y = rightY;
+          rightY += 85;
+        } else {
+          elem.w = rightColW;
+          elem.h = elem.details && elem.details.length > 3 ? 280 : 200;
+          elem.x = rightColX;
+          elem.y = rightY;
+          rightY += elem.h + 20;
+        }
+      });
+
+      // 4. Position Bottom Key Distinction Card
+      if (bottomDistinction) {
+        const maxY = Math.max(leftY, rightY);
+        (bottomDistinction as Studio3FreeformElement).w = 840;
+        (bottomDistinction as Studio3FreeformElement).h = 95;
+        (bottomDistinction as Studio3FreeformElement).x = Math.floor((canvasWidth - 840) / 2);
+        (bottomDistinction as Studio3FreeformElement).y = Math.min(880, Math.max(760, maxY + 15));
+      }
+
+      return clones;
+    }
+  }
+
+  // Standard Multi-Tier Layout (When not comparative)
+  const bottomCards = clones.filter(e => (e.shape === 'rectangle' && (e.details && e.details.length > 0)) || e.y >= 480);
+  const otherElems = clones.filter(e => !bottomCards.includes(e));
+
+  const topEntities = otherElems.filter(e => (e.y < 340 && e.id !== 'focus' && !e.name.toLowerCase().includes('object in circular')) || otherElems.length <= 3);
+  const middleFocus = otherElems.filter(e => !topEntities.includes(e));
+
+  // 1. Arrange Top Tier Elements (Non-overlapping, evenly spaced horizontally)
+  if (topEntities.length > 0) {
+    const K = topEntities.length;
+    const gap = 30;
+    const maxW = Math.min(280, Math.floor((canvasWidth - 120 - (K - 1) * gap) / K));
+    const totalW = K * maxW + (K - 1) * gap;
+    const startX = Math.floor((canvasWidth - totalW) / 2);
+
+    topEntities.forEach((elem, idx) => {
+      elem.w = elem.shape === 'circle' ? Math.min(140, maxW) : maxW;
+      elem.h = elem.shape === 'circle' ? elem.w : Math.min(220, elem.h || 180);
+      elem.x = startX + idx * (maxW + gap) + (maxW - elem.w) / 2;
+      elem.y = 130 + (elem.shape === 'circle' ? 20 : 0);
+    });
+  }
+
+  // 2. Arrange Middle Focus Elements (Centered, ample vertical clearance)
+  if (middleFocus.length > 0) {
+    const M = middleFocus.length;
+    const gap = 40;
+    const totalW = middleFocus.reduce((acc, e) => acc + (e.w || 150), 0) + (M - 1) * gap;
+    let curX = Math.floor((canvasWidth - totalW) / 2);
+
+    middleFocus.forEach((elem) => {
+      elem.w = elem.w || (elem.shape === 'circle' ? 150 : 260);
+      elem.h = elem.h || (elem.shape === 'circle' ? 150 : 160);
+      elem.x = curX;
+      elem.y = 355;
+      curX += elem.w + gap;
+    });
+  }
+
+  // 3. Arrange Bottom Application Cards (Equal columns, beautiful symmetry)
+  if (bottomCards.length > 0) {
+    const N = bottomCards.length;
+    const gap = 20;
+    const paddingX = 60;
+    const availableW = canvasWidth - paddingX * 2;
+    const colW = Math.min(360, Math.floor((availableW - (N - 1) * gap) / N));
+    const totalRowW = N * colW + (N - 1) * gap;
+    const startX = Math.floor((canvasWidth - totalRowW) / 2);
+
+    bottomCards.forEach((elem, idx) => {
+      elem.w = colW;
+      elem.h = 320;
+      elem.x = startX + idx * (colW + gap);
+      elem.y = 540;
+    });
+  }
+
+  // 4. Final 2D AABB Collision Check & Box Pushing (Zero Tolerance for Overlaps)
+  for (let iter = 0; iter < 15; iter++) {
+    let hadCollision = false;
+    for (let i = 0; i < clones.length; i++) {
+      for (let j = i + 1; j < clones.length; j++) {
+        const a = clones[i];
+        const b = clones[j];
+        const pad = 24;
+        if (
+          a.x < b.x + b.w + pad &&
+          a.x + a.w + pad > b.x &&
+          a.y < b.y + b.h + pad &&
+          a.y + a.h + pad > b.y
+        ) {
+          hadCollision = true;
+          // Separate on shortest axis
+          const overlapX = Math.min(a.x + a.w + pad - b.x, b.x + b.w + pad - a.x);
+          const overlapY = Math.min(a.y + a.h + pad - b.y, b.y + b.h + pad - a.y);
+          if (overlapX < overlapY) {
+            if (a.x < b.x) {
+              b.x = a.x + a.w + pad;
+            } else {
+              a.x = b.x + b.w + pad;
+            }
+          } else {
+            if (a.y < b.y) {
+              b.y = a.y + a.h + pad;
+            } else {
+              a.y = b.y + b.h + pad;
+            }
+          }
+        }
+      }
+    }
+    if (!hadCollision) break;
+  }
+
+  // Clamp within canvas boundaries
+  clones.forEach(elem => {
+    elem.x = Math.max(40, Math.min(canvasWidth - elem.w - 40, elem.x));
+    elem.y = Math.max(115, Math.min(canvasHeight - elem.h - 60, elem.y));
+  });
+
+  return clones;
+}
+
 export function solveAndRenderStudio3Xml(
   graph: Studio3SemanticGraph,
   options: LayoutOptions = {}
@@ -414,7 +619,8 @@ export function solveAndRenderStudio3Xml(
 
   // 2. Freeform Layout Engine (Direct Visual Graph Drawing without boxed columns)
   if (graph?.freeformElements && graph.freeformElements.length > 0) {
-    graph.freeformElements.forEach(elem => {
+    const solvedElements = autoSolveFreeformElements(graph.freeformElements, canvasWidth, canvasHeight);
+    solvedElements.forEach(elem => {
       const colorKey = String(elem.color || 'blue').trim().toLowerCase();
       const elemColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
       cardCoordinates[elem.id] = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
@@ -445,17 +651,17 @@ export function solveAndRenderStudio3Xml(
           <table style="width:100%;border-collapse:collapse;margin-bottom:8px;text-align:center;font-family:monospace;font-size:11px;background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:6px;overflow:hidden;">
             ${matrixHeaders.length > 0 ? `<tr style="background:${isDark ? '#1E293B' : '#E2E8F0'};color:${textPrimary};font-weight:bold;">
               <th style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};"></th>
-              ${matrixHeaders.map(h => `<th style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};">${escapeXml(h)}</th>`).join('')}
+              ${matrixHeaders.map((h: string) => `<th style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};">${escapeXml(h)}</th>`).join('')}
             </tr>` : ''}
-            ${matrixData.map((row, rIdx) => `<tr style="color:${textPrimary};">
+            ${matrixData.map((row: string[], rIdx: number) => `<tr style="color:${textPrimary};">
               ${matrixHeaders.length > 0 ? `<td style="padding:4px;font-weight:bold;background:${isDark ? '#1E293B' : '#E2E8F0'};border:1px solid ${isDark ? '#334155' : '#CBD5E1'};">${escapeXml(matrixHeaders[rIdx] || `R${rIdx}`)}</td>` : ''}
-              ${row.map(cell => `<td style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};font-weight:${cell !== '0' ? '800' : 'normal'};color:${cell !== '0' ? (isDark ? '#38BDF8' : '#2563EB') : (isDark ? '#64748B' : '#94A3B8')};">${escapeXml(cell)}</td>`).join('')}
+              ${row.map((cell: string) => `<td style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};font-weight:${cell !== '0' ? '800' : 'normal'};color:${cell !== '0' ? (isDark ? '#38BDF8' : '#2563EB') : (isDark ? '#64748B' : '#94A3B8')};">${escapeXml(cell)}</td>`).join('')}
             </tr>`).join('')}
           </table>`;
 
         if (elem.details && elem.details.length > 0) {
           matrixHtml += `<ul style="margin:0;padding-left:14px;color:${textSecondary};font-size:10px;line-height:1.35;flex-grow:1;">
-            ${elem.details.map(d => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
+            ${elem.details.map((d: string) => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
           </ul>`;
         }
         matrixHtml += `</div>`;
@@ -474,7 +680,7 @@ export function solveAndRenderStudio3Xml(
 
         if (elem.details && elem.details.length > 0) {
           formulaHtml += `<ul style="margin:0;padding-left:14px;color:${textSecondary};font-size:10px;line-height:1.35;flex-grow:1;">
-            ${elem.details.map(d => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
+            ${elem.details.map((d: string) => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
           </ul>`;
         }
         formulaHtml += `</div>`;
@@ -499,7 +705,7 @@ export function solveAndRenderStudio3Xml(
         }
         if (elem.details && elem.details.length > 0) {
           rectHtml += `<ul style="margin:0;padding-left:16px;color:${textSecondary};font-size:10.5px;line-height:1.4;flex-grow:1;">
-            ${elem.details.map(d => `<li style="margin-bottom:4px;">${escapeXml(d)}</li>`).join('')}
+            ${elem.details.map((d: string) => `<li style="margin-bottom:4px;">${escapeXml(d)}</li>`).join('')}
           </ul>`;
         }
         rectHtml += `</div></div>`;
@@ -809,10 +1015,10 @@ export function solveAndRenderStudio3Xml(
         const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${strokeColor};strokeWidth=${strokeWidth};dashed=${dashed};${dashPattern}${labelPillStyle}`;
 
         addCell(`
-          <mxCell id="${cellId++}" value="${escapeXml(conn.label || '')}" style="${edgeStyle}" edge="1" parent="1">
+          <mxCell id="${cellId++}" value="${escapeXml(conn.label || '')}" style="${edgeStyle}" edge="1" parent="1" source="${conn.fromId}" target="${conn.toId}">
             <mxGeometry relative="1" as="geometry">
-              <mxPoint x="${fromGeom.x + fromGeom.w}" y="${fromGeom.y + fromGeom.h / 2}" as="sourcePoint"/>
-              <mxPoint x="${toGeom.x}" y="${toGeom.y + toGeom.h / 2}" as="targetPoint"/>
+              <mxPoint x="${fromGeom.x + fromGeom.w / 2}" y="${fromGeom.y + fromGeom.h / 2}" as="sourcePoint"/>
+              <mxPoint x="${toGeom.x + toGeom.w / 2}" y="${toGeom.y + toGeom.h / 2}" as="targetPoint"/>
             </mxGeometry>
           </mxCell>
         `);
