@@ -7,9 +7,10 @@ export interface LayoutOptions {
   canvasHeight?: number;
 }
 
-function escapeXml(str: string): string {
+function escapeXml(str: any): string {
   if (!str) return '';
-  return str
+  const s = String(str);
+  return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -17,13 +18,17 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;');
 }
 
-const COLOR_MAP = {
+const COLOR_MAP: Record<string, { bg: string; text: string; lightBg: string; border: string }> = {
   blue: { bg: '#1D4ED8', text: '#FFFFFF', lightBg: '#EFF6FF', border: '#93C5FD' },
   teal: { bg: '#0D9488', text: '#FFFFFF', lightBg: '#F0FDFA', border: '#99F6E4' },
   purple: { bg: '#7C3AED', text: '#FFFFFF', lightBg: '#FAF5FF', border: '#D8B4FE' },
   slate: { bg: '#475569', text: '#FFFFFF', lightBg: '#F8FAFC', border: '#CBD5E1' },
   amber: { bg: '#D97706', text: '#FFFFFF', lightBg: '#FFFBEB', border: '#FDE68A' },
-  emerald: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#A7F3D0' }
+  emerald: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#A7F3D0' },
+  green: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#A7F3D0' },
+  indigo: { bg: '#4338CA', text: '#FFFFFF', lightBg: '#EEF2FF', border: '#C7D2FE' },
+  cyan: { bg: '#0891B2', text: '#FFFFFF', lightBg: '#ECFEFF', border: '#A5F3FC' },
+  red: { bg: '#DC2626', text: '#FFFFFF', lightBg: '#FEF2F2', border: '#FECACA' }
 };
 
 export function solveAndRenderStudio3Xml(
@@ -49,6 +54,11 @@ export function solveAndRenderStudio3Xml(
     return cellXml;
   };
 
+  // Safe strings
+  const graphTitle = graph?.title || 'System Architecture';
+  const graphSubtitle = graph?.subtitle || 'Synthesized Architecture';
+  const abstractionLabel = (graph?.abstractionLevel || 'logical').toUpperCase();
+
   // 1. Header Banner
   const headerX = 40;
   const headerY = 30;
@@ -59,13 +69,13 @@ export function solveAndRenderStudio3Xml(
     <div style="display:flex;align-items:center;gap:16px;">
       <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🏛️</div>
       <div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;">${escapeXml(graph.title)}</div>
-        <div style="font-size:11px;opacity:0.9;font-weight:400;margin-top:2px;">${escapeXml(graph.subtitle)}</div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;">${escapeXml(graphTitle)}</div>
+        <div style="font-size:11px;opacity:0.9;font-weight:400;margin-top:2px;">${escapeXml(graphSubtitle)}</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
       <div style="background:rgba(255,255,255,0.2);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.3);">
-        ${graph.abstractionLevel.toUpperCase()} VIEW
+        ${abstractionLabel} VIEW
       </div>
       <div style="background:#FFFFFF;color:#1E40AF;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.03em;">
         STUDIO 3 GENERATIVE
@@ -80,12 +90,14 @@ export function solveAndRenderStudio3Xml(
   `);
 
   // 2. Bands Layout
-  const numBands = graph.bands.length;
+  const bands = graph?.bands || [];
+  const numBands = Math.max(1, bands.length);
   let bandY = 110;
   const totalBandsHeight = 780;
+  const calculatedBandH = Math.floor((totalBandsHeight - 20 * (numBands - 1)) / numBands);
 
-  graph.bands.forEach((band, bandIndex) => {
-    let bandH = numBands === 1 ? totalBandsHeight : bandIndex === 0 ? 440 : 330;
+  bands.forEach((band, bandIndex) => {
+    const bandH = calculatedBandH;
     const bandX = 40;
     const bandW = 1520;
 
@@ -96,8 +108,8 @@ export function solveAndRenderStudio3Xml(
       </mxCell>
     `);
 
-    // Render Band Content based on type
-    if (band.type === 'columns' && band.columns && band.columns.length > 0) {
+    // Render Columns
+    if (band.columns && band.columns.length > 0) {
       const numCols = band.columns.length;
       const colGap = 16;
       const innerPadding = 18;
@@ -107,7 +119,8 @@ export function solveAndRenderStudio3Xml(
         const colX = bandX + innerPadding + colIndex * (colW + colGap);
         const colY = bandY + innerPadding;
         const colH = bandH - innerPadding * 2;
-        const colColor = COLOR_MAP[col.headerColor] || COLOR_MAP.blue;
+        const colorKey = (col.headerColor || 'blue').toLowerCase();
+        const colColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
 
         // Column Box
         addCell(`
@@ -116,9 +129,9 @@ export function solveAndRenderStudio3Xml(
           </mxCell>
         `);
 
-        // Column Chevron Header
+        // Column Header
         const colHeaderHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${colColor.bg};color:${colColor.text};font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;border-top-left-radius:6px;border-top-right-radius:6px;">
-          ${escapeXml(col.header)}
+          ${escapeXml(col.header || 'TIER')}
         </div>`;
 
         addCell(`
@@ -128,20 +141,21 @@ export function solveAndRenderStudio3Xml(
         `);
 
         // Column Cards
+        const cards = col.cards || [];
         let cardY = colY + 44;
         const availableCardSpace = colH - 52 - (col.footerNote ? 28 : 0);
-        const numCards = col.cards.length;
+        const numCards = Math.max(1, cards.length);
         const cardGap = 10;
-        const cardH = (availableCardSpace - cardGap * (numCards - 1)) / numCards;
+        const cardH = Math.max(60, (availableCardSpace - cardGap * (numCards - 1)) / numCards);
 
-        col.cards.forEach(card => {
+        cards.forEach(card => {
           const cardX = colX + 12;
           const currentCardW = colW - 24;
 
           let cardContentHtml = `<div style="padding:10px 12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
               ${card.iconKey ? renderGcpIconHtml(card.iconKey, 20) : '<div>📦</div>'}
-              <div style="font-size:11.5px;font-weight:700;color:${textPrimary};line-height:1.2;">${escapeXml(card.title)}</div>
+              <div style="font-size:11.5px;font-weight:700;color:${textPrimary};line-height:1.2;">${escapeXml(card.title || 'Component')}</div>
               ${card.badge ? `<span style="margin-left:auto;background:#EF4444;color:#FFF;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;">${escapeXml(card.badge)}</span>` : ''}
             </div>`;
 
@@ -178,7 +192,7 @@ export function solveAndRenderStudio3Xml(
           `);
         }
       });
-    } else if (band.type === 'pipeline' && band.pipelineStages && band.pipelineStages.length > 0) {
+    } else if (band.pipelineStages && band.pipelineStages.length > 0) {
       // Horizontal Workflow Pipeline
       const numStages = band.pipelineStages.length;
       const stageGap = 16;
@@ -189,7 +203,8 @@ export function solveAndRenderStudio3Xml(
         const stageX = bandX + innerPadding + sIndex * (stageW + stageGap);
         const stageY = bandY + innerPadding;
         const stageH = bandH - innerPadding * 2;
-        const stageColor = COLOR_MAP[stage.color] || COLOR_MAP.blue;
+        const colorKey = (stage.color || 'blue').toLowerCase();
+        const stageColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
 
         // Stage Container Box
         addCell(`
@@ -200,37 +215,39 @@ export function solveAndRenderStudio3Xml(
 
         // Stage Chevron Header with Step Badge ❶..❹
         const stepIcons = ['❶', '❷', '❸', '❹', '❺', '❻'];
-        const stepBadge = stepIcons[stage.stepNumber - 1] || `${stage.stepNumber}.`;
+        const stepBadge = stepIcons[(stage.stepNumber || 1) - 1] || `${stage.stepNumber || 1}.`;
 
         const stageHeaderHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 12px;width:100%;height:100%;background:${stageColor.bg};color:${stageColor.text};font-weight:800;font-size:11.5px;letter-spacing:0.03em;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;">
           <span style="font-size:14px;">${stepBadge}</span>
           <div style="line-height:1.1;">
-            <div>${escapeXml(stage.title)}</div>
+            <div>${escapeXml(stage.title || 'Stage')}</div>
             ${stage.subtitle ? `<div style="font-size:8.5px;font-weight:400;opacity:0.9;">${escapeXml(stage.subtitle)}</div>` : ''}
           </div>
         </div>`;
 
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(stageHeaderHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-            <mxGeometry x="${stageX}" y="${stageY}" width="${stageW}" height="38" as="geometry"/>
+            <mxGeometry x="${stageX}" y="${stageY}" width="${stageW}" height="${stageH < 180 ? 28 : 38}" as="geometry"/>
           </mxCell>
         `);
 
         // Stage Nodes
-        let nodeY = stageY + 46;
-        const availableNodeSpace = stageH - 56;
-        const numNodes = stage.nodes.length;
+        const nodes = stage.nodes || [];
+        const headerOffset = stageH < 180 ? 34 : 46;
+        let nodeY = stageY + headerOffset;
+        const availableNodeSpace = stageH - headerOffset - 10;
+        const numNodes = Math.max(1, nodes.length);
         const nodeGap = 8;
-        const nodeH = (availableNodeSpace - nodeGap * (numNodes - 1)) / numNodes;
+        const nodeH = Math.max(40, (availableNodeSpace - nodeGap * (numNodes - 1)) / numNodes);
 
-        stage.nodes.forEach(node => {
+        nodes.forEach(node => {
           const nodeX = stageX + 12;
           const currentStageNodeW = stageW - 24;
 
           const nodeHtml = `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;height:100%;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;">
             ${node.iconKey ? renderGcpIconHtml(node.iconKey, 24) : '<div>⚙️</div>'}
             <div style="line-height:1.25;">
-              <div style="font-size:11px;font-weight:700;color:${textPrimary};">${escapeXml(node.name)}</div>
+              <div style="font-size:11px;font-weight:700;color:${textPrimary};">${escapeXml(node.name || 'Service')}</div>
               ${node.role ? `<div style="font-size:9px;color:${textSecondary};margin-top:2px;">${escapeXml(node.role)}</div>` : ''}
             </div>
           </div>`;
@@ -255,7 +272,7 @@ export function solveAndRenderStudio3Xml(
   const footerW = 1520;
   const footerH = 45;
 
-  const tenetsString = graph.tenets && graph.tenets.length > 0
+  const tenetsString = graph?.tenets && graph.tenets.length > 0
     ? graph.tenets.join('  |  ')
     : 'PRODUCER INDEPENDENCE  |  CONSUMER INDEPENDENCE  |  FORMAT, NOT PLATFORM';
 
@@ -276,7 +293,7 @@ export function solveAndRenderStudio3Xml(
   `);
 
   return `<mxfile host="embed.diagrams.net">
-  <diagram id="studio3_diagram" name="${escapeXml(graph.title)}">
+  <diagram id="studio3_diagram" name="${escapeXml(graphTitle)}">
     <mxGraphModel dx="${canvasWidth}" dy="${canvasHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${canvasWidth}" pageHeight="${canvasHeight}" background="${bgCanvas}" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
