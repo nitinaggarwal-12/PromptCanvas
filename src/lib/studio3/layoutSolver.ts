@@ -90,24 +90,125 @@ export function solveAndRenderStudio3Xml(
     </mxCell>
   `);
 
-  // 2. Bands Layout
-  const bands = graph?.bands || [];
-  const numBands = Math.max(1, bands.length);
-  let bandY = 110;
-  const totalBandsHeight = 780;
-  const calculatedBandH = Math.floor((totalBandsHeight - 20 * (numBands - 1)) / numBands);
+  // 2. Freeform Layout Engine (Direct Visual Graph Drawing without boxed columns)
+  if (graph?.freeformElements && graph.freeformElements.length > 0) {
+    graph.freeformElements.forEach(elem => {
+      const colorKey = String(elem.color || 'blue').trim().toLowerCase();
+      const elemColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
+      cardCoordinates[elem.id] = { x: elem.x, y: elem.y, w: elem.w, h: elem.h };
 
-  bands.forEach((band, bandIndex) => {
-    const bandH = calculatedBandH;
-    const bandX = 40;
-    const bandW = 1520;
+      // Shape A: Circular Vertex / Node
+      if (elem.shape === 'circle') {
+        const circleHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;color:#FFFFFF;text-align:center;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;padding:6px;">
+          <div style="font-weight:900;font-size:14px;letter-spacing:0.02em;">${escapeXml(elem.name)}</div>
+          ${elem.subLabel ? `<div style="font-size:9px;opacity:0.92;margin-top:2px;font-weight:600;line-height:1.2;">${escapeXml(elem.subLabel)}</div>` : ''}
+        </div>`;
 
-    // Band Container Outer Box
-    addCell(`
-      <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${containerBg};strokeColor=${containerBorder};strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
-        <mxGeometry x="${bandX}" y="${bandY}" width="${bandW}" height="${bandH}" as="geometry"/>
-      </mxCell>
-    `);
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(circleHtml)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=${elemColor.bg};strokeColor=${elemColor.border};strokeWidth=2.5;shadow=1;" vertex="1" parent="1">
+            <mxGeometry x="${elem.x}" y="${elem.y}" width="${elem.w}" height="${elem.h}" as="geometry"/>
+          </mxCell>
+        `);
+      }
+      // Shape B: 2D Matrix Grid
+      else if (elem.shape === 'matrix') {
+        const matrixHeaders = elem.matrixHeaders || [];
+        const matrixData = elem.matrixData || [];
+
+        let matrixHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;background:${cardBg};border-radius:10px;border:1px solid ${cardBorder};">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-size:11.5px;font-weight:900;color:${isDark ? '#38BDF8' : '#1D4ED8'};text-transform:uppercase;letter-spacing:0.04em;">🔢 ${escapeXml(elem.name)}</div>
+            ${elem.badge ? `<span style="background:#2563EB;color:#FFF;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:800;">${escapeXml(elem.badge)}</span>` : ''}
+          </div>
+          <table style="width:100%;border-collapse:collapse;margin-bottom:8px;text-align:center;font-family:monospace;font-size:11px;background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:6px;overflow:hidden;">
+            ${matrixHeaders.length > 0 ? `<tr style="background:${isDark ? '#1E293B' : '#E2E8F0'};color:${textPrimary};font-weight:bold;">
+              <th style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};"></th>
+              ${matrixHeaders.map(h => `<th style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};">${escapeXml(h)}</th>`).join('')}
+            </tr>` : ''}
+            ${matrixData.map((row, rIdx) => `<tr style="color:${textPrimary};">
+              ${matrixHeaders.length > 0 ? `<td style="padding:4px;font-weight:bold;background:${isDark ? '#1E293B' : '#E2E8F0'};border:1px solid ${isDark ? '#334155' : '#CBD5E1'};">${escapeXml(matrixHeaders[rIdx] || `R${rIdx}`)}</td>` : ''}
+              ${row.map(cell => `<td style="padding:4px;border:1px solid ${isDark ? '#334155' : '#CBD5E1'};font-weight:${cell !== '0' ? '800' : 'normal'};color:${cell !== '0' ? (isDark ? '#38BDF8' : '#2563EB') : (isDark ? '#64748B' : '#94A3B8')};">${escapeXml(cell)}</td>`).join('')}
+            </tr>`).join('')}
+          </table>`;
+
+        if (elem.details && elem.details.length > 0) {
+          matrixHtml += `<ul style="margin:0;padding-left:14px;color:${textSecondary};font-size:10px;line-height:1.35;flex-grow:1;">
+            ${elem.details.map(d => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
+          </ul>`;
+        }
+        matrixHtml += `</div>`;
+
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(matrixHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cardBg};strokeColor=${cardBorder};shadow=0;" vertex="1" parent="1">
+            <mxGeometry x="${elem.x}" y="${elem.y}" width="${elem.w}" height="${elem.h}" as="geometry"/>
+          </mxCell>
+        `);
+      }
+      // Shape C: Formula & Theorem Block
+      else if (elem.shape === 'formula') {
+        let formulaHtml = `<div style="padding:12px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;background:${cardBg};border-radius:10px;border:1px solid ${cardBorder};">
+          <div style="font-size:11.5px;font-weight:900;color:${isDark ? '#F59E0B' : '#D97706'};margin-bottom:8px;text-transform:uppercase;letter-spacing:0.04em;">📐 ${escapeXml(elem.name)}</div>
+          ${elem.formula ? `<pre style="margin:0 0 8px 0;background:${isDark ? '#050914' : '#FFFBEB'};color:${isDark ? '#FCD34D' : '#92400E'};padding:8px 10px;border-radius:6px;font-size:10.5px;font-family:monospace;font-weight:bold;line-height:1.45;border:1px solid ${isDark ? '#1E293B' : '#FCD34D'};white-space:pre-wrap;">${escapeXml(elem.formula)}</pre>` : ''}`;
+
+        if (elem.details && elem.details.length > 0) {
+          formulaHtml += `<ul style="margin:0;padding-left:14px;color:${textSecondary};font-size:10px;line-height:1.35;flex-grow:1;">
+            ${elem.details.map(d => `<li style="margin-bottom:2px;">${escapeXml(d)}</li>`).join('')}
+          </ul>`;
+        }
+        formulaHtml += `</div>`;
+
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(formulaHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cardBg};strokeColor=${cardBorder};shadow=0;" vertex="1" parent="1">
+            <mxGeometry x="${elem.x}" y="${elem.y}" width="${elem.w}" height="${elem.h}" as="geometry"/>
+          </mxCell>
+        `);
+      }
+      // Shape D: Rectangular Process / Engine Card
+      else {
+        let rectHtml = `<div style="display:flex;flex-direction:column;height:100%;box-sizing:border-box;background:${cardBg};border-radius:10px;border:1px solid ${elemColor.border};overflow:hidden;">
+          <div style="background:${elemColor.bg};color:#FFFFFF;padding:7px 12px;font-weight:800;font-size:11.5px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;letter-spacing:0.03em;">
+            <span>${escapeXml(elem.name)}</span>
+            ${elem.badge ? `<span style="background:rgba(255,255,255,0.22);padding:1.5px 7px;border-radius:10px;font-size:9.5px;font-weight:700;">${escapeXml(elem.badge)}</span>` : ''}
+          </div>
+          <div style="padding:10px 12px;display:flex;flex-direction:column;flex-grow:1;justify-content:flex-start;">`;
+
+        if (elem.codeSnippet) {
+          rectHtml += `<pre style="margin:0 0 6px 0;background:#050914;color:#38BDF8;padding:6px 8px;border-radius:5px;font-size:9.5px;font-family:monospace;line-height:1.35;white-space:pre-wrap;border:1px solid #1E293B;">${escapeXml(elem.codeSnippet)}</pre>`;
+        }
+        if (elem.details && elem.details.length > 0) {
+          rectHtml += `<ul style="margin:0;padding-left:16px;color:${textSecondary};font-size:10.5px;line-height:1.4;flex-grow:1;">
+            ${elem.details.map(d => `<li style="margin-bottom:4px;">${escapeXml(d)}</li>`).join('')}
+          </ul>`;
+        }
+        rectHtml += `</div></div>`;
+
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(rectHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cardBg};strokeColor=${elemColor.border};shadow=0;" vertex="1" parent="1">
+            <mxGeometry x="${elem.x}" y="${elem.y}" width="${elem.w}" height="${elem.h}" as="geometry"/>
+          </mxCell>
+        `);
+      }
+    });
+  }
+  // 3. Bands Layout (When standard structured architecture is requested)
+  else {
+    const bands = graph?.bands || [];
+    const numBands = Math.max(1, bands.length);
+    let bandY = 110;
+    const totalBandsHeight = 780;
+    const calculatedBandH = Math.floor((totalBandsHeight - 20 * (numBands - 1)) / numBands);
+
+    bands.forEach((band, bandIndex) => {
+      const bandH = calculatedBandH;
+      const bandX = 40;
+      const bandW = 1520;
+
+      // Band Container Outer Box
+      addCell(`
+        <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${containerBg};strokeColor=${containerBorder};strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="${bandX}" y="${bandY}" width="${bandW}" height="${bandH}" as="geometry"/>
+        </mxCell>
+      `);
 
     // A. Columns Band
     if (band.columns && band.columns.length > 0) {
@@ -348,6 +449,7 @@ export function solveAndRenderStudio3Xml(
 
     bandY += bandH + 20;
   });
+}
 
   // 3. Connectors & Edges (With High-Contrast Labeled Pill Badges)
   if (Array.isArray(graph?.connections)) {

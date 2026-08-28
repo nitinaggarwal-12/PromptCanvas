@@ -84,6 +84,12 @@ export function verifyPhase1Technical(
     });
   });
 
+  (graph?.freeformElements || []).forEach(elem => {
+    if (elem?.name) allCardTitles.push(elem.name.toLowerCase());
+    if (elem?.formula) allItems.push(elem.formula.toLowerCase());
+    (elem?.details || []).forEach(d => allItems.push(d.toLowerCase()));
+  });
+
   const combinedCorpus = `${graph?.title || ''} ${graph?.subtitle || ''} ${allCardTitles.join(' ')} ${allItems.join(' ')}`.toLowerCase();
 
   // 1. Abstraction Level Ontology Check
@@ -370,6 +376,15 @@ export function evaluateStudio3Quality(params: {
 }): Studio3QualityReport {
   const { graph, intent, previousGraph, boxes = [], clientConfig } = params;
 
+  const effectiveBoxes: BoundingBox[] = boxes.length > 0 ? boxes : (graph?.freeformElements || []).map(e => ({
+    id: e.id,
+    name: e.name,
+    x: e.x,
+    y: e.y,
+    w: e.w,
+    h: e.h
+  }));
+
   const safeIntent: Studio3Intent = intent || {
     abstractionLevel: graph?.abstractionLevel || 'logical',
     primaryGoal: 'Synthesize architecture from first principles',
@@ -384,7 +399,7 @@ export function evaluateStudio3Quality(params: {
   };
 
   const phase1Technical = verifyPhase1Technical(graph, safeIntent);
-  const phase2Visual = verifyPhase2Visual(graph, boxes);
+  const phase2Visual = verifyPhase2Visual(graph, effectiveBoxes);
   const phase3Versioning = verifyPhase3Versioning(graph, previousGraph || null);
   const phase4ClientPresentation = verifyPhase4ClientPresentation({ graph, clientConfig });
 

@@ -141,6 +141,17 @@ export function enrichAndSanitizeSemanticGraph(
     bands: []
   };
 
+  // If freeform elements are present, preserve them directly
+  if (graph?.freeformElements && graph.freeformElements.length > 0) {
+    return {
+      ...enriched,
+      layoutType: 'freeform',
+      freeformElements: graph.freeformElements,
+      bands: [],
+      connections: graph.connections || []
+    };
+  }
+
   const rawBands = Array.isArray(graph?.bands) && graph.bands.length > 0 ? graph.bands : [
     {
       id: 'band_main',

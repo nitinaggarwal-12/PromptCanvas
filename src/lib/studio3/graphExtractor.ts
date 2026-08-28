@@ -69,11 +69,32 @@ export interface Studio3Connection {
   style: 'solid_blue' | 'dashed_orange' | 'dashed_purple' | 'green_protocol' | 'feedback_teal';
 }
 
+export interface Studio3FreeformElement {
+  id: string;
+  name: string;
+  shape: 'circle' | 'rectangle' | 'cylinder' | 'rhombus' | 'matrix' | 'formula' | 'callout';
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  color?: 'blue' | 'purple' | 'teal' | 'slate' | 'amber' | 'emerald' | 'cyan' | 'red';
+  iconKey?: string;
+  formula?: string;
+  matrixData?: string[][];
+  matrixHeaders?: string[];
+  details?: string[];
+  subLabel?: string;
+  badge?: string;
+  codeSnippet?: string;
+}
+
 export interface Studio3SemanticGraph {
   title: string;
   subtitle: string;
   tenets: string[];
   abstractionLevel: 'conceptual' | 'logical' | 'technical';
+  layoutType?: 'freeform' | 'bands' | 'matrix';
+  freeformElements?: Studio3FreeformElement[];
   bands: Studio3Band[];
   connections: Studio3Connection[];
 }
@@ -92,6 +113,158 @@ export function generateDynamicFirstPrinciplesGraph(
 ): Studio3SemanticGraph {
   const p = (prompt || '').toLowerCase();
   const isMultiBand = intent.topologyGrammar === 'composite_multi_band' || intent.actionType === 'band_expansion';
+
+  // 0. GRAPH THEORY & DISCRETE MATHEMATICS (AUTHENTIC FREEFORM GRAPH DRAWING)
+  if (p.includes('graph theory') || (p.includes('graph') && !p.includes('knowledge graph') && !p.includes('spanner')) || p.includes('discrete math') || p.includes('dijkstra') || p.includes('bfs') || p.includes('dfs') || p.includes('tree') || p.includes('node') && p.includes('edge')) {
+    const rawGraph: Studio3SemanticGraph = {
+      title: 'FOUNDATIONS OF GRAPH THEORY: NODES, EDGES & TOPOLOGY',
+      subtitle: 'Discrete Mathematics & Graph Analytics: G = (V, E), Adjacency Representation, and Pathfinding',
+      tenets: ['G = (V, E) TOPOLOGY', 'HANDSHAKING LEMMA Σ deg(v) = 2|E|', 'PATHFINDING & COMPLEXITY'],
+      abstractionLevel: 'conceptual',
+      layoutType: 'freeform',
+      freeformElements: [
+        // Vertices & Directed Graph Subnetwork
+        {
+          id: 'v1',
+          name: 'Vertex V₁',
+          shape: 'circle',
+          x: 80,
+          y: 180,
+          w: 110,
+          h: 110,
+          color: 'blue',
+          subLabel: 'Source • deg⁺=2, deg⁻=0'
+        },
+        {
+          id: 'v2',
+          name: 'Vertex V₂',
+          shape: 'circle',
+          x: 280,
+          y: 110,
+          w: 110,
+          h: 110,
+          color: 'teal',
+          subLabel: 'Intermediate • deg⁺=1, deg⁻=1'
+        },
+        {
+          id: 'v3',
+          name: 'Vertex V₃',
+          shape: 'circle',
+          x: 480,
+          y: 180,
+          w: 110,
+          h: 110,
+          color: 'purple',
+          subLabel: 'Sink • deg⁺=0, deg⁻=2'
+        },
+        {
+          id: 'v4',
+          name: 'Vertex V₄',
+          shape: 'circle',
+          x: 280,
+          y: 310,
+          w: 110,
+          h: 110,
+          color: 'amber',
+          subLabel: 'Hub • deg⁺=1, deg⁻=1'
+        },
+        {
+          id: 'v5',
+          name: 'Vertex V₅',
+          shape: 'circle',
+          x: 380,
+          y: 470,
+          w: 110,
+          h: 110,
+          color: 'emerald',
+          subLabel: 'Leaf • deg⁺=1, deg⁻=1'
+        },
+        // Adjacency Matrix
+        {
+          id: 'adj_matrix',
+          name: 'ADJACENCY MATRIX A = [a_ij]',
+          shape: 'matrix',
+          x: 640,
+          y: 110,
+          w: 390,
+          h: 240,
+          matrixHeaders: ['V₁', 'V₂', 'V₃', 'V₄', 'V₅'],
+          matrixData: [
+            ['0', '4', '0', '2', '0'],
+            ['0', '0', '7', '0', '0'],
+            ['0', '0', '0', '0', '0'],
+            ['0', '0', '0', '0', '3'],
+            ['0', '0', '1', '0', '0']
+          ],
+          details: [
+            'Weighted Directed Graph representation where a_ij represents edge weight from V_i to V_j',
+            'Space Complexity: O(|V|²), ideal for dense graphs'
+          ]
+        },
+        // Mathematical Theorems & Properties
+        {
+          id: 'math_theorems',
+          name: 'MATHEMATICAL FOUNDATIONS & THEOREMS',
+          shape: 'formula',
+          x: 640,
+          y: 380,
+          w: 390,
+          h: 220,
+          formula: 'G = (V, E)  where  |V| = 5, |E| = 5\n\nHandshaking Theorem: ∑_{v ∈ V} deg(v) = 2|E| = 10\nEuler Characteristic (Planar): V - E + F = 2',
+          details: [
+            'Connectedness: Strong (Directed) vs Weak',
+            'Degree Sum: Sum of in-degrees = Sum of out-degrees'
+          ]
+        },
+        // Traversal Algorithms: BFS vs DFS
+        {
+          id: 'traversal_engine',
+          name: 'GRAPH TRAVERSAL ALGORITHMS',
+          shape: 'rectangle',
+          x: 1070,
+          y: 110,
+          w: 420,
+          h: 240,
+          color: 'teal',
+          badge: 'O(V + E)',
+          details: [
+            'BFS (Breadth-First Search): Explores neighbors level by level via FIFO Queue; guarantees shortest unweighted path',
+            'DFS (Depth-First Search): Explores branch depth via LIFO Stack / Recursion; detects cycles & topological ordering',
+            'Time: O(|V| + |E|)  •  Space: O(|V|) memory footprint'
+          ]
+        },
+        // Shortest Path & Centrality Algorithms
+        {
+          id: 'path_algorithms',
+          name: 'SHORTEST PATH & CENTRALITY METRICS',
+          shape: 'rectangle',
+          x: 1070,
+          y: 380,
+          w: 420,
+          h: 240,
+          color: 'purple',
+          badge: 'Network Science',
+          details: [
+            "Dijkstra's Algorithm: Greedy priority queue finding shortest path in non-negative graphs: O((V+E) log V)",
+            'Bellman-Ford: Dynamic programming solving negative weights and detecting negative cycles: O(V · E)',
+            'Centrality: Degree, Betweenness, Closeness, and Google PageRank eigenvector centrality'
+          ]
+        }
+      ],
+      bands: [],
+      connections: [
+        { fromId: 'v1', toId: 'v2', label: 'w = 4', style: 'solid_blue' },
+        { fromId: 'v2', toId: 'v3', label: 'w = 7', style: 'solid_blue' },
+        { fromId: 'v1', toId: 'v4', label: 'w = 2', style: 'dashed_orange' },
+        { fromId: 'v4', toId: 'v5', label: 'w = 3', style: 'dashed_orange' },
+        { fromId: 'v5', toId: 'v3', label: 'w = 1', style: 'green_protocol' },
+        { fromId: 'v3', toId: 'adj_matrix', label: 'Matrix Mapping', style: 'dashed_purple' },
+        { fromId: 'adj_matrix', toId: 'traversal_engine', label: 'Input to BFS/DFS', style: 'solid_blue' },
+        { fromId: 'traversal_engine', toId: 'path_algorithms', label: 'Dijkstra Relaxation', style: 'feedback_teal' }
+      ]
+    };
+    return rawGraph;
+  }
 
   // 1. FINANCIAL / LEDGER DOMAIN
   if (p.includes('ledger') || p.includes('financial') || p.includes('spanner') || p.includes('payment') || p.includes('transaction')) {
@@ -609,15 +782,14 @@ export async function extractStudio3SemanticGraph(params: {
   try {
     const ai = getAiClient(apiKey);
 
-    const systemInstruction = `You are Google DeepMind's Premier Architecture Graph Synthesizer for Studio 3.
-Your task is to convert the user's prompt and validated intent into a high-density, professional semantic graph with authentic GCP service icons and bulleted technical descriptions.
+    const systemInstruction = `You are Google DeepMind's Premier Architecture & Mathematical Graph Synthesizer for Studio 3.
+Your task is to convert the user's prompt and validated intent into an authentic, visually compelling architecture diagram or discrete mathematical drawing.
 
 MANDATORY RULES:
-1. Every column MUST have an explicit, uppercase 'header' (e.g. "DATA INGESTION & EXPLORATION", "FEATURE MATRIX & MATHEMATICAL FORMULATION", "MODEL TRAINING & SGD OPTIMIZATION", "INFERENCE & DECISION BOUNDARY"). NEVER leave header blank or set to 'TIER'.
-2. Every card MUST have an authentic 'iconKey' from: "cloud_armor", "spanner", "gke_autopilot", "cloud_run", "iap", "memorystore", "gemini", "vertex_ai", "vertex_vector_search", "bigquery", "cloud_storage", "cloud_logging", "git", "dbt".
-3. Every card MUST have 2 to 4 concrete, informative bullet points in 'items' describing mathematical formulas (e.g. Sigmoid σ(z) = 1/(1+e^-z), Log-loss), protocols, and throughput SLAs. NEVER output empty cards with only a title.
-4. Always generate sequential 'connections' connecting stages from left to right with explicit labeled protocol pills (e.g. "❶ Ingestion Stream", "❷ Feature Vector X", "❸ Loss Minimization", "❹ Inference Endpoint").
-5. Set 'headerColor' on columns from: "blue", "teal", "purple", "slate", "amber", "emerald".`;
+1. For theoretical, mathematical, graph theory, algorithmic, or conceptual topics (such as "teach me graph theory", "dijkstra", "neural network activation", "discrete math", "data structures"), you MUST output "layoutType": "freeform" with "freeformElements" containing circular nodes/vertices (shape: "circle"), 2D grid matrices (shape: "matrix"), and formula theorem boxes (shape: "formula"). DO NOT put mathematical concepts into boring rigid column cards.
+2. For cloud topologies and systems, you can use "bands" with structured columns or "freeformElements".
+3. Every card or element MUST have concrete, informative technical bullet points, mathematical formulas, and protocols. NEVER output empty elements.
+4. Always generate sequential 'connections' connecting entities with explicit labeled pills and step numbers (❶, ❷, ❸, ❹).`;
 
     const userContent = `Extract the complete architecture graph for:
 Prompt: "${prompt}"
@@ -630,25 +802,40 @@ JSON Schema:
   "subtitle": "Informative Subtitle",
   "tenets": ["TENET 1", "TENET 2", "TENET 3"],
   "abstractionLevel": "conceptual" | "logical" | "technical",
+  "layoutType": "freeform" | "bands",
+  "freeformElements": [
+    {
+      "id": "v1",
+      "name": "Node / Vertex / Component Name",
+      "shape": "circle" | "rectangle" | "matrix" | "formula",
+      "x": 80,
+      "y": 180,
+      "w": 110,
+      "h": 110,
+      "color": "blue" | "teal" | "purple" | "amber" | "emerald",
+      "subLabel": "Optional subtitle / degree / role",
+      "formula": "Optional mathematical formula snippet",
+      "matrixHeaders": ["V1", "V2", "V3"],
+      "matrixData": [["0", "1", "0"], ["0", "0", "1"], ["1", "0", "0"]],
+      "details": ["Bullet point 1", "Bullet point 2"]
+    }
+  ],
   "bands": [
     {
       "id": "band_1",
       "title": "BAND TITLE",
-      "badge": "ZONE BADGE",
       "type": "columns",
       "columns": [
         {
           "id": "col_1",
-          "header": "MEANINGFUL TIER HEADER",
+          "header": "TIER HEADER",
           "headerColor": "blue" | "teal" | "purple" | "slate" | "amber",
-          "subtitle": "Tier Subtitle",
           "cards": [
             {
               "id": "card_1",
               "title": "Service Name",
-              "iconKey": "vertex_ai" | "bigquery" | "vertex_vector_search" | "gke_autopilot" | "cloud_run" | "cloud_monitoring",
-              "badge": "Optional Badge",
-              "items": ["Specific technical item 1", "Specific technical item 2", "Specific technical item 3"]
+              "iconKey": "vertex_ai" | "bigquery" | "spanner" | "gke_autopilot" | "cloud_armor",
+              "items": ["Item 1", "Item 2"]
             }
           ]
         }
@@ -657,9 +844,9 @@ JSON Schema:
   ],
   "connections": [
     {
-      "fromId": "card_1",
-      "toId": "card_2",
-      "label": "❶ Step Protocol / Data Vector",
+      "fromId": "v1",
+      "toId": "v2",
+      "label": "❶ Step Protocol / Edge Weight",
       "style": "solid_blue" | "dashed_purple" | "green_protocol" | "feedback_teal"
     }
   ]
