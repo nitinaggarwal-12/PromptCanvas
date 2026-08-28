@@ -141,6 +141,17 @@ export function enrichAndSanitizeSemanticGraph(
     bands: []
   };
 
+  // If conceptual roadmap is present, preserve it directly
+  if (graph?.conceptualRoadmap) {
+    return {
+      ...enriched,
+      layoutType: 'conceptual_roadmap',
+      conceptualRoadmap: graph.conceptualRoadmap,
+      bands: [],
+      connections: []
+    };
+  }
+
   // If freeform elements are present, preserve them directly
   if (graph?.freeformElements && graph.freeformElements.length > 0) {
     return {

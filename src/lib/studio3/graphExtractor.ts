@@ -161,7 +161,111 @@ export function generateGenericConceptualRoadmap(
   const p = (prompt || '').toLowerCase();
   const cleanTitle = (prompt || 'CONCEPTUAL LEARNING ROADMAP').toUpperCase();
 
-  // 0. PETROLEUM REFINING & GASOLINE EXTRACTION / CHEMICAL ENGINEERING
+  // 0. CLASSICAL MECHANICS: CENTRIPETAL VS CENTRIFUGAL FORCES & ROTATING FRAMES
+  if (p.includes('centripetal') || p.includes('centrifugal') || (p.includes('circular') && p.includes('motion')) || p.includes('coriolis') || p.includes('rotating frame')) {
+    return {
+      title: 'CENTRIPETAL VS. CENTRIFUGAL FORCES: INERTIAL & ROTATING REFERENCE FRAMES',
+      subtitle: 'Kinematics, Fictitious Inertial Forces, Rotating Coordinate Transformations & Circular Dynamics',
+      milestones: [
+        { title: '🔄 CIRCULAR MOTION INTUITION', color: 'blue', icon: '🔄' },
+        { title: 'KINEMATICS & DYNAMICS', color: 'green', icon: '📐' },
+        { title: 'REFERENCE FRAME TAXONOMY', color: 'orange', icon: '⚖️' },
+        { title: '🔬 MODERN SCIENTIFIC FRONTIERS 🌐', color: 'yellow', icon: '🚀' }
+      ],
+      section1Analogy: {
+        title: 'The Rotating Carousel & Tetherball Analogy',
+        actors: [
+          { id: 'ground', name: 'Ground Observer (Inertial Frame)', avatar: '🧍', x: 50, y: 170 },
+          { id: 'pivot', name: 'Center Pivot / Axis', avatar: '🎯', x: 170, y: 220 },
+          { id: 'rider', name: 'Rotating Observer (Carousel Rider)', avatar: '🎠', x: 290, y: 170 }
+        ],
+        relations: [
+          { from: 'rider', to: 'pivot', label: 'Real Centripetal Tension T' },
+          { from: 'ground', to: 'rider', label: 'Views Circular Trajectory' }
+        ],
+        legend: [
+          { icon: '🎯', label: 'Center Axis' },
+          { icon: '➡️', label: 'Real Inward Force (Fc)' },
+          { icon: '⬅️', label: 'Apparent Outward Push' },
+          { icon: '⚖️', label: 'Inertial Reference Frame' }
+        ],
+        challengeCallout: "The Challenge: Differentiating Real Forces (Newton's 3rd Law) from Non-Inertial Fictitious Forces"
+      },
+      section2Prerequisites: {
+        title: 'Kinematics & Frame Transformation Physics',
+        mathFormulas: [
+          { name: 'Centripetal Force & Acceleration', formula: 'F_c = m · a_c = m · (v² / r) = m · ω² r  (Radially Inward)', icon: '📐' },
+          { name: 'Rotating Frame Equation of Motion', formula: 'F_eff = F_real - m A_0 - m ω×(ω×r) - 2m(ω×v_rot)', icon: '🔄' },
+          { name: 'Centrifugal Fictitious Term', formula: 'F_centrifugal = m · ω² r  (Apparent Outward Push)', icon: '⚡' }
+        ],
+        checklist: [
+          "☑ Inertial Frame: Only Real Forces Exist (Tension, Gravity, Friction; ∑F = ma)",
+          "☑ Non-Inertial Rotating Frame: D'Alembert Inertial Centrifugal Force Added",
+          '☑ Coriolis Force Term: F_cor = -2m(ω × v_rel) for Moving Bodies in Rotating Frames'
+        ]
+      },
+      section3Taxonomy: {
+        title: 'Reference Frame & Dynamics Taxonomy',
+        variants: [
+          { name: 'INERTIAL FRAME (GROUND)', subtext: "Newton's Laws Hold • Pure Inward F_c", diagramType: 'directed' },
+          { name: 'ROTATING FRAME (NON-INERTIAL)', subtext: 'Accelerating Frame • Apparent Outward F_cf', diagramType: 'nodes' },
+          { name: 'BANKED CURVES & ROADS', subtext: 'Normal Force Tilt • v = √(r g tan θ)', diagramType: 'layers' },
+          { name: 'ARTIFICIAL GRAVITY HABITAT', subtext: 'Rotating Hull • g_eff = ω² R', diagramType: 'weighted' }
+        ]
+      },
+      section4ModernFrontiers: {
+        title: 'Modern Engineering & Astrophysical Applications',
+        knowledgeGraphNodes: [
+          { id: 'kg_cent', label: 'Ultra\nCentrifuges', color: '#38BDF8' },
+          { id: 'kg_atm', label: 'Atmospheric\nCyclones', color: '#F59E0B' },
+          { id: 'kg_space', label: 'Space Habitat\nGravity', color: '#10B981' },
+          { id: 'kg_gyro', label: 'MEMS\nGyroscopes', color: '#A855F7' }
+        ],
+        frameworkBullets: [
+          '🔬 • Analytical Ultracentrifugation (Isotope & DNA Density Gradient Separation)',
+          '🌪️ • Atmospheric Geostrophic Wind Balance & Cyclonic Vortex Formation',
+          '🚀 • Rotating O\'Neill Cylinders for Deep-Space Interplanetary Habitats'
+        ]
+      },
+      bottomWorkflow: {
+        title: 'CIRCULAR MOTION & DYNAMICS ANALYSIS PIPELINE',
+        step1Problem: {
+          title: 'STEP 1: Coordinate System Setup',
+          subtitle: 'Define Reference Frame & Motion Parameters',
+          icon: '🎯 🔄',
+          formula: 'Radius r, Tangential Speed v = ω r, Mass m',
+          bullets: ['• Choose reference frame: Ground Inertial vs. Co-Rotating', '• Identify physical force origins (Tension, Gravity, Friction, Normal)']
+        },
+        step2Execution: {
+          title: 'STEP 2: Free-Body Diagram (FBD) Resolution',
+          input: 'Force Vectors Acting on Mass m',
+          phases: [
+            { name: '1. Radial Vector Resolution', desc: 'Sum real physical inward components: ∑ F_r = T + f_s + mg sin θ' },
+            { name: '2. Tangential & Vertical Balance', desc: 'Ensure orthogonal equilibrium: ∑ F_z = 0 (Normal vs Gravity)' },
+            { name: '3. Speed Limit Calculation', desc: 'Determine max speed before slip: v_max = √(μ_s g r)' }
+          ]
+        },
+        step3Engine: {
+          title: 'STEP 3: Frame Transformation Engine',
+          subtitle: 'Inertial vs. Non-Inertial Mathematical Equivalence',
+          engines: [
+            { name: 'INERTIAL OBSERVER ENGINE', complexity: '∑ F_radial = m v²/r', items: ['Real inward acceleration causes continuous direction change', 'No outward force exists in free-body diagram'] },
+            { name: 'CO-ROTATING OBSERVER ENGINE', complexity: '∑ F_radial - m ω² r = 0', items: ['Object appears stationary; centrifugal force balances inward tension', 'Valid only inside non-inertial accelerating reference frame'] }
+          ],
+          callout: '⚡ Both Frames Predict Identical Physical Measurements & String Tension'
+        },
+        step4Applications: [
+          { title: 'Automotive Safety', subtitle: 'Banked Highway Turns', icon: '🚗', detail: 'Frictionless speed limit' },
+          { title: 'Medical Centrifuges', subtitle: 'Blood Plasma Separation', icon: '🧪', detail: '10,000+ g sedimentation' },
+          { title: 'Orbital Satellites', subtitle: 'Geostationary Orbits', icon: '🛰️', detail: 'Gravity = Centripetal force' },
+          { title: 'Roller Coasters', subtitle: 'Clothoid Inversion Loops', icon: '🎢', detail: 'Smooth g-force transition' }
+        ]
+      },
+      footerTenets: ['FRAME DEPENDENCE IS MATHEMATICAL', 'PHYSICAL INVARIANTS ARE ABSOLUTE', 'NET FORCE DIRECTS ACCELERATION']
+    };
+  }
+
+  // 1. PETROLEUM REFINING & GASOLINE EXTRACTION / CHEMICAL ENGINEERING
   if (p.includes('gasoline') || p.includes('petroleum') || p.includes('refining') || p.includes('crude oil') || p.includes('distillation') || p.includes('fractional') || p.includes('hydrocarbon')) {
     return {
       title: 'PETROLEUM REFINING & GASOLINE EXTRACTION: FROM CRUDE OIL TO HIGH-OCTANE FUEL',
@@ -1123,14 +1227,14 @@ export async function extractStudio3SemanticGraph(params: {
   try {
     const ai = getAiClient(apiKey);
 
-    const systemInstruction = `You are Google DeepMind's Premier Architecture & Mathematical Graph Synthesizer for Studio 3.
-Your task is to convert the user's prompt and validated intent into an authentic, visually compelling architecture diagram or discrete mathematical drawing.
+    const systemInstruction = `You are Google DeepMind's Premier Architecture & Scientific Knowledge Synthesizer for Studio 3.
+Your task is to convert the user's prompt and validated intent into an authentic, visually compelling architecture diagram or 2-Tier Learning Roadmap.
 
 MANDATORY RULES:
-1. For theoretical, mathematical, graph theory, algorithmic, or conceptual topics (such as "teach me graph theory", "dijkstra", "neural network activation", "discrete math", "data structures"), you MUST output "layoutType": "freeform" with "freeformElements" containing circular nodes/vertices (shape: "circle"), 2D grid matrices (shape: "matrix"), and formula theorem boxes (shape: "formula"). DO NOT put mathematical concepts into boring rigid column cards.
-2. For cloud topologies and systems, you can use "bands" with structured columns or "freeformElements".
-3. Every card or element MUST have concrete, informative technical bullet points, mathematical formulas, and protocols. NEVER output empty elements.
-4. Always generate sequential 'connections' connecting entities with explicit labeled pills and step numbers (❶, ❷, ❸, ❹).`;
+1. For ALL conceptual, educational, physical science, mathematical, theoretical, or algorithmic topics (such as "help me learn centripetal vs centrifugal forces", "teach me neural networks", "how does gasoline extraction work", "explain transformer attention", "quantum mechanics"), you MUST output "layoutType": "conceptual_roadmap" with the complete "conceptualRoadmap" object. DO NOT output loose overlapping coordinates or generic Kanban card boxes.
+2. For cloud infrastructure and systems topologies (e.g. "VPC landing zone", "Microservices Kubernetes", "Payment gateway"), you can use "bands" with structured columns.
+3. Every formula, milestone, and workflow step MUST be technically precise and informative.
+4. Ensure 4 distinct milestone chevrons, 4 visual taxonomy variants, and 4 real-world deployment applications.`;
 
     const userContent = `Extract the complete architecture graph for:
 Prompt: "${prompt}"
@@ -1143,24 +1247,92 @@ JSON Schema:
   "subtitle": "Informative Subtitle",
   "tenets": ["TENET 1", "TENET 2", "TENET 3"],
   "abstractionLevel": "conceptual" | "logical" | "technical",
-  "layoutType": "freeform" | "bands",
-  "freeformElements": [
-    {
-      "id": "v1",
-      "name": "Node / Vertex / Component Name",
-      "shape": "circle" | "rectangle" | "matrix" | "formula",
-      "x": 80,
-      "y": 180,
-      "w": 110,
-      "h": 110,
-      "color": "blue" | "teal" | "purple" | "amber" | "emerald",
-      "subLabel": "Optional subtitle / degree / role",
-      "formula": "Optional mathematical formula snippet",
-      "matrixHeaders": ["V1", "V2", "V3"],
-      "matrixData": [["0", "1", "0"], ["0", "0", "1"], ["1", "0", "0"]],
-      "details": ["Bullet point 1", "Bullet point 2"]
-    }
-  ],
+  "layoutType": "conceptual_roadmap" | "bands",
+  "conceptualRoadmap": {
+    "title": "ROADMAP TITLE IN ALL CAPS",
+    "subtitle": "Subtitle",
+    "milestones": [
+      { "title": "1. FIRST MILESTONE", "color": "blue", "icon": "🧭" },
+      { "title": "2. SECOND MILESTONE", "color": "green", "icon": "📐" },
+      { "title": "3. THIRD MILESTONE", "color": "orange", "icon": "⚖️" },
+      { "title": "4. FOURTH MILESTONE", "color": "yellow", "icon": "🔬" }
+    ],
+    "section1Analogy": {
+      "title": "Analogy Title",
+      "actors": [
+        { "id": "act_1", "name": "Actor 1 Name", "avatar": "🧍" },
+        { "id": "act_2", "name": "Actor 2 Name", "avatar": "🎯" },
+        { "id": "act_3", "name": "Actor 3 Name", "avatar": "🎠" }
+      ],
+      "relations": [
+        { "from": "act_1", "to": "act_2", "label": "Interaction 1" },
+        { "from": "act_2", "to": "act_3", "label": "Interaction 2" }
+      ],
+      "legend": [
+        { "icon": "🎯", "label": "Legend Item 1" },
+        { "icon": "➡️", "label": "Legend Item 2" }
+      ],
+      "challengeCallout": "Core Challenge Statement"
+    },
+    "section2Prerequisites": {
+      "title": "Theoretical & Mathematical Foundations",
+      "mathFormulas": [
+        { "name": "Formula 1 Name", "formula": "Mathematical Equation", "icon": "📐" },
+        { "name": "Formula 2 Name", "formula": "Mathematical Equation", "icon": "⚡" }
+      ],
+      "checklist": ["☑ Check 1", "☑ Check 2", "☑ Check 3"]
+    },
+    "section3Taxonomy": {
+      "title": "Taxonomy & Variants",
+      "variants": [
+        { "name": "VARIANT 1", "subtext": "Subtext description", "diagramType": "directed" },
+        { "name": "VARIANT 2", "subtext": "Subtext description", "diagramType": "nodes" },
+        { "name": "VARIANT 3", "subtext": "Subtext description", "diagramType": "layers" },
+        { "name": "VARIANT 4", "subtext": "Subtext description", "diagramType": "weighted" }
+      ]
+    },
+    "section4ModernFrontiers": {
+      "title": "Modern Scientific / Industrial Frontiers",
+      "knowledgeGraphNodes": [
+        { "id": "kg1", "label": "Node 1\nLabel", "color": "#38BDF8" },
+        { "id": "kg2", "label": "Node 2\nLabel", "color": "#F59E0B" }
+      ],
+      "frameworkBullets": ["🔬 • Bullet 1", "🌪️ • Bullet 2", "🚀 • Bullet 3"]
+    },
+    "bottomWorkflow": {
+      "title": "END-TO-END EXECUTION WORKFLOW PIPELINE",
+      "step1Problem": {
+        "title": "STEP 1: Problem Definition",
+        "subtitle": "Subtitle",
+        "icon": "🎯 🔄",
+        "formula": "Equation",
+        "bullets": ["• Bullet 1", "• Bullet 2"]
+      },
+      "step2Execution": {
+        "title": "STEP 2: Execution",
+        "input": "Input Stream",
+        "phases": [
+          { "name": "1. Phase 1", "desc": "Description" },
+          { "name": "2. Phase 2", "desc": "Description" }
+        ]
+      },
+      "step3Engine": {
+        "title": "STEP 3: Engine Optimization",
+        "subtitle": "Subtitle",
+        "engines": [
+          { "name": "ENGINE 1", "complexity": "O(1)", "items": ["Item 1", "Item 2"] }
+        ],
+        "callout": "Certified Statement"
+      },
+      "step4Applications": [
+        { "title": "App 1", "subtitle": "Sub", "icon": "🚗", "detail": "Detail" },
+        { "title": "App 2", "subtitle": "Sub", "icon": "🧪", "detail": "Detail" },
+        { "title": "App 3", "subtitle": "Sub", "icon": "🛰️", "detail": "Detail" },
+        { "title": "App 4", "subtitle": "Sub", "icon": "🎢", "detail": "Detail" }
+      ]
+    },
+    "footerTenets": ["TENET 1", "TENET 2", "TENET 3"]
+  },
   "bands": [
     {
       "id": "band_1",
@@ -1183,14 +1355,7 @@ JSON Schema:
       ]
     }
   ],
-  "connections": [
-    {
-      "fromId": "v1",
-      "toId": "v2",
-      "label": "❶ Step Protocol / Edge Weight",
-      "style": "solid_blue" | "dashed_purple" | "green_protocol" | "feedback_teal"
-    }
-  ]
+  "connections": []
 }`;
 
     const response = await ai.models.generateContent({

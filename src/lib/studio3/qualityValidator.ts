@@ -90,6 +90,16 @@ export function verifyPhase1Technical(
     (elem?.details || []).forEach(d => allItems.push(d.toLowerCase()));
   });
 
+  if (graph?.conceptualRoadmap) {
+    const cm = graph.conceptualRoadmap;
+    if (cm.title) allCardTitles.push(cm.title.toLowerCase());
+    (cm.milestones || []).forEach(m => allCardTitles.push(m.title.toLowerCase()));
+    (cm.section1Analogy?.actors || []).forEach(a => allCardTitles.push(a.name.toLowerCase()));
+    (cm.section2Prerequisites?.mathFormulas || []).forEach(f => allItems.push(`${f.name} ${f.formula}`.toLowerCase()));
+    (cm.section3Taxonomy?.variants || []).forEach(v => allCardTitles.push(`${v.name} ${v.subtext || ''}`.toLowerCase()));
+    (cm.bottomWorkflow?.step4Applications || []).forEach(app => allCardTitles.push(`${app.title} ${app.subtitle}`.toLowerCase()));
+  }
+
   const combinedCorpus = `${graph?.title || ''} ${graph?.subtitle || ''} ${allCardTitles.join(' ')} ${allItems.join(' ')}`.toLowerCase();
 
   // 1. Abstraction Level Ontology Check
