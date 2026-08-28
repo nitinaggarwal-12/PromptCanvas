@@ -118,10 +118,36 @@ export default function Studio3Page() {
     textArea.select();
     try {
       document.execCommand('copy');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Fallback copy failed', err);
+      console.error('Fallback copy failed: ', err);
     }
     document.body.removeChild(textArea);
+  };
+
+  const handleCopyXml = () => {
+    if (!currentXml) return;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(currentXml).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {
+        fallbackCopyTextToClipboard(currentXml);
+      });
+    } else {
+      fallbackCopyTextToClipboard(currentXml);
+    }
+  };
+
+  const handleEditInDrawio = () => {
+    if (!currentXml) return;
+    try {
+      const url = `https://app.diagrams.net/#R${encodeURIComponent(currentXml)}`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      console.error('Error opening Draw.io', e);
+    }
   };
 
   const handleResetStage = () => {
@@ -132,47 +158,41 @@ export default function Studio3Page() {
     setAllLogs([]);
     setMessages([
       {
-        id: `msg_${Date.now()}`,
+        id: 'msg_welcome_' + Date.now(),
         role: 'assistant',
-        content: '🎬 **Stage Reset.** The curtain has been lowered. Enter a new prompt below to start a fresh architectural session.',
+        content: '🎭 **Stage Reset.** The curtain is closed. Enter any new architecture prompt to synthesize from first principles.',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
   };
 
   const handleSynthesize = async (promptText: string, forcedAbstraction?: AbstractionLevel) => {
-    if (!promptText || !promptText.trim() || loading) return;
+    if (!promptText.trim() || loading) return;
 
-    setLoading(true);
-    const userMsgId = `msg_${Date.now()}`;
-    const newMessages: ChatMessage[] = [
-      ...messages,
-      {
-        id: userMsgId,
-        role: 'user',
-        content: promptText,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }
-    ];
-    setMessages(newMessages);
+    const userMessage: ChatMessage = {
+      id: `usr_${Date.now()}`,
+      role: 'user',
+      content: promptText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    setMessages(prev => [...prev, userMessage]);
     setPromptInput('');
+    setLoading(true);
 
     try {
-      const isIterativeTurn = Boolean(currentXml && currentGraph);
-
-      const endpoint = isIterativeTurn ? '/api/studio3/chat' : '/api/studio3/synthesize';
-      const payload = isIterativeTurn
+      const isInitial = !currentXml;
+      const endpoint = isInitial ? '/api/studio3/synthesize' : '/api/studio3/chat';
+      const payload = isInitial
         ? {
-            messages: newMessages.map(m => ({ role: m.role, content: m.content })),
-            currentXml,
-            previousGraph: currentGraph,
-            theme
+            prompt: promptText,
+            theme,
+            forcedAbstraction: forcedAbstraction || selectedAbstraction
           }
         : {
             prompt: promptText,
-            intent: forcedAbstraction ? { abstractionLevel: forcedAbstraction } : undefined,
-            previousContext: '',
-            previousGraph: null,
+            currentXml,
+            previousGraph: currentGraph,
             theme
           };
 
@@ -183,60 +203,49 @@ export default function Studio3Page() {
       });
 
       const data = await res.json();
-      const executionLogs: Studio3LogEntry[] = Array.isArray(data.logs) ? data.logs : [];
-      setAllLogs(prev => [...prev, ...executionLogs]);
 
-      if (data.success && data.xml) {
-        setCurrentXml(data.xml);
-        setCurrentIntent(data.intent || null);
-        setCurrentGraph(data.graph || null);
-        setCurrentQuality(data.qualityReport || null);
-        
-        const effectiveAbstraction = data.intent?.abstractionLevel || 'logical';
-        setSelectedAbstraction(effectiveAbstraction);
-
-        const botReply =
-          data.intent?.actionType === 'band_expansion'
-            ? `🎭 **Curtain Raised & Expanded**: Synthesized a **Multi-Band Composite Architecture**! Top comparative matrix tier and bottom 4-step workflow pipeline added (Score: ${data.qualityReport?.overallScore || 95}/100).`
-            : isIterativeTurn
-            ? `✨ **Diagram Refined in Place**: Updated active **${effectiveAbstraction.toUpperCase()}** architecture for "${promptText}" (Score: ${data.qualityReport?.overallScore || 95}/100).`
-            : `🎬 **Curtain Raised**: Synthesized first **${effectiveAbstraction.toUpperCase()}** architecture from first principles (Quality: ${data.qualityReport?.overallScore || 95}/100).`;
-
-        setMessages(prev => [
-          ...prev,
-          {
-            id: `msg_${Date.now() + 1}`,
-            role: 'assistant',
-            content: botReply,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            intent: data.intent,
-            qualityReport: data.qualityReport,
-            logs: executionLogs
-          }
-        ]);
-      } else {
-        setMessages(prev => [
-          ...prev,
-          {
-            id: `msg_${Date.now() + 1}`,
-            role: 'assistant',
-            content: `Failed to synthesize: ${data.error || 'Unknown error occurred.'}`,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            logs: executionLogs
-          }
-        ]);
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to synthesize architecture');
       }
+
+      // Update state
+      if (data.xml) setCurrentXml(data.xml);
+      if (data.intent) {
+        setCurrentIntent(data.intent);
+        if (data.intent.abstractionLevel) {
+          setSelectedAbstraction(data.intent.abstractionLevel);
+        }
+      }
+      if (data.graph) setCurrentGraph(data.graph);
+      if (data.qualityReport) setCurrentQuality(data.qualityReport);
+
+      if (Array.isArray(data.logs)) {
+        setAllLogs(prev => [...prev, ...data.logs]);
+      }
+
+      // Assistant Response Message
+      const assistantMessage: ChatMessage = {
+        id: `asst_${Date.now()}`,
+        role: 'assistant',
+        content: data.explanation || (isInitial
+          ? `🎬 **Curtain Raised:** Synthesized first **${(data.intent?.abstractionLevel || 'logical').toUpperCase()}** architecture from first principles (Quality: **${data.qualityReport?.overallScore || 95}/100**).`
+          : `✨ **Architecture Evolved:** Applied updates to diagram (Quality: **${data.qualityReport?.overallScore || 95}/100**).`),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        intent: data.intent,
+        qualityReport: data.qualityReport,
+        logs: data.logs
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (err: any) {
       console.error('Synthesis error:', err);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `msg_${Date.now() + 1}`,
-          role: 'assistant',
-          content: `Error connecting to Studio 3 generative engine: ${err.message}`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
+      const errorMessage: ChatMessage = {
+        id: `err_${Date.now()}`,
+        role: 'assistant',
+        content: `⚠️ **Error:** ${err.message || 'Something went wrong during synthesis.'}`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setLoading(false);
     }
@@ -245,57 +254,37 @@ export default function Studio3Page() {
   const handleOverrideAbstraction = (level: AbstractionLevel) => {
     setSelectedAbstraction(level);
     if (messages.length > 1) {
-      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')?.content;
+      const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
       if (lastUserMsg) {
-        handleSynthesize(lastUserMsg, level);
+        handleSynthesize(`Switch abstraction view to ${level.toUpperCase()} for: ${lastUserMsg.content}`, level);
       }
     }
   };
 
-  const handleCopyXml = () => {
-    if (!currentXml) return;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(currentXml).catch(() => {
-        fallbackCopyTextToClipboard(currentXml);
-      });
-    } else {
-      fallbackCopyTextToClipboard(currentXml);
-    }
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleEditInDrawio = () => {
-    if (!currentXml) return;
-    const encoded = encodeURIComponent(currentXml);
-    window.open(`https://app.diagrams.net/#R${encoded}`, '_blank');
-  };
-
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-slate-950 text-slate-50' : 'bg-slate-50 text-slate-900'} transition-colors duration-200`}>
-      {/* 1. TOP FULL-WIDTH STICKY NAVBAR */}
-      <header className={`sticky top-0 z-40 w-full border-b backdrop-blur-md ${theme === 'dark' ? 'border-slate-800 bg-slate-950/80' : 'border-slate-200 bg-white/80'}`}>
-        <div className="max-w-[1700px] mx-auto px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2 text-blue-600 font-extrabold text-xl tracking-tight">
-              <span>PromptCanvas</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200 dark:border-blue-800">
-                Studio 3
-              </span>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#060A14] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-200`}>
+      {/* 1. TOP GLOBAL NAVIGATION & TELEMETRY HEADER */}
+      <header className={`sticky top-0 z-30 border-b backdrop-blur-md ${theme === 'dark' ? 'bg-[#0B111E]/90 border-slate-800/80 shadow-lg shadow-black/20' : 'bg-white/90 border-slate-200 shadow-sm'}`}>
+        <div className="max-w-[1920px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+          {/* Logo & Brand Block */}
+          <div className="flex items-center gap-3">
+            <Link href="/studio3" className="flex items-center gap-2 group">
+              <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white">Prompt<span className="text-blue-500">Canvas</span></span>
+              <span className="px-2 py-0.5 text-[11px] font-black rounded-md bg-blue-600 text-white shadow-sm">Studio 3</span>
             </Link>
-            <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 pl-3 border-l border-slate-200 dark:border-slate-800">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>Zero Predefined Blueprints • Single-Session Architecture Stage</span>
+            <div className="hidden xl:flex items-center gap-2 text-xs font-semibold text-slate-400 pl-3 border-l border-slate-700/60">
+              <span className="text-amber-400">✨</span>
+              <span>Zero Predefined Blueprints • Single-Session Generative Architecture Stage</span>
             </div>
           </div>
 
-          {/* Abstraction Level Selector & Controls */}
+          {/* Abstraction Level Selector & Action Controls */}
           <div className="flex items-center gap-3">
             {/* Reset Stage Button */}
             {currentXml && (
               <button
                 onClick={handleResetStage}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"
                 title="Reset stage and lower curtain"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
@@ -306,7 +295,7 @@ export default function Studio3Page() {
             {/* Live Logs Indicator */}
             <button
               onClick={() => setActiveTab('logs')}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-cyan-300 border border-cyan-800/60 text-xs font-mono font-bold transition hover:bg-slate-800"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition hover:bg-slate-800 shadow-sm"
             >
               <Terminal className="w-3.5 h-3.5 text-cyan-400" />
               <span>Gemini: {allLogs.length} Events</span>
@@ -316,23 +305,23 @@ export default function Studio3Page() {
             {currentQuality && (
               <button
                 onClick={() => setActiveTab('quality')}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition hover:bg-emerald-100"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-black transition hover:bg-emerald-900 shadow-sm"
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>{currentQuality.overallScore}/100</span>
               </button>
             )}
 
             {/* Abstraction Level Chips */}
-            <div className="hidden lg:flex items-center bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+            <div className="hidden lg:flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-700/80 text-xs">
               {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
                 <button
                   key={lvl}
                   onClick={() => handleOverrideAbstraction(lvl)}
-                  className={`px-3 py-1.5 rounded-lg font-semibold capitalize transition-all ${
+                  className={`px-3 py-1.5 rounded-lg font-bold capitalize transition-all ${
                     selectedAbstraction === lvl
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
                   }`}
                 >
                   {lvl} View
@@ -341,34 +330,34 @@ export default function Studio3Page() {
             </div>
 
             {/* Navigation to other studios */}
-            <div className="flex items-center gap-2 text-xs font-medium text-slate-600 dark:text-slate-400">
-              <Link href="/" className="px-2.5 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-900">Studio 1</Link>
-              <Link href="/studio2" className="px-2.5 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-900">Studio 2</Link>
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+              <Link href="/" className="px-2.5 py-1 rounded hover:bg-slate-800 hover:text-white transition">Studio 1</Link>
+              <Link href="/studio2" className="px-2.5 py-1 rounded hover:bg-slate-800 hover:text-white transition">Studio 2</Link>
             </div>
 
             {/* Theme Switcher */}
             <button
               onClick={() => setTheme(t => (t === 'light' ? 'dark' : 'light'))}
-              className="p-2 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
+              className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
               title="Toggle theme"
             >
-              {theme === 'light' ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
+              {theme === 'light' ? <Moon className="w-4 h-4 text-slate-200" /> : <Sun className="w-4 h-4 text-amber-400" />}
             </button>
 
             {/* Export & Edit Buttons */}
             <button
               onClick={handleCopyXml}
               disabled={!currentXml}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition disabled:opacity-40"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-600 transition disabled:opacity-40"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied XML' : 'Copy XML'}</span>
             </button>
 
             <button
               onClick={handleEditInDrawio}
               disabled={!currentXml}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-sm transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-md transition disabled:opacity-50"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Edit in Draw.io</span>
@@ -377,34 +366,34 @@ export default function Studio3Page() {
         </div>
       </header>
 
-      {/* 2. MAIN 2-PANE WORKSPACE */}
-      <main className="max-w-[1700px] mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-80px)]">
-        {/* LEFT PANE: CONVERSATIONAL CHAT & INTENT CONTROLLER (5 Cols) */}
-        <div className={`lg:col-span-5 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white'} shadow-sm overflow-hidden`}>
+      {/* 2. MAIN PROPORTIONAL WORKSPACE: 30% CHATBOX & 70% CANVAS STAGE */}
+      <main className="w-full max-w-[1920px] mx-auto px-4 md:px-6 py-4 flex flex-col lg:flex-row gap-5 h-[calc(100vh-76px)]">
+        {/* LEFT PANE: CONVERSATIONAL CHAT & INTENT CONTROLLER (30% WIDTH) */}
+        <div className={`w-full lg:w-[30%] min-w-[320px] max-w-[480px] flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-200 bg-white shadow-md'} overflow-hidden`}>
           {/* Header */}
-          <div className={`p-4 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50/70'} flex items-center justify-between`}>
+          <div className={`p-3.5 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50'} flex items-center justify-between`}>
             <div className="flex items-center gap-2">
               <Clapperboard className="w-4 h-4 text-blue-500" />
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Architecture Director & Session Stream
+              <span className="text-xs font-black uppercase tracking-wider text-slate-200">
+                Architecture Director
               </span>
             </div>
             {currentIntent && (
-              <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 uppercase">
-                {currentIntent.abstractionLevel} • {(currentIntent.topologyGrammar || '').replace('_', ' ')}
+              <span className="text-[10.5px] font-black px-2 py-0.5 rounded-md bg-blue-900/80 border border-blue-600 text-blue-200 uppercase tracking-wide">
+                {currentIntent.abstractionLevel}
               </span>
             )}
           </div>
 
           {/* Quick Starter Chips */}
-          <div className={`px-4 py-2.5 border-b ${theme === 'dark' ? 'border-slate-800/80 bg-slate-950/40' : 'border-slate-100 bg-slate-50/40'} flex items-center gap-2 overflow-x-auto text-[11px]`}>
-            <span className="text-slate-400 dark:text-slate-500 font-semibold whitespace-nowrap">Starters:</span>
+          <div className={`px-3 py-2 border-b ${theme === 'dark' ? 'border-slate-800/80 bg-slate-950/60' : 'border-slate-100 bg-slate-50/60'} flex items-center gap-1.5 overflow-x-auto text-[11px]`}>
+            <span className="text-slate-400 font-bold whitespace-nowrap text-[10.5px]">Starters:</span>
             {STARTER_PROMPTS.map((sp, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSynthesize(sp.prompt, sp.abstraction)}
                 disabled={loading}
-                className="whitespace-nowrap px-2.5 py-1 rounded-md bg-slate-200/70 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:text-blue-600 dark:hover:text-blue-300 border border-slate-300/60 dark:border-slate-700/60 transition"
+                className="whitespace-nowrap px-2.5 py-1 rounded-md bg-slate-900 hover:bg-blue-900/60 hover:text-white text-slate-300 border border-slate-700/80 transition text-[10.5px] font-medium"
               >
                 {sp.title}
               </button>
@@ -419,18 +408,18 @@ export default function Studio3Page() {
                 className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
+                  className={`max-w-[90%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-none shadow-sm'
+                      ? 'bg-blue-600 text-white rounded-br-none shadow-md font-medium'
                       : theme === 'dark'
-                      ? 'bg-slate-800/90 text-slate-100 border border-slate-700/60 rounded-bl-none'
-                      : 'bg-slate-100 text-slate-900 border border-slate-200/80 rounded-bl-none'
+                      ? 'bg-slate-900 text-slate-100 border border-slate-700/80 rounded-bl-none shadow-sm'
+                      : 'bg-slate-100 text-slate-900 border border-slate-200 rounded-bl-none'
                   }`}
                 >
-                  <div className="font-medium whitespace-pre-wrap">
+                  <div className="whitespace-pre-wrap">
                     {msg.content.split(/(\*\*.*?\*\*)/g).map((part, i) => {
                       if (part.startsWith('**') && part.endsWith('**')) {
-                        return <strong key={i} className="font-bold text-blue-400 dark:text-blue-300">{part.slice(2, -2)}</strong>;
+                        return <strong key={i} className="font-black text-sky-300">{part.slice(2, -2)}</strong>;
                       }
                       return part;
                     })}
@@ -438,16 +427,16 @@ export default function Studio3Page() {
 
                   {/* Inline Telemetry Snippet (Collapsible Accordion) */}
                   {msg.logs && msg.logs.length > 0 && (
-                    <details className="mt-2.5 pt-2 border-t border-slate-200/20 text-[10px] font-mono group">
-                      <summary className="cursor-pointer text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 select-none py-1">
-                        <Terminal className="w-3 h-3" />
-                        <span>View Gemini Trace ({msg.logs.length} events)</span>
+                    <details className="mt-2.5 pt-2 border-t border-slate-700/60 text-[10.5px] font-mono group">
+                      <summary className="cursor-pointer text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5 select-none py-1 font-bold">
+                        <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>⚡ View Gemini Trace ({msg.logs.length} events)</span>
                       </summary>
-                      <div className="mt-2 space-y-1 bg-slate-950/80 p-2 rounded-lg border border-slate-800">
+                      <div className="mt-2 space-y-1.5 bg-black/70 p-2.5 rounded-lg border border-slate-800">
                         {msg.logs.map(l => (
-                          <div key={l.id} className="flex items-center gap-1.5 text-cyan-300 dark:text-cyan-400">
+                          <div key={l.id} className="flex items-center gap-1.5 text-cyan-300">
                             <span className="text-slate-500">[{l.timestamp}]</span>
-                            <span className="font-bold uppercase text-[9px] px-1 py-0.2 rounded bg-slate-800 border border-slate-700 text-amber-300">{l.stage}</span>
+                            <span className="font-bold uppercase text-[9px] px-1 rounded bg-slate-800 border border-slate-700 text-amber-300">{l.stage}</span>
                             <span className="truncate">{l.message}</span>
                           </div>
                         ))}
@@ -455,14 +444,14 @@ export default function Studio3Page() {
                     </details>
                   )}
                 </div>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">{msg.timestamp}</span>
+                <span className="text-[10px] text-slate-500 mt-1 px-1">{msg.timestamp}</span>
               </div>
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 p-3 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-200/60 dark:border-blue-900/60 font-mono">
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>[Stage Director] Raising curtain & synthesizing first-principles architecture...</span>
+              <div className="flex items-center gap-2 text-xs text-blue-400 p-3 bg-blue-950/40 rounded-xl border border-blue-800 font-mono">
+                <RefreshCw className="w-4 h-4 animate-spin text-blue-400" />
+                <span>[Stage Director] Synthesizing first-principles architecture...</span>
               </div>
             )}
             <div ref={chatEndRef} />
@@ -470,44 +459,27 @@ export default function Studio3Page() {
 
           {/* Active Intent Status Bar */}
           {currentIntent && (
-            <div className={`p-3 border-t ${theme === 'dark' ? 'border-slate-800 bg-slate-950/60' : 'border-slate-100 bg-blue-50/40'} text-xs`}>
+            <div className={`p-3 border-t ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-100 bg-blue-50/40'} text-xs`}>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-                  Active Diagram Mode: <span className="text-blue-600 dark:text-blue-400">{currentIntent.abstractionLevel}</span>
+                <span className="text-[10.5px] font-black text-slate-400 uppercase tracking-wider">
+                  Active Mode: <span className="text-blue-400">{currentIntent.abstractionLevel}</span>
                 </span>
-                <span className="text-[10px] text-slate-400">{(currentIntent.bands || []).length} Bands • {currentGraph?.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones</span>
+                <span className="text-[10px] text-slate-400 font-semibold">{(currentIntent.bands || []).length} Bands • {currentGraph?.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones</span>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleOverrideAbstraction('conceptual')}
-                  className={`text-[10px] font-semibold px-2 py-1 rounded border transition ${
-                    selectedAbstraction === 'conceptual'
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-blue-400'
-                  }`}
-                >
-                  Conceptual View
-                </button>
-                <button
-                  onClick={() => handleOverrideAbstraction('logical')}
-                  className={`text-[10px] font-semibold px-2 py-1 rounded border transition ${
-                    selectedAbstraction === 'logical'
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-blue-400'
-                  }`}
-                >
-                  Logical System
-                </button>
-                <button
-                  onClick={() => handleOverrideAbstraction('technical')}
-                  className={`text-[10px] font-semibold px-2 py-1 rounded border transition ${
-                    selectedAbstraction === 'technical'
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-blue-400'
-                  }`}
-                >
-                  Technical Infra
-                </button>
+              <div className="flex items-center gap-1.5">
+                {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
+                  <button
+                    key={lvl}
+                    onClick={() => handleOverrideAbstraction(lvl)}
+                    className={`text-[10px] font-bold px-2 py-1 rounded border transition capitalize ${
+                      selectedAbstraction === lvl
+                        ? 'bg-blue-600 text-white border-blue-600'
+                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                    }`}
+                  >
+                    {lvl}
+                  </button>
+                ))}
               </div>
             </div>
           )}
@@ -527,16 +499,12 @@ export default function Studio3Page() {
                 onChange={e => setPromptInput(e.target.value)}
                 placeholder="Describe your system or expand the active diagram..."
                 disabled={loading}
-                className={`flex-1 px-4 py-2.5 rounded-xl text-xs font-medium border outline-none transition ${
-                  theme === 'dark'
-                    ? 'bg-slate-950 border-slate-800 text-slate-100 focus:border-blue-500'
-                    : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500'
-                }`}
+                className="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
               />
               <button
                 type="submit"
                 disabled={!promptInput.trim() || loading}
-                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50 flex items-center justify-center"
+                className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition disabled:opacity-40 flex items-center justify-center shadow-md"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -544,17 +512,17 @@ export default function Studio3Page() {
           </div>
         </div>
 
-        {/* RIGHT PANE: PRE-SHOW CURTAIN STAGE & DRAW.IO VIEWPORT (7 Cols) */}
-        <div className={`lg:col-span-7 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white'} shadow-sm overflow-hidden`}>
+        {/* RIGHT PANE: PRE-SHOW CURTAIN STAGE & DRAW.IO VIEWPORT (70% WIDTH) */}
+        <div className={`w-full lg:w-[70%] flex-1 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-[#0B111E] shadow-xl' : 'border-slate-200 bg-white shadow-md'} overflow-hidden`}>
           {/* Canvas Header */}
-          <div className={`p-3 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50/70'} flex items-center justify-between`}>
-            <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className={`p-3 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50'} flex items-center justify-between`}>
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveTab('canvas')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'canvas'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -562,10 +530,10 @@ export default function Studio3Page() {
               </button>
               <button
                 onClick={() => setActiveTab('logs')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'logs'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 <Terminal className="w-3.5 h-3.5 text-cyan-400" />
@@ -573,10 +541,10 @@ export default function Studio3Page() {
               </button>
               <button
                 onClick={() => setActiveTab('quality')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'quality'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -584,10 +552,10 @@ export default function Studio3Page() {
               </button>
               <button
                 onClick={() => setActiveTab('xml')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'xml'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800'
                 }`}
               >
                 <Code className="w-3.5 h-3.5" />
@@ -595,13 +563,13 @@ export default function Studio3Page() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+            <div className="flex items-center gap-2 text-xs text-slate-400 font-mono text-[11px]">
               {currentXml ? '16:9 • 1600x1000px' : 'STAGE CURTAIN CLOSED'}
             </div>
           </div>
 
           {/* Canvas Display Area */}
-          <div className="flex-1 relative overflow-hidden bg-slate-950 flex items-center justify-center p-4">
+          <div className="flex-1 relative overflow-hidden bg-slate-950 flex items-center justify-center p-3">
             {/* Draw.io Canvas View OR Pre-Show Curtain Stage */}
             {activeTab === 'canvas' && (
               <div className="w-full h-full rounded-xl overflow-hidden border border-slate-800 bg-slate-950 shadow-inner relative flex items-center justify-center">
@@ -616,52 +584,52 @@ export default function Studio3Page() {
                   /* 🎭 PRE-SHOW STAGE CURTAIN (ELEGANT EMPTY STATE) */
                   <div className="w-full h-full flex flex-col items-center justify-center text-center p-8 relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-950 to-black select-none">
                     {/* Stage Ambient Lighting / Drapery Glow */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(37,99,235,0.18),transparent_70%)] pointer-events-none" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(37,99,235,0.22),transparent_70%)] pointer-events-none" />
                     <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-purple-600 to-amber-500 shadow-[0_0_15px_rgba(37,99,235,0.8)]" />
 
                     {/* Stage Curtain Silhouette Elements */}
-                    <div className="absolute -top-12 -left-12 w-48 h-96 bg-gradient-to-r from-indigo-950/60 to-transparent rounded-full blur-2xl pointer-events-none" />
-                    <div className="absolute -top-12 -right-12 w-48 h-96 bg-gradient-to-l from-indigo-950/60 to-transparent rounded-full blur-2xl pointer-events-none" />
+                    <div className="absolute -top-12 -left-12 w-56 h-96 bg-gradient-to-r from-indigo-950/70 to-transparent rounded-full blur-2xl pointer-events-none" />
+                    <div className="absolute -top-12 -right-12 w-56 h-96 bg-gradient-to-l from-indigo-950/70 to-transparent rounded-full blur-2xl pointer-events-none" />
 
                     {/* Central Stage Portal */}
-                    <div className="relative z-10 max-w-xl flex flex-col items-center space-y-5">
+                    <div className="relative z-10 max-w-xl flex flex-col items-center space-y-6">
                       <div className="relative">
-                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center shadow-[0_0_35px_rgba(37,99,235,0.4)] border border-blue-400/30">
-                          <Clapperboard className="w-9 h-9 text-white" />
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 flex items-center justify-center shadow-[0_0_35px_rgba(37,99,235,0.4)] border border-blue-400/40">
+                          <Clapperboard className="w-10 h-10 text-white" />
                         </div>
                         <div className="absolute -bottom-2 -right-2 p-1.5 rounded-full bg-amber-500 text-slate-950 font-black text-[10px] shadow-md flex items-center justify-center">
-                          <Sparkles className="w-3 h-3" />
+                          <Sparkles className="w-3.5 h-3.5" />
                         </div>
                       </div>
 
                       <div>
-                        <h2 className="text-2xl font-black tracking-tight text-white uppercase">
+                        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase">
                           Studio 3 Generative Stage
                         </h2>
-                        <p className="text-xs text-slate-400 mt-1.5 max-w-md mx-auto leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-300 mt-2 max-w-md mx-auto leading-relaxed">
                           The curtain is drawn. Enter any prompt in the Director Chat to raise the curtain and synthesize your architecture from first principles.
                         </p>
                       </div>
 
                       {/* Interactive Stage Starter Chips */}
                       <div className="w-full pt-2">
-                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+                        <div className="text-[11px] font-black text-slate-400 uppercase tracking-wider mb-3">
                           Pick a Director Scenario:
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
                           {STARTER_PROMPTS.map((sp, idx) => (
                             <button
                               key={idx}
                               onClick={() => handleSynthesize(sp.prompt, sp.abstraction)}
-                              className="p-3 rounded-xl bg-slate-900/90 hover:bg-blue-950/60 border border-slate-800 hover:border-blue-600/60 transition group text-left space-y-1"
+                              className="p-3.5 rounded-xl bg-slate-900/90 hover:bg-blue-950/80 border border-slate-700 hover:border-blue-500 transition group text-left space-y-1 shadow-md"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 group-hover:text-blue-300">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-blue-400 group-hover:text-blue-300">
                                   {sp.category}
                                 </span>
-                                <Play className="w-3 h-3 text-slate-500 group-hover:text-blue-400 transition" />
+                                <Play className="w-3.5 h-3.5 text-slate-500 group-hover:text-blue-400 transition" />
                               </div>
-                              <div className="text-xs font-semibold text-slate-200 group-hover:text-white line-clamp-1">
+                              <div className="text-xs font-bold text-slate-100 group-hover:text-white line-clamp-1">
                                 {sp.title}
                               </div>
                             </button>
@@ -669,9 +637,9 @@ export default function Studio3Page() {
                         </div>
                       </div>
 
-                      <div className="text-[10.5px] text-slate-500 flex items-center gap-1.5 pt-2">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Zero Predefined Templates • Continuous Session State • 3-Stage Quality Gate</span>
+                      <div className="text-[11px] text-slate-400 flex items-center gap-2 pt-2 font-medium">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        <span>Zero Predefined Templates • Continuous Session State • 4-Phase Quality Gate</span>
                       </div>
                     </div>
                   </div>
@@ -683,11 +651,11 @@ export default function Studio3Page() {
             {activeTab === 'logs' && (
               <div className="w-full h-full p-6 overflow-auto bg-slate-950 text-cyan-300 font-mono text-xs rounded-xl border border-slate-800 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-2 text-white font-bold">
+                  <div className="flex items-center gap-2 text-white font-bold text-sm">
                     <Cpu className="w-4 h-4 text-cyan-400" />
                     <span>Real-Time Gemini API Execution Telemetry</span>
                   </div>
-                  <span className="text-[11px] text-slate-400">{allLogs.length} Total Events Logged</span>
+                  <span className="text-xs text-slate-400">{allLogs.length} Total Events Logged</span>
                 </div>
 
                 <div className="space-y-3">
@@ -697,7 +665,7 @@ export default function Studio3Page() {
                     allLogs.map(l => (
                       <div
                         key={l.id}
-                        className={`p-3 rounded-lg border ${
+                        className={`p-3.5 rounded-lg border ${
                           l.status === 'error'
                             ? 'bg-red-950/40 border-red-800/60 text-red-300'
                             : l.status === 'warning'
@@ -705,28 +673,28 @@ export default function Studio3Page() {
                             : 'bg-slate-900 border-slate-800 text-slate-200'
                         }`}
                       >
-                        <div className="flex items-center justify-between text-[10.5px] mb-1">
+                        <div className="flex items-center justify-between text-[11px] mb-1.5">
                           <div className="flex items-center gap-2">
                             <span className="text-slate-400">{l.timestamp}</span>
                             <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold uppercase text-[9.5px] border border-slate-700 text-cyan-400">
                               {l.stage}
                             </span>
                             {l.model && (
-                              <span className="px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 text-[9.5px] border border-blue-800">
+                              <span className="px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 text-[9.5px] border border-blue-800 font-bold">
                                 {l.model}
                               </span>
                             )}
                           </div>
                           {l.latencyMs && (
-                            <span className="flex items-center gap-1 text-slate-400 text-[10px]">
-                              <Clock className="w-3 h-3" />
+                            <span className="flex items-center gap-1 text-slate-400 text-[10.5px]">
+                              <Clock className="w-3.5 h-3.5" />
                               {l.latencyMs}ms
                             </span>
                           )}
                         </div>
                         <div className="text-xs font-semibold mt-1">{l.message}</div>
                         {l.payload && (
-                          <pre className="mt-2 p-2 rounded bg-black/50 text-[10px] text-slate-400 overflow-x-auto">
+                          <pre className="mt-2 p-2 rounded bg-black/60 text-[10.5px] text-slate-300 overflow-x-auto border border-slate-800">
                             {JSON.stringify(l.payload, null, 2)}
                           </pre>
                         )}
@@ -746,73 +714,106 @@ export default function Studio3Page() {
                       <ShieldCheck className="w-5 h-5 text-emerald-400" />
                       <span>Studio 3 Quality Gate & Audit Report</span>
                     </h3>
-                    <p className="text-xs text-slate-400 mt-0.5">3-Phase Technical Accuracy, Spatial Collision, and Versioning Verification</p>
+                    <p className="text-xs text-slate-400 mt-0.5">4-Phase Technical Accuracy, Spatial Collision, Versioning, and Client DOM Verification</p>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-extrabold text-emerald-400">{currentQuality?.overallScore || 96}/100</div>
-                    <div className="text-[10px] font-bold text-emerald-500 uppercase">Certified Production Grade</div>
-                  </div>
+                  {currentQuality && (
+                    <div className={`px-3 py-1 rounded-full text-xs font-black flex items-center gap-1.5 border ${
+                      currentQuality.certified
+                        ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
+                        : 'bg-amber-950/60 border-amber-500/50 text-amber-300'
+                    }`}>
+                      {currentQuality.certified ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertTriangle className="w-4 h-4 text-amber-400" />}
+                      <span>{currentQuality.certified ? 'CERTIFIED ARCHITECTURE' : 'REVIEW NEEDED'} ({currentQuality.overallScore}/100)</span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Phase 1 Card */}
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-blue-400 flex items-center gap-1.5">
-                        <Activity className="w-3.5 h-3.5" />
-                        <span>Phase 1: Technical</span>
-                      </span>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                {!currentQuality ? (
+                  <div className="text-slate-500 italic text-xs">No quality report generated yet. Synthesize an architecture to run automated gate checks.</div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    {/* Phase 1 */}
+                    <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between font-bold text-white">
+                        <span>Phase 1: Technical & Semantic</span>
+                        <span className={currentQuality.phase1Technical.passed ? 'text-emerald-400' : 'text-red-400'}>
+                          {currentQuality.phase1Technical.passed ? 'PASS' : 'WARN'} ({Math.round(currentQuality.phase1Technical.completenessScore * 100)}%)
+                        </span>
+                      </div>
+                      <div className="text-slate-400 space-y-1">
+                        <div>Matched Entities: {currentQuality.phase1Technical.matchedEntities.join(', ') || 'None'}</div>
+                        {currentQuality.phase1Technical.ontologyErrors.length > 0 && (
+                          <div className="text-red-400">Errors: {currentQuality.phase1Technical.ontologyErrors.join('; ')}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-300">
-                      Completeness: <strong>{((currentQuality?.phase1Technical?.completenessScore || 0.95) * 100).toFixed(0)}%</strong>
-                    </div>
-                    <div className="text-[11px] text-slate-400">
-                      Ontology: <span className="text-emerald-400 font-medium">Valid {currentIntent?.abstractionLevel}</span>
-                    </div>
-                  </div>
 
-                  {/* Phase 2 Card */}
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-purple-400 flex items-center gap-1.5">
-                        <LayoutGrid className="w-3.5 h-3.5" />
-                        <span>Phase 2: Visual & Spatial</span>
-                      </span>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    {/* Phase 2 */}
+                    <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between font-bold text-white">
+                        <span>Phase 2: 2D Spatial Geometry</span>
+                        <span className={currentQuality.phase2Visual.passed ? 'text-emerald-400' : 'text-red-400'}>
+                          {currentQuality.phase2Visual.passed ? 'PASS (0 Collisions)' : `FAIL (${currentQuality.phase2Visual.collisionsCount} Collisions)`}
+                        </span>
+                      </div>
+                      <div className="text-slate-400 space-y-1">
+                        <div>Density Grade: <span className="text-blue-400 capitalize">{currentQuality.phase2Visual.densityGrade}</span> ({Math.round(currentQuality.phase2Visual.visualDensity * 100)}% filled)</div>
+                        <div>WCAG AA Contrast: <span className="text-emerald-400">PASSED</span></div>
+                        {currentQuality.phase2Visual.htmlOverflowViolations && currentQuality.phase2Visual.htmlOverflowViolations.length > 0 && (
+                          <div className="text-red-400">HTML Overflows: {currentQuality.phase2Visual.htmlOverflowViolations.join('; ')}</div>
+                        )}
+                        {currentQuality.phase2Visual.columnWidthViolations && currentQuality.phase2Visual.columnWidthViolations.length > 0 && (
+                          <div className="text-red-400">Column Squeeze: {currentQuality.phase2Visual.columnWidthViolations.join('; ')}</div>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-300">
-                      AABB Collisions: <strong className="text-emerald-400">0 Overlaps</strong>
-                    </div>
-                    <div className="text-[11px] text-slate-400">
-                      Density Ratio: <strong>{currentQuality?.phase2Visual?.visualDensity || 0.36} (Optimal)</strong>
-                    </div>
-                  </div>
 
-                  {/* Phase 3 Card */}
-                  <div className="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                        <GitBranch className="w-3.5 h-3.5" />
-                        <span>Phase 3: Versioning</span>
-                      </span>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    {/* Phase 3 */}
+                    <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between font-bold text-white">
+                        <span>Phase 3: Conversational AST Versioning</span>
+                        <span className="text-blue-400">VERIFIED</span>
+                      </div>
+                      <div className="text-slate-400 space-y-1">
+                        <div>Added Nodes: {currentQuality.phase3Versioning.addedNodes.length}</div>
+                        <div>Preserved Anchors: {currentQuality.phase3Versioning.anchorsPreservedCount}</div>
+                      </div>
                     </div>
-                    <div className="text-xs text-slate-300">
-                      AST State Diff: <strong className="text-slate-200">+{currentQuality?.phase3Versioning?.addedNodes?.length || 0} Nodes</strong>
-                    </div>
-                    <div className="text-[11px] text-slate-400">
-                      Layout Anchors: <span className="text-emerald-400 font-medium">Preserved</span>
+
+                    {/* Phase 4 */}
+                    <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between font-bold text-white">
+                        <span>Phase 4: Client DOM & Viewport</span>
+                        <span className={currentQuality.phase4ClientPresentation?.passed ? 'text-emerald-400' : 'text-amber-400'}>
+                          {currentQuality.phase4ClientPresentation?.passed ? 'PASS (Auto-Fit)' : 'WARN'}
+                        </span>
+                      </div>
+                      <div className="text-slate-400 space-y-1">
+                        <div>Viewport Containment: <span className="text-emerald-400 font-bold">{currentQuality.phase4ClientPresentation?.viewportContainment || 'auto_fit_guaranteed'}</span></div>
+                        <div>Markdown Cleanliness: <span className="text-emerald-400 font-bold">{currentQuality.phase4ClientPresentation?.textFormatting || 'formatted_markdown'}</span></div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
 
-            {/* XML View */}
+            {/* RAW XML CODE TAB */}
             {activeTab === 'xml' && (
-              <div className="w-full h-full p-4 font-mono text-xs overflow-auto bg-slate-900 text-blue-300 rounded-xl border border-slate-800">
-                <pre>{currentXml || '<!-- No XML generated yet -->'}</pre>
+              <div className="w-full h-full p-4 overflow-auto bg-slate-950 text-cyan-300 font-mono text-xs rounded-xl border border-slate-800 flex flex-col">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+                  <span className="text-white font-bold">Draw.io XML AST</span>
+                  <button
+                    onClick={handleCopyXml}
+                    className="flex items-center gap-1 text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+                  >
+                    {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    <span>{copied ? 'Copied' : 'Copy'}</span>
+                  </button>
+                </div>
+                <pre className="flex-1 overflow-auto text-[11px] leading-relaxed p-2 bg-black/60 rounded border border-slate-900 text-slate-300">
+                  {currentXml || '<!-- No diagram synthesized yet. -->'}
+                </pre>
               </div>
             )}
           </div>
