@@ -90,6 +90,20 @@ export function verifyPhase1Technical(
     (elem?.details || []).forEach(d => allItems.push(d.toLowerCase()));
   });
 
+  if (Array.isArray(graph?.slides)) {
+    graph.slides.forEach(s => {
+      if (s.title) allCardTitles.push(s.title.toLowerCase());
+      if (s.subtitle) allItems.push(s.subtitle.toLowerCase());
+      if (s.mainSummary) allItems.push(s.mainSummary.toLowerCase());
+      (s.bullets || []).forEach(b => allItems.push(b.toLowerCase()));
+      (s.cards || []).forEach(cd => {
+        if (cd.title) allCardTitles.push(cd.title.toLowerCase());
+        if (cd.desc) allItems.push(cd.desc.toLowerCase());
+        (cd.items || []).forEach(it => allItems.push(it.toLowerCase()));
+      });
+    });
+  }
+
   if (graph?.conceptualRoadmap) {
     const cm = graph.conceptualRoadmap;
     if (cm.title) allCardTitles.push(cm.title.toLowerCase());

@@ -1,4 +1,4 @@
-import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage, Studio3ConceptualRoadmap, Studio3FreeformElement } from './graphExtractor';
+import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage, Studio3ConceptualRoadmap, Studio3FreeformElement, Studio3Slide } from './graphExtractor';
 import { renderGcpIconHtml } from '../gcpIcons';
 import { generateTemplate51GraphTheoryLearningRoadmapXml } from '../canonical/template51GraphTheoryLearningRoadmap';
 import { synthesizeVisualConceptSpecFromPrompt, compileVisualConceptSpecToXml } from './visualConceptEngine';
@@ -1357,6 +1357,163 @@ export function renderBespokeConceptualRoadmapXml(
 </mxfile>`;
 }
 
+export function renderMultiPageSlideDeckXml(
+  slides: Studio3Slide[],
+  deckTitle: string = 'Presentation Slide Deck',
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const isDark = theme === 'dark';
+  const diagramsXml: string[] = [];
+
+  const safeSlides = Array.isArray(slides) && slides.length > 0 ? slides : [
+    {
+      slideNumber: 1,
+      title: 'Executive Summary & Introduction',
+      subtitle: 'Overview of Core Concepts & Architecture',
+      badge: 'Overview',
+      heroIcon: '📊',
+      mainSummary: 'High-level synthesis and strategic takeaways.',
+      bullets: ['• Scalable distributed architecture', '• Sub-second processing latency', '• Zero-trust security compliance']
+    }
+  ];
+
+  safeSlides.forEach((slide, idx) => {
+    const slideNumber = slide.slideNumber || idx + 1;
+    const slideTitle = slide.title || `Slide ${slideNumber}`;
+    const slideId = `slide_${slideNumber}`;
+    const c: string[] = [];
+
+    const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+      c.push(`<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`);
+
+    // 1. TOP SLIDE BANNER (y=15..75, x=30..1570, w=1540, h=60)
+    const hdrHtml = `<div style="background:${isDark ? '#0F1E36' : 'linear-gradient(90deg, #0F172A 0%, #1E293B 100%)'};border-radius:10px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;color:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,0.15);border:1px solid ${isDark ? '#1E3A8A' : '#334155'};">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="background:#2563EB;border-radius:8px;padding:6px 12px;font-size:22px;">${escapeXml(slide.heroIcon || '📑')}</div>
+        <div>
+          <div style="font-family:Impact,Arial Black,sans-serif;letter-spacing:1px;font-size:22px;text-transform:uppercase;color:#FFFFFF;line-height:1.1;">
+            ${escapeXml(slideTitle)}
+          </div>
+          ${slide.subtitle ? `<div style="font-size:11.5px;color:#94A3B8;font-weight:600;margin-top:2px;">${escapeXml(slide.subtitle)}</div>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        ${slide.badge ? `<span style="background:rgba(59,130,246,0.18);border:1px solid #3B82F6;color:#60A5FA;padding:4px 12px;border-radius:12px;font-size:10.5px;font-weight:800;text-transform:uppercase;">${escapeXml(slide.badge)}</span>` : ''}
+        <span style="background:#2563EB;color:#FFF;padding:5px 14px;border-radius:14px;font-size:11px;font-weight:900;letter-spacing:0.04em;">SLIDE ${slideNumber} / ${safeSlides.length}</span>
+      </div>
+    </div>`;
+    cell('slide_hdr', hdrHtml, 30, 15, 1540, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+    // 2. MAIN BODY SECTION (y=85..840)
+    let bodyY = 85;
+
+    // Optional Main Summary Hero
+    if (slide.mainSummary) {
+      const summaryHtml = `<div style="background:${isDark ? '#131D31' : '#EFF6FF'};border:1.5px solid ${isDark ? '#1E3A8A' : '#93C5FD'};border-radius:10px;padding:12px 18px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#F8FAFC' : '#1E3A8A'};font-size:13px;font-weight:700;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+        💡 <strong>Core Concept:</strong> ${escapeXml(slide.mainSummary)}
+      </div>`;
+      cell('slide_summary', summaryHtml, 30, bodyY, 1540, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+      bodyY += 60;
+    }
+
+    // Optional Formula Bar
+    if (slide.formula) {
+      const formulaHtml = `<div style="background:${isDark ? '#050914' : '#FFFBEB'};border:1.5px solid ${isDark ? '#334155' : '#FCD34D'};border-radius:10px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+        <div style="font-size:11px;font-weight:900;color:${isDark ? '#F59E0B' : '#D97706'};text-transform:uppercase;letter-spacing:0.04em;">📐 Mathematical Formalism</div>
+        <div style="font-family:monospace;font-size:12.5px;font-weight:900;color:${isDark ? '#FCD34D' : '#92400E'};">${escapeXml(slide.formula)}</div>
+      </div>`;
+      cell('slide_formula', formulaHtml, 30, bodyY, 1540, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+      bodyY += 56;
+    }
+
+    // Cards Grid (2, 3, or 4 columns)
+    const cards = slide.cards || [];
+    const numCards = Math.max(cards.length, 1);
+    const cardGap = 16;
+    const cardW = (1540 - cardGap * (numCards - 1)) / numCards;
+    const remainingH = 840 - bodyY;
+    const cardH = slide.takeaway ? remainingH - 65 : remainingH;
+
+    cards.forEach((cd, cIdx) => {
+      const cardX = 30 + cIdx * (cardW + cardGap);
+      const colorKey = String(cd.color || 'blue').trim().toLowerCase();
+      const cCol = COLOR_MAP[colorKey] || COLOR_MAP.blue;
+
+      const cardHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${cCol.border};border-radius:10px;padding:16px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.04);">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+            <div style="font-size:13.5px;font-weight:900;color:${cCol.text};text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+              <span>${escapeXml(cd.icon || '⚡')}</span>
+              <span>${escapeXml(cd.title)}</span>
+            </div>
+            ${cd.badge ? `<span style="background:${cCol.lightBg};color:${cCol.text};border:1px solid ${cCol.border};padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:800;">${escapeXml(cd.badge)}</span>` : ''}
+          </div>
+          ${cd.desc ? `<div style="font-size:11.5px;color:${isDark ? '#94A3B8' : '#475569'};line-height:1.45;margin-bottom:10px;">${escapeXml(cd.desc)}</div>` : ''}
+          ${cd.formula ? `<div style="background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-family:monospace;font-size:10.5px;color:${cCol.text};font-weight:bold;margin-bottom:10px;">${escapeXml(cd.formula)}</div>` : ''}
+          ${Array.isArray(cd.items) && cd.items.length > 0 ? `
+            <ul style="margin:0;padding-left:16px;color:${isDark ? '#CBD5E1' : '#334155'};font-size:11px;line-height:1.45;">
+              ${cd.items.map(it => `<li style="margin-bottom:4px;">${escapeXml(it)}</li>`).join('')}
+            </ul>
+          ` : ''}
+        </div>
+        <div style="background:${cCol.lightBg};border-radius:6px;padding:6px 10px;font-size:10px;font-weight:800;color:${cCol.text};text-align:center;">
+          Verified Production Principle
+        </div>
+      </div>`;
+      cell(`card_${cIdx}`, cardHtml, cardX, bodyY, cardW, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    });
+
+    // If no cards, render Bullets / Key Metrics
+    if (cards.length === 0 && (slide.bullets || slide.keyMetrics)) {
+      const bulletsHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:10px;padding:20px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          ${(slide.bullets || []).map(b => `<div style="font-size:13px;font-weight:700;color:${isDark ? '#F8FAFC' : '#0F172A'};line-height:1.5;">${escapeXml(b)}</div>`).join('')}
+        </div>
+        ${Array.isArray(slide.keyMetrics) && slide.keyMetrics.length > 0 ? `
+          <div style="display:flex;gap:12px;margin-top:16px;">
+            ${slide.keyMetrics.map(m => `
+              <div style="background:${isDark ? '#1E293B' : '#F1F5F9'};border:1px solid ${isDark ? '#3B82F6' : '#93C5FD'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;">
+                <div style="font-size:10px;color:#94A3B8;font-weight:800;text-transform:uppercase;">${escapeXml(m.label)}</div>
+                <div style="font-size:18px;font-weight:900;color:#2563EB;">${escapeXml(m.value)}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>`;
+      cell('bullets_box', bulletsHtml, 30, bodyY, 1540, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    }
+
+    // Optional Bottom Takeaway Card
+    if (slide.takeaway) {
+      const takeawayY = 850;
+      const takeawayHtml = `<div style="background:${isDark ? '#064E3B' : '#ECFDF5'};border:1.5px solid ${isDark ? '#059669' : '#86EFAC'};border-radius:8px;padding:10px 18px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#A7F3D0' : '#065F46'};font-size:12px;font-weight:800;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:16px;">🎯</span>
+        <span><strong>Key Takeaway:</strong> ${escapeXml(slide.takeaway)}</span>
+      </div>`;
+      cell('slide_takeaway', takeawayHtml, 30, takeawayY, 1540, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    }
+
+    // 3. BOTTOM FOOTER (y=915..960, h=45)
+    const ftrHtml = `<div style="background:${isDark ? '#0F172A' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#E2E8F0'};color:${isDark ? '#94A3B8' : '#64748B'};border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;">
+      <div>🧬 <strong>${escapeXml(deckTitle)}</strong> • Slide ${slideNumber} of ${safeSlides.length}</div>
+      <div style="color:#3B82F6;font-weight:800;">PromptCanvas Multi-Modal Presentation Engine</div>
+    </div>`;
+    cell('slide_ftr', ftrHtml, 30, 915, 1540, 45, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+    diagramsXml.push(`  <diagram id="${slideId}" name="Slide ${slideNumber}: ${escapeXml(slideTitle)}">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="${isDark ? '#0B111E' : '#FFFFFF'}" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>`);
+  });
+
+  return `<mxfile host="embed.diagrams.net">\n${diagramsXml.join('\n')}\n</mxfile>`;
+}
+
 export function renderUniversalConceptualRoadmapXml(
   roadmap: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
@@ -1575,7 +1732,12 @@ export function solveAndRenderStudio3Xml(
 ): string {
   const { theme = 'dark', canvasWidth = 1600, canvasHeight = 1000 } = options;
 
-  // 0. Dynamic Bespoke Conceptual Roadmap Renderer (if conceptual roadmap graph provided)
+  // 0A. Multi-Page Slide Deck / Presentation Carousel Renderer
+  if (graph?.layoutType === 'slide_deck' || (Array.isArray(graph?.slides) && graph.slides.length > 0)) {
+    return renderMultiPageSlideDeckXml(graph.slides || [], graph.title || 'Presentation Slide Deck', theme);
+  }
+
+  // 0B. Dynamic Bespoke Conceptual Roadmap Renderer
   if (graph?.conceptualRoadmap) {
     return renderUniversalConceptualRoadmapXml(graph.conceptualRoadmap, theme);
   }

@@ -37,7 +37,9 @@ import {
   X,
   Search,
   Trash2,
-  CopyPlus
+  CopyPlus,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
@@ -113,6 +115,31 @@ export default function Studio3Page() {
   const [currentQuality, setCurrentQuality] = useState<Studio3QualityReport | null>(null);
   const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
   const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('conceptual');
+  const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+
+  // Multi-page Slide Deck Parser & Active Slide Selector
+  const parsedSlides = React.useMemo(() => {
+    if (!currentXml) return [];
+    const matches: Array<{ id: string; name: string; fullDiagramXml: string }> = [];
+    const diagramBlockRegex = /<diagram\s+id="([^"]+)"\s+name="([^"]+)">([\s\S]*?)<\/diagram>/g;
+    let match;
+    while ((match = diagramBlockRegex.exec(currentXml)) !== null) {
+      matches.push({
+        id: match[1],
+        name: match[2],
+        fullDiagramXml: match[0]
+      });
+    }
+    return matches;
+  }, [currentXml]);
+
+  const activeXmlForViewer = React.useMemo(() => {
+    if (!currentXml || parsedSlides.length <= 1) return currentXml;
+    const activeSlide = parsedSlides[activeSlideIndex] || parsedSlides[0];
+    const otherSlides = parsedSlides.filter((_, idx) => idx !== activeSlideIndex);
+    const reorderedDiagrams = [activeSlide, ...otherSlides].map(s => s.fullDiagramXml).join('\n');
+    return `<mxfile host="embed.diagrams.net">\n${reorderedDiagrams}\n</mxfile>`;
+  }, [currentXml, parsedSlides, activeSlideIndex]);
 
   // History Drawer State
   const [showHistory, setShowHistory] = useState(false);
@@ -828,8 +855,53 @@ export default function Studio3Page() {
               </button>
             </div>
 
-            <div className={`flex items-center gap-2 text-xs font-mono text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-              {currentXml ? '16:9 • 1600x1000px' : 'STAGE CURTAIN CLOSED'}
+            {/* Right Side: Multi-Slide Carousel Controls & Viewport Metadata */}
+            <div className="flex items-center gap-3">
+              {parsedSlides.length > 1 && (
+                <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border shadow-xs ${
+                  theme === 'dark' ? 'bg-blue-950/70 border-blue-500/50 text-blue-200' : 'bg-blue-50 border-blue-300 text-blue-900'
+                }`}>
+                  <span className="text-[10.5px] font-black tracking-wide uppercase mr-1 flex items-center gap-1">
+                    📑 <span>Deck:</span>
+                  </span>
+                  <button
+                    onClick={() => setActiveSlideIndex(i => Math.max(0, i - 1))}
+                    disabled={activeSlideIndex === 0}
+                    className="p-1 rounded hover:bg-blue-600 hover:text-white transition disabled:opacity-30"
+                    title="Previous Slide"
+                  >
+                    <ChevronLeft className="w-3.5 h-3.5" />
+                  </button>
+                  <select
+                    value={activeSlideIndex}
+                    onChange={e => setActiveSlideIndex(Number(e.target.value))}
+                    className={`text-[11px] font-bold rounded px-2 py-0.5 border focus:outline-none cursor-pointer ${
+                      theme === 'dark' ? 'bg-slate-900 text-white border-slate-700' : 'bg-white text-slate-900 border-slate-300'
+                    }`}
+                  >
+                    {parsedSlides.map((s, idx) => (
+                      <option key={s.id} value={idx}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => setActiveSlideIndex(i => Math.min(parsedSlides.length - 1, i + 1))}
+                    disabled={activeSlideIndex === parsedSlides.length - 1}
+                    className="p-1 rounded hover:bg-blue-600 hover:text-white transition disabled:opacity-30"
+                    title="Next Slide"
+                  >
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="text-[10px] font-bold opacity-80 ml-1">
+                    ({activeSlideIndex + 1}/{parsedSlides.length})
+                  </span>
+                </div>
+              )}
+
+              <div className={`hidden sm:flex items-center gap-2 text-xs font-mono text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
+                {currentXml ? (parsedSlides.length > 1 ? `${parsedSlides.length} Slides • 16:9` : '16:9 • 1600x1000px') : 'STAGE CURTAIN CLOSED'}
+              </div>
             </div>
           </div>
 
@@ -840,7 +912,7 @@ export default function Studio3Page() {
               <div className={`w-full h-full rounded-xl overflow-hidden border shadow-inner relative flex items-center justify-center ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-300 bg-white'}`}>
                 {currentXml ? (
                   <DiagramViewerRenderSafe
-                    xml={currentXml}
+                    xml={activeXmlForViewer}
                     aspectRatioId="16:9"
                     bgTheme={theme}
                     allowFullScaleScroll={false}

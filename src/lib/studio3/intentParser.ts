@@ -11,7 +11,9 @@ export type TopologyGrammar =
   | 'composite_multi_band'
   | 'matrix_grid'
   | 'hub_spoke'
-  | 'swimlanes';
+  | 'swimlanes'
+  | 'slide_deck'
+  | 'freeform_canvas';
 
 export type TemporalNature = 'steady_state_topology' | 'sequential_workflow';
 
@@ -33,6 +35,7 @@ export interface Studio3Intent {
   inferredEntities: string[];
   rationale: string;
   actionType: 'initial_synthesis' | 'in_place_refinement' | 'band_expansion';
+  requestedSlideCount?: number;
 }
 
 function getAiClient(apiKey?: string): GoogleGenAI {
@@ -51,7 +54,25 @@ export function parseStudio3IntentHeuristics(
   const p = safePrompt.toLowerCase();
   const isFollowUp = Boolean(previousContext && String(previousContext).trim().length > 0);
 
-  // 1. Abstraction Level detection: Default to technical/logical for engineering/cloud/protocol systems
+  // 1. Slide Deck / Carousel Detection
+  const isSlideDeck =
+    p.includes('slide') ||
+    p.includes('carousel') ||
+    p.includes('carousal') ||
+    p.includes('presentation') ||
+    p.includes('deck') ||
+    p.includes('storyboard') ||
+    p.includes('pitch');
+
+  let requestedSlideCount = 6;
+  const slideMatch = p.match(/(\d+)\s*(slide|page|card|part)/);
+  if (slideMatch) {
+    requestedSlideCount = Math.min(Math.max(parseInt(slideMatch[1], 10), 3), 15);
+  } else if (p.includes('10')) {
+    requestedSlideCount = 10;
+  }
+
+  // 2. Abstraction Level detection: Default to technical/logical for engineering/cloud/protocol systems
   let abstractionLevel: AbstractionLevel = 'technical';
   if (
     p.includes('analogy') ||
@@ -76,7 +97,7 @@ export function parseStudio3IntentHeuristics(
     abstractionLevel = 'technical';
   }
 
-  // 2. Multi-Band / Composite expansion detection
+  // 3. Multi-Band / Composite expansion detection
   const isComparison =
     p.includes('compare') ||
     p.includes('contrast') ||
@@ -97,7 +118,17 @@ export function parseStudio3IntentHeuristics(
   let topologyGrammar: TopologyGrammar = 'hierarchical_tiers';
   let bands: Studio3IntentBand[] = [];
 
-  if (isComparison && isWorkflow) {
+  if (isSlideDeck) {
+    topologyGrammar = 'slide_deck';
+    bands = [
+      {
+        id: 'band_slides',
+        name: `${requestedSlideCount}-Slide Presentation Deck`,
+        type: 'workflow',
+        description: `Multi-page sequential slide deck containing ${requestedSlideCount} discrete slides.`
+      }
+    ];
+  } else if (isComparison && isWorkflow) {
     topologyGrammar = 'composite_multi_band';
     bands = [
       {
@@ -178,7 +209,8 @@ export function parseStudio3IntentHeuristics(
     bands,
     inferredEntities: extractKeywords(safePrompt),
     rationale: `Classified as ${abstractionLevel} based on detected keywords and intent vectors. Grammar: ${topologyGrammar}.`,
-    actionType
+    actionType,
+    requestedSlideCount: isSlideDeck ? requestedSlideCount : undefined
   };
 }
 

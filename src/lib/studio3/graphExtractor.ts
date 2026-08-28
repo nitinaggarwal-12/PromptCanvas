@@ -133,13 +133,39 @@ export interface Studio3ConceptualRoadmap {
   footerTenets: string[];
 }
 
+export interface Studio3SlideCard {
+  title: string;
+  desc?: string;
+  icon?: string;
+  badge?: string;
+  formula?: string;
+  items?: string[];
+  color?: 'blue' | 'purple' | 'teal' | 'slate' | 'amber' | 'emerald' | 'cyan' | 'red';
+}
+
+export interface Studio3Slide {
+  slideNumber: number;
+  title: string;
+  subtitle?: string;
+  badge?: string;
+  heroIcon?: string;
+  layout?: 'hero_visual' | 'cards_grid' | 'formula_breakdown' | 'step_pipeline' | 'split_comparison';
+  mainSummary?: string;
+  cards?: Studio3SlideCard[];
+  keyMetrics?: Array<{ label: string; value: string }>;
+  formula?: string;
+  bullets?: string[];
+  takeaway?: string;
+}
+
 export interface Studio3SemanticGraph {
   title: string;
   subtitle: string;
   tenets: string[];
   abstractionLevel: 'conceptual' | 'logical' | 'technical';
-  layoutType?: 'freeform' | 'bands' | 'matrix' | 'conceptual_roadmap';
+  layoutType?: 'freeform' | 'bands' | 'matrix' | 'conceptual_roadmap' | 'slide_deck';
   templateId?: string;
+  slides?: Studio3Slide[];
   conceptualRoadmap?: Studio3ConceptualRoadmap;
   freeformElements?: Studio3FreeformElement[];
   bands: Studio3Band[];
@@ -702,7 +728,94 @@ export function generateDynamicFirstPrinciplesGraph(
   const p = (prompt || '').toLowerCase();
   const isMultiBand = intent.topologyGrammar === 'composite_multi_band' || intent.actionType === 'band_expansion';
 
-  // 0. UNIVERSAL CONCEPTUAL LEARNING ROADMAP (APPLIES TO ANY TOPIC UNDER THE SUN!)
+  // 0A. MULTI-PAGE SLIDE DECK / PRESENTATION CAROUSEL
+  if (
+    intent.topologyGrammar === 'slide_deck' ||
+    p.includes('slide') ||
+    p.includes('carousel') ||
+    p.includes('carousal') ||
+    p.includes('presentation') ||
+    p.includes('deck')
+  ) {
+    const slideCount = intent.requestedSlideCount || 6;
+    const cleanTopic = prompt.replace(/(\d+)\s*(slide|page|card|carousel|carousal|deck|presentation)/gi, '').replace(/build|make|create|generate|what is|tell me|show me/gi, '').trim().toUpperCase() || 'SYSTEM ARCHITECTURE';
+    const slides: Studio3Slide[] = [];
+
+    for (let i = 1; i <= slideCount; i++) {
+      if (i === 1) {
+        slides.push({
+          slideNumber: 1,
+          title: `1. INTRODUCTION: ${cleanTopic}`,
+          subtitle: 'Executive Summary & Foundational Motivation',
+          badge: 'Overview',
+          heroIcon: '🧭',
+          mainSummary: `Overview and primary architectural objectives of ${cleanTopic}.`,
+          cards: [
+            { title: 'Core Mission', desc: `Understanding the architectural fundamentals of ${cleanTopic}.`, icon: '🎯', badge: 'Foundational', color: 'blue' },
+            { title: 'Key Benefits', desc: 'Scalability, resilience, and mathematical elegance.', icon: '⚡', badge: 'High Impact', color: 'teal' }
+          ],
+          bullets: [`• Overview of ${cleanTopic}`, '• Industry adoption and performance benchmarks'],
+          takeaway: 'Provides the structural backbone for modern high-scale implementations.'
+        });
+      } else if (i === 2) {
+        slides.push({
+          slideNumber: 2,
+          title: `2. THE PROBLEM & TRADITIONAL BOTTLENECKS`,
+          subtitle: 'Limitations of Preceding Approaches',
+          badge: 'Problem Space',
+          heroIcon: '⚠️',
+          mainSummary: 'Traditional approaches suffer from sequential bottlenecks and memory scaling constraints.',
+          cards: [
+            { title: 'Sequential Processing', desc: 'O(N) recurrence prevents parallel hardware acceleration on GPUs.', icon: '⏱️', badge: 'Bottleneck', color: 'red' },
+            { title: 'Information Loss', desc: 'Vanishing gradients and context attenuation across long sequences.', icon: '📉', badge: 'Memory Limit', color: 'amber' }
+          ],
+          takeaway: 'Necessitated a paradigm shift towards parallelized, attention-based architectures.'
+        });
+      } else if (i === 3) {
+        slides.push({
+          slideNumber: 3,
+          title: `3. CORE ARCHITECTURAL MECHANISM`,
+          subtitle: 'First-Principles Mechanics & Structural Design',
+          badge: 'Mechanism',
+          heroIcon: '⚙️',
+          formula: 'Attention(Q, K, V) = softmax(Q · K^T / √d_k) · V',
+          cards: [
+            { title: 'Query Vector (Q)', desc: 'Represents the current item seeking context.', icon: '🔍', color: 'blue' },
+            { title: 'Key Vector (K)', desc: 'Represents candidate items offering relevance scores.', icon: '🏷️', color: 'purple' },
+            { title: 'Value Vector (V)', desc: 'Contains the actual feature payload aggregated by attention weights.', icon: '📑', color: 'emerald' }
+          ],
+          takeaway: 'Enables constant-time O(1) path length between any two tokens in a sequence.'
+        });
+      } else {
+        slides.push({
+          slideNumber: i,
+          title: `${i}. ${cleanTopic}: STAGE ${i}`,
+          subtitle: `Deep-Dive Phase ${i} of ${slideCount}`,
+          badge: `Part ${i}`,
+          heroIcon: '🔬',
+          cards: [
+            { title: `Component ${i}A`, desc: `Detailed technical operations and validation rules for Stage ${i}.`, icon: '⚡', color: 'blue' },
+            { title: `Component ${i}B`, desc: `Downstream optimization and integration patterns for Stage ${i}.`, icon: '🚀', color: 'purple' }
+          ],
+          bullets: [`• Milestone ${i} verification and health telemetry`, `• Production scale SLAs and automated recovery`],
+          takeaway: `Phase ${i} establishes verified stability and high throughput.`
+        });
+      }
+    }
+
+    return {
+      title: `${cleanTopic}: ${slideCount}-SLIDE PRESENTATION DECK`,
+      subtitle: `Bespoke Multi-Page Presentation Carousel for ${cleanTopic}`,
+      tenets: ['MODULARITY', 'SCALABILITY', 'PRODUCTION VERIFIED'],
+      abstractionLevel: intent.abstractionLevel,
+      layoutType: 'slide_deck',
+      slides,
+      bands: [],
+      connections: []
+    };
+  }
+
+  // 0B. UNIVERSAL CONCEPTUAL LEARNING ROADMAP (APPLIES TO ANY TOPIC UNDER THE SUN!)
   if (
     intent.abstractionLevel === 'conceptual' ||
     p.startsWith('teach me') ||
@@ -1244,13 +1357,14 @@ Your task is to analyze the user's natural language request and synthesize an au
 
 MANDATORY RULES:
 1. No generic or canned boilerplate. Every title, subsystem, card item, protocol, and connector MUST be deeply tailored and relevant to the user's specific prompt.
-2. For educational, scientific, learning, and algorithmic flows ("help me learn X", "how does X work", "explain X step by step"):
-   - Output structured bands or a conceptualRoadmap that teaches the exact concepts, mathematical foundations, data representations, and real-world architectures for X.
-3. For cloud systems and distributed engineering topologies:
-   - Use structured tiers/bands (e.g. Ingress, Compute/Worker Engine, Storage/Persistence, Security/Governance) with rich technical bullet points and authentic GCP/cloud services.
+2. SLIDE DECKS & PRESENTATION CAROUSELS:
+   - When the user asks for "slides", "carousel", "presentation deck", "pitch deck", or "storyboard", you MUST output "layoutType": "slide_deck" with the exact requested number of slides in the "slides" array (default 6 to 10 slides).
+   - Each slide must be a complete presentation slide with "slideNumber", "title", "subtitle", "badge", "heroIcon", "mainSummary", "cards" (2-4 cards), "keyMetrics", "formula", "bullets", and "takeaway".
+3. FREEFORM ARCHITECTURE & FLOWCHARTS:
+   - When user asks for custom topologies, service meshes, or data flow architectures, output "layoutType": "bands" with structured tiers OR "layoutType": "freeform" with "freeformElements".
 4. Connectors MUST have explicit numbered badges (❶, ❷, ❸...) and semantic protocol labels showing true data flow and state transitions.`;
 
-    const userContent = `Extract the complete architecture graph for:
+    const userContent = `Extract the complete architecture or presentation graph for:
 Prompt: "${prompt}"
 Validated Intent: ${JSON.stringify(intent, null, 2)}
 Previous History: "${previousContext || 'None'}"
@@ -1261,7 +1375,33 @@ JSON Schema:
   "subtitle": "Informative Subtitle",
   "tenets": ["TENET 1", "TENET 2", "TENET 3"],
   "abstractionLevel": "conceptual" | "logical" | "technical",
-  "layoutType": "conceptual_roadmap" | "bands",
+  "layoutType": "slide_deck" | "bands" | "conceptual_roadmap" | "freeform",
+  "slides": [
+    {
+      "slideNumber": 1,
+      "title": "Slide Headline",
+      "subtitle": "Slide Subtitle",
+      "badge": "Phase 1",
+      "heroIcon": "🧠",
+      "layout": "cards_grid" | "formula_breakdown" | "step_pipeline" | "split_comparison" | "hero_visual",
+      "mainSummary": "Core summary of this slide",
+      "cards": [
+        {
+          "title": "Card Title",
+          "desc": "Card Description",
+          "icon": "⚡",
+          "badge": "Sub-10ms",
+          "formula": "Optional Equation",
+          "items": ["Point 1", "Point 2"],
+          "color": "blue" | "teal" | "purple" | "emerald" | "amber" | "red"
+        }
+      ],
+      "keyMetrics": [{ "label": "Accuracy", "value": "99.4%" }],
+      "formula": "Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V",
+      "bullets": ["• Bullet Point 1", "• Bullet Point 2"],
+      "takeaway": "Key executive or technical takeaway"
+    }
+  ],
   "conceptualRoadmap": {
     "title": "ROADMAP TITLE IN ALL CAPS",
     "subtitle": "Subtitle",
@@ -1308,8 +1448,8 @@ JSON Schema:
     "section4ModernFrontiers": {
       "title": "Modern Scientific / Industrial Frontiers",
       "knowledgeGraphNodes": [
-        { "id": "kg1", "label": "Node 1\nLabel", "color": "#38BDF8" },
-        { "id": "kg2", "label": "Node 2\nLabel", "color": "#F59E0B" }
+        { "id": "kg1", "label": "Node 1\\nLabel", "color": "#38BDF8" },
+        { "id": "kg2", "label": "Node 2\\nLabel", "color": "#F59E0B" }
       ],
       "frameworkBullets": ["🔬 • Bullet 1", "🌪️ • Bullet 2", "🚀 • Bullet 3"]
     },
