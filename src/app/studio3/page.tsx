@@ -107,11 +107,29 @@ export default function Studio3Page() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  const fallbackCopyTextToClipboard = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      document.execCommand('copy');
+    } catch (err) {
+      console.error('Fallback copy failed', err);
+    }
+    document.body.removeChild(textArea);
+  };
+
   const handleResetStage = () => {
     setCurrentXml('');
     setCurrentIntent(null);
     setCurrentGraph(null);
     setCurrentQuality(null);
+    setAllLogs([]);
     setMessages([
       {
         id: `msg_${Date.now()}`,
@@ -236,7 +254,13 @@ export default function Studio3Page() {
 
   const handleCopyXml = () => {
     if (!currentXml) return;
-    navigator.clipboard.writeText(currentXml);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(currentXml).catch(() => {
+        fallbackCopyTextToClipboard(currentXml);
+      });
+    } else {
+      fallbackCopyTextToClipboard(currentXml);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
