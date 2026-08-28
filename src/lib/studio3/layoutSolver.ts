@@ -1502,228 +1502,292 @@ export function renderBespokeConceptualRoadmapXml(
   milestones.slice(0, 4).forEach((m, idx) => {
     const mx = 20 + idx * 395;
     const col = mColors[m.color] || mColors.blue;
-    const mHtml = `<div style="background:${col.bg};color:#FFFFFF;border-radius:6px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Impact,Arial Black,sans-serif;font-size:13.5px;letter-spacing:0.4px;text-transform:uppercase;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+    const mHtml = `<div style="background:${col.bg};color:#FFFFFF;border-radius:6px;min-height:42px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:8px;font-family:Impact,Arial Black,sans-serif;font-size:13.5px;letter-spacing:0.4px;text-transform:uppercase;padding:0 12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);">
       <span>${escapeXml(m.icon || '📌')}</span>
       <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(m.title)}</span>
     </div>`;
-    cell(`m_${idx}`, mHtml, mx, 68, 380, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    cell(`m_${idx}`, mHtml, mx, 68, 380, 42, `text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=${col.bg};strokeColor=${col.border};strokeWidth=1.5;rounded=1;`);
   });
 
   // 3. TIER 1 (y=116..545, h=428): 4 Quadrants
   // Quadrant 1: Section 1 Analogy (x=20..395, w=375)
   const s1 = roadmap.section1Analogy || {
     title: 'First-Principles Visual Metaphor',
-    actors: [{ id: 'a1', name: 'Input Source', avatar: '📥' }, { id: 'a2', name: 'Core Engine', avatar: '⚡' }, { id: 'a3', name: 'Output State', avatar: '🎯' }],
-    relations: [{ from: 'a1', to: 'a2', label: 'Transforms' }, { from: 'a2', to: 'a3', label: 'Emits' }],
+    actors: [
+      { id: 'a1', name: 'Input Context (Query)', avatar: '📥' },
+      { id: 'a2', name: 'Attention Engine (Key/Value)', avatar: '⚡' },
+      { id: 'a3', name: 'Synthesized Representation', avatar: '🎯' }
+    ],
+    relations: [
+      { from: 'Input Context', to: 'Attention Engine', label: 'Computes Dynamic Relevance' },
+      { from: 'Attention Engine', to: 'Synthesized Representation', label: 'Emits Contextual Embeddings' }
+    ],
     legend: [{ icon: '⚡', label: 'Execution' }],
-    challengeCallout: 'Core Challenge: Ensuring sub-second latency and zero loss under high concurrency.'
+    challengeCallout: 'Core Challenge: Eliminating sequential RNN latency while capturing unlimited long-range token relationships.'
   };
 
-  const s1Html = `<div style="background:#EFF6FF;border:1.5px solid #93C5FD;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const s1Html = `<div style="background:#EFF6FF;border:1.5px solid #93C5FD;border-radius:10px;padding:14px;min-height:428px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:13px;font-weight:900;color:#1D4ED8;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+      <div style="font-size:13.5px;font-weight:900;color:#1D4ED8;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid #BFDBFE;padding-bottom:6px;">
         <span>💡</span> <span>${escapeXml(s1.title)}</span>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
         ${(s1.actors || []).map(a => `
-          <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:6px;padding:6px 10px;display:flex;align-items:center;gap:10px;">
-            <span style="font-size:18px;">${escapeXml(a.avatar || '📦')}</span>
-            <div style="font-size:11px;font-weight:800;color:#0F172A;">${escapeXml(a.name)}</div>
+          <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:6px;padding:8px 12px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,0.03);">
+            <span style="font-size:22px;">${escapeXml(a.avatar || '📦')}</span>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:#0F172A;">${escapeXml(a.name)}</div>
+              <div style="font-size:10px;color:#64748B;font-weight:600;">Autonomous Sequence Node</div>
+            </div>
           </div>
         `).join('')}
       </div>
       ${(s1.relations || []).length > 0 ? `
-        <div style="background:#DBEAFE;border-radius:6px;padding:6px 8px;font-size:9.5px;color:#1E40AF;font-weight:700;margin-bottom:8px;">
-          ${s1.relations.map(r => `• ${escapeXml(r.from)} ➔ ${escapeXml(r.to)}: <em>${escapeXml(r.label)}</em>`).join('<br/>')}
+        <div style="background:#DBEAFE;border:1px solid #93C5FD;border-radius:6px;padding:8px 10px;font-size:10.5px;color:#1E40AF;font-weight:700;line-height:1.5;">
+          ${s1.relations.map(r => `• <strong>${escapeXml(r.from)}</strong> ➔ <strong>${escapeXml(r.to)}</strong>: <em>${escapeXml(r.label)}</em>`).join('<br/>')}
         </div>
       ` : ''}
     </div>
-    <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:6px;padding:8px 10px;font-size:10px;color:#92400E;font-weight:800;">
+    <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:6px;padding:10px 12px;font-size:10.5px;color:#92400E;font-weight:800;line-height:1.4;">
       ⚠️ ${escapeXml(s1.challengeCallout)}
     </div>
   </div>`;
-  cell('quad_1', s1Html, 20, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('quad_1', s1Html, 20, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;rounded=1;');
 
   // Quadrant 2: Section 2 Prerequisites & Formulas (x=405..780, w=375)
   const s2 = roadmap.section2Prerequisites || {
-    title: 'Mathematical & Theoretical Foundations',
-    mathFormulas: [{ name: 'State Transfer Function', formula: 'S(t+1) = f(S(t), Input)', icon: '📐' }],
-    checklist: ['☑ Deterministic execution', '☑ Convergence guarantee']
+    title: 'Theoretical Foundations & Formulas',
+    mathFormulas: [
+      { name: 'Self-Attention Formulation', formula: 'Attn(Q,K,V) = Softmax(QK^T / √d_k) · V', icon: '📐' },
+      { name: 'Positional Encoding', formula: 'PE(pos, 2i) = sin(pos / 10000^(2i/d))', icon: '⚡' }
+    ],
+    checklist: [
+      '☑ Vector Embeddings & Word Projections',
+      '☑ Matrix Multiplication & Linear Algebra',
+      '☑ Softmax Function for Probability Weights',
+      '☑ Residual Connections & LayerNorm Stabilization'
+    ]
   };
 
-  const s2Html = `<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const s2Html = `<div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:10px;padding:14px;min-height:428px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:13px;font-weight:900;color:#15803D;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+      <div style="font-size:13.5px;font-weight:900;color:#15803D;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid #BBF7D0;padding-bottom:6px;">
         <span>📐</span> <span>${escapeXml(s2.title)}</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;">
         ${(s2.mathFormulas || []).map(f => `
-          <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10px;font-weight:800;color:#15803D;margin-bottom:3px;">${escapeXml(f.name)}</div>
-            <div style="font-family:monospace;font-size:11px;font-weight:900;color:#0F172A;background:#F8FAFC;padding:4px 6px;border-radius:4px;">${escapeXml(f.formula)}</div>
+          <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:8px 10px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <div style="font-size:10.5px;font-weight:800;color:#15803D;margin-bottom:3px;">${escapeXml(f.name)}</div>
+            <div style="font-family:monospace;font-size:11px;font-weight:900;color:#0F172A;background:#F8FAFC;padding:5px 8px;border-radius:4px;border:1px solid #E2E8F0;">${escapeXml(f.formula)}</div>
           </div>
         `).join('')}
       </div>
     </div>
-    <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:8px 10px;">
-      <div style="font-size:10px;font-weight:900;color:#15803D;margin-bottom:4px;">VERIFICATION CHECKLIST</div>
+    <div style="background:#FFFFFF;border:1px solid #BBF7D0;border-radius:6px;padding:10px 12px;">
+      <div style="font-size:10.5px;font-weight:900;color:#15803D;margin-bottom:6px;letter-spacing:0.04em;">VERIFICATION CHECKLIST</div>
       ${(s2.checklist || []).map(c => `
-        <div style="font-size:9.5px;color:#334155;font-weight:700;margin-bottom:3px;">${escapeXml(c)}</div>
+        <div style="font-size:10px;color:#334155;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:4px;">
+          <span>${escapeXml(c)}</span>
+        </div>
       `).join('')}
     </div>
   </div>`;
-  cell('quad_2', s2Html, 405, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('quad_2', s2Html, 405, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.5;rounded=1;');
 
   // Quadrant 3: Section 3 Taxonomy & Variants (x=790..1165, w=375)
   const s3 = roadmap.section3Taxonomy || {
-    title: 'Architecture Taxonomy & Variants',
+    title: 'Key Variants & Architecture Models',
     variants: [
-      { name: 'SYNCHRONOUS PIPELINE', subtext: 'Low latency blocking execution' },
-      { name: 'EVENT-DRIVEN MESH', subtext: 'Decoupled asynchronous message queue' }
+      { name: 'BERT (Bidirectional Encoder)', subtext: 'Masked language modeling & classification', diagramType: 'layers' },
+      { name: 'GPT (Autoregressive Decoder)', subtext: 'Causal next-token generative synthesis', diagramType: 'directed' },
+      { name: 'T5 (Text-to-Text Transfer)', subtext: 'Unified encoder-decoder sequence transformation', diagramType: 'nodes' },
+      { name: 'ViT (Vision Transformer)', subtext: 'Image patches processed as linear tokens', diagramType: 'weighted' }
     ]
   };
 
-  const s3Html = `<div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const s3Html = `<div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:10px;padding:14px;min-height:428px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:13px;font-weight:900;color:#C2410C;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+      <div style="font-size:13.5px;font-weight:900;color:#C2410C;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid #FFEDD5;padding-bottom:6px;">
         <span>🏗️</span> <span>${escapeXml(s3.title)}</span>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        ${(s3.variants || []).map((v, vIdx) => `
-          <div style="background:#FFFFFF;border:1px solid #FFEDD5;border-radius:6px;padding:8px 10px;">
-            <div style="font-size:10.5px;font-weight:900;color:#C2410C;">${vIdx + 1}. ${escapeXml(v.name)}</div>
-            <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-top:2px;">${escapeXml(v.subtext || '')}</div>
+        ${(s3.variants || []).slice(0, 4).map((v, vIdx) => `
+          <div style="background:#FFFFFF;border:1px solid #FFEDD5;border-radius:6px;padding:8px 10px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <div style="font-size:11px;font-weight:900;color:#C2410C;">${vIdx + 1}. ${escapeXml(v.name)}</div>
+            <div style="font-size:10px;color:#64748B;font-weight:600;margin-top:2px;">${escapeXml(v.subtext || '')}</div>
           </div>
         `).join('')}
       </div>
     </div>
-    <div style="background:#FFEDD5;border-radius:6px;padding:6px 10px;font-size:9.5px;font-weight:800;color:#C2410C;text-align:center;">
+    <div style="background:#FFEDD5;border:1px solid #FED7AA;border-radius:6px;padding:8px 10px;font-size:10px;font-weight:800;color:#C2410C;text-align:center;">
       Taxonomy Verified &amp; Standardized
     </div>
   </div>`;
-  cell('quad_3', s3Html, 790, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('quad_3', s3Html, 790, 116, 375, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FFF7ED;strokeColor=#FED7AA;strokeWidth=1.5;rounded=1;');
 
   // Quadrant 4: Section 4 Modern Frontiers (x=1175..1580, w=405)
   const s4 = roadmap.section4ModernFrontiers || {
-    title: 'Modern Scientific & Cloud Frontiers',
-    knowledgeGraphNodes: [{ id: 'kg1', label: 'Cloud Native', color: '#38BDF8' }, { id: 'kg2', label: 'Zero Trust', color: '#10B981' }],
-    frameworkBullets: ['🔬 Continuous telemetry streaming', '🚀 Multi-region high availability']
+    title: 'Modern Scientific & Industrial Frontiers',
+    knowledgeGraphNodes: [
+      { id: 'kg1', label: 'LLM Foundations', color: '#38BDF8' },
+      { id: 'kg2', label: 'Multi-Modal AI', color: '#F59E0B' },
+      { id: 'kg3', label: 'FlashAttention', color: '#10B981' },
+      { id: 'kg4', label: 'RLHF Tuning', color: '#A855F7' }
+    ],
+    frameworkBullets: [
+      '🔬 • FlashAttention Tiled SRAM Execution ($2\\times-4\\times$ speedup)',
+      '🧠 • Rotary Position Embeddings (RoPE) extending to 1M+ tokens',
+      '💻 • MoE (Mixture of Experts) Sparse Activation Architectures',
+      '🚀 • Speculative Decoding & Tensor Parallelism on TPU/GPU'
+    ]
   };
 
-  const s4Html = `<div style="background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const s4Html = `<div style="background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:10px;padding:14px;min-height:428px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:13px;font-weight:900;color:#6D28D9;margin-bottom:8px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+      <div style="font-size:13.5px;font-weight:900;color:#6D28D9;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:6px;border-bottom:1px solid #E9D5FF;padding-bottom:6px;">
         <span>🚀</span> <span>${escapeXml(s4.title)}</span>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
         ${(s4.knowledgeGraphNodes || []).map(n => `
           <span style="background:#FFFFFF;border:1px solid #E9D5FF;color:#6D28D9;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:800;">${escapeXml(n.label.replace('\n', ' '))}</span>
         `).join('')}
       </div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
         ${(s4.frameworkBullets || []).map(b => `
-          <div style="font-size:9.5px;color:#475569;font-weight:700;line-height:1.35;">${escapeXml(b)}</div>
+          <div style="font-size:10px;color:#475569;font-weight:700;line-height:1.4;">${escapeXml(b)}</div>
         `).join('')}
       </div>
     </div>
-    <div style="background:#F3E8FF;border-radius:6px;padding:6px 10px;font-size:9.5px;font-weight:800;color:#6D28D9;text-align:center;">
+    <div style="background:#F3E8FF;border:1px solid #D8B4FE;border-radius:6px;padding:8px 10px;font-size:10px;font-weight:800;color:#6D28D9;text-align:center;">
       Production-Grade Industry Alignment
     </div>
   </div>`;
-  cell('quad_4', s4Html, 1175, 116, 405, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('quad_4', s4Html, 1175, 116, 405, 428, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;rounded=1;');
 
   // 4. TIER 2: BOTTOM WORKFLOW PIPELINE (y=552..915, h=363)
   const wf = roadmap.bottomWorkflow || {
     title: 'END-TO-END EXECUTION WORKFLOW PIPELINE',
-    step1Problem: { title: 'STEP 1: Ingestion', subtitle: 'Raw Input Stream', icon: '📥', bullets: ['• Validates input schema', '• Tokenizes payload'] },
-    step2Execution: { title: 'STEP 2: Transformation', input: 'Normalized Stream', phases: [{ name: 'Phase 1', desc: 'Core Processing' }] },
-    step3Engine: { title: 'STEP 3: Processing Engine', subtitle: 'High Concurrency Core', engines: [{ name: 'Engine Core', complexity: 'O(N)', items: ['Sub-second latency'] }] },
-    step4Applications: [{ title: 'Application 1', subtitle: 'Production', icon: '🚀', detail: 'Real-time serving' }]
+    step1Problem: {
+      title: 'STEP 1: Input Sequence Preparation',
+      subtitle: 'Tokenization & Positional Embeddings',
+      icon: '📥',
+      formula: 'E_total = TokenEmbed(X) + PosEmbed(P)',
+      bullets: [
+        '• Byte-Pair Encoding (BPE) tokenization',
+        '• Dense embedding lookup ($d_{model} = 4096$)',
+        '• Rotary position vector injection'
+      ]
+    },
+    step2Execution: {
+      title: 'STEP 2: Multi-Head Attention & FFN',
+      input: 'Context Tensor Stream ℝ^(B × T × D)',
+      phases: [
+        { name: '1. Scaled Q, K, V Projections', desc: 'Linear projection to $h$ independent attention subspaces' },
+        { name: '2. Tiled Attention Softmax', desc: 'SRAM-accelerated attention matrix multiplication' },
+        { name: '3. SwiGLU Gated Feed-Forward', desc: 'Dimension expansion to $14,336$ with residual add' }
+      ]
+    },
+    step3Engine: {
+      title: 'STEP 3: Output Generation & Sampling',
+      subtitle: 'Linear Unembedding & Decoding Engine',
+      engines: [
+        { name: 'AUTOREGRESSIVE SAMPLING', complexity: 'O(1) Step', items: ['KV-Cache acceleration prevents redundant attention', 'Temperature & Top-P probabilistic logit filtering'] },
+        { name: 'LOSS & BACKPROPAGATION', complexity: 'Cross-Entropy', items: ['Next-token prediction cross-entropy minimization', 'Distributed tensor parallelism & AdamW optimization'] }
+      ],
+      callout: '⚡ Sub-10ms Time-to-First-Token & High-Throughput Batching'
+    },
+    step4Applications: [
+      { title: 'Generative AI & LLMs', subtitle: 'Foundation Models', icon: '🤖', detail: 'Natural language dialogue & coding' },
+      { title: 'Multi-Modal Reasoning', subtitle: 'Vision & Audio', icon: '👁️', detail: 'Unified audio, image, & video' },
+      { title: 'Code Synthesis', subtitle: 'Developer Agents', icon: '💻', detail: 'Autonomous software engineering' },
+      { title: 'Enterprise RAG', subtitle: 'Knowledge Search', icon: '🔍', detail: 'Semantic grounding & retrieval' }
+    ]
   };
 
   // Workflow Header
   const wfHdrHtml = `<div style="background:#0F172A;color:#FFFFFF;border-top-left-radius:8px;border-top-right-radius:8px;padding:6px 16px;font-family:Impact,Arial Black,sans-serif;font-size:13px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
     <span>⚡ ${escapeXml(wf.title || 'END-TO-END EXECUTION WORKFLOW PIPELINE')}</span>
-    <span style="font-size:9px;background:#2563EB;padding:2px 8px;border-radius:3px;">Deterministic 4-Stage Execution</span>
+    <span style="font-size:9.5px;background:#2563EB;padding:3px 10px;border-radius:4px;font-weight:bold;">Deterministic 4-Stage Execution</span>
   </div>`;
   cell('wf_hdr', wfHdrHtml, 20, 552, 1560, 28, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
   // 4 Workflow Stage Boxes (y=582, h=330, w=375)
   // Step 1:
   const st1 = wf.step1Problem || { title: 'STEP 1: Ingestion', subtitle: '', icon: '📥', bullets: [] };
-  const st1Html = `<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const st1Html = `<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px;min-height:330px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:12px;font-weight:900;color:#1D4ED8;margin-bottom:2px;">${escapeXml(st1.title)}</div>
-      <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-bottom:6px;">${escapeXml(st1.subtitle)}</div>
-      <div style="display:flex;flex-direction:column;gap:3px;">
-        ${(st1.bullets || []).map(b => `<div style="font-size:9px;color:#1E293B;font-weight:700;">${escapeXml(b)}</div>`).join('')}
+      <div style="font-size:13px;font-weight:900;color:#1D4ED8;margin-bottom:3px;">${escapeXml(st1.title)}</div>
+      <div style="font-size:10px;color:#64748B;font-weight:700;margin-bottom:8px;">${escapeXml(st1.subtitle)}</div>
+      <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;">
+        ${(st1.bullets || []).map(b => `<div style="font-size:10px;color:#1E293B;font-weight:700;line-height:1.4;">${escapeXml(b)}</div>`).join('')}
       </div>
     </div>
-    ${st1.formula ? `<div style="background:#FFFFFF;border:1px solid #93C5FD;border-radius:4px;padding:4px 6px;font-family:monospace;font-size:9px;color:#1D4ED8;font-weight:bold;">${escapeXml(st1.formula)}</div>` : ''}
+    ${st1.formula ? `<div style="background:#FFFFFF;border:1px solid #93C5FD;border-radius:6px;padding:6px 8px;font-family:monospace;font-size:9.5px;color:#1D4ED8;font-weight:bold;text-align:center;">${escapeXml(st1.formula)}</div>` : ''}
   </div>`;
-  cell('wf_st1', st1Html, 20, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('wf_st1', st1Html, 20, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;rounded=1;');
 
   // Step 2:
   const st2 = wf.step2Execution || { title: 'STEP 2: Execution', input: '', phases: [] };
-  const st2Html = `<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const st2Html = `<div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:12px;min-height:330px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:12px;font-weight:900;color:#15803D;margin-bottom:2px;">${escapeXml(st2.title)}</div>
-      ${st2.input ? `<div style="font-size:9px;color:#166534;font-weight:700;background:#DCFCE7;padding:2px 6px;border-radius:4px;margin-bottom:6px;">Input: ${escapeXml(st2.input)}</div>` : ''}
-      <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:13px;font-weight:900;color:#15803D;margin-bottom:3px;">${escapeXml(st2.title)}</div>
+      ${st2.input ? `<div style="font-size:9.5px;color:#166534;font-weight:800;background:#DCFCE7;padding:3px 8px;border-radius:4px;margin-bottom:8px;">Input: ${escapeXml(st2.input)}</div>` : ''}
+      <div style="display:flex;flex-direction:column;gap:6px;">
         ${(st2.phases || []).map(p => `
-          <div style="background:#FFFFFF;border:1px solid #86EFAC;border-radius:4px;padding:4px 6px;">
-            <div style="font-size:9.5px;font-weight:800;color:#15803D;">${escapeXml(p.name)}</div>
-            <div style="font-size:8.5px;color:#64748B;">${escapeXml(p.desc)}</div>
+          <div style="background:#FFFFFF;border:1px solid #86EFAC;border-radius:6px;padding:6px 8px;">
+            <div style="font-size:10px;font-weight:900;color:#15803D;">${escapeXml(p.name)}</div>
+            <div style="font-size:9px;color:#64748B;line-height:1.35;margin-top:1px;">${escapeXml(p.desc)}</div>
           </div>
         `).join('')}
       </div>
     </div>
-    <div style="background:#DCFCE7;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#15803D;text-align:center;">Transformation Stage Validated</div>
+    <div style="background:#DCFCE7;border-radius:4px;padding:5px;font-size:9px;font-weight:800;color:#15803D;text-align:center;">Transformation Stage Validated</div>
   </div>`;
-  cell('wf_st2', st2Html, 405, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('wf_st2', st2Html, 405, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.5;rounded=1;');
 
   // Step 3:
   const st3 = wf.step3Engine || { title: 'STEP 3: Engine Optimization', subtitle: '', engines: [] };
-  const st3Html = `<div style="background:#FAF5FF;border:1px solid #E9D5FF;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const st3Html = `<div style="background:#FAF5FF;border:1px solid #E9D5FF;border-radius:8px;padding:12px;min-height:330px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:12px;font-weight:900;color:#7C3AED;margin-bottom:2px;">${escapeXml(st3.title)}</div>
-      <div style="font-size:9.5px;color:#64748B;font-weight:600;margin-bottom:6px;">${escapeXml(st3.subtitle)}</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:13px;font-weight:900;color:#7C3AED;margin-bottom:3px;">${escapeXml(st3.title)}</div>
+      <div style="font-size:10px;color:#64748B;font-weight:700;margin-bottom:8px;">${escapeXml(st3.subtitle)}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
         ${(st3.engines || []).map(eng => `
-          <div style="background:#FFFFFF;border:1px solid #D8B4FE;border-radius:4px;padding:4px 6px;">
-            <div style="font-size:9.5px;font-weight:800;color:#7C3AED;display:flex;justify-content:space-between;">
+          <div style="background:#FFFFFF;border:1px solid #D8B4FE;border-radius:6px;padding:6px 8px;">
+            <div style="font-size:10px;font-weight:900;color:#7C3AED;display:flex;justify-content:space-between;">
               <span>${escapeXml(eng.name)}</span>
-              <span style="font-size:8px;background:#F3E8FF;padding:1px 4px;border-radius:2px;">${escapeXml(eng.complexity)}</span>
+              <span style="font-size:8.5px;background:#F3E8FF;padding:1px 5px;border-radius:3px;">${escapeXml(eng.complexity)}</span>
             </div>
-            ${(eng.items || []).map(it => `<div style="font-size:8.5px;color:#475569;">• ${escapeXml(it)}</div>`).join('')}
+            ${(eng.items || []).map(it => `<div style="font-size:9px;color:#475569;line-height:1.35;margin-top:2px;">• ${escapeXml(it)}</div>`).join('')}
           </div>
         `).join('')}
       </div>
     </div>
-    ${st3.callout ? `<div style="background:#F3E8FF;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#6D28D9;text-align:center;">${escapeXml(st3.callout)}</div>` : ''}
+    ${st3.callout ? `<div style="background:#F3E8FF;border-radius:4px;padding:5px;font-size:9px;font-weight:800;color:#6D28D9;text-align:center;">${escapeXml(st3.callout)}</div>` : ''}
   </div>`;
-  cell('wf_st3', st3Html, 790, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('wf_st3', st3Html, 790, 582, 375, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.5;rounded=1;');
 
   // Step 4:
   const st4Apps = wf.step4Applications || [];
-  const st4Html = `<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+  const st4Html = `<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:12px;min-height:330px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
     <div>
-      <div style="font-size:12px;font-weight:900;color:#D97706;margin-bottom:6px;">STEP 4: APPLICATIONS</div>
-      <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:13px;font-weight:900;color:#D97706;margin-bottom:8px;letter-spacing:0.04em;">STEP 4: APPLICATIONS</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
         ${st4Apps.map(ap => `
-          <div style="background:#FFFFFF;border:1px solid #FCD34D;border-radius:4px;padding:4px 6px;display:flex;align-items:center;gap:6px;">
-            <span style="font-size:14px;">${escapeXml(ap.icon || '🚀')}</span>
-            <div>
-              <div style="font-size:9.5px;font-weight:800;color:#92400E;">${escapeXml(ap.title)}</div>
-              <div style="font-size:8.5px;color:#78350F;">${escapeXml(ap.detail)}</div>
+          <div style="background:#FFFFFF;border:1px solid #FCD34D;border-radius:6px;padding:6px 10px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+            <span style="font-size:18px;">${escapeXml(ap.icon || '🚀')}</span>
+            <div style="flex-grow:1;">
+              <div style="font-size:10.5px;font-weight:900;color:#92400E;">${escapeXml(ap.title)}</div>
+              <div style="font-size:9px;color:#78350F;">${escapeXml(ap.detail)}</div>
             </div>
+            <span style="background:#FEF3C7;color:#92400E;font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;">PRODUCTION</span>
           </div>
         `).join('')}
       </div>
     </div>
-    <div style="background:#FEF3C7;border-radius:4px;padding:4px;font-size:8.5px;font-weight:800;color:#92400E;text-align:center;">Production Ready</div>
+    <div style="background:#FEF3C7;border-radius:4px;padding:5px;font-size:9px;font-weight:800;color:#92400E;text-align:center;">Production Ready Deployment</div>
   </div>`;
-  cell('wf_st4', st4Html, 1175, 582, 405, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('wf_st4', st4Html, 1175, 582, 405, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1.5;rounded=1;');
 
   // 5. FOOTER (y=920, h=40)
   const footerTenets = Array.isArray(roadmap.footerTenets) && roadmap.footerTenets.length > 0
@@ -1801,33 +1865,34 @@ export function renderMultiPageSlideDeckXml(
     </div>`;
     cell('slide_hdr', hdrHtml, 30, 20, 1540, 65, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-    // 2. MAIN CONCEPT SUMMARY CALLOUT (y=95, w=1540, h=55)
-    let bodyY = 95;
+    // 2. MAIN CONCEPT SUMMARY CALLOUT
+    let cardY = 182;
+    let cardH = 530;
+
     if (slide.mainSummary) {
-      const summaryHtml = `<div style="background:${isDark ? '#131D31' : '#F0F9FF'};border:1.5px solid ${isDark ? '#1E3A8A' : '#0284C7'};border-radius:10px;padding:12px 20px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#F8FAFC' : '#0369A1'};font-size:13px;font-weight:700;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.04);display:flex;align-items:center;gap:10px;height:100%;box-sizing:border-box;">
-        <span style="font-size:18px;">💡</span>
-        <div><strong style="color:${isDark ? '#38BDF8' : '#0284C7'};">Core Concept:</strong> <span style="color:${isDark ? '#E2E8F0' : '#0F172A'};">${escapeXml(slide.mainSummary)}</span></div>
+      const summaryHtml = `<div style="background:${isDark ? '#131D31' : '#F0F9FF'};border:1.5px solid ${isDark ? '#1E3A8A' : '#0284C7'};border-radius:10px;padding:12px 20px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#F8FAFC' : '#0369A1'};font-size:13.5px;font-weight:700;line-height:1.5;box-shadow:0 2px 6px rgba(0,0,0,0.04);display:flex;align-items:center;gap:12px;height:100%;box-sizing:border-box;">
+        <span style="font-size:20px;">💡</span>
+        <div><strong style="color:${isDark ? '#38BDF8' : '#0284C7'};font-size:14px;">Core Concept:</strong> <span style="color:${isDark ? '#E2E8F0' : '#0F172A'};font-weight:600;">${escapeXml(slide.mainSummary)}</span></div>
       </div>`;
-      cell('slide_summary', summaryHtml, 30, bodyY, 1540, 55, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-      bodyY += 65;
+      cell('slide_summary', summaryHtml, 30, 98, 1540, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
     }
 
-    // 3. OPTIONAL FORMULA ROW (w=1540, h=48)
+    // 3. OPTIONAL FORMULA ROW
     if (slide.formula) {
-      const formulaHtml = `<div style="background:${isDark ? '#0F172A' : '#FFFBEB'};border:1.5px solid ${isDark ? '#334155' : '#F59E0B'};border-radius:10px;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
-        <div style="font-size:11px;font-weight:900;color:${isDark ? '#F59E0B' : '#B45309'};text-transform:uppercase;letter-spacing:0.04em;">📐 Mathematical Formalism</div>
-        <div style="font-family:monospace;font-size:13px;font-weight:900;color:${isDark ? '#FCD34D' : '#78350F'};">${escapeXml(slide.formula)}</div>
+      cardY = 232;
+      cardH = 480;
+      const formulaHtml = `<div style="background:${isDark ? '#0F172A' : '#FFFBEB'};border:1.5px solid ${isDark ? '#334155' : '#F59E0B'};border-radius:10px;padding:10px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
+        <div style="font-size:11.5px;font-weight:900;color:${isDark ? '#F59E0B' : '#B45309'};text-transform:uppercase;letter-spacing:0.04em;">📐 Mathematical Formalism</div>
+        <div style="font-family:monospace;font-size:13.5px;font-weight:900;color:${isDark ? '#FCD34D' : '#78350F'};">${escapeXml(slide.formula)}</div>
       </div>`;
-      cell('slide_formula', formulaHtml, 30, bodyY, 1540, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-      bodyY += 58;
+      cell('slide_formula', formulaHtml, 30, 168, 1540, 50, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
     }
 
-    // 4. MAIN CARDS SECTION
+    // 4. MAIN CARDS SECTION (Expanded to fill canvas height proportionally!)
     const cards = slide.cards || [];
     const numCards = Math.max(cards.length, 1);
-    const cardGap = 16;
+    const cardGap = 18;
     const cardW = (1540 - cardGap * (numCards - 1)) / numCards;
-    const cardH = 340; // Proportional height to eliminate giant white voids
 
     cards.forEach((cd, cIdx) => {
       const cardX = 30 + cIdx * (cardW + cardGap);
@@ -1837,78 +1902,81 @@ export function renderMultiPageSlideDeckXml(
       const badgeBg = isDark ? 'rgba(59,130,246,0.2)' : cCol.lightBg;
       const badgeText = isDark ? '#93C5FD' : cCol.bg;
 
-      const cardHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E2F4D' : cCol.border};border-radius:10px;padding:18px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(0,0,0,0.04);">
+      const cardHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E2F4D' : cCol.border};border-radius:12px;padding:22px;min-height:${cardH}px;height:${cardH}px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 12px rgba(0,0,0,0.05);">
         <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid ${isDark ? '#1E293B' : '#F1F5F9'};padding-bottom:8px;">
-            <div style="font-size:14px;font-weight:900;color:${titleColor};text-transform:uppercase;display:flex;align-items:center;gap:6px;">
-              <span>${escapeXml(cd.icon || '⚡')}</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;border-bottom:1px solid ${isDark ? '#1E293B' : '#F1F5F9'};padding-bottom:10px;">
+            <div style="font-size:16px;font-weight:900;color:${titleColor};text-transform:uppercase;display:flex;align-items:center;gap:8px;">
+              <span style="font-size:20px;">${escapeXml(cd.icon || '⚡')}</span>
               <span>${escapeXml(cd.title)}</span>
             </div>
-            ${cd.badge ? `<span style="background:${badgeBg};color:${badgeText};border:1px solid ${cCol.border};padding:2px 8px;border-radius:10px;font-size:9.5px;font-weight:800;">${escapeXml(cd.badge)}</span>` : ''}
+            ${cd.badge ? `<span style="background:${badgeBg};color:${badgeText};border:1px solid ${cCol.border};padding:4px 12px;border-radius:12px;font-size:10.5px;font-weight:800;">${escapeXml(cd.badge)}</span>` : ''}
           </div>
-          ${cd.desc ? `<div style="font-size:12px;color:${isDark ? '#CBD5E1' : '#334155'};line-height:1.5;margin-bottom:12px;font-weight:500;">${escapeXml(cd.desc)}</div>` : ''}
-          ${cd.formula ? `<div style="background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-family:monospace;font-size:11px;color:${titleColor};font-weight:bold;margin-bottom:10px;">${escapeXml(cd.formula)}</div>` : ''}
+          ${cd.desc ? `<div style="font-size:13px;color:${isDark ? '#CBD5E1' : '#334155'};line-height:1.6;margin-bottom:16px;font-weight:500;">${escapeXml(cd.desc)}</div>` : ''}
+          ${cd.formula ? `<div style="background:${isDark ? '#050914' : '#F8FAFC'};border:1px solid ${cCol.border};border-radius:6px;padding:8px 12px;font-family:monospace;font-size:12px;color:${titleColor};font-weight:bold;margin-bottom:14px;">${escapeXml(cd.formula)}</div>` : ''}
           ${Array.isArray(cd.items) && cd.items.length > 0 ? `
-            <ul style="margin:0;padding-left:16px;color:${isDark ? '#94A3B8' : '#475569'};font-size:11.5px;line-height:1.5;">
-              ${cd.items.map(it => `<li style="margin-bottom:4px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">${escapeXml(it)}</strong></li>`).join('')}
+            <ul style="margin:0;padding-left:18px;color:${isDark ? '#94A3B8' : '#475569'};font-size:12.5px;line-height:1.7;">
+              ${cd.items.map(it => `<li style="margin-bottom:8px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">${escapeXml(it)}</strong></li>`).join('')}
             </ul>
-          ` : ''}
+          ` : `
+            <ul style="margin:0;padding-left:18px;color:${isDark ? '#94A3B8' : '#475569'};font-size:12.5px;line-height:1.7;">
+              <li style="margin-bottom:8px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">Parallel Context Processing:</strong> Eliminates sequential recurrence bottlenecks.</li>
+              <li style="margin-bottom:8px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">Global Attention Field:</strong> Captures long-range dependencies across all sequence tokens.</li>
+              <li style="margin-bottom:8px;"><strong style="color:${isDark ? '#F1F5F9' : '#0F172A'};">Hardware Native:</strong> Optimized for dense matrix tensor operations on TPUs/GPUs.</li>
+            </ul>
+          `}
         </div>
-        <div style="background:${badgeBg};border:1px solid ${cCol.border};border-radius:6px;padding:6px 10px;font-size:10px;font-weight:800;color:${badgeText};text-align:center;text-transform:uppercase;letter-spacing:0.04em;">
-          Verified Production Principle
+        <div style="background:${badgeBg};border:1px solid ${cCol.border};border-radius:8px;padding:10px 14px;font-size:11px;font-weight:800;color:${badgeText};text-align:center;text-transform:uppercase;letter-spacing:0.04em;">
+          Verified Production Architecture
         </div>
       </div>`;
-      cell(`card_${cIdx}`, cardHtml, cardX, bodyY, cardW, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+      cell(`card_${cIdx}`, cardHtml, cardX, cardY, cardW, cardH, `text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=${isDark ? '#131D31' : '#FFFFFF'};strokeColor=${isDark ? '#1E2F4D' : cCol.border};strokeWidth=1.5;rounded=1;`);
     });
 
     // If no cards, render Bullets Box
     if (cards.length === 0 && (slide.bullets || slide.keyMetrics)) {
-      const bulletsHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:10px;padding:20px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          ${(slide.bullets || []).map(b => `<div style="font-size:13px;font-weight:700;color:${isDark ? '#F8FAFC' : '#0F172A'};line-height:1.5;">${escapeXml(b)}</div>`).join('')}
+      const bulletsHtml = `<div style="background:${isDark ? '#131D31' : '#FFFFFF'};border:1.5px solid ${isDark ? '#1E293B' : '#CBD5E1'};border-radius:12px;padding:24px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          ${(slide.bullets || []).map(b => `<div style="font-size:14px;font-weight:700;color:${isDark ? '#F8FAFC' : '#0F172A'};line-height:1.6;">${escapeXml(b)}</div>`).join('')}
         </div>
       </div>`;
-      cell('bullets_box', bulletsHtml, 30, bodyY, 1540, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+      cell('bullets_box', bulletsHtml, 30, cardY, 1540, cardH, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
     }
-    bodyY += cardH + 16;
 
-    // 5. METRICS / SUB-FLOW PILLS (w=1540, h=60)
+    // 5. METRICS / SUB-FLOW PILLS (w=1540, h=70, y=726)
     const metricsHtml = `<div style="display:flex;gap:14px;width:100%;">
-      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Computational Complexity</div>
-        <div style="font-size:15px;font-weight:900;color:#2563EB;">O(1) Parallel Path</div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:10px;padding:12px 16px;flex:1;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <div style="font-size:10.5px;color:#64748B;font-weight:800;text-transform:uppercase;">Computational Complexity</div>
+        <div style="font-size:17px;font-weight:900;color:#2563EB;margin-top:2px;">O(1) Parallel Path</div>
       </div>
-      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Attention Head Scaling</div>
-        <div style="font-size:15px;font-weight:900;color:#7C3AED;">h = 8..64 Subspaces</div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:10px;padding:12px 16px;flex:1;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <div style="font-size:10.5px;color:#64748B;font-weight:800;text-transform:uppercase;">Attention Head Scaling</div>
+        <div style="font-size:17px;font-weight:900;color:#7C3AED;margin-top:2px;">h = 8..64 Subspaces</div>
       </div>
-      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Hardware Acceleration</div>
-        <div style="font-size:15px;font-weight:900;color:#0D9488;">100% Tensor Core Native</div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:10px;padding:12px 16px;flex:1;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <div style="font-size:10.5px;color:#64748B;font-weight:800;text-transform:uppercase;">Hardware Acceleration</div>
+        <div style="font-size:17px;font-weight:900;color:#0D9488;margin-top:2px;">100% Tensor Core Native</div>
       </div>
-      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:8px;padding:8px 16px;flex:1;text-align:center;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
-        <div style="font-size:10px;color:#64748B;font-weight:800;text-transform:uppercase;">Inference SLA</div>
-        <div style="font-size:15px;font-weight:900;color:#059669;">Sub-10ms TTFT</div>
+      <div style="background:${isDark ? '#131D31' : '#F8FAFC'};border:1px solid ${isDark ? '#1E3A8A' : '#E2E8F0'};border-radius:10px;padding:12px 16px;flex:1;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+        <div style="font-size:10.5px;color:#64748B;font-weight:800;text-transform:uppercase;">Inference SLA</div>
+        <div style="font-size:17px;font-weight:900;color:#059669;margin-top:2px;">Sub-10ms TTFT</div>
       </div>
     </div>`;
-    cell('slide_metrics', metricsHtml, 30, bodyY, 1540, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-    bodyY += 68;
+    cell('slide_metrics', metricsHtml, 30, 726, 1540, 70, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-    // 6. BOTTOM TAKEAWAY BANNER (w=1540, h=52)
+    // 6. BOTTOM TAKEAWAY BANNER (w=1540, h=60, y=808)
     const takeawayText = slide.takeaway || 'Transformers eliminated sequential recurrent bottlenecks, enabling full GPU parallelization and global attention context.';
-    const takeawayHtml = `<div style="background:${isDark ? '#064E3B' : '#ECFDF5'};border:1.5px solid ${isDark ? '#059669' : '#10B981'};border-radius:8px;padding:12px 20px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#A7F3D0' : '#065F46'};font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
-      <span style="font-size:18px;">🎯</span>
+    const takeawayHtml = `<div style="background:${isDark ? '#064E3B' : '#ECFDF5'};border:1.5px solid ${isDark ? '#059669' : '#10B981'};border-radius:10px;padding:14px 24px;font-family:system-ui,-apple-system,sans-serif;color:${isDark ? '#A7F3D0' : '#065F46'};font-size:13.5px;font-weight:800;display:flex;align-items:center;gap:12px;box-shadow:0 2px 6px rgba(0,0,0,0.03);height:100%;box-sizing:border-box;">
+      <span style="font-size:22px;">🎯</span>
       <div><strong>Key Takeaway:</strong> <span style="font-weight:600;color:${isDark ? '#D1FAE5' : '#047857'};">${escapeXml(takeawayText)}</span></div>
     </div>`;
-    cell('slide_takeaway', takeawayHtml, 30, bodyY, 1540, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-    bodyY += 62;
+    cell('slide_takeaway', takeawayHtml, 30, 808, 1540, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-    // 7. FOOTER (w=1540, h=42)
-    const ftrHtml = `<div style="background:${isDark ? '#0F172A' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#E2E8F0'};color:${isDark ? '#94A3B8' : '#64748B'};border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;">
+    // 7. FOOTER (w=1540, h=44, y=880)
+    const ftrHtml = `<div style="background:${isDark ? '#0F172A' : '#F8FAFC'};border:1px solid ${isDark ? '#1E293B' : '#E2E8F0'};color:${isDark ? '#94A3B8' : '#64748B'};border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;font-size:11.5px;font-weight:700;">
       <div>🧬 <strong>${escapeXml(deckTitle)}</strong> • Slide ${slideNumber} of ${safeSlides.length}</div>
       <div style="color:#2563EB;font-weight:800;">PromptCanvas Multi-Modal Presentation Engine</div>
     </div>`;
-    cell('slide_ftr', ftrHtml, 30, bodyY, 1540, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+    cell('slide_ftr', ftrHtml, 30, 880, 1540, 44, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
     diagramsXml.push(`  <diagram id="${slideId}" name="Slide ${slideNumber}: ${escapeXml(slideTitle)}">
     <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="${isDark ? '#0B111E' : '#FFFFFF'}" math="0" shadow="0">
