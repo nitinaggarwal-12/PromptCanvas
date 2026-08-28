@@ -141,6 +141,17 @@ export function enrichAndSanitizeSemanticGraph(
     bands: []
   };
 
+  // If slide deck is present, preserve it directly
+  if (graph?.slides && graph.slides.length > 0) {
+    return {
+      ...enriched,
+      layoutType: 'slide_deck',
+      slides: graph.slides,
+      bands: [],
+      connections: []
+    };
+  }
+
   // If conceptual roadmap is present, preserve it directly
   if (graph?.conceptualRoadmap) {
     return {
