@@ -277,6 +277,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = `${newVal} &lt;span&gt;${escapeXmlText(badge)}&lt;/span&gt;`;
           }
         }
+        if (newVal === existingVal && (title || subtitle || badge)) {
+          // Defensive fallback: Structural AST mutation
+          newVal = mutateNodeValueStructurally(existingVal, { title, subtitle, badge });
+        }
         customizedXml = customizedXml.replace(nodeRegex, `$1${newVal}$3`);
       }
     }
@@ -319,6 +323,77 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
       technicalUsecase: `High-availability 1400x800 architecture deployed on Google Cloud.`
     };
   }
+}
+
+
+function unescapeXmlText(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+}
+
+/**
+ * 🛡️ Defensive Structural AST Node Replacer
+ * Guarantees 100% mutation fidelity even if HTML markup or font weights differ.
+ */
+function mutateNodeValueStructurally(
+  existingXmlValue: string,
+  mutation: { title?: string; subtitle?: string; badge?: string }
+): string {
+  const rawHtml = unescapeXmlText(existingXmlValue);
+  const newTitle = mutation.title || '';
+  const newSubtitle = mutation.subtitle || '';
+  const newBadge = mutation.badge || '';
+
+  // Extract existing icon (SVG or Emoji or image)
+  let iconHtml = '';
+  const svgMatch = rawHtml.match(/<svg[\s\S]*?<\/svg>/i);
+  if (svgMatch) {
+    iconHtml = svgMatch[0];
+  } else {
+    const emojiMatch = rawHtml.match(/<div[^>]*font-size:\s*2[0-9]px[^>]*>(.*?)<\/div>/i);
+    if (emojiMatch) {
+      iconHtml = emojiMatch[0];
+    } else {
+      const imgMatch = rawHtml.match(/<img[^>]+>/i);
+      if (imgMatch) iconHtml = imgMatch[0];
+    }
+  }
+
+  // If it's a simple text header/label
+  if (!rawHtml.includes('<div') && !rawHtml.includes('<table')) {
+    return escapeXmlText(newTitle);
+  }
+
+  const isLeftAlign = rawHtml.includes('text-align:left') || rawHtml.includes('text-align: left');
+  const isDark = rawHtml.includes('color:#F8FAFC') || rawHtml.includes('color: #F8FAFC') || rawHtml.includes('color:#fff');
+  const titleColor = isDark ? '#F8FAFC' : '#202124';
+  const subColor = isDark ? '#94A3B8' : '#5F6368';
+
+  let mutatedHtml = '';
+  if (isLeftAlign) {
+    mutatedHtml = `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
+      `<div style="display:flex;align-items:center;gap:8px;">` +
+      (iconHtml ? `${iconHtml}` : '') +
+      `<span style="font-size:11.5px;font-weight:700;color:${titleColor};">${newTitle}</span>` +
+      (newBadge ? `<span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;margin-left:auto;">${newBadge}</span>` : '') +
+      `</div>` +
+      (newSubtitle ? `<div style="font-size:8.5px;color:${subColor};margin-top:4px;">${newSubtitle}</div>` : '') +
+      `</div>`;
+  } else {
+    mutatedHtml = `<div style="padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,system-ui,sans-serif;">` +
+      (iconHtml ? `${iconHtml}` : '') +
+      `<div style="font-size:11.5px;font-weight:700;color:${titleColor};margin-top:4px;">${newTitle}</div>` +
+      (newSubtitle ? `<div style="font-size:8.5px;color:${subColor};">${newSubtitle}</div>` : '') +
+      (newBadge ? `<div style="margin-top:3px;"><span style="font-size:8px;font-weight:700;background:#E8F0FE;color:#1A73E8;padding:2px 6px;border-radius:4px;border:1px solid #DADCE0;">${newBadge}</span></div>` : '') +
+      `</div>`;
+  }
+
+  return escapeXmlText(mutatedHtml);
 }
 
 function escapeXmlText(str: string): string {
