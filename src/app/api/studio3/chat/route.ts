@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { parseStudio3IntentWithLLM } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
+import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { messages, currentXml, theme = 'light', userApiKey } = body;
+    const { messages, currentXml, previousGraph, theme = 'light', userApiKey } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -40,6 +41,13 @@ export async function POST(req: NextRequest) {
       theme: theme === 'dark' ? 'dark' : 'light'
     });
 
+    // 4. Run 3-Phase Quality Inspection
+    const qualityReport = evaluateStudio3Quality({
+      graph,
+      intent,
+      previousGraph: previousGraph || null
+    });
+
     let explanation = `I've synthesized a **${intent.abstractionLevel.toUpperCase()}** representation for "${latestUserMessage}".`;
     if (intent.actionType === 'band_expansion') {
       explanation = `Expanded the canvas into a **Multi-Band Composite Architecture**: added the top comparative matrix tier and bottom 4-stage operational ingestion pipeline.`;
@@ -50,7 +58,8 @@ export async function POST(req: NextRequest) {
       message: explanation,
       intent,
       xml,
-      graph
+      graph,
+      qualityReport
     });
   } catch (error: any) {
     console.error('Studio 3 Chat API Error:', error);

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { parseStudio3IntentWithLLM, Studio3Intent } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
+import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { prompt, intent: overrideIntent, previousContext, theme = 'light', userApiKey } = body;
+    const { prompt, intent: overrideIntent, previousContext, previousGraph, theme = 'light', userApiKey } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Resolve Intent
+    // 1. Resolve Intent & Abstraction Level
     let finalIntent: Studio3Intent = overrideIntent;
     if (!finalIntent) {
       finalIntent = await parseStudio3IntentWithLLM({
@@ -40,15 +41,25 @@ export async function POST(req: NextRequest) {
       canvasHeight: 1000
     });
 
+    // 4. Run 3-Phase Automated Quality Gate
+    const qualityReport = evaluateStudio3Quality({
+      graph,
+      intent: finalIntent,
+      previousGraph: previousGraph || null
+    });
+
     return NextResponse.json({
       success: true,
       intent: finalIntent,
       graph,
       xml,
+      qualityReport,
       stats: {
         bandsCount: graph.bands.length,
         abstractionLevel: graph.abstractionLevel,
-        connectionsCount: graph.connections.length
+        connectionsCount: graph.connections.length,
+        qualityScore: qualityReport.overallScore,
+        certified: qualityReport.certified
       }
     });
   } catch (error: any) {
