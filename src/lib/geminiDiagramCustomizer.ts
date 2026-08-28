@@ -234,7 +234,9 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
         if (!match) continue;
 
         const existingVal = match[2] || '';
-        const title = custom.title || (typeof custom === 'string' ? custom : '');
+        const rawTitle = custom.title || (typeof custom === 'string' ? custom : '');
+        // 🧹 Deduplicate stuttered category words (e.g., 'Agent Agent' -> 'Agent', 'Router Router' -> 'Router')
+        const title = rawTitle.replace(/\b(Agent|Router|Gateway|Pipeline|Engine|Memory|Store|Lakehouse|Service|DB|Output|Worker|Swarm|Platform|Monitoring|Extraction|Orchestrator)\s+\1\b/gi, '$1');
         const subtitle = custom.subtitle || '';
         const isHeaderOrText = !existingVal.includes('&lt;b') && !existingVal.includes('<b');
         
