@@ -115,9 +115,8 @@ export function solveAndRenderStudio3Xml(
       const innerPadding = 16;
       const colGap = 16;
 
-      // Wrap columns into 2 rows if more than 4 columns (prevents squeezed, narrow columns)
+      // Wrap columns into 2 rows if > 4 columns
       const wrapRows = numCols > 4;
-      const numRows = wrapRows ? 2 : 1;
       const colsPerRow = wrapRows ? Math.ceil(numCols / 2) : numCols;
       const rowGap = 14;
 
@@ -143,27 +142,28 @@ export function solveAndRenderStudio3Xml(
         `);
 
         // Column Header Banner
-        const colHeaderHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${colColor.bg};color:${colColor.text};font-weight:800;font-size:11.5px;letter-spacing:0.04em;text-transform:uppercase;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;padding:0 10px;text-align:center;word-break:break-word;">
+        const colHeaderHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${colColor.bg};color:${colColor.text};font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;padding:0 12px;text-align:center;word-break:break-word;">
           ${escapeXml(col.header || 'TIER')}
         </div>`;
 
+        const headerH = colH < 220 ? 30 : 38;
+
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(colHeaderHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-            <mxGeometry x="${colX}" y="${colY}" width="${colW}" height="${colH < 220 ? 30 : 36}" as="geometry"/>
+            <mxGeometry x="${colX}" y="${colY}" width="${colW}" height="${headerH}" as="geometry"/>
           </mxCell>
         `);
 
         // Column Cards
         const cards = col.cards || [];
-        const headerH = colH < 220 ? 30 : 36;
-        const availableCardSpace = colH - headerH - 12 - (col.footerNote ? 24 : 0);
+        const availableCardSpace = colH - headerH - 16 - (col.footerNote ? 24 : 0);
         const numCards = Math.max(1, cards.length);
-        const cardGap = 8;
+        const cardGap = 12;
 
-        // Dynamic card height clamping (prevents 1 card stretching into a giant 600px void)
+        // Proportional card height (fill column evenly without awkward voids)
         const computedH = (availableCardSpace - cardGap * (numCards - 1)) / numCards;
-        const maxCardH = numCards === 1 ? Math.min(180, availableCardSpace) : (colH < 220 ? 90 : 160);
-        const cardH = Math.min(maxCardH, Math.max(65, computedH));
+        const maxCardH = numCards === 1 ? Math.min(220, availableCardSpace) : (colH < 220 ? 95 : 280);
+        const cardH = Math.min(maxCardH, Math.max(90, computedH));
 
         // Center card vertically if space is available
         const totalCardsH = numCards * cardH + (numCards - 1) * cardGap;
@@ -175,20 +175,20 @@ export function solveAndRenderStudio3Xml(
 
           cardCoordinates[card.id] = { x: cardX, y: cardY, w: currentCardW, h: cardH };
 
-          let cardContentHtml = `<div style="padding:8px 10px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;word-break:break-word;overflow-wrap:break-word;overflow:hidden;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-shrink:0;">
-              <div style="width:24px;height:24px;border-radius:6px;background:${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                ${card.iconKey ? renderGcpIconHtml(card.iconKey, 18) : '<div>📦</div>'}
+          let cardContentHtml = `<div style="padding:12px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;word-break:break-word;overflow-wrap:break-word;overflow:hidden;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-shrink:0;">
+              <div style="width:28px;height:28px;border-radius:7px;background:${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                ${card.iconKey ? renderGcpIconHtml(card.iconKey, 20) : '<div>📦</div>'}
               </div>
-              <div style="font-size:11.5px;font-weight:700;color:${textPrimary};line-height:1.2;flex-grow:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(card.title || 'Component')}</div>
-              ${card.badge ? `<span style="margin-left:auto;background:#2563EB;color:#FFF;font-size:8.5px;padding:1px 6px;border-radius:10px;font-weight:700;letter-spacing:0.02em;flex-shrink:0;">${escapeXml(card.badge)}</span>` : ''}
+              <div style="font-size:12.5px;font-weight:800;color:${textPrimary};line-height:1.2;flex-grow:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(card.title || 'Component')}</div>
+              ${card.badge ? `<span style="margin-left:auto;background:#2563EB;color:#FFF;font-size:9px;padding:2px 7px;border-radius:10px;font-weight:800;letter-spacing:0.02em;flex-shrink:0;">${escapeXml(card.badge)}</span>` : ''}
             </div>`;
 
           if (card.codeSnippet) {
-            cardContentHtml += `<pre style="margin:2px 0 0 0;background:#050914;color:#38BDF8;padding:5px 7px;border-radius:4px;font-size:8.5px;font-family:monospace;line-height:1.3;white-space:pre-wrap;word-break:break-all;overflow-wrap:anywhere;max-width:100%;box-sizing:border-box;overflow:hidden;flex-grow:1;border:1px solid #1E293B;">${escapeXml(card.codeSnippet)}</pre>`;
+            cardContentHtml += `<pre style="margin:4px 0 0 0;background:#050914;color:#38BDF8;padding:6px 8px;border-radius:5px;font-size:9.5px;font-family:monospace;line-height:1.35;white-space:pre-wrap;word-break:break-all;overflow-wrap:anywhere;max-width:100%;box-sizing:border-box;overflow:hidden;flex-grow:1;border:1px solid #1E293B;">${escapeXml(card.codeSnippet)}</pre>`;
           } else if (card.items && card.items.length > 0) {
-            cardContentHtml += `<ul style="margin:2px 0 0 0;padding-left:14px;color:${textSecondary};font-size:9.5px;line-height:1.35;flex-grow:1;overflow:hidden;">
-              ${card.items.slice(0, 3).map(it => `<li style="margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;">${escapeXml(it)}</li>`).join('')}
+            cardContentHtml += `<ul style="margin:4px 0 0 0;padding-left:16px;color:${isDark ? '#CBD5E1' : '#334155'};font-size:11px;line-height:1.45;flex-grow:1;overflow:hidden;">
+              ${card.items.slice(0, 4).map(it => `<li style="margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;">${escapeXml(it)}</li>`).join('')}
             </ul>`;
           }
 
@@ -207,7 +207,7 @@ export function solveAndRenderStudio3Xml(
 
         // Column Footer Note
         if (col.footerNote) {
-          const footerHtml = `<div style="font-size:8.5px;color:${textSecondary};font-style:italic;text-align:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          const footerHtml = `<div style="font-size:9px;color:${textSecondary};font-style:italic;text-align:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
             ${escapeXml(col.footerNote)}
           </div>`;
           addCell(`
@@ -243,11 +243,11 @@ export function solveAndRenderStudio3Xml(
         const stepIcons = ['❶', '❷', '❸', '❹', '❺', '❻', '❼', '❽', '❾', '❿', '⓫', '⓬', '⓭', '⓮', '⓯', '⓰', '⓱', '⓲', '⓳', '⓴'];
         const stepBadge = stepIcons[(stage.stepNumber || 1) - 1] || `${stage.stepNumber || 1}.`;
 
-        const stageHeaderHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 10px;width:100%;height:100%;background:${stageColor.bg};color:${stageColor.text};font-weight:800;font-size:11px;letter-spacing:0.03em;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;">
-          <span style="font-size:13px;">${stepBadge}</span>
+        const stageHeaderHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 12px;width:100%;height:100%;background:${stageColor.bg};color:${stageColor.text};font-weight:800;font-size:11.5px;letter-spacing:0.03em;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;">
+          <span style="font-size:14px;">${stepBadge}</span>
           <div style="line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
             <div>${escapeXml(stage.title || 'Stage')}</div>
-            ${stage.subtitle ? `<div style="font-size:8px;font-weight:400;opacity:0.9;">${escapeXml(stage.subtitle)}</div>` : ''}
+            ${stage.subtitle ? `<div style="font-size:8.5px;font-weight:400;opacity:0.9;">${escapeXml(stage.subtitle)}</div>` : ''}
           </div>
         </div>`;
 
@@ -275,8 +275,8 @@ export function solveAndRenderStudio3Xml(
           const nodeHtml = `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;height:100%;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;overflow:hidden;">
             ${node.iconKey ? renderGcpIconHtml(node.iconKey, 20) : '<div>⚙️</div>'}
             <div style="line-height:1.2;overflow:hidden;flex-grow:1;">
-              <div style="font-size:10.5px;font-weight:700;color:${textPrimary};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(node.name || 'Service')}</div>
-              ${node.role ? `<div style="font-size:8.5px;color:${textSecondary};margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(node.role)}</div>` : ''}
+              <div style="font-size:11px;font-weight:700;color:${textPrimary};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(node.name || 'Service')}</div>
+              ${node.role ? `<div style="font-size:9px;color:${textSecondary};margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeXml(node.role)}</div>` : ''}
             </div>
           </div>`;
 
@@ -349,39 +349,39 @@ export function solveAndRenderStudio3Xml(
     bandY += bandH + 20;
   });
 
-  // 3. Connectors & Edges
+  // 3. Connectors & Edges (With High-Contrast Labeled Pill Badges)
   if (Array.isArray(graph?.connections)) {
     graph.connections.forEach(conn => {
       const fromGeom = cardCoordinates[conn.fromId];
       const toGeom = cardCoordinates[conn.toId];
       if (fromGeom && toGeom) {
         let strokeColor = '#3B82F6';
-        let strokeWidth = '1.5';
+        let strokeWidth = '1.8';
         let dashed = '0';
         let dashPattern = '';
 
         if (conn.style === 'dashed_orange') {
           strokeColor = '#F97316';
-          strokeWidth = '1.5';
+          strokeWidth = '1.8';
           dashed = '1';
           dashPattern = 'dashPattern=6 4;';
         } else if (conn.style === 'dashed_purple') {
           strokeColor = '#8B5CF6';
-          strokeWidth = '1.5';
+          strokeWidth = '1.8';
           dashed = '1';
           dashPattern = 'dashPattern=4 4;';
         } else if (conn.style === 'green_protocol') {
           strokeColor = '#10B981';
-          strokeWidth = '1.8';
+          strokeWidth = '2';
           dashed = '0';
         } else if (conn.style === 'feedback_teal') {
           strokeColor = '#14B8A6';
-          strokeWidth = '1.5';
+          strokeWidth = '1.8';
           dashed = '1';
           dashPattern = 'dashPattern=5 5;';
         }
 
-        const labelPillStyle = 'labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontSize=9;fontStyle=1;fontColor=#1E293B;';
+        const labelPillStyle = 'labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=9.5;fontStyle=1;fontColor=#0F172A;padding=3.5;';
         const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${strokeColor};strokeWidth=${strokeWidth};dashed=${dashed};${dashPattern}${labelPillStyle}`;
 
         addCell(`
@@ -407,7 +407,7 @@ export function solveAndRenderStudio3Xml(
     : [];
 
   const defaultTenets = [
-    'FIRST-PRINCIPLES ARCHITECTURE',
+    'MATHEMATICAL FORMULATION',
     graph?.abstractionLevel === 'technical' ? 'ZERO TRUST & RESILIENCE' : 'HIGH AVAILABILITY & ISOLATION',
     'CONTINUOUS OBSERVABILITY'
   ];

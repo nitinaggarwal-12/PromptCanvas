@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseStudio3IntentWithLLM, Studio3Intent } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
+import { enrichAndSanitizeSemanticGraph } from '@/lib/studio3/graphEnricher';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
 import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
 import { Studio3ExecutionLogger } from '@/lib/studio3/telemetryLogger';
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { prompt, intent: overrideIntent, previousContext, previousGraph, theme = 'dark', userApiKey } = body;
+    const { prompt, intent: overrideIntent, previousContext, previousGraph, theme = 'light', userApiKey } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -54,7 +55,8 @@ export async function POST(req: NextRequest) {
 
     // 3. Solve 2D Mathematical Layout & Render Draw.io XML
     const layoutStart = Date.now();
-    const xml = solveAndRenderStudio3Xml(graph, {
+    let finalGraph = graph;
+    let xml = solveAndRenderStudio3Xml(finalGraph, {
       theme: theme === 'dark' ? 'dark' : 'light',
       canvasWidth: 1600,
       canvasHeight: 1000
@@ -68,28 +70,55 @@ export async function POST(req: NextRequest) {
       message: `2D Coordinate & Channel Solver generated Draw.io XML (${xml.length} bytes, 0 collisions) in ${layoutElapsed}ms`
     });
 
-    // 4. Run 3-Phase Automated Quality Gate
+    // 4. Run 4-Phase Automated Quality Gate with Closed-Loop Auto-Healing
     const qualityStart = Date.now();
-    const qualityReport = evaluateStudio3Quality({
-      graph,
+    let qualityReport = evaluateStudio3Quality({
+      graph: finalGraph,
       intent: finalIntent,
       previousGraph: previousGraph || null
     });
-    const qualityElapsed = Date.now() - qualityStart;
 
-    logger.log({
-      stage: 'quality_gate',
-      status: qualityReport.certified ? 'success' : 'warning',
-      latencyMs: qualityElapsed,
-      message: `Quality Gate Certified (Overall Score: ${qualityReport.overallScore}/100, Completeness: ${Math.round((qualityReport.phase1Technical?.completenessScore || 0.9) * 100)}%, AABB Collisions: ${qualityReport.phase2Visual?.collisionsCount || 0}) in ${qualityElapsed}ms`
-    });
+    // Auto-heal if score is below threshold or issues detected
+    if (!qualityReport.certified || qualityReport.overallScore < 85 || (qualityReport.phase2Visual?.collisionsCount || 0) > 0) {
+      logger.log({
+        stage: 'quality_gate',
+        status: 'warning',
+        message: `Quality Gate score was ${qualityReport.overallScore}/100 with layout violations. Running autonomous self-healing pass...`
+      });
+
+      finalGraph = enrichAndSanitizeSemanticGraph(finalGraph, finalIntent);
+      xml = solveAndRenderStudio3Xml(finalGraph, {
+        theme: theme === 'dark' ? 'dark' : 'light',
+        canvasWidth: 1600,
+        canvasHeight: 1000
+      });
+
+      qualityReport = evaluateStudio3Quality({
+        graph: finalGraph,
+        intent: finalIntent,
+        previousGraph: previousGraph || null
+      });
+
+      logger.log({
+        stage: 'quality_gate',
+        status: 'success',
+        message: `Self-Healing complete: Quality Score boosted to ${qualityReport.overallScore}/100 (Certified: ${qualityReport.certified})`
+      });
+    } else {
+      logger.log({
+        stage: 'quality_gate',
+        status: 'success',
+        latencyMs: Date.now() - qualityStart,
+        message: `Quality Gate Certified on first pass (Overall Score: ${qualityReport.overallScore}/100, Collisions: ${qualityReport.phase2Visual?.collisionsCount || 0})`
+      });
+    }
 
     // 5. Persist Diagram to Database for Permanent Unique Link & ID
     let diagramId: string | null = null;
     let versionId: string | null = null;
     try {
       const dbRes = await createDiagram(
-        graph?.title || 'Studio 3 First-Principles Architecture',
+        finalGraph?.title || 'Studio 3 First-Principles Architecture',
         xml,
         'Synthesized via Studio 3 First Principles',
         prompt,
@@ -111,14 +140,14 @@ export async function POST(req: NextRequest) {
       diagramId,
       versionId,
       intent: finalIntent,
-      graph,
+      graph: finalGraph,
       xml,
       qualityReport,
       logs: logger.getLogs(),
       stats: {
-        bandsCount: Array.isArray(graph?.bands) ? graph.bands.length : 1,
-        abstractionLevel: graph?.abstractionLevel || finalIntent.abstractionLevel,
-        connectionsCount: Array.isArray(graph?.connections) ? graph.connections.length : 0,
+        bandsCount: Array.isArray(finalGraph?.bands) ? finalGraph.bands.length : 1,
+        abstractionLevel: finalGraph?.abstractionLevel || finalIntent.abstractionLevel,
+        connectionsCount: Array.isArray(finalGraph?.connections) ? finalGraph.connections.length : 0,
         qualityScore: qualityReport.overallScore,
         certified: qualityReport.certified
       }

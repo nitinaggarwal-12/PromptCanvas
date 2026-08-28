@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseStudio3IntentWithLLM } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
+import { enrichAndSanitizeSemanticGraph } from '@/lib/studio3/graphEnricher';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
 import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
 import { Studio3ExecutionLogger } from '@/lib/studio3/telemetryLogger';
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { messages, currentXml, previousGraph, theme = 'dark', userApiKey } = body;
+    const { messages, currentXml, previousGraph, theme = 'light', userApiKey } = body;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -52,10 +53,13 @@ export async function POST(req: NextRequest) {
       logger
     });
 
-    // 3. Render Updated Draw.io XML
+    // 3. Solve 2D Mathematical Layout & Render Draw.io XML
     const layoutStart = Date.now();
-    const xml = solveAndRenderStudio3Xml(graph, {
-      theme: theme === 'dark' ? 'dark' : 'light'
+    let finalGraph = graph;
+    let xml = solveAndRenderStudio3Xml(finalGraph, {
+      theme: theme === 'dark' ? 'dark' : 'light',
+      canvasWidth: 1600,
+      canvasHeight: 1000
     });
     const layoutElapsed = Date.now() - layoutStart;
 
@@ -66,18 +70,45 @@ export async function POST(req: NextRequest) {
       message: `Rendered Draw.io XML (${xml.length} bytes) in ${layoutElapsed}ms`
     });
 
-    // 4. Run 3-Phase Quality Inspection
-    const qualityReport = evaluateStudio3Quality({
-      graph,
+    // 4. Run 4-Phase Quality Inspection with Closed-Loop Auto-Healing
+    let qualityReport = evaluateStudio3Quality({
+      graph: finalGraph,
       intent,
       previousGraph: previousGraph || null
     });
 
-    logger.log({
-      stage: 'quality_gate',
-      status: qualityReport.certified ? 'success' : 'warning',
-      message: `Quality Certification: ${qualityReport.overallScore}/100`
-    });
+    if (!qualityReport.certified || qualityReport.overallScore < 85 || (qualityReport.phase2Visual?.collisionsCount || 0) > 0) {
+      logger.log({
+        stage: 'quality_gate',
+        status: 'warning',
+        message: `Quality Gate score was ${qualityReport.overallScore}/100 with layout violations. Running autonomous self-healing pass...`
+      });
+
+      finalGraph = enrichAndSanitizeSemanticGraph(finalGraph, intent);
+      xml = solveAndRenderStudio3Xml(finalGraph, {
+        theme: theme === 'dark' ? 'dark' : 'light',
+        canvasWidth: 1600,
+        canvasHeight: 1000
+      });
+
+      qualityReport = evaluateStudio3Quality({
+        graph: finalGraph,
+        intent,
+        previousGraph: previousGraph || null
+      });
+
+      logger.log({
+        stage: 'quality_gate',
+        status: 'success',
+        message: `Self-Healing complete: Quality Score boosted to ${qualityReport.overallScore}/100 (Certified: ${qualityReport.certified})`
+      });
+    } else {
+      logger.log({
+        stage: 'quality_gate',
+        status: 'success',
+        message: `Quality Certification: ${qualityReport.overallScore}/100 (Certified: ${qualityReport.certified})`
+      });
+    }
 
     let explanation = `I've synthesized a **${intent.abstractionLevel.toUpperCase()}** representation for "${latestUserMessage}".`;
     if (intent.actionType === 'band_expansion') {
@@ -99,12 +130,12 @@ export async function POST(req: NextRequest) {
           null,
           null,
           'studio3_generative',
-          JSON.stringify(graph)
+          JSON.stringify(finalGraph)
         );
         versionId = v.id;
       } else {
         const dbRes = await createDiagram(
-          graph?.title || 'Studio 3 First-Principles Architecture',
+          finalGraph?.title || 'Studio 3 First-Principles Architecture',
           xml,
           'Synthesized via Studio 3 Chat Turn',
           latestUserMessage,
@@ -129,13 +160,13 @@ export async function POST(req: NextRequest) {
       message: explanation,
       intent,
       xml,
-      graph,
+      graph: finalGraph,
       qualityReport,
       logs: logger.getLogs(),
       stats: {
-        bandsCount: Array.isArray(graph?.bands) ? graph.bands.length : 1,
-        abstractionLevel: graph?.abstractionLevel || intent.abstractionLevel,
-        connectionsCount: Array.isArray(graph?.connections) ? graph.connections.length : 0,
+        bandsCount: Array.isArray(finalGraph?.bands) ? finalGraph.bands.length : 1,
+        abstractionLevel: finalGraph?.abstractionLevel || intent.abstractionLevel,
+        connectionsCount: Array.isArray(finalGraph?.connections) ? finalGraph.connections.length : 0,
         qualityScore: qualityReport.overallScore,
         certified: qualityReport.certified
       }

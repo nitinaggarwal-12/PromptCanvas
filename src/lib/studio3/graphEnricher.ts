@@ -2,13 +2,53 @@ import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3CardItem, Stud
 import { Studio3Intent } from './intentParser';
 
 const SERVICE_ICON_MAP: Record<string, { iconKey: string; defaultItems: string[] }> = {
+  logistic: {
+    iconKey: 'vertex_ai',
+    defaultItems: ['Sigmoid activation: σ(z) = 1 / (1 + e^-z)', 'Log-odds output mapped to probability p ∈ [0, 1]', 'Binary Cross-Entropy (Log-Loss) minimization']
+  },
+  regression: {
+    iconKey: 'vertex_ai',
+    defaultItems: ['Linear logit calculation: z = w^T x + b', 'Maximum Likelihood Estimation (MLE) optimization', 'L1 (Lasso) / L2 (Ridge) weight regularization']
+  },
+  classification: {
+    iconKey: 'vertex_ai',
+    defaultItems: ['Decision boundary thresholding (p ≥ 0.5)', 'Multi-class Softmax / OvR probability vectors', 'High-accuracy probabilistic classification']
+  },
+  sigmoid: {
+    iconKey: 'vertex_ai',
+    defaultItems: ['S-shaped non-linear monotonic curve', 'Asymptotic bounds: lim z→∞ = 1, lim z→-∞ = 0', 'Smooth derivative for gradient calculation']
+  },
+  gradient: {
+    iconKey: 'gke_autopilot',
+    defaultItems: ['Stochastic Gradient Descent (SGD / Adam)', 'Weight updates: w := w - α ∇J(w)', 'Loss surface convergence & learning rate tuning']
+  },
+  feature: {
+    iconKey: 'vertex_vector_search',
+    defaultItems: ['Design matrix X normalization & z-scoring', 'One-Hot Encoding & categorical imputation', 'Vertex AI Feature Store real-time online serving']
+  },
+  dataset: {
+    iconKey: 'bigquery',
+    defaultItems: ['Ground truth labeled dataset (y ∈ {0, 1})', 'Stratified 80/20 train/test evaluation split', 'Petabyte-scale BigQuery feature warehouse']
+  },
+  training: {
+    iconKey: 'gke_autopilot',
+    defaultItems: ['Distributed GPU/TPU training worker pool', 'Mini-batch loss computation & backpropagation', 'Automated checkpointing & early stopping']
+  },
+  evaluation: {
+    iconKey: 'cloud_monitoring',
+    defaultItems: ['Confusion matrix: Precision, Recall, F1 score', 'ROC curve & Area Under Curve (ROC-AUC)', 'Continuous model performance & data drift tracking']
+  },
+  inference: {
+    iconKey: 'cloud_run',
+    defaultItems: ['Sub-10ms serverless prediction endpoint', 'Real-time JSON payload scoring & logging', 'Autoscaling endpoint behind Cloud Armor']
+  },
   transformer: {
     iconKey: 'gemini',
     defaultItems: ['Multi-Head Self-Attention layers', 'Positional Encodings (Sinusoidal / RoPE)', 'Feed-Forward Neural Networks (FFN)']
   },
   attention: {
     iconKey: 'gemini',
-    defaultItems: ['Scaled Dot-Product Attention: Softmax(QK^T / √d_k)V', 'Multi-Head Parallel Subspace Projections', 'Residual Connections & LayerNorm']
+    defaultItems: ['Scaled Dot-Product: Softmax(QK^T / √d_k)V', 'Multi-Head Parallel Subspace Projections', 'Residual Connections & LayerNorm']
   },
   encoder: {
     iconKey: 'gemini',
@@ -17,106 +57,6 @@ const SERVICE_ICON_MAP: Record<string, { iconKey: string; defaultItems: string[]
   decoder: {
     iconKey: 'gemini',
     defaultItems: ['Masked Multi-Head Self-Attention (Autoregressive)', 'Encoder-Decoder Cross-Attention Conditioning', 'Linear Projection to Vocabulary & Softmax']
-  },
-  embedding: {
-    iconKey: 'vertex_vector_search',
-    defaultItems: ['Token Embedding Lookup Matrix', 'Learnable / Sinusoidal Positional Encoding', 'High-Dimensional Vector Representation']
-  },
-  layer: {
-    iconKey: 'gemini',
-    defaultItems: ['Pre-Layer Normalization (RMSNorm / LayerNorm)', 'GELU / SwiGLU Activation Function', 'Skip Residual Connection']
-  },
-  armor: {
-    iconKey: 'cloud_armor',
-    defaultItems: ['L3/L4/L7 DDoS mitigation & rate-limiting', 'OWASP Top 10 automated threat filtering', 'Custom WAF banking API security policies']
-  },
-  waf: {
-    iconKey: 'cloud_armor',
-    defaultItems: ['Edge threat inspection & DDoS protection', 'Adaptive rate limiting for public endpoints']
-  },
-  spanner: {
-    iconKey: 'spanner',
-    defaultItems: ['TrueTime multi-region active-active replication', 'Global ACID transactions with 99.999% SLA', 'Strong consistency for financial ledgers']
-  },
-  ledger: {
-    iconKey: 'spanner',
-    defaultItems: ['Immutable double-entry transaction journal', 'Synchronous multi-region ledger persistence', 'Cryptographic audit log verification']
-  },
-  kms: {
-    iconKey: 'cloud_armor',
-    defaultItems: ['Customer-Managed Encryption Keys (CMEK)', 'FIPS 140-2 Level 3 HSM hardware protection', 'Automated 90-day cryptographic key rotation']
-  },
-  cmek: {
-    iconKey: 'cloud_armor',
-    defaultItems: ['Envelope encryption with Cloud KMS', 'Hardware Security Module (HSM) protection', 'Granular IAM key access policies']
-  },
-  gke: {
-    iconKey: 'gke_autopilot',
-    defaultItems: ['Auto-scaling stateless ledger microservices', 'Hardened GKE Autopilot node security', 'mTLS service-to-service communication']
-  },
-  kubernetes: {
-    iconKey: 'gke_autopilot',
-    defaultItems: ['Containerized microservices orchestration', 'Zero-downtime rolling canary deployments']
-  },
-  run: {
-    iconKey: 'cloud_run',
-    defaultItems: ['Serverless container execution', 'Sub-second auto-scaling on demand', 'Direct VPC egress with private connectivity']
-  },
-  iap: {
-    iconKey: 'iap',
-    defaultItems: ['Context-aware device & user verification', 'Zero-trust identity boundary enforcement', 'BeyondCorp zero-trust network access']
-  },
-  iam: {
-    iconKey: 'iap',
-    defaultItems: ['Least-privilege role-based access control', 'Workload Identity Federation for pods', 'Short-lived OAuth2 access tokens']
-  },
-  user: {
-    iconKey: 'iap',
-    defaultItems: ['Multi-Factor Authentication (MFA/FIDO2)', 'Context-aware device certificate verification']
-  },
-  vpc: {
-    iconKey: 'cloud_armor',
-    defaultItems: ['Private Service Connect (PSC) endpoints', 'VPC Service Controls (VPC-SC) perimeters', 'Zero public IP exposure for databases']
-  },
-  pubsub: {
-    iconKey: 'cloud_run',
-    defaultItems: ['Guaranteed at-least-once message streaming', 'Dead-Letter Queue (DLQ) for poison messages', 'Ordered message delivery by account key']
-  },
-  redis: {
-    iconKey: 'memorystore',
-    defaultItems: ['Sub-millisecond in-memory cache cluster', 'High-availability Redis with auto-failover', 'Read-shield for core database clusters']
-  },
-  memorystore: {
-    iconKey: 'memorystore',
-    defaultItems: ['Managed in-memory distributed cache', 'Sub-millisecond latency for hot balances', 'In-transit TLS encryption']
-  },
-  gemini: {
-    iconKey: 'gemini',
-    defaultItems: ['Multimodal reasoning & intent decomposition', 'Autonomous tool calling & function execution', 'Deterministic safety & guardrail enforcement']
-  },
-  vertex: {
-    iconKey: 'vertex_ai',
-    defaultItems: ['Managed AI agent orchestration framework', 'Enterprise RAG grounding & citation synthesis', 'Sub-10ms ScaNN vector search index']
-  },
-  vector: {
-    iconKey: 'vertex_vector_search',
-    defaultItems: ['Hierarchical Navigable Small World (HNSW)', 'Hybrid dense-sparse embedding retrieval', 'Real-time streaming vector mutations']
-  },
-  bigquery: {
-    iconKey: 'bigquery',
-    defaultItems: ['Petabyte-scale analytical data warehouse', 'Real-time telemetry ingestion via Storage Write API', 'Data governance & column-level encryption']
-  },
-  storage: {
-    iconKey: 'cloud_storage',
-    defaultItems: ['Dual-region geo-redundant object bucket', 'Object lifecycle management & immutability locks', 'Customer-Managed Encryption Keys (CMEK)']
-  },
-  logging: {
-    iconKey: 'cloud_logging',
-    defaultItems: ['Centralized immutable audit logs', 'Real-time anomaly detection & security alerts', 'SOC2 / HIPAA compliance log retention']
-  },
-  monitoring: {
-    iconKey: 'cloud_monitoring',
-    defaultItems: ['Golden signals telemetry (Latency, Errors, Saturation)', 'Automated PagerDuty & Slack alerting policies']
   },
   diffusion: {
     iconKey: 'gemini',
@@ -134,13 +74,41 @@ const SERVICE_ICON_MAP: Record<string, { iconKey: string; defaultItems: string[]
     iconKey: 'vertex_vector_search',
     defaultItems: ['Variational Autoencoder (VAE) encoder/decoder', '8x spatial dimension compression', 'Perceptual and adversarial patch loss']
   },
-  unet: {
-    iconKey: 'gemini',
-    defaultItems: ['Encoder-Decoder with skip connections', 'Spatial self-attention & cross-attention', 'Time-embedding injection blocks']
+  armor: {
+    iconKey: 'cloud_armor',
+    defaultItems: ['L3/L4/L7 DDoS mitigation & rate-limiting', 'OWASP Top 10 automated threat filtering', 'Custom WAF banking API security policies']
   },
-  dit: {
-    iconKey: 'gemini',
-    defaultItems: ['Diffusion Transformer patch backbone', 'Multi-head self-attention token mixing', 'Scalable generative image synthesis']
+  spanner: {
+    iconKey: 'spanner',
+    defaultItems: ['TrueTime multi-region active-active replication', 'Global ACID transactions with 99.999% SLA', 'Strong consistency for financial ledgers']
+  },
+  gke: {
+    iconKey: 'gke_autopilot',
+    defaultItems: ['Auto-scaling stateless ledger microservices', 'Hardened GKE Autopilot node security', 'mTLS service-to-service communication']
+  },
+  run: {
+    iconKey: 'cloud_run',
+    defaultItems: ['Serverless container execution', 'Sub-second auto-scaling on demand', 'Direct VPC egress with private connectivity']
+  },
+  iap: {
+    iconKey: 'iap',
+    defaultItems: ['Context-aware device & user verification', 'Zero-trust identity boundary enforcement', 'BeyondCorp zero-trust network access']
+  },
+  bigquery: {
+    iconKey: 'bigquery',
+    defaultItems: ['Petabyte-scale analytical data warehouse', 'Real-time telemetry ingestion via Storage Write API', 'Data governance & column-level encryption']
+  },
+  storage: {
+    iconKey: 'cloud_storage',
+    defaultItems: ['Dual-region geo-redundant object bucket', 'Object lifecycle management & immutability locks', 'Customer-Managed Encryption Keys (CMEK)']
+  },
+  logging: {
+    iconKey: 'cloud_logging',
+    defaultItems: ['Centralized immutable audit logs', 'Real-time anomaly detection & security alerts', 'SOC2 / HIPAA compliance log retention']
+  },
+  monitoring: {
+    iconKey: 'cloud_monitoring',
+    defaultItems: ['Golden signals telemetry (Latency, Errors, Saturation)', 'Automated PagerDuty & Slack alerting policies']
   }
 };
 
@@ -151,14 +119,13 @@ export function enrichAndSanitizeSemanticGraph(
   graph: Studio3SemanticGraph,
   intent: Studio3Intent
 ): Studio3SemanticGraph {
-  // Sanitize tenets cleanly
   const rawTenets = Array.isArray(graph?.tenets)
     ? graph.tenets.filter(t => typeof t === 'string' && t.trim().length > 0).map(t => String(t).toUpperCase())
     : [];
 
   const enrichedTenets = rawTenets.length > 0
     ? rawTenets
-    : ['ZERO TRUST SECURITY', 'HIGH AVAILABILITY', 'OBSERVABILITY FIRST'];
+    : ['MATHEMATICAL PRECISION', 'HIGH AVAILABILITY & RESILIENCE', 'CONTINUOUS OBSERVABILITY'];
 
   const enriched: Studio3SemanticGraph = {
     ...graph,
@@ -170,7 +137,7 @@ export function enrichAndSanitizeSemanticGraph(
       : `Synthesized ${intent?.abstractionLevel?.toUpperCase() || 'LOGICAL'} Architecture`,
     abstractionLevel: intent?.abstractionLevel || graph?.abstractionLevel || 'logical',
     tenets: enrichedTenets,
-    connections: Array.isArray(graph?.connections) ? graph.connections : [],
+    connections: Array.isArray(graph?.connections) ? [...graph.connections] : [],
     bands: []
   };
 
@@ -184,11 +151,14 @@ export function enrichAndSanitizeSemanticGraph(
     }
   ];
 
+  const stepBadges = ['❶', '❷', '❸', '❹', '❺', '❻', '❼', '❽'];
+  const allCardIdsByColumn: string[][] = [];
+
   enriched.bands = rawBands.map((band, bIdx) => {
     // 1. If it's a column band
     if (band.columns && band.columns.length > 0) {
       const enrichedCols: Studio3Column[] = band.columns.map((col, cIdx) => {
-        const headerColors: Array<Studio3Column['headerColor']> = ['blue', 'teal', 'purple', 'slate', 'amber', 'emerald'];
+        const headerColors: Array<Studio3Column['headerColor']> = ['blue', 'teal', 'purple', 'emerald', 'amber', 'slate'];
         const fallbackColor = headerColors[cIdx % headerColors.length];
 
         const enrichedCards: Studio3CardItem[] = (col.cards || []).map((card, cardIdx) => {
@@ -206,11 +176,13 @@ export function enrichAndSanitizeSemanticGraph(
           }
 
           if (!matchedIconKey) {
-            if (titleLower.includes('attention') || titleLower.includes('model') || titleLower.includes('transformer')) matchedIconKey = 'gemini';
-            else if (titleLower.includes('db') || titleLower.includes('data') || titleLower.includes('sql')) matchedIconKey = 'spanner';
-            else if (titleLower.includes('auth') || titleLower.includes('user') || titleLower.includes('client')) matchedIconKey = 'iap';
-            else if (titleLower.includes('api') || titleLower.includes('ingress') || titleLower.includes('gateway')) matchedIconKey = 'cloud_armor';
-            else matchedIconKey = 'gke_autopilot';
+            if (titleLower.includes('dataset') || titleLower.includes('data') || titleLower.includes('sql')) matchedIconKey = 'bigquery';
+            else if (titleLower.includes('feature') || titleLower.includes('vector') || titleLower.includes('embed')) matchedIconKey = 'vertex_vector_search';
+            else if (titleLower.includes('model') || titleLower.includes('sigmoid') || titleLower.includes('regression')) matchedIconKey = 'vertex_ai';
+            else if (titleLower.includes('train') || titleLower.includes('job') || titleLower.includes('compute')) matchedIconKey = 'gke_autopilot';
+            else if (titleLower.includes('endpoint') || titleLower.includes('inference') || titleLower.includes('serve')) matchedIconKey = 'cloud_run';
+            else if (titleLower.includes('eval') || titleLower.includes('metric') || titleLower.includes('log')) matchedIconKey = 'cloud_monitoring';
+            else matchedIconKey = 'gemini';
           }
 
           const rawItems = Array.isArray(card?.items)
@@ -218,7 +190,7 @@ export function enrichAndSanitizeSemanticGraph(
             : [];
 
           const finalItems = rawItems.length > 0
-            ? rawItems.slice(0, 6) // Cap items at 6 to prevent vertical overflow
+            ? rawItems.slice(0, 4)
             : (defaultItems.length > 0 ? defaultItems : ['Core architectural subsystem', 'High-performance processing block', 'Low-latency communication pathway']);
 
           let cleanSnippet = card?.codeSnippet;
@@ -230,41 +202,31 @@ export function enrichAndSanitizeSemanticGraph(
             }
           }
 
+          const cardId = card?.id || `card_${bIdx}_${cIdx}_${cardIdx}`;
+
           return {
             ...card,
-            id: card?.id || `card_${bIdx}_${cIdx}_${cardIdx}`,
+            id: cardId,
             title: card?.title && typeof card.title === 'string' ? card.title : 'Architecture Component',
             iconKey: matchedIconKey,
             items: finalItems,
             codeSnippet: cleanSnippet,
-            badge: card?.badge || (titleLower.includes('spanner') ? '99.999% SLA' : titleLower.includes('attention') ? 'Core Block' : undefined)
+            badge: card?.badge || (titleLower.includes('spanner') ? '99.999% SLA' : titleLower.includes('model') ? 'ML Core' : undefined)
           };
         });
 
-        let headerTitle = col?.header;
-        if (!headerTitle || typeof headerTitle !== 'string' || headerTitle.trim().toUpperCase() === 'TIER' || headerTitle.length < 4) {
-          const cardTitles = enrichedCards.map(c => c.title.toLowerCase()).join(' ');
-          if (cardTitles.includes('embedding') || cardTitles.includes('input') || cardTitles.includes('token')) {
-            headerTitle = 'INPUT EMBEDDING & POSITIONAL ENCODING';
-          } else if (cardTitles.includes('encoder') || cardTitles.includes('attention') || cardTitles.includes('self-attention')) {
-            headerTitle = 'MULTI-HEAD ATTENTION & ENCODER BLOCK';
-          } else if (cardTitles.includes('decoder') || cardTitles.includes('output') || cardTitles.includes('linear') || cardTitles.includes('softmax')) {
-            headerTitle = 'DECODER & AUTOREGRESSIVE GENERATION';
-          } else if (cardTitles.includes('armor') || cardTitles.includes('iap') || cardTitles.includes('user') || cardTitles.includes('iam')) {
-            headerTitle = 'IDENTITY & EDGE SECURITY INGRESS';
-          } else if (cardTitles.includes('gke') || cardTitles.includes('run') || cardTitles.includes('microservice')) {
-            headerTitle = 'COMPUTE & TRANSACTION PROCESSING';
-          } else if (cardTitles.includes('spanner') || cardTitles.includes('kms') || cardTitles.includes('database')) {
-            headerTitle = 'DATA PERSISTENCE & KMS ENCRYPTION';
-          } else {
-            headerTitle = `STAGE ${cIdx + 1}: CORE PROCESSING`;
-          }
-        }
+        const colCardIds = enrichedCards.map(c => c.id);
+        allCardIdsByColumn.push(colCardIds);
+
+        let rawHeader = col?.header || `STAGE ${cIdx + 1}`;
+        const cleanHeader = rawHeader.replace(/^[❶❷❸❹❺❻❼❽\d\.\s\-]+/, '').trim();
+        const stepPrefix = stepBadges[cIdx] ? `${stepBadges[cIdx]} ` : '';
+        const finalHeader = `${stepPrefix}${cleanHeader}`.toUpperCase();
 
         return {
           ...col,
           id: col?.id || `col_${bIdx}_${cIdx}`,
-          header: String(headerTitle).trim().toUpperCase(),
+          header: finalHeader,
           headerColor: col?.headerColor || fallbackColor,
           subtitle: col?.subtitle || 'Processing Subsystem',
           cards: enrichedCards
@@ -277,49 +239,46 @@ export function enrichAndSanitizeSemanticGraph(
       };
     }
 
-    // 2. If it's a pipeline band
-    if (band.pipelineStages && band.pipelineStages.length > 0) {
-      const enrichedStages: Studio3PipelineStage[] = band.pipelineStages.map((st, sIdx) => {
-        const stageColors: Array<Studio3PipelineStage['color']> = ['blue', 'teal', 'amber', 'purple', 'emerald', 'slate'];
-        const fallbackColor = stageColors[sIdx % stageColors.length];
-
-        const enrichedNodes = (st.nodes || []).map((node, nIdx) => {
-          const nameLower = (node?.name || '').toLowerCase();
-          let iconKey = node?.iconKey;
-          if (!iconKey) {
-            if (nameLower.includes('token') || nameLower.includes('embed')) iconKey = 'vertex_vector_search';
-            else if (nameLower.includes('attention') || nameLower.includes('encoder') || nameLower.includes('decoder')) iconKey = 'gemini';
-            else if (nameLower.includes('storage') || nameLower.includes('file')) iconKey = 'cloud_storage';
-            else iconKey = 'cloud_run';
-          }
-          return {
-            ...node,
-            id: node?.id || `node_${bIdx}_${sIdx}_${nIdx}`,
-            name: node?.name && typeof node.name === 'string' ? node.name : 'Stage Node',
-            iconKey,
-            role: node?.role || 'Sequential Transformation'
-          };
-        });
-
-        return {
-          ...st,
-          stepNumber: st?.stepNumber || sIdx + 1,
-          id: st?.id || `stage_${bIdx}_${sIdx}`,
-          title: String(st?.title || `STAGE ${sIdx + 1}`).toUpperCase(),
-          subtitle: st?.subtitle || 'Operational Pipeline Phase',
-          color: st?.color || fallbackColor,
-          nodes: enrichedNodes
-        };
-      });
-
-      return {
-        ...band,
-        pipelineStages: enrichedStages
-      };
-    }
-
     return band;
   });
+
+  // 3. Auto-Synthesize Sequential Connections if Empty (Guarantees Visible Flow & Arrows)
+  if (enriched.connections.length === 0 && allCardIdsByColumn.length >= 2) {
+    const defaultLabels = [
+      '❶ Ingest & Preprocessing (mTLS)',
+      '❷ Feature Vector X (gRPC)',
+      '❸ Loss Minimization (SGD / Adam)',
+      '❹ Model Deployment (REST / JSON)',
+      '❺ Telemetry Stream (CDC / PubSub)'
+    ];
+
+    for (let i = 0; i < allCardIdsByColumn.length - 1; i++) {
+      const fromCardId = allCardIdsByColumn[i][0];
+      const toCardId = allCardIdsByColumn[i + 1][0];
+      if (fromCardId && toCardId) {
+        enriched.connections.push({
+          fromId: fromCardId,
+          toId: toCardId,
+          label: defaultLabels[i] || `Step ${i + 1} Data Flow`,
+          style: i === 2 ? 'dashed_purple' : 'solid_blue'
+        });
+      }
+    }
+
+    // Add closed-loop feedback from last column back to feature engineering if available
+    if (allCardIdsByColumn.length >= 3 && allCardIdsByColumn[allCardIdsByColumn.length - 1].length > 1 && allCardIdsByColumn[1].length > 1) {
+      const fromEvalCard = allCardIdsByColumn[allCardIdsByColumn.length - 1][1];
+      const toFeatureCard = allCardIdsByColumn[1][1];
+      if (fromEvalCard && toFeatureCard) {
+        enriched.connections.push({
+          fromId: fromEvalCard,
+          toId: toFeatureCard,
+          label: 'Continuous Retraining & Drift Feedback',
+          style: 'feedback_teal'
+        });
+      }
+    }
+  }
 
   return enriched;
 }

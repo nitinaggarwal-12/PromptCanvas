@@ -81,7 +81,7 @@ const STARTER_PROMPTS = [
 ];
 
 export default function Studio3Page() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [promptInput, setPromptInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
