@@ -398,134 +398,106 @@ export default function Studio3Page() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#060A14] text-slate-100' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans transition-colors duration-200`}>
-      {/* 1. TOP GLOBAL NAVIGATION & TELEMETRY HEADER */}
+      {/* 1. TOP GLOBAL NAVIGATION & CONSOLIDATED CONTROLS */}
       <header className={`sticky top-0 z-30 border-b backdrop-blur-md ${theme === 'dark' ? 'bg-[#0B111E]/95 border-slate-800 shadow-lg shadow-black/20 text-slate-100' : 'bg-white/95 border-slate-200 shadow-sm text-slate-900'}`}>
-        <div className="max-w-[1920px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-          {/* Logo & Brand Block */}
+        <div className="max-w-[1920px] mx-auto px-4 md:px-6 h-14 flex items-center justify-between gap-4">
+          {/* Left: Brand & Studio Switcher */}
           <div className="flex items-center gap-3">
             <Link href="/studio3" className="flex items-center gap-2 group">
-              <span className={`text-xl font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Prompt<span className="text-blue-600">Canvas</span></span>
-              <span className="px-2 py-0.5 text-[11px] font-black rounded-md bg-blue-600 text-white shadow-sm">Studio 3</span>
+              <span className={`text-lg font-black tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>Prompt<span className="text-blue-600">Canvas</span></span>
             </Link>
-            <div className={`hidden xl:flex items-center gap-2 text-xs font-semibold pl-3 border-l ${theme === 'dark' ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-600'}`}>
-              <span className="text-amber-500">✨</span>
-              <span>Zero Predefined Blueprints • Single-Session Generative Architecture Stage</span>
+
+            {/* Compact Studio Selector Pill */}
+            <div className={`flex items-center p-0.5 rounded-lg border text-[11px] font-bold ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
+              <Link href="/" className={`px-2 py-0.5 rounded transition ${theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}>Studio 1</Link>
+              <Link href="/studio2" className={`px-2 py-0.5 rounded transition ${theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}>Studio 2</Link>
+              <span className="bg-blue-600 text-white rounded px-2 py-0.5 shadow-xs">Studio 3</span>
             </div>
           </div>
 
-          {/* Abstraction Level Selector & Action Controls */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            {/* Prominent + New Diagram Button */}
-            <button
-              onClick={handleResetStage}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-md transition active:scale-95"
-              title="Start a fresh new diagram from scratch"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-              <span>+ New Diagram</span>
-            </button>
-
-            {/* Saved Architecture History Button */}
-            <button
-              onClick={openHistoryDrawer}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm ${
-                theme === 'dark'
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
-              }`}
-              title="Open saved diagram history"
-            >
-              <History className="w-3.5 h-3.5 text-blue-500" />
-              <span>History</span>
-            </button>
-
-            {/* Shareable Unique Link & ID Badge */}
-            {diagramId && (
+          {/* Center: Primary Stage Actions & View Mode Switcher */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Primary Action Button Group */}
+            <div className="flex items-center gap-1.5">
               <button
-                onClick={handleCopyShareLink}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-sm ${
-                  theme === 'dark'
-                    ? 'bg-blue-950/90 hover:bg-blue-900 border border-blue-500/60 text-blue-200'
-                    : 'bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-700 font-bold'
-                }`}
-                title="Click to copy unique shareable link"
+                onClick={handleResetStage}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition active:scale-95"
+                title="Start a fresh new diagram"
               >
-                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <LinkIcon className="w-3.5 h-3.5 text-blue-600" />}
-                <span>{copiedLink ? 'Copied Link!' : `ID: ${diagramId.slice(0, 8)}...`}</span>
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ New</span>
               </button>
-            )}
 
-            {/* Live Logs Indicator */}
-            <button
-              onClick={() => setActiveTab('logs')}
-              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition shadow-sm ${
-                theme === 'dark'
-                  ? 'bg-slate-900 text-cyan-300 border border-cyan-500/40 hover:bg-slate-800'
-                  : 'bg-slate-100 text-cyan-800 border border-slate-300 hover:bg-slate-200'
-              }`}
-            >
-              <Terminal className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
-              <span>Gemini: {allLogs.length} Events</span>
-            </button>
-
-            {/* Quality Badge */}
-            {currentQuality && (
               <button
-                onClick={() => setActiveTab('quality')}
-                className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-sm ${
+                onClick={openHistoryDrawer}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-xs ${
                   theme === 'dark'
-                    ? 'bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-900'
-                    : 'bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
                 }`}
+                title="Open saved architecture history"
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>{currentQuality.overallScore}/100</span>
+                <History className="w-3.5 h-3.5 text-blue-500" />
+                <span>History</span>
               </button>
-            )}
 
-            {/* Abstraction Level Chips */}
-            <div className={`hidden lg:flex items-center p-1 rounded-xl border text-xs ${
-              theme === 'dark'
-                ? 'bg-slate-900/90 border-slate-700/80'
-                : 'bg-slate-100 border-slate-300'
+              {diagramId && (
+                <button
+                  onClick={handleCopyShareLink}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition shadow-xs ${
+                    theme === 'dark'
+                      ? 'bg-blue-950/80 hover:bg-blue-900 border border-blue-500/50 text-blue-200'
+                      : 'bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-700 font-bold'
+                  }`}
+                  title="Click to copy unique shareable link"
+                >
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <LinkIcon className="w-3.5 h-3.5 text-blue-600" />}
+                  <span>{copiedLink ? 'Copied' : `ID: ${diagramId.slice(0, 6)}...`}</span>
+                </button>
+              )}
+            </div>
+
+            {/* Separator */}
+            <div className={`hidden sm:block h-4 w-px ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-300'}`} />
+
+            {/* Compact Abstraction View Selector */}
+            <div className={`hidden md:flex items-center p-0.5 rounded-lg border text-xs font-bold ${
+              theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
             }`}>
               {(['conceptual', 'logical', 'technical'] as AbstractionLevel[]).map(lvl => (
                 <button
                   key={lvl}
                   onClick={() => handleOverrideAbstraction(lvl)}
-                  className={`px-3 py-1.5 rounded-lg font-black capitalize transition-all ${
+                  className={`px-2.5 py-1 rounded-md capitalize transition-all ${
                     selectedAbstraction === lvl
-                      ? 'bg-blue-600 text-white shadow-md'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : theme === 'dark'
-                      ? 'text-slate-400 hover:text-white hover:bg-slate-800'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200'
+                      ? 'text-slate-400 hover:text-white'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  {lvl} View
+                  {lvl}
                 </button>
               ))}
             </div>
+          </div>
 
-            {/* Navigation to other studios */}
-            <div className={`flex items-center gap-2 text-xs font-bold ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-              <Link href="/" className={`px-2.5 py-1 rounded transition ${theme === 'dark' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-slate-200 hover:text-slate-900'}`}>Studio 1</Link>
-              <Link href="/studio2" className={`px-2.5 py-1 rounded transition ${theme === 'dark' ? 'hover:bg-slate-800 hover:text-white' : 'hover:bg-slate-200 hover:text-slate-900'}`}>Studio 2</Link>
-            </div>
-
-            {/* Theme Switcher */}
+          {/* Right: Export Actions & Theme */}
+          <div className="flex items-center gap-2">
+            {/* Theme Toggle */}
             <button
               onClick={() => setTheme(t => (t === 'light' ? 'dark' : 'light'))}
-              className={`p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded-lg border transition ${
                 theme === 'dark'
                   ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
                   : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
               }`}
-              title="Toggle light/dark canvas theme"
+              title="Toggle light/dark theme"
             >
               {theme === 'light' ? <Moon className="w-4 h-4 text-slate-700" /> : <Sun className="w-4 h-4 text-amber-400" />}
             </button>
 
-            {/* Export & Edit Buttons */}
+            {/* Export Actions Group */}
             <button
               onClick={handleCopyXml}
               disabled={!currentXml}
@@ -536,13 +508,13 @@ export default function Studio3Page() {
               }`}
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-              <span>{copied ? 'Copied XML' : 'Copy XML'}</span>
+              <span>{copied ? 'Copied' : 'XML'}</span>
             </button>
 
             <button
               onClick={handleEditInDrawio}
               disabled={!currentXml}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-md transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition disabled:opacity-50"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Edit in Draw.io</span>
