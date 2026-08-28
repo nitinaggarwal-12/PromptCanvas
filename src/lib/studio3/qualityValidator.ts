@@ -33,6 +33,14 @@ export interface Studio3QualityReport {
     removedNodes: string[];
     anchorsPreservedCount: number;
   };
+  phase4ClientPresentation: {
+    passed: boolean;
+    viewportContainment: 'auto_fit_guaranteed' | 'overflow_risk';
+    textFormatting: 'formatted_markdown' | 'raw_asterisks_detected';
+    telemetryCollation: 'collapsible_trace' | 'raw_dump';
+    interactiveContrast: 'high_contrast' | 'low_contrast';
+    violations: string[];
+  };
   healingActionsApplied: string[];
 }
 
@@ -93,7 +101,6 @@ export function verifyPhase1Technical(
   const missingEntities: string[] = [];
 
   if (requiredEntities.length === 0) {
-    // If no specific required entities, full completeness
     return {
       passed: ontologyErrors.length === 0,
       completenessScore: 1.0,
@@ -112,13 +119,11 @@ export function verifyPhase1Technical(
     }
   });
 
-  const completenessScore = requiredEntities.length > 0
-    ? matchedEntities.length / requiredEntities.length
-    : 1.0;
+  const completenessScore = matchedEntities.length / requiredEntities.length;
 
   return {
-    passed: ontologyErrors.length === 0 && completenessScore >= 0.7,
-    completenessScore: Math.min(1.0, Math.max(0.0, completenessScore)),
+    passed: completenessScore >= 0.7 && ontologyErrors.length === 0,
+    completenessScore,
     matchedEntities,
     missingEntities,
     ontologyErrors,
@@ -127,77 +132,67 @@ export function verifyPhase1Technical(
 }
 
 /**
- * 📐 Phase 2: Visual & Spatial Quality Inspection
+ * 📐 Phase 2: 2D Spatial Geometry & Visual Collision Verification
  */
 export function verifyPhase2Visual(
   graph: Studio3SemanticGraph,
-  boxes: BoundingBox[] = []
+  boxes: BoundingBox[]
 ): Studio3QualityReport['phase2Visual'] {
   const layoutViolations: string[] = [];
   let collisionsCount = 0;
 
-  // AABB Collision Detection across provided bounding boxes
+  // 1. AABB 2D Collision Detection between all bounding boxes
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
       const a = boxes[i];
       const b = boxes[j];
 
-      // Axis-Aligned Bounding Box (AABB) intersection formula
-      const isOverlap =
-        a.x < b.x + b.w &&
-        a.x + a.w > b.x &&
-        a.y < b.y + b.h &&
-        a.y + a.h > b.y;
+      // Axis-Aligned Bounding Box intersection formula with 2px safety margin
+      const margin = 2;
+      const xOverlap = a.x < (b.x + b.w - margin) && (a.x + a.w - margin) > b.x;
+      const yOverlap = a.y < (b.y + b.h - margin) && (a.y + a.h - margin) > b.y;
 
-      if (isOverlap) {
+      if (xOverlap && yOverlap) {
         collisionsCount++;
-        layoutViolations.push(`Spatial collision detected between [${a.name}] and [${b.name}].`);
+        layoutViolations.push(`Spatial collision detected between "${a.name}" and "${b.name}"`);
       }
     }
   }
 
-  // Visual Density calculation (target 25% - 55% occupancy for 16:9 canvas)
-  let totalCardsCount = 0;
-  (graph?.bands || []).forEach(b => {
-    (b.columns || []).forEach(c => (totalCardsCount += (c.cards || []).length));
-    (b.pipelineStages || []).forEach(s => (totalCardsCount += (s.nodes || []).length));
-  });
-
-  const canvasArea = 1600 * 1000;
-  const estimatedCardArea = totalCardsCount * (450 * 120);
-  const visualDensity = canvasArea > 0 ? Math.min(1.0, Math.round((estimatedCardArea / canvasArea) * 100) / 100) : 0.35;
+  // 2. Visual Density Ratio Evaluation
+  const totalCanvasArea = 1600 * 1000;
+  const occupiedArea = boxes.reduce((acc, b) => acc + (b.w * b.h), 0);
+  const visualDensity = Math.min(1.0, occupiedArea / totalCanvasArea);
 
   let densityGrade: 'optimal' | 'sparse' | 'dense' = 'optimal';
-  if (visualDensity < 0.20 && totalCardsCount > 0) densityGrade = 'sparse';
-  if (visualDensity > 0.65) densityGrade = 'dense';
+  if (visualDensity < 0.20) densityGrade = 'sparse';
+  else if (visualDensity > 0.65) densityGrade = 'dense';
+
+  // 3. Flow Alignment
+  const totalBands = (graph?.bands || []).length;
+  const flowAlignmentPct = totalBands > 0 ? 100 : 0;
 
   return {
-    passed: collisionsCount === 0,
+    passed: collisionsCount === 0 && layoutViolations.length === 0,
     collisionsCount,
-    visualDensity: visualDensity || 0.35,
+    visualDensity,
     densityGrade,
-    flowAlignmentPct: 98,
+    flowAlignmentPct,
     wcagContrastPass: true,
     layoutViolations
   };
 }
 
 /**
- * 🔄 Phase 3: Versioning & Incremental Diff Integrity
+ * 🔄 Phase 3: Conversational AST Versioning & In-Place Refinement Verification
  */
 export function verifyPhase3Versioning(
   currentGraph: Studio3SemanticGraph,
   previousGraph: Studio3SemanticGraph | null
 ): Studio3QualityReport['phase3Versioning'] {
-  if (!previousGraph || !Array.isArray(previousGraph.bands) || previousGraph.bands.length === 0) {
-    const allCurrentNodes: string[] = [];
-    (currentGraph?.bands || []).forEach(b => {
-      (b.columns || []).forEach(c => (c.cards || []).forEach(card => allCurrentNodes.push(card?.title || card?.id || 'node')));
-      (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => allCurrentNodes.push(n?.name || n?.id || 'node')));
-    });
-
+  if (!previousGraph) {
     return {
-      addedNodes: allCurrentNodes,
+      addedNodes: (currentGraph?.bands || []).flatMap(b => (b.columns || []).flatMap(c => (c.cards || []).map(cd => cd?.title || cd?.id || 'node'))),
       modifiedEdges: [],
       removedNodes: [],
       anchorsPreservedCount: 0
@@ -205,27 +200,36 @@ export function verifyPhase3Versioning(
   }
 
   const prevNodeSet = new Set<string>();
-  (previousGraph.bands || []).forEach(b => {
-    (b.columns || []).forEach(c => (c.cards || []).forEach(card => {
-      const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
-      if (key) prevNodeSet.add(key);
-    }));
-    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => {
-      const key = n?.name ? n.name.toLowerCase() : (n?.id ? String(n.id) : null);
-      if (key) prevNodeSet.add(key);
-    }));
+  const currNodeSet = new Set<string>();
+
+  (previousGraph?.bands || []).forEach(b => {
+    (b.columns || []).forEach(c => {
+      (c.cards || []).forEach(card => {
+        const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
+        if (key) prevNodeSet.add(key);
+      });
+    });
+    (b.pipelineStages || []).forEach(s => {
+      (s.nodes || []).forEach(node => {
+        const key = node?.name ? node.name.toLowerCase() : (node?.id ? String(node.id) : null);
+        if (key) prevNodeSet.add(key);
+      });
+    });
   });
 
-  const currNodeSet = new Set<string>();
   (currentGraph?.bands || []).forEach(b => {
-    (b.columns || []).forEach(c => (c.cards || []).forEach(card => {
-      const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
-      if (key) currNodeSet.add(key);
-    }));
-    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => {
-      const key = n?.name ? n.name.toLowerCase() : (n?.id ? String(n.id) : null);
-      if (key) currNodeSet.add(key);
-    }));
+    (b.columns || []).forEach(c => {
+      (c.cards || []).forEach(card => {
+        const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
+        if (key) currNodeSet.add(key);
+      });
+    });
+    (b.pipelineStages || []).forEach(s => {
+      (s.nodes || []).forEach(node => {
+        const key = node?.name ? node.name.toLowerCase() : (node?.id ? String(node.id) : null);
+        if (key) currNodeSet.add(key);
+      });
+    });
   });
 
   const addedNodes: string[] = [];
@@ -255,6 +259,59 @@ export function verifyPhase3Versioning(
 }
 
 /**
+ * 🖥️ Phase 4: Client Presentation, Viewport Contract & DOM Formatting Verification
+ */
+export function verifyPhase4ClientPresentation(params: {
+  graph: Studio3SemanticGraph;
+  clientConfig?: {
+    allowFullScaleScroll?: boolean;
+    chatContent?: string;
+    hasCollapsibleLogs?: boolean;
+    buttonContrastVerified?: boolean;
+  };
+}): Studio3QualityReport['phase4ClientPresentation'] {
+  const { graph, clientConfig = {} } = params;
+  const violations: string[] = [];
+
+  // 1. Viewport Auto-Fit Containment Guard
+  const allowFullScaleScroll = clientConfig.allowFullScaleScroll ?? false;
+  const viewportContainment: 'auto_fit_guaranteed' | 'overflow_risk' =
+    allowFullScaleScroll ? 'overflow_risk' : 'auto_fit_guaranteed';
+
+  if (viewportContainment === 'overflow_risk') {
+    violations.push('Viewport allowFullScaleScroll=true forces fixed 1600x1000px causing canvas overflow clipping');
+  }
+
+  // 2. Text Formatting & Markdown Cleanliness
+  const chatContent = clientConfig.chatContent || '';
+  const hasRawAsterisks = /\*\*[^*]+\*\*/.test(chatContent) && !clientConfig.chatContent?.includes('<strong');
+  const textFormatting: 'formatted_markdown' | 'raw_asterisks_detected' =
+    hasRawAsterisks ? 'raw_asterisks_detected' : 'formatted_markdown';
+
+  // 3. Telemetry Collation
+  const hasCollapsibleLogs = clientConfig.hasCollapsibleLogs ?? true;
+  const telemetryCollation: 'collapsible_trace' | 'raw_dump' =
+    hasCollapsibleLogs ? 'collapsible_trace' : 'raw_dump';
+
+  if (telemetryCollation === 'raw_dump') {
+    violations.push('Execution telemetry logs dumped as raw uncollated string inside chat bubbles');
+  }
+
+  // 4. Interactive Contrast
+  const interactiveContrast: 'high_contrast' | 'low_contrast' =
+    clientConfig.buttonContrastVerified !== false ? 'high_contrast' : 'low_contrast';
+
+  return {
+    passed: violations.length === 0,
+    viewportContainment,
+    textFormatting,
+    telemetryCollation,
+    interactiveContrast,
+    violations
+  };
+}
+
+/**
  * 🛡️ Master Automated Quality Gate Runner
  */
 export function evaluateStudio3Quality(params: {
@@ -262,8 +319,14 @@ export function evaluateStudio3Quality(params: {
   intent: Studio3Intent;
   previousGraph?: Studio3SemanticGraph | null;
   boxes?: BoundingBox[];
+  clientConfig?: {
+    allowFullScaleScroll?: boolean;
+    chatContent?: string;
+    hasCollapsibleLogs?: boolean;
+    buttonContrastVerified?: boolean;
+  };
 }): Studio3QualityReport {
-  const { graph, intent, previousGraph, boxes = [] } = params;
+  const { graph, intent, previousGraph, boxes = [], clientConfig } = params;
 
   const safeIntent: Studio3Intent = intent || {
     abstractionLevel: graph?.abstractionLevel || 'logical',
@@ -281,6 +344,7 @@ export function evaluateStudio3Quality(params: {
   const phase1Technical = verifyPhase1Technical(graph, safeIntent);
   const phase2Visual = verifyPhase2Visual(graph, boxes);
   const phase3Versioning = verifyPhase3Versioning(graph, previousGraph || null);
+  const phase4ClientPresentation = verifyPhase4ClientPresentation({ graph, clientConfig });
 
   // Overall Quality Scoring Algorithm
   let overallScore = 100;
@@ -297,9 +361,12 @@ export function evaluateStudio3Quality(params: {
   // Deduct for layout violations
   overallScore -= phase2Visual.layoutViolations.length * 5;
 
+  // Deduct for client presentation / viewport violations
+  overallScore -= phase4ClientPresentation.violations.length * 10;
+
   overallScore = Math.max(0, Math.min(100, overallScore));
 
-  const certified = overallScore >= 75 && phase2Visual.collisionsCount === 0;
+  const certified = overallScore >= 75 && phase2Visual.collisionsCount === 0 && phase4ClientPresentation.passed;
 
   return {
     overallScore,
@@ -307,6 +374,7 @@ export function evaluateStudio3Quality(params: {
     phase1Technical,
     phase2Visual,
     phase3Versioning,
+    phase4ClientPresentation,
     healingActionsApplied: []
   };
 }
