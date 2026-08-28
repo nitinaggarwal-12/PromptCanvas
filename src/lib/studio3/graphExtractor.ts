@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '../geminiConfig';
 import { Studio3Intent } from './intentParser';
 import { Studio3ExecutionLogger } from './telemetryLogger';
+import { enrichAndSanitizeSemanticGraph } from './graphEnricher';
 
 export interface Studio3CardItem {
   id: string;
@@ -82,8 +83,7 @@ function getAiClient(apiKey?: string): GoogleGenAI {
 }
 
 /**
- * ⚡ Truly Dynamic First-Principles Graph Generator
- * Creates custom cards and tiers based on the user's actual prompt keywords and architecture domain.
+ * ⚡ Truly Dynamic First-Principles Graph Generator (Fallback Engine)
  */
 export function generateDynamicFirstPrinciplesGraph(
   prompt: string,
@@ -94,7 +94,7 @@ export function generateDynamicFirstPrinciplesGraph(
 
   // 1. FINANCIAL / LEDGER DOMAIN
   if (p.includes('ledger') || p.includes('financial') || p.includes('spanner') || p.includes('payment') || p.includes('transaction')) {
-    return {
+    const rawGraph: Studio3SemanticGraph = {
       title: 'ZERO-TRUST MULTI-REGION FINANCIAL LEDGER ARCHITECTURE',
       subtitle: 'Active-Active ACID Ledger with Cloud Spanner TrueTime, Cloud Armor WAF & Cloud KMS CMEK',
       tenets: ['ZERO TRUST SECURITY', 'TRUETIME ACTIVE-ACTIVE', 'CUSTOMER MANAGED ENCRYPTION'],
@@ -191,11 +191,12 @@ export function generateDynamicFirstPrinciplesGraph(
       ],
       connections: []
     };
+    return enrichAndSanitizeSemanticGraph(rawGraph, intent);
   }
 
   // 2. VERTEX AI / RAG / AGENTIC DOMAIN
   if (p.includes('rag') || p.includes('agent') || p.includes('gemini') || p.includes('vector') || p.includes('embedding')) {
-    return {
+    const rawGraph: Studio3SemanticGraph = {
       title: 'VERTEX AI ENTERPRISE AGENTIC RAG KNOWLEDGE MESH',
       subtitle: 'Multi-Agent Autonomous Orchestration, ScaNN Vector Search & BigQuery Grounding',
       tenets: ['GROUNDED CITATIONS', 'ENTERPRISE ZERO-EGRESS', 'VECTOR GRAPH RETRIEVAL'],
@@ -255,12 +256,13 @@ export function generateDynamicFirstPrinciplesGraph(
       ],
       connections: []
     };
+    return enrichAndSanitizeSemanticGraph(rawGraph, intent);
   }
 
-  // 3. GOOGLE OKF DOMAIN (If specifically requested)
+  // 3. GOOGLE OKF DOMAIN
   if (p.includes('okf') || p.includes('knowledge format')) {
     if (isMultiBand) {
-      return {
+      const rawGraph: Studio3SemanticGraph = {
         title: 'INTEGRATING GOOGLE OKF WITH THE MODERN KNOWLEDGE ECOSYSTEM',
         subtitle: 'Universal Open Knowledge Standard, Tool Interoperability & Downstream AI Ingestion',
         tenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM'],
@@ -365,12 +367,13 @@ export function generateDynamicFirstPrinciplesGraph(
         ],
         connections: []
       };
+      return enrichAndSanitizeSemanticGraph(rawGraph, intent);
     }
   }
 
   // 4. GENERAL DYNAMIC CLOUD TOPOLOGY
   const cleanTitle = prompt.length > 50 ? prompt.slice(0, 48) + '...' : prompt;
-  return {
+  const rawGraph: Studio3SemanticGraph = {
     title: cleanTitle.toUpperCase(),
     subtitle: `Synthesized ${intent.abstractionLevel.toUpperCase()} Architecture with GCP Native Services`,
     tenets: ['HIGH AVAILABILITY', 'SECURITY BY DESIGN', 'OBSERVABILITY FIRST'],
@@ -429,6 +432,7 @@ export function generateDynamicFirstPrinciplesGraph(
     ],
     connections: []
   };
+  return enrichAndSanitizeSemanticGraph(rawGraph, intent);
 }
 
 export async function extractStudio3SemanticGraph(params: {
@@ -464,22 +468,53 @@ export async function extractStudio3SemanticGraph(params: {
   try {
     const ai = getAiClient(apiKey);
 
-    const systemInstruction = `You are Google DeepMind's Premier Semantic Graph Extractor for Studio 3.
-Your goal is to extract a complete, rich semantic architecture graph (Bands, Containers, Columns, Pipeline Stages, Cards, and Connections) based on the user's prompt and validated intent.
+    const systemInstruction = `You are Google DeepMind's Premier Architecture Graph Synthesizer for Studio 3.
+Your task is to convert the user's prompt and validated intent into a high-density, professional semantic graph with authentic GCP service icons and bulleted technical descriptions.
 
-Output Rules:
-- If prompt asks for a comparison AND a workflow (or if intent is composite_multi_band), generate TWO bands:
-  1. Top Band: type="columns" (with comparative columns and matrix cards).
-  2. Bottom Band: type="pipeline" (with 4 sequential pipeline stages: Ingestion -> Conversion -> Storage -> Consumption).
-- Assign authentic icon keys: "gemini", "vertex_ai", "vertex_vector_search", "cloud_storage", "bigquery", "document_ai", "cloud_run", "gke_autopilot", "spanner", "memorystore", "iap", "cloud_armor", "cloud_logging", "git", "dbt".
-- Include code snippets or bullet items to ensure all cards are rich and informative.`;
+MANDATORY RULES:
+1. Every column MUST have an explicit, uppercase 'header' (e.g. "IDENTITY & EDGE SECURITY INGRESS", "TRANSACTION PROCESSING & MICROSERVICES", "PERSISTENCE & KMS CMEK ENCRYPTION"). NEVER leave header blank or set to 'TIER'.
+2. Every card MUST have an authentic 'iconKey' from: "cloud_armor", "spanner", "gke_autopilot", "cloud_run", "iap", "memorystore", "gemini", "vertex_ai", "vertex_vector_search", "bigquery", "cloud_storage", "cloud_logging", "git", "dbt".
+3. Every card MUST have 2 to 4 concrete, informative bullet points in 'items' describing its functional role, security parameters, and protocols. NEVER output empty cards with only a title.
+4. If a database is mentioned (like Cloud Spanner), include a short SQL DDL snippet in 'codeSnippet'.
+5. Set 'headerColor' on columns from: "blue", "teal", "purple", "slate", "amber", "emerald".`;
 
-    const userContent = `Extract the semantic architecture graph for:
+    const userContent = `Extract the complete architecture graph for:
 Prompt: "${prompt}"
 Validated Intent: ${JSON.stringify(intent, null, 2)}
 Previous History: "${previousContext || 'None'}"
 
-Return JSON matching the Studio3SemanticGraph interface.`;
+JSON Schema:
+{
+  "title": "TITLE IN ALL CAPS",
+  "subtitle": "Informative Subtitle",
+  "tenets": ["TENET 1", "TENET 2", "TENET 3"],
+  "abstractionLevel": "conceptual" | "logical" | "technical",
+  "bands": [
+    {
+      "id": "band_1",
+      "title": "BAND TITLE",
+      "badge": "ZONE BADGE",
+      "type": "columns",
+      "columns": [
+        {
+          "id": "col_1",
+          "header": "MEANINGFUL TIER HEADER",
+          "headerColor": "blue" | "teal" | "purple" | "slate" | "amber",
+          "subtitle": "Tier Subtitle",
+          "cards": [
+            {
+              "id": "card_1",
+              "title": "Service Name",
+              "iconKey": "cloud_armor" | "spanner" | "gke_autopilot" | "iap" | "memorystore",
+              "badge": "Optional Badge",
+              "items": ["Specific technical item 1", "Specific technical item 2", "Specific technical item 3"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}`;
 
     const response = await ai.models.generateContent({
       model: modelName,
@@ -495,16 +530,19 @@ Return JSON matching the Studio3SemanticGraph interface.`;
     const rawText = response.text || '';
     const parsed = JSON.parse(rawText) as Studio3SemanticGraph;
 
+    // Run semantic post-processor & auto-enricher to guarantee 100% icon & item completeness
+    const enriched = enrichAndSanitizeSemanticGraph(parsed, intent);
+
     logger?.log({
       stage: 'graph_synthesis',
       status: 'success',
       model: modelName,
       latencyMs: elapsed,
-      message: `Gemini synthesized graph with ${parsed.bands?.length || 1} bands and ${parsed.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} zones in ${elapsed}ms`,
-      payload: parsed
+      message: `Gemini synthesized graph: "${enriched.title}" (${enriched.bands?.length || 1} bands, ${enriched.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} zones) in ${elapsed}ms`,
+      payload: enriched
     });
 
-    return parsed;
+    return enriched;
   } catch (error: any) {
     const elapsed = Date.now() - startTime;
     logger?.log({
@@ -512,7 +550,7 @@ Return JSON matching the Studio3SemanticGraph interface.`;
       status: 'error',
       model: modelName,
       latencyMs: elapsed,
-      message: `Gemini Graph Synthesis failed (${error.message}). Using dynamic first-principles generator.`,
+      message: `Gemini Graph Synthesis failed (${error.message}). Running dynamic first-principles generator.`,
       payload: { error: error.message }
     });
     return generateDynamicFirstPrinciplesGraph(prompt, intent);

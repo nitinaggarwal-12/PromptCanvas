@@ -19,30 +19,30 @@ function escapeXml(str: any): string {
 }
 
 const COLOR_MAP: Record<string, { bg: string; text: string; lightBg: string; border: string }> = {
-  blue: { bg: '#1D4ED8', text: '#FFFFFF', lightBg: '#EFF6FF', border: '#93C5FD' },
-  teal: { bg: '#0D9488', text: '#FFFFFF', lightBg: '#F0FDFA', border: '#99F6E4' },
-  purple: { bg: '#7C3AED', text: '#FFFFFF', lightBg: '#FAF5FF', border: '#D8B4FE' },
-  slate: { bg: '#475569', text: '#FFFFFF', lightBg: '#F8FAFC', border: '#CBD5E1' },
-  amber: { bg: '#D97706', text: '#FFFFFF', lightBg: '#FFFBEB', border: '#FDE68A' },
-  emerald: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#A7F3D0' },
-  green: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#A7F3D0' },
-  indigo: { bg: '#4338CA', text: '#FFFFFF', lightBg: '#EEF2FF', border: '#C7D2FE' },
-  cyan: { bg: '#0891B2', text: '#FFFFFF', lightBg: '#ECFEFF', border: '#A5F3FC' },
-  red: { bg: '#DC2626', text: '#FFFFFF', lightBg: '#FEF2F2', border: '#FECACA' }
+  blue: { bg: '#1D4ED8', text: '#FFFFFF', lightBg: '#EFF6FF', border: '#3B82F6' },
+  teal: { bg: '#0D9488', text: '#FFFFFF', lightBg: '#F0FDFA', border: '#14B8A6' },
+  purple: { bg: '#7C3AED', text: '#FFFFFF', lightBg: '#FAF5FF', border: '#8B5CF6' },
+  slate: { bg: '#475569', text: '#FFFFFF', lightBg: '#F8FAFC', border: '#64748B' },
+  amber: { bg: '#D97706', text: '#FFFFFF', lightBg: '#FFFBEB', border: '#F59E0B' },
+  emerald: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#10B981' },
+  green: { bg: '#059669', text: '#FFFFFF', lightBg: '#ECFDF5', border: '#10B981' },
+  indigo: { bg: '#4338CA', text: '#FFFFFF', lightBg: '#EEF2FF', border: '#6366F1' },
+  cyan: { bg: '#0891B2', text: '#FFFFFF', lightBg: '#ECFEFF', border: '#06B6D4' },
+  red: { bg: '#DC2626', text: '#FFFFFF', lightBg: '#FEF2F2', border: '#EF4444' }
 };
 
 export function solveAndRenderStudio3Xml(
   graph: Studio3SemanticGraph,
   options: LayoutOptions = {}
 ): string {
-  const { theme = 'light', canvasWidth = 1600, canvasHeight = 1000 } = options;
+  const { theme = 'dark', canvasWidth = 1600, canvasHeight = 1000 } = options;
   const isDark = theme === 'dark';
 
-  const bgCanvas = isDark ? '#0F172A' : '#FFFFFF';
-  const containerBg = isDark ? '#1E293B' : '#F8FAFC';
-  const containerBorder = isDark ? '#334155' : '#E2E8F0';
-  const cardBg = isDark ? '#0B111E' : '#FFFFFF';
-  const cardBorder = isDark ? '#1E293B' : '#CBD5E1';
+  const bgCanvas = isDark ? '#0B111E' : '#FFFFFF';
+  const containerBg = isDark ? '#0F172A' : '#F8FAFC';
+  const containerBorder = isDark ? '#1E293B' : '#E2E8F0';
+  const cardBg = isDark ? '#131D31' : '#FFFFFF';
+  const cardBorder = isDark ? '#1E2F4D' : '#CBD5E1';
   const textPrimary = isDark ? '#F8FAFC' : '#0F172A';
   const textSecondary = isDark ? '#94A3B8' : '#475569';
 
@@ -56,7 +56,7 @@ export function solveAndRenderStudio3Xml(
 
   // Safe strings
   const graphTitle = graph?.title || 'System Architecture';
-  const graphSubtitle = graph?.subtitle || 'Synthesized Architecture';
+  const graphSubtitle = graph?.subtitle || 'Synthesized First-Principles Architecture';
   const abstractionLabel = (graph?.abstractionLevel || 'logical').toUpperCase();
 
   // 1. Header Banner
@@ -65,19 +65,19 @@ export function solveAndRenderStudio3Xml(
   const headerW = 1520;
   const headerH = 65;
 
-  const headerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:12px;background:${isDark ? 'linear-gradient(90deg, #1E3A8A 0%, #1E293B 100%)' : 'linear-gradient(90deg, #1E40AF 0%, #2563EB 100%)'};color:#FFFFFF;font-family:system-ui,-apple-system,sans-serif;">
+  const headerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:12px;background:${isDark ? 'linear-gradient(90deg, #1E3A8A 0%, #0F172A 100%)' : 'linear-gradient(90deg, #1E40AF 0%, #2563EB 100%)'};color:#FFFFFF;font-family:system-ui,-apple-system,sans-serif;border:1px solid ${isDark ? '#1E3A8A' : '#93C5FD'};">
     <div style="display:flex;align-items:center;gap:16px;">
-      <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🏛️</div>
+      <div style="width:42px;height:42px;border-radius:10px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:24px;">🏛️</div>
       <div>
-        <div style="font-size:20px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;">${escapeXml(graphTitle)}</div>
-        <div style="font-size:11px;opacity:0.9;font-weight:400;margin-top:2px;">${escapeXml(graphSubtitle)}</div>
+        <div style="font-size:19px;font-weight:800;letter-spacing:-0.02em;text-transform:uppercase;">${escapeXml(graphTitle)}</div>
+        <div style="font-size:11.5px;opacity:0.88;font-weight:400;margin-top:2px;">${escapeXml(graphSubtitle)}</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <div style="background:rgba(255,255,255,0.2);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.3);">
+      <div style="background:rgba(255,255,255,0.18);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.25);">
         ${abstractionLabel} VIEW
       </div>
-      <div style="background:#FFFFFF;color:#1E40AF;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.03em;">
+      <div style="background:#FFFFFF;color:#1E40AF;padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:0.03em;">
         STUDIO 3 GENERATIVE
       </div>
     </div>
@@ -111,7 +111,7 @@ export function solveAndRenderStudio3Xml(
     // Render Columns
     if (band.columns && band.columns.length > 0) {
       const numCols = band.columns.length;
-      const colGap = 16;
+      const colGap = 18;
       const innerPadding = 18;
       const colW = (bandW - innerPadding * 2 - colGap * (numCols - 1)) / numCols;
 
@@ -124,52 +124,54 @@ export function solveAndRenderStudio3Xml(
 
         // Column Box
         addCell(`
-          <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#141E33' : '#FFFFFF'};strokeColor=${colColor.border};strokeWidth=1.2;" vertex="1" parent="1">
+          <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#0C1322' : '#FFFFFF'};strokeColor=${colColor.border};strokeWidth=1.2;" vertex="1" parent="1">
             <mxGeometry x="${colX}" y="${colY}" width="${colW}" height="${colH}" as="geometry"/>
           </mxCell>
         `);
 
-        // Column Header
-        const colHeaderHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${colColor.bg};color:${colColor.text};font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;border-top-left-radius:6px;border-top-right-radius:6px;">
+        // Column Header Banner
+        const colHeaderHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:${colColor.bg};color:${colColor.text};font-weight:800;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;border-top-left-radius:6px;border-top-right-radius:6px;box-sizing:border-box;padding:0 12px;text-align:center;">
           ${escapeXml(col.header || 'TIER')}
         </div>`;
 
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(colHeaderHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-            <mxGeometry x="${colX}" y="${colY}" width="${colW}" height="36" as="geometry"/>
+            <mxGeometry x="${colX}" y="${colY}" width="${colW}" height="38" as="geometry"/>
           </mxCell>
         `);
 
         // Column Cards
         const cards = col.cards || [];
-        let cardY = colY + 44;
-        const availableCardSpace = colH - 52 - (col.footerNote ? 28 : 0);
+        let cardY = colY + 48;
+        const availableCardSpace = colH - 58 - (col.footerNote ? 28 : 0);
         const numCards = Math.max(1, cards.length);
-        const cardGap = 10;
-        const cardH = Math.max(60, (availableCardSpace - cardGap * (numCards - 1)) / numCards);
+        const cardGap = 12;
+        const cardH = Math.max(70, (availableCardSpace - cardGap * (numCards - 1)) / numCards);
 
         cards.forEach(card => {
           const cardX = colX + 12;
           const currentCardW = colW - 24;
 
-          let cardContentHtml = `<div style="padding:10px 12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-              ${card.iconKey ? renderGcpIconHtml(card.iconKey, 20) : '<div>📦</div>'}
-              <div style="font-size:11.5px;font-weight:700;color:${textPrimary};line-height:1.2;">${escapeXml(card.title || 'Component')}</div>
-              ${card.badge ? `<span style="margin-left:auto;background:#EF4444;color:#FFF;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:700;">${escapeXml(card.badge)}</span>` : ''}
+          let cardContentHtml = `<div style="padding:12px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+              <div style="width:28px;height:28px;border-radius:6px;background:${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                ${card.iconKey ? renderGcpIconHtml(card.iconKey, 20) : '<div>📦</div>'}
+              </div>
+              <div style="font-size:12.5px;font-weight:700;color:${textPrimary};line-height:1.2;">${escapeXml(card.title || 'Component')}</div>
+              ${card.badge ? `<span style="margin-left:auto;background:#2563EB;color:#FFF;font-size:9.5px;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:0.02em;">${escapeXml(card.badge)}</span>` : ''}
             </div>`;
 
           if (card.codeSnippet) {
-            cardContentHtml += `<pre style="margin:4px 0 0 0;background:#0F172A;color:#38BDF8;padding:8px 10px;border-radius:6px;font-size:9px;font-family:monospace;line-height:1.35;overflow:hidden;flex-grow:1;">${escapeXml(card.codeSnippet)}</pre>`;
+            cardContentHtml += `<pre style="margin:4px 0 0 0;background:#050914;color:#38BDF8;padding:8px 10px;border-radius:6px;font-size:9.5px;font-family:monospace;line-height:1.4;overflow:hidden;flex-grow:1;border:1px solid #1E293B;">${escapeXml(card.codeSnippet)}</pre>`;
           } else if (card.items && card.items.length > 0) {
-            cardContentHtml += `<ul style="margin:4px 0 0 0;padding-left:14px;color:${textSecondary};font-size:10px;line-height:1.45;flex-grow:1;">
-              ${card.items.map(it => `<li style="margin-bottom:3px;">${escapeXml(it)}</li>`).join('')}
+            cardContentHtml += `<ul style="margin:2px 0 0 0;padding-left:16px;color:${textSecondary};font-size:10.5px;line-height:1.5;flex-grow:1;">
+              ${card.items.map(it => `<li style="margin-bottom:4px;">${escapeXml(it)}</li>`).join('')}
             </ul>`;
           }
 
           cardContentHtml += `</div>`;
 
-          const borderStyle = card.highlight ? 'strokeColor=#EF4444;strokeWidth=1.5;' : `strokeColor=${cardBorder};strokeWidth=1;`;
+          const borderStyle = card.highlight ? 'strokeColor=#3B82F6;strokeWidth=1.5;' : `strokeColor=${cardBorder};strokeWidth=1;`;
 
           addCell(`
             <mxCell id="${cellId++}" value="${escapeXml(cardContentHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cardBg};${borderStyle}shadow=0;" vertex="1" parent="1">
@@ -195,7 +197,7 @@ export function solveAndRenderStudio3Xml(
     } else if (band.pipelineStages && band.pipelineStages.length > 0) {
       // Horizontal Workflow Pipeline
       const numStages = band.pipelineStages.length;
-      const stageGap = 16;
+      const stageGap = 18;
       const innerPadding = 18;
       const stageW = (bandW - innerPadding * 2 - stageGap * (numStages - 1)) / numStages;
 
@@ -208,7 +210,7 @@ export function solveAndRenderStudio3Xml(
 
         // Stage Container Box
         addCell(`
-          <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#141E33' : '#FFFFFF'};strokeColor=${stageColor.border};strokeWidth=1.2;" vertex="1" parent="1">
+          <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#0C1322' : '#FFFFFF'};strokeColor=${stageColor.border};strokeWidth=1.2;" vertex="1" parent="1">
             <mxGeometry x="${stageX}" y="${stageY}" width="${stageW}" height="${stageH}" as="geometry"/>
           </mxCell>
         `);
@@ -276,12 +278,12 @@ export function solveAndRenderStudio3Xml(
     ? graph.tenets.join('  |  ')
     : 'PRODUCER INDEPENDENCE  |  CONSUMER INDEPENDENCE  |  FORMAT, NOT PLATFORM';
 
-  const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:8px;background:${isDark ? '#1E293B' : '#F1F5F9'};border:1px solid ${containerBorder};color:${textSecondary};font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;">
+  const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:8px;background:${isDark ? '#0F172A' : '#F1F5F9'};border:1px solid ${containerBorder};color:${textSecondary};font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;">
     <div style="display:flex;align-items:center;gap:8px;">
       <span>🧬</span>
       <span>${escapeXml(tenetsString)}</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;color:#1E40AF;font-weight:800;">
+    <div style="display:flex;align-items:center;gap:8px;color:#3B82F6;font-weight:800;">
       <span>Google Cloud Architecture Engine</span>
     </div>
   </div>`;
