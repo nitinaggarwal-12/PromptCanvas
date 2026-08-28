@@ -140,6 +140,7 @@ import { generateTemplate47MlopsAiLifecyclePlatformXml } from "./template47Mlops
 import { generateTemplate48BcdrCyberRecoveryResilienceXml } from "./template48BcdrCyberRecoveryResilience";
 import { generateTemplate49HealthcareLifeSciencesPlatformXml } from "./template49HealthcareLifeSciencesPlatform";
 import { generateTemplate50SustainabilityEsgPlatformXml } from "./template50SustainabilityEsgPlatform";
+import { generateTemplate51GraphTheoryLearningRoadmapXml } from "./template51GraphTheoryLearningRoadmap";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -754,6 +755,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/sustainability_esg_platform.png',
     keyComponents: ['Engagement & Impact Layer', 'Analytics & Intelligence Layer', 'Data Integration & Processing Layer', 'ESG Data Model & Governance Layer', 'Sustainability Domain Layer', 'Data Sources & Connectivity Layer', 'Infrastructure Layer', 'Google Cloud Foundation', 'Governance, Risk & Compliance', 'Observability & Assurance', 'Platform Operations', 'Business Outcomes', 'ESG Domains', 'Frameworks & Standards', 'Sustainability by Design'],
     generateXml: generateTemplate50SustainabilityEsgPlatformXml
+  },
+  {
+    id: '51',
+    name: 'Graph Theory & Algorithm Learning Roadmap',
+    family: 'Understand',
+    level: 'L1',
+    primaryPurpose: 'Comprehensive visual learning roadmap for graph theory, from intuition and avatar analogies to Dijkstra algorithm workflow',
+    examples: 'Graph Theory, Network Topology, Knowledge Graph, Dijkstra, BFS/DFS, Algorithm Roadmap',
+    defaultDomain: 'Graph Theory & Discrete Mathematics',
+    previewImage: '/templates/graph_theory_learning_roadmap.png',
+    keyComponents: ['Graph Intuition & Social Analogy', 'Essential Prerequisites', 'Visual Taxonomy', 'Modern Graph Science & Knowledge Graph', 'Key Graph Algorithms Workflow'],
+    generateXml: generateTemplate51GraphTheoryLearningRoadmapXml
   }
 ];
 

@@ -94,6 +94,7 @@ export interface Studio3SemanticGraph {
   tenets: string[];
   abstractionLevel: 'conceptual' | 'logical' | 'technical';
   layoutType?: 'freeform' | 'bands' | 'matrix';
+  templateId?: string;
   freeformElements?: Studio3FreeformElement[];
   bands: Studio3Band[];
   connections: Studio3Connection[];

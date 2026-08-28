@@ -1,5 +1,6 @@
 import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage } from './graphExtractor';
 import { renderGcpIconHtml } from '../gcpIcons';
+import { generateTemplate51GraphTheoryLearningRoadmapXml } from '../canonical/template51GraphTheoryLearningRoadmap';
 
 export interface LayoutOptions {
   theme?: 'light' | 'dark';
@@ -36,6 +37,15 @@ export function solveAndRenderStudio3Xml(
   options: LayoutOptions = {}
 ): string {
   const { theme = 'dark', canvasWidth = 1600, canvasHeight = 1000 } = options;
+
+  // Master Canonical Passthrough for Graph Theory Roadmap
+  if (
+    graph?.templateId === '51' ||
+    (graph?.title || '').toLowerCase().includes('graph theory') ||
+    (graph?.title || '').toLowerCase().includes('learning roadmap')
+  ) {
+    return generateTemplate51GraphTheoryLearningRoadmapXml('graph_theory', theme);
+  }
   const isDark = theme === 'dark';
 
   const bgCanvas = isDark ? '#0B111E' : '#FFFFFF';
