@@ -4,13 +4,16 @@
  * Compiles ANY prompt or use case into authentic, structured, zero-collision
  * architectural nodes, stages, and cards for Draw.io viewports.
  * 
- * Prioritizes high-specificity semantic intents:
- * 1. ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust
- * 2. Vertex AI Vector Search / ScaNN / RAG Grounding
- * 3. GPU / Compute Engine MIG / Autoscaling / Slurm
- * 4. Multi-Region Cloud Spanner / Database Layer
- * 5. Real-Time Event Streaming / PubSub / Dataflow
- * 6. Standard Enterprise Agentic AI Platform
+ * Comprehensive Semantic Intent Hierarchy:
+ * 1. Cloud Armor / WAF / DDoS / Security Perimeter ("add cloud armor", "enforce waf")
+ * 2. Multi-Tier VPC Subnets & Networking ("add subnets", "private subnets", "psc")
+ * 3. ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust ("integrate adk", "tool calling")
+ * 4. Vertex AI Vector Search / ScaNN / RAG Grounding ("vector search", "scann", "rag")
+ * 5. GPU MIGs, Compute Engine Autoscaling & Slurm ("scale migs", "gpu compute", "h100")
+ * 6. Cloud Spanner / Multi-Region DB / ACID ("spanner", "ha database", "sql")
+ * 7. BigQuery Lakehouse & Analytics ("bigquery lakehouse", "real-time analytics")
+ * 8. Real-Time Event Streaming / PubSub / Dataflow ("pubsub streaming", "dataflow")
+ * 9. Standard Enterprise Agentic AI Platform (Default)
  */
 
 import { renderGcpIconHtml, GcpIconDefinition } from './gcpIcons';
@@ -59,7 +62,115 @@ export function compileArchitectureFromPrompt(
   const title = projectTitle || (projectName && useCaseName ? `${projectName}: ${useCaseName}` : 'Enterprise Google Cloud Platform Architecture');
 
   // =========================================================================
-  // 1. SPECIFIC: ADK 2.0 / Agent Tools / BeyondCorp / Function Calling / MCP
+  // 1. SPECIFIC: Cloud Armor / WAF / DDoS / Edge Security ("add cloud armor")
+  // =========================================================================
+  if (p.includes('armor') || p.includes('waf') || p.includes('ddos') || (p.includes('security') && !p.includes('database')) || p.includes('firewall') || p.includes('perimeter')) {
+    return {
+      projectTitle: title.includes('Armor') || title.includes('Security') ? title : `${projectName || 'Google Cloud'}: Cloud Armor WAF & Edge Security Architecture`,
+      subtitle: 'Edge Security Flow: Global Anycast IP → Cloud Armor Adaptive WAF → IAP Zero-Trust → Filtered Backend Compute',
+      summary: 'Enforced Edge Security, Cloud Armor WAF & Identity-Aware Proxy',
+      targetTier: 'Ingress & Security (Tier 1)',
+      changedComponents: ['Cloud Armor DDoS/WAF Filtering', 'Cloud Armor Adaptive Protection (ML)', 'Identity-Aware Proxy (IAP)', 'Global External HTTP(S) Load Balancer'],
+      stages: [
+        { num: '1', title: 'Edge WAF & DDoS Defense', category: 'ingress', color: '#1A73E8' },
+        { num: '2', title: 'Zero-Trust & Identity', category: 'orchestration', color: '#1A73E8' },
+        { num: '3', title: 'Protected Backend Services', category: 'compute', color: '#1A73E8' },
+        { num: '4', title: 'Secure Data & KMS', category: 'data', color: '#1A73E8' },
+        { num: '5', title: 'Threat Intelligence Core', category: 'ai', color: '#1E8E3E' },
+        { num: '6', title: 'Security Command Center', category: 'ops', color: '#1E8E3E' }
+      ],
+      nodes: {
+        ingress: [
+          { id: 'n_start_users', title: 'Global Web & API Traffic', subtitle: 'Public Internet, Botnets, Partner APIs', icon: 'user_ingress', stage: 1 },
+          { id: 'n_edge_armor', title: 'Cloud Armor & WAF Rules', subtitle: 'OWASP Top 10 • Rate Limiting • Geo-IP', icon: 'cloud_armor', stage: 1, highlight: true },
+          { id: 'n_edge_iap', title: 'Cloud Armor Adaptive ML', subtitle: 'Automatic Layer 7 Attack Detection', icon: 'cloud_armor', stage: 1, highlight: true },
+          { id: 'n_cloud_dlp', title: 'Global External HTTP(S) LB', subtitle: 'Anycast Edge IP & SSL Offloading', icon: 'cloud_load_balancing', stage: 1, highlight: true }
+        ],
+        routing: [
+          { id: 'n_fast_path', title: 'Fast-Path Static Cache', subtitle: 'Cloud CDN Signed URLs & Tokens', icon: 'cloud_cdn', stage: 2 },
+          { id: 'gate_task_type', title: 'Context-Aware Access Gate', subtitle: 'Device State & IP Subnet Verification', icon: 'iap', stage: 2 },
+          { id: 'n_supervisor', title: 'Identity-Aware Proxy (IAP)', subtitle: 'BeyondCorp Zero-Trust Auth (mTLS)', icon: 'iap', stage: 2, highlight: true },
+          { id: 'n_memory', title: 'VPC Service Controls', subtitle: 'Perimeter Egress & Exfiltration Shield', icon: 'vpc_sc', stage: 2 }
+        ],
+        workers: [
+          { id: 'n_rag_agent', title: 'Protected GKE Autopilot', subtitle: 'Private Cluster in Shielded VPC Subnet', icon: 'gke_autopilot', stage: 3 },
+          { id: 'n_sql_agent', title: 'Cloud Run Private Microservices', subtitle: 'Internal Ingress Only via Serverless VPC', icon: 'cloud_run', stage: 3 },
+          { id: 'n_tool_agent', title: 'Compute Engine Shielded VMs', subtitle: 'vTPM & Secure Boot Instances', icon: 'compute_engine', stage: 3 }
+        ],
+        data: [
+          { id: 'n_vector_search', title: 'Cloud Storage (CMEK)', subtitle: 'Encrypted at Rest with Customer Keys', icon: 'cloud_storage', stage: 4 },
+          { id: 'n_doc_ingestion', title: 'Cloud KMS HSM Key Ring', subtitle: 'FIPS 140-2 Level 3 Hardware Security', icon: 'cloud_iam', stage: 4, highlight: true },
+          { id: 'n_bigquery_dw', title: 'BigQuery Security Analytics', subtitle: 'Audit Logs & WAF Telemetry Warehouse', icon: 'bigquery', stage: 4 },
+          { id: 'n_spanner_db', title: 'Cloud Spanner IAM Store', subtitle: 'Zero-Downtime Policy DB', icon: 'spanner', stage: 4 },
+          { id: 'n_hitl_governance_node', title: 'Sensitive Data Protection', subtitle: 'Real-Time DLP Payload Tokenization', icon: 'cloud_dlp', stage: 4 },
+          { id: 'n_vertex_extensions', title: 'Chronicle SIEM Egress', subtitle: 'Real-Time Security Event Streaming', icon: 'agent_builder', stage: 4 }
+        ],
+        aiCore: { id: 'n_gemini_core', title: 'Gemini Security Copilot', subtitle: 'Automated Threat Triage & WAF Tuning', icon: 'gemini', stage: 5 },
+        delivery: [
+          { id: 'gate_factuality', title: 'Vertex Model Armor', subtitle: 'Prompt Injection & Jailbreak Filter', icon: 'model_armor', stage: 6 },
+          { id: 'n_delivery', title: 'Sanitized & Encrypted Stream', subtitle: 'TLS 1.3 End-to-End Verified Delivery', icon: 'vertex_ai', stage: 6 },
+          { id: 'n_audit_logging', title: 'Security Command Center (SCC)', subtitle: 'Continuous Vulnerability & Threat Feeds', icon: 'scc', stage: 6, highlight: true }
+        ]
+      }
+    };
+  }
+
+  // =========================================================================
+  // 2. SPECIFIC: Multi-Tier VPC Subnets & Networking ("add subnets")
+  // =========================================================================
+  if (p.includes('subnet') || p.includes('vpc') || p.includes('cidr') || p.includes('network') || p.includes('nat') || p.includes('psc') || p.includes('peering')) {
+    return {
+      projectTitle: title.includes('Subnet') || title.includes('VPC') ? title : `${projectName || 'Google Cloud'}: Multi-Tier VPC Subnet & Network Topology`,
+      subtitle: 'Multi-Tier Subnet Topology: Public Ingress Subnet → Regional Compute Subnet B → Isolated Data Subnet C → PSC Egress',
+      summary: 'Configured Multi-Tier VPC Subnets & Private Service Connect (PSC)',
+      targetTier: 'VPC Networking & Subnets (Tier 2)',
+      changedComponents: ['Regional Compute Subnet B (10.10.1.0/24)', 'Isolated Data Subnet C (10.10.2.0/24)', 'Private Service Connect (PSC)', 'Cloud NAT & Cloud Router Gateway'],
+      stages: [
+        { num: '1', title: 'Public Ingress Subnet', category: 'ingress', color: '#1A73E8' },
+        { num: '2', title: 'Routing & NAT Gateway', category: 'orchestration', color: '#1A73E8' },
+        { num: '3', title: 'Compute Subnet (Private)', category: 'compute', color: '#1A73E8' },
+        { num: '4', title: 'Data Subnet (Isolated)', category: 'data', color: '#1A73E8' },
+        { num: '5', title: 'AI Acceleration Subnet', category: 'ai', color: '#1E8E3E' },
+        { num: '6', title: 'VPC Flow Logs & Telemetry', category: 'ops', color: '#1E8E3E' }
+      ],
+      nodes: {
+        ingress: [
+          { id: 'n_start_users', title: 'External Public Ingress', subtitle: 'Public Subnet A (10.10.0.0/24)', icon: 'user_ingress', stage: 1, highlight: true },
+          { id: 'n_edge_armor', title: 'Cloud Armor Edge Protection', subtitle: 'External HTTPS Load Balancing', icon: 'cloud_armor', stage: 1 },
+          { id: 'n_edge_iap', title: 'IAP TCP Forwarding', subtitle: 'Bastion-less SSH/RDP to Private IPs', icon: 'iap', stage: 1, highlight: true },
+          { id: 'n_cloud_dlp', title: 'VPC Firewall Rules', subtitle: 'Stateful Ingress & Egress ACLs', icon: 'vpc_sc', stage: 1 }
+        ],
+        routing: [
+          { id: 'n_fast_path', title: 'Regional Internal LB (ILB)', subtitle: 'Private Subnet B VIP (10.10.1.5)', icon: 'cloud_load_balancing', stage: 2, highlight: true },
+          { id: 'gate_task_type', title: 'Cloud Router & BGP', subtitle: 'Dynamic Multi-Region Route Exchange', icon: 'agent_builder', stage: 2 },
+          { id: 'n_supervisor', title: 'Cloud NAT Gateway', subtitle: 'Secure Outbound Internet without Public IPs', icon: 'compute_engine', stage: 2, highlight: true },
+          { id: 'n_memory', title: 'Cloud DNS Private Zones', subtitle: 'Internal Split-Horizon Service Discovery', icon: 'memorystore', stage: 2 }
+        ],
+        workers: [
+          { id: 'n_rag_agent', title: 'Compute Engine MIG Subnet B', subtitle: 'Private Pool (10.10.1.0/24, No Public IP)', icon: 'compute_engine', stage: 3, highlight: true },
+          { id: 'n_sql_agent', title: 'GKE Private Cluster Nodes', subtitle: 'Private Master & Worker Subnet', icon: 'gke_autopilot', stage: 3, highlight: true },
+          { id: 'n_tool_agent', title: 'Serverless VPC Connector', subtitle: 'Direct Cloud Run to Private Subnet Bridging', icon: 'cloud_run', stage: 3 }
+        ],
+        data: [
+          { id: 'n_vector_search', title: 'Private Service Connect (PSC)', subtitle: 'Zero-Egress Private Endpoint to Vertex AI', icon: 'vertex_vector_search', stage: 4, highlight: true },
+          { id: 'n_doc_ingestion', title: 'Cloud Storage Private VIP', subtitle: '[restricted.googleapis.com Routing]', icon: 'cloud_storage', stage: 4 },
+          { id: 'n_bigquery_dw', title: 'BigQuery PSC Endpoint', subtitle: 'Direct Private Subnet Ingestion', icon: 'bigquery', stage: 4 },
+          { id: 'n_spanner_db', title: 'Cloud Spanner Data Subnet C', subtitle: 'Isolated Tier (10.10.2.0/24)', icon: 'spanner', stage: 4, highlight: true },
+          { id: 'n_hitl_governance_node', title: 'VPC Service Controls', subtitle: 'Perimeter Bridge & Egress Policy', icon: 'cloud_iam', stage: 4 },
+          { id: 'n_vertex_extensions', title: 'Dedicated Interconnect', subtitle: '10Gbps On-Premises L3 WAN Peering', icon: 'agent_builder', stage: 4 }
+        ],
+        aiCore: { id: 'n_gemini_core', title: 'Gemini 3.1 via Private IP', subtitle: 'Private Google Access • Zero Public Transit', icon: 'gemini', stage: 5 },
+        delivery: [
+          { id: 'gate_factuality', title: 'Network Policy Enforcement', subtitle: 'Calico / Kubernetes Egress Filters', icon: 'model_armor', stage: 6 },
+          { id: 'n_delivery', title: 'Private Internal API Gateway', subtitle: 'Mutual TLS across Private Subnets', icon: 'vertex_ai', stage: 6 },
+          { id: 'n_audit_logging', title: 'VPC Flow Logs & Cloud Trace', subtitle: 'Sub-ms Packet Telemetry & Loss Metrics', icon: 'cloud_logging', stage: 6, highlight: true }
+        ]
+      }
+    };
+  }
+
+  // =========================================================================
+  // 3. SPECIFIC: ADK 2.0 / Agent Tools / BeyondCorp / Function Calling / MCP
   // =========================================================================
   if (p.includes('adk') || p.includes('agentic tool') || p.includes('beyondcorp') || p.includes('tool calling') || p.includes('function call') || (p.includes('tool') && p.includes('iap')) || (p.includes('tool') && p.includes('agent'))) {
     return {
@@ -113,7 +224,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 2. SPECIFIC: Vertex AI Vector Search / ScaNN / RAG Grounding / Embeddings
+  // 4. SPECIFIC: Vertex AI Vector Search / ScaNN / RAG Grounding / Embeddings
   // =========================================================================
   if (p.includes('vector') || p.includes('scann') || p.includes('rag') || p.includes('grounding') || p.includes('similarity') || p.includes('embedding') || p.includes('knowledge graph')) {
     return {
@@ -167,7 +278,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 3. SPECIFIC: GPU / Compute Engine MIG / Autoscaling
+  // 5. SPECIFIC: GPU / Compute Engine MIG / Autoscaling
   // =========================================================================
   if (p.includes('mig') || p.includes('gpu') || p.includes('instance') || p.includes('gce') || p.includes('h100') || p.includes('a3') || p.includes('compute engine') || p.includes('internal lb')) {
     return {
@@ -221,7 +332,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 4. SPECIFIC: Cloud Spanner / Multi-Region DB / Zero-Trust Mesh
+  // 6. SPECIFIC: Cloud Spanner / Multi-Region DB / Zero-Trust Mesh
   // =========================================================================
   if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('microservice') || p.includes('truetime')) {
     return {
@@ -275,7 +386,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 5. GENERAL: Event Streaming / PubSub / Dataflow
+  // 7. GENERAL: Event Streaming / PubSub / Dataflow
   // =========================================================================
   if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('kafka') || p.includes('dataflow') || p.includes('cdc') || p.includes('queue')) {
     return {
@@ -329,7 +440,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 6. DEFAULT: Standard Enterprise Agentic AI Platform
+  // 8. DEFAULT: Standard Enterprise Agentic AI Platform
   // =========================================================================
   return {
     projectTitle: title,
