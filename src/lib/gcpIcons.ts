@@ -294,12 +294,20 @@ export const GCP_OFFICIAL_ICONS: Record<string, GcpIconDefinition> = {
  * Generates an inline HTML box with authentic GCP vector SVG for Draw.io nodes and HTML labels.
  */
 export function renderGcpIconHtml(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string, size = 24): string {
-  const icon = GCP_OFFICIAL_ICONS[iconKey];
+  const safeSize = Math.max(16, size || 24);
+  const cleanKey = String(iconKey || '').trim().toLowerCase();
+  const icon = GCP_OFFICIAL_ICONS[cleanKey];
+
   if (!icon) {
-    return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:6px;background:#EFF6FF;color:#1A73E8;flex-shrink:0;"><svg width="${Math.round(size * 0.75)}" height="${Math.round(size * 0.75)}" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/></svg></div>`;
+    return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${safeSize}px;height:${safeSize}px;border-radius:6px;background:#EFF6FF;color:#1A73E8;flex-shrink:0;"><svg width="${Math.round(safeSize * 0.75)}" height="${Math.round(safeSize * 0.75)}" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/></svg></div>`;
   }
 
-  return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:6px;background:${icon.bgColor};color:${icon.primaryColor};flex-shrink:0;">${icon.svg}</div>`;
+  // Adjust width and height in svg tag to safeSize
+  const scaledSvg = icon.svg
+    .replace(/width="24"/, `width="${safeSize}"`)
+    .replace(/height="24"/, `height="${safeSize}"`);
+
+  return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${safeSize}px;height:${safeSize}px;border-radius:6px;background:${icon.bgColor};color:${icon.primaryColor};flex-shrink:0;">${scaledSvg}</div>`;
 }
 
 /**
