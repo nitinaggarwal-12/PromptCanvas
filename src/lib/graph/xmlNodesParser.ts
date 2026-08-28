@@ -5,6 +5,10 @@ export interface DiagramNodeItem {
   source?: string;
   target?: string;
   style?: string;
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 }
 
 export function cleanHtmlLabel(raw: string): string {
@@ -64,6 +68,13 @@ export function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
     const style = innerAttrs.match(/style="([^"]*)"/)?.[1] || objAttrs.match(/style="([^"]*)"/)?.[1];
     const innerId = innerAttrs.match(/id="([^"]*)"/)?.[1];
 
+    const geoMatch = innerContent.match(/<mxGeometry\s+([^>]+)>/i);
+    const geoAttrs = geoMatch ? geoMatch[1] : '';
+    const x = geoAttrs.match(/x="([\d.-]+)"/)?.[1];
+    const y = geoAttrs.match(/y="([\d.-]+)"/)?.[1];
+    const width = geoAttrs.match(/width="([\d.-]+)"/)?.[1];
+    const height = geoAttrs.match(/height="([\d.-]+)"/)?.[1];
+
     const id = objId || innerId;
     if (id && id !== '0' && id !== '1' && !processedIds.has(id)) {
       processedIds.add(id);
@@ -76,22 +87,34 @@ export function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
         isEdge,
         source,
         target,
-        style
+        style,
+        x: x ? parseFloat(x) : undefined,
+        y: y ? parseFloat(y) : undefined,
+        width: width ? parseFloat(width) : undefined,
+        height: height ? parseFloat(height) : undefined,
       });
     }
   }
 
   // 2. Match standard <mxCell ...>
-  const regex = /<mxCell\s+([^>]+)>/g;
+  const cellRegex = /<mxCell\s+([^>]+?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi;
   let match;
-  while ((match = regex.exec(xml)) !== null) {
+  while ((match = cellRegex.exec(xml)) !== null) {
     const attrsStr = match[1];
+    const innerContent = match[2] || '';
     const getId = attrsStr.match(/id="([^"]*)"/)?.[1];
     const getValue = attrsStr.match(/value="([^"]*)"/)?.[1];
     const isEdge = attrsStr.includes('edge="1"');
     const getSource = attrsStr.match(/source="([^"]*)"/)?.[1];
     const getTarget = attrsStr.match(/target="([^"]*)"/)?.[1];
     const getStyle = attrsStr.match(/style="([^"]*)"/)?.[1];
+
+    const geoMatch = (attrsStr + innerContent).match(/<mxGeometry\s+([^>]+)>/i);
+    const geoAttrs = geoMatch ? geoMatch[1] : '';
+    const x = geoAttrs.match(/x="([\d.-]+)"/)?.[1];
+    const y = geoAttrs.match(/y="([\d.-]+)"/)?.[1];
+    const width = geoAttrs.match(/width="([\d.-]+)"/)?.[1];
+    const height = geoAttrs.match(/height="([\d.-]+)"/)?.[1];
 
     if (getId && getId !== '0' && getId !== '1' && !processedIds.has(getId)) {
       processedIds.add(getId);
@@ -102,7 +125,11 @@ export function parseXmlNodesAndEdges(xml: string): DiagramNodeItem[] {
         isEdge,
         source: getSource,
         target: getTarget,
-        style: getStyle
+        style: getStyle,
+        x: x ? parseFloat(x) : undefined,
+        y: y ? parseFloat(y) : undefined,
+        width: width ? parseFloat(width) : undefined,
+        height: height ? parseFloat(height) : undefined,
       });
     }
   }

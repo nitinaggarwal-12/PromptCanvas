@@ -91,7 +91,65 @@ function parseCellsFromXml(xml: string): Map<string, ParsedCell> {
   const map = new Map<string, ParsedCell>();
   if (!xml) return map;
 
-  // Regex to match mxCell tags
+  // 1. Match <UserObject ...>...</UserObject> and <object ...>...</object>
+  const objectBlockRegex = /<(?:UserObject|object)\s+([^>]+)>([\s\S]*?)<\/(?:UserObject|object)>/gi;
+  let objMatch;
+  while ((objMatch = objectBlockRegex.exec(xml)) !== null) {
+    const objAttrs = objMatch[1];
+    const innerContent = objMatch[2];
+
+    const objId = objAttrs.match(/id=["']([^"']+)["']/i)?.[1];
+    if (!objId || objId === '0' || objId === '1') continue;
+
+    const rawValue = objAttrs.match(/label=["']([\s\S]*?)["']/i)?.[1] ||
+                     objAttrs.match(/value=["']([\s\S]*?)["']/i)?.[1] ||
+                     objAttrs.match(/tooltip=["']([\s\S]*?)["']/i)?.[1] ||
+                     objAttrs.match(/name=["']([\s\S]*?)["']/i)?.[1] || '';
+
+    const innerCellMatch = innerContent.match(/<mxCell\s+([^>]+?)(?:\/>|>([\s\S]*?)<\/mxCell>)/i);
+    const innerAttrs = innerCellMatch ? innerCellMatch[1] : '';
+    const innerCellBody = innerCellMatch ? innerCellMatch[2] || '' : '';
+
+    const style = innerAttrs.match(/style=["']([\s\S]*?)["']/i)?.[1] || '';
+    const vertexMatch = innerAttrs.match(/vertex=["']1["']/i);
+    const edgeMatch = innerAttrs.match(/edge=["']1["']/i);
+    const sourceMatch = innerAttrs.match(/source=["']([^"']+)["']/i);
+    const targetMatch = innerAttrs.match(/target=["']([^"']+)["']/i);
+
+    const geoMatch = (innerAttrs + innerCellBody + innerContent).match(/<mxGeometry\s+([^>]+?)(?:\/>|>([\s\S]*?)<\/mxGeometry>)/i);
+    let geometry: ParsedCell['geometry'];
+    if (geoMatch) {
+      const geoAttrs = geoMatch[1] || '';
+      const x = geoAttrs.match(/x=["']([\d.-]+)["']/i);
+      const y = geoAttrs.match(/y=["']([\d.-]+)["']/i);
+      const w = geoAttrs.match(/width=["']([\d.-]+)["']/i);
+      const h = geoAttrs.match(/height=["']([\d.-]+)["']/i);
+      geometry = {
+        x: x ? parseFloat(x[1]) : undefined,
+        y: y ? parseFloat(y[1]) : undefined,
+        width: w ? parseFloat(w[1]) : undefined,
+        height: h ? parseFloat(h[1]) : undefined
+      };
+    }
+
+    const cleanText = stripHtml(rawValue);
+    const title = extractPrimaryTitle(rawValue) || (vertexMatch ? cleanText.slice(0, 30) : `Connector ${objId}`);
+
+    map.set(objId, {
+      id: objId,
+      value: rawValue,
+      cleanText,
+      title,
+      isVertex: Boolean(vertexMatch),
+      isEdge: Boolean(edgeMatch),
+      source: sourceMatch ? sourceMatch[1] : undefined,
+      target: targetMatch ? targetMatch[1] : undefined,
+      style,
+      geometry
+    });
+  }
+
+  // 2. Match standard <mxCell ...> tags not inside UserObject
   const cellRegex = /<mxCell\s+([^>]+?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi;
   let match;
 
@@ -103,7 +161,7 @@ function parseCellsFromXml(xml: string): Map<string, ParsedCell> {
     const idMatch = attrString.match(/id=["']([^"']+)["']/i);
     if (!idMatch || !idMatch[1]) continue;
     const id = idMatch[1];
-    if (id === '0' || id === '1') continue; // Root containers
+    if (id === '0' || id === '1' || map.has(id)) continue; // Skip root containers & already parsed objects
 
     const valueMatch = attrString.match(/value=["']([\s\S]*?)["']/i);
     const rawValue = valueMatch ? valueMatch[1] : '';

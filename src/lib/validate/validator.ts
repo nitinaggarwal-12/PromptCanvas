@@ -298,13 +298,34 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     });
   }
 
-  // Compute absolute coordinates on canvas
-  for (const [id, v] of verticesMap.entries()) {
-    if (v.parent !== '1' && verticesMap.has(v.parent)) {
-      const parentV = verticesMap.get(v.parent)!;
-      v.absX = parentV.x + v.x;
-      v.absY = parentV.y + v.y;
+  // Compute recursive absolute coordinates on canvas across arbitrary nesting depths
+  const absComputed = new Set<string>();
+  function resolveAbsoluteCoords(v: ParsedVertex, visiting = new Set<string>()): { absX: number; absY: number } {
+    if (absComputed.has(v.id)) {
+      return { absX: v.absX, absY: v.absY };
     }
+    if (visiting.has(v.id)) {
+      // Cycle protection
+      return { absX: v.x, absY: v.y };
+    }
+    visiting.add(v.id);
+
+    if (v.parent && v.parent !== '0' && v.parent !== '1' && verticesMap.has(v.parent)) {
+      const parentV = verticesMap.get(v.parent)!;
+      const pCoords = resolveAbsoluteCoords(parentV, visiting);
+      v.absX = pCoords.absX + v.x;
+      v.absY = pCoords.absY + v.y;
+    } else {
+      v.absX = v.x;
+      v.absY = v.y;
+    }
+
+    absComputed.add(v.id);
+    return { absX: v.absX, absY: v.absY };
+  }
+
+  for (const v of verticesMap.values()) {
+    resolveAbsoluteCoords(v);
   }
 
   // Check EDGE_DANGLING & collect connected nodes

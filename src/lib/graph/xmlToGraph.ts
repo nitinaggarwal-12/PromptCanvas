@@ -140,7 +140,7 @@ function extractProtocol(label: string): string | undefined {
 
 function isGateTransition(label: string): boolean {
   if (!label) return false;
-  return /\b(APPROVED|REJECTED|VALID|INVALID|GATE|CONDITION|IF|WHEN)\b/i.test(label) || (label.includes('[') && label.includes(']'));
+  return /\b(APPROVED|REJECTED|VALID|INVALID|GATE|CONDITION|IF|WHEN|YES|NO|PASS|FAIL|TRUE|FALSE|ALLOW|DENY|SUCCESS|FAILURE)\b/i.test(label) || (label.includes('[') && label.includes(']'));
 }
 
 export function xmlToGraph(mxGraphXml: string): ExtractedGraph | null {

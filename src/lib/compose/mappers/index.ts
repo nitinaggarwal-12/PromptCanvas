@@ -30,10 +30,10 @@ export const componentDescriptionsMapper: DerivationMapperFn = (model, sectionId
   for (const tier of tiersToSummarize) {
     const tierComps = model.components.filter((c) => c.tier === tier.id);
     const compNames = tierComps.slice(0, 4).map((c) => c.label);
-    const extraCount = tierComps.length - topCompsLength(compNames);
+    const extraCount = Math.max(0, tierComps.length - compNames.length);
     const summaryList =
       tierComps.length > 0
-        ? `${compNames.join(', ')}${tierComps.length > 4 ? ` (+${tierComps.length - 4} additional pods)` : ''}`
+        ? `${compNames.join(', ')}${extraCount > 0 ? ` (+${extraCount} additional pods)` : ''}`
         : 'Governed Compute & Service Pods';
 
     const sampleFlow = model.flows.find(
