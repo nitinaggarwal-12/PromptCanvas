@@ -40,19 +40,32 @@ function parseNodeValue(id: string, rawVal: string): ParsedNodeContext {
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');
 
-  if (unescaped.includes('<table') || unescaped.includes('&lt;table')) {
+  if (
+    unescaped.includes('<table') ||
+    unescaped.includes('&lt;table') ||
+    unescaped.includes('<svg') ||
+    unescaped.includes('font-weight:700') ||
+    unescaped.includes('font-size:11.5px') ||
+    unescaped.includes('font-size:11px')
+  ) {
     isCard = true;
     const logoMatch = unescaped.match(/src=["']([^"']+)["']/i);
     if (logoMatch) logoUrl = logoMatch[1];
 
-    const titleMatch = unescaped.match(/<b[^>]*>(.*?)<\/b>/i);
+    const titleMatch =
+      unescaped.match(/<b[^>]*>(.*?)<\/b>/i) ||
+      unescaped.match(/<div[^>]*font-weight:\s*700[^>]*>(.*?)<\/div>/i) ||
+      unescaped.match(/<div[^>]*font-size:\s*(?:1[1-4]|2[0-9])px[^>]*>(.*?)<\/div>/i);
     if (titleMatch) currentTitle = titleMatch[1].replace(/<[^>]+>/g, '').trim();
 
     const badgeMatch = unescaped.match(/<span[^>]*style="[^"]*background:[^"]*"[^>]*>(.*?)<\/span>/i);
     if (badgeMatch) currentBadge = badgeMatch[1].replace(/<[^>]+>/g, '').trim();
 
-    const subMatch = unescaped.match(/<span[^>]*color:[^"]*334155[^"]*"[^>]*>(.*?)<\/span>/i) || 
-                     unescaped.match(/<br\s*\/?>\s*<span[^>]*>(.*?)<\/span>/i);
+    const subMatch =
+      unescaped.match(/<div[^>]*font-size:\s*8\.5px[^>]*>(.*?)<\/div>/i) ||
+      unescaped.match(/<div[^>]*color:\s*#5F6368[^>]*>(.*?)<\/div>/i) ||
+      unescaped.match(/<span[^>]*color:[^"]*334155[^"]*"[^>]*>(.*?)<\/span>/i) ||
+      unescaped.match(/<br\s*\/?>\s*<span[^>]*>(.*?)<\/span>/i);
     if (subMatch) currentSubtitle = subMatch[1].replace(/<br\s*\/?>/gi, ' | ').replace(/<[^>]+>/g, '').trim();
   } else {
     currentTitle = unescaped.replace(/<[^>]+>/g, '').trim();
@@ -225,6 +238,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = newVal.replace(/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i, `$1${escapeXmlText(title)}$3`);
           } else if (/<b\b[^>]*>(.*?)<\/b>/i.test(newVal)) {
             newVal = newVal.replace(/(<b\b[^>]*>)(.*?)(<\/b>)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (/(<div[^>]*font-weight:\s*700[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*font-weight:\s*700[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (/(<div[^>]*font-size:\s*11\.5px[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*font-size:\s*11\.5px[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
           } else if (isHeaderOrText) {
             newVal = escapeXmlText(title);
           }
@@ -234,6 +251,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = newVal.replace(/(&lt;span\b[^&]*?color:[^&]*?334155[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
           } else if (/<span\b[^>]*?color:[^>]*?334155[^>]*?>(.*?)<\/span>/i.test(newVal)) {
             newVal = newVal.replace(/(<span\b[^>]*?color:[^>]*?334155[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(subtitle)}$3`);
+          } else if (/(<div[^>]*font-size:\s*8\.5px[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*font-size:\s*8\.5px[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
+          } else if (/(<div[^>]*color:\s*#5F6368[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*color:\s*#5F6368[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
           }
         }
         const badge = custom.badge || '';

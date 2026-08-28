@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
+import { customizeDiagramTemplateWithGemini } from '@/lib/geminiDiagramCustomizer';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
@@ -22,8 +23,10 @@ export async function POST(request: Request) {
       existingXml,
     } = body;
 
-    // 1. Generate base functional flowchart XML tailored to prompt
-    const baseXml = generateGcpFunctionalFlowchartXml({
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // 1. Get base template XML (or use existing XML if provided)
+    const baseXml = existingXml || generateGcpFunctionalFlowchartXml({
       projectName,
       useCaseName,
       projectTitle,
@@ -31,8 +34,29 @@ export async function POST(request: Request) {
       theme,
     });
 
-    // 2. Preflight Geometric & Structural Validation
-    const healerResult = validateAndHealDrawioXml(baseXml, 'canonical_gcp_functional_flowchart');
+    let synthesizedXml = baseXml;
+    let customReasoning = 'Loaded pristine GCP Functional Flowchart Architecture.';
+
+    // 2. Perform Real Gemini 2.5 / 3.1 Pro LLM Diagram Synthesis & Component Mutation
+    if (prompt && prompt.trim().length > 3) {
+      try {
+        const customResult = await customizeDiagramTemplateWithGemini(
+          baseXml,
+          prompt,
+          'gcp_functional_flowchart',
+          apiKey
+        );
+        if (customResult && customResult.xml && customResult.xml.includes('<mxfile')) {
+          synthesizedXml = customResult.xml;
+          customReasoning = customResult.reasoning || `Synthesized architecture components for "${prompt}".`;
+        }
+      } catch (err: any) {
+        console.warn('[validate-and-synthesize] LLM Customization warning, falling back to base XML:', err?.message);
+      }
+    }
+
+    // 3. Preflight Geometric, AST & Structural Validation
+    const healerResult = validateAndHealDrawioXml(synthesizedXml, 'canonical_gcp_functional_flowchart');
     const finalXml = preflightVerifyAndHealXmlAcrossAll6Audits(healerResult.xml, 'canonical_gcp_functional_flowchart');
     let geminiAudit = {
       isValid: true,
@@ -49,8 +73,7 @@ export async function POST(request: Request) {
       aiReasoning: 'Diagram topology strictly adheres to Google Cloud Well-Architected Framework with zero-collision orthogonal vector routing.'
     };
 
-    // 3. Gemini 3.1 Pro Architecture Quality & Security Critic Audit
-    const apiKey = process.env.GEMINI_API_KEY;
+    // 4. Gemini 3.1 Pro Architecture Quality & Security Critic Audit
     if (apiKey && prompt && prompt.length > 5) {
       try {
         const ai = getAiClient(apiKey);
