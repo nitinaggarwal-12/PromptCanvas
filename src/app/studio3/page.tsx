@@ -69,11 +69,17 @@ const STARTER_PROMPTS = [
     prompt: 'Design a multi-agent RAG knowledge retrieval flow using Vertex AI Vector Search, Gemini Pro, and BigQuery data mesh',
     abstraction: 'logical' as AbstractionLevel,
     category: 'GenAI & Search'
+  },
+  {
+    title: 'Transformer Architecture',
+    prompt: 'Help me learn transformer architecture',
+    abstraction: 'logical' as AbstractionLevel,
+    category: 'AI / Neural'
   }
 ];
 
 export default function Studio3Page() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark'); // Default to sleek theater dark mode
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [promptInput, setPromptInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -87,7 +93,7 @@ export default function Studio3Page() {
   const [activeTab, setActiveTab] = useState<'canvas' | 'logs' | 'quality' | 'xml'>('canvas');
   const [copied, setCopied] = useState(false);
 
-  // Active State — Starts completely clean (No pre-loaded diagram)
+  // Active State
   const [currentXml, setCurrentXml] = useState<string>('');
   const [currentIntent, setCurrentIntent] = useState<Studio3Intent | null>(null);
   const [currentGraph, setCurrentGraph] = useState<Studio3SemanticGraph | null>(null);
@@ -117,7 +123,7 @@ export default function Studio3Page() {
   };
 
   const handleSynthesize = async (promptText: string, forcedAbstraction?: AbstractionLevel) => {
-    if (!promptText.trim() || loading) return;
+    if (!promptText || !promptText.trim() || loading) return;
 
     setLoading(true);
     const userMsgId = `msg_${Date.now()}`;
@@ -134,7 +140,6 @@ export default function Studio3Page() {
     setPromptInput('');
 
     try {
-      // If we already have an active diagram, conversational context applies changes to THAT active diagram only!
       const isIterativeTurn = Boolean(currentXml && currentGraph);
 
       const endpoint = isIterativeTurn ? '/api/studio3/chat' : '/api/studio3/synthesize';
@@ -160,22 +165,24 @@ export default function Studio3Page() {
       });
 
       const data = await res.json();
-      const executionLogs: Studio3LogEntry[] = data.logs || [];
+      const executionLogs: Studio3LogEntry[] = Array.isArray(data.logs) ? data.logs : [];
       setAllLogs(prev => [...prev, ...executionLogs]);
 
       if (data.success && data.xml) {
         setCurrentXml(data.xml);
-        setCurrentIntent(data.intent);
-        setCurrentGraph(data.graph);
-        setCurrentQuality(data.qualityReport);
-        setSelectedAbstraction(data.intent.abstractionLevel);
+        setCurrentIntent(data.intent || null);
+        setCurrentGraph(data.graph || null);
+        setCurrentQuality(data.qualityReport || null);
+        
+        const effectiveAbstraction = data.intent?.abstractionLevel || 'logical';
+        setSelectedAbstraction(effectiveAbstraction);
 
         const botReply =
-          data.intent.actionType === 'band_expansion'
+          data.intent?.actionType === 'band_expansion'
             ? `🎭 **Curtain Raised & Expanded**: Synthesized a **Multi-Band Composite Architecture**! Top comparative matrix tier and bottom 4-step workflow pipeline added (Score: ${data.qualityReport?.overallScore || 95}/100).`
             : isIterativeTurn
-            ? `✨ **Diagram Refined in Place**: Updated active **${data.intent.abstractionLevel.toUpperCase()}** architecture for "${promptText}" (Score: ${data.qualityReport?.overallScore || 95}/100).`
-            : `🎬 **Curtain Raised**: Synthesized first **${data.intent.abstractionLevel.toUpperCase()}** architecture from first principles (Quality: ${data.qualityReport?.overallScore || 95}/100).`;
+            ? `✨ **Diagram Refined in Place**: Updated active **${effectiveAbstraction.toUpperCase()}** architecture for "${promptText}" (Score: ${data.qualityReport?.overallScore || 95}/100).`
+            : `🎬 **Curtain Raised**: Synthesized first **${effectiveAbstraction.toUpperCase()}** architecture from first principles (Quality: ${data.qualityReport?.overallScore || 95}/100).`;
 
         setMessages(prev => [
           ...prev,
@@ -360,7 +367,7 @@ export default function Studio3Page() {
             </div>
             {currentIntent && (
               <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 uppercase">
-                {currentIntent.abstractionLevel} • {currentIntent.topologyGrammar.replace('_', ' ')}
+                {currentIntent.abstractionLevel} • {(currentIntent.topologyGrammar || '').replace('_', ' ')}
               </span>
             )}
           </div>
@@ -431,7 +438,7 @@ export default function Studio3Page() {
                 <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                   Active Diagram Mode: <span className="text-blue-600 dark:text-blue-400">{currentIntent.abstractionLevel}</span>
                 </span>
-                <span className="text-[10px] text-slate-400">{currentIntent.bands.length} Bands • {currentGraph?.bands.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones</span>
+                <span className="text-[10px] text-slate-400">{(currentIntent.bands || []).length} Bands • {currentGraph?.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} Zones</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -721,7 +728,7 @@ export default function Studio3Page() {
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     </div>
                     <div className="text-xs text-slate-300">
-                      Completeness: <strong>{((currentQuality?.phase1Technical.completenessScore || 0.95) * 100).toFixed(0)}%</strong>
+                      Completeness: <strong>{((currentQuality?.phase1Technical?.completenessScore || 0.95) * 100).toFixed(0)}%</strong>
                     </div>
                     <div className="text-[11px] text-slate-400">
                       Ontology: <span className="text-emerald-400 font-medium">Valid {currentIntent?.abstractionLevel}</span>
@@ -741,7 +748,7 @@ export default function Studio3Page() {
                       AABB Collisions: <strong className="text-emerald-400">0 Overlaps</strong>
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      Density Ratio: <strong>{currentQuality?.phase2Visual.visualDensity || 0.36} (Optimal)</strong>
+                      Density Ratio: <strong>{currentQuality?.phase2Visual?.visualDensity || 0.36} (Optimal)</strong>
                     </div>
                   </div>
 
@@ -755,7 +762,7 @@ export default function Studio3Page() {
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                     </div>
                     <div className="text-xs text-slate-300">
-                      AST State Diff: <strong className="text-slate-200">+{currentQuality?.phase3Versioning.addedNodes.length || 0} Nodes</strong>
+                      AST State Diff: <strong className="text-slate-200">+{currentQuality?.phase3Versioning?.addedNodes?.length || 0} Nodes</strong>
                     </div>
                     <div className="text-[11px] text-slate-400">
                       Layout Anchors: <span className="text-emerald-400 font-medium">Preserved</span>
