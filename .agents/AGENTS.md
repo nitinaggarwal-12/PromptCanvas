@@ -161,3 +161,13 @@
    - **Typed Connector Semantics**: Enforce distinct visual styles (Solid Blue = API, Dashed Orange = Stream, Dashed Purple = RAG, Green = Protocol, Dashed Teal = Feedback).
    - **Collision-Free Channel Routing**: Connector lines must never slice through intermediate cards or text labels.
 
+---
+
+# 🔄 Mandatory Closed-Loop Validation & Auto-Healing Law (Prompt-to-Canvas Gate)
+
+1. **Zero-Defect Delivery Mandate**:
+   - Every prompt execution (initial synthesis or iterative refinement) MUST run the full 4-Phase Quality Validator (`evaluateStudio3Quality`) immediately following layout solving.
+   - If ANY score deduction, AABB spatial collision, unescaped entity, or viewport violation is detected, the engine must execute automated self-healing passes to resolve all issues before emitting the finalized Draw.io XML to the canvas.
+2. **Pre-Delivery Certification Gate**:
+   - Never stream or return an unverified or failing diagram state to the client canvas. The canvas must only render diagrams with `certified: true` (Overall Score $\ge 75$, 0 collisions, 100% viewport containment).
+
