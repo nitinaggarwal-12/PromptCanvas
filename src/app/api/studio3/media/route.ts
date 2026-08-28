@@ -4,7 +4,7 @@ import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, type = 'animation' } = await req.json();
+    const { prompt, type = 'animation', previousAsset } = await req.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ error: 'Missing prompt.' }, { status: 400 });
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const ai = new GoogleGenAI({ apiKey });
 
     // Handle Gladiator specific photorealistic image mapping if requested
-    if (prompt.toLowerCase().includes('gladiator') || prompt.toLowerCase().includes('colosseum')) {
+    if (prompt.toLowerCase().includes('gladiator') && !previousAsset) {
       return NextResponse.json({
         success: true,
         asset: {
@@ -29,20 +29,31 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Otherwise, generate a rich standalone HTML5 Canvas / WebGL / CSS procedural interactive animation!
+    // Generate or iteratively evolve a standalone HTML5 Canvas / WebGL / CSS procedural interactive animation!
+    const isEvolution = Boolean(previousAsset && previousAsset.htmlCode);
     const systemInstruction = `You are Google DeepMind's Creative Multimodal Graphics & Procedural Animation Specialist.
-Your task is to generate a complete, standalone, self-contained HTML5 file containing rich CSS, JavaScript, HTML5 Canvas 2D/WebGL, and interactive physics for the given visual prompt.
+Your task is to ${isEvolution ? 'modify and evolve the existing HTML5 animation' : 'generate a complete, standalone, self-contained HTML5 file'} containing rich CSS, JavaScript, HTML5 Canvas 2D/WebGL, and interactive physics for the visual prompt.
 
 MANDATORY RULES:
 1. Output ONLY the raw HTML code starting with <!DOCTYPE html> and ending with </html>.
 2. Include all necessary CSS (embedded inside <style>) and JavaScript (embedded inside <script>).
 3. The animation must be modern, responsive, 60fps smooth (requestAnimationFrame), high-contrast, dark-themed (#050811), and visually stunning.
-4. Include interactive mouse controls (hover particles, click ripples, drag orbit).
+4. Include interactive mouse controls (hover particles, click ripples, drag orbit, touch).
 5. Never use markdown code blocks or backticks. Output pure executable HTML code.`;
+
+    const userPrompt = isEvolution
+      ? `Existing HTML5 Code:
+${previousAsset.htmlCode}
+
+Requested Modification / Evolution:
+"${prompt}"
+
+Apply the requested changes to the animation while maintaining 60fps smoothness and interactive controls.`
+      : `Create an interactive, cinematic, 60fps HTML5 Canvas animation / simulation for: "${prompt}"`;
 
     const response = await ai.models.generateContent({
       model: GEMINI_MODEL_ID,
-      contents: [{ role: 'user', parts: [{ text: `Create an interactive, cinematic, 60fps HTML5 Canvas animation / simulation for: ${prompt}` }] }],
+      contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
       config: {
         systemInstruction: { parts: [{ text: systemInstruction }] },
         temperature: 0.3
@@ -57,9 +68,11 @@ MANDATORY RULES:
       asset: {
         id: `media_${Date.now()}`,
         type: type === 'image' ? 'image' : 'animation',
-        title: prompt.toUpperCase().slice(0, 45),
+        title: (isEvolution ? `${previousAsset.title} (Modified)` : prompt.toUpperCase()).slice(0, 45),
         htmlCode,
-        caption: `Interactive 60fps procedural simulation generated for ${prompt}`,
+        caption: isEvolution
+          ? `Modified based on prompt: "${prompt}"`
+          : `Interactive 60fps procedural simulation generated for "${prompt}"`,
         aspectRatio: '16:9',
         createdAt: new Date().toISOString()
       }

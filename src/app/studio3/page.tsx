@@ -136,10 +136,11 @@ export default function Studio3Page() {
   const handleGenerateMedia = async (prompt: string, type: 'image' | 'animation' = 'animation') => {
     setGeneratingMedia(true);
     try {
+      const activeAsset = mediaAssets[activeAssetIndex] || null;
       const res = await fetch('/api/studio3/media', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, type })
+        body: JSON.stringify({ prompt, type, previousAsset: activeAsset })
       });
       const data = await res.json();
       if (data.success && data.asset) {

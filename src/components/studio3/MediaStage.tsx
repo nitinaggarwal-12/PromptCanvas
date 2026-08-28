@@ -347,19 +347,45 @@ export const MediaStage: React.FC<MediaStageProps> = ({
         )}
       </div>
 
-      {/* 3. BOTTOM ASSET CAROUSEL & CAPTION */}
-      <div className="px-4 py-2 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex items-center justify-between z-20">
-        <div className="text-[11px] text-slate-400 font-medium truncate max-w-lg">
-          {activeAsset.caption || `Generated ${activeAsset.type} asset in Studio 3 Multimodal Engine.`}
+      {/* 3. BOTTOM ITERATIVE MODIFICATION & ASSET CAROUSEL BAR */}
+      <div className="px-4 py-2.5 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 z-20">
+        {/* Iterative Prompt Modification Input */}
+        <div className="flex-1 w-full max-w-xl flex items-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+          <input
+            type="text"
+            value={customPrompt}
+            onChange={e => setCustomPrompt(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && customPrompt.trim()) {
+                onGenerateMedia?.(customPrompt.trim(), activeAsset.type === 'image' ? 'image' : 'animation');
+                setCustomPrompt('');
+              }
+            }}
+            placeholder={`Modify this ${activeAsset.type} with prompt (e.g. "make it night time", "add rain", "faster particles")...`}
+            className="flex-1 rounded-lg px-3 py-1.5 bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+          />
+          <button
+            onClick={() => {
+              if (customPrompt.trim()) {
+                onGenerateMedia?.(customPrompt.trim(), activeAsset.type === 'image' ? 'image' : 'animation');
+                setCustomPrompt('');
+              }
+            }}
+            disabled={!customPrompt.trim() || isGenerating}
+            className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold transition disabled:opacity-40 shrink-0 flex items-center gap-1 shadow-sm"
+          >
+            <span>Apply</span>
+          </button>
         </div>
 
         {/* Thumbnail Selector (if multiple assets) */}
         {mediaAssets.length > 1 && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
               Assets ({mediaAssets.length}):
             </span>
-            <div className="flex items-center gap-1.5 overflow-x-auto">
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-xs">
               {mediaAssets.map((asset, idx) => (
                 <button
                   key={asset.id || idx}
@@ -371,7 +397,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                   }`}
                 >
                   <span>{idx + 1}.</span>
-                  <span className="truncate max-w-[90px]">{asset.title}</span>
+                  <span className="truncate max-w-[80px]">{asset.title}</span>
                 </button>
               ))}
             </div>
