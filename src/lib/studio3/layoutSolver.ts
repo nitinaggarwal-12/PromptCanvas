@@ -82,63 +82,126 @@ export function renderTwoSidesOfTheSpinInfographicXml(
   </div>`;
   cell('left_body', leftBodyHtml, 40, 157, 380, 395, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  // 3. CENTER HERO VISUAL ILLUSTRATION (x=440..1140, y=80..565)
-  const centerHeroHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+  // 3. CENTER HERO: INTERACTIVE PHYSICS SANDBOX & DYNAMIC VECTORS (x=430..1150, y=75..565)
+  const centerHeroHtml = `<div id="physics_sandbox" style="display:flex;flex-direction:column;align-items:center;justify-content:space-between;width:100%;height:100%;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;padding:8px;">
     
-    <svg viewBox="0 0 540 470" width="540" height="470" style="overflow:visible;">
-      <!-- Top Green Tangential Velocity Vector -->
-      <g transform="translate(270, 42)">
-        <text x="0" y="-18" text-anchor="middle" font-size="16" font-weight="900" fill="#059669">Velocity v</text>
-        <text x="0" y="-2" text-anchor="middle" font-size="12.5" font-weight="700" fill="#059669">(Inertia wants straight line)</text>
-        <line x1="-90" y1="12" x2="90" y2="12" stroke="#059669" stroke-width="6"/>
-        <polygon points="104,12 86,3 86,21" fill="#059669"/>
-      </g>
+    <!-- Top Interactive Control Bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;width:100%;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:10px;padding:6px 14px;box-sizing:border-box;">
+      <!-- Speed Slider -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:11px;font-weight:800;color:#0F172A;">⚡ Spin Speed:</span>
+        <input type="range" id="spin_speed" min="1" max="10" value="4" style="width:90px;cursor:pointer;" oninput="
+          var dur = (16 / this.value) + 's';
+          var rot = document.getElementById('rot_group');
+          if(rot) rot.style.animationDuration = dur;
+          var fcLen = 30 + this.value * 9;
+          var fcLine = document.getElementById('fc_arrow');
+          if(fcLine) fcLine.setAttribute('x2', 270 - fcLen * 0.7);
+          var valDisp = document.getElementById('fc_val');
+          if(valDisp) valDisp.innerText = Math.round(this.value * 28) + ' N';
+        "/>
+      </div>
 
-      <!-- Circular Orbit Track -->
-      <circle cx="270" cy="260" r="165" stroke="#0F172A" stroke-width="2.5" fill="none"/>
+      <!-- Live Readout Badge -->
+      <div style="background:#EFF6FF;border:1px solid #93C5FD;border-radius:6px;padding:3px 10px;font-size:10.5px;font-weight:800;color:#1D4ED8;">
+        Fc = <span id="fc_val">112 N</span> | v = <span id="v_val">8.4 m/s</span>
+      </div>
 
-      <!-- Rotational Direction Arrows on Track -->
-      <path d="M 125 330 Q 145 375 180 400" stroke="#0F172A" stroke-width="2.5" fill="none"/>
-      <polygon points="125,330 134,338 122,344" fill="#0F172A"/>
+      <!-- Action Buttons -->
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button style="background:#EF4444;color:#FFFFFF;border:none;border-radius:6px;padding:5px 12px;font-size:10.5px;font-weight:900;cursor:pointer;box-shadow:0 2px 4px rgba(239,68,68,0.3);" onclick="
+          var str = document.getElementById('string_line');
+          if(str) str.style.display = 'none';
+          var rot = document.getElementById('rot_group');
+          if(rot) rot.style.animationPlayState = 'paused';
+          var alertB = document.getElementById('inertia_alert');
+          if(alertB) { alertB.style.display = 'block'; alertB.innerText = '✂️ STRING CUT! Ball flies straight along tangent vector (INERTIA)!'; }
+        ">✂️ Cut String</button>
+        <button style="background:#3B82F6;color:#FFFFFF;border:none;border-radius:6px;padding:5px 10px;font-size:10.5px;font-weight:800;cursor:pointer;" onclick="
+          var str = document.getElementById('string_line');
+          if(str) str.style.display = 'inline';
+          var rot = document.getElementById('rot_group');
+          if(rot) { rot.style.animationPlayState = 'running'; rot.style.animationDuration = '4s'; }
+          var alertB = document.getElementById('inertia_alert');
+          if(alertB) alertB.style.display = 'none';
+          var sp = document.getElementById('spin_speed');
+          if(sp) sp.value = 4;
+          var valDisp = document.getElementById('fc_val');
+          if(valDisp) valDisp.innerText = '112 N';
+        ">🔄 Reset</button>
+      </div>
+    </div>
 
-      <!-- Center Person (Top-Down Avatar) -->
-      <g transform="translate(270, 260)">
-        <!-- Head -->
-        <circle cx="0" cy="0" r="15" fill="#92400E" stroke="#0F172A" stroke-width="2.5"/>
-        <!-- Shoulders / Torso -->
-        <ellipse cx="0" cy="6" rx="22" ry="13" fill="#2563EB" stroke="#0F172A" stroke-width="2.5"/>
-        <!-- Arms extending to hold string -->
-        <path d="M -18 8 Q -26 26 -15 32 L -12 32" stroke="#2563EB" stroke-width="5.5" fill="none"/>
-        <path d="M 18 8 Q 2 26 -9 32 L -12 32" stroke="#2563EB" stroke-width="5.5" fill="none"/>
-        <circle cx="-12" cy="32" r="4.5" fill="#FBBF24"/>
-      </g>
+    <!-- Inertia Flash Callout -->
+    <div id="inertia_alert" style="display:none;background:#FEF3C7;color:#92400E;border:1.5px solid #F59E0B;border-radius:8px;padding:4px 12px;font-size:11px;font-weight:900;text-align:center;margin:4px 0;width:95%;"></div>
 
-      <!-- Taut String Line -->
-      <line x1="258" y1="292" x2="162" y2="390" stroke="#0F172A" stroke-width="3.5"/>
+    <!-- Main Live Orbit Canvas -->
+    <div style="position:relative;width:520px;height:380px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 520 380" width="520" height="380" style="overflow:visible;">
+        <defs>
+          <style>
+            @keyframes spinOrbit {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            .orbiting-group {
+              transform-origin: 260px 190px;
+              animation: spinOrbit 4s linear infinite;
+            }
+          </style>
+        </defs>
 
-      <!-- Red Ball (Mass m) -->
-      <circle cx="162" cy="390" r="22" fill="#DC2626" stroke="#0F172A" stroke-width="2.5"/>
-      <text x="162" y="396" text-anchor="middle" font-size="13" font-weight="900" fill="#FFFFFF">m</text>
+        <!-- Top Green Tangential Velocity Vector (v) -->
+        <g transform="translate(260, 25)">
+          <text x="0" y="-14" text-anchor="middle" font-size="15" font-weight="900" fill="#059669">Velocity v (Inertia wants straight line)</text>
+          <line x1="-90" y1="8" x2="90" y2="8" stroke="#059669" stroke-width="5"/>
+          <polygon points="102,8 86,1 86,15" fill="#059669"/>
+        </g>
 
-      <!-- Blue Inward Centripetal Force Vector -->
-      <g>
-        <text x="270" y="125" text-anchor="middle" font-size="17" font-weight="900" fill="#1D70B8">Centripetal Force Fc</text>
-        <text x="270" y="145" text-anchor="middle" font-size="13" font-weight="700" fill="#1D70B8">(Real inward pull)</text>
-        <line x1="365" y1="125" x2="300" y2="230" stroke="#1D70B8" stroke-width="6"/>
-        <polygon points="292,238 296,222 310,232" fill="#1D70B8"/>
-      </g>
+        <!-- Circular Orbit Track -->
+        <circle cx="260" cy="190" r="140" stroke="#0F172A" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
 
-      <!-- Red Outward Centrifugal Force Vector (Dashed) -->
-      <g>
-        <line x1="270" y1="260" x2="435" y2="260" stroke="#DC2626" stroke-width="6" stroke-dasharray="10 6"/>
-        <polygon points="451,260 433,248 433,272" fill="#DC2626"/>
-        <text x="360" y="295" text-anchor="middle" font-size="16" font-weight="900" fill="#DC2626">Centrifugal Force</text>
-        <text x="360" y="315" text-anchor="middle" font-size="13" font-weight="700" fill="#DC2626">(Perceived outward push)</text>
-      </g>
-    </svg>
+        <!-- Center Person (Top-Down Avatar) -->
+        <g transform="translate(260, 190)">
+          <!-- Head -->
+          <circle cx="0" cy="0" r="14" fill="#92400E" stroke="#0F172A" stroke-width="2.5"/>
+          <!-- Torso -->
+          <ellipse cx="0" cy="5" rx="20" ry="12" fill="#2563EB" stroke="#0F172A" stroke-width="2.5"/>
+          <circle cx="-10" cy="26" r="4" fill="#FBBF24"/>
+        </g>
 
+        <!-- Live Rotating Motion Group -->
+        <g id="rot_group" class="orbiting-group">
+          <!-- Taut String Line -->
+          <line id="string_line" x1="250" y1="216" x2="162" y2="298" stroke="#0F172A" stroke-width="3.5"/>
+
+          <!-- Orbiting Red Ball (Mass m) -->
+          <circle cx="162" cy="298" r="20" fill="#DC2626" stroke="#0F172A" stroke-width="2.5"/>
+          <text x="162" y="304" text-anchor="middle" font-size="12" font-weight="900" fill="#FFFFFF">m</text>
+
+          <!-- Blue Inward Centripetal Force Vector (Fc -> center) -->
+          <line id="fc_arrow" x1="162" y1="298" x2="225" y2="230" stroke="#1D70B8" stroke-width="5"/>
+          <polygon points="230,225 218,228 226,238" fill="#1D70B8"/>
+          
+          <!-- Red Outward Centrifugal Vector (Dashed) -->
+          <line x1="260" y1="190" x2="390" y2="190" stroke="#DC2626" stroke-width="5" stroke-dasharray="8 5"/>
+          <polygon points="402,190 388,180 388,200" fill="#DC2626"/>
+        </g>
+
+        <!-- Static Descriptive Badges -->
+        <text x="260" y="80" text-anchor="middle" font-size="15" font-weight="900" fill="#1D70B8">Centripetal Force Fc</text>
+        <text x="260" y="96" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1D70B8">(Real inward pull)</text>
+
+        <text x="355" y="218" text-anchor="middle" font-size="14" font-weight="900" fill="#DC2626">Centrifugal Force</text>
+        <text x="355" y="234" text-anchor="middle" font-size="11" font-weight="700" fill="#DC2626">(Perceived outward push)</text>
+      </svg>
+    </div>
+
+    <div style="font-size:11px;font-weight:800;color:#0F172A;background:#F1F5F9;padding:4px 14px;border-radius:15px;border:1px solid #CBD5E1;">
+      ⚡ Drag speed slider to increase $F_c = m v^2 / r$ or click <strong>✂️ Cut String</strong> to observe straight-line inertia!
+    </div>
   </div>`;
-  cell('center_hero', centerHeroHtml, 435, 75, 710, 480, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('center_hero', centerHeroHtml, 430, 75, 720, 490, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
   // 4. RIGHT PANEL: CENTRIFUGAL FORCE (x=1160..1540, y=85..565)
   const rightHdrHtml = `<div style="background:#E03131;color:#FFFFFF;border-top-left-radius:12px;border-top-right-radius:12px;padding:12px 18px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;">
