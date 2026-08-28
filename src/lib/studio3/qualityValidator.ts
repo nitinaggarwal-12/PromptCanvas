@@ -26,6 +26,8 @@ export interface Studio3QualityReport {
     flowAlignmentPct: number;
     wcagContrastPass: boolean;
     layoutViolations: string[];
+    htmlOverflowViolations: string[];
+    columnWidthViolations: string[];
   };
   phase3Versioning: {
     addedNodes: string[];
@@ -139,6 +141,8 @@ export function verifyPhase2Visual(
   boxes: BoundingBox[]
 ): Studio3QualityReport['phase2Visual'] {
   const layoutViolations: string[] = [];
+  const htmlOverflowViolations: string[] = [];
+  const columnWidthViolations: string[] = [];
   let collisionsCount = 0;
 
   // 1. AABB 2D Collision Detection between all bounding boxes
@@ -159,7 +163,38 @@ export function verifyPhase2Visual(
     }
   }
 
-  // 2. Visual Density Ratio Evaluation
+  // 2. Deep Column Width & Compression Audit (> 4 columns per single row without wrapping)
+  (graph?.bands || []).forEach((band, bIdx) => {
+    if (band.columns && band.columns.length > 4) {
+      const colWidthEst = (1520 - 32 - 16 * (band.columns.length - 1)) / band.columns.length;
+      if (colWidthEst < 260) {
+        columnWidthViolations.push(`Band ${bIdx + 1} has ${band.columns.length} columns squeezed to ${Math.round(colWidthEst)}px (< 260px min threshold)`);
+      }
+    }
+  });
+
+  // 3. Deep HTML & Code Snippet Overflow Audit
+  (graph?.bands || []).forEach(band => {
+    (band.columns || []).forEach(col => {
+      (col.cards || []).forEach(card => {
+        if (card.codeSnippet) {
+          const lines = card.codeSnippet.split('\n');
+          for (const line of lines) {
+            // If any single continuous line without spaces exceeds 45 characters, it will overflow without wrap
+            const tokens = line.split(/\s+/);
+            for (const token of tokens) {
+              if (token.length > 45) {
+                htmlOverflowViolations.push(`Card "${card.title}" contains un-wrapped token of length ${token.length} in codeSnippet: "${token.slice(0, 30)}..."`);
+                break;
+              }
+            }
+          }
+        }
+      });
+    });
+  });
+
+  // 4. Visual Density Ratio Evaluation
   const totalCanvasArea = 1600 * 1000;
   const occupiedArea = boxes.reduce((acc, b) => acc + (b.w * b.h), 0);
   const visualDensity = Math.min(1.0, occupiedArea / totalCanvasArea);
@@ -168,18 +203,25 @@ export function verifyPhase2Visual(
   if (visualDensity < 0.20) densityGrade = 'sparse';
   else if (visualDensity > 0.65) densityGrade = 'dense';
 
-  // 3. Flow Alignment
+  // 5. Flow Alignment
   const totalBands = (graph?.bands || []).length;
   const flowAlignmentPct = totalBands > 0 ? 100 : 0;
 
+  const passed = collisionsCount === 0 &&
+    layoutViolations.length === 0 &&
+    htmlOverflowViolations.length === 0 &&
+    columnWidthViolations.length === 0;
+
   return {
-    passed: collisionsCount === 0 && layoutViolations.length === 0,
+    passed,
     collisionsCount,
     visualDensity,
     densityGrade,
     flowAlignmentPct,
     wcagContrastPass: true,
-    layoutViolations
+    layoutViolations,
+    htmlOverflowViolations,
+    columnWidthViolations
   };
 }
 
@@ -361,12 +403,22 @@ export function evaluateStudio3Quality(params: {
   // Deduct for layout violations
   overallScore -= phase2Visual.layoutViolations.length * 5;
 
+  // Deduct for HTML text / code snippet overflows
+  overallScore -= phase2Visual.htmlOverflowViolations.length * 15;
+
+  // Deduct for column squishing violations
+  overallScore -= phase2Visual.columnWidthViolations.length * 15;
+
   // Deduct for client presentation / viewport violations
   overallScore -= phase4ClientPresentation.violations.length * 10;
 
   overallScore = Math.max(0, Math.min(100, overallScore));
 
-  const certified = overallScore >= 75 && phase2Visual.collisionsCount === 0 && phase4ClientPresentation.passed;
+  const certified = overallScore >= 75 &&
+    phase2Visual.collisionsCount === 0 &&
+    phase2Visual.htmlOverflowViolations.length === 0 &&
+    phase2Visual.columnWidthViolations.length === 0 &&
+    phase4ClientPresentation.passed;
 
   return {
     overallScore,
