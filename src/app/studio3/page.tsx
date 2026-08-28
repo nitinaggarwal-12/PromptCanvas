@@ -359,7 +359,7 @@ export default function Studio3Page() {
             <button
               onClick={handleCopyXml}
               disabled={!currentXml}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition disabled:opacity-40"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copied ? 'Copied XML' : 'Copy XML'}</span>
@@ -427,19 +427,32 @@ export default function Studio3Page() {
                       : 'bg-slate-100 text-slate-900 border border-slate-200/80 rounded-bl-none'
                   }`}
                 >
-                  <p className="font-medium whitespace-pre-wrap">{msg.content}</p>
+                  <div className="font-medium whitespace-pre-wrap">
+                    {msg.content.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+                      if (part.startsWith('**') && part.endsWith('**')) {
+                        return <strong key={i} className="font-bold text-blue-400 dark:text-blue-300">{part.slice(2, -2)}</strong>;
+                      }
+                      return part;
+                    })}
+                  </div>
 
-                  {/* Inline Telemetry Snippet */}
+                  {/* Inline Telemetry Snippet (Collapsible Accordion) */}
                   {msg.logs && msg.logs.length > 0 && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-200/20 text-[10px] font-mono space-y-1 opacity-90">
-                      {msg.logs.map(l => (
-                        <div key={l.id} className="flex items-center gap-1.5 text-cyan-300 dark:text-cyan-400">
-                          <span className="text-slate-400">[{l.timestamp}]</span>
-                          <span className="font-bold uppercase text-[9px] px-1 py-0.2 rounded bg-slate-800 border border-slate-700">{l.stage}</span>
-                          <span className="truncate">{l.message}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <details className="mt-2.5 pt-2 border-t border-slate-200/20 text-[10px] font-mono group">
+                      <summary className="cursor-pointer text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 select-none py-1">
+                        <Terminal className="w-3 h-3" />
+                        <span>View Gemini Trace ({msg.logs.length} events)</span>
+                      </summary>
+                      <div className="mt-2 space-y-1 bg-slate-950/80 p-2 rounded-lg border border-slate-800">
+                        {msg.logs.map(l => (
+                          <div key={l.id} className="flex items-center gap-1.5 text-cyan-300 dark:text-cyan-400">
+                            <span className="text-slate-500">[{l.timestamp}]</span>
+                            <span className="font-bold uppercase text-[9px] px-1 py-0.2 rounded bg-slate-800 border border-slate-700 text-amber-300">{l.stage}</span>
+                            <span className="truncate">{l.message}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
                   )}
                 </div>
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">{msg.timestamp}</span>
@@ -597,7 +610,7 @@ export default function Studio3Page() {
                     xml={currentXml}
                     aspectRatioId="16:9"
                     bgTheme={theme}
-                    allowFullScaleScroll={true}
+                    allowFullScaleScroll={false}
                   />
                 ) : (
                   /* 🎭 PRE-SHOW STAGE CURTAIN (ELEGANT EMPTY STATE) */

@@ -84,13 +84,17 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       archType.startsWith('canonical') ||
       archType.includes('canonical') ||
       archType.includes('wbs') ||
-      archType.includes('blueprint')
+      archType.includes('blueprint') ||
+      archType === 'studio3' ||
+      archType.includes('studio3')
     ) && archType !== 'custom' && archType !== 'gemini_custom')
   ) || (
     xmlInput && (
       xmlInput.includes('canonical') ||
       xmlInput.includes('NOVACURA') ||
       xmlInput.includes('template_0') ||
+      xmlInput.includes('studio3_diagram') ||
+      xmlInput.includes('STUDIO 3') ||
       xmlInput.includes('02 — Capability Map') ||
       xmlInput.includes('03 — Business Process') ||
       xmlInput.includes('01 — System Context') ||

@@ -106,7 +106,9 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.startsWith('canonical') ||
       archType.includes('canonical') ||
       archType.includes('wbs') ||
-      archType.includes('blueprint')
+      archType.includes('blueprint') ||
+      archType === 'studio3' ||
+      archType.includes('studio3')
     )
   ) || (
     inputXml.includes('PromptCanvas') ||
@@ -116,6 +118,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('Template ') ||
     inputXml.includes('TOTAL UNIFIED SYSTEM VIEW') ||
     inputXml.includes('unified_system_view') ||
+    inputXml.includes('studio3_diagram') ||
+    inputXml.includes('STUDIO 3') ||
     inputXml.includes('sw1_') ||
     inputXml.includes('02 — Capability Map') ||
     inputXml.includes('03 — Business Process') ||
