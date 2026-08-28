@@ -120,7 +120,7 @@ interface StudioDiagramTab {
   title: string;
   templateId: string;
   xml: string;
-  source: 'functional_flowchart' | 'custom';
+  source: 'functional_flowchart' | 'generic_architecture' | 'custom';
   lastPrompt?: string;
 }
 
@@ -1020,6 +1020,9 @@ function Studio2Content() {
         let apiChangedComponents: string[] = [];
         let apiReasoning = '';
 
+        const isGenericTab = activeDiagram?.source === 'generic_architecture';
+        const currentArchType = isGenericTab ? 'generic_architecture' : 'gcp_functional_flowchart';
+
         try {
           const res = await fetch('/api/studio2/validate-and-synthesize', {
             method: 'POST',
@@ -1030,7 +1033,8 @@ function Studio2Content() {
               projectTitle: titleToUse,
               prompt: promptToUse,
               theme: isLight ? 'light' : 'dark',
-              existingXml: activeDiagram?.xml || ''
+              existingXml: activeDiagram?.xml || '',
+              architectureType: currentArchType
             })
           });
 
@@ -1050,13 +1054,20 @@ function Studio2Content() {
         }
 
         if (!finalXml) {
-          const generatedXml = generateGcpFunctionalFlowchartXml({
-            projectTitle: titleToUse,
-            projectName: derivedProject,
-            useCaseName: derivedUseCase,
-            prompt: promptToUse,
-            theme: isLight ? 'light' : 'dark'
-          });
+          const generatedXml = isGenericTab
+            ? generateGenericArchitectureXml({
+                projectTitle: titleToUse,
+                projectName: derivedProject,
+                prompt: promptToUse,
+                theme: isLight ? 'light' : 'dark'
+              })
+            : generateGcpFunctionalFlowchartXml({
+                projectTitle: titleToUse,
+                projectName: derivedProject,
+                useCaseName: derivedUseCase,
+                prompt: promptToUse,
+                theme: isLight ? 'light' : 'dark'
+              });
           finalXml = injectUseCaseFlavor(generatedXml, titleToUse, promptToUse);
         }
 
@@ -1065,9 +1076,9 @@ function Studio2Content() {
           if (diag.id === activeDiagramId) {
             return {
               ...diag,
-              title: `${titleToUse} • Functional Flowchart`,
+              title: `${titleToUse} • ${isGenericTab ? 'Generic Architecture' : 'Functional Flowchart'}`,
               xml: finalXml,
-              source: 'functional_flowchart',
+              source: isGenericTab ? 'generic_architecture' : 'functional_flowchart',
               lastPrompt: promptToUse
             };
           }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart';
+import { generateGenericArchitectureXml } from '@/lib/genericArchitecture';
 import { customizeDiagramTemplateWithGemini } from '@/lib/geminiDiagramCustomizer';
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
@@ -21,21 +22,33 @@ export async function POST(request: Request) {
       prompt = '',
       theme = 'light',
       existingXml,
+      architectureType = 'gcp_functional_flowchart'
     } = body;
 
     const apiKey = process.env.GEMINI_API_KEY;
+    const isGeneric = architectureType === 'generic_architecture' || architectureType === 'generic';
+    const effectiveArchType = isGeneric ? 'generic_architecture' : 'gcp_functional_flowchart';
 
     // 1. Get base template XML (or use existing XML if provided)
-    const baseXml = existingXml || generateGcpFunctionalFlowchartXml({
-      projectName,
-      useCaseName,
-      projectTitle,
-      prompt,
-      theme,
-    });
+    const baseXml = existingXml || (isGeneric
+      ? generateGenericArchitectureXml({
+          projectName,
+          projectTitle,
+          prompt,
+          theme,
+        })
+      : generateGcpFunctionalFlowchartXml({
+          projectName,
+          useCaseName,
+          projectTitle,
+          prompt,
+          theme,
+        }));
 
     let synthesizedXml = baseXml;
-    let customReasoning = 'Loaded pristine GCP Functional Flowchart Architecture.';
+    let customReasoning = isGeneric
+      ? 'Loaded pristine Generic Enterprise Architecture.'
+      : 'Loaded pristine GCP Functional Flowchart Architecture.';
     let summary = `Synthesized architecture updates for "${prompt}"`;
     let targetTier = 'Target Cloud Architecture Tier';
     let changedComponents: string[] = [];
@@ -46,7 +59,7 @@ export async function POST(request: Request) {
         const customResult = await customizeDiagramTemplateWithGemini(
           baseXml,
           prompt,
-          'gcp_functional_flowchart',
+          effectiveArchType,
           apiKey
         );
         if (customResult && customResult.xml && customResult.xml.includes('<mxfile')) {
@@ -62,8 +75,8 @@ export async function POST(request: Request) {
     }
 
     // 3. Preflight Geometric, AST & Structural Validation
-    const healerResult = validateAndHealDrawioXml(synthesizedXml, 'canonical_gcp_functional_flowchart');
-    const finalXml = preflightVerifyAndHealXmlAcrossAll6Audits(healerResult.xml, 'canonical_gcp_functional_flowchart');
+    const healerResult = validateAndHealDrawioXml(synthesizedXml, effectiveArchType);
+    const finalXml = preflightVerifyAndHealXmlAcrossAll6Audits(healerResult.xml, effectiveArchType);
     let geminiAudit = {
       isValid: true,
       securityScore: 98,

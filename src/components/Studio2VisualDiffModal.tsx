@@ -33,7 +33,7 @@ export interface StudioDiagramTab {
   title: string;
   templateId: string;
   xml: string;
-  source: 'functional_flowchart' | 'custom';
+  source: 'functional_flowchart' | 'generic_architecture' | 'custom';
   lastPrompt?: string;
 }
 
