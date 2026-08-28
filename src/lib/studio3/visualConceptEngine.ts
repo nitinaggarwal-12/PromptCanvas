@@ -374,7 +374,181 @@ export function compileVisualConceptSpecToXml(spec: VisualConceptSpec): string {
 export function synthesizeVisualConceptSpecFromPrompt(prompt: string): VisualConceptSpec {
   const p = prompt.toLowerCase();
 
-  // 1. QUANTUM PHYSICS / QUANTUM THEORY / COMPUTING
+  // 1. NETWORKING: PING & ICMP PROTOCOL MECHANISM
+  if (p.includes('ping') || p.includes('icmp') || p.includes('echo request') || p.includes('echo reply') || p.includes('packet transit')) {
+    return {
+      title: 'VISUAL GUIDE: HOW THE PING COMMAND & ICMP PROTOCOL WORKS',
+      layout: 'triad-comparison',
+      columns: [
+        {
+          id: 'col_ping_req',
+          number: 1,
+          title: '1. ICMP ECHO REQUEST: PACKET INGRESS',
+          themeColor: 'blue',
+          icon: '📤',
+          badge: 'Type 8',
+          heroType: 'generic-concept',
+          heroValue: 'ICMP Type 8 • Code 0 (Echo Request)',
+          heroSubtext: 'Client Kernel Raw Socket ➔ Encapsulated in IPv4/IPv6 Packet',
+          definitionTitle: 'WHAT HAPPENS ON CLIENT SEND?',
+          definitionBody: 'The ping utility generates an ICMP Echo Request containing a unique Process ID, Sequence Number (seq=1,2,3), timestamp, and 64-byte payload.',
+          checkmarks: { label1: 'Kernel Raw Socket: Yes', val1: true, label2: 'Sequence Numbering: Yes', val2: true },
+          subCardTitle: 'IPv4 + ICMP Packet Header Frame',
+          formula: 'IP Header [TTL=64, Proto=1] + ICMP [Type=8, Code=0, Seq=N, Timestamp]'
+        },
+        {
+          id: 'col_ping_transit',
+          number: 2,
+          title: '2. NETWORK ROUTING & TTL DECREMENT',
+          themeColor: 'purple',
+          icon: '🌐',
+          badge: 'Transit',
+          heroType: 'generic-concept',
+          heroValue: 'Hop-by-Hop Routing (TTL = TTL - 1)',
+          heroSubtext: 'Routers forward packet across gateways until destination reached',
+          definitionTitle: 'HOW DO ROUTERS FORWARD THE PACKET?',
+          definitionBody: 'Each intermediate gateway decrements the Time-To-Live (TTL). If TTL reaches 0 before destination, router returns ICMP Type 11 (Time Exceeded).',
+          checkmarks: { label1: 'Loop Prevention (TTL): Yes', val1: true, label2: 'MTU Verification: Yes', val2: true },
+          subCardTitle: 'Subnet Gateway & Route Discovery',
+          formula: 'NextHop = RouteLookup(Dest_IP)  •  TTL = TTL - 1  •  ARP Cache Match'
+        },
+        {
+          id: 'col_ping_reply',
+          number: 3,
+          title: '3. ICMP ECHO REPLY & RTT COMPUTATION',
+          themeColor: 'green',
+          icon: '📥',
+          badge: 'Type 0',
+          heroType: 'generic-concept',
+          heroValue: 'ICMP Type 0 • Code 0 (Echo Reply)',
+          heroSubtext: 'Destination Kernel Reflects Payload & Calculates Latency',
+          definitionTitle: 'HOW IS LATENCY (RTT) COMPUTED?',
+          definitionBody: 'Destination kernel instantly mirrors the payload back. Client subtracts send timestamp from receive timestamp to output RTT: min/avg/max/mdev ms.',
+          checkmarks: { label1: 'Zero Application Overhead: Yes', val1: true, label2: 'Round-Trip Timing: Yes', val2: true },
+          subCardTitle: 'Telemetry & Health Metrics',
+          formula: 'RTT = T_receive - T_send  •  Loss % = (Sent - Recv) / Sent * 100'
+        }
+      ]
+    };
+  }
+
+  // 2. NETWORKING: DNS RESOLUTION LIFECYCLE
+  if (p.includes('dns') || p.includes('domain name') || p.includes('lookup') || p.includes('nameserver')) {
+    return {
+      title: 'VISUAL GUIDE: HOW DNS RESOLUTION WORKS STEP-BY-STEP',
+      layout: 'triad-comparison',
+      columns: [
+        {
+          id: 'col_dns_stub',
+          number: 1,
+          title: '1. CLIENT STUB RESOLVER & LOCAL CACHE',
+          themeColor: 'blue',
+          icon: '💻',
+          badge: 'Local Cache',
+          heroType: 'generic-concept',
+          heroValue: 'Cache Check: Browser ➔ OS ➔ Hosts',
+          heroSubtext: 'Fast sub-millisecond local lookup before hitting network',
+          definitionTitle: 'WHAT IS CHECKED LOCALLY?',
+          definitionBody: 'Browser checks internal DNS cache, OS resolver cache (systemd-resolved/mDNS), and /etc/hosts file for matching hostname.',
+          checkmarks: { label1: 'Local Cache Hit: < 1ms', val1: true, label2: 'Cache Miss ➔ Recursive: Yes', val2: true },
+          subCardTitle: 'Stub Resolver Socket (UDP :53)',
+          formula: 'If Host in LocalCache: Return IP  •  Else: Query Recursive Resolver (8.8.8.8)'
+        },
+        {
+          id: 'col_dns_hierarchy',
+          number: 2,
+          title: '2. HIERARCHICAL RECURSION (ROOT ➔ TLD)',
+          themeColor: 'purple',
+          icon: '🌳',
+          badge: 'Hierarchy',
+          heroType: 'generic-concept',
+          heroValue: 'Root (.) ➔ TLD (.com) ➔ Authoritative',
+          heroSubtext: 'Recursive resolver traverses the global DNS tree',
+          definitionTitle: 'HOW DOES RECURSION TRAVERSE THE TREE?',
+          definitionBody: 'Recursive resolver queries 1 of 13 Root servers for the TLD (.com/.io), queries the TLD for the domain NS, then asks Authoritative NS.',
+          checkmarks: { label1: 'Distributed Hierarchy: Yes', val1: true, label2: 'Anycast Geo-Routing: Yes', val2: true },
+          subCardTitle: 'Authoritative Delegation Chain',
+          formula: 'Root Server ➔ TLD Registry Server ➔ Cloudflare / Route53 Authoritative NS'
+        },
+        {
+          id: 'col_dns_record',
+          number: 3,
+          title: '3. RECORD RESPONSE & TTL CACHING',
+          themeColor: 'green',
+          icon: '⚡',
+          badge: 'Record Return',
+          heroType: 'generic-concept',
+          heroValue: 'A / AAAA Record IP Returned with TTL',
+          heroSubtext: 'Client connects to target IP via TCP/TLS handshake',
+          definitionTitle: 'HOW IS THE RECORD CACHED?',
+          definitionBody: 'Authoritative NS delivers DNS Resource Record (A = IPv4, AAAA = IPv6, CNAME = Alias) with TTL. Resolver caches record for TTL duration.',
+          checkmarks: { label1: 'TTL Cache Honored: Yes', val1: true, label2: 'DNSSEC Validated: Yes', val2: true },
+          subCardTitle: 'Client Connection Ready',
+          formula: 'Record = { Name: "api.domain.com", Type: "A", IP: "34.120.50.1", TTL: 300s }'
+        }
+      ]
+    };
+  }
+
+  // 3. NETWORKING: TCP 3-WAY HANDSHAKE & SOCKET CONNECTION
+  if (p.includes('tcp') || p.includes('handshake') || p.includes('syn ack') || p.includes('socket connection') || p.includes('transmission control')) {
+    return {
+      title: 'VISUAL GUIDE: TCP 3-WAY HANDSHAKE & RELIABLE CONNECTION',
+      layout: 'triad-comparison',
+      columns: [
+        {
+          id: 'col_tcp_syn',
+          number: 1,
+          title: '1. STEP 1: SYN (SYNCHRONIZE SEQ=X)',
+          themeColor: 'blue',
+          icon: '🤝',
+          badge: 'SYN_SENT',
+          heroType: 'generic-concept',
+          heroValue: 'Client ➔ Server: SYN [Seq = X]',
+          heroSubtext: 'Client initiates connection & selects random Initial Sequence Number (ISN)',
+          definitionTitle: 'WHAT DOES THE CLIENT SEND?',
+          definitionBody: 'Client sends a TCP segment with SYN flag set, containing Initial Sequence Number (ISN=X) and window size options. State changes to SYN_SENT.',
+          checkmarks: { label1: 'SYN Flag = 1: Yes', val1: true, label2: 'Initial Seq No (ISN): Yes', val2: true },
+          subCardTitle: 'TCP Header Flags [SYN]',
+          formula: 'TCP Segment: SYN=1, ACK=0, Seq=X, MSS=1460, WindowSize=65535'
+        },
+        {
+          id: 'col_tcp_synack',
+          number: 2,
+          title: '2. STEP 2: SYN-ACK (ACK=X+1, SEQ=Y)',
+          themeColor: 'purple',
+          icon: '📡',
+          badge: 'SYN_RCVD',
+          heroType: 'generic-concept',
+          heroValue: 'Server ➔ Client: SYN-ACK [Seq = Y, Ack = X+1]',
+          heroSubtext: 'Server acknowledges client ISN & generates its own server ISN (Y)',
+          definitionTitle: 'HOW DOES THE SERVER RESPOND?',
+          definitionBody: 'Server kernel receives SYN, allocates socket buffers, increments Seq (Ack = X + 1), picks its own ISN (Seq = Y), and sets state to SYN_RCVD.',
+          checkmarks: { label1: 'SYN=1 & ACK=1: Yes', val1: true, label2: 'Server Buffer Allocated: Yes', val2: true },
+          subCardTitle: 'TCP Header Flags [SYN, ACK]',
+          formula: 'TCP Segment: SYN=1, ACK=1, Seq=Y, Ack=X+1, WindowScale=7'
+        },
+        {
+          id: 'col_tcp_ack',
+          number: 3,
+          title: '3. STEP 3: ACK & ESTABLISHED SOCKET',
+          themeColor: 'green',
+          icon: '✅',
+          badge: 'ESTABLISHED',
+          heroType: 'generic-concept',
+          heroValue: 'Client ➔ Server: ACK [Seq = X+1, Ack = Y+1]',
+          heroSubtext: 'Full-duplex reliable byte stream established for TLS / HTTP payloads',
+          definitionTitle: 'HOW DOES DATA FLOW BEGIN?',
+          definitionBody: 'Client returns final ACK (Ack = Y + 1). Both endpoints transition to ESTABLISHED state. Application layer data transmission begins immediately.',
+          checkmarks: { label1: 'Full-Duplex Stream: Yes', val1: true, label2: 'Congestion Control Active: Yes', val2: true },
+          subCardTitle: 'Socket Channel Active',
+          formula: 'State: ESTABLISHED  •  Payload Ingestion: HTTP/2, gRPC, TLS 1.3'
+        }
+      ]
+    };
+  }
+
+  // 4. QUANTUM PHYSICS / QUANTUM THEORY / COMPUTING
   if (p.includes('quantum') || p.includes('wave particle') || p.includes('entangle') || p.includes('superposition') || p.includes('schrodinger') || p.includes('qubit')) {
     return {
       title: 'VISUAL GUIDE: QUANTUM THEORY & CORE FOUNDATIONS',
@@ -607,8 +781,19 @@ export function synthesizeVisualConceptSpecFromPrompt(prompt: string): VisualCon
   }
 
   // 5. UNIVERSAL CLEAN ADAPTIVE CONCEPT
-  const words = prompt.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase().split(' ').filter(w => w.length > 2);
-  const cleanTitle = words.length > 0 ? `VISUAL GUIDE: ${words.slice(0, 5).join(' ')}` : 'VISUAL GUIDE: SYSTEM ARCHITECTURE & INTUITION';
+  const STOP_WORDS = new Set(['THE', 'HOW', 'WHAT', 'TELL', 'WORKS', 'PLEASE', 'SHOW', 'WITH', 'AND', 'FOR', 'ARE', 'CAN', 'YOU', 'THIS', 'THAT', 'FROM', 'INTO', 'DOES', 'EXPLAIN', 'MAKE', 'BUILD']);
+  const meaningfulWords = prompt
+    .replace(/[^a-zA-Z0-9 ]/g, '')
+    .toUpperCase()
+    .split(' ')
+    .filter(w => w.length > 1 && !STOP_WORDS.has(w));
+
+  const conceptTopic = meaningfulWords.length > 0 ? meaningfulWords.join(' ') : 'SYSTEM ARCHITECTURE';
+  const cleanTitle = `VISUAL GUIDE: ${conceptTopic}`;
+
+  const entity1 = meaningfulWords[0] || 'INGESTION & CORE';
+  const entity2 = meaningfulWords[1] || 'PROCESSING ENGINE';
+  const entity3 = meaningfulWords[2] || 'DISTRIBUTED SCALE';
 
   return {
     title: cleanTitle,
@@ -617,50 +802,50 @@ export function synthesizeVisualConceptSpecFromPrompt(prompt: string): VisualCon
       {
         id: 'col_1',
         number: 1,
-        title: `1. FOUNDATIONAL MODEL (${words[0] || 'CORE'})`,
+        title: `1. ${entity1}: SYSTEM INGRESS`,
         themeColor: 'blue',
-        icon: '📐',
-        badge: 'Foundation',
+        icon: '📥',
+        badge: 'Ingress',
         heroType: 'generic-concept',
-        heroValue: `Primary Invariant (${words[0] || 'Entity'})`,
-        heroSubtext: 'Core mathematical and structural axioms',
-        definitionTitle: 'WHAT IS THE PRIMARY MODEL?',
-        definitionBody: 'The foundational state representation and baseline invariant principles governing this domain.',
-        checkmarks: { label1: 'Baseline Invariant: Yes', val1: true, label2: 'State Isolation: Yes', val2: true },
-        subCardTitle: 'Formulation & Invariants',
-        formula: 'S = (V, E, W, Σ)  •  Foundational Space Bounds'
+        heroValue: `${entity1} Pipeline`,
+        heroSubtext: 'Initial protocol handshakes, raw payload validation & state capture',
+        definitionTitle: `WHAT HAPPENS DURING ${entity1}?`,
+        definitionBody: `The system validates inbound client requests, checks authentication tokens, and normalizes payloads into standard structured schemas.`,
+        checkmarks: { label1: 'Schema Validation: Yes', val1: true, label2: 'State Isolation: Yes', val2: true },
+        subCardTitle: 'Core Contract & Payload Definition',
+        formula: `Ingress = Validate(Payload)  •  Status: 200 OK  •  Zero Loss`
       },
       {
         id: 'col_2',
         number: 2,
-        title: `2. TRANSFORMATION LOGIC (${words[1] || 'ENGINE'})`,
+        title: `2. ${entity2}: STATE TRANSFORMATION`,
         themeColor: 'green',
         icon: '⚡',
         badge: 'Execution',
         heroType: 'generic-concept',
-        heroValue: 'State Evolution Engine',
-        heroSubtext: 'Dynamic state changes and transfer functions',
-        definitionTitle: 'HOW DOES STATE EVOLVE?',
-        definitionBody: 'The mechanisms and rules that drive transitions from initial input conditions to final convergence.',
-        checkmarks: { label1: 'Deterministic Steps: Yes', val1: true, label2: 'Convergence Proof: Yes', val2: true },
-        subCardTitle: 'Transition Engine & Relaxations',
-        formula: 'S(t + 1) = f(S(t), Input)  •  Iterative Step Function'
+        heroValue: `${entity2} Core`,
+        heroSubtext: 'High-concurrency worker routing, queue buffering & transactional state',
+        definitionTitle: `HOW DOES ${entity2} EXECUTE?`,
+        definitionBody: `Dynamic business logic applies state evolution, runs sub-millisecond transforms, and safely commits changes to durable storage.`,
+        checkmarks: { label1: 'ACID Guarantees: Yes', val1: true, label2: 'Sub-second Latency: Yes', val2: true },
+        subCardTitle: 'Execution Pipeline & State Mutations',
+        formula: `State(t+1) = Transform(State(t), Event)  •  Idempotent Key Enforced`
       },
       {
         id: 'col_3',
         number: 3,
-        title: `3. REAL-WORLD APPLICATIONS (${words[2] || 'FRONTIERS'})`,
+        title: `3. ${entity3}: OUTBOUND & SCALE`,
         themeColor: 'orange',
-        icon: '🔬',
-        badge: 'Scale',
+        icon: '🚀',
+        badge: 'Outcomes',
         heroType: 'generic-concept',
-        heroValue: 'Frontier Implementations',
-        heroSubtext: 'Modern industrial deployments and topologies',
-        definitionTitle: 'WHERE IS THIS DEPLOYED?',
-        definitionBody: 'High-throughput enterprise applications, scientific research, and real-world system integrations.',
-        checkmarks: { label1: 'Production Proven: Yes', val1: true, label2: 'Horizontal Scale: Yes', val2: true },
-        subCardTitle: 'Enterprise Topology & Ecosystem',
-        formula: 'Ecosystem Integration & Telemetry Pipeline'
+        heroValue: `${entity3} Topology`,
+        heroSubtext: 'Real-time telemetry, downstream event fanout & high-availability failover',
+        definitionTitle: `HOW DOES ${entity3} SCALE?`,
+        definitionBody: `Results are emitted across downstream consumer groups, cached in memory, and monitored via continuous observability pipelines.`,
+        checkmarks: { label1: 'High Availability: 99.99%', val1: true, label2: 'Horizontal Scale: Yes', val2: true },
+        subCardTitle: 'Ecosystem Distribution & Telemetry',
+        formula: `Metrics = Stream(Prometheus)  •  Egress: Multi-Region Active-Active`
       }
     ]
   };
