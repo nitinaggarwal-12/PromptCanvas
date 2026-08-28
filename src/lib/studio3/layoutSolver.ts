@@ -752,11 +752,306 @@ export function renderSpeedVelocityAccelerationInfographicXml(
 </mxfile>`;
 }
 
+
+export function renderNeuralNetworkArchitectureXml(
+  roadmap?: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const c: string[] = [];
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const edge = (id: string, src: string, trg: string, style = 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=6;') =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+
+  // 1. TOP HEADER BANNER (y=10..68)
+  const hdrHtml = `<div style="background:#0F1E36;border-radius:8px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:system-ui,-apple-system,sans-serif;color:#FFFFFF;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="background:#2563EB;border-radius:8px;padding:8px 12px;font-size:20px;display:flex;align-items:center;justify-content:center;">🧠</div>
+      <div>
+        <div style="font-family:Impact,Arial Black,sans-serif;letter-spacing:1px;font-size:24px;text-transform:uppercase;color:#FFFFFF;line-height:1.1;">
+          DEEP NEURAL NETWORK &amp; TRANSFORMER ARCHITECTURE
+        </div>
+        <div style="font-size:11.5px;color:#94A3B8;font-weight:600;margin-top:2px;">
+          Token Ingestion • Multi-Head Self-Attention (MHA) • SwiGLU Feed-Forward Blocks • Autograd Backpropagation
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#38BDF8;">d_model = 4096</span>
+      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#FBBF24;">Layers N = 32</span>
+      <span style="background:#1E293B;border:1px solid #334155;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;color:#34D399;">FlashAttention-3</span>
+    </div>
+  </div>`;
+  cell('main_header', hdrHtml, 25, 10, 1550, 58, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 2. ZONE 1: INPUT INGESTION & EMBEDDING PIPELINE (x=25..365, y=78..780)
+  cell('z1_box', '', 25, 78, 340, 702, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const z1HdrHtml = `<div style="background:#2563EB;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 14px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
+    <span>📥 1. INPUT &amp; EMBEDDINGS</span>
+    <span style="font-size:10px;background:#1D4ED8;padding:2px 8px;border-radius:4px;">X ∈ ℝ^(B×T×D)</span>
+  </div>`;
+  cell('z1_hdr', z1HdrHtml, 25, 78, 340, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  const z1ContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;">
+    <!-- Card 1: Tokenizer -->
+    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">1. Byte-Pair Tokenizer (BPE)</span>
+        <span style="background:#EFF6FF;font-size:8.5px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">Vocab V=32k</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Raw string converted into discrete integer token sequences: ["The", " neural", " network"].</div>
+      <div style="background:#F1F5F9;border-radius:4px;padding:4px 8px;font-family:monospace;font-size:8.5px;color:#0F172A;margin-top:6px;font-weight:700;">tokens = [464, 15729, 2642]</div>
+    </div>
+
+    <!-- Card 2: Token Embedding Matrix -->
+    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">2. Embedding Matrix W_E</span>
+        <span style="background:#EFF6FF;font-size:8.5px;font-weight:800;color:#1D4ED8;padding:2px 6px;border-radius:4px;">ℝ^(32000 × 4096)</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Learned dense look-up table mapping token IDs to continuous latent representation space.</div>
+      <div style="background:#EFF6FF;border:1px solid #DBEAFE;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#1D4ED8;margin-top:6px;font-weight:800;text-align:center;">X_emb = Lookup(W_E, tokens)</div>
+    </div>
+
+    <!-- Card 3: Rotary Position Embedding -->
+    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">3. Rotary Pos Embedding (RoPE)</span>
+        <span style="background:#FEF3C7;font-size:8.5px;font-weight:800;color:#92400E;padding:2px 6px;border-radius:4px;">Relative Angles</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Applies complex 2D planar rotation matrices to Q/K pairs to encode token sequence order.</div>
+      <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#B45309;margin-top:6px;font-weight:800;text-align:center;">x_m' = R_(Θ,m)^d · x_m</div>
+    </div>
+
+    <!-- Card 4: Pre-Layer RMSNorm -->
+    <div style="background:#FFFFFF;border:1.5px solid #BFDBFE;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <span style="font-size:11px;font-weight:900;color:#1E3A8A;">4. Pre-Layer RMSNorm</span>
+        <span style="background:#ECFDF5;font-size:8.5px;font-weight:800;color:#065F46;padding:2px 6px;border-radius:4px;">Zero Variance Drift</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Root-mean-square normalization scales activations for extreme gradient stability in 70B+ scales.</div>
+      <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;padding:4px 8px;font-size:8.5px;color:#15803D;margin-top:6px;font-weight:800;text-align:center;">RMS(x) = √(1/d ∑ x_i² + ε)</div>
+    </div>
+  </div>`;
+  cell('z1_content', z1ContentHtml, 25, 122, 340, 658, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 3. ZONE 2: TRANSFORMER REPEATED LAYER STACK (x=380..1205, y=78..780)
+  cell('z2_box', '', 380, 78, 825, 702, 'rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#D8B4FE;strokeWidth=1.5;');
+  const z2HdrHtml = `<div style="background:#7C3AED;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 18px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
+    <span>⚡ 2. TRANSFORMER BLOCK STACK (REPEATED × N = 32 LAYERS)</span>
+    <span style="font-size:10px;background:#6D28D9;padding:2px 10px;border-radius:4px;">Pre-Norm Residual Topology</span>
+  </div>`;
+  cell('z2_hdr', z2HdrHtml, 380, 78, 825, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // SUB-PANEL 2A: MULTI-HEAD SELF-ATTENTION (MHA / GQA) (x=395..780, y=128..765)
+  cell('z2a_box', '', 395, 128, 385, 638, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
+  const z2aContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box;">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #F3E8FF;padding-bottom:6px;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:900;color:#6D28D9;">A. Grouped-Query Attention (GQA)</span>
+        <span style="background:#F3E8FF;font-size:9px;font-weight:800;color:#7C3AED;padding:2px 8px;border-radius:4px;">32 Q Heads • 8 KV Heads</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;margin-bottom:8px;">
+        Computes pairwise inter-token correlation weights across the sequence window using linear projections:
+      </div>
+
+      <!-- Q, K, V Projection Matrix -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;">
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:11px;font-weight:900;color:#1D4ED8;">Q (Query)</div>
+          <div style="font-size:7.5px;color:#3B82F6;">Q = X · W_Q</div>
+        </div>
+        <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:11px;font-weight:900;color:#065F46;">K (Key)</div>
+          <div style="font-size:7.5px;color:#10B981;">K = X · W_K</div>
+        </div>
+        <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:11px;font-weight:900;color:#9A3412;">V (Value)</div>
+          <div style="font-size:7.5px;color:#F97316;">V = X · W_V</div>
+        </div>
+      </div>
+
+      <!-- Scaled Dot-Product Attention Equation Box -->
+      <div style="background:#FAF5FF;border:1.5px solid #D8B4FE;border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;">
+        <div style="font-size:9.5px;font-weight:800;color:#6B21A8;margin-bottom:4px;">Scaled Dot-Product Attention Core</div>
+        <div style="background:#FFFFFF;border:1px solid #E9D5FF;border-radius:6px;padding:6px;font-family:monospace;font-size:10px;font-weight:900;color:#7C3AED;">
+          Attn(Q,K,V) = Softmax((QK^T)/√d_k + M) · V
+        </div>
+      </div>
+
+      <!-- FlashAttention Kernel Box -->
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:8px;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;">
+          <span style="font-size:12px;">⚡</span>
+          <span style="font-size:10px;font-weight:900;color:#0F172A;">FlashAttention-3 IO Kernel</span>
+        </div>
+        <div style="font-size:8.5px;color:#64748B;line-height:1.3;">
+          Tiled online softmax avoids materializing N×N attention matrix in HBM; runs entirely in GPU SRAM.
+        </div>
+      </div>
+    </div>
+
+    <!-- Output Projection & Residual Add -->
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:8px;text-align:center;">
+      <div style="font-size:9.5px;font-weight:900;color:#15803D;">Residual Bypass Connection 1</div>
+      <div style="font-size:8.5px;color:#166534;font-family:monospace;">X_mid = X_in + Linear(Attn(Q, K, V)) · W_O</div>
+    </div>
+  </div>`;
+  cell('z2a_content', z2aContentHtml, 395, 128, 385, 638, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // SUB-PANEL 2B: FEED-FORWARD NETWORK (SwiGLU FFN / MLP) (x=800..1185, y=128..765)
+  cell('z2b_box', '', 800, 128, 385, 638, 'rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.5;');
+  const z2bContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box;">
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid #F3E8FF;padding-bottom:6px;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:900;color:#6D28D9;">B. SwiGLU Feed-Forward Network</span>
+        <span style="background:#F3E8FF;font-size:9px;font-weight:800;color:#7C3AED;padding:2px 8px;border-radius:4px;">Hidden Dim 14336</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;margin-bottom:8px;">
+        Pointwise non-linear dimension expansion for knowledge recall and deep contextual reasoning:
+      </div>
+
+      <!-- Projection Layers -->
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;">
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:9.5px;font-weight:900;color:#0F172A;">1. Gate Projection W_gate</span>
+          <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(4096 ➔ 14336)</span>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:9.5px;font-weight:900;color:#0F172A;">2. Up Projection W_up</span>
+          <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(4096 ➔ 14336)</span>
+        </div>
+      </div>
+
+      <!-- SwiGLU Gated Activation Box -->
+      <div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:8px;padding:10px;text-align:center;margin-bottom:10px;">
+        <div style="font-size:9.5px;font-weight:800;color:#9A3412;margin-bottom:4px;">SwiGLU Non-Linear Gating</div>
+        <div style="background:#FFFFFF;border:1px solid #FFEDD5;border-radius:6px;padding:6px;font-family:monospace;font-size:10px;font-weight:900;color:#C2410C;">
+          h = Swish(x · W_gate) ⊗ (x · W_up)
+        </div>
+      </div>
+
+      <!-- Down Projection -->
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-size:9.5px;font-weight:900;color:#0F172A;">3. Down Projection W_down</span>
+        <span style="font-size:8px;font-family:monospace;color:#64748B;">Linear(14336 ➔ 4096)</span>
+      </div>
+    </div>
+
+    <!-- Output Projection & Residual Add -->
+    <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:8px;text-align:center;">
+      <div style="font-size:9.5px;font-weight:900;color:#15803D;">Residual Bypass Connection 2</div>
+      <div style="font-size:8.5px;color:#166534;font-family:monospace;">X_out = X_mid + FFN(RMSNorm(X_mid))</div>
+    </div>
+  </div>`;
+  cell('z2b_content', z2bContentHtml, 800, 128, 385, 638, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 4. ZONE 3: OUTPUT PROJECTION, LOGITS & LOSS (x=1220..1575, y=78..780)
+  cell('z3_box', '', 1220, 78, 355, 702, 'rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const z3HdrHtml = `<div style="background:#059669;color:#FFFFFF;border-top-left-radius:6px;border-top-right-radius:6px;padding:10px 14px;font-family:Impact,Arial Black,sans-serif;font-size:15px;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;">
+    <span>🎯 3. LOGITS &amp; LOSS</span>
+    <span style="font-size:10px;background:#047857;padding:2px 8px;border-radius:4px;">Softmax Probability</span>
+  </div>`;
+  cell('z3_hdr', z3HdrHtml, 1220, 78, 355, 42, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  const z3ContentHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;">
+    <!-- Final RMSNorm -->
+    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">1. Final Layer RMSNorm</div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Final normalization before projection into unconstrained vocabulary logit dimensions.</div>
+    </div>
+
+    <!-- Unembedding Linear Head -->
+    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+        <span style="font-size:11px;font-weight:900;color:#065F46;">2. Unembedding Head W_U</span>
+        <span style="background:#ECFDF5;font-size:8px;font-weight:800;color:#047857;padding:2px 6px;border-radius:4px;">ℝ^(4096 × 32k)</span>
+      </div>
+      <div style="font-size:9px;color:#475569;line-height:1.35;">Projects hidden state vector into unnormalized logit scores z_i for all 32,000 dictionary tokens.</div>
+    </div>
+
+    <!-- Softmax Temperature Sampling -->
+    <div style="background:#FFFFFF;border:1.5px solid #A7F3D0;border-radius:8px;padding:10px;">
+      <div style="font-size:11px;font-weight:900;color:#065F46;margin-bottom:3px;">3. Softmax &amp; Sampling</div>
+      <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:4px;padding:4px;font-family:monospace;font-size:9px;font-weight:800;color:#047857;text-align:center;margin-bottom:4px;">
+        P(w_i) = exp(z_i / T) / ∑ exp(z_j / T)
+      </div>
+      <div style="font-size:8.5px;color:#64748B;">Top-P (Nucleus = 0.95), Top-K = 40, Min-P = 0.05 sampling filters.</div>
+    </div>
+
+    <!-- Cross-Entropy Loss & Autograd -->
+    <div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:8px;padding:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">
+        <span style="font-size:11px;font-weight:900;color:#B91C1C;">4. Cross-Entropy Loss</span>
+        <span style="background:#FEE2E2;font-size:8px;font-weight:800;color:#991B1B;padding:2px 6px;border-radius:4px;">Backprop Flow</span>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:4px;padding:4px;font-family:monospace;font-size:9px;font-weight:900;color:#DC2626;text-align:center;margin-bottom:4px;">
+        ℒ = -∑ y_i log(ŷ_i)  •  ∇_θ ℒ = ∂ℒ / ∂W
+      </div>
+      <div style="font-size:8.5px;color:#991B1B;">Reverse-mode autodiff propagates gradient tensors backward to update all weights W_ij.</div>
+    </div>
+  </div>`;
+  cell('z3_content', z3ContentHtml, 1220, 122, 355, 658, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 5. INTER-ZONE ORTHOGONAL CONNECTORS
+  edge('edge_z1_z2', 'z1_box', 'z2_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2.5;flowAnimation=1;endArrow=classic;endSize=6;');
+  edge('edge_z2_z3', 'z2_box', 'z3_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=2.5;flowAnimation=1;endArrow=classic;endSize=6;');
+
+  // 6. ZONE 4: BOTTOM DISTRIBUTED TRAINING & HARDWARE TELEMETRY (y=790..870)
+  const btmTelemetryHtml = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:8px;padding:8px 18px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:11px;font-weight:900;color:#0F172A;text-transform:uppercase;">🚀 Distributed Accelerators &amp; 3D Parallelism</div>
+      <div style="font-size:9px;color:#64748B;">Google TPU v5p Pods (8,960 Chips) • NVIDIA H100 SXM5 80GB • Megatron-LM Parallel Mesh</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="background:#EFF6FF;border:1px solid #BFDBFE;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#1D4ED8;">Tensor Parallel TP=8</span>
+      <span style="background:#F0FDF4;border:1px solid #BBF7D0;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#15803D;">Pipeline Parallel PP=4</span>
+      <span style="background:#FAF5FF;border:1px solid #E9D5FF;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#7C3AED;">ZeRO-3 Data Parallel DP=64</span>
+      <span style="background:#FFFBEB;border:1px solid #FDE68A;padding:4px 8px;border-radius:4px;font-size:9.5px;font-weight:800;color:#B45309;">FP8 Mixed Precision</span>
+    </div>
+  </div>`;
+  cell('btm_telemetry', btmTelemetryHtml, 25, 790, 1550, 52, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 7. FOOTER (y=850..885)
+  const ftrHtml = `<div style="display:flex;align-items:center;justify-content:space-between;padding:0 8px;font-family:system-ui,-apple-system,sans-serif;font-size:10.5px;font-weight:800;color:#64748B;">
+    <div>FORWARD INFERENCE ➔ | BACKPROPAGATION GRADIENTS ⬅ | LOSS OPTIMIZATION</div>
+    <div style="display:flex;align-items:center;gap:6px;color:#0F172A;font-weight:900;">
+      <span>Google Cloud Vertex AI &amp; DeepMind Core</span>
+    </div>
+  </div>`;
+  cell('main_footer', ftrHtml, 25, 850, 1550, 26, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="neural_network_transformer_architecture" name="Deep Neural Network &amp; Transformer Architecture">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
 export function renderUniversalConceptualRoadmapXml(
   roadmap: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
 ): string {
-  const isCentripetal = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('centrifugal') || (roadmap.title || '').toLowerCase().includes('spinning');
+  const titleLower = (roadmap.title || '').toLowerCase();
+  
+  const isNeural = titleLower.includes('neural') || titleLower.includes('transformer') || titleLower.includes('deep learning') || titleLower.includes('attention') || titleLower.includes('backpropagation') || titleLower.includes('mlp') || titleLower.includes('llm') || titleLower.includes('cnn') || titleLower.includes('rnn') || titleLower.includes('network arch');
+  if (isNeural) {
+    return renderNeuralNetworkArchitectureXml(roadmap, theme);
+  }
+
+  const isCentripetal = titleLower.includes('centripetal') || titleLower.includes('centrifugal') || titleLower.includes('spinning');
   if (isCentripetal) {
     return renderTwoSidesOfTheSpinInfographicXml(roadmap, theme);
   }
@@ -764,6 +1059,7 @@ export function renderUniversalConceptualRoadmapXml(
   const spec = synthesizeVisualConceptSpecFromPrompt(roadmap.title || '');
   return compileVisualConceptSpecToXml(spec);
 }
+
 /**
  * 2D Non-Colliding Geometric Layout Solver for Freeform Elements
  * Prevents overlapping nodes, auto-spaces concept tiers, and organizes full-width comparative diagrams
