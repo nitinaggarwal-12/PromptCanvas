@@ -161,6 +161,110 @@ export function generateGenericConceptualRoadmap(
   const p = (prompt || '').toLowerCase();
   const cleanTitle = (prompt || 'CONCEPTUAL LEARNING ROADMAP').toUpperCase();
 
+  // 0. PETROLEUM REFINING & GASOLINE EXTRACTION / CHEMICAL ENGINEERING
+  if (p.includes('gasoline') || p.includes('petroleum') || p.includes('refining') || p.includes('crude oil') || p.includes('distillation') || p.includes('fractional') || p.includes('hydrocarbon')) {
+    return {
+      title: 'PETROLEUM REFINING & GASOLINE EXTRACTION: FROM CRUDE OIL TO HIGH-OCTANE FUEL',
+      subtitle: 'Atmospheric & Vacuum Distillation, Catalytic Cracking (FCC), Hydrotreating & Octane Blending',
+      milestones: [
+        { title: '🛢️ CRUDE FEEDSTOCK & THERMAL INTUITION', color: 'blue', icon: '🛢️' },
+        { title: 'THERMODYNAMICS & FRACTIONATION', color: 'green', icon: '🌡️' },
+        { title: 'CONVERSION & CRACKING TAXONOMY', color: 'orange', icon: '⚡' },
+        { title: '🔬 MODERN PETROCHEMICAL FRONTIERS 🌐', color: 'yellow', icon: '🌿' }
+      ],
+      section1Analogy: {
+        title: 'Boiling-Point Molecular Sieve Analogy',
+        actors: [
+          { id: 'crude', name: 'Raw Crude Feedstock (C1-C50+)', avatar: '🛢️', x: 50, y: 170 },
+          { id: 'tower', name: 'Fractional Distillation Column', avatar: '🏭', x: 170, y: 220 },
+          { id: 'gasoline', name: 'Gasoline Fraction (C5-C10)', avatar: '⛽', x: 290, y: 170 }
+        ],
+        relations: [
+          { from: 'crude', to: 'tower', label: 'Furnace Preheat 350°C' },
+          { from: 'tower', to: 'gasoline', label: 'Condensation Tray 40-200°C' }
+        ],
+        legend: [
+          { icon: '🛢️', label: 'Heavy Crude Feed' },
+          { icon: '🌡️', label: 'Thermal Gradient' },
+          { icon: '⛽', label: 'Light Naphtha' },
+          { icon: '🔒', label: 'Desulfurization' }
+        ],
+        challengeCallout: 'The Challenge: High Sulfur Contamination & Low Natural Octane Number (RON < 70)'
+      },
+      section2Prerequisites: {
+        title: 'Thermodynamic & Separation Physics',
+        mathFormulas: [
+          { name: "Raoult's Law & Vapor Pressure", formula: 'P_i = x_i · P_i*(T), K_i = y_i / x_i', icon: '🌡️' },
+          { name: 'McCabe-Thiele Minimum Reflux', formula: 'R_min = (x_D - y\') / (y\' - x\'), N_min = ln(S) / ln(α)', icon: '📐' },
+          { name: 'Anti-Knock Octane Index (AKI)', formula: 'AKI = (RON + MON) / 2 ≥ 87 - 93', icon: '⚡' }
+        ],
+        checklist: [
+          '☑ Hydrocarbon Boiling Point Cuts (C1-C4 Gas, C5-C10 Gasoline, C11-C15 Kerosene, C16-C20 Diesel)',
+          '☑ Acid-Zeolite Catalyzed C-C Bond Scission Mechanics',
+          '☑ Hydrodesulfurization Stoichiometry: R-S-R\' + 2H₂ ➔ 2R-H + H₂S'
+        ]
+      },
+      section3Taxonomy: {
+        title: 'Refining Process Unit Taxonomy',
+        variants: [
+          { name: 'ATMOSPHERIC DISTILLATION', subtext: 'Physical Separation (25°C - 350°C)', diagramType: 'layers' },
+          { name: 'FLUID CATALYTIC CRACKING (FCC)', subtext: 'Heavy Gas Oil ➔ Light Gasoline', diagramType: 'directed' },
+          { name: 'CATALYTIC REFORMING', subtext: 'Naphthenes ➔ High-Octane Aromatics', diagramType: 'nodes' },
+          { name: 'ALKYLATION & ISOMERIZATION', subtext: 'Isobutane + Olefins ➔ Alkylate (RON 96+)', diagramType: 'weighted' }
+        ]
+      },
+      section4ModernFrontiers: {
+        title: 'Modern Refining & Clean Energy Frontiers',
+        knowledgeGraphNodes: [
+          { id: 'kg_h2', label: 'Hydrogen\nHydrotreater', color: '#38BDF8' },
+          { id: 'kg_bio', label: 'Bio-Ethanol\nE10 / E85', color: '#10B981' },
+          { id: 'kg_ccus', label: 'Carbon\nCapture CCUS', color: '#F59E0B' },
+          { id: 'kg_apc', label: 'APC Digital\nTwin Engine', color: '#A855F7' }
+        ],
+        frameworkBullets: [
+          '🔬 • Ultra-Low Sulfur Gasoline Standards (ULSG < 10 ppm Sulfur)',
+          '🌿 • Synthetic Renewable e-Fuels & Fischer-Tropsch Synthesis',
+          '💻 • Real-Time NIR Spectroscopy Closed-Loop Octane Blending'
+        ]
+      },
+      bottomWorkflow: {
+        title: 'END-TO-END GASOLINE EXTRACTION & REFINING PIPELINE',
+        step1Problem: {
+          title: 'STEP 1: Desalting & Furnace Preheat',
+          subtitle: 'Crude Feedstock Pre-Treatment',
+          icon: '🛢️ 🔥',
+          formula: 'Crude API Gravity: 30° - 45° API',
+          bullets: ['• Electrostatic desalting removes inorganic chlorides', '• Direct-fired furnace heats crude stream to 350°C - 370°C']
+        },
+        step2Execution: {
+          title: 'STEP 2: Fractional Distillation Column',
+          input: 'Preheated Two-Phase Crude Stream',
+          phases: [
+            { name: '1. Flash Zone Vaporization', desc: 'Vapor rises through multi-stage sieve bubble cap trays' },
+            { name: '2. Top Naphtha Draw (40°C - 160°C)', desc: 'Extract straight-run gasoline & light naphtha fraction' },
+            { name: '3. Side-Stream Stripping', desc: 'Separate Kerosene/Jet Fuel (160-250°C) and Diesel (250-350°C)' }
+          ]
+        },
+        step3Engine: {
+          title: 'STEP 3: Catalytic Cracking & Reforming',
+          subtitle: 'Chemical Conversion & Octane Enhancement',
+          engines: [
+            { name: 'FLUID CATALYTIC CRACKER (FCC)', complexity: '500°C Zeolite Bed', items: ['Cracks long-chain vacuum gas oils into high-value C5-C10 blendstock', 'Continuous catalyst regeneration cycle'] },
+            { name: 'CONTINUOUS CATALYTIC REFORMER (CCR)', complexity: 'Pt/Re Catalyst', items: ['Dehydrogenates cycloalkanes into high-octane aromatics (Toluene/Xylene)', 'Boosts research octane number from RON 60 to RON 102'] }
+          ],
+          callout: '⚡ High Yield Conversion: > 45% Gasoline Yield per Barrel'
+        },
+        step4Applications: [
+          { title: 'Automotive Mogas', subtitle: 'Regular & Premium Gasoline', icon: '🚗', detail: 'RON 87 / 91 / 93 Octane' },
+          { title: 'Aviation Turbine Fuel', subtitle: 'Commercial Jet A-1 / JP-8', icon: '✈️', detail: 'Freeze point < -47°C' },
+          { title: 'Petrochemical Naphtha', subtitle: 'Ethylene / Propylene Steam Cracker', icon: '🧪', detail: 'Plastics & Polymers' },
+          { title: 'Low-Sulfur Diesel (ULSD)', subtitle: 'Transport & Freight Rail', icon: '🚛', detail: 'Cetane Index > 51' }
+        ]
+      },
+      footerTenets: ['MAXIMUM HIGH-OCTANE YIELD', 'ULTRA-LOW SULFUR (ULSG < 10 PPM)', 'ENERGY INTENSITY OPTIMIZATION']
+    };
+  }
+
   // 1. NEURAL NETWORKS & DEEP LEARNING
   if (p.includes('neural') || p.includes('deep learning') || p.includes('backprop') || p.includes('gradient') || p.includes('perceptron') || p.includes('cnn') || p.includes('rnn')) {
     return {
