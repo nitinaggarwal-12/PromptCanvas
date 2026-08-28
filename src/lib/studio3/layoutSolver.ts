@@ -88,33 +88,110 @@ export function renderUniversalConceptualRoadmapXml(
     cell(`chv_${idx}`, title, x, 78, w, 40, `shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=${colCfg.fill};strokeColor=${colCfg.stroke};fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;`);
   });
 
-  // 3. TOP SECTION 1: Analogy & Visual Actors (x=20..395, y=126..500)
+  // 3. TOP SECTION 1: Analogy & Live Dynamic Motion Simulator (x=20..395, y=126..500)
   const sec1 = roadmap.section1Analogy;
+  const isPhysics = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('spinning') || (roadmap.title || '').toLowerCase().includes('force');
+  const isPetroleum = (roadmap.title || '').toLowerCase().includes('petroleum') || (roadmap.title || '').toLowerCase().includes('gasoline') || (roadmap.title || '').toLowerCase().includes('refining');
+
   cell('sec1_bg', '', 20, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;');
   cell('sec1_title', `<div style="text-align:center;font-weight:900;font-size:13px;color:#1E3A8A;padding-top:8px;">${escapeXml(sec1?.title || 'Intuitive Real-World Analogy')}</div>`, 24, 130, 367, 24, 'text;html=1;whiteSpace=wrap;');
 
-  const actors = sec1?.actors || [
-    { id: 'act_1', name: 'Alice (Client)', avatar: '👧', x: 50, y: 170 },
-    { id: 'act_2', name: 'Bob (Server)', avatar: '👦', x: 290, y: 170 },
-    { id: 'act_3', name: 'Carol (Coordinator)', avatar: '👩', x: 170, y: 270 }
-  ];
-  actors.forEach((act, aIdx) => {
-    const ax = act.x ?? (aIdx === 0 ? 50 : aIdx === 1 ? 290 : 170);
-    const ay = act.y ?? (aIdx === 0 ? 170 : aIdx === 1 ? 170 : 270);
-    cell(`act_${act.id}`, act.avatar || '👤', ax, ay, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
-    cell(`lbl_${act.id}`, act.name, ax - 10, ay + 58, 76, 18, 'text;html=1;fontStyle=1;fontSize=10.5;fontColor=#1E293B;align=center;');
-  });
+  if (isPhysics) {
+    // Dynamic Physics Orbital Simulator with Rotating Mass and Inward Centripetal Force Vector
+    const orbitSimHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;box-sizing:border-box;">
+      <svg viewBox="0 0 170 170" width="160" height="160" style="overflow:visible;">
+        <!-- Static Circular Track -->
+        <circle cx="85" cy="85" r="58" stroke="#3B82F6" stroke-width="1.8" stroke-dasharray="5 3" fill="none" opacity="0.6"/>
+        <circle cx="85" cy="85" r="8" fill="#1E3A8A"/>
+        <text x="85" y="103" text-anchor="middle" font-size="8" font-weight="900" fill="#1E3A8A">CENTER PIVOT</text>
+        
+        <!-- Live Continuous Rotating Arm with Inward Vector -->
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="0 85 85" to="360 85 85" dur="3s" repeatCount="indefinite"/>
+          <!-- String Tension T -->
+          <line x1="85" y1="85" x2="85" y2="27" stroke="#2563EB" stroke-width="2"/>
+          <!-- Orbiting Body (Mass m) -->
+          <circle cx="85" cy="27" r="10" fill="#EF4444" stroke="#B91C1C" stroke-width="2"/>
+          <text x="85" y="18" text-anchor="middle" font-size="8" font-weight="900" fill="#B91C1C">Mass m</text>
+          
+          <!-- Inward Centripetal Force Vector (Fc -> center) -->
+          <line x1="85" y1="27" x2="85" y2="52" stroke="#10B981" stroke-width="3"/>
+          <polygon points="85,55 81,47 89,47" fill="#10B981"/>
+          <text x="96" y="44" font-size="7.5" font-weight="900" fill="#047857">Fc (Inward)</text>
 
-  (sec1?.relations || [
-    { from: 'act_1', to: 'act_2', label: 'Direct Interaction' },
-    { from: 'act_1', to: 'act_3', label: 'Signal Vector' },
-    { from: 'act_2', to: 'act_3', label: 'State Sync' }
-  ]).forEach((rel, rIdx) => {
-    edge(`rel_${rIdx}`, `act_${rel.from}`, `act_${rel.to}`, 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=6;');
-    if (rIdx === 0 && rel.label) {
-      cell(`lbl_rel_${rIdx}`, rel.label, 140, 172, 110, 18, 'text;html=1;fontSize=9;fontStyle=1;fontColor=#2563EB;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;');
-    }
-  });
+          <!-- Tangential Velocity Vector (v -> right) -->
+          <line x1="85" y1="27" x2="115" y2="27" stroke="#F59E0B" stroke-width="2.2"/>
+          <polygon points="119,27 112,23 112,31" fill="#F59E0B"/>
+          <text x="114" y="20" font-size="7.5" font-weight="900" fill="#D97706">v (Tangent)</text>
+        </g>
+      </svg>
+      <div style="font-size:9.5px;font-weight:800;color:#1E3A8A;margin-top:2px;">⚡ Live Orbit: Green Arrow = Real Pull Towards Center</div>
+    </div>`;
+    cell('sec1_simulator', orbitSimHtml, 30, 160, 355, 190, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  } else if (isPetroleum) {
+    // Dynamic Chemical Distillation Simulator with Animated Vapor Rise
+    const distilSimHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;box-sizing:border-box;">
+      <svg viewBox="0 0 170 170" width="160" height="160" style="overflow:visible;">
+        <!-- Distillation Column Body -->
+        <rect x="55" y="15" width="60" height="135" rx="8" fill="#F8FAFC" stroke="#0284C7" stroke-width="2"/>
+        
+        <!-- Trays -->
+        <line x1="55" y1="45" x2="115" y2="45" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="55" y1="75" x2="115" y2="75" stroke="#CBD5E1" stroke-width="1.5"/>
+        <line x1="55" y1="105" x2="115" y2="105" stroke="#CBD5E1" stroke-width="1.5"/>
+
+        <!-- Animated Rising Vapor Bubbles -->
+        <circle cx="85" cy="130" r="4" fill="#F59E0B" opacity="0.8">
+          <animate attributeName="cy" values="130;30" dur="2s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.1" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="75" cy="130" r="3" fill="#38BDF8" opacity="0.8">
+          <animate attributeName="cy" values="130;40" dur="2.4s" begin="0.4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.1" dur="2.4s" begin="0.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="95" cy="130" r="3.5" fill="#10B981" opacity="0.8">
+          <animate attributeName="cy" values="130;50" dur="1.8s" begin="0.8s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.9;0.1" dur="1.8s" begin="0.8s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- Temperature Labels -->
+        <text x="122" y="32" font-size="7" font-weight="900" fill="#EF4444">40°C Naphtha</text>
+        <text x="122" y="65" font-size="7" font-weight="900" fill="#F59E0B">160°C Kero</text>
+        <text x="122" y="95" font-size="7" font-weight="900" fill="#10B981">250°C Diesel</text>
+        <text x="122" y="135" font-size="7" font-weight="900" fill="#1E293B">350°C Residue</text>
+
+        <!-- Feed Ingress -->
+        <line x1="20" y1="120" x2="55" y2="120" stroke="#EF4444" stroke-width="2.5"/>
+        <text x="22" y="112" font-size="7.5" font-weight="900" fill="#EF4444">🔥 Feed</text>
+      </svg>
+      <div style="font-size:9.5px;font-weight:800;color:#0284C7;margin-top:2px;">⚡ Live Thermal Fractionation: Light Vapor Ascends</div>
+    </div>`;
+    cell('sec1_simulator', distilSimHtml, 30, 160, 355, 190, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  } else {
+    // Dynamic Interactive Actors Network
+    const actors = sec1?.actors || [
+      { id: 'act_1', name: 'Alice (Client)', avatar: '👧', x: 50, y: 170 },
+      { id: 'act_2', name: 'Bob (Server)', avatar: '👦', x: 290, y: 170 },
+      { id: 'act_3', name: 'Carol (Coordinator)', avatar: '👩', x: 170, y: 270 }
+    ];
+    actors.forEach((act, aIdx) => {
+      const ax = act.x ?? (aIdx === 0 ? 50 : aIdx === 1 ? 290 : 170);
+      const ay = act.y ?? (aIdx === 0 ? 170 : aIdx === 1 ? 170 : 270);
+      cell(`act_${act.id}`, act.avatar || '👤', ax, ay, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
+      cell(`lbl_${act.id}`, act.name, ax - 10, ay + 58, 76, 18, 'text;html=1;fontStyle=1;fontSize=10.5;fontColor=#1E293B;align=center;');
+    });
+
+    (sec1?.relations || [
+      { from: 'act_1', to: 'act_2', label: 'Direct Interaction' },
+      { from: 'act_1', to: 'act_3', label: 'Signal Vector' },
+      { from: 'act_2', to: 'act_3', label: 'State Sync' }
+    ]).forEach((rel, rIdx) => {
+      edge(`rel_${rIdx}`, `act_${rel.from}`, `act_${rel.to}`, 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2563EB;strokeWidth=2;dashed=1;dashPattern=6 4;flowAnimation=1;endArrow=classic;endSize=6;');
+      if (rIdx === 0 && rel.label) {
+        cell(`lbl_rel_${rIdx}`, rel.label, 140, 172, 110, 18, 'text;html=1;fontSize=9;fontStyle=1;fontColor=#2563EB;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;');
+      }
+    });
+  }
 
   const legendItems = sec1?.legend || [
     { icon: '📐', label: 'Entities' },
@@ -248,7 +325,7 @@ export function renderUniversalConceptualRoadmapXml(
     </div>
   </div>`;
   cell('step1_content', s1Html, 36, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-  cell('arr_1_2', '➔', 382, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#3B82F6;fontStyle=1;align=center;');
+  edge('edge_s1_s2', 'step1_box', 'step2_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;endArrow=classic;endSize=6;');
 
   // Step 2: Algorithm Execution
   const s2 = wf?.step2Execution;
@@ -268,7 +345,7 @@ export function renderUniversalConceptualRoadmapXml(
     `).join('')}
   </div>`;
   cell('step2_content', s2Html, 420, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-  cell('arr_2_3', '➔', 766, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#10B981;fontStyle=1;align=center;');
+  edge('edge_s2_s3', 'step2_box', 'step3_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;endArrow=classic;endSize=6;');
 
   // Step 3: Engine Mechanics
   const s3 = wf?.step3Engine;
@@ -290,7 +367,7 @@ export function renderUniversalConceptualRoadmapXml(
     </div>
   </div>`;
   cell('step3_content', s3Html, 804, 554, 350, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-  cell('arr_3_4', '➔', 1160, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#EA580C;fontStyle=1;align=center;');
+  edge('edge_s3_s4', 'step3_box', 'step4_box', 'edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EA580C;strokeWidth=2.5;dashed=1;dashPattern=6 4;flowAnimation=1;endArrow=classic;endSize=6;');
 
   // Step 4: Real-World Applications
   const s4Apps = wf?.step4Applications || [
@@ -1012,7 +1089,7 @@ export function solveAndRenderStudio3Xml(
         }
 
         const labelPillStyle = 'labelBackgroundColor=#FFFFFF;labelBorderColor=#94A3B8;fontSize=9.5;fontStyle=1;fontColor=#0F172A;padding=3.5;';
-        const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${strokeColor};strokeWidth=${strokeWidth};dashed=${dashed};${dashPattern}${labelPillStyle}`;
+        const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${strokeColor};strokeWidth=${strokeWidth};dashed=${dashed};flowAnimation=1;${dashPattern}${labelPillStyle}`;
 
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(conn.label || '')}" style="${edgeStyle}" edge="1" parent="1" source="${conn.fromId}" target="${conn.toId}">
