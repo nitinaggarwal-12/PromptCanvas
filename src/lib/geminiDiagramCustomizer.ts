@@ -238,10 +238,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = newVal.replace(/(&lt;b(?:[^&]*)?&gt;)(.*?)(&lt;\/b&gt;)/i, `$1${escapeXmlText(title)}$3`);
           } else if (/<b\b[^>]*>(.*?)<\/b>/i.test(newVal)) {
             newVal = newVal.replace(/(<b\b[^>]*>)(.*?)(<\/b>)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (/(<div[^>]*font-weight:\s*700[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*font-weight:\s*700[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
-          } else if (/(<div[^>]*font-size:\s*11\.5px[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*font-size:\s*11\.5px[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (/(&lt;div[^&]*?(?:font-weight:\s*700|font-size:\s*(?:1[1-4]|2[0-9])px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(newVal)) {
+            newVal = newVal.replace(/(&lt;div[^&]*?(?:font-weight:\s*700|font-size:\s*(?:1[1-4]|2[0-9])px)[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i, `$1${escapeXmlText(title)}$3`);
+          } else if (/(<div[^>]*?(?:font-weight:\s*700|font-size:\s*(?:1[1-4]|2[0-9])px)[^>]*?>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*?(?:font-weight:\s*700|font-size:\s*(?:1[1-4]|2[0-9])px)[^>]*?>)(.*?)(<\/div>)/i, `$1${escapeXmlText(title)}$3`);
           } else if (isHeaderOrText) {
             newVal = escapeXmlText(title);
           }
@@ -251,10 +251,10 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
             newVal = newVal.replace(/(&lt;span\b[^&]*?color:[^&]*?334155[^&]*?&gt;)(.*?)(&lt;\/span&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
           } else if (/<span\b[^>]*?color:[^>]*?334155[^>]*?>(.*?)<\/span>/i.test(newVal)) {
             newVal = newVal.replace(/(<span\b[^>]*?color:[^>]*?334155[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(subtitle)}$3`);
-          } else if (/(<div[^>]*font-size:\s*8\.5px[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*font-size:\s*8\.5px[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
-          } else if (/(<div[^>]*color:\s*#5F6368[^>]*>)(.*?)(<\/div>)/i.test(newVal)) {
-            newVal = newVal.replace(/(<div[^>]*color:\s*#5F6368[^>]*>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
+          } else if (/(&lt;div[^&]*?(?:font-size:\s*(?:7|8|9|10)(?:\.[0-9])?px|color:\s*#(?:5F6368|64748B|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i.test(newVal)) {
+            newVal = newVal.replace(/(&lt;div[^&]*?(?:font-size:\s*(?:7|8|9|10)(?:\.[0-9])?px|color:\s*#(?:5F6368|64748B|137333|0D9488))[^&]*?&gt;)(.*?)(&lt;\/div&gt;)/i, `$1${escapeXmlText(subtitle)}$3`);
+          } else if (/(<div[^>]*?(?:font-size:\s*(?:7|8|9|10)(?:\.[0-9])?px|color:\s*#(?:5F6368|64748B|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i.test(newVal)) {
+            newVal = newVal.replace(/(<div[^>]*?(?:font-size:\s*(?:7|8|9|10)(?:\.[0-9])?px|color:\s*#(?:5F6368|64748B|137333|0D9488))[^>]*?>)(.*?)(<\/div>)/i, `$1${escapeXmlText(subtitle)}$3`);
           }
         }
         const badge = custom.badge || '';
@@ -264,7 +264,7 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
           } else if (/<span\b[^>]*?border-radius:[^>]*?>(.*?)<\/span>/i.test(newVal)) {
             newVal = newVal.replace(/(<span\b[^>]*?border-radius:[^>]*?>)(.*?)(<\/span>)/i, `$1${escapeXmlText(badge)}$3`);
           } else if (newVal.includes('&lt;/tr&gt;')) {
-            newVal = newVal.replace('&lt;/tr&gt;', `&lt;span style="font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;"&gt;${escapeXmlText(badge)}&lt;/span&gt;&lt;/tr&gt;`);
+            newVal = newVal.replace('&lt;/tr&gt;', `&lt;span style=&quot;font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;&quot;&gt;${escapeXmlText(badge)}&lt;/span&gt;&lt;/tr&gt;`);
           } else if (newVal.includes('</tr>')) {
             newVal = newVal.replace('</tr>', `<span style="font-size:8px;padding:2px 4px;border-radius:4px;background:#38bdf8;color:#0f172a;font-weight:bold;">${escapeXmlText(badge)}</span></tr>`);
           } else {
