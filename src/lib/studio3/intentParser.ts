@@ -51,36 +51,29 @@ export function parseStudio3IntentHeuristics(
   const p = safePrompt.toLowerCase();
   const isFollowUp = Boolean(previousContext && String(previousContext).trim().length > 0);
 
-  // 1. Abstraction Level detection (Default: conceptual unless specifically asked for logical/technical)
-  let abstractionLevel: AbstractionLevel = 'conceptual';
+  // 1. Abstraction Level detection: Default to technical/logical for engineering/cloud/protocol systems
+  let abstractionLevel: AbstractionLevel = 'technical';
   if (
-    p.includes('technical') ||
-    p.includes('infrastructure') ||
-    p.includes('kubernetes') ||
-    p.includes('gke') ||
-    p.includes('subnet') ||
-    p.includes('vpc') ||
-    p.includes('terraform') ||
-    p.includes('docker') ||
-    p.includes('cidr') ||
-    p.includes('cmek') ||
-    p.includes('spanner') ||
-    p.includes('memorystore') ||
-    p.includes('port 443') ||
-    p.includes('mtls') ||
-    p.includes('tcp') ||
-    p.includes('armor') ||
-    p.includes('ledger')
+    p.includes('analogy') ||
+    p.includes('simple terms') ||
+    p.includes('kid') ||
+    p.includes('5th grade') ||
+    p.includes('high-level concept') ||
+    p.includes('for executives') ||
+    p.includes('business outcome')
   ) {
-    abstractionLevel = 'technical';
+    abstractionLevel = 'conceptual';
   } else if (
     p.includes('logical') ||
     p.includes('microservice') ||
     p.includes('service mesh') ||
     p.includes('api gateway') ||
-    p.includes('component model')
+    p.includes('component model') ||
+    p.includes('domain model')
   ) {
     abstractionLevel = 'logical';
+  } else {
+    abstractionLevel = 'technical';
   }
 
   // 2. Multi-Band / Composite expansion detection
@@ -237,10 +230,10 @@ Your task is to analyze the user's natural language request and classify its arc
 
 MANDATORY RULES:
 1. Abstraction Level:
-   - Unless the user specifically asks for "technical" (VPCs, subnets, CIDR, ports, Kubernetes pods, IAM roles) or "logical" (microservice boundaries, service mesh), ALWAYS default to "conceptual" (high-level flow, business outcomes, foundational concept stages, why & what).
-   - "conceptual": High-level workflow, foundational principles, user journey, "Why/What" for stakeholders.
-   - "logical": Functional component boundaries, microservices, database interfaces.
-   - "technical": Infrastructure, concrete cloud services, subnets, ports, protocols, "How".
+   - For all networking protocols (ping, icmp, tcp, dns, http, tls, socket), cloud architectures, pipelines, and engineering systems, classify as "technical" or "logical" with realistic step flows, network channels, and data packets.
+   - "technical": Concrete protocols, cloud services, packet headers, subnets, ports, sequence numbers, "How it works internally".
+   - "logical": Functional component boundaries, microservices, database interfaces, message buses.
+   - "conceptual": High-level educational analogies, foundational philosophy, user journey, "Why/What" for non-technical stakeholders.
 2. Topology Grammar:
    - "horizontal_pipeline": Left-to-right stages with sequential step badges.
    - "hierarchical_tiers": Stacked vertical tiers (Ingress -> Compute -> Data -> Governance).
