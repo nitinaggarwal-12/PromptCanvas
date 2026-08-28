@@ -380,8 +380,7 @@ export function generateGenericConceptualRoadmap(
         },
         step2Execution: {
           title: 'STEP 2: Tactical Engagement',
-          subtitle: 'Heavy vs Agile Asymmetric Combat',
-          input: 'Murmillo vs Retiarius Matchup',
+          input: 'Murmillo vs Retiarius Matchup (Heavy vs Agile Asymmetric Combat)',
           phases: [
             { name: '1. Distance Management', desc: 'Retiarius casts net from 4m range, probing with trident' },
             { name: '2. Shield Rush & Close Quarters', desc: 'Murmillo absorbs trident thrust with scutum and closes range' },

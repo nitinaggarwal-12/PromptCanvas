@@ -380,6 +380,403 @@ export function renderTwoSidesOfTheSpinInfographicXml(
 }
 
 // ============================================================================
+// ROMAN COLOSSEUM GLADIATORIAL COMBAT: HIGH-FIDELITY ARENA & BATTLE DYNAMICS
+// ============================================================================
+export function renderGladiatorColosseumBattleXml(
+  roadmap: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const c: string[] = [];
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  // 1. TOP TITLE BANNER (y=15, h=62, w=1560)
+  const titleHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;font-family:Impact,'Arial Black',-apple-system,sans-serif;background:#7F1D1D;color:#FFFFFF;border-radius:10px;padding:0 24px;box-sizing:border-box;border:2px solid #F59E0B;box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span style="font-size:32px;">⚔️</span>
+      <div>
+        <div style="font-size:26px;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#FFFFFF;">ROMAN COLOSSEUM: GLADIATORS ARENA COMBAT DYNAMICS</div>
+        <div style="font-size:11px;font-family:system-ui,sans-serif;font-weight:700;color:#FEF3C7;margin-top:1px;">Flavian Amphitheater Sand Harena (87m × 55m) • Retiarius (Net &amp; Trident) vs. Murmillo (Scutum &amp; Gladius) • Imperial Decision Gates</div>
+      </div>
+    </div>
+    <div style="background:#451A03;border:1.5px solid #F59E0B;padding:6px 14px;border-radius:20px;font-size:11px;font-family:system-ui,sans-serif;font-weight:900;color:#FBBF24;">
+      SPQR • MUNERA &amp; LUDI
+    </div>
+  </div>`;
+  cell('hdr_title', titleHtml, 20, 15, 1560, 62, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#7F1D1D;strokeColor=#F59E0B;strokeWidth=2;rounded=1;');
+
+  // 2. LEFT PANEL: RETIARIUS COMBATANT PROFILE (x=20, y=85, w=380, h=470)
+  const leftProfileHtml = `<div style="background:#EFF6FF;border:2px solid #3B82F6;border-radius:12px;padding:16px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(59,130,246,0.1);">
+    <div>
+      <!-- Header Badge -->
+      <div style="display:flex;align-items:center;gap:10px;background:#1D4ED8;color:#FFFFFF;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+        <span style="font-size:28px;">🔱</span>
+        <div>
+          <div style="font-size:16px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">RETIARIUS (NET FIGHTER)</div>
+          <div style="font-size:10.5px;color:#BFDBFE;font-weight:600;">Agile Skirmisher &amp; Distance Tactician</div>
+        </div>
+      </div>
+
+      <!-- Armor & Weapons Breakdown -->
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:#0F172A;">
+        <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:6px;padding:8px 10px;">
+          <div style="font-weight:800;color:#1D4ED8;margin-bottom:2px;">🛡️ DEFENSIVE LOADOUT (Light / Agility):</div>
+          <div style="color:#334155;line-height:1.4;">• <strong>Galerus:</strong> Bronze shoulder shield protecting neck/jaw<br/>• <strong>Manica:</strong> Padded leather sleeve on weapon arm<br/>• <strong>No Helmet &amp; No Shield:</strong> Unencumbered 360° vision</div>
+        </div>
+
+        <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:6px;padding:8px 10px;">
+          <div style="font-weight:800;color:#1D4ED8;margin-bottom:2px;">⚔️ OFFENSIVE WEAPONS:</div>
+          <div style="color:#334155;line-height:1.4;">• <strong>Rete (Weighted Net):</strong> 3.5m spread with lead sinkers<br/>• <strong>Fascina (War Trident):</strong> 2.4m ash shaft with barbed prongs<br/>• <strong>Pugio (Dagger):</strong> 20cm backup blade for close grapple</div>
+        </div>
+
+        <div style="background:#DBEAFE;border-radius:6px;padding:8px 10px;font-size:11px;font-weight:700;color:#1E40AF;">
+          ⚡ <strong>Combat Velocity:</strong> v = 6.5 m/s (Sprint &amp; Circle)<br/>
+          🎯 <strong>Core Objective:</strong> Snare Murmillo's shield &amp; deliver precision trident puncture from 2.5m range.
+        </div>
+      </div>
+    </div>
+
+    <!-- Health & Stamina HUD -->
+    <div style="background:#FFFFFF;border:1px solid #93C5FD;border-radius:8px;padding:8px 12px;">
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;color:#1D4ED8;margin-bottom:4px;">
+        <span>HP: 85/100</span>
+        <span>STAMINA: 95%</span>
+      </div>
+      <div style="width:100%;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;margin-bottom:4px;">
+        <div style="width:85%;height:100%;background:#22C55E;"></div>
+      </div>
+      <div style="width:100%;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;">
+        <div style="width:95%;height:100%;background:#3B82F6;"></div>
+      </div>
+    </div>
+  </div>`;
+  cell('retiarius_card', leftProfileHtml, 20, 85, 380, 470, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;rounded=1;');
+
+  // 3. CENTER HERO: INTERACTIVE ARENA SANDBOX (x=410, y=85, w=780, h=470)
+  const centerHeroHtml = `<div id="gladiator_sandbox" style="background:#FFFBEB;border:2px solid #F59E0B;border-radius:12px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 14px rgba(245,158,11,0.15);">
+    
+    <!-- Top Interactive Control HUD -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:#FFFFFF;border:1.5px solid #FCD34D;border-radius:8px;padding:6px 12px;box-sizing:border-box;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:11px;font-weight:900;color:#78350F;">🏛️ ARENA ACTIONS:</span>
+        <button style="background:#2563EB;color:#FFF;border:none;border-radius:5px;padding:5px 10px;font-size:10.5px;font-weight:800;cursor:pointer;box-shadow:0 2px 4px rgba(37,99,235,0.25);" onclick="
+          var net = document.getElementById('net_arc');
+          if(net) { net.style.opacity = '1'; net.setAttribute('transform', 'translate(140, 10) scale(1.4)'); }
+          var alertB = document.getElementById('combat_alert');
+          if(alertB) { alertB.style.display = 'block'; alertB.innerText = '🔱 NET CAST! Retiarius throws weighted rete over Murmillo scutum!'; }
+        ">🔱 Cast Net</button>
+
+        <button style="background:#DC2626;color:#FFF;border:none;border-radius:5px;padding:5px 10px;font-size:10.5px;font-weight:800;cursor:pointer;box-shadow:0 2px 4px rgba(220,38,38,0.25);" onclick="
+          var murm = document.getElementById('murmillo_group');
+          if(murm) murm.setAttribute('transform', 'translate(-60, 0)');
+          var alertB = document.getElementById('combat_alert');
+          if(alertB) { alertB.style.display = 'block'; alertB.innerText = '🛡️ SHIELD CHARGE! Murmillo deflects net with scutum and thrusts Gladius!'; }
+        ">🛡️ Shield Charge</button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button style="background:#16A34A;color:#FFF;border:none;border-radius:5px;padding:5px 9px;font-size:10px;font-weight:900;cursor:pointer;" onclick="
+          var alertB = document.getElementById('combat_alert');
+          if(alertB) { alertB.style.display = 'block'; alertB.style.background = '#DCFCE7'; alertB.style.color = '#15803D'; alertB.innerText = '👍 MISSIO GRANTED! Emperor &amp; Crowd spare the valorous gladiator!'; }
+        ">👍 Missio (Mercy)</button>
+
+        <button style="background:#7F1D1D;color:#FFF;border:none;border-radius:5px;padding:5px 9px;font-size:10px;font-weight:900;cursor:pointer;" onclick="
+          var alertB = document.getElementById('combat_alert');
+          if(alertB) { alertB.style.display = 'block'; alertB.style.background = '#FEE2E2'; alertB.style.color = '#991B1B'; alertB.innerText = '👎 POLLICE VERSO! Turned thumb signaled — Execution ordered!'; }
+        ">👎 Pollice Verso</button>
+
+        <button style="background:#64748B;color:#FFF;border:none;border-radius:5px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer;" onclick="
+          var net = document.getElementById('net_arc');
+          if(net) { net.style.opacity = '0.7'; net.setAttribute('transform', 'translate(0, 0)'); }
+          var murm = document.getElementById('murmillo_group');
+          if(murm) murm.setAttribute('transform', 'translate(0, 0)');
+          var alertB = document.getElementById('combat_alert');
+          if(alertB) alertB.style.display = 'none';
+        ">🔄</button>
+      </div>
+    </div>
+
+    <!-- Alert Banner -->
+    <div id="combat_alert" style="display:none;background:#FEF3C7;color:#92400E;border:1.5px solid #F59E0B;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:900;text-align:center;margin:4px 0;"></div>
+
+    <!-- SVG Battle Scene -->
+    <div style="position:relative;width:100%;height:370px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 740 370" width="740" height="370" style="overflow:visible;">
+        <defs>
+          <radialGradient id="arenaSand" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FEF3C7"/>
+            <stop offset="85%" stop-color="#FDE68A"/>
+            <stop offset="100%" stop-color="#D97706"/>
+          </radialGradient>
+          <linearGradient id="scutumGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#DC2626"/>
+            <stop offset="100%" stop-color="#991B1B"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Colosseum Oval Sand Arena Boundary -->
+        <ellipse cx="370" cy="185" rx="350" ry="165" fill="url(#arenaSand)" stroke="#B45309" stroke-width="4"/>
+        <ellipse cx="370" cy="185" rx="335" ry="152" fill="none" stroke="#78350F" stroke-width="1.5" stroke-dasharray="8 6"/>
+
+        <!-- Trapdoor Lifts (Hypogeum Substructures) -->
+        <rect x="180" y="80" width="45" height="25" rx="3" fill="#92400E" stroke="#451A03" stroke-width="2"/>
+        <text x="202" y="97" text-anchor="middle" font-size="9" font-weight="900" fill="#FEF3C7">LIFT 1</text>
+
+        <rect x="515" y="80" width="45" height="25" rx="3" fill="#92400E" stroke="#451A03" stroke-width="2"/>
+        <text x="537" y="97" text-anchor="middle" font-size="9" font-weight="900" fill="#FEF3C7">LIFT 2</text>
+
+        <rect x="345" y="295" width="50" height="26" rx="3" fill="#92400E" stroke="#451A03" stroke-width="2"/>
+        <text x="370" y="312" text-anchor="middle" font-size="9" font-weight="900" fill="#FEF3C7">BEAST LIFT</text>
+
+        <!-- Imperial Box (Top Center) -->
+        <rect x="300" y="10" width="140" height="36" rx="6" fill="#7C2D12" stroke="#F59E0B" stroke-width="2"/>
+        <text x="370" y="26" text-anchor="middle" font-size="11" font-weight="900" fill="#FEF3C7">👑 IMPERIAL BOX</text>
+        <text x="370" y="38" text-anchor="middle" font-size="8.5" font-weight="700" fill="#FCD34D">Emperor &amp; Cavea (50,000 Spectators)</text>
+
+        <!-- Distance Range Arc & Trajectory Line (4.2m Distance) -->
+        <line x1="230" y1="205" x2="510" y2="205" stroke="#78350F" stroke-width="2" stroke-dasharray="5 4"/>
+        <text x="370" y="200" text-anchor="middle" font-size="11" font-weight="900" fill="#78350F">Distance Gap: 4.2 Meters</text>
+
+        <!-- FIGHTER 1: RETIARIUS (Left Side, x=210, y=200) -->
+        <g id="retiarius_group" transform="translate(190, 140)">
+          <!-- Shadow -->
+          <ellipse cx="40" cy="115" rx="32" ry="12" fill="rgba(0,0,0,0.2)"/>
+
+          <!-- Body / Torso (Unarmored Tunic) -->
+          <rect x="26" y="45" width="28" height="42" rx="4" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="2"/>
+          
+          <!-- Head / Hair (No Helmet) -->
+          <circle cx="40" cy="28" r="15" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
+          <circle cx="40" cy="22" r="14" fill="#78350F"/>
+
+          <!-- Left Shoulder Guard (Galerus) -->
+          <rect x="14" y="38" width="14" height="22" rx="3" fill="#D97706" stroke="#78350F" stroke-width="2"/>
+
+          <!-- Legs -->
+          <line x1="33" y1="87" x2="28" y2="114" stroke="#78350F" stroke-width="4"/>
+          <line x1="47" y1="87" x2="52" y2="114" stroke="#78350F" stroke-width="4"/>
+
+          <!-- Trident in Right Hand (Fascina) -->
+          <g transform="translate(48, 10)">
+            <line x1="0" y1="90" x2="60" y2="15" stroke="#78350F" stroke-width="4"/>
+            <!-- 3 Iron Prongs -->
+            <path d="M 60 15 L 75 -2 M 60 15 L 82 10 M 60 15 L 72 26" stroke="#1E293B" stroke-width="3.5" fill="none"/>
+            <polygon points="76,-4 73,1 78,0" fill="#1E293B"/>
+            <polygon points="84,8 81,13 86,11" fill="#1E293B"/>
+            <polygon points="74,28 71,23 76,24" fill="#1E293B"/>
+          </g>
+
+          <!-- Swirling Net Arc (Rete) -->
+          <g id="net_arc" transform="translate(0, 0)" style="transition: all 0.5s ease;">
+            <circle cx="10" cy="15" r="28" fill="none" stroke="#1E40AF" stroke-width="2.5" stroke-dasharray="6 3"/>
+            <line x1="10" y1="-13" x2="10" y2="43" stroke="#1E40AF" stroke-width="1.5"/>
+            <line x1="-18" y1="15" x2="38" y2="15" stroke="#1E40AF" stroke-width="1.5"/>
+            <!-- Lead sinkers -->
+            <circle cx="-16" cy="5" r="3.5" fill="#475569"/>
+            <circle cx="34" cy="5" r="3.5" fill="#475569"/>
+            <circle cx="10" cy="42" r="3.5" fill="#475569"/>
+          </g>
+
+          <text x="40" y="132" text-anchor="middle" font-size="12" font-weight="900" fill="#1D4ED8">RETIARIUS</text>
+        </g>
+
+        <!-- FIGHTER 2: MURMILLO (Right Side, x=510, y=140) -->
+        <g id="murmillo_group" transform="translate(480, 140)" style="transition: all 0.5s ease;">
+          <!-- Shadow -->
+          <ellipse cx="40" cy="115" rx="35" ry="14" fill="rgba(0,0,0,0.2)"/>
+
+          <!-- Body / Torso Behind Shield -->
+          <rect x="28" y="42" width="30" height="45" rx="4" fill="#B91C1C" stroke="#78350F" stroke-width="2"/>
+
+          <!-- Legs with Bronze Ocrea Greave on Left Leg -->
+          <line x1="33" y1="87" x2="26" y2="114" stroke="#D97706" stroke-width="6"/>
+          <line x1="48" y1="87" x2="52" y2="114" stroke="#78350F" stroke-width="4"/>
+
+          <!-- Massive Curved Red Scutum Shield -->
+          <rect x="-6" y="32" width="28" height="68" rx="6" fill="url(#scutumGrad)" stroke="#F59E0B" stroke-width="3"/>
+          <!-- Gold Roman Eagle Emblem on Shield -->
+          <circle cx="8" cy="66" r="8" fill="#FCD34D" stroke="#78350F" stroke-width="1.5"/>
+          <line x1="8" y1="42" x2="8" y2="90" stroke="#FCD34D" stroke-width="2"/>
+          <line x1="-2" y1="66" x2="18" y2="66" stroke="#FCD34D" stroke-width="2"/>
+
+          <!-- Crested Bronze Cassis Helmet with Fish Dorsal Fin Crest -->
+          <g transform="translate(38, 16)">
+            <!-- Helmet Bowl -->
+            <circle cx="0" cy="10" r="16" fill="#D97706" stroke="#78350F" stroke-width="2.5"/>
+            <!-- Grille Visor -->
+            <rect x="-14" y="6" width="12" height="12" rx="2" fill="#1E293B"/>
+            <line x1="-12" y1="10" x2="-4" y2="10" stroke="#FBBF24" stroke-width="1.5"/>
+            <line x1="-12" y1="14" x2="-4" y2="14" stroke="#FBBF24" stroke-width="1.5"/>
+            <!-- High Crest / Fin -->
+            <path d="M -10 0 Q 0 -18 14 -12 Q 10 2 0 4 Z" fill="#DC2626" stroke="#991B1B" stroke-width="2"/>
+          </g>
+
+          <!-- Drawn Gladius Blade in Right Hand -->
+          <g transform="translate(48, 55)">
+            <line x1="0" y1="0" x2="-35" y2="10" stroke="#E2E8F0" stroke-width="5"/>
+            <polygon points="-38,11 -28,5 -26,14" fill="#E2E8F0"/>
+            <rect x="-2" y="-4" width="8" height="8" rx="2" fill="#D97706"/>
+          </g>
+
+          <text x="40" y="132" text-anchor="middle" font-size="12" font-weight="900" fill="#DC2626">MURMILLO</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Arena Legend Footer -->
+    <div style="display:flex;align-items:center;justify-content:space-around;background:#FFFFFF;border:1px solid #FCD34D;border-radius:8px;padding:6px;font-size:10.5px;font-weight:800;color:#78350F;">
+      <span>🏟️ Harena Sand Floor (15cm)</span>
+      <span>⚖️ Summa Rudis Referee Staff</span>
+      <span>🚪 28 Hypogeum Freight Lifts</span>
+      <span>🩸 Fatal Kinetic Strike (86 Joules)</span>
+    </div>
+  </div>`;
+  cell('arena_sandbox', centerHeroHtml, 410, 85, 780, 470, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;rounded=1;');
+
+  // 4. RIGHT PANEL: MURMILLO COMBATANT PROFILE (x=1200, y=85, w=380, h=470)
+  const rightProfileHtml = `<div style="background:#FEF2F2;border:2px solid #EF4444;border-radius:12px;padding:16px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;box-shadow:0 4px 10px rgba(239,68,68,0.1);">
+    <div>
+      <!-- Header Badge -->
+      <div style="display:flex;align-items:center;gap:10px;background:#DC2626;color:#FFFFFF;padding:10px 14px;border-radius:8px;margin-bottom:12px;">
+        <span style="font-size:28px;">🛡️</span>
+        <div>
+          <div style="font-size:16px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">MURMILLO (HEAVY TANK)</div>
+          <div style="font-size:10.5px;color:#FECACA;font-weight:600;">Armored Juggernaut &amp; Shield Charger</div>
+        </div>
+      </div>
+
+      <!-- Armor & Weapons Breakdown -->
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:11.5px;color:#0F172A;">
+        <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:6px;padding:8px 10px;">
+          <div style="font-weight:800;color:#DC2626;margin-bottom:2px;">🛡️ DEFENSIVE LOADOUT (Heavy 18kg):</div>
+          <div style="color:#334155;line-height:1.4;">• <strong>Cassis Helmet:</strong> 4kg bronze helmet with fish fin &amp; face visor<br/>• <strong>Scutum Shield:</strong> 1.2m × 0.8m curved oak shield (0.96m²)<br/>• <strong>Ocrea &amp; Manica:</strong> Left shin greave &amp; leather arm guard</div>
+        </div>
+
+        <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:6px;padding:8px 10px;">
+          <div style="font-weight:800;color:#DC2626;margin-bottom:2px;">⚔️ OFFENSIVE WEAPONS:</div>
+          <div style="color:#334155;line-height:1.4;">• <strong>Gladius Hispaniensis:</strong> 50cm short stabbing steel blade<br/>• <strong>Scutum Boss (Umbo):</strong> Iron center spike used for shield bashes</div>
+        </div>
+
+        <div style="background:#FEE2E2;border-radius:6px;padding:8px 10px;font-size:11px;font-weight:700;color:#991B1B;">
+          🛡️ <strong>Shield Coverage:</strong> 85% Frontal Body Protection<br/>
+          🎯 <strong>Core Objective:</strong> Absorb net cast, rush distance gap, execute close-quarters thrust beneath Retiarius shoulder guard.
+        </div>
+      </div>
+    </div>
+
+    <!-- Health & Stamina HUD -->
+    <div style="background:#FFFFFF;border:1px solid #FCA5A5;border-radius:8px;padding:8px 12px;">
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;font-weight:800;color:#DC2626;margin-bottom:4px;">
+        <span>HP: 100/100</span>
+        <span>STAMINA: 78% (Armor Load)</span>
+      </div>
+      <div style="width:100%;height:8px;background:#E2E8F0;border-radius:4px;overflow:hidden;margin-bottom:4px;">
+        <div style="width:100%;height:100%;background:#22C55E;"></div>
+      </div>
+      <div style="width:100%;height:6px;background:#E2E8F0;border-radius:3px;overflow:hidden;">
+        <div style="width:78%;height:100%;background:#F59E0B;"></div>
+      </div>
+    </div>
+  </div>`;
+  cell('murmillo_card', rightProfileHtml, 1200, 85, 380, 470, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;rounded=1;');
+
+  // 5. BOTTOM TIER: 4 TACTICAL VIGNETTE CARDS (x=20..1580, y=565..895, h=330)
+  // Card 1: Hypogeum Substructures
+  const v1Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#78350F;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span>🚪</span> <span>1. HYPOGEUM SUBSTRUCTURES</span>
+      </div>
+      <div style="font-size:11px;color:#334155;line-height:1.45;">
+        • <strong>28 Counterweight Winches:</strong> Lifted wooden cages with wild lions, tigers, and combatants.<br/>
+        • <strong>32 Underground Animal Pens:</strong> Fed directly onto sand trapdoors.<br/>
+        • <strong>Water Drainage Channels:</strong> Hypogeum flooded for mock naval battles (Naumachia).
+      </div>
+    </div>
+    <div style="background:#FEF3C7;border-radius:6px;padding:6px;font-size:10px;font-weight:800;color:#92400E;text-align:center;">
+      Engineering Masterpiece (Flavian Era)
+    </div>
+  </div>`;
+  cell('vignette_1', v1Html, 20, 565, 380, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 2: Lex Pugnandi & Referees
+  const v2Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#1D4ED8;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span>⚖️</span> <span>2. LEX PUGNANDI (COMBAT LAW)</span>
+      </div>
+      <div style="font-size:11px;color:#334155;line-height:1.45;">
+        • <strong>Summa Rudis Oversight:</strong> Chief referee wielding a long wooden staff (*rudis*) to stop illegal hits.<br/>
+        • <strong>Probatio Armorum:</strong> Public inspection of blade sharpness prior to entering the arena.<br/>
+        • <strong>Single Combat Code:</strong> Strict pairing by weight and asymmetric weapons (never mirror matches).
+      </div>
+    </div>
+    <div style="background:#DBEAFE;border-radius:6px;padding:6px;font-size:10px;font-weight:800;color:#1E40AF;text-align:center;">
+      Regulated Martial Sport, Not Chaos
+    </div>
+  </div>`;
+  cell('vignette_2', v2Html, 410, 565, 380, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 3: Submissio & Submission
+  const v3Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#DC2626;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span>🩸</span> <span>3. SUBMISSIO (AD DIGITUM)</span>
+      </div>
+      <div style="font-size:11px;color:#334155;line-height:1.45;">
+        • <strong>Dropping the Shield:</strong> Wounded gladiator drops his scutum/weapon to surrender.<br/>
+        • <strong>Ad Digitum:</strong> Raises left index finger toward the Emperor to plead for mercy (*Missio*).<br/>
+        • <strong>Referee Freeze:</strong> Summa Rudis immediately steps between fighters with his staff.
+      </div>
+    </div>
+    <div style="background:#FEE2E2;border-radius:6px;padding:6px;font-size:10px;font-weight:800;color:#991B1B;text-align:center;">
+      Honorable Surrender Protocol
+    </div>
+  </div>`;
+  cell('vignette_3', v3Html, 800, 565, 380, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Card 4: Imperial Verdict Gate
+  const v4Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;font-family:system-ui,-apple-system,sans-serif;">
+    <div>
+      <div style="font-size:13px;font-weight:900;color:#D97706;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+        <span>👑</span> <span>4. IMPERIAL VERDICT GATE</span>
+      </div>
+      <div style="font-size:11px;color:#334155;line-height:1.45;">
+        • <strong>Crowd Decibel Gate (115 dB):</strong> 50,000 Romans shout *"Mitte!"* (Release) or *"Iugula!"* (Slit throat).<br/>
+        • <strong>Missio (Spared):</strong> Emperor grants life; gladiator returns to Ludus to fight another day.<br/>
+        • <strong>Pollice Verso:</strong> Turned thumb signaling execution; gladiator faces blade with stoic composure.
+      </div>
+    </div>
+    <div style="background:#FEF3C7;border-radius:6px;padding:6px;font-size:10px;font-weight:800;color:#92400E;text-align:center;">
+      Life or Death in the Emperor's Hand
+    </div>
+  </div>`;
+  cell('vignette_4', v4Html, 1190, 565, 390, 330, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 6. FOOTER (y=905, h=40)
+  const ftrHtml = `<div style="background:#78350F;color:#FEF3C7;border-radius:6px;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 20px;font-family:system-ui,-apple-system,sans-serif;font-size:10.5px;font-weight:800;letter-spacing:0.05em;border:1px solid #F59E0B;">
+    <span>⚔️ VIRTUS &amp; MARTIAL HONOR  •  ASYMMETRIC GLADIATOR COMBAT  •  FLAVIAN ARCHITECTURE &amp; HYPOGEUM</span>
+    <span style="color:#FDE68A;">SPQR Colosseum Arena Engine</span>
+  </div>`;
+  cell('main_ftr', ftrHtml, 20, 905, 1560, 40, 'text;html=1;whiteSpace=wrap;overflow=hidden;fillColor=#78350F;strokeColor=#F59E0B;strokeWidth=1.5;rounded=1;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="gladiators_colosseum_combat" name="Roman Colosseum Gladiators Combat">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
+// ============================================================================
 // SPEED VS. VELOCITY VS. ACCELERATION: 100% GROUND-TRUTH REPRODUCTION
 // ============================================================================
 export function renderSpeedVelocityAccelerationInfographicXml(
@@ -1752,6 +2149,16 @@ export function solveAndRenderStudio3Xml(
 
   // 0B. Dynamic Bespoke Conceptual Roadmap Renderer
   if (graph?.conceptualRoadmap) {
+    const pTitle = (graph.conceptualRoadmap.title || '').toLowerCase();
+    if (pTitle.includes('centripetal') || pTitle.includes('centrifugal') || pTitle.includes('spin')) {
+      return renderTwoSidesOfTheSpinInfographicXml(graph.conceptualRoadmap, theme);
+    }
+    if (pTitle.includes('speed') && pTitle.includes('velocity') && pTitle.includes('acceleration')) {
+      return renderSpeedVelocityAccelerationInfographicXml(graph.conceptualRoadmap, theme);
+    }
+    if (pTitle.includes('gladiator') || pTitle.includes('colosseum') || pTitle.includes('rome') || pTitle.includes('arena') || pTitle.includes('amphitheater')) {
+      return renderGladiatorColosseumBattleXml(graph.conceptualRoadmap, theme);
+    }
     return renderUniversalConceptualRoadmapXml(graph.conceptualRoadmap, theme);
   }
 
