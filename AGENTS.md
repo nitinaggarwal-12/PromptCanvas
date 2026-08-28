@@ -194,3 +194,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
       - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
       - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
 
+---
+
+# 🏛️ Core Architectural Tenets: Visual Clarity, Technical Accuracy & Logical Flow
+
+1. **Visual Clarity Law**:
+   - **Viewport Auto-Fit Containment**: Diagram viewports must always enforce `allowFullScaleScroll={false}` and `fit=true` to guarantee 100% visual containment without viewport clipping on ultra-wide or high-DPI displays.
+   - **Clean Markdown Parsing**: Never dump raw markdown asterisks (`**`) into JSX text nodes. Always parse markdown into styled typography tags.
+   - **Collated Telemetry Disclosure**: Encapsulate real-time Gemini API logs in clean, collapsible accordions (`<details>`).
+   - **High-Contrast Interactive Actions**: Action controllers (`Copy XML`, `Reset Stage`) must maintain WCAG AA contrast against background containers.
+
+2. **Technical Accuracy Law**:
+   - **Native GCP Vector SVGs**: Use authentic Google Cloud vector icons (`renderGcpIconHtml`) for all cloud services.
+   - **Informative Technical Specifications**: Include protocols, SLAs, and SQL DDL snippets on architecture cards; never output empty cards.
+   - **Zero-Mutation Studio 3 Passthrough**: Protect first-principles XML from geometric or coordinate mutation in preflight filters.
+
+3. **Logical Flow Law**:
+   - **Sequential Step Sequences**: Use explicit step number badges (❶..⓴) for horizontal pipelines.
+   - **Typed Connector Semantics**: Enforce distinct visual styles (Solid Blue = API, Dashed Orange = Stream, Dashed Purple = RAG, Green = Protocol, Dashed Teal = Feedback).
+   - **Collision-Free Channel Routing**: Connector lines must never slice through intermediate cards or text labels.
+
