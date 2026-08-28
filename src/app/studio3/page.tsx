@@ -31,7 +31,11 @@ import {
   Link as LinkIcon,
   Share2,
   PlusCircle,
-  Plus
+  Plus,
+  History,
+  FolderOpen,
+  X,
+  Search
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
@@ -108,87 +112,96 @@ export default function Studio3Page() {
   const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
   const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('conceptual');
 
+  // History Drawer State
+  const [showHistory, setShowHistory] = useState(false);
+  const [historyList, setHistoryList] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
+
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // 1. Initial Mount: Restore from URL Query (?id=...) or LocalStorage
+  const loadDiagramById = async (id: string) => {
+    setLoading(true);
+    setShowHistory(false);
+    try {
+      const res = await fetch(`/api/diagrams/${id}`);
+      const data = await res.json();
+      if (data && (data.xml_content || data.versions?.[0]?.xml_content)) {
+        const xml = data.xml_content || data.versions[0].xml_content;
+        setCurrentXml(xml);
+        setDiagramId(data.id);
+        setDiagramName(data.name || 'Studio 3 Architecture');
+        if (data.architecture_type) {
+          setSelectedAbstraction(data.architecture_type as AbstractionLevel);
+        }
+        window.history.replaceState(null, '', `/studio3?id=${data.id}`);
+        setMessages([
+          {
+            id: 'msg_restored_' + Date.now(),
+            role: 'assistant',
+            content: `🎯 **Loaded from History:** \`${data.name || 'Architecture'}\` (Permanent ID: \`${data.id}\`).`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      }
+    } catch (err) {
+      console.error('Failed to load diagram by ID:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openHistoryDrawer = async () => {
+    setShowHistory(true);
+    setLoadingHistory(true);
+    try {
+      const res = await fetch('/api/diagrams');
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setHistoryList(data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch diagram history:', e);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  // 1. Initial Mount: ONLY restore from URL Query if ?id=... is present!
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const searchParams = new URLSearchParams(window.location.search);
     const urlId = searchParams.get('id');
 
     if (urlId) {
-      setLoading(true);
-      fetch(`/api/diagrams/${urlId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && (data.xml_content || data.versions?.[0]?.xml_content)) {
-            const xml = data.xml_content || data.versions[0].xml_content;
-            setCurrentXml(xml);
-            setDiagramId(data.id);
-            setDiagramName(data.name || 'Studio 3 Architecture');
-            if (data.architecture_type) {
-              setSelectedAbstraction(data.architecture_type as AbstractionLevel);
-            }
-            setMessages([
-              {
-                id: 'msg_restored',
-                role: 'assistant',
-                content: `🎯 **Diagram Restored via Unique Link:** Loaded \`${data.name || 'Architecture'}\` (Permanent ID: \`${data.id}\`).`,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              }
-            ]);
-          }
-        })
-        .catch(err => console.error('Failed to load diagram by ID:', err))
-        .finally(() => setLoading(false));
+      loadDiagramById(urlId);
     } else {
-      try {
-        const saved = localStorage.getItem('pc_studio3_session');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (parsed.currentXml) {
-            setCurrentXml(parsed.currentXml);
-            if (parsed.diagramId) {
-              setDiagramId(parsed.diagramId);
-              window.history.replaceState(null, '', `/studio3?id=${parsed.diagramId}`);
-            }
-            if (parsed.diagramName) setDiagramName(parsed.diagramName);
-            if (Array.isArray(parsed.messages) && parsed.messages.length > 0) setMessages(parsed.messages);
-            if (parsed.currentIntent) setCurrentIntent(parsed.currentIntent);
-            if (parsed.currentGraph) setCurrentGraph(parsed.currentGraph);
-            if (parsed.currentQuality) setCurrentQuality(parsed.currentQuality);
-            if (Array.isArray(parsed.allLogs)) setAllLogs(parsed.allLogs);
-            if (parsed.selectedAbstraction) setSelectedAbstraction(parsed.selectedAbstraction);
-          }
+      // Clean Fresh Start: Canvas is clear, no previous diagram auto-loaded!
+      setDiagramId(null);
+      setDiagramName('');
+      setCurrentXml('');
+      setCurrentIntent(null);
+      setCurrentGraph(null);
+      setCurrentQuality(null);
+      setAllLogs([]);
+      setMessages([
+        {
+          id: 'msg_welcome',
+          role: 'assistant',
+          content: '🎭 **Welcome to Studio 3: First-Principles Generative Stage.**\n\nThe stage is clear and ready for a fresh start. Enter any architectural prompt, concept, or system workflow below to synthesize from scratch.',
+          timestamp: 'Ready'
         }
-      } catch (e) {
-        console.warn('Failed to parse localStorage session:', e);
-      }
+      ]);
     }
   }, []);
 
-  // 2. Continuous State Auto-Sync to LocalStorage & URL History
+  // 2. Continuous State Auto-Sync to URL History when an active diagram exists
   useEffect(() => {
     if (typeof window === 'undefined' || !currentXml) return;
-    try {
-      localStorage.setItem('pc_studio3_session', JSON.stringify({
-        diagramId,
-        diagramName,
-        currentXml,
-        messages,
-        currentIntent,
-        currentGraph,
-        currentQuality,
-        allLogs,
-        selectedAbstraction
-      }));
-      if (diagramId) {
-        window.history.replaceState(null, '', `/studio3?id=${diagramId}`);
-      }
-    } catch (e) {
-      console.warn('Failed to save session to localStorage:', e);
+    if (diagramId) {
+      window.history.replaceState(null, '', `/studio3?id=${diagramId}`);
     }
-  }, [currentXml, diagramId, diagramName, messages, currentIntent, currentGraph, currentQuality, allLogs, selectedAbstraction]);
+  }, [currentXml, diagramId]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -410,6 +423,20 @@ export default function Studio3Page() {
             >
               <PlusCircle className="w-3.5 h-3.5" />
               <span>+ New Diagram</span>
+            </button>
+
+            {/* Saved Architecture History Button */}
+            <button
+              onClick={openHistoryDrawer}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm ${
+                theme === 'dark'
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
+              }`}
+              title="Open saved diagram history"
+            >
+              <History className="w-3.5 h-3.5 text-blue-500" />
+              <span>History</span>
             </button>
 
             {/* Shareable Unique Link & ID Badge */}
@@ -1015,6 +1042,127 @@ export default function Studio3Page() {
           </div>
         </div>
       </main>
+
+      {/* 3. HISTORY DRAWER MODAL (SAVED DIAGRAMS & RESTORE) */}
+      {showHistory && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in">
+          {/* Backdrop Click to Close */}
+          <div className="absolute inset-0" onClick={() => setShowHistory(false)} />
+
+          {/* Slide-in Drawer Container */}
+          <div className={`relative z-10 w-full max-w-md h-full shadow-2xl flex flex-col border-l transition-transform ${
+            theme === 'dark' ? 'bg-[#0B111E] border-slate-800 text-slate-100' : 'bg-white border-slate-300 text-slate-900'
+          }`}>
+            {/* Drawer Header */}
+            <div className={`p-4 border-b flex items-center justify-between ${
+              theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}>
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-blue-600" />
+                <h3 className="text-sm font-black uppercase tracking-wider">Architecture History</h3>
+              </div>
+              <button
+                onClick={() => setShowHistory(false)}
+                className={`p-1.5 rounded-lg border transition ${
+                  theme === 'dark' ? 'border-slate-700 hover:bg-slate-800 text-slate-300' : 'border-slate-300 hover:bg-slate-200 text-slate-700'
+                }`}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Search Filter */}
+            <div className={`p-3 border-b ${theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="text"
+                  value={historySearch}
+                  onChange={e => setHistorySearch(e.target.value)}
+                  placeholder="Search saved architectures..."
+                  className={`w-full pl-9 pr-3 py-2 text-xs rounded-xl border font-medium focus:outline-none transition ${
+                    theme === 'dark'
+                      ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500 focus:border-blue-500'
+                      : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 focus:border-blue-600'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Diagrams List */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+              {loadingHistory ? (
+                <div className="flex items-center justify-center py-12 text-xs font-mono text-blue-600 gap-2">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Loading saved architectures...</span>
+                </div>
+              ) : historyList.length === 0 ? (
+                <div className="text-center py-12 text-xs text-slate-400">
+                  <FolderOpen className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                  <p>No saved diagrams found.</p>
+                </div>
+              ) : (
+                historyList
+                  .filter(d => (d.name || '').toLowerCase().includes(historySearch.toLowerCase()) || (d.architecture_type || '').toLowerCase().includes(historySearch.toLowerCase()))
+                  .map(d => (
+                    <div
+                      key={d.id}
+                      className={`p-3.5 rounded-xl border transition flex flex-col gap-2 group ${
+                        theme === 'dark'
+                          ? 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-blue-500/60'
+                          : 'bg-white hover:bg-blue-50/50 border-slate-200 hover:border-blue-400 shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h4 className={`text-xs font-black truncate ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                            {d.name || 'Untitled Diagram'}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono uppercase font-bold bg-blue-600/10 text-blue-600 dark:text-blue-400">
+                              {d.architecture_type || 'diagram'}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              {d.created_at ? new Date(d.created_at).toLocaleDateString() : 'Recent'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <button
+                          onClick={() => loadDiagramById(d.id)}
+                          className="flex-1 py-1.5 px-3 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition active:scale-95 text-center flex items-center justify-center gap-1.5"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          <span>Open in Studio 3</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/studio3?id=${d.id}`);
+                          }}
+                          className={`p-1.5 rounded-lg border transition ${
+                            theme === 'dark' ? 'border-slate-700 hover:bg-slate-800 text-slate-300' : 'border-slate-300 hover:bg-slate-200 text-slate-700'
+                          }`}
+                          title="Copy Share Link"
+                        >
+                          <LinkIcon className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className={`p-3 border-t text-center text-[11px] font-bold ${
+              theme === 'dark' ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
+            }`}>
+              Click "+ New Diagram" at any time for a clean drawing stage.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
