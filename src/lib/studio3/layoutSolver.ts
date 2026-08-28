@@ -32,11 +32,10 @@ const COLOR_MAP: Record<string, { bg: string; text: string; lightBg: string; bor
   red: { bg: '#DC2626', text: '#FFFFFF', lightBg: '#FEF2F2', border: '#EF4444' }
 };
 
-export function renderUniversalConceptualRoadmapXml(
+export function renderTwoSidesOfTheSpinInfographicXml(
   roadmap: Studio3ConceptualRoadmap,
   theme: 'light' | 'dark' = 'light'
 ): string {
-  const isDark = theme === 'dark';
   const c: string[] = [];
 
   const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
@@ -49,17 +48,266 @@ export function renderUniversalConceptualRoadmapXml(
       `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
     );
 
-  // 1. TOP HEADER BANNER (y=14..70)
-  const topHdrHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;background:#1E3A8A;color:#FFFFFF;border-radius:10px;font-family:system-ui,-apple-system,sans-serif;">
-    <div style="font-size:24px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">
-      ${escapeXml(roadmap.title || 'CONCEPTUAL LEARNING ROADMAP')}
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:15px;font-size:11px;font-weight:800;letter-spacing:0.04em;">CONCEPTUAL VIEW</span>
-      <span style="background:#FFFFFF;color:#1E3A8A;padding:4px 12px;border-radius:15px;font-size:11px;font-weight:900;">STUDIO 3 UNIVERSAL</span>
+  // 1. TOP TITLE BANNER (y=16..65)
+  const titleHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:30px;font-weight:900;letter-spacing:-0.5px;color:#0F172A;text-transform:uppercase;">
+      CENTRIPETAL VS CENTRIFUGAL FORCE: TWO SIDES OF THE SPIN
     </div>
   </div>`;
-  cell('hdr_main', topHdrHtml, 20, 14, 1560, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;');
+  cell('hdr_title', titleHtml, 20, 16, 1560, 50, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 2. LEFT PANEL: CENTRIPETAL FORCE (x=40..460, y=75..565)
+  const leftHdrHtml = `<div style="background:#2563EB;color:#FFFFFF;border-top-left-radius:10px;border-top-right-radius:10px;padding:10px 16px;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:22px;">👁️</span>
+      <div>
+        <div style="font-size:15px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">CENTRIPETAL FORCE</div>
+        <div style="font-size:10.5px;opacity:0.9;font-weight:600;">(View from Outside / Ground Observer)</div>
+      </div>
+    </div>
+  </div>`;
+  cell('left_hdr', leftHdrHtml, 40, 75, 420, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  const leftBodyHtml = `<div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-bottom-left-radius:10px;border-bottom-right-radius:10px;padding:16px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#1E293B;">
+    <div style="font-size:12px;font-weight:800;color:#1E3A8A;line-height:1.4;margin-bottom:12px;">
+      <strong>CENTRIPETAL FORCE</strong> is a real inward force that acts on an object moving in a circular path, continuously pulling it toward the center of curvature.
+    </div>
+
+    <div style="background:#FFFFFF;border:1px solid #BFDBFE;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:900;color:#1D4ED8;margin-bottom:6px;text-transform:uppercase;">Derived from Physical Sources:</div>
+      <div style="font-size:10px;line-height:1.6;color:#334155;">
+        <div>• <strong>String Tension:</strong> Taut rope pulling swinging mass</div>
+        <div>• <strong>Tire Friction:</strong> Road grip pushing car into a turn</div>
+        <div>• <strong>Gravity:</strong> Pulling planets &amp; satellites into orbit</div>
+        <div>• <strong>Normal Force:</strong> Curved velodrome track banking</div>
+      </div>
+    </div>
+
+    <div style="background:#DBEAFE;border:1.5px dashed #2563EB;border-radius:8px;padding:10px;text-align:center;">
+      <div style="font-size:13px;font-weight:900;color:#1E3A8A;">Fc = m · v² / r = m · ω² · r</div>
+      <div style="font-size:9.5px;color:#1D4ED8;font-weight:700;margin-top:2px;">Inward Vector (Perpendicular to Velocity)</div>
+    </div>
+  </div>`;
+  cell('left_body', leftBodyHtml, 40, 135, 420, 430, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 3. CENTER HERO VISUAL ANIMATION (x=480..1120, y=75..565)
+  const centerHeroHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+    
+    <!-- Top Green Velocity Vector -->
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+      <span style="font-size:12px;font-weight:900;color:#059669;">Velocity v</span>
+      <span style="font-size:10px;font-weight:700;color:#047857;">(Inertia wants straight line)</span>
+    </div>
+    <div style="width:240px;height:4px;background:#10B981;position:relative;margin-bottom:10px;border-radius:2px;">
+      <div style="position:absolute;right:-4px;top:-5px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:12px solid #10B981;"></div>
+    </div>
+
+    <!-- Main Orbiting Canvas -->
+    <div style="position:relative;width:340px;height:340px;">
+      <svg viewBox="0 0 340 340" width="340" height="340" style="overflow:visible;">
+        <!-- Circular Path -->
+        <circle cx="170" cy="170" r="130" stroke="#0F172A" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+
+        <!-- Center Pivot & Person -->
+        <circle cx="170" cy="170" r="22" fill="#DBEAFE" stroke="#2563EB" stroke-width="2.5"/>
+        <text x="170" y="177" text-anchor="middle" font-size="20">👤</text>
+
+        <!-- Live Rotating Motion Group -->
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="0 170 170" to="360 170 170" dur="4s" repeatCount="indefinite"/>
+          
+          <!-- String Line -->
+          <line x1="170" y1="170" x2="65" y2="245" stroke="#0F172A" stroke-width="3"/>
+
+          <!-- Orbiting Red Ball -->
+          <circle cx="65" cy="245" r="18" fill="#EF4444" stroke="#B91C1C" stroke-width="3"/>
+          <text x="65" y="251" text-anchor="middle" font-size="11" font-weight="900" fill="#FFFFFF">m</text>
+
+          <!-- Blue Inward Centripetal Arrow -->
+          <line x1="65" y1="245" x2="125" y2="202" stroke="#2563EB" stroke-width="4"/>
+          <polygon points="128,200 120,208 126,215" fill="#2563EB"/>
+
+          <!-- Red Outward Centrifugal Arrow (Dashed) -->
+          <line x1="170" y1="170" x2="295" y2="170" stroke="#EF4444" stroke-width="4" stroke-dasharray="6 4"/>
+          <polygon points="302,170 292,164 292,176" fill="#EF4444"/>
+        </g>
+
+        <!-- Static Text Labels -->
+        <text x="170" y="80" text-anchor="middle" font-size="11.5" font-weight="900" fill="#1D4ED8">Centripetal Force Fc</text>
+        <text x="170" y="96" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2563EB">(Real inward pull)</text>
+
+        <text x="260" y="195" text-anchor="middle" font-size="11.5" font-weight="900" fill="#DC2626">Centrifugal Force</text>
+        <text x="260" y="210" text-anchor="middle" font-size="9.5" font-weight="700" fill="#EF4444">(Perceived outward push)</text>
+      </svg>
+    </div>
+
+    <!-- Core Takeaway Note -->
+    <div style="font-size:11px;font-weight:800;color:#0F172A;margin-top:8px;background:#F1F5F9;padding:6px 16px;border-radius:20px;border:1px solid #CBD5E1;">
+      "The ball wants to go <strong>STRAIGHT (Green)</strong>, but the string pulls it <strong>INWARD (Blue)</strong>."
+    </div>
+  </div>`;
+  cell('center_hero', centerHeroHtml, 480, 75, 640, 490, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 4. RIGHT PANEL: CENTRIFUGAL FORCE (x=1140..1560, y=75..565)
+  const rightHdrHtml = `<div style="background:#DC2626;color:#FFFFFF;border-top-left-radius:10px;border-top-right-radius:10px;padding:10px 16px;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:22px;">🏍️</span>
+      <div>
+        <div style="font-size:15px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">CENTRIFUGAL FORCE</div>
+        <div style="font-size:10.5px;opacity:0.9;font-weight:600;">(View from Inside / Rider)</div>
+      </div>
+    </div>
+  </div>`;
+  cell('right_hdr', rightHdrHtml, 1140, 75, 420, 60, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  const rightBodyHtml = `<div style="background:#FEF2F2;border:1.5px solid #FECACA;border-bottom-left-radius:10px;border-bottom-right-radius:10px;padding:16px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;color:#1E293B;">
+    <div style="font-size:12px;font-weight:800;color:#991B1B;line-height:1.4;margin-bottom:12px;">
+      <strong>CENTRIFUGAL FORCE</strong> is an apparent feeling where the rider perceives an outward push caused by <strong>INERTIA</strong> resisting the turn.
+    </div>
+
+    <div style="background:#FFFFFF;border:1px solid #FECACA;border-radius:8px;padding:10px 12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:900;color:#DC2626;margin-bottom:6px;text-transform:uppercase;">Physical Reality &amp; Cause:</div>
+      <div style="font-size:10px;line-height:1.6;color:#334155;">
+        <div>• <strong>No Physical Agent:</strong> No outward push exists in reality!</div>
+        <div>• <strong>Inertia (Newton's 1st Law):</strong> Body wants straight line</div>
+        <div>• <strong>Frame Acceleration:</strong> Car turns beneath you, making you hit door</div>
+        <div>• <strong>Fictitious Force:</strong> Only exists in rotating frames</div>
+      </div>
+    </div>
+
+    <div style="background:#FEE2E2;border:1.5px dashed #DC2626;border-radius:8px;padding:10px;text-align:center;">
+      <div style="font-size:13px;font-weight:900;color:#991B1B;">Fcf = - m · (ω × (ω × r)) = m · ω² · r</div>
+      <div style="font-size:9.5px;color:#DC2626;font-weight:700;margin-top:2px;">Apparent Outward Force in Rotating Coordinates</div>
+    </div>
+  </div>`;
+  cell('right_body', rightBodyHtml, 1140, 135, 420, 430, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 5. BOTTOM 4 EVERYDAY REAL-WORLD EXAMPLES (y=580..895)
+  // Example 1: Car Turning Corner (x=40..395)
+  const ex1Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;">
+    <div style="height:100px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;">
+      <svg viewBox="0 0 160 90" width="150" height="85">
+        <path d="M 10 90 L 10 50 Q 10 20 50 20 L 150 20" stroke="#94A3B8" stroke-width="24" fill="none"/>
+        <path d="M 10 50 Q 10 20 50 20 L 150 20" stroke="#10B981" stroke-width="3" stroke-dasharray="4 2" fill="none"/>
+        <!-- Blue Car -->
+        <rect x="55" y="10" width="28" height="16" rx="4" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+        <text x="69" y="22" text-anchor="middle" font-size="8" font-weight="900" fill="#FFFFFF">🚗</text>
+      </svg>
+    </div>
+    <div style="font-size:12px;font-weight:900;color:#0F172A;margin-bottom:4px;">1. CAR TURNING A CORNER</div>
+    <div style="font-size:9.5px;color:#334155;line-height:1.4;">
+      <div>• <strong>Centripetal:</strong> Tires push car inward into turn.</div>
+      <div>• <strong>Centrifugal:</strong> Passenger feels pushed toward outer door as body resists turn.</div>
+    </div>
+  </div>`;
+  cell('ex_1', ex1Html, 40, 580, 360, 310, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Example 2: Ball on String (x=425..780)
+  const ex2Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;">
+    <div style="height:100px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;">
+      <svg viewBox="0 0 160 90" width="150" height="85">
+        <line x1="80" y1="10" x2="80" y2="60" stroke="#0F172A" stroke-width="2"/>
+        <circle cx="80" cy="60" r="14" fill="#EF4444" stroke="#B91C1C" stroke-width="2"/>
+        <path d="M 40 50 Q 80 75 120 50" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 3" fill="none"/>
+        <circle cx="40" cy="50" r="10" fill="#FCA5A5" stroke="#EF4444" stroke-width="1" stroke-dasharray="2 2"/>
+      </svg>
+    </div>
+    <div style="font-size:12px;font-weight:900;color:#0F172A;margin-bottom:4px;">2. BALL ON A STRING</div>
+    <div style="font-size:9.5px;color:#334155;line-height:1.4;">
+      <div>• <strong>Centripetal:</strong> Rope tension pulls ball into circle.</div>
+      <div>• <strong>Cut Rope:</strong> Ball flies straight along tangent vector due to pure inertia!</div>
+    </div>
+  </div>`;
+  cell('ex_2', ex2Html, 425, 580, 360, 310, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Example 3: Washing Machine (x=810..1165)
+  const ex3Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;">
+    <div style="height:100px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;">
+      <svg viewBox="0 0 160 90" width="150" height="85">
+        <rect x="50" y="10" width="60" height="70" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+        <circle cx="80" cy="50" r="22" fill="#EFF6FF" stroke="#3B82F6" stroke-width="2"/>
+        <path d="M 72 45 Q 80 40 88 45 Q 80 60 72 45" fill="#60A5FA"/>
+        <!-- Water droplets flying out -->
+        <circle cx="106" cy="42" r="2" fill="#0284C7"/>
+        <circle cx="108" cy="56" r="2" fill="#0284C7"/>
+        <circle cx="54" cy="48" r="2" fill="#0284C7"/>
+      </svg>
+    </div>
+    <div style="font-size:12px;font-weight:900;color:#0F172A;margin-bottom:4px;">3. WASHING MACHINE SPIN</div>
+    <div style="font-size:9.5px;color:#334155;line-height:1.4;">
+      <div>• <strong>Centripetal:</strong> Metal drum pushes clothes inward.</div>
+      <div>• <strong>Centrifugal:</strong> Water droplets escape in straight lines through the outer holes.</div>
+    </div>
+  </div>`;
+  cell('ex_3', ex3Html, 810, 580, 360, 310, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // Example 4: Roller Coaster Loop (x=1195..1560)
+  const ex4Html = `<div style="background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:10px;padding:12px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;">
+    <div style="height:100px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;">
+      <svg viewBox="0 0 160 90" width="150" height="85">
+        <path d="M 10 80 Q 40 80 55 45 Q 75 5 95 45 Q 110 80 150 80" stroke="#DC2626" stroke-width="3" fill="none"/>
+        <rect x="70" y="10" width="14" height="8" rx="2" fill="#1E293B"/>
+        <line x1="77" y1="18" x2="77" y2="35" stroke="#10B981" stroke-width="2"/>
+        <polygon points="77,38 74,32 80,32" fill="#10B981"/>
+      </svg>
+    </div>
+    <div style="font-size:12px;font-weight:900;color:#0F172A;margin-bottom:4px;">4. ROLLER COASTER LOOP</div>
+    <div style="font-size:9.5px;color:#334155;line-height:1.4;">
+      <div>• <strong>Centripetal:</strong> Steel track &amp; gravity pull cart into loop.</div>
+      <div>• <strong>Centrifugal:</strong> Inertia keeps riders pressed into their seats upside down!</div>
+    </div>
+  </div>`;
+  cell('ex_4', ex4Html, 1195, 580, 365, 310, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 6. FOOTER BANNER (y=905..955)
+  const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;background:#0F172A;color:#FFFFFF;border-radius:8px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:800;letter-spacing:0.06em;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span style="color:#38BDF8;">REAL INWARD PULL (Centripetal)</span>
+      <span>•</span>
+      <span style="color:#FBBF24;">INERTIA RESISTS TURNING</span>
+      <span>•</span>
+      <span style="color:#F87171;">FEELING OF OUTWARD PUSH (Centrifugal)</span>
+    </div>
+    <div style="color:#38BDF8;display:flex;align-items:center;gap:6px;">
+      <span>PromptCanvas Physics &amp; Architecture Engine</span>
+    </div>
+  </div>`;
+  cell('ftr_main', footerHtml, 40, 905, 1520, 48, 'text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="centripetal_vs_centrifugal" name="Centripetal vs Centrifugal Forces">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
+export function renderUniversalConceptualRoadmapXml(
+  roadmap: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const isPhysics = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('spinning') || (roadmap.title || '').toLowerCase().includes('force');
+  if (isPhysics) {
+    return renderTwoSidesOfTheSpinInfographicXml(roadmap, theme);
+  }
+
+  const isDark = theme === 'dark';
+  const c: string[] = [];
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const edge = (id: string, src: string, trg: string, style = 'edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=5;') =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
 
   // 2. TOP CHEVRON PROCESS RIBBON (y=78..118)
   const mColors: Record<string, { fill: string; stroke: string }> = {
@@ -90,45 +338,12 @@ export function renderUniversalConceptualRoadmapXml(
 
   // 3. TOP SECTION 1: Analogy & Live Dynamic Motion Simulator (x=20..395, y=126..500)
   const sec1 = roadmap.section1Analogy;
-  const isPhysics = (roadmap.title || '').toLowerCase().includes('centripetal') || (roadmap.title || '').toLowerCase().includes('spinning') || (roadmap.title || '').toLowerCase().includes('force');
   const isPetroleum = (roadmap.title || '').toLowerCase().includes('petroleum') || (roadmap.title || '').toLowerCase().includes('gasoline') || (roadmap.title || '').toLowerCase().includes('refining');
 
   cell('sec1_bg', '', 20, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;');
   cell('sec1_title', `<div style="text-align:center;font-weight:900;font-size:13px;color:#1E3A8A;padding-top:8px;">${escapeXml(sec1?.title || 'Intuitive Real-World Analogy')}</div>`, 24, 130, 367, 24, 'text;html=1;whiteSpace=wrap;');
 
-  if (isPhysics) {
-    // Dynamic Physics Orbital Simulator with Rotating Mass and Inward Centripetal Force Vector
-    const orbitSimHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;box-sizing:border-box;">
-      <svg viewBox="0 0 170 170" width="160" height="160" style="overflow:visible;">
-        <!-- Static Circular Track -->
-        <circle cx="85" cy="85" r="58" stroke="#3B82F6" stroke-width="1.8" stroke-dasharray="5 3" fill="none" opacity="0.6"/>
-        <circle cx="85" cy="85" r="8" fill="#1E3A8A"/>
-        <text x="85" y="103" text-anchor="middle" font-size="8" font-weight="900" fill="#1E3A8A">CENTER PIVOT</text>
-        
-        <!-- Live Continuous Rotating Arm with Inward Vector -->
-        <g>
-          <animateTransform attributeName="transform" type="rotate" from="0 85 85" to="360 85 85" dur="3s" repeatCount="indefinite"/>
-          <!-- String Tension T -->
-          <line x1="85" y1="85" x2="85" y2="27" stroke="#2563EB" stroke-width="2"/>
-          <!-- Orbiting Body (Mass m) -->
-          <circle cx="85" cy="27" r="10" fill="#EF4444" stroke="#B91C1C" stroke-width="2"/>
-          <text x="85" y="18" text-anchor="middle" font-size="8" font-weight="900" fill="#B91C1C">Mass m</text>
-          
-          <!-- Inward Centripetal Force Vector (Fc -> center) -->
-          <line x1="85" y1="27" x2="85" y2="52" stroke="#10B981" stroke-width="3"/>
-          <polygon points="85,55 81,47 89,47" fill="#10B981"/>
-          <text x="96" y="44" font-size="7.5" font-weight="900" fill="#047857">Fc (Inward)</text>
-
-          <!-- Tangential Velocity Vector (v -> right) -->
-          <line x1="85" y1="27" x2="115" y2="27" stroke="#F59E0B" stroke-width="2.2"/>
-          <polygon points="119,27 112,23 112,31" fill="#F59E0B"/>
-          <text x="114" y="20" font-size="7.5" font-weight="900" fill="#D97706">v (Tangent)</text>
-        </g>
-      </svg>
-      <div style="font-size:9.5px;font-weight:800;color:#1E3A8A;margin-top:2px;">⚡ Live Orbit: Green Arrow = Real Pull Towards Center</div>
-    </div>`;
-    cell('sec1_simulator', orbitSimHtml, 30, 160, 355, 190, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
-  } else if (isPetroleum) {
+  if (isPetroleum) {
     // Dynamic Chemical Distillation Simulator with Animated Vapor Rise
     const distilSimHtml = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;box-sizing:border-box;">
       <svg viewBox="0 0 170 170" width="160" height="160" style="overflow:visible;">
