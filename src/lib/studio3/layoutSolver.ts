@@ -48,6 +48,7 @@ export function solveAndRenderStudio3Xml(
 
   let cellId = 2;
   const cells: string[] = [];
+  const cardCoordinates: Record<string, { x: number; y: number; w: number; h: number }> = {};
 
   const addCell = (cellXml: string): string => {
     cells.push(cellXml);
@@ -108,7 +109,7 @@ export function solveAndRenderStudio3Xml(
       </mxCell>
     `);
 
-    // Render Columns
+    // A. Columns Band
     if (band.columns && band.columns.length > 0) {
       const numCols = band.columns.length;
       const colGap = 18;
@@ -152,7 +153,9 @@ export function solveAndRenderStudio3Xml(
           const cardX = colX + 12;
           const currentCardW = colW - 24;
 
-          let cardContentHtml = `<div style="padding:12px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;">
+          cardCoordinates[card.id] = { x: cardX, y: cardY, w: currentCardW, h: cardH };
+
+          let cardContentHtml = `<div style="padding:12px 14px;font-family:system-ui,-apple-system,sans-serif;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-start;word-break:break-word;overflow-wrap:break-word;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
               <div style="width:28px;height:28px;border-radius:6px;background:${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 ${card.iconKey ? renderGcpIconHtml(card.iconKey, 20) : '<div>📦</div>'}
@@ -182,7 +185,7 @@ export function solveAndRenderStudio3Xml(
           cardY += cardH + cardGap;
         });
 
-        // Column Footer Note if present
+        // Column Footer Note
         if (col.footerNote) {
           const footerHtml = `<div style="font-size:9.5px;color:${textSecondary};font-style:italic;text-align:center;padding:0 8px;">
             ${escapeXml(col.footerNote)}
@@ -194,8 +197,9 @@ export function solveAndRenderStudio3Xml(
           `);
         }
       });
-    } else if (band.pipelineStages && band.pipelineStages.length > 0) {
-      // Horizontal Workflow Pipeline
+    }
+    // B. Horizontal Pipeline Stages Band
+    else if (band.pipelineStages && band.pipelineStages.length > 0) {
       const numStages = band.pipelineStages.length;
       const stageGap = 18;
       const innerPadding = 18;
@@ -208,14 +212,14 @@ export function solveAndRenderStudio3Xml(
         const colorKey = (stage.color || 'blue').toLowerCase();
         const stageColor = COLOR_MAP[colorKey] || COLOR_MAP.blue;
 
-        // Stage Container Box
+        // Stage Box
         addCell(`
           <mxCell id="${cellId++}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isDark ? '#0C1322' : '#FFFFFF'};strokeColor=${stageColor.border};strokeWidth=1.2;" vertex="1" parent="1">
             <mxGeometry x="${stageX}" y="${stageY}" width="${stageW}" height="${stageH}" as="geometry"/>
           </mxCell>
         `);
 
-        // Stage Chevron Header with Step Badge ❶..❹
+        // Stage Header
         const stepIcons = ['❶', '❷', '❸', '❹', '❺', '❻'];
         const stepBadge = stepIcons[(stage.stepNumber || 1) - 1] || `${stage.stepNumber || 1}.`;
 
@@ -264,11 +268,84 @@ export function solveAndRenderStudio3Xml(
         });
       });
     }
+    // C. Matrix Evaluation Band
+    else if (band.matrixRows && band.matrixRows.length > 0) {
+      const headers = band.matrixHeaders || ['DIMENSION / TOOL', 'CAPABILITY', 'INTEGRATION', 'STANDARD'];
+      const numCols = headers.length;
+      const innerPadding = 18;
+      const tableW = bandW - innerPadding * 2;
+      const colW = tableW / numCols;
+      const headerRowH = 34;
+      const rows = band.matrixRows;
+      const rowH = Math.max(45, (bandH - innerPadding * 2 - headerRowH) / Math.max(1, rows.length));
+
+      // Table Header Row
+      headers.forEach((h, hIdx) => {
+        const cellX = bandX + innerPadding + hIdx * colW;
+        const cellY = bandY + innerPadding;
+        const cellHtml = `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:#1E3A8A;color:#FFFFFF;font-weight:800;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;border:1px solid #2563EB;box-sizing:border-box;">
+          ${escapeXml(h)}
+        </div>`;
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(cellHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+            <mxGeometry x="${cellX}" y="${cellY}" width="${colW}" height="${headerRowH}" as="geometry"/>
+          </mxCell>
+        `);
+      });
+
+      // Table Data Rows
+      rows.forEach((row, rIdx) => {
+        const rowY = bandY + innerPadding + headerRowH + rIdx * rowH;
+        
+        // Col 0: Dimension Name
+        const dimCellHtml = `<div style="display:flex;align-items:center;padding:0 12px;width:100%;height:100%;background:${isDark ? '#0C1322' : '#F8FAFC'};color:${textPrimary};font-weight:700;font-size:11px;border:1px solid ${cardBorder};box-sizing:border-box;">
+          ${escapeXml(row.dimension)}
+        </div>`;
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(dimCellHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+            <mxGeometry x="${bandX + innerPadding}" y="${rowY}" width="${colW}" height="${rowH}" as="geometry"/>
+          </mxCell>
+        `);
+
+        // Other Cols
+        (row.cols || []).forEach((c, cIdx) => {
+          const colX = bandX + innerPadding + (cIdx + 1) * colW;
+          const colCellHtml = `<div style="display:flex;flex-direction:column;justify-content:center;padding:0 12px;width:100%;height:100%;background:${isDark ? '#131D31' : '#FFFFFF'};color:${textSecondary};font-size:10.5px;border:1px solid ${cardBorder};box-sizing:border-box;">
+            <div style="font-weight:700;color:${textPrimary};">${escapeXml(c.toolName || '')}</div>
+            <div style="margin-top:2px;">${escapeXml(c.value || '')}</div>
+          </div>`;
+          addCell(`
+            <mxCell id="${cellId++}" value="${escapeXml(colCellHtml)}" style="text;html=1;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+              <mxGeometry x="${colX}" y="${rowY}" width="${colW}" height="${rowH}" as="geometry"/>
+            </mxCell>
+          `);
+        });
+      });
+    }
 
     bandY += bandH + 20;
   });
 
-  // 3. Footer Bar
+  // 3. Connectors & Edges
+  if (Array.isArray(graph?.connections)) {
+    graph.connections.forEach(conn => {
+      const fromGeom = cardCoordinates[conn.fromId];
+      const toGeom = cardCoordinates[conn.toId];
+      if (fromGeom && toGeom) {
+        const edgeStyle = 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;strokeWidth=1.5;strokeDasharray=0;';
+        addCell(`
+          <mxCell id="${cellId++}" value="${escapeXml(conn.label || '')}" style="${edgeStyle}" edge="1" parent="1">
+            <mxGeometry relative="1" as="geometry">
+              <mxPoint x="${fromGeom.x + fromGeom.w}" y="${fromGeom.y + fromGeom.h / 2}" as="sourcePoint"/>
+              <mxPoint x="${toGeom.x}" y="${toGeom.y + toGeom.h / 2}" as="targetPoint"/>
+            </mxGeometry>
+          </mxCell>
+        `);
+      }
+    });
+  }
+
+  // 4. Footer Bar
   const footerX = 40;
   const footerY = 910;
   const footerW = 1520;
