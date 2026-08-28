@@ -4,8 +4,13 @@
  * Compiles ANY prompt or use case into authentic, structured, zero-collision
  * architectural nodes, stages, and cards for Draw.io viewports.
  * 
- * Prioritizes high-specificity semantic intents (RAG/Vector Search, GPU/MIG,
- * Databases, Streaming) to guarantee 100% real-time fidelity to prompt refinements.
+ * Prioritizes high-specificity semantic intents:
+ * 1. ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust
+ * 2. Vertex AI Vector Search / ScaNN / RAG Grounding
+ * 3. GPU / Compute Engine MIG / Autoscaling / Slurm
+ * 4. Multi-Region Cloud Spanner / Database Layer
+ * 5. Real-Time Event Streaming / PubSub / Dataflow
+ * 6. Standard Enterprise Agentic AI Platform
  */
 
 import { renderGcpIconHtml, GcpIconDefinition } from './gcpIcons';
@@ -54,7 +59,61 @@ export function compileArchitectureFromPrompt(
   const title = projectTitle || (projectName && useCaseName ? `${projectName}: ${useCaseName}` : 'Enterprise Google Cloud Platform Architecture');
 
   // =========================================================================
-  // 1. SPECIFIC: Vertex AI Vector Search / ScaNN / RAG Grounding / Embeddings
+  // 1. SPECIFIC: ADK 2.0 / Agent Tools / BeyondCorp / Function Calling / MCP
+  // =========================================================================
+  if (p.includes('adk') || p.includes('agentic tool') || p.includes('beyondcorp') || p.includes('tool calling') || p.includes('function call') || (p.includes('tool') && p.includes('iap')) || (p.includes('tool') && p.includes('agent'))) {
+    return {
+      projectTitle: title.includes('ADK') || title.includes('BeyondCorp') || title.includes('Tool') ? title : `${projectName || 'Google Cloud'}: ADK 2.0 Agentic Tools & BeyondCorp Zero-Trust Platform`,
+      subtitle: 'Agentic Tool Architecture: BeyondCorp Ingress → ADK 2.0 Tool Runtime → Privileged HITL Gate → Enterprise API Connectors',
+      summary: 'Integrated ADK 2.0 Agentic Tools with BeyondCorp Zero-Trust & Identity-Aware Proxy (IAP)',
+      targetTier: 'Agentic Tools & Zero-Trust Governance (Tier 4)',
+      changedComponents: ['ADK 2.0 Agent Tool Runtime', 'BeyondCorp Context-Aware IAP', 'Privileged Action Approval Gate (HITL)', 'Enterprise Tool Registry (OpenAPI)'],
+      stages: [
+        { num: '1', title: 'Zero-Trust Ingress', category: 'ingress', color: '#1A73E8' },
+        { num: '2', title: 'Intent & Policy Router', category: 'orchestration', color: '#1A73E8' },
+        { num: '3', title: 'ADK 2.0 Agent Swarm', category: 'compute', color: '#1A73E8' },
+        { num: '4', title: 'Tools & Privileged Gate', category: 'data', color: '#1A73E8' },
+        { num: '5', title: 'Gemini Multi-Agent Core', category: 'ai', color: '#1E8E3E' },
+        { num: '6', title: 'Audited Action Delivery', category: 'ops', color: '#1E8E3E' }
+      ],
+      nodes: {
+        ingress: [
+          { id: 'n_start_users', title: 'Enterprise Users & Copilots', subtitle: 'Workspace, Slack, REST Clients, CLI', icon: 'user_ingress', stage: 1 },
+          { id: 'n_edge_armor', title: 'Cloud Armor & WAF Rules', subtitle: 'OWASP Defense • Rate Limits', icon: 'cloud_armor', stage: 1 },
+          { id: 'n_edge_iap', title: 'BeyondCorp IAP Zero-Trust', subtitle: 'Context-Aware mTLS & Device Identity', icon: 'iap', stage: 1, highlight: true },
+          { id: 'n_cloud_dlp', title: 'Sensitive Data Protection', subtitle: 'Real-Time DLP Payload Sanitization', icon: 'cloud_dlp', stage: 1 }
+        ],
+        routing: [
+          { id: 'n_fast_path', title: 'Direct Read-Only Tool Cache', subtitle: 'Memorystore Fast-Path Tool Lookup', icon: 'memorystore', stage: 2 },
+          { id: 'gate_task_type', title: 'Agent Policy & Scope Router', subtitle: 'Role-Based Tool Permissions (RBAC)', icon: 'agent_builder', stage: 2 },
+          { id: 'n_supervisor', title: 'ADK 2.0 Supervisor Engine', subtitle: 'GKE Autopilot Multi-Agent Orchestrator', icon: 'gke_autopilot', stage: 2, highlight: true },
+          { id: 'n_memory', title: 'Episodic & Tool State Store', subtitle: 'Cloud Memorystore & Spanner Session Sync', icon: 'memorystore', stage: 2 }
+        ],
+        workers: [
+          { id: 'n_rag_agent', title: 'ADK Autonomous Tool Agent', subtitle: 'Dynamic Function Calling & OpenAPI Exec', icon: 'agent_builder', stage: 3, highlight: true },
+          { id: 'n_sql_agent', title: 'Database & Analytics Agent', subtitle: 'Text-to-SQL & Multi-Cloud Connectors', icon: 'bigquery', stage: 3 },
+          { id: 'n_tool_agent', title: 'External Integration Worker', subtitle: 'Secure Async Cloud Run Webhook Runner', icon: 'cloud_run', stage: 3 }
+        ],
+        data: [
+          { id: 'n_vector_search', title: 'Enterprise Tool Registry', subtitle: 'OpenAPI 3.0 & MCP Dynamic Catalog', icon: 'agent_builder', stage: 4, highlight: true },
+          { id: 'n_doc_ingestion', title: 'Cloud Storage Secret Vault', subtitle: '[CMEK Encrypted Service Credentials]', icon: 'cloud_storage', stage: 4 },
+          { id: 'n_bigquery_dw', title: 'BigQuery Audit Warehouse', subtitle: 'Real-Time Tool Invocation Logs', icon: 'bigquery', stage: 4 },
+          { id: 'n_spanner_db', title: 'Cloud Spanner Tool State', subtitle: 'ACID Distributed Idempotency Ledger', icon: 'spanner', stage: 4 },
+          { id: 'n_hitl_governance_node', title: 'Privileged HITL Approval Gate', subtitle: 'Dual-Admin Escalation (High-Risk)', icon: 'cloud_iam', stage: 4, highlight: true },
+          { id: 'n_vertex_extensions', title: 'Enterprise API Connectors', subtitle: 'Salesforce, SAP, Workday, ServiceNow', icon: 'agent_builder', stage: 4, highlight: true }
+        ],
+        aiCore: { id: 'n_gemini_core', title: 'Gemini 3.1 Pro Multi-Agent', subtitle: 'CoT Reasoning • Function Call Verification', icon: 'gemini', stage: 5, highlight: true },
+        delivery: [
+          { id: 'gate_factuality', title: 'Vertex Model Armor', subtitle: 'Prompt Injection & Tool Guardrails', icon: 'model_armor', stage: 6 },
+          { id: 'n_delivery', title: 'Signed Secure Action Stream', subtitle: 'Cryptographically Verified Responses', icon: 'vertex_ai', stage: 6 },
+          { id: 'n_audit_logging', title: 'Cloud Logging & Cloud Trace', subtitle: 'Immutable Audit Trail • SIEM Egress', icon: 'cloud_logging', stage: 6 }
+        ]
+      }
+    };
+  }
+
+  // =========================================================================
+  // 2. SPECIFIC: Vertex AI Vector Search / ScaNN / RAG Grounding / Embeddings
   // =========================================================================
   if (p.includes('vector') || p.includes('scann') || p.includes('rag') || p.includes('grounding') || p.includes('similarity') || p.includes('embedding') || p.includes('knowledge graph')) {
     return {
@@ -108,7 +167,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 2. SPECIFIC: GPU / Compute Engine MIG / Autoscaling
+  // 3. SPECIFIC: GPU / Compute Engine MIG / Autoscaling
   // =========================================================================
   if (p.includes('mig') || p.includes('gpu') || p.includes('instance') || p.includes('gce') || p.includes('h100') || p.includes('a3') || p.includes('compute engine') || p.includes('internal lb')) {
     return {
@@ -162,9 +221,9 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 3. SPECIFIC: Cloud Spanner / Multi-Region DB / Zero-Trust Mesh
+  // 4. SPECIFIC: Cloud Spanner / Multi-Region DB / Zero-Trust Mesh
   // =========================================================================
-  if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('microservice') || p.includes('zero-trust')) {
+  if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('microservice') || p.includes('truetime')) {
     return {
       projectTitle: title,
       subtitle: 'Zero-Trust Cloud Architecture: Identity Ingress → Microservices Mesh → Multi-Region Spanner & Analytics',
@@ -216,7 +275,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 4. GENERAL: Event Streaming / PubSub / Dataflow
+  // 5. GENERAL: Event Streaming / PubSub / Dataflow
   // =========================================================================
   if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('kafka') || p.includes('dataflow') || p.includes('cdc') || p.includes('queue')) {
     return {
@@ -270,7 +329,7 @@ export function compileArchitectureFromPrompt(
   }
 
   // =========================================================================
-  // 5. DEFAULT: Standard Enterprise Agentic AI Platform
+  // 6. DEFAULT: Standard Enterprise Agentic AI Platform
   // =========================================================================
   return {
     projectTitle: title,
