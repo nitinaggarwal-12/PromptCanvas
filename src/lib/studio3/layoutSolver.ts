@@ -250,6 +250,8 @@ export function solveAndRenderStudio3Xml(
           const nodeX = stageX + 12;
           const currentStageNodeW = stageW - 24;
 
+          cardCoordinates[node.id] = { x: nodeX, y: nodeY, w: currentStageNodeW, h: nodeH };
+
           const nodeHtml = `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;height:100%;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;">
             ${node.iconKey ? renderGcpIconHtml(node.iconKey, 24) : '<div>⚙️</div>'}
             <div style="line-height:1.25;">
@@ -296,7 +298,8 @@ export function solveAndRenderStudio3Xml(
       // Table Data Rows
       rows.forEach((row, rIdx) => {
         const rowY = bandY + innerPadding + headerRowH + rIdx * rowH;
-        
+        cardCoordinates[`matrix_row_${bandIndex}_${rIdx}`] = { x: bandX + innerPadding, y: rowY, w: tableW, h: rowH };
+
         // Col 0: Dimension Name
         const dimCellHtml = `<div style="display:flex;align-items:center;padding:0 12px;width:100%;height:100%;background:${isDark ? '#0C1322' : '#F8FAFC'};color:${textPrimary};font-weight:700;font-size:11px;border:1px solid ${cardBorder};box-sizing:border-box;">
           ${escapeXml(row.dimension || 'Dimension')}
@@ -332,7 +335,35 @@ export function solveAndRenderStudio3Xml(
       const fromGeom = cardCoordinates[conn.fromId];
       const toGeom = cardCoordinates[conn.toId];
       if (fromGeom && toGeom) {
-        const edgeStyle = 'edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3B82F6;strokeWidth=1.5;strokeDasharray=0;';
+        let strokeColor = '#3B82F6';
+        let strokeWidth = '1.5';
+        let dashed = '0';
+        let dashPattern = '';
+
+        if (conn.style === 'dashed_orange') {
+          strokeColor = '#F97316';
+          strokeWidth = '1.5';
+          dashed = '1';
+          dashPattern = 'dashPattern=6 4;';
+        } else if (conn.style === 'dashed_purple') {
+          strokeColor = '#8B5CF6';
+          strokeWidth = '1.5';
+          dashed = '1';
+          dashPattern = 'dashPattern=4 4;';
+        } else if (conn.style === 'green_protocol') {
+          strokeColor = '#10B981';
+          strokeWidth = '1.8';
+          dashed = '0';
+        } else if (conn.style === 'feedback_teal') {
+          strokeColor = '#14B8A6';
+          strokeWidth = '1.5';
+          dashed = '1';
+          dashPattern = 'dashPattern=5 5;';
+        }
+
+        const labelPillStyle = 'labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;fontSize=9;fontStyle=1;fontColor=#1E293B;';
+        const edgeStyle = `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${strokeColor};strokeWidth=${strokeWidth};dashed=${dashed};${dashPattern}${labelPillStyle}`;
+
         addCell(`
           <mxCell id="${cellId++}" value="${escapeXml(conn.label || '')}" style="${edgeStyle}" edge="1" parent="1">
             <mxGeometry relative="1" as="geometry">
