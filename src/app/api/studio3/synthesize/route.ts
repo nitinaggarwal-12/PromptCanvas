@@ -136,6 +136,20 @@ export async function POST(req: NextRequest) {
       console.warn('DB persistence warning (proceeding with runtime diagram):', dbErr);
     }
 
+    // Check for associated visual media asset
+    let mediaAsset: any = null;
+    if (prompt.toLowerCase().includes('gladiator') || prompt.toLowerCase().includes('colosseum')) {
+      mediaAsset = {
+        id: 'media_gladiator_arena',
+        type: 'image',
+        title: 'Colosseum Gladiator Duel',
+        url: '/gladiators_rome_arena.jpg',
+        caption: 'Photorealistic Roman Colosseum arena duel with Secutor vs Retiarius in dramatic sunlight and dust.',
+        aspectRatio: '16:9',
+        createdAt: new Date().toISOString()
+      };
+    }
+
     return NextResponse.json({
       success: true,
       diagramId,
@@ -144,6 +158,7 @@ export async function POST(req: NextRequest) {
       graph: finalGraph,
       xml,
       qualityReport,
+      mediaAsset,
       logs: logger.getLogs(),
       stats: {
         bandsCount: Array.isArray(finalGraph?.bands) ? finalGraph.bands.length : 1,

@@ -46,6 +46,7 @@ import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
 import { Studio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { Studio3QualityReport } from '@/lib/studio3/qualityValidator';
 import { Studio3LogEntry } from '@/lib/studio3/telemetryLogger';
+import { MediaStage, Studio3MediaAsset } from '@/components/studio3/MediaStage';
 
 interface ChatMessage {
   id: string;
@@ -102,9 +103,24 @@ export default function Studio3Page() {
     }
   ]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'canvas' | 'logs' | 'quality' | 'xml'>('canvas');
+  const [activeTab, setActiveTab] = useState<'canvas' | 'media' | 'logs' | 'quality' | 'xml'>('canvas');
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Media Stage Assets State
+  const [mediaAssets, setMediaAssets] = useState<Studio3MediaAsset[]>([
+    {
+      id: 'gladiator_arena_hero',
+      type: 'image',
+      title: 'Colosseum Gladiator Duel',
+      url: '/gladiators_rome_arena.jpg',
+      caption: 'Photorealistic Roman Colosseum arena scene with Secutor vs Retiarius in dramatic sunlight and dust.',
+      aspectRatio: '16:9',
+      createdAt: new Date().toISOString()
+    }
+  ]);
+  const [activeAssetIndex, setActiveAssetIndex] = useState<number>(0);
+  const [generatingMedia, setGeneratingMedia] = useState<boolean>(false);
 
   // Active State & Persistent ID
   const [diagramId, setDiagramId] = useState<string | null>(null);
@@ -116,6 +132,27 @@ export default function Studio3Page() {
   const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
   const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
+
+  const handleGenerateMedia = async (prompt: string, type: 'image' | 'animation' = 'animation') => {
+    setGeneratingMedia(true);
+    try {
+      const res = await fetch('/api/studio3/media', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, type })
+      });
+      const data = await res.json();
+      if (data.success && data.asset) {
+        setMediaAssets(prev => [data.asset, ...prev]);
+        setActiveAssetIndex(0);
+        setActiveTab('media');
+      }
+    } catch (err) {
+      console.error('Failed to generate media:', err);
+    } finally {
+      setGeneratingMedia(false);
+    }
+  };
 
   // Multi-page Slide Deck Parser & Active Slide Selector
   const parsedSlides = React.useMemo(() => {
@@ -440,6 +477,22 @@ export default function Studio3Page() {
 
       if (Array.isArray(data.logs)) {
         setAllLogs(prev => [...prev, ...data.logs]);
+      }
+
+      if (data.mediaAsset) {
+        setMediaAssets(prev => {
+          const exists = prev.some(a => a.id === data.mediaAsset.id);
+          return exists ? prev : [data.mediaAsset, ...prev];
+        });
+        if (
+          promptText.toLowerCase().includes('image') ||
+          promptText.toLowerCase().includes('photo') ||
+          promptText.toLowerCase().includes('gladiator') ||
+          promptText.toLowerCase().includes('picture') ||
+          promptText.toLowerCase().includes('movie')
+        ) {
+          setActiveTab('media');
+        }
       }
 
       // Assistant Response Message
@@ -815,6 +868,19 @@ export default function Studio3Page() {
                 <span>Draw.io Stage</span>
               </button>
               <button
+                onClick={() => setActiveTab('media')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                  activeTab === 'media'
+                    ? 'bg-purple-600 text-white shadow-md'
+                    : theme === 'dark'
+                    ? 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200 font-bold'
+                }`}
+              >
+                <Film className="w-3.5 h-3.5 text-purple-400" />
+                <span>Media Stage ({mediaAssets.length})</span>
+              </button>
+              <button
                 onClick={() => setActiveTab('logs')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   activeTab === 'logs'
@@ -982,6 +1048,18 @@ export default function Studio3Page() {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* MEDIA & CINEMA STAGE TAB (Images, Animations, HTML5 Canvas/WebGL, GIFs, Videos) */}
+            {activeTab === 'media' && (
+              <MediaStage
+                theme={theme}
+                mediaAssets={mediaAssets}
+                activeAssetIndex={activeAssetIndex}
+                onSelectAsset={setActiveAssetIndex}
+                onGenerateMedia={handleGenerateMedia}
+                isGenerating={generatingMedia}
+              />
             )}
 
             {/* LIVE GEMINI API LOGS TAB */}
