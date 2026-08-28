@@ -117,6 +117,30 @@ const SERVICE_ICON_MAP: Record<string, { iconKey: string; defaultItems: string[]
   monitoring: {
     iconKey: 'cloud_monitoring',
     defaultItems: ['Golden signals telemetry (Latency, Errors, Saturation)', 'Automated PagerDuty & Slack alerting policies']
+  },
+  diffusion: {
+    iconKey: 'gemini',
+    defaultItems: ['Forward Diffusion Gaussian noise schedule', 'Latent space score matching & denoising', 'Reverse trajectory sampling (DDPM / DDIM)']
+  },
+  noise: {
+    iconKey: 'vertex_ai',
+    defaultItems: ['Forward Markovian noise schedule (β_t)', 'Gaussian noise perturbation q(x_t|x_0)', 'Time-step conditioning embeddings']
+  },
+  denoise: {
+    iconKey: 'gemini',
+    defaultItems: ['U-Net / DiT score-based noise predictor', 'Cross-attention text prompt conditioning', 'Iterative noise residual subtraction']
+  },
+  latent: {
+    iconKey: 'vertex_vector_search',
+    defaultItems: ['Variational Autoencoder (VAE) encoder/decoder', '8x spatial dimension compression', 'Perceptual and adversarial patch loss']
+  },
+  unet: {
+    iconKey: 'gemini',
+    defaultItems: ['Encoder-Decoder with skip connections', 'Spatial self-attention & cross-attention', 'Time-embedding injection blocks']
+  },
+  dit: {
+    iconKey: 'gemini',
+    defaultItems: ['Diffusion Transformer patch backbone', 'Multi-head self-attention token mixing', 'Scalable generative image synthesis']
   }
 };
 
@@ -197,12 +221,22 @@ export function enrichAndSanitizeSemanticGraph(
             ? rawItems.slice(0, 6) // Cap items at 6 to prevent vertical overflow
             : (defaultItems.length > 0 ? defaultItems : ['Core architectural subsystem', 'High-performance processing block', 'Low-latency communication pathway']);
 
+          let cleanSnippet = card?.codeSnippet;
+          if (cleanSnippet && typeof cleanSnippet === 'string') {
+            if (!cleanSnippet.includes('\n') && cleanSnippet.length > 40) {
+              cleanSnippet = cleanSnippet
+                .replace(/\s+(PRIMARY KEY|OPTIONS|FROM|WHERE|GROUP BY|ORDER BY)\b/gi, '\n  $1')
+                .replace(/,\s*/g, ',\n  ');
+            }
+          }
+
           return {
             ...card,
             id: card?.id || `card_${bIdx}_${cIdx}_${cardIdx}`,
             title: card?.title && typeof card.title === 'string' ? card.title : 'Architecture Component',
             iconKey: matchedIconKey,
             items: finalItems,
+            codeSnippet: cleanSnippet,
             badge: card?.badge || (titleLower.includes('spanner') ? '99.999% SLA' : titleLower.includes('attention') ? 'Core Block' : undefined)
           };
         });
