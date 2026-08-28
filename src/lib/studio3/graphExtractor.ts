@@ -303,7 +303,112 @@ export function generateGenericConceptualRoadmap(
     };
   }
 
-  // 1. PETROLEUM REFINING & GASOLINE EXTRACTION / CHEMICAL ENGINEERING
+  // 1. HISTORICAL & ANCIENT ARCHITECTURE: ROMAN GLADIATORS IN COLOSSEUM ARENA
+  if (p.includes('gladiator') || p.includes('rome') || p.includes('colosseum') || p.includes('arena') || p.includes('amphitheater')) {
+    return {
+      title: 'ROMAN COLOSSEUM GLADIATORIAL COMBAT: ARENA TOPOLOGY & DYNAMICS',
+      subtitle: 'Hypogeum Substructures, Combatant Classes (Murmillo vs Retiarius), Staging Logistics & Imperial Decision Gates',
+      milestones: [
+        { title: '🏛️ COLOSSEUM ARENA TOPOLOGY', color: 'blue', icon: '🏛️' },
+        { title: '⚔️ COMBAT PHYSICS & RULES', color: 'green', icon: '⚔️' },
+        { title: '🛡️ GLADIATOR CLASS TAXONOMY', color: 'orange', icon: '🛡️' },
+        { title: '👑 IMPERIAL DECISION GATES 🌐', color: 'yellow', icon: '👑' }
+      ],
+      section1Analogy: {
+        title: 'The Dual Combatant & Crowd Feedback Metaphor',
+        actors: [
+          { id: 'hypogeum', name: 'Hypogeum (Underground Staging & Trapdoors)', avatar: '🚪', x: 50, y: 170 },
+          { id: 'arena_floor', name: 'Sand Arena Floor (Harena 87m × 55m)', avatar: '🏟️', x: 170, y: 220 },
+          { id: 'emperor_pod', name: 'Imperial Box & 50,000 Spectators (Cavea)', avatar: '👑', x: 290, y: 170 }
+        ],
+        relations: [
+          { from: 'hypogeum', to: 'arena_floor', label: 'Lifts Deploy Combatants & Beasts' },
+          { from: 'arena_floor', to: 'emperor_pod', label: 'Missio Appeal for Life/Death' }
+        ],
+        legend: [
+          { icon: '🚪', label: 'Hypogeum Staging' },
+          { icon: '⚔️', label: 'Combat Arena' },
+          { icon: '👑', label: 'Imperial Verdict' }
+        ],
+        challengeCallout: 'Core Dynamic: Balancing crowd spectacle, martial training (Ludus), and lethal entertainment under imperial oversight.'
+      },
+      section2Prerequisites: {
+        title: 'Arena Dimensions, Kinetics & Combat Rules (Lex Pugnandi)',
+        mathFormulas: [
+          { name: 'Colosseum Elliptical Geometry', formula: 'Area = π · a · b = π · (94.5m) · (78m) ≈ 23,000 m²', icon: '📐' },
+          { name: 'Strike Kinetic Energy', formula: 'E_k = ½ m · v²  (Gladius thrust: m=1.2kg, v=12m/s → 86 Joules)', icon: '⚡' },
+          { name: 'Crowd Decibel Resonance', formula: 'SPL = 10 · log10(P / P0) ≈ 115 dB (50,000 Cheering Spectators)', icon: '🔊' }
+        ],
+        checklist: [
+          '☑ Hypogeum: 32 animal pens, 28 hydraulic counterweight freight elevators',
+          '☑ Sand Surface (Harena): 15cm absorbent river sand absorbing blood and cushioning falls',
+          '☑ Referee Oversight: Summa Rudis presiding with staff to prevent illegal fouls',
+          '☑ Decision Rule: Submissio (finger raise) triggering Missio appeal to Emperor'
+        ]
+      },
+      section3Taxonomy: {
+        title: 'Gladiator Fighting Styles & Weapon Classes',
+        variants: [
+          { name: 'MURMILLO (Heavy Tank)', subtext: 'Cassis helmet, Scutum rectangular shield, Gladius sword', diagramType: 'layers' },
+          { name: 'RETIARIUS (Agile Net-Fighter)', subtext: 'Rete weighted net, Fascina trident, Galerus shoulder guard', diagramType: 'directed' },
+          { name: 'THRAEX (Thracian Skirmisher)', subtext: 'Sica curved dagger, Parma small shield, High greaves', diagramType: 'nodes' },
+          { name: 'SECUTOR (Chaser / Anti-Net)', subtext: 'Smooth rounded helmet with tiny eyeholes preventing net entanglement', diagramType: 'weighted' }
+        ]
+      },
+      section4ModernFrontiers: {
+        title: 'Modern Archaeological & Engineering Discoveries',
+        knowledgeGraphNodes: [
+          { id: 'kg1', label: 'Hydraulic\nLifts', color: '#38BDF8' },
+          { id: 'kg2', label: 'Travertine\nFoundations', color: '#F59E0B' },
+          { id: 'kg3', label: 'Velarium\nAwning', color: '#10B981' },
+          { id: 'kg4', label: 'Osteology\nDiet (Barley)', color: '#A855F7' }
+        ],
+        frameworkBullets: [
+          '🏛️ • Reconstructed Roman Hypogeum counterweight elevators & bronze pulleys',
+          '🔬 • Bone isotope analysis revealing high-calcium vegetarian "Hordearii" barley diet',
+          '🏗️ • Velarium canopy rope mechanics engineered by Imperial Roman Navy sailors'
+        ]
+      },
+      bottomWorkflow: {
+        title: 'END-TO-END GLADIATORIAL COMBAT LIFECYCLE (MUNERA)',
+        step1Problem: {
+          title: 'STEP 1: Pompa & Entry Ingress',
+          subtitle: 'Solemn Procession & Weapon Proving',
+          icon: '🎺 🛡️',
+          formula: 'Probatio Armorum (Sharpness Inspection)',
+          bullets: ['• Gladiator procession into the arena', '• Editor inspects weapon sharpness']
+        },
+        step2Execution: {
+          title: 'STEP 2: Tactical Engagement',
+          subtitle: 'Heavy vs Agile Asymmetric Combat',
+          input: 'Murmillo vs Retiarius Matchup',
+          phases: [
+            { name: '1. Distance Management', desc: 'Retiarius casts net from 4m range, probing with trident' },
+            { name: '2. Shield Rush & Close Quarters', desc: 'Murmillo absorbs trident thrust with scutum and closes range' },
+            { name: '3. Disarm & Ground Submission', desc: 'Wounded fighter drops shield and raises index finger (Ad Digitum)' }
+          ]
+        },
+        step3Engine: {
+          title: 'STEP 3: Imperial Verdict Gate',
+          subtitle: 'Missio (Mercy) vs Iugula (Execution)',
+          engines: [
+            { name: 'MISSIO (MERCY / SPARED)', complexity: 'Cost: Paid by Sponsor', items: ['Granted for valorous combat', 'Fighter returns to Ludus to heal and fight again'] },
+            { name: 'POLLICE VERSO (TURNED THUMB)', complexity: 'Cost: Full Replacement Price', items: ['Signaled for cowardice or poor defense', 'Fighter accepts fatal strike with composure (Sine Missione)'] }
+          ],
+          callout: '⚔️ Imperial Decision Gate: Verdict finalized by Emperor / Editor of the Games'
+        },
+        step4Applications: [
+          { title: 'Public Roman Games', subtitle: 'Ludi & Munera', icon: '🏛️', detail: 'State festivals' },
+          { title: 'Training Academies', subtitle: 'Ludus & Lanista', icon: '🏋️', detail: 'Gladiator school' },
+          { title: 'Historical Archaeology', subtitle: 'Bone Isotope Data', icon: '🔬', detail: 'Scientific insight' },
+          { title: 'Engineering Feats', subtitle: 'Substructure Lifts', icon: '⚙️', detail: 'Roman hydraulics' }
+        ]
+      },
+      footerTenets: ['MARTIAL VALOR', 'ASYMMETRIC CLASS BALANCE', 'IMPERIAL SPECTACLE & ARCHITECTURE']
+    };
+  }
+
+  // 2. PETROLEUM REFINING & GASOLINE EXTRACTION / CHEMICAL ENGINEERING
   if (p.includes('gasoline') || p.includes('petroleum') || p.includes('refining') || p.includes('crude oil') || p.includes('distillation') || p.includes('fractional') || p.includes('hydrocarbon')) {
     return {
       title: 'PETROLEUM REFINING & GASOLINE EXTRACTION: FROM CRUDE OIL TO HIGH-OCTANE FUEL',
