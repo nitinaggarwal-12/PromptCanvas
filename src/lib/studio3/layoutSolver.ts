@@ -386,9 +386,15 @@ export function solveAndRenderStudio3Xml(
     ? graph.tenets.filter(t => typeof t === 'string' && t.trim().length > 0)
     : [];
 
+  const defaultTenets = [
+    'FIRST-PRINCIPLES ARCHITECTURE',
+    graph?.abstractionLevel === 'technical' ? 'ZERO TRUST & RESILIENCE' : 'HIGH AVAILABILITY & ISOLATION',
+    'CONTINUOUS OBSERVABILITY'
+  ];
+
   const tenetsString = rawTenets.length > 0
     ? rawTenets.join('  |  ')
-    : 'PRODUCER INDEPENDENCE  |  CONSUMER INDEPENDENCE  |  FORMAT, NOT PLATFORM';
+    : defaultTenets.join('  |  ');
 
   const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;border-radius:8px;background:${isDark ? '#0F172A' : '#F1F5F9'};border:1px solid ${containerBorder};color:${textSecondary};font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:700;letter-spacing:0.06em;">
     <div style="display:flex;align-items:center;gap:8px;">
