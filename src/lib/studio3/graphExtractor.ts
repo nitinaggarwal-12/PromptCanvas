@@ -1225,28 +1225,30 @@ export async function extractStudio3SemanticGraph(params: {
     return generateDynamicFirstPrinciplesGraph(prompt, intent);
   }
 
-  const modelName = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+  const modelName = process.env.GEMINI_MODEL_ID || process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
   const startTime = Date.now();
 
   logger?.log({
     stage: 'graph_synthesis',
     status: 'calling',
     model: modelName,
-    message: `Calling Gemini API for Semantic Graph Extraction on: "${(prompt || '').slice(0, 60)}..."`,
-    payload: { prompt, intent }
+    message: `Calling Gemini API (${modelName}) for bespoke graph extraction on: "${(prompt || '').slice(0, 60)}..."`,
+    payload: { prompt, intent, model: modelName }
   });
 
   try {
     const ai = getAiClient(apiKey);
 
-    const systemInstruction = `You are Google DeepMind's Premier Architecture & Scientific Knowledge Synthesizer for Studio 3.
-Your task is to convert the user's prompt and validated intent into an authentic, visually compelling architecture diagram or 2-Tier Learning Roadmap.
+    const systemInstruction = `You are Google DeepMind's Premier Multi-Modal Architecture & Engineering Knowledge Synthesizer.
+Your task is to analyze the user's natural language request and synthesize an authentic, visually stunning, and 100% bespoke architecture graph tailored specifically to their prompt.
 
 MANDATORY RULES:
-1. For ALL conceptual, educational, physical science, mathematical, theoretical, or algorithmic topics (such as "help me learn centripetal vs centrifugal forces", "teach me neural networks", "how does gasoline extraction work", "explain transformer attention", "quantum mechanics"), you MUST output "layoutType": "conceptual_roadmap" with the complete "conceptualRoadmap" object. DO NOT output loose overlapping coordinates or generic Kanban card boxes.
-2. For cloud infrastructure and systems topologies (e.g. "VPC landing zone", "Microservices Kubernetes", "Payment gateway"), you can use "bands" with structured columns.
-3. Every formula, milestone, and workflow step MUST be technically precise and informative.
-4. Ensure 4 distinct milestone chevrons, 4 visual taxonomy variants, and 4 real-world deployment applications.`;
+1. No generic or canned boilerplate. Every title, subsystem, card item, protocol, and connector MUST be deeply tailored and relevant to the user's specific prompt.
+2. For educational, scientific, learning, and algorithmic flows ("help me learn X", "how does X work", "explain X step by step"):
+   - Output structured bands or a conceptualRoadmap that teaches the exact concepts, mathematical foundations, data representations, and real-world architectures for X.
+3. For cloud systems and distributed engineering topologies:
+   - Use structured tiers/bands (e.g. Ingress, Compute/Worker Engine, Storage/Persistence, Security/Governance) with rich technical bullet points and authentic GCP/cloud services.
+4. Connectors MUST have explicit numbered badges (❶, ❷, ❸...) and semantic protocol labels showing true data flow and state transitions.`;
 
     const userContent = `Extract the complete architecture graph for:
 Prompt: "${prompt}"
