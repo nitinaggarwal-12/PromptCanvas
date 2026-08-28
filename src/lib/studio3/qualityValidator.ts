@@ -61,15 +61,15 @@ export function verifyPhase1Technical(
   (graph?.bands || []).forEach(b => {
     (b.columns || []).forEach(c => {
       (c.cards || []).forEach(card => {
-        if (card.title) allCardTitles.push(card.title.toLowerCase());
-        (card.items || []).forEach(it => {
-          if (it) allItems.push(it.toLowerCase());
+        if (card && typeof card.title === 'string') allCardTitles.push(card.title.toLowerCase());
+        (card?.items || []).forEach(it => {
+          if (typeof it === 'string') allItems.push(it.toLowerCase());
         });
       });
     });
     (b.pipelineStages || []).forEach(s => {
       (s.nodes || []).forEach(n => {
-        if (n.name) allCardTitles.push(n.name.toLowerCase());
+        if (n && typeof n.name === 'string') allCardTitles.push(n.name.toLowerCase());
       });
     });
   });
@@ -87,9 +87,22 @@ export function verifyPhase1Technical(
   }
 
   // 2. Entity Completeness Score safely
-  const requiredEntities = (intent?.inferredEntities || []).map(e => String(e).toLowerCase());
+  const rawEntities = Array.isArray(intent?.inferredEntities) ? intent.inferredEntities : [];
+  const requiredEntities = rawEntities.filter(e => typeof e === 'string').map(e => e.toLowerCase());
   const matchedEntities: string[] = [];
   const missingEntities: string[] = [];
+
+  if (requiredEntities.length === 0) {
+    // If no specific required entities, full completeness
+    return {
+      passed: ontologyErrors.length === 0,
+      completenessScore: 1.0,
+      matchedEntities: [],
+      missingEntities: [],
+      ontologyErrors,
+      orphanNodesCount: 0
+    };
+  }
 
   requiredEntities.forEach(ent => {
     if (combinedCorpus.includes(ent)) {
@@ -104,8 +117,8 @@ export function verifyPhase1Technical(
     : 1.0;
 
   return {
-    passed: ontologyErrors.length === 0 && completenessScore >= 0.6,
-    completenessScore: Math.round(completenessScore * 100) / 100,
+    passed: ontologyErrors.length === 0 && completenessScore >= 0.7,
+    completenessScore: Math.min(1.0, Math.max(0.0, completenessScore)),
     matchedEntities,
     missingEntities,
     ontologyErrors,
@@ -114,66 +127,77 @@ export function verifyPhase1Technical(
 }
 
 /**
- * 🎨 Phase 2: Visual & Spatial Quality Inspection
+ * 📐 Phase 2: Visual & Spatial Quality Inspection
  */
 export function verifyPhase2Visual(
-  boxes: BoundingBox[] = [],
-  canvasWidth = 1600,
-  canvasHeight = 1000
+  graph: Studio3SemanticGraph,
+  boxes: BoundingBox[] = []
 ): Studio3QualityReport['phase2Visual'] {
-  const collisions: string[] = [];
-  const safetyPadding = 12; // 12px margin
+  const layoutViolations: string[] = [];
+  let collisionsCount = 0;
 
-  // 1. AABB Collision Detection across nodes
+  // AABB Collision Detection across provided bounding boxes
   for (let i = 0; i < boxes.length; i++) {
     for (let j = i + 1; j < boxes.length; j++) {
-      const b1 = boxes[i];
-      const b2 = boxes[j];
+      const a = boxes[i];
+      const b = boxes[j];
 
-      const overlapX = (b1.x < b2.x + b2.w - safetyPadding) && (b1.x + b1.w - safetyPadding > b2.x);
-      const overlapY = (b1.y < b2.y + b2.h - safetyPadding) && (b1.y + b1.h - safetyPadding > b2.y);
+      // Axis-Aligned Bounding Box (AABB) intersection formula
+      const isOverlap =
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y;
 
-      if (overlapX && overlapY) {
-        collisions.push(`Collision between "${b1.name}" and "${b2.name}"`);
+      if (isOverlap) {
+        collisionsCount++;
+        layoutViolations.push(`Spatial collision detected between [${a.name}] and [${b.name}].`);
       }
     }
   }
 
-  // 2. Visual Density Calculation (Area occupancy ratio)
-  const totalOccupiedArea = boxes.reduce((acc, b) => acc + (b.w * b.h), 0);
-  const totalCanvasArea = canvasWidth * canvasHeight;
-  const visualDensity = totalCanvasArea > 0 ? totalOccupiedArea / totalCanvasArea : 0.35;
+  // Visual Density calculation (target 25% - 55% occupancy for 16:9 canvas)
+  let totalCardsCount = 0;
+  (graph?.bands || []).forEach(b => {
+    (b.columns || []).forEach(c => (totalCardsCount += (c.cards || []).length));
+    (b.pipelineStages || []).forEach(s => (totalCardsCount += (s.nodes || []).length));
+  });
+
+  const canvasArea = 1600 * 1000;
+  const estimatedCardArea = totalCardsCount * (450 * 120);
+  const visualDensity = canvasArea > 0 ? Math.min(1.0, Math.round((estimatedCardArea / canvasArea) * 100) / 100) : 0.35;
 
   let densityGrade: 'optimal' | 'sparse' | 'dense' = 'optimal';
-  if (visualDensity < 0.20) densityGrade = 'sparse';
-  else if (visualDensity > 0.65) densityGrade = 'dense';
+  if (visualDensity < 0.20 && totalCardsCount > 0) densityGrade = 'sparse';
+  if (visualDensity > 0.65) densityGrade = 'dense';
 
   return {
-    passed: collisions.length === 0 && densityGrade === 'optimal',
-    collisionsCount: collisions.length,
-    visualDensity: Math.round(visualDensity * 100) / 100,
+    passed: collisionsCount === 0,
+    collisionsCount,
+    visualDensity: visualDensity || 0.35,
     densityGrade,
     flowAlignmentPct: 98,
     wcagContrastPass: true,
-    layoutViolations: collisions
+    layoutViolations
   };
 }
 
 /**
- * 🔄 Phase 3: Versioning & State Diff Engine
+ * 🔄 Phase 3: Versioning & Incremental Diff Integrity
  */
 export function verifyPhase3Versioning(
   currentGraph: Studio3SemanticGraph,
-  previousGraph?: Studio3SemanticGraph | null
+  previousGraph: Studio3SemanticGraph | null
 ): Studio3QualityReport['phase3Versioning'] {
-  if (!previousGraph || !previousGraph.bands) {
-    const currentNodes: string[] = [];
+  if (!previousGraph || !Array.isArray(previousGraph.bands) || previousGraph.bands.length === 0) {
+    const allCurrentNodes: string[] = [];
     (currentGraph?.bands || []).forEach(b => {
-      (b.columns || []).forEach(c => (c.cards || []).forEach(card => currentNodes.push(card.title)));
-      (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => currentNodes.push(n.name)));
+      (b.columns || []).forEach(c => (c.cards || []).forEach(card => allCurrentNodes.push(card?.title || card?.id || 'node')));
+      (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => allCurrentNodes.push(n?.name || n?.id || 'node')));
     });
+
     return {
-      addedNodes: currentNodes,
+      addedNodes: allCurrentNodes,
       modifiedEdges: [],
       removedNodes: [],
       anchorsPreservedCount: 0
@@ -182,14 +206,26 @@ export function verifyPhase3Versioning(
 
   const prevNodeSet = new Set<string>();
   (previousGraph.bands || []).forEach(b => {
-    (b.columns || []).forEach(c => (c.cards || []).forEach(card => prevNodeSet.add(card.title.toLowerCase())));
-    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => prevNodeSet.add(n.name.toLowerCase())));
+    (b.columns || []).forEach(c => (c.cards || []).forEach(card => {
+      const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
+      if (key) prevNodeSet.add(key);
+    }));
+    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => {
+      const key = n?.name ? n.name.toLowerCase() : (n?.id ? String(n.id) : null);
+      if (key) prevNodeSet.add(key);
+    }));
   });
 
   const currNodeSet = new Set<string>();
   (currentGraph?.bands || []).forEach(b => {
-    (b.columns || []).forEach(c => (c.cards || []).forEach(card => currNodeSet.add(card.title.toLowerCase())));
-    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => currNodeSet.add(n.name.toLowerCase())));
+    (b.columns || []).forEach(c => (c.cards || []).forEach(card => {
+      const key = card?.title ? card.title.toLowerCase() : (card?.id ? String(card.id) : null);
+      if (key) currNodeSet.add(key);
+    }));
+    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => {
+      const key = n?.name ? n.name.toLowerCase() : (n?.id ? String(n.id) : null);
+      if (key) currNodeSet.add(key);
+    }));
   });
 
   const addedNodes: string[] = [];
@@ -238,34 +274,39 @@ export function evaluateStudio3Quality(params: {
     suggestedTitle: graph?.title || 'System Architecture',
     bands: [],
     inferredEntities: [],
-    rationale: 'Default safe intent',
+    rationale: 'Generated intent fallback',
     actionType: 'initial_synthesis'
   };
 
-  const phase1 = verifyPhase1Technical(graph, safeIntent);
-  const phase2 = verifyPhase2Visual(boxes);
-  const phase3 = verifyPhase3Versioning(graph, previousGraph);
+  const phase1Technical = verifyPhase1Technical(graph, safeIntent);
+  const phase2Visual = verifyPhase2Visual(graph, boxes);
+  const phase3Versioning = verifyPhase3Versioning(graph, previousGraph || null);
 
-  const healingActionsApplied: string[] = [];
-  if (phase2.collisionsCount > 0) {
-    healingActionsApplied.push('Auto-healed 2D bounding box spacing via 140px channel solver');
-  }
-  if (phase1.missingEntities.length > 0 && phase1.completenessScore < 0.8) {
-    healingActionsApplied.push('Augmented semantic entities into contextual cards');
-  }
+  // Overall Quality Scoring Algorithm
+  let overallScore = 100;
 
-  // Calculate Overall Composite Score (0 - 100)
-  const techScore = phase1.completenessScore * 40; // max 40
-  const visualScore = (phase2.collisionsCount === 0 ? 35 : 15) + (phase2.densityGrade === 'optimal' ? 15 : 5); // max 50
-  const versionScore = 10; // max 10
-  const overallScore = Math.min(100, Math.round(techScore + visualScore + versionScore));
+  // Deduct for completeness gaps
+  overallScore -= Math.round((1.0 - phase1Technical.completenessScore) * 20);
+
+  // Deduct for ontology errors
+  overallScore -= phase1Technical.ontologyErrors.length * 10;
+
+  // Deduct for visual collisions
+  overallScore -= phase2Visual.collisionsCount * 15;
+
+  // Deduct for layout violations
+  overallScore -= phase2Visual.layoutViolations.length * 5;
+
+  overallScore = Math.max(0, Math.min(100, overallScore));
+
+  const certified = overallScore >= 75 && phase2Visual.collisionsCount === 0;
 
   return {
     overallScore,
-    certified: overallScore >= 80,
-    phase1Technical: phase1,
-    phase2Visual: phase2,
-    phase3Versioning: phase3,
-    healingActionsApplied
+    certified,
+    phase1Technical,
+    phase2Visual,
+    phase3Versioning,
+    healingActionsApplied: []
   };
 }
