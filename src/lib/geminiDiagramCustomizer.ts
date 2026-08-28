@@ -8,6 +8,9 @@ import { generateContentWithRetry } from './geminiRetryHelper';
 export interface CustomizationResult {
   xml: string;
   reasoning: string;
+  summary?: string;
+  targetTier?: string;
+  changedComponents?: string[];
   businessUsecase: string;
   technicalUsecase: string;
 }
@@ -143,6 +146,9 @@ CRITICAL RULES:
 OUTPUT JSON SCHEMA:
 {
   "reasoning": "string (executive summary of architectural design & changes made)",
+  "summary": "string (one-line review summary of changes made, e.g. 'Configured Cloud Armor WAF & Adaptive Protection')",
+  "targetTier": "string (primary architecture tier affected, e.g. 'Ingress & Security (Tier 1)')",
+  "changedComponents": ["string", "string", "string"],
   "businessUsecase": "string (business value & operational impact)",
   "technicalUsecase": "string (technical implementation details & protocols)",
   "headerTitle": "string (clear, professional architecture title)",
@@ -283,12 +289,20 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
     }
 
     const reasoning = data.reasoning || `Architected using Gemini ${modelName} strictly tailored for "${userPrompt.slice(0, 50)}".`;
+    const summary = data.summary || `Synthesized architecture updates for "${userPrompt.slice(0, 50)}"`;
+    const targetTier = data.targetTier || 'Target Cloud Architecture Tier';
+    const changedComponents = Array.isArray(data.changedComponents) && data.changedComponents.length > 0
+      ? data.changedComponents
+      : Object.values<any>(data.customizations || {}).map((c: any) => c.title || '').filter(Boolean).slice(0, 5);
     const businessUsecase = data.businessUsecase || `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`;
     const technicalUsecase = data.technicalUsecase || `Zero-collision 1400x800 high-availability architecture deployed on Google Cloud.`;
 
     return {
       xml: customizedXml,
       reasoning,
+      summary,
+      targetTier,
+      changedComponents: changedComponents.length > 0 ? changedComponents : ['Edge Security & Ingress', 'Compute Workloads', 'Data Storage Layer'],
       businessUsecase,
       technicalUsecase
     };
@@ -298,6 +312,9 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
     return {
       xml: fallbackFlavored,
       reasoning: `Configured from verified reference blueprint for "${userPrompt.slice(0, 50)}".`,
+      summary: `Synthesized architecture updates for "${userPrompt.slice(0, 50)}"`,
+      targetTier: 'Global Multi-Tier Architecture',
+      changedComponents: ['Edge Security', 'Compute Subnets', 'Data Layer'],
       businessUsecase: `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`,
       technicalUsecase: `High-availability 1400x800 architecture deployed on Google Cloud.`
     };

@@ -1015,6 +1015,10 @@ function Studio2Content() {
         // Call Gemini 3.1 Pro Architecture Validation & Correction API
         let finalXml = '';
         let geminiAudit: any = null;
+        let apiSummary = '';
+        let apiTargetTier = '';
+        let apiChangedComponents: string[] = [];
+        let apiReasoning = '';
 
         try {
           const res = await fetch('/api/studio2/validate-and-synthesize', {
@@ -1025,7 +1029,8 @@ function Studio2Content() {
               useCaseName: derivedUseCase,
               projectTitle: titleToUse,
               prompt: promptToUse,
-              theme: isLight ? 'light' : 'dark'
+              theme: isLight ? 'light' : 'dark',
+              existingXml: activeDiagram?.xml || ''
             })
           });
 
@@ -1034,6 +1039,10 @@ function Studio2Content() {
             if (data.success && data.xml) {
               finalXml = data.xml;
               geminiAudit = data.geminiAudit;
+              apiSummary = data.summary;
+              apiTargetTier = data.targetTier;
+              apiChangedComponents = data.changedComponents;
+              apiReasoning = data.reasoning;
             }
           }
         } catch (err: any) {
@@ -1068,14 +1077,19 @@ function Studio2Content() {
         setDiagrams(updatedDiagrams);
 
         const analysis = analyzePromptChanges(promptToUse);
+        const resolvedSummary = apiSummary || analysis.summary;
+        const resolvedTier = apiTargetTier || analysis.targetTier;
+        const resolvedComponents = (apiChangedComponents && apiChangedComponents.length > 0)
+          ? apiChangedComponents
+          : analysis.changedComponents;
 
         // Put changes in pending review / micro-version state
         setPendingVerification({
           isPending: true,
           prompt: promptToUse,
-          summary: analysis.summary,
-          targetTier: analysis.targetTier,
-          changedComponents: analysis.changedComponents,
+          summary: resolvedSummary,
+          targetTier: resolvedTier,
+          changedComponents: resolvedComponents,
           microVersionTag,
           proposedVersionTag,
           candidateXml: finalXml,
@@ -1087,7 +1101,7 @@ function Studio2Content() {
         const nextSuggestions = computeDynamicNextSuggestions(
           promptToUse,
           derivedProject,
-          analysis.changedComponents
+          resolvedComponents
         );
         setDynamicSuggestions(nextSuggestions);
 

@@ -36,6 +36,9 @@ export async function POST(request: Request) {
 
     let synthesizedXml = baseXml;
     let customReasoning = 'Loaded pristine GCP Functional Flowchart Architecture.';
+    let summary = `Synthesized architecture updates for "${prompt}"`;
+    let targetTier = 'Target Cloud Architecture Tier';
+    let changedComponents: string[] = [];
 
     // 2. Perform Real Gemini 2.5 / 3.1 Pro LLM Diagram Synthesis & Component Mutation
     if (prompt && prompt.trim().length > 3) {
@@ -49,6 +52,9 @@ export async function POST(request: Request) {
         if (customResult && customResult.xml && customResult.xml.includes('<mxfile')) {
           synthesizedXml = customResult.xml;
           customReasoning = customResult.reasoning || `Synthesized architecture components for "${prompt}".`;
+          summary = customResult.summary || summary;
+          targetTier = customResult.targetTier || targetTier;
+          changedComponents = customResult.changedComponents || [];
         }
       } catch (err: any) {
         console.warn('[validate-and-synthesize] LLM Customization warning, falling back to base XML:', err?.message);
@@ -127,6 +133,10 @@ Respond in JSON format:
     return NextResponse.json({
       success: true,
       xml: finalXml,
+      summary,
+      targetTier,
+      changedComponents,
+      reasoning: customReasoning,
       geminiAudit,
     });
   } catch (error: any) {
