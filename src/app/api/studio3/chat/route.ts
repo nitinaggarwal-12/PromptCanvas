@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { parseStudio3IntentWithLLM } from '@/lib/studio3/intentParser';
+import { parseStudio3IntentWithLLM, Studio3Intent } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
 import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
       previousContext: conversationHistory,
       userApiKey
     });
+
+    if (!Array.isArray(intent.inferredEntities)) {
+      intent.inferredEntities = [];
+    }
 
     // 2. Synthesize Updated Graph
     const graph = await extractStudio3SemanticGraph({

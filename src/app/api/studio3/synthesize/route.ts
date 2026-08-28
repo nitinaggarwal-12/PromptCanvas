@@ -16,14 +16,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Resolve Intent & Abstraction Level
-    let finalIntent: Studio3Intent = overrideIntent;
-    if (!finalIntent) {
-      finalIntent = await parseStudio3IntentWithLLM({
-        prompt,
-        previousContext,
-        userApiKey
-      });
+    // 1. Resolve Full Intent with guaranteed inferredEntities & bands
+    const parsedIntent = await parseStudio3IntentWithLLM({
+      prompt,
+      previousContext,
+      userApiKey
+    });
+
+    const finalIntent: Studio3Intent = {
+      ...parsedIntent,
+      ...(overrideIntent && typeof overrideIntent === 'object' ? overrideIntent : {})
+    };
+
+    // Guarantee inferredEntities is an array
+    if (!Array.isArray(finalIntent.inferredEntities)) {
+      finalIntent.inferredEntities = [];
     }
 
     // 2. Extract Semantic Graph from First Principles (Zero Predefined Blueprints)

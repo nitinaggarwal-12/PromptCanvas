@@ -54,26 +54,30 @@ export function verifyPhase1Technical(
 ): Studio3QualityReport['phase1Technical'] {
   const ontologyErrors: string[] = [];
 
-  // Extract all text in the graph
+  // Extract all text in the graph safely
   const allCardTitles: string[] = [];
   const allItems: string[] = [];
 
-  graph.bands.forEach(b => {
-    b.columns?.forEach(c => {
-      c.cards.forEach(card => {
-        allCardTitles.push(card.title.toLowerCase());
-        card.items?.forEach(it => allItems.push(it.toLowerCase()));
+  (graph?.bands || []).forEach(b => {
+    (b.columns || []).forEach(c => {
+      (c.cards || []).forEach(card => {
+        if (card.title) allCardTitles.push(card.title.toLowerCase());
+        (card.items || []).forEach(it => {
+          if (it) allItems.push(it.toLowerCase());
+        });
       });
     });
-    b.pipelineStages?.forEach(s => {
-      s.nodes.forEach(n => allCardTitles.push(n.name.toLowerCase()));
+    (b.pipelineStages || []).forEach(s => {
+      (s.nodes || []).forEach(n => {
+        if (n.name) allCardTitles.push(n.name.toLowerCase());
+      });
     });
   });
 
-  const combinedCorpus = `${graph.title} ${graph.subtitle} ${allCardTitles.join(' ')} ${allItems.join(' ')}`.toLowerCase();
+  const combinedCorpus = `${graph?.title || ''} ${graph?.subtitle || ''} ${allCardTitles.join(' ')} ${allItems.join(' ')}`.toLowerCase();
 
   // 1. Abstraction Level Ontology Check
-  if (graph.abstractionLevel === 'conceptual') {
+  if (graph?.abstractionLevel === 'conceptual') {
     const lowLevelTerms = ['/24', '/16', 'port 443', '10.0.0.', 'tcp/ip', 'cidr'];
     lowLevelTerms.forEach(term => {
       if (combinedCorpus.includes(term)) {
@@ -82,8 +86,8 @@ export function verifyPhase1Technical(
     });
   }
 
-  // 2. Entity Completeness Score
-  const requiredEntities = intent.inferredEntities.map(e => e.toLowerCase());
+  // 2. Entity Completeness Score safely
+  const requiredEntities = (intent?.inferredEntities || []).map(e => String(e).toLowerCase());
   const matchedEntities: string[] = [];
   const missingEntities: string[] = [];
 
@@ -113,7 +117,7 @@ export function verifyPhase1Technical(
  * 🎨 Phase 2: Visual & Spatial Quality Inspection
  */
 export function verifyPhase2Visual(
-  boxes: BoundingBox[],
+  boxes: BoundingBox[] = [],
   canvasWidth = 1600,
   canvasHeight = 1000
 ): Studio3QualityReport['phase2Visual'] {
@@ -162,11 +166,11 @@ export function verifyPhase3Versioning(
   currentGraph: Studio3SemanticGraph,
   previousGraph?: Studio3SemanticGraph | null
 ): Studio3QualityReport['phase3Versioning'] {
-  if (!previousGraph) {
+  if (!previousGraph || !previousGraph.bands) {
     const currentNodes: string[] = [];
-    currentGraph.bands.forEach(b => {
-      b.columns?.forEach(c => c.cards.forEach(card => currentNodes.push(card.title)));
-      b.pipelineStages?.forEach(s => s.nodes.forEach(n => currentNodes.push(n.name)));
+    (currentGraph?.bands || []).forEach(b => {
+      (b.columns || []).forEach(c => (c.cards || []).forEach(card => currentNodes.push(card.title)));
+      (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => currentNodes.push(n.name)));
     });
     return {
       addedNodes: currentNodes,
@@ -177,15 +181,15 @@ export function verifyPhase3Versioning(
   }
 
   const prevNodeSet = new Set<string>();
-  previousGraph.bands.forEach(b => {
-    b.columns?.forEach(c => c.cards.forEach(card => prevNodeSet.add(card.title.toLowerCase())));
-    b.pipelineStages?.forEach(s => s.nodes.forEach(n => prevNodeSet.add(n.name.toLowerCase())));
+  (previousGraph.bands || []).forEach(b => {
+    (b.columns || []).forEach(c => (c.cards || []).forEach(card => prevNodeSet.add(card.title.toLowerCase())));
+    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => prevNodeSet.add(n.name.toLowerCase())));
   });
 
   const currNodeSet = new Set<string>();
-  currentGraph.bands.forEach(b => {
-    b.columns?.forEach(c => c.cards.forEach(card => currNodeSet.add(card.title.toLowerCase())));
-    b.pipelineStages?.forEach(s => s.nodes.forEach(n => currNodeSet.add(n.name.toLowerCase())));
+  (currentGraph?.bands || []).forEach(b => {
+    (b.columns || []).forEach(c => (c.cards || []).forEach(card => currNodeSet.add(card.title.toLowerCase())));
+    (b.pipelineStages || []).forEach(s => (s.nodes || []).forEach(n => currNodeSet.add(n.name.toLowerCase())));
   });
 
   const addedNodes: string[] = [];
@@ -225,7 +229,20 @@ export function evaluateStudio3Quality(params: {
 }): Studio3QualityReport {
   const { graph, intent, previousGraph, boxes = [] } = params;
 
-  const phase1 = verifyPhase1Technical(graph, intent);
+  const safeIntent: Studio3Intent = intent || {
+    abstractionLevel: graph?.abstractionLevel || 'logical',
+    primaryGoal: 'Synthesize architecture from first principles',
+    topologyGrammar: 'hierarchical_tiers',
+    temporalNature: 'steady_state_topology',
+    scope: 'full_system',
+    suggestedTitle: graph?.title || 'System Architecture',
+    bands: [],
+    inferredEntities: [],
+    rationale: 'Default safe intent',
+    actionType: 'initial_synthesis'
+  };
+
+  const phase1 = verifyPhase1Technical(graph, safeIntent);
   const phase2 = verifyPhase2Visual(boxes);
   const phase3 = verifyPhase3Versioning(graph, previousGraph);
 
