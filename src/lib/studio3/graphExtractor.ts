@@ -3,6 +3,7 @@ import { GEMINI_MODEL_ID } from '../geminiConfig';
 import { Studio3Intent } from './intentParser';
 import { Studio3ExecutionLogger } from './telemetryLogger';
 import { enrichAndSanitizeSemanticGraph } from './graphEnricher';
+import { parseJsonSafely } from './jsonRepair';
 
 export interface Studio3CardItem {
   id: string;
@@ -89,7 +90,7 @@ export function generateDynamicFirstPrinciplesGraph(
   prompt: string,
   intent: Studio3Intent
 ): Studio3SemanticGraph {
-  const p = prompt.toLowerCase();
+  const p = (prompt || '').toLowerCase();
   const isMultiBand = intent.topologyGrammar === 'composite_multi_band' || intent.actionType === 'band_expansion';
 
   // 1. FINANCIAL / LEDGER DOMAIN
@@ -259,120 +260,78 @@ export function generateDynamicFirstPrinciplesGraph(
     return enrichAndSanitizeSemanticGraph(rawGraph, intent);
   }
 
-  // 3. GOOGLE OKF DOMAIN
-  if (p.includes('okf') || p.includes('knowledge format')) {
-    if (isMultiBand) {
-      const rawGraph: Studio3SemanticGraph = {
-        title: 'INTEGRATING GOOGLE OKF WITH THE MODERN KNOWLEDGE ECOSYSTEM',
-        subtitle: 'Universal Open Knowledge Standard, Tool Interoperability & Downstream AI Ingestion',
-        tenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM'],
-        abstractionLevel: intent.abstractionLevel,
-        bands: [
-          {
-            id: 'band_top_comparative',
-            title: 'KNOWLEDGE ECOSYSTEM & EVALUATION MATRIX',
-            badge: 'ECOSYSTEM CONTEXT',
-            type: 'columns',
-            columns: [
-              {
-                id: 'col_before',
-                header: 'FRAGMENTED KNOWLEDGE BEFORE OKF',
-                headerColor: 'blue',
-                subtitle: 'Siloed sources create context starvation for LLMs',
-                cards: [
-                  {
-                    id: 'card_silos',
-                    title: 'Disconnected Sources',
-                    iconKey: 'cloud_storage',
-                    items: ['Metadata Catalog (APIs)', 'Wikis & Shared Drives', 'Code Comments & Docstrings', 'Tribal Knowledge']
-                  }
-                ]
-              },
-              {
-                id: 'col_okf_spec',
-                header: 'WHAT IS GOOGLE OKF?',
-                headerColor: 'teal',
-                subtitle: 'Open, filesystem-based context representation',
-                cards: [
-                  {
-                    id: 'card_pillars',
-                    title: 'The OKF Specification',
-                    iconKey: 'document_ai',
-                    items: ['JUST MARKDOWN (.md)', 'JUST FILES & DIRECTORIES', 'JUST YAML FRONTMATTER']
-                  },
-                  {
-                    id: 'card_code',
-                    title: 'WEEKLY_ACTIVE_USERS.md',
-                    iconKey: 'bigquery',
-                    codeSnippet: `type: metric\ntitle: Weekly Active Users\nresource: bigquery://project/users\n---\nSELECT count(distinct user_id)...`
-                  }
-                ]
-              },
-              {
-                id: 'col_matrix',
-                header: 'CONTRASTING & COOPERATING WITH SIMILAR TOOLS',
-                headerColor: 'purple',
-                subtitle: 'How OKF complements Docs and KM platforms',
-                cards: [
-                  {
-                    id: 'card_mat',
-                    title: 'Tool Comparison Matrix',
-                    iconKey: 'vertex_ai',
-                    items: ['Traditional Docs: Low standard, locked-in', 'KM (Confluence/Notion): In-platform lock-in', 'Google OKF: Universal open standard, full file portability']
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: 'band_bottom_workflow',
-            title: 'HOW OKF WORKS TOGETHER: A COHESIVE KNOWLEDGE WORKFLOW',
-            badge: 'OPERATIONAL PIPELINE',
-            type: 'pipeline',
-            pipelineStages: [
-              {
-                stepNumber: 1,
-                id: 'stage_ingest',
-                title: 'DATA INGESTION',
-                subtitle: 'From Silos',
-                color: 'blue',
-                nodes: [{ id: 'n1', name: 'Wikis & PDFs', iconKey: 'document_ai' }, { id: 'n2', name: 'Ingestion Engine', iconKey: 'cloud_run' }]
-              },
-              {
-                stepNumber: 2,
-                id: 'stage_conversion',
-                title: 'OKF CONVERSION',
-                subtitle: 'Markdown + YAML',
-                color: 'teal',
-                nodes: [{ id: 'n3', name: 'OKF Bundle', iconKey: 'cloud_storage' }]
-              },
-              {
-                stepNumber: 3,
-                id: 'stage_storage',
-                title: 'PORTABLE STORAGE',
-                subtitle: 'Git & Object Store',
-                color: 'amber',
-                nodes: [{ id: 'n4', name: 'Git Repo', iconKey: 'git' }, { id: 'n5', name: 'Cloud Storage', iconKey: 'cloud_storage' }]
-              },
-              {
-                stepNumber: 4,
-                id: 'stage_consumption',
-                title: 'DOWNSTREAM CONSUMPTION',
-                subtitle: 'Human & AI',
-                color: 'purple',
-                nodes: [{ id: 'n6', name: 'Human Portal', iconKey: 'iap' }, { id: 'n7', name: 'Vertex AI Agent', iconKey: 'vertex_ai' }]
-              }
-            ]
-          }
-        ],
-        connections: []
-      };
-      return enrichAndSanitizeSemanticGraph(rawGraph, intent);
-    }
+  // 3. TRANSFORMER ARCHITECTURE
+  if (p.includes('transformer') || p.includes('attention') || p.includes('neural')) {
+    const rawGraph: Studio3SemanticGraph = {
+      title: 'TRANSFORMER NEURAL ARCHITECTURE & ATTENTION FLOW',
+      subtitle: 'Multi-Head Self-Attention, Positional Embeddings & Autoregressive Decoding',
+      tenets: ['ATTENTION IS ALL YOU NEED', 'AUTOREGRESSIVE DECODING', 'PARALLEL ENCODING'],
+      abstractionLevel: intent.abstractionLevel,
+      bands: [
+        {
+          id: 'band_transformer_core',
+          title: 'TRANSFORMER ENCODER-DECODER MESH',
+          badge: 'DEEP LEARNING MODEL',
+          type: 'columns',
+          columns: [
+            {
+              id: 'col_embedding',
+              header: 'INPUT EMBEDDING & POSITIONAL ENCODING',
+              headerColor: 'blue',
+              subtitle: 'Tokenization and Vector Space Representation',
+              cards: [
+                {
+                  id: 'card_emb',
+                  title: 'Token & Positional Embeddings',
+                  iconKey: 'vertex_vector_search',
+                  items: ['Learned token embedding projection matrix', 'Sinusoidal / RoPE positional vectors', 'Addition & Dropout layer regularization']
+                }
+              ]
+            },
+            {
+              id: 'col_encoder',
+              header: 'MULTI-HEAD ATTENTION & ENCODER STACK',
+              headerColor: 'teal',
+              subtitle: 'Bidirectional Contextual Feature Extraction',
+              cards: [
+                {
+                  id: 'card_attn',
+                  title: 'Multi-Head Self-Attention Block',
+                  iconKey: 'gemini',
+                  items: ['Scaled Dot-Product: Softmax(QK^T / √d_k)V', '8-32 parallel subspace projection heads', 'Residual Add & Pre-LayerNorm (RMSNorm)']
+                },
+                {
+                  id: 'card_ffn',
+                  title: 'Feed-Forward Network (FFN)',
+                  iconKey: 'gemini',
+                  items: ['Pointwise two-layer dense transformation', 'SwiGLU / GELU non-linear activations']
+                }
+              ]
+            },
+            {
+              id: 'col_decoder',
+              header: 'DECODER & AUTOREGRESSIVE GENERATION',
+              headerColor: 'purple',
+              subtitle: 'Cross-Attention and Token Probability Output',
+              cards: [
+                {
+                  id: 'card_dec',
+                  title: 'Masked Decoder & Cross-Attention',
+                  iconKey: 'gemini',
+                  items: ['Causal masking for autoregressive inference', 'Cross-attention over encoder key-values', 'Final linear layer to vocabulary logits']
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      connections: []
+    };
+    return enrichAndSanitizeSemanticGraph(rawGraph, intent);
   }
 
   // 4. GENERAL DYNAMIC CLOUD TOPOLOGY
-  const cleanTitle = prompt.length > 50 ? prompt.slice(0, 48) + '...' : prompt;
+  const cleanTitle = (prompt || '').length > 50 ? (prompt || '').slice(0, 48) + '...' : (prompt || 'SYSTEM TOPOLOGY');
   const rawGraph: Studio3SemanticGraph = {
     title: cleanTitle.toUpperCase(),
     subtitle: `Synthesized ${intent.abstractionLevel.toUpperCase()} Architecture with GCP Native Services`,
@@ -461,7 +420,7 @@ export async function extractStudio3SemanticGraph(params: {
     stage: 'graph_synthesis',
     status: 'calling',
     model: modelName,
-    message: `Calling Gemini API for Semantic Graph Extraction on: "${prompt.slice(0, 60)}..."`,
+    message: `Calling Gemini API for Semantic Graph Extraction on: "${(prompt || '').slice(0, 60)}..."`,
     payload: { prompt, intent }
   });
 
@@ -528,7 +487,8 @@ JSON Schema:
 
     const elapsed = Date.now() - startTime;
     const rawText = response.text || '';
-    const parsed = JSON.parse(rawText) as Studio3SemanticGraph;
+    const fallbackGraph = generateDynamicFirstPrinciplesGraph(prompt, intent);
+    const parsed = parseJsonSafely<Studio3SemanticGraph>(rawText, fallbackGraph);
 
     // Run semantic post-processor & auto-enricher to guarantee 100% icon & item completeness
     const enriched = enrichAndSanitizeSemanticGraph(parsed, intent);

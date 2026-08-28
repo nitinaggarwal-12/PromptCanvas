@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '../geminiConfig';
 import { Studio3ExecutionLogger } from './telemetryLogger';
+import { parseJsonSafely } from './jsonRepair';
 
 export type AbstractionLevel = 'conceptual' | 'logical' | 'technical';
 
@@ -43,8 +44,9 @@ export function parseStudio3IntentHeuristics(
   prompt: string,
   previousContext?: string
 ): Studio3Intent {
-  const p = prompt.toLowerCase();
-  const isFollowUp = Boolean(previousContext && previousContext.trim().length > 0);
+  const safePrompt = String(prompt || '').trim();
+  const p = safePrompt.toLowerCase();
+  const isFollowUp = Boolean(previousContext && String(previousContext).trim().length > 0);
 
   // 1. Abstraction Level detection
   let abstractionLevel: AbstractionLevel = 'logical';
@@ -160,7 +162,7 @@ export function parseStudio3IntentHeuristics(
   }
 
   // Extract clean title dynamically from prompt
-  let suggestedTitle = prompt.length > 55 ? prompt.slice(0, 52) + '...' : prompt;
+  let suggestedTitle = safePrompt.length > 55 ? safePrompt.slice(0, 52) + '...' : (safePrompt || 'SYSTEM ARCHITECTURE');
   if (p.includes('ledger') || p.includes('financial')) {
     suggestedTitle = 'Zero-Trust Multi-Region Financial Ledger Architecture';
   } else if (p.includes('rag') || p.includes('vector')) {
@@ -169,17 +171,19 @@ export function parseStudio3IntentHeuristics(
     suggestedTitle = isComparison
       ? 'Google OKF: Modern Knowledge Ecosystem Integration'
       : 'Google Open Knowledge Format (OKF) Architecture';
+  } else if (p.includes('transformer')) {
+    suggestedTitle = 'Transformer Neural Architecture & Attention Flow';
   }
 
   return {
     abstractionLevel,
-    primaryGoal: `Synthesize a ${abstractionLevel} architecture representing "${prompt.trim()}".`,
+    primaryGoal: `Synthesize a ${abstractionLevel} architecture representing "${safePrompt || 'System'}".`,
     topologyGrammar,
     temporalNature: isWorkflow ? 'sequential_workflow' : 'steady_state_topology',
     scope: p.includes('auth') || p.includes('ingest') ? 'subsystem' : 'full_system',
     suggestedTitle,
     bands,
-    inferredEntities: extractKeywords(prompt),
+    inferredEntities: extractKeywords(safePrompt),
     rationale: `Classified as ${abstractionLevel} based on detected keywords and intent vectors. Grammar: ${topologyGrammar}.`,
     actionType
   };
@@ -187,8 +191,8 @@ export function parseStudio3IntentHeuristics(
 
 function extractKeywords(prompt: string): string[] {
   const stopWords = new Set(['the', 'and', 'with', 'for', 'how', 'what', 'this', 'that', 'show', 'explain', 'diagram', 'help', 'from', 'into', 'architect', 'design', 'build']);
-  const words = prompt
-    .replace(/[^\w\s]/g, '')
+  const words = (prompt || '')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
     .split(/\s+/)
     .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
   return Array.from(new Set(words)).slice(0, 10);
@@ -219,7 +223,7 @@ export async function parseStudio3IntentWithLLM(params: {
     stage: 'intent_parsing',
     status: 'calling',
     model: modelName,
-    message: `Calling Gemini API for Intent & Abstraction Classification on: "${prompt.slice(0, 60)}..."`,
+    message: `Calling Gemini API for Intent & Abstraction Classification on: "${(prompt || '').slice(0, 60)}..."`,
     payload: { prompt, model: modelName }
   });
 
@@ -262,14 +266,15 @@ Return valid JSON with keys: abstractionLevel, primaryGoal, topologyGrammar, tem
 
     const elapsed = Date.now() - startTime;
     const rawText = response.text || '';
-    const parsed = JSON.parse(rawText) as Studio3Intent;
+    const fallbackIntent = parseStudio3IntentHeuristics(prompt, previousContext);
+    const parsed = parseJsonSafely<Studio3Intent>(rawText, fallbackIntent);
 
     logger?.log({
       stage: 'intent_parsing',
       status: 'success',
       model: modelName,
       latencyMs: elapsed,
-      message: `Gemini parsed intent: [${parsed.abstractionLevel.toUpperCase()}] • [${parsed.topologyGrammar}] in ${elapsed}ms`,
+      message: `Gemini parsed intent: [${(parsed.abstractionLevel || 'logical').toUpperCase()}] • [${parsed.topologyGrammar || 'hierarchical_tiers'}] in ${elapsed}ms`,
       payload: parsed
     });
 

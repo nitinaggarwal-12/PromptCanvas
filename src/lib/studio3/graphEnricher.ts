@@ -127,12 +127,25 @@ export function enrichAndSanitizeSemanticGraph(
   graph: Studio3SemanticGraph,
   intent: Studio3Intent
 ): Studio3SemanticGraph {
+  // Sanitize tenets cleanly
+  const rawTenets = Array.isArray(graph?.tenets)
+    ? graph.tenets.filter(t => typeof t === 'string' && t.trim().length > 0).map(t => String(t).toUpperCase())
+    : [];
+
+  const enrichedTenets = rawTenets.length > 0
+    ? rawTenets
+    : ['ZERO TRUST SECURITY', 'HIGH AVAILABILITY', 'OBSERVABILITY FIRST'];
+
   const enriched: Studio3SemanticGraph = {
     ...graph,
-    title: graph?.title && !graph.title.toLowerCase().includes('undefined') ? graph.title : (intent?.suggestedTitle || 'SYSTEM ARCHITECTURE').toUpperCase(),
-    subtitle: graph?.subtitle || `Synthesized ${intent?.abstractionLevel?.toUpperCase() || 'LOGICAL'} Architecture`,
+    title: graph?.title && typeof graph.title === 'string' && !graph.title.toLowerCase().includes('undefined')
+      ? graph.title
+      : (intent?.suggestedTitle || 'SYSTEM ARCHITECTURE').toUpperCase(),
+    subtitle: graph?.subtitle && typeof graph.subtitle === 'string'
+      ? graph.subtitle
+      : `Synthesized ${intent?.abstractionLevel?.toUpperCase() || 'LOGICAL'} Architecture`,
     abstractionLevel: intent?.abstractionLevel || graph?.abstractionLevel || 'logical',
-    tenets: Array.isArray(graph?.tenets) && graph.tenets.length > 0 ? graph.tenets : ['ATTENTION MECHANISM', 'HIGH PERFORMANCE', 'SCALABLE TOPOLOGY'],
+    tenets: enrichedTenets,
     connections: Array.isArray(graph?.connections) ? graph.connections : [],
     bands: []
   };
@@ -176,14 +189,18 @@ export function enrichAndSanitizeSemanticGraph(
             else matchedIconKey = 'gke_autopilot';
           }
 
-          const finalItems = (Array.isArray(card?.items) && card.items.length > 0)
-            ? card.items
+          const rawItems = Array.isArray(card?.items)
+            ? card.items.filter(it => typeof it === 'string' && it.trim().length > 0)
+            : [];
+
+          const finalItems = rawItems.length > 0
+            ? rawItems.slice(0, 6) // Cap items at 6 to prevent vertical overflow
             : (defaultItems.length > 0 ? defaultItems : ['Core architectural subsystem', 'High-performance processing block', 'Low-latency communication pathway']);
 
           return {
             ...card,
             id: card?.id || `card_${bIdx}_${cIdx}_${cardIdx}`,
-            title: card?.title || 'Architecture Component',
+            title: card?.title && typeof card.title === 'string' ? card.title : 'Architecture Component',
             iconKey: matchedIconKey,
             items: finalItems,
             badge: card?.badge || (titleLower.includes('spanner') ? '99.999% SLA' : titleLower.includes('attention') ? 'Core Block' : undefined)
@@ -191,7 +208,7 @@ export function enrichAndSanitizeSemanticGraph(
         });
 
         let headerTitle = col?.header;
-        if (!headerTitle || headerTitle.trim().toUpperCase() === 'TIER' || headerTitle.length < 4) {
+        if (!headerTitle || typeof headerTitle !== 'string' || headerTitle.trim().toUpperCase() === 'TIER' || headerTitle.length < 4) {
           const cardTitles = enrichedCards.map(c => c.title.toLowerCase()).join(' ');
           if (cardTitles.includes('embedding') || cardTitles.includes('input') || cardTitles.includes('token')) {
             headerTitle = 'INPUT EMBEDDING & POSITIONAL ENCODING';
@@ -213,7 +230,7 @@ export function enrichAndSanitizeSemanticGraph(
         return {
           ...col,
           id: col?.id || `col_${bIdx}_${cIdx}`,
-          header: headerTitle.toUpperCase(),
+          header: String(headerTitle).trim().toUpperCase(),
           headerColor: col?.headerColor || fallbackColor,
           subtitle: col?.subtitle || 'Processing Subsystem',
           cards: enrichedCards
@@ -233,8 +250,8 @@ export function enrichAndSanitizeSemanticGraph(
         const fallbackColor = stageColors[sIdx % stageColors.length];
 
         const enrichedNodes = (st.nodes || []).map((node, nIdx) => {
-          const nameLower = (node.name || '').toLowerCase();
-          let iconKey = node.iconKey;
+          const nameLower = (node?.name || '').toLowerCase();
+          let iconKey = node?.iconKey;
           if (!iconKey) {
             if (nameLower.includes('token') || nameLower.includes('embed')) iconKey = 'vertex_vector_search';
             else if (nameLower.includes('attention') || nameLower.includes('encoder') || nameLower.includes('decoder')) iconKey = 'gemini';
@@ -243,20 +260,20 @@ export function enrichAndSanitizeSemanticGraph(
           }
           return {
             ...node,
-            id: node.id || `node_${bIdx}_${sIdx}_${nIdx}`,
-            name: node.name || 'Stage Node',
+            id: node?.id || `node_${bIdx}_${sIdx}_${nIdx}`,
+            name: node?.name && typeof node.name === 'string' ? node.name : 'Stage Node',
             iconKey,
-            role: node.role || 'Sequential Transformation'
+            role: node?.role || 'Sequential Transformation'
           };
         });
 
         return {
           ...st,
-          stepNumber: st.stepNumber || sIdx + 1,
-          id: st.id || `stage_${bIdx}_${sIdx}`,
-          title: (st.title || `STAGE ${sIdx + 1}`).toUpperCase(),
-          subtitle: st.subtitle || 'Operational Pipeline Phase',
-          color: st.color || fallbackColor,
+          stepNumber: st?.stepNumber || sIdx + 1,
+          id: st?.id || `stage_${bIdx}_${sIdx}`,
+          title: String(st?.title || `STAGE ${sIdx + 1}`).toUpperCase(),
+          subtitle: st?.subtitle || 'Operational Pipeline Phase',
+          color: st?.color || fallbackColor,
           nodes: enrichedNodes
         };
       });
