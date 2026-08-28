@@ -35,7 +35,9 @@ import {
   History,
   FolderOpen,
   X,
-  Search
+  Search,
+  Trash2,
+  CopyPlus
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
@@ -164,6 +166,54 @@ export default function Studio3Page() {
       console.error('Failed to fetch diagram history:', e);
     } finally {
       setLoadingHistory(false);
+    }
+  };
+
+  const handleCloneDiagram = async (d: any) => {
+    setLoading(true);
+    try {
+      // Get full XML content if not present on item
+      let xmlToClone = d.xml_content;
+      if (!xmlToClone) {
+        const fullRes = await fetch(`/api/diagrams/${d.id}`);
+        const fullData = await fullRes.json();
+        xmlToClone = fullData.xml_content || fullData.versions?.[0]?.xml_content || '';
+      }
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${d.name || 'Architecture'} (Clone)`,
+          architecture_type: d.architecture_type || 'custom',
+          xml_content: xmlToClone
+        })
+      });
+      const newDiag = await res.json();
+      if (newDiag && newDiag.id) {
+        await openHistoryDrawer();
+        await loadDiagramById(newDiag.id);
+      }
+    } catch (e) {
+      console.error('Failed to clone diagram:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteDiagram = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm('Are you sure you want to delete this diagram from history?')) return;
+    try {
+      await fetch(`/api/diagrams/${id}`, { method: 'DELETE' });
+      setHistoryList(prev => prev.filter(item => item.id !== id));
+      if (diagramId === id) {
+        setDiagramId(null);
+        setCurrentXml('');
+        window.history.replaceState(null, '', '/studio3');
+      }
+    } catch (e) {
+      console.error('Failed to delete diagram:', e);
     }
   };
 
@@ -435,11 +485,24 @@ export default function Studio3Page() {
                     ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
                 }`}
-                title="Open saved architecture history"
+                title="Quick history drawer"
               >
                 <History className="w-3.5 h-3.5 text-blue-500" />
                 <span>History</span>
               </button>
+
+              <Link
+                href="/history"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition shadow-xs ${
+                  theme === 'dark'
+                    ? 'bg-teal-950/80 hover:bg-teal-900 text-teal-300 border border-teal-500/50'
+                    : 'bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-300'
+                }`}
+                title="Full Canvas History Page (Navigate, Edit, Clone, Delete, Save)"
+              >
+                <FolderOpen className="w-3.5 h-3.5 text-teal-500" />
+                <span>History Manager ➔</span>
+              </Link>
 
               {diagramId && (
                 <button
@@ -1033,14 +1096,24 @@ export default function Studio3Page() {
                 <History className="w-5 h-5 text-blue-600" />
                 <h3 className="text-sm font-black uppercase tracking-wider">Architecture History</h3>
               </div>
-              <button
-                onClick={() => setShowHistory(false)}
-                className={`p-1.5 rounded-lg border transition ${
-                  theme === 'dark' ? 'border-slate-700 hover:bg-slate-800 text-slate-300' : 'border-slate-300 hover:bg-slate-200 text-slate-700'
-                }`}
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/history"
+                  className="px-2.5 py-1 bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-black rounded-lg shadow-xs transition flex items-center gap-1"
+                  title="Open full page canvas manager to edit, clone, delete, and save"
+                >
+                  <FolderOpen className="w-3 h-3" />
+                  <span>Full Manager ➔</span>
+                </Link>
+                <button
+                  onClick={() => setShowHistory(false)}
+                  className={`p-1.5 rounded-lg border transition ${
+                    theme === 'dark' ? 'border-slate-700 hover:bg-slate-800 text-slate-300' : 'border-slate-300 hover:bg-slate-200 text-slate-700'
+                  }`}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             {/* Search Filter */}
@@ -1101,13 +1174,32 @@ export default function Studio3Page() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <button
                           onClick={() => loadDiagramById(d.id)}
-                          className="flex-1 py-1.5 px-3 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition active:scale-95 text-center flex items-center justify-center gap-1.5"
+                          className="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-black bg-blue-600 hover:bg-blue-500 text-white shadow-sm transition active:scale-95 text-center flex items-center justify-center gap-1"
+                          title="Open & Edit in Studio 3"
                         >
                           <ExternalLink className="w-3 h-3" />
-                          <span>Open in Studio 3</span>
+                          <span>Open</span>
+                        </button>
+                        <button
+                          onClick={() => handleCloneDiagram(d)}
+                          className={`p-1.5 rounded-lg border transition ${
+                            theme === 'dark' ? 'border-slate-700 hover:bg-slate-800 text-amber-300' : 'border-slate-300 hover:bg-slate-200 text-amber-600'
+                          }`}
+                          title="Clone / Duplicate Diagram"
+                        >
+                          <CopyPlus className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => handleDeleteDiagram(d.id, e)}
+                          className={`p-1.5 rounded-lg border transition ${
+                            theme === 'dark' ? 'border-slate-700 hover:bg-red-950 text-red-400' : 'border-slate-300 hover:bg-red-50 text-red-600'
+                          }`}
+                          title="Delete Diagram"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => {
@@ -1127,10 +1219,14 @@ export default function Studio3Page() {
             </div>
 
             {/* Drawer Footer */}
-            <div className={`p-3 border-t text-center text-[11px] font-bold ${
+            <div className={`p-3 border-t flex items-center justify-between text-[11px] font-bold ${
               theme === 'dark' ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
             }`}>
-              Click "+ New Diagram" at any time for a clean drawing stage.
+              <span>Manage all architectures</span>
+              <Link href="/history" className="text-teal-500 hover:underline font-black flex items-center gap-1">
+                <span>Open History Page</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
             </div>
           </div>
         </div>

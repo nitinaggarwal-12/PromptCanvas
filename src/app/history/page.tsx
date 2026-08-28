@@ -42,7 +42,9 @@ import {
   BookOpen,
   ClipboardList,
   Compass,
-  Menu
+  Menu,
+  Trash2,
+  CopyPlus
 } from 'lucide-react';
 import { getArchitectureTypeById, getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { sanitizeDrawioXmlAttributes } from '@/lib/diagramCleaner';
@@ -303,6 +305,56 @@ export default function CanvasHistoryPage() {
       router.push(`/workspace?blueprint=${archType}&tab=editor`);
     } else {
       router.push(`/workspace?tab=editor`);
+    }
+  };
+
+  // Open in Studio 3
+  const handleLaunchStudio3 = (diagramId: string) => {
+    router.push(`/studio3?id=${diagramId}`);
+  };
+
+  // Clone / Duplicate Diagram
+  const handleCloneDiagram = async (diagram: CanvasDiagramItem, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    try {
+      let xmlToClone = diagram.xml_content;
+      if (!xmlToClone) {
+        const fullRes = await fetch(`/api/diagrams/${diagram.id}`);
+        const fullData = await fullRes.json();
+        xmlToClone = fullData.xml_content || fullData.versions?.[0]?.xml_content || '';
+      }
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${diagram.name || 'Architecture'} (Clone)`,
+          architecture_type: diagram.architecture_type || 'custom',
+          xml_content: xmlToClone
+        })
+      });
+      const newDiag = await res.json();
+      if (newDiag && newDiag.id) {
+        await fetchAllCanvases();
+        router.push(`/studio3?id=${newDiag.id}`);
+      }
+    } catch (err) {
+      console.error('Failed to clone diagram:', err);
+    }
+  };
+
+  // Delete Diagram
+  const handleDeleteDiagram = async (diagramId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (!confirm('Are you sure you want to delete this diagram from history? This action cannot be undone.')) return;
+    try {
+      await fetch(`/api/diagrams/${diagramId}`, { method: 'DELETE' });
+      setDiagrams(prev => prev.filter(d => d.id !== diagramId));
+      if (activeModalCanvas?.id === diagramId) {
+        handleCloseModal();
+      }
+    } catch (err) {
+      console.error('Failed to delete diagram:', err);
     }
   };
 
@@ -882,28 +934,65 @@ export default function CanvasHistoryPage() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className={`pt-4 border-t flex items-center justify-between gap-3 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
-                    <button
-                      onClick={() => handleOpenPreviewModal(diagram)}
-                      className={`flex-1 px-4 py-2.5 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-sm ${
-                        isLight
-                          ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
-                          : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
-                      }`}
-                    >
-                      <Eye className="w-3.5 h-3.5 text-teal-500" />
-                      <span>Preview All Versions</span>
-                    </button>
+                  <div className={`pt-4 border-t flex flex-col gap-2 ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleLaunchStudio3(diagram.id)}
+                        className="flex-1 py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95"
+                        title="Open directly in Studio 3 Generative Stage"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Studio 3</span>
+                      </button>
 
-                    <button
-                      onClick={() => handleLaunchWorkspace(diagram.id, diagram.architecture_type)}
-                      className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-[#070a13] text-xs font-black transition flex items-center gap-1.5 cursor-pointer shadow-lg shadow-teal-500/20"
-                      title="Open full editable canvas in workspace"
-                    >
-                      <span>Open Canvas</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </button>
+                      <button
+                        onClick={() => handleOpenPreviewModal(diagram)}
+                        className={`py-2 px-3 rounded-xl border text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs ${
+                          isLight
+                            ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
+                            : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
+                        }`}
+                        title="Preview all version snapshots"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-teal-500" />
+                        <span>Preview</span>
+                      </button>
                     </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => handleLaunchWorkspace(diagram.id, diagram.architecture_type)}
+                        className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                          isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
+                        }`}
+                        title="Open full editable canvas in Draw.io workspace"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        <span>Workspace</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => handleCloneDiagram(diagram, e)}
+                        className={`p-1.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                          isLight ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800' : 'bg-amber-950/50 hover:bg-amber-900 border-amber-800 text-amber-300'
+                        }`}
+                        title="Clone / Duplicate this Canvas"
+                      >
+                        <CopyPlus className="w-3.5 h-3.5" />
+                        <span>Clone</span>
+                      </button>
+
+                      <button
+                        onClick={(e) => handleDeleteDiagram(diagram.id, e)}
+                        className={`p-1.5 rounded-lg border text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                          isLight ? 'bg-red-50 hover:bg-red-100 border-red-200 text-red-800' : 'bg-red-950/50 hover:bg-red-900 border-red-800 text-red-300'
+                        }`}
+                        title="Delete Canvas"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
                   </div>
                 );
               })}
@@ -963,11 +1052,36 @@ export default function CanvasHistoryPage() {
                     </button>
 
                     <button
-                      onClick={() => handleLaunchWorkspace(activeModalCanvas.id, activeModalCanvas.architecture_type)}
-                      className="px-4 py-1.5 rounded-lg bg-teal-400 hover:bg-teal-300 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-lg shadow-teal-500/20"
+                      onClick={() => handleLaunchStudio3(activeModalCanvas.id)}
+                      className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-md active:scale-95"
+                      title="Open and synthesize further in Studio 3"
                     >
-                      <span>Open in Workspace</span>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Open in Studio 3</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleLaunchWorkspace(activeModalCanvas.id, activeModalCanvas.architecture_type)}
+                      className="px-3.5 py-1.5 rounded-lg bg-teal-400 hover:bg-teal-300 text-slate-950 text-xs font-black transition flex items-center gap-1.5 shadow-lg shadow-teal-500/20"
+                    >
+                      <span>Workspace</span>
                       <ExternalLink className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={(e) => handleCloneDiagram(activeModalCanvas, e)}
+                      className="p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-amber-300 transition flex items-center gap-1"
+                      title="Clone / Duplicate this Canvas"
+                    >
+                      <CopyPlus className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      onClick={(e) => handleDeleteDiagram(activeModalCanvas.id, e)}
+                      className="p-1.5 rounded-lg bg-slate-900 hover:bg-red-950 border border-slate-700 text-xs font-bold text-red-400 transition flex items-center gap-1"
+                      title="Delete Canvas"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </>
                 )}
