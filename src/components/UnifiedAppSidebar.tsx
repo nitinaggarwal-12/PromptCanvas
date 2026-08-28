@@ -21,7 +21,8 @@ import {
   X,
   Compass,
   Layers,
-  Activity
+  Activity,
+  Zap
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
@@ -38,6 +39,7 @@ interface NavItem {
 }
 
 const CANONICAL_NAV_ITEMS: NavItem[] = [
+  { id: 'studio3', name: 'Launch Studio 3', icon: Zap, href: '/studio3', badge: 'AI' },
   { id: 'studio2', name: 'Launch Studio 2', icon: Sparkles, href: '/studio2', badge: 'PRO' },
   { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
