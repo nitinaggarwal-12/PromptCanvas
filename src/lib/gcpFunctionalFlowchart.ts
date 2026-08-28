@@ -25,7 +25,10 @@ export interface GCPFunctionalFlowchartOptions {
 
 export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOptions = {}): string {
   const {
-    projectTitle = 'Google Cloud Agentic AI Platform — End-to-End Enterprise Architecture',
+    projectName = 'Enterprise GCP Architecture',
+    useCaseName = 'Agentic AI Functional Flowchart',
+    projectTitle,
+    prompt = '',
     theme = 'light'
   } = options;
 
@@ -34,6 +37,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   const cardBg = isDark ? '#1E293B' : '#FFFFFF';
   const cardBorder = isDark ? '#334155' : '#DADCE0';
   const textDark = isDark ? '#F8FAFC' : '#202124';
+
+  const isStreaming = /pub\/?sub|dataflow|stream|event|kafka|cdc|iot|telemetry/i.test(prompt || '') || 
+                      /pub\/?sub|dataflow|stream|event|kafka/i.test(projectTitle || '') ||
+                      /pub\/?sub|dataflow|stream|event/i.test(useCaseName || '');
+
+  const displayTitle = projectTitle || (projectName && useCaseName ? `${projectName}: ${useCaseName}` : isStreaming ? 'Real-Time Event Streaming & Dataflow Platform' : 'Google Cloud Agentic AI Platform — End-to-End Enterprise Architecture');
+  const displaySubtitle = isStreaming
+    ? 'High-Throughput Streaming Flow: Ingress → Real-Time Pub/Sub Bus → Dataflow Stream Processing → Spanner & BigQuery → Monitoring & Closed Loop'
+    : 'Production Reference Flow: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop';
   
   const c: string[] = [];
   let idCounter = 100;
@@ -108,8 +120,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
       </div>
       <div style="border-left:1.5px solid #DADCE0;height:36px;margin:0 2px;"></div>
       <div style="flex:1;">
-        <div style="font-size:22px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">Agentic AI Harness</div>
-        <div style="font-size:11.5px;font-weight:500;color:#1A73E8;margin-top:2px;">Production Reference Flow: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop</div>
+        <div style="font-size:20px;font-weight:700;color:${textDark};letter-spacing:-0.2px;">${displayTitle}</div>
+        <div style="font-size:11px;font-weight:500;color:#1A73E8;margin-top:2px;">${displaySubtitle}</div>
       </div>
     </div>`,
     24,
@@ -122,7 +134,14 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // =========================================================================
   // 2. SIX STAGE PHASE HEADERS (x=24..1576, y=68..94)
   // =========================================================================
-  const stages = [
+  const stages = isStreaming ? [
+    { num: '1', t: 'Ingress & Security', w: 200, x: 24, c: '#1A73E8' },
+    { num: '2', t: 'Event Ingestion & Bus', w: 215, x: 260, c: '#1A73E8' },
+    { num: '3', t: 'Stream Processing', w: 195, x: 510, c: '#1A73E8' },
+    { num: '4', t: 'Data & State Stores', w: 235, x: 735, c: '#1A73E8' },
+    { num: '5', t: 'Stream Analytics & ML', w: 230, x: 1000, c: '#1E8E3E' },
+    { num: '6', t: 'Delivery & Ops', w: 230, x: 1265, c: '#1E8E3E' }
+  ] : [
     { num: '1', t: 'Ingress & Security', w: 200, x: 24, c: '#1A73E8' },
     { num: '2', t: 'Planning & Memory', w: 215, x: 260, c: '#1A73E8' },
     { num: '3', t: 'Agent Swarm', w: 195, x: 510, c: '#1A73E8' },
@@ -217,15 +236,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   node(
     "n_fast_path",
     `<div style="padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
-      ${renderGcpIconHtml('gemini', 26)}
-      <div style="font-size:11.5px;font-weight:700;color:#1E8E3E;margin-top:4px;">Gemini Flash Fast-Path</div>
-      <div style="font-size:8.5px;color:#137333;font-weight:600;">Direct Low-Latency (&lt; 100ms TTFT)</div>
+      ${renderGcpIconHtml(isStreaming ? 'pubsub' : 'gemini', 26)}
+      <div style="font-size:11.5px;font-weight:700;color:${isStreaming ? '#1A73E8' : '#1E8E3E'};margin-top:4px;">${isStreaming ? 'Cloud Pub/Sub Messaging Bus' : 'Gemini Flash Fast-Path'}</div>
+      <div style="font-size:8.5px;color:${isStreaming ? '#1A73E8' : '#137333'};font-weight:600;">${isStreaming ? 'High-Throughput Partitioned Topics' : 'Direct Low-Latency (&lt; 100ms TTFT)'}</div>
     </div>`,
     260,
     105,
     215,
     72,
-    `fillColor=${cardBg};strokeColor=#1E8E3E;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
+    `fillColor=${cardBg};strokeColor=${isStreaming ? '#1A73E8' : '#1E8E3E'};strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
   // TASK GRAPH ROUTER (Central Fork, y=225)
@@ -233,8 +252,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     "gate_task_type",
     `<div style="padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       ${renderGcpIconHtml('agent_builder', 24)}
-      <div style="font-size:11.5px;font-weight:700;color:#202124;margin-top:3px;">Task Graph Router</div>
-      <div style="font-size:8px;color:#5F6368;">Complexity &amp; Intent Classifier</div>
+      <div style="font-size:11.5px;font-weight:700;color:#202124;margin-top:3px;">${isStreaming ? 'Event Router &amp; Validator' : 'Task Graph Router'}</div>
+      <div style="font-size:8px;color:#5F6368;">${isStreaming ? 'Schema Registry &amp; Route Keys' : 'Complexity &amp; Intent Classifier'}</div>
     </div>`,
     260,
     225,
@@ -244,39 +263,39 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // Sanitized Prompt routes cleanly into Router from DLP
-  line(nid(), 'Sanitized Prompt', 'n_cloud_dlp', 'gate_task_type', 1, 0.5, 0, 0.5, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Validated Stream' : 'Sanitized Prompt', 'n_cloud_dlp', 'gate_task_type', 1, 0.5, 0, 0.5, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 238, y: 441 },
     { x: 238, y: 261 }
   ], -0.6, -10);
 
   // ROUTER FORK 1: Simple Prompt -> Steps UP into Fast-Path
-  line(nid(), 'Simple Intent', 'gate_task_type', 'n_fast_path', 0.5, 0, 0.5, 1, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;');
+  line(nid(), isStreaming ? 'Async Events' : 'Simple Intent', 'gate_task_type', 'n_fast_path', 0.5, 0, 0.5, 1, `strokeColor=${isStreaming ? '#1A73E8' : '#1E8E3E'};strokeWidth=1.5;endArrow=block;endSize=4;`);
 
   // SUPERVISOR AGENT CARD (Below Router, y=345)
   node(
     "n_supervisor",
     `<div style="padding:10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
-      ${renderGcpIconHtml('gke_autopilot', 26)}
-      <div style="font-size:12px;font-weight:700;color:#202124;margin-top:4px;">Supervisor Agent</div>
-      <div style="font-size:8.5px;color:#1A73E8;font-weight:600;">GKE Autopilot • Task Graph Planner</div>
+      ${renderGcpIconHtml(isStreaming ? 'dataflow' : 'gke_autopilot', 26)}
+      <div style="font-size:12px;font-weight:700;color:#202124;margin-top:4px;">${isStreaming ? 'Cloud Dataflow Engine' : 'Supervisor Agent'}</div>
+      <div style="font-size:8.5px;color:${isStreaming ? '#059669' : '#1A73E8'};font-weight:600;">${isStreaming ? 'Apache Beam Exactly-Once Stream' : 'GKE Autopilot • Task Graph Planner'}</div>
     </div>`,
     260,
     345,
     215,
     80,
-    `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.8;shadow=1;rounded=1;arcSize=8;`
+    `fillColor=${cardBg};strokeColor=${isStreaming ? '#059669' : '#1A73E8'};strokeWidth=1.8;shadow=1;rounded=1;arcSize=8;`
   );
 
   // ROUTER FORK 2: Complex Task -> Steps DOWN into Supervisor
-  line(nid(), 'Multi-Step Intent', 'gate_task_type', 'n_supervisor', 0.5, 1, 0.5, 0, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
+  line(nid(), isStreaming ? 'Stream Pipeline' : 'Multi-Step Intent', 'gate_task_type', 'n_supervisor', 0.5, 1, 0.5, 0, `strokeColor=${isStreaming ? '#059669' : '#1A73E8'};strokeWidth=1.5;endArrow=block;endSize=4;`);
 
   // CONVERSATIONAL & EPISODIC MEMORY (Bottom, y=475)
   node(
     "n_memory",
     `<div style="padding:8px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       ${renderGcpIconHtml('memorystore', 24)}
-      <div style="font-size:10.5px;font-weight:700;color:#202124;margin-top:4px;">Episodic &amp; Working Memory</div>
-      <div style="font-size:8px;color:#5F6368;">Cloud Memorystore (&lt; 1ms) • Cloud Spanner</div>
+      <div style="font-size:10.5px;font-weight:700;color:#202124;margin-top:4px;">${isStreaming ? 'Cloud Memorystore Redis' : 'Episodic &amp; Working Memory'}</div>
+      <div style="font-size:8px;color:#5F6368;">${isStreaming ? 'Sub-ms Window State &amp; Deduplication' : 'Cloud Memorystore (&lt; 1ms) • Cloud Spanner'}</div>
     </div>`,
     260,
     475,
@@ -288,18 +307,18 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   line(nid(), 'State Sync', 'n_supervisor', 'n_memory', 0.5, 1, 0.5, 0, 'strokeColor=#EA4335;strokeWidth=1.5;dashed=1;dashPattern=3 3;endArrow=classic;startArrow=classic;endSize=4;startSize=4;');
 
   // =========================================================================
-  // 5. COLUMN 3: 3 PARALLEL SPECIALIST AGENTS (x=510, w=195)
+  // 5. COLUMN 3: 3 PARALLEL SPECIALIST AGENTS / STREAM WORKERS (x=510, w=195)
   // =========================================================================
 
-  // LANE 1: RAG AGENT (y=155)
+  // LANE 1: RAG AGENT / WORKERS (y=155)
   node(
     "n_rag_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       <div style="display:flex;align-items:center;gap:8px;">
-        ${renderGcpIconHtml('vertex_vector_search', 22)}
-        <span style="font-size:11.5px;font-weight:700;color:#202124;">RAG Specialist</span>
+        ${renderGcpIconHtml(isStreaming ? 'gke_autopilot' : 'vertex_vector_search', 22)}
+        <span style="font-size:11.5px;font-weight:700;color:#202124;">${isStreaming ? 'GKE Stream Workers' : 'RAG Specialist'}</span>
       </div>
-      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Hybrid Semantic Retrieval</div>
+      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">${isStreaming ? 'Autoscaling Kafka/PubSub Consumers' : 'Hybrid Semantic Retrieval'}</div>
     </div>`,
     510,
     155,
@@ -308,15 +327,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // LANE 2: SQL AGENT (y=285)
+  // LANE 2: SQL AGENT / CONTINUOUS SQL (y=285)
   node(
     "n_sql_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       <div style="display:flex;align-items:center;gap:8px;">
         ${renderGcpIconHtml('bigquery', 22)}
-        <span style="font-size:11.5px;font-weight:700;color:#202124;">SQL &amp; Data Agent</span>
+        <span style="font-size:11.5px;font-weight:700;color:#202124;">${isStreaming ? 'Continuous SQL Engine' : 'SQL &amp; Data Agent'}</span>
       </div>
-      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Text-to-SQL &amp; Multi-DB Router</div>
+      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">${isStreaming ? 'BigQuery Real-Time Stream Windows' : 'Text-to-SQL &amp; Multi-DB Router'}</div>
     </div>`,
     510,
     285,
@@ -325,15 +344,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=${cardBorder};strokeWidth=1;shadow=1;rounded=1;arcSize=8;`
   );
 
-  // LANE 3: TOOL AGENT (y=415)
+  // LANE 3: TOOL AGENT / EVENTARC (y=415)
   node(
     "n_tool_agent",
     `<div style="padding:10px 12px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       <div style="display:flex;align-items:center;gap:8px;">
-        ${renderGcpIconHtml('agent_builder', 22)}
-        <span style="font-size:11.5px;font-weight:700;color:#202124;">Action &amp; Tool Agent</span>
+        ${renderGcpIconHtml(isStreaming ? 'cloud_run' : 'agent_builder', 22)}
+        <span style="font-size:11.5px;font-weight:700;color:#202124;">${isStreaming ? 'Eventarc &amp; Cloud Run' : 'Action &amp; Tool Agent'}</span>
       </div>
-      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">Vertex AI Tool Execution</div>
+      <div style="font-size:8.5px;color:#5F6368;margin-top:4px;">${isStreaming ? 'Serverless Event Handlers &amp; DLQ' : 'Vertex AI Tool Execution'}</div>
     </div>`,
     510,
     415,
@@ -343,15 +362,15 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   // Supervisor Dispatch Connectors (100% strict orthogonal steps)
-  line(nid(), 'Parallel RAG', 'n_supervisor', 'n_rag_agent', 1, 0.25, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Worker Ingest' : 'Parallel RAG', 'n_supervisor', 'n_rag_agent', 1, 0.25, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 492, y: 365 },
     { x: 492, y: 191 }
   ]);
-  line(nid(), 'Parallel SQL', 'n_supervisor', 'n_sql_agent', 1, 0.5, 0, 0.5, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Continuous Stream' : 'Parallel SQL', 'n_supervisor', 'n_sql_agent', 1, 0.5, 0, 0.5, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 492, y: 385 },
     { x: 492, y: 321 }
   ]);
-  line(nid(), 'Parallel Tools', 'n_supervisor', 'n_tool_agent', 1, 0.75, 0, 0.5, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Event Triggers' : 'Parallel Tools', 'n_supervisor', 'n_tool_agent', 1, 0.75, 0, 0.5, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 492, y: 405 },
     { x: 492, y: 451 }
   ]);
@@ -368,7 +387,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
         ${renderGcpIconHtml('vertex_vector_search', 22)}
         <span style="font-size:11.5px;font-weight:700;color:#202124;">Vertex Vector Search</span>
       </div>
-      <div style="font-size:8.5px;color:#1A73E8;font-weight:600;margin-top:2px;">ScaNN Semantic Index (&lt; 5ms)</div>
+      <div style="font-size:8.5px;color:#1A73E8;font-weight:600;margin-top:2px;">${isStreaming ? 'Real-Time ScaNN Embeddings Index' : 'ScaNN Semantic Index (&lt; 5ms)'}</div>
     </div>`,
     735,
     135,
@@ -381,10 +400,10 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   node(
     "n_doc_ingestion",
     `<div style="padding:4px 8px;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Google Sans',Roboto,Arial,sans-serif;">
-      ${renderGcpIconHtml('document_ai', 18)}
+      ${renderGcpIconHtml(isStreaming ? 'cloud_storage' : 'document_ai', 18)}
       <div style="text-align:left;">
-        <div style="font-size:8.5px;font-weight:700;color:#202124;">GCS &amp; Document AI OCR</div>
-        <div style="font-size:7.5px;color:#1A73E8;font-weight:600;">[Async Ingestion &amp; Chunking]</div>
+        <div style="font-size:8.5px;font-weight:700;color:#202124;">${isStreaming ? 'Cloud Storage (GCS) Raw Lake' : 'GCS &amp; Document AI OCR'}</div>
+        <div style="font-size:7.5px;color:#1A73E8;font-weight:600;">${isStreaming ? '[Immutable Bronze/Silver Medallion]' : '[Async Ingestion &amp; Chunking]'}</div>
       </div>
     </div>`,
     735,
@@ -395,7 +414,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   );
 
   line(nid(), '', 'n_doc_ingestion', 'n_vector_search', 0.5, 0, 0.5, 1, 'strokeColor=#1A73E8;strokeWidth=1.5;dashed=1;dashPattern=3 3;endArrow=block;endSize=4;');
-  line(nid(), 'Embedding', 'n_rag_agent', 'n_vector_search', 1, 0.5, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Vector Sink' : 'Embedding', 'n_rag_agent', 'n_vector_search', 1, 0.5, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 720, y: 191 },
     { x: 720, y: 164 }
   ]);
@@ -406,9 +425,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `<div style="padding:6px 10px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       <div style="display:flex;align-items:center;gap:6px;">
         ${renderGcpIconHtml('bigquery', 18)}
-        <span style="font-size:10.5px;font-weight:700;color:#202124;">BigQuery Studio (OLAP)</span>
+        <span style="font-size:10.5px;font-weight:700;color:#202124;">${isStreaming ? 'BigQuery Lakehouse (OLAP)' : 'BigQuery Studio (OLAP)'}</span>
       </div>
-      <div style="font-size:7.5px;color:#E37400;font-weight:600;">Analytics Lakehouse &amp; Text-to-SQL</div>
+      <div style="font-size:7.5px;color:#E37400;font-weight:600;">${isStreaming ? 'Real-Time Partitioned Streaming Tables' : 'Analytics Lakehouse &amp; Text-to-SQL'}</div>
     </div>`,
     735,
     260,
@@ -425,7 +444,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
         ${renderGcpIconHtml('spanner', 18)}
         <span style="font-size:10.5px;font-weight:700;color:#202124;">Cloud Spanner (OLTP)</span>
       </div>
-      <div style="font-size:7.5px;color:#1A73E8;font-weight:600;">TrueTime Globally Distributed DB</div>
+      <div style="font-size:7.5px;color:#1A73E8;font-weight:600;">${isStreaming ? 'Global Multi-Region High-Write OLTP' : 'TrueTime Globally Distributed DB'}</div>
     </div>`,
     735,
     312,
@@ -434,19 +453,19 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `fillColor=${cardBg};strokeColor=#1A73E8;strokeWidth=1.5;shadow=1;rounded=1;arcSize=8;`
   );
 
-  line(nid(), 'OLAP SQL', 'n_sql_agent', 'n_bigquery_dw', 1, 0.35, 0, 0.5, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Stream Write' : 'OLAP SQL', 'n_sql_agent', 'n_bigquery_dw', 1, 0.35, 0, 0.5, 'strokeColor=#E37400;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 720, y: 310 },
     { x: 720, y: 282 }
   ]);
-  line(nid(), 'OLTP CRUD', 'n_sql_agent', 'n_spanner_db', 1, 0.68, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
+  line(nid(), isStreaming ? 'ACID Sink' : 'OLTP CRUD', 'n_sql_agent', 'n_spanner_db', 1, 0.68, 0, 0.5, 'strokeColor=#1A73E8;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // GOVERNANCE & PRIVILEGED HITL APPROVAL GATE
   node(
     "n_hitl_governance_node",
     `<div style="padding:6px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       ${renderGcpIconHtml('cloud_iam', 18)}
-      <div style="font-size:10px;font-weight:700;color:#202124;margin-top:2px;">HITL Approval Gate</div>
-      <div style="font-size:7px;color:#D93025;font-weight:600;">Dual Admin Authorization</div>
+      <div style="font-size:10px;font-weight:700;color:#202124;margin-top:2px;">${isStreaming ? 'Policy &amp; IAM Guard' : 'HITL Approval Gate'}</div>
+      <div style="font-size:7px;color:#D93025;font-weight:600;">${isStreaming ? 'Stream Egress Authorization' : 'Dual Admin Authorization'}</div>
     </div>`,
     735,
     385,
@@ -461,9 +480,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `<div style="padding:8px 10px;text-align:left;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       <div style="display:flex;align-items:center;gap:6px;">
         ${renderGcpIconHtml('agent_builder', 20)}
-        <span style="font-size:10.5px;font-weight:700;color:#202124;">Vertex AI Extensions</span>
+        <span style="font-size:10.5px;font-weight:700;color:#202124;">${isStreaming ? 'External Connectors' : 'Vertex AI Extensions'}</span>
       </div>
-      <div style="font-size:7.5px;color:#0D9488;font-weight:600;margin-top:1px;">Google Workspace, Salesforce, SAP</div>
+      <div style="font-size:7.5px;color:#0D9488;font-weight:600;margin-top:1px;">${isStreaming ? 'Kafka, SFTP, Webhooks, REST' : 'Google Workspace, Salesforce, SAP'}</div>
     </div>`,
     865,
     385,
@@ -480,7 +499,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   line(nid(), 'Approved', 'n_hitl_governance_node', 'n_vertex_extensions', 1, 0.5, 0, 0.5, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;');
 
   // Standard Direct Tool Call routes under HITL directly to Extensions via clear waypoint at x=855
-  line(nid(), 'Standard API', 'n_tool_agent', 'n_vertex_extensions', 1, 0.75, 0, 0.85, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Webhooks' : 'Standard API', 'n_tool_agent', 'n_vertex_extensions', 1, 0.75, 0, 0.85, 'strokeColor=#0D9488;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 720, y: 469 },
     { x: 855, y: 469 },
     { x: 855, y: 440 }
@@ -494,8 +513,8 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
     `<div style="padding:14px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
       ${renderGcpIconHtml('gemini', 36)}
       <div style="font-size:13px;font-weight:700;color:#202124;margin-top:6px;letter-spacing:-0.2px;">Gemini 3.1 Pro / Flash</div>
-      <div style="font-size:8.5px;color:#1E8E3E;font-weight:600;margin-top:2px;">Multimodal Reasoning &amp; Synthesis</div>
-      <div style="font-size:7.5px;color:#5F6368;margin-top:4px;">2M Context • CoT Reflection</div>
+      <div style="font-size:8.5px;color:#1E8E3E;font-weight:600;margin-top:2px;">${isStreaming ? 'Stream Analytics &amp; Anomaly ML' : 'Multimodal Reasoning &amp; Synthesis'}</div>
+      <div style="font-size:7.5px;color:#5F6368;margin-top:4px;">${isStreaming ? 'Continuous Real-Time Scoring' : '2M Context • CoT Reflection'}</div>
     </div>`,
     1050,
     175,
@@ -507,7 +526,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // 100% STRICT ORTHOGONAL CONNECTOR PORTS INTO GEMINI:
   
   // Port 1 (y=195 = 175 + 240*0.08): Fast Path Direct Prompt (Strict 90-degree Manhattan routing)
-  line(nid(), 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 1, 0.5, 0, 0.08, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
+  line(nid(), isStreaming ? 'Real-Time Telemetry' : 'Direct Prompt', 'n_fast_path', 'n_gemini_core', 1, 0.5, 0, 0.08, 'strokeColor=#1E8E3E;strokeWidth=1.5;endArrow=block;endSize=4;', [
     { x: 490, y: 141 },
     { x: 490, y: 96 },
     { x: 1030, y: 96 },
@@ -562,9 +581,9 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   node(
     "n_delivery",
     `<div style="padding:10px 12px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Google Sans',Roboto,Arial,sans-serif;">
-      ${renderGcpIconHtml('vertex_ai', 26)}
-      <div style="font-size:12px;font-weight:700;color:#1E8E3E;margin-top:4px;">Grounded Stream to User</div>
-      <div style="font-size:8.5px;color:#137333;font-weight:600;">Verified Citations • Sub-Second TTFT</div>
+      ${renderGcpIconHtml(isStreaming ? 'cloud_cdn' : 'vertex_ai', 26)}
+      <div style="font-size:12px;font-weight:700;color:#1E8E3E;margin-top:4px;">${isStreaming ? 'Real-Time Stream to Consumers' : 'Grounded Stream to User'}</div>
+      <div style="font-size:8.5px;color:#137333;font-weight:600;">${isStreaming ? 'Low-Latency WebSocket &amp; SSE Feed' : 'Verified Citations • Sub-Second TTFT'}</div>
     </div>`,
     1275,
     380,
@@ -689,7 +708,7 @@ export function generateGCPFunctionalFlowchart(options: GCPFunctionalFlowchartOp
   // Assemble full XML envelope
   return `<?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="embed.diagrams.net">
-  <diagram id="gcp_enterprise_production_flow" name="${E(projectTitle)}">
+  <diagram id="gcp_enterprise_production_flow" name="${E(displayTitle)}">
     <mxGraphModel dx="1600" dy="750" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="750" background="${bg}" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
