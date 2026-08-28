@@ -4,6 +4,7 @@ import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
 import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
 import { Studio3ExecutionLogger } from '@/lib/studio3/telemetryLogger';
+import { saveDiagramVersion, createDiagram } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
   const logger = new Studio3ExecutionLogger();
@@ -83,8 +84,48 @@ export async function POST(req: NextRequest) {
       explanation = `Expanded the canvas into a **Multi-Band Composite Architecture**: added the top comparative matrix tier and bottom 4-stage operational ingestion pipeline.`;
     }
 
+    // 5. Persist Version to Database
+    let activeDiagramId = body.diagramId || null;
+    let versionId: string | null = null;
+    try {
+      if (activeDiagramId) {
+        const v = await saveDiagramVersion(
+          activeDiagramId,
+          xml,
+          `Chat Turn: ${latestUserMessage.slice(0, 50)}`,
+          'AI',
+          latestUserMessage,
+          intent?.rationale || null,
+          null,
+          null,
+          'studio3_generative',
+          JSON.stringify(graph)
+        );
+        versionId = v.id;
+      } else {
+        const dbRes = await createDiagram(
+          graph?.title || 'Studio 3 First-Principles Architecture',
+          xml,
+          'Synthesized via Studio 3 Chat Turn',
+          latestUserMessage,
+          intent?.rationale || null,
+          null,
+          null,
+          null,
+          'studio3_generative',
+          false
+        );
+        activeDiagramId = dbRes.diagram.id;
+        versionId = dbRes.version?.id || null;
+      }
+    } catch (dbErr) {
+      console.warn('DB version persistence warning:', dbErr);
+    }
+
     return NextResponse.json({
       success: true,
+      diagramId: activeDiagramId,
+      versionId,
       message: explanation,
       intent,
       xml,

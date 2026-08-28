@@ -27,7 +27,9 @@ import {
   Clapperboard,
   Film,
   Play,
-  RotateCcw
+  RotateCcw,
+  Link as LinkIcon,
+  Share2
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
@@ -92,8 +94,11 @@ export default function Studio3Page() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'canvas' | 'logs' | 'quality' | 'xml'>('canvas');
   const [copied, setCopied] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
 
-  // Active State
+  // Active State & Persistent ID
+  const [diagramId, setDiagramId] = useState<string | null>(null);
+  const [diagramName, setDiagramName] = useState<string>('');
   const [currentXml, setCurrentXml] = useState<string>('');
   const [currentIntent, setCurrentIntent] = useState<Studio3Intent | null>(null);
   const [currentGraph, setCurrentGraph] = useState<Studio3SemanticGraph | null>(null);
@@ -102,6 +107,86 @@ export default function Studio3Page() {
   const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // 1. Initial Mount: Restore from URL Query (?id=...) or LocalStorage
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const searchParams = new URLSearchParams(window.location.search);
+    const urlId = searchParams.get('id');
+
+    if (urlId) {
+      setLoading(true);
+      fetch(`/api/diagrams/${urlId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && (data.xml_content || data.versions?.[0]?.xml_content)) {
+            const xml = data.xml_content || data.versions[0].xml_content;
+            setCurrentXml(xml);
+            setDiagramId(data.id);
+            setDiagramName(data.name || 'Studio 3 Architecture');
+            if (data.architecture_type) {
+              setSelectedAbstraction(data.architecture_type as AbstractionLevel);
+            }
+            setMessages([
+              {
+                id: 'msg_restored',
+                role: 'assistant',
+                content: `🎯 **Diagram Restored via Unique Link:** Loaded \`${data.name || 'Architecture'}\` (Permanent ID: \`${data.id}\`).`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              }
+            ]);
+          }
+        })
+        .catch(err => console.error('Failed to load diagram by ID:', err))
+        .finally(() => setLoading(false));
+    } else {
+      try {
+        const saved = localStorage.getItem('pc_studio3_session');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.currentXml) {
+            setCurrentXml(parsed.currentXml);
+            if (parsed.diagramId) {
+              setDiagramId(parsed.diagramId);
+              window.history.replaceState(null, '', `/studio3?id=${parsed.diagramId}`);
+            }
+            if (parsed.diagramName) setDiagramName(parsed.diagramName);
+            if (Array.isArray(parsed.messages) && parsed.messages.length > 0) setMessages(parsed.messages);
+            if (parsed.currentIntent) setCurrentIntent(parsed.currentIntent);
+            if (parsed.currentGraph) setCurrentGraph(parsed.currentGraph);
+            if (parsed.currentQuality) setCurrentQuality(parsed.currentQuality);
+            if (Array.isArray(parsed.allLogs)) setAllLogs(parsed.allLogs);
+            if (parsed.selectedAbstraction) setSelectedAbstraction(parsed.selectedAbstraction);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to parse localStorage session:', e);
+      }
+    }
+  }, []);
+
+  // 2. Continuous State Auto-Sync to LocalStorage & URL History
+  useEffect(() => {
+    if (typeof window === 'undefined' || !currentXml) return;
+    try {
+      localStorage.setItem('pc_studio3_session', JSON.stringify({
+        diagramId,
+        diagramName,
+        currentXml,
+        messages,
+        currentIntent,
+        currentGraph,
+        currentQuality,
+        allLogs,
+        selectedAbstraction
+      }));
+      if (diagramId) {
+        window.history.replaceState(null, '', `/studio3?id=${diagramId}`);
+      }
+    } catch (e) {
+      console.warn('Failed to save session to localStorage:', e);
+    }
+  }, [currentXml, diagramId, diagramName, messages, currentIntent, currentGraph, currentQuality, allLogs, selectedAbstraction]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -140,6 +225,28 @@ export default function Studio3Page() {
     }
   };
 
+  const handleCopyShareLink = () => {
+    if (typeof window === 'undefined') return;
+    const shareUrl = diagramId
+      ? `${window.location.origin}/studio3?id=${diagramId}`
+      : window.location.href;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+      }).catch(() => {
+        fallbackCopyTextToClipboard(shareUrl);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+      });
+    } else {
+      fallbackCopyTextToClipboard(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
+  };
+
   const handleEditInDrawio = () => {
     if (!currentXml) return;
     try {
@@ -151,6 +258,12 @@ export default function Studio3Page() {
   };
 
   const handleResetStage = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('pc_studio3_session');
+      window.history.replaceState(null, '', '/studio3');
+    }
+    setDiagramId(null);
+    setDiagramName('');
     setCurrentXml('');
     setCurrentIntent(null);
     setCurrentGraph(null);
@@ -190,7 +303,8 @@ export default function Studio3Page() {
             forcedAbstraction: forcedAbstraction || selectedAbstraction
           }
         : {
-            prompt: promptText,
+            diagramId,
+            messages: [...messages, userMessage],
             currentXml,
             previousGraph: currentGraph,
             theme
@@ -208,7 +322,10 @@ export default function Studio3Page() {
         throw new Error(data.error || 'Failed to synthesize architecture');
       }
 
-      // Update state
+      // Update state & ID
+      if (data.diagramId) {
+        setDiagramId(data.diagramId);
+      }
       if (data.xml) setCurrentXml(data.xml);
       if (data.intent) {
         setCurrentIntent(data.intent);
@@ -216,7 +333,10 @@ export default function Studio3Page() {
           setSelectedAbstraction(data.intent.abstractionLevel);
         }
       }
-      if (data.graph) setCurrentGraph(data.graph);
+      if (data.graph) {
+        setCurrentGraph(data.graph);
+        if (data.graph.title) setDiagramName(data.graph.title);
+      }
       if (data.qualityReport) setCurrentQuality(data.qualityReport);
 
       if (Array.isArray(data.logs)) {
@@ -227,7 +347,7 @@ export default function Studio3Page() {
       const assistantMessage: ChatMessage = {
         id: `asst_${Date.now()}`,
         role: 'assistant',
-        content: data.explanation || (isInitial
+        content: data.explanation || data.message || (isInitial
           ? `🎬 **Curtain Raised:** Synthesized first **${(data.intent?.abstractionLevel || 'logical').toUpperCase()}** architecture from first principles (Quality: **${data.qualityReport?.overallScore || 95}/100**).`
           : `✨ **Architecture Evolved:** Applied updates to diagram (Quality: **${data.qualityReport?.overallScore || 95}/100**).`),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -279,16 +399,28 @@ export default function Studio3Page() {
           </div>
 
           {/* Abstraction Level Selector & Action Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Shareable Unique Link & ID Badge */}
+            {diagramId && (
+              <button
+                onClick={handleCopyShareLink}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black bg-blue-950/90 hover:bg-blue-900 border border-blue-500/60 text-blue-200 transition shadow-sm"
+                title="Click to copy unique shareable link"
+              >
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <LinkIcon className="w-3.5 h-3.5 text-blue-400" />}
+                <span>{copiedLink ? 'Copied Link!' : `ID: ${diagramId.slice(0, 8)}...`}</span>
+              </button>
+            )}
+
             {/* Reset Stage Button */}
             {currentXml && (
               <button
                 onClick={handleResetStage}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition"
-                title="Reset stage and lower curtain"
+                title="Reset stage and clear session"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Reset Stage</span>
+                <span className="hidden sm:inline">Reset</span>
               </button>
             )}
 
