@@ -171,3 +171,14 @@
 2. **Pre-Delivery Certification Gate**:
    - Never stream or return an unverified or failing diagram state to the client canvas. The canvas must only render diagrams with `certified: true` (Overall Score $\ge 75$, 0 collisions, 100% viewport containment).
 
+---
+
+# 🔗 Permanent Deep-Link & Unique ID Addressability Law
+
+1. **Full-Page Deep Links Over Ephemeral Popups**:
+   - All diagram viewers, AI generation studios, audit inspectors, and editing workspaces MUST be full-page destinations with distinct, shareable URLs and persistent UUIDs (e.g., `/studio3?id=<uuid>`, `/diagrams/[id]`).
+   - NEVER isolate core workflows into transient popup modals that vanish on browser refresh or prevent direct link sharing.
+2. **Continuous State & URL Synchronization**:
+   - All synthesized diagrams and conversational turns must automatically persist to the database and update the browser address bar with their unique ID.
+   - Direct page reloads or deep-link navigation to `/studio3?id=<id>` must seamlessly restore the exact diagram, chat history, and configuration with zero state loss.
+
