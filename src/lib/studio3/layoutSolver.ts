@@ -1,4 +1,4 @@
-import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage } from './graphExtractor';
+import { Studio3SemanticGraph, Studio3Band, Studio3Column, Studio3PipelineStage, Studio3ConceptualRoadmap } from './graphExtractor';
 import { renderGcpIconHtml } from '../gcpIcons';
 import { generateTemplate51GraphTheoryLearningRoadmapXml } from '../canonical/template51GraphTheoryLearningRoadmap';
 
@@ -32,13 +32,325 @@ const COLOR_MAP: Record<string, { bg: string; text: string; lightBg: string; bor
   red: { bg: '#DC2626', text: '#FFFFFF', lightBg: '#FEF2F2', border: '#EF4444' }
 };
 
+export function renderUniversalConceptualRoadmapXml(
+  roadmap: Studio3ConceptualRoadmap,
+  theme: 'light' | 'dark' = 'light'
+): string {
+  const isDark = theme === 'dark';
+  const c: string[] = [];
+
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+    c.push(
+      `<mxCell id="${id}" value="${escapeXml(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+    );
+
+  const edge = (id: string, src: string, trg: string, style = 'edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=5;') =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+
+  // 1. TOP HEADER BANNER (y=14..70)
+  const topHdrHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;background:#1E3A8A;color:#FFFFFF;border-radius:10px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:24px;font-weight:900;letter-spacing:0.5px;text-transform:uppercase;">
+      ${escapeXml(roadmap.title || 'CONCEPTUAL LEARNING ROADMAP')}
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:15px;font-size:11px;font-weight:800;letter-spacing:0.04em;">CONCEPTUAL VIEW</span>
+      <span style="background:#FFFFFF;color:#1E3A8A;padding:4px 12px;border-radius:15px;font-size:11px;font-weight:900;">STUDIO 3 UNIVERSAL</span>
+    </div>
+  </div>`;
+  cell('hdr_main', topHdrHtml, 20, 14, 1560, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;');
+
+  // 2. TOP CHEVRON PROCESS RIBBON (y=78..118)
+  const mColors: Record<string, { fill: string; stroke: string }> = {
+    blue: { fill: '#3B82F6', stroke: '#1D4ED8' },
+    green: { fill: '#10B981', stroke: '#047857' },
+    orange: { fill: '#F97316', stroke: '#C2410C' },
+    yellow: { fill: '#EAB308', stroke: '#A16207' },
+    purple: { fill: '#8B5CF6', stroke: '#6D28D9' },
+    teal: { fill: '#14B8A6', stroke: '#0F766E' }
+  };
+
+  const defaultMilestones: Array<{ title: string; color: 'blue' | 'green' | 'orange' | 'yellow'; icon?: string }> = [
+    { title: 'INTUITION & ANALOGIES', color: 'blue', icon: '🧭' },
+    { title: 'ESSENTIAL PREREQUISITES', color: 'green', icon: '📐' },
+    { title: 'STEP-BY-STEP TAXONOMY', color: 'orange', icon: '🧱' },
+    { title: 'MODERN FRONTIERS', color: 'yellow', icon: '🔬' }
+  ];
+
+  const milestones = (roadmap.milestones && roadmap.milestones.length === 4) ? roadmap.milestones : defaultMilestones;
+  const chevronWidth = 375;
+  milestones.forEach((m, idx) => {
+    const colCfg = mColors[m.color] || mColors.blue;
+    const x = 20 + idx * (chevronWidth + 10);
+    const w = idx === 3 ? 405 : chevronWidth;
+    const title = m.icon ? `${m.icon} ${m.title}` : m.title;
+    cell(`chv_${idx}`, title, x, 78, w, 40, `shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=${colCfg.fill};strokeColor=${colCfg.stroke};fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;`);
+  });
+
+  // 3. TOP SECTION 1: Analogy & Visual Actors (x=20..395, y=126..500)
+  const sec1 = roadmap.section1Analogy;
+  cell('sec1_bg', '', 20, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;');
+  cell('sec1_title', `<div style="text-align:center;font-weight:900;font-size:13px;color:#1E3A8A;padding-top:8px;">${escapeXml(sec1?.title || 'Intuitive Real-World Analogy')}</div>`, 24, 130, 367, 24, 'text;html=1;whiteSpace=wrap;');
+
+  const actors = sec1?.actors || [
+    { id: 'act_1', name: 'Alice (Client)', avatar: '👧', x: 50, y: 170 },
+    { id: 'act_2', name: 'Bob (Server)', avatar: '👦', x: 290, y: 170 },
+    { id: 'act_3', name: 'Carol (Coordinator)', avatar: '👩', x: 170, y: 270 }
+  ];
+  actors.forEach((act, aIdx) => {
+    const ax = act.x ?? (aIdx === 0 ? 50 : aIdx === 1 ? 290 : 170);
+    const ay = act.y ?? (aIdx === 0 ? 170 : aIdx === 1 ? 170 : 270);
+    cell(`act_${act.id}`, act.avatar || '👤', ax, ay, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
+    cell(`lbl_${act.id}`, act.name, ax - 10, ay + 58, 76, 18, 'text;html=1;fontStyle=1;fontSize=10.5;fontColor=#1E293B;align=center;');
+  });
+
+  (sec1?.relations || [
+    { from: 'act_1', to: 'act_2', label: 'Direct Interaction' },
+    { from: 'act_1', to: 'act_3', label: 'Signal Vector' },
+    { from: 'act_2', to: 'act_3', label: 'State Sync' }
+  ]).forEach((rel, rIdx) => {
+    edge(`rel_${rIdx}`, `act_${rel.from}`, `act_${rel.to}`, 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=6;');
+    if (rIdx === 0 && rel.label) {
+      cell(`lbl_rel_${rIdx}`, rel.label, 140, 172, 110, 18, 'text;html=1;fontSize=9;fontStyle=1;fontColor=#2563EB;align=center;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;');
+    }
+  });
+
+  const legendItems = sec1?.legend || [
+    { icon: '📐', label: 'Entities' },
+    { icon: '🔗', label: 'Channels' },
+    { icon: '📊', label: 'Topology' },
+    { icon: '🎯', label: 'Invariants' }
+  ];
+  const legendHtml = `<div style="display:flex;align-items:center;justify-content:space-around;width:100%;height:100%;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;box-sizing:border-box;font-size:10px;font-weight:700;color:#1E293B;">
+    ${legendItems.map(it => `<div>${it.icon} <strong>${escapeXml(it.label)}</strong></div>`).join('')}
+  </div>`;
+  cell('sec1_legend', legendHtml, 30, 360, 355, 46, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('sec1_chal', `<div style="text-align:center;font-size:10px;font-weight:800;color:#DC2626;background:#FEE2E2;border:1px solid #FCA5A5;border-radius:6px;padding:6px;">${escapeXml(sec1?.challengeCallout || 'Key Challenge: Coordination Complexity & Scale Invariance')}</div>`, 30, 420, 355, 30, 'text;html=1;whiteSpace=wrap;');
+
+  // 4. TOP SECTION 2: Prerequisites & Math Formalisms (x=405..780)
+  const sec2 = roadmap.section2Prerequisites;
+  cell('sec2_bg', '', 405, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;');
+  const mathHtml = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box;">
+    ${(sec2?.mathFormulas || [
+      { name: 'Core Formulation (Mathematical Model)', formula: 'S = (V, E, W, Σ)', icon: '📐' },
+      { name: 'Invariant & Conservation Laws', formula: '∂L/∂w = 0, ∑ Pr(X) = 1.0', icon: '💭' },
+      { name: 'Complexity & Bounds', formula: 'Time: O(N log N) | Space: O(V + E)', icon: '⚡' }
+    ]).map(f => `
+      <div style="background:#FFFFFF;border:1px solid #A7F3D0;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:11.5px;font-weight:900;color:#047857;">${escapeXml(f.name)}</div>
+          <div style="font-size:9.5px;color:#065F46;margin-top:2px;">${escapeXml(f.formula)}</div>
+        </div>
+        <div style="font-size:20px;">${f.icon || '📐'}</div>
+      </div>
+    `).join('')}
+    <div style="background:#D1FAE5;border:1px dashed #059669;border-radius:8px;padding:8px 10px;font-size:9.5px;color:#065F46;font-weight:700;">
+      ${(sec2?.checklist || [
+        '☑ Foundational Axiom Verification',
+        '☑ Asymptotic Convergence & Stability',
+        '☑ Dual Space Equivalence Proof'
+      ]).map(cItem => `<div style="margin-bottom:2px;">${escapeXml(cItem)}</div>`).join('')}
+    </div>
+  </div>`;
+  cell('sec2_content', mathHtml, 405, 126, 375, 374, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 5. TOP SECTION 3: Taxonomy & Variants (x=790..1165)
+  const sec3 = roadmap.section3Taxonomy;
+  cell('sec3_bg', '', 790, 126, 375, 374, 'rounded=1;arcSize=8;fillColor=#FFF7ED;strokeColor=#FED7AA;strokeWidth=1.5;');
+  const variants = sec3?.variants || [
+    { name: 'HOMOGENEOUS / SIMPLE', subtext: 'Symmetric connections', diagramType: 'nodes' as const },
+    { name: 'DIRECTED FLOW', subtext: 'Asymmetric state transfers', diagramType: 'directed' as const },
+    { name: 'WEIGHTED METRIC', subtext: 'Cost/Latency parameterized', diagramType: 'weighted' as const },
+    { name: 'HIERARCHICAL / TREE', subtext: 'Rooted acyclic structure', diagramType: 'tree' as const }
+  ];
+  variants.forEach((v, vIdx) => {
+    const py = 142 + vIdx * 64;
+    cell(`t_v_${vIdx}`, `${v.name}\n${v.subtext || ''}`, 805, py, 140, 42, 'rounded=1;arcSize=10;fillColor=#FDBA74;strokeColor=#EA580C;fontColor=#7C2D12;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;');
+    if (vIdx === 0) {
+      cell('vg0_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
+      cell('vg0_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
+      cell('vg0_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;strokeWidth=1.2;');
+      edge('vge0_1', 'vg0_1', 'vg0_2', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
+      edge('vge0_2', 'vg0_2', 'vg0_3', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
+      edge('vge0_3', 'vg0_3', 'vg0_1', 'strokeColor=#94A3B8;strokeWidth=1.2;endArrow=none;');
+    } else if (vIdx === 1) {
+      cell('vg1_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
+      cell('vg1_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
+      cell('vg1_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
+      edge('vge1_1', 'vg1_1', 'vg1_2', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
+      edge('vge1_2', 'vg1_2', 'vg1_3', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
+      edge('vge1_3', 'vg1_3', 'vg1_1', 'strokeColor=#047857;strokeWidth=1.5;endArrow=classic;endSize=4;');
+    } else if (vIdx === 2) {
+      cell('vg2_1', '', 980, py + 4, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
+      cell('vg2_2', '', 1025, py + 4, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
+      cell('vg2_3', '', 1002, py + 24, 16, 16, 'ellipse;fillColor=#6366F1;strokeColor=#4338CA;strokeWidth=1.2;');
+      edge('vge2_1', 'vg2_1', 'vg2_2', 'strokeColor=#4338CA;strokeWidth=1.2;endArrow=none;');
+      edge('vge2_2', 'vg2_2', 'vg2_3', 'strokeColor=#4338CA;strokeWidth=1.2;endArrow=none;');
+      cell('lbl_w1', 'w=5', 996, py - 2, 24, 10, 'text;fontColor=#4338CA;fontSize=7.5;fontStyle=1;');
+    } else {
+      cell('vg3_r', '', 1002, py + 2, 14, 14, 'ellipse;fillColor=#F59E0B;strokeColor=#B45309;strokeWidth=1.2;');
+      cell('vg3_l', '', 980, py + 22, 12, 12, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
+      cell('vg3_rg', '', 1024, py + 22, 12, 12, 'ellipse;fillColor=#10B981;strokeColor=#047857;strokeWidth=1.2;');
+      edge('vge3_1', 'vg3_r', 'vg3_l', 'strokeColor=#B45309;strokeWidth=1.2;endArrow=none;');
+      edge('vge3_2', 'vg3_r', 'vg3_rg', 'strokeColor=#B45309;strokeWidth=1.2;endArrow=none;');
+    }
+  });
+
+  // 6. TOP SECTION 4: Modern Graph Science / Frontiers (x=1175..1580)
+  const sec4 = roadmap.section4ModernFrontiers;
+  cell('sec4_bg', '', 1175, 126, 405, 374, 'rounded=1;arcSize=8;fillColor=#FEFCE8;strokeColor=#FEF08A;strokeWidth=1.5;');
+  cell('sec4_title', `<div style="text-align:center;font-weight:900;font-size:12.5px;color:#854D0E;padding-top:8px;text-transform:uppercase;">${escapeXml(sec4?.title || 'Traversable Knowledge Architecture')}</div>`, 1180, 130, 395, 24, 'text;html=1;whiteSpace=wrap;');
+
+  const kgNodes = sec4?.knowledgeGraphNodes || [
+    { id: 'kgn_1', label: 'Semantic\nMesh', color: '#38BDF8' },
+    { id: 'kgn_2', label: 'Neural\nVector', color: '#F59E0B' },
+    { id: 'kgn_3', label: 'Domain\nOntology', color: '#10B981' },
+    { id: 'kgn_4', label: 'Inference\nGraph', color: '#A855F7' }
+  ];
+  cell('kg_c', 'Core', 1345, 195, 48, 48, 'ellipse;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;');
+  kgNodes.forEach((kgn, idx) => {
+    const kx = idx === 0 ? 1195 : idx === 1 ? 1495 : idx === 2 ? 1335 : 1480;
+    const ky = idx === 0 ? 175 : idx === 1 ? 175 : idx === 2 ? 290 : 290;
+    cell(`kgn_${idx}`, kgn.label, kx, ky, 54, 54, `ellipse;fillColor=${kgn.color || '#38BDF8'};strokeColor=#0284C7;fontColor=#FFFFFF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;`);
+    edge(`kge_${idx}`, `kgn_${idx}`, 'kg_c', 'strokeColor=#94A3B8;strokeWidth=1.5;endArrow=none;');
+  });
+
+  const bulletsHtml = `<div style="padding:10px 14px;font-family:system-ui,-apple-system,sans-serif;color:#713F12;font-size:10px;line-height:1.45;font-weight:700;">
+    ${(sec4?.frameworkBullets || [
+      '🔬 • High-dimensional Embedding & Spectral Analysis',
+      '🧠 • Graph Neural Networks (GNN) & Message Passing',
+      '💻 • Distributed Scalable Cloud Runtime (Vertex AI / GKE)'
+    ]).map(b => `<div style="margin-bottom:4px;">${escapeXml(b)}</div>`).join('')}
+  </div>`;
+  cell('sec4_bullets', bulletsHtml, 1180, 365, 395, 80, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 7. BOTTOM WORKFLOW & EXECUTION PIPELINE (y=512..890)
+  const wf = roadmap.bottomWorkflow;
+  cell('wf_bg', '', 20, 512, 1560, 378, 'rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.8;');
+  cell('wf_title', `<div style="text-align:center;font-size:15px;font-weight:900;color:#0F172A;letter-spacing:0.5px;text-transform:uppercase;">${escapeXml(wf?.title || 'KEY ALGORITHMS & EXECUTION WORKFLOW PIPELINE')}</div>`, 20, 520, 1560, 24, 'text;html=1;whiteSpace=wrap;');
+
+  // Step 1: Problem Definition
+  const s1 = wf?.step1Problem;
+  cell('step1_box', '', 36, 554, 340, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const s1Html = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11.5px;font-weight:900;color:#1E3A8A;text-transform:uppercase;margin-bottom:4px;">${escapeXml(s1?.title || 'STEP 1: Problem Definition')}</div>
+    <div style="font-size:10px;color:#64748B;font-weight:600;margin-bottom:8px;">${escapeXml(s1?.subtitle || 'Objective Function & Formulation')}</div>
+    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:10px;text-align:center;margin-bottom:8px;">
+      <div style="font-size:32px;margin-bottom:4px;">${s1?.icon || '🎯 📊'}</div>
+      <div style="font-size:10.5px;font-weight:800;color:#1D4ED8;">${escapeXml(s1?.formula || 'min Cost C(x) s.t. Constraints')}</div>
+    </div>
+    <div style="font-size:9.5px;color:#334155;line-height:1.4;">
+      ${(s1?.bullets || [
+        '• Formal input state compilation',
+        '• Invariant constraint bounds validation'
+      ]).map(b => `<div>${escapeXml(b)}</div>`).join('')}
+    </div>
+  </div>`;
+  cell('step1_content', s1Html, 36, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('arr_1_2', '➔', 382, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#3B82F6;fontStyle=1;align=center;');
+
+  // Step 2: Algorithm Execution
+  const s2 = wf?.step2Execution;
+  cell('step2_box', '', 420, 554, 340, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const s2Html = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11.5px;font-weight:900;color:#047857;text-transform:uppercase;margin-bottom:4px;">${escapeXml(s2?.title || 'STEP 2: Algorithm Execution')}</div>
+    <div style="font-size:10px;color:#64748B;font-weight:600;margin-bottom:8px;">Input: ${escapeXml(s2?.input || 'State Vector X')}</div>
+    ${(s2?.phases || [
+      { name: '1. Initialization', desc: 'Set initial distance & state parameters' },
+      { name: '2. Priority Extraction', desc: 'Select optimal candidate from frontier' },
+      { name: '3. Iterative Relaxation Loop', desc: 'Update adjacent candidate metrics' }
+    ]).map(p => `
+      <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:6px 10px;margin-bottom:6px;text-align:center;">
+        <div style="font-size:10.5px;font-weight:800;color:#065F46;">${escapeXml(p.name)}</div>
+        <div style="font-size:8.5px;color:#047857;">${escapeXml(p.desc)}</div>
+      </div>
+    `).join('')}
+  </div>`;
+  cell('step2_content', s2Html, 420, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('arr_2_3', '➔', 766, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#10B981;fontStyle=1;align=center;');
+
+  // Step 3: Engine Mechanics
+  const s3 = wf?.step3Engine;
+  cell('step3_box', '', 804, 554, 350, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const s3Html = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11.5px;font-weight:900;color:#7C2D12;text-transform:uppercase;margin-bottom:4px;">${escapeXml(s3?.title || 'STEP 3: Engine Optimization')}</div>
+    <div style="font-size:10px;color:#64748B;font-weight:600;margin-bottom:8px;">${escapeXml(s3?.subtitle || 'Algorithmic Engines & Complexity')}</div>
+    ${(s3?.engines || [
+      { name: 'GREEDY / HEURISTIC ENGINE', complexity: 'O(N log N)', items: ['Priority Queue Min-Heap', 'Local greedy optimality'] },
+      { name: 'DYNAMIC RELAXATION ENGINE', complexity: 'O(N · M)', items: ['Global state matrix update', 'Cycle detection & convergence'] }
+    ]).map(e => `
+      <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:6px 10px;margin-bottom:6px;">
+        <div style="font-size:10px;font-weight:800;color:#9A3412;">${escapeXml(e.name)} (${escapeXml(e.complexity)})</div>
+        <div style="font-size:8.5px;color:#7C2D12;">${e.items.map(it => `• ${escapeXml(it)}`).join('<br/>')}</div>
+      </div>
+    `).join('')}
+    <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:6px 10px;text-align:center;font-size:9.5px;font-weight:800;color:#92400E;">
+      ${escapeXml(s3?.callout || '⚡ High-Throughput Convergence Certified')}
+    </div>
+  </div>`;
+  cell('step3_content', s3Html, 804, 554, 350, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+  cell('arr_3_4', '➔', 1160, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#EA580C;fontStyle=1;align=center;');
+
+  // Step 4: Real-World Applications
+  const s4Apps = wf?.step4Applications || [
+    { title: 'Navigation & Routing', subtitle: 'Shortest Path Execution', icon: '🚗', detail: 'Real-time telemetry' },
+    { title: 'Infrastructure (MST)', subtitle: 'Kruskal / Prim Min-Cost', icon: '⚡', detail: 'Grid optimization' },
+    { title: 'Bioinformatics', subtitle: 'Sequence Alignment', icon: '🧬', detail: 'Eulerian graphs' },
+    { title: 'Network Throughput', subtitle: 'Max Flow Allocation', icon: '🌊', detail: 'Ford-Fulkerson cut' }
+  ];
+  cell('step4_box', '', 1200, 554, 360, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
+  const s4Html = `<div style="padding:12px;font-family:system-ui,-apple-system,sans-serif;">
+    <div style="font-size:11.5px;font-weight:900;color:#1E3A8A;text-transform:uppercase;margin-bottom:4px;">STEP 4: Solutions &amp; Applications</div>
+    <div style="font-size:10px;color:#64748B;font-weight:600;margin-bottom:8px;">Enterprise Scale Real-World Deployment</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      ${s4Apps.slice(0, 4).map(app => `
+        <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:6px;padding:6px;text-align:center;">
+          <div style="font-size:18px;">${app.icon || '🚀'}</div>
+          <div style="font-size:9px;font-weight:800;color:#1E293B;">${escapeXml(app.title)}</div>
+          <div style="font-size:7.5px;color:#64748B;">${escapeXml(app.subtitle)}</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+  cell('step4_content', s4Html, 1200, 554, 360, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
+
+  // 8. FOOTER BANNER
+  const tenets = roadmap.footerTenets && roadmap.footerTenets.length > 0 ? roadmap.footerTenets.join('  |  ') : 'PRODUCER INDEPENDENCE  |  CONSUMER INDEPENDENCE  |  FORMAT, NOT PLATFORM';
+  const ftrHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:800;color:#334155;letter-spacing:0.06em;">
+    <div>${escapeXml(tenets)}</div>
+    <div style="color:#2563EB;display:flex;align-items:center;gap:6px;">
+      <span style="font-size:14px;">☁️</span>
+      <span>Google Cloud Architecture Engine</span>
+    </div>
+  </div>`;
+  cell('ftr_main', ftrHtml, 20, 904, 1560, 44, 'text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;');
+
+  return `<mxfile host="embed.diagrams.net">
+  <diagram id="conceptual_roadmap" name="${escapeXml(roadmap.title || 'Conceptual Roadmap')}">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="${isDark ? '#0B111E' : '#FFFFFF'}" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        ${c.join('\n        ')}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+}
+
 export function solveAndRenderStudio3Xml(
   graph: Studio3SemanticGraph,
   options: LayoutOptions = {}
 ): string {
   const { theme = 'dark', canvasWidth = 1600, canvasHeight = 1000 } = options;
 
-  // Master Canonical Passthrough for Graph Theory Roadmap
+  // 0. Universal Conceptual Roadmap Passthrough (Applied for any topic!)
+  if (graph?.conceptualRoadmap) {
+    return renderUniversalConceptualRoadmapXml(graph.conceptualRoadmap, theme);
+  }
+
+  // Master Canonical Passthrough for Template 51 (Graph Theory)
   if (
     graph?.templateId === '51' ||
     (graph?.title || '').toLowerCase().includes('graph theory') ||

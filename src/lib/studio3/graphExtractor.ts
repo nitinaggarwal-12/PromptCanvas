@@ -88,13 +88,59 @@ export interface Studio3FreeformElement {
   codeSnippet?: string;
 }
 
+export interface Studio3ConceptualRoadmap {
+  title: string;
+  subtitle?: string;
+  milestones: Array<{
+    title: string;
+    color: 'blue' | 'green' | 'orange' | 'yellow' | 'purple' | 'teal';
+    icon?: string;
+  }>;
+  section1Analogy: {
+    title: string;
+    subtitle?: string;
+    actors: Array<{ id: string; name: string; avatar: string; role?: string; x?: number; y?: number }>;
+    relations: Array<{ from: string; to: string; label: string }>;
+    legend: Array<{ icon: string; label: string }>;
+    challengeCallout: string;
+  };
+  section2Prerequisites: {
+    title: string;
+    mathFormulas: Array<{ name: string; formula: string; icon?: string }>;
+    checklist: string[];
+  };
+  section3Taxonomy: {
+    title: string;
+    variants: Array<{
+      name: string;
+      subtext?: string;
+      diagramType: 'nodes' | 'directed' | 'weighted' | 'tree' | 'layers' | 'grid';
+      details?: string[];
+    }>;
+  };
+  section4ModernFrontiers: {
+    title: string;
+    knowledgeGraphNodes: Array<{ id: string; label: string; color?: string }>;
+    frameworkBullets: string[];
+  };
+  bottomWorkflow: {
+    title: string;
+    step1Problem: { title: string; subtitle: string; icon: string; formula?: string; bullets: string[] };
+    step2Execution: { title: string; input: string; phases: Array<{ name: string; desc: string }> };
+    step3Engine: { title: string; subtitle: string; engines: Array<{ name: string; complexity: string; items: string[] }>; callout?: string };
+    step4Applications: Array<{ title: string; subtitle: string; icon: string; detail: string }>;
+  };
+  footerTenets: string[];
+}
+
 export interface Studio3SemanticGraph {
   title: string;
   subtitle: string;
   tenets: string[];
   abstractionLevel: 'conceptual' | 'logical' | 'technical';
-  layoutType?: 'freeform' | 'bands' | 'matrix';
+  layoutType?: 'freeform' | 'bands' | 'matrix' | 'conceptual_roadmap';
   templateId?: string;
+  conceptualRoadmap?: Studio3ConceptualRoadmap;
   freeformElements?: Studio3FreeformElement[];
   bands: Studio3Band[];
   connections: Studio3Connection[];
@@ -103,6 +149,327 @@ export interface Studio3SemanticGraph {
 function getAiClient(apiKey?: string): GoogleGenAI {
   const key = apiKey || process.env.GEMINI_API_KEY || '';
   return new GoogleGenAI({ apiKey: key });
+}
+
+/**
+ * 🌟 Universal High-Craft Conceptual Roadmap Generator for Any Topic
+ */
+export function generateGenericConceptualRoadmap(
+  prompt: string,
+  intent: Studio3Intent
+): Studio3ConceptualRoadmap {
+  const p = (prompt || '').toLowerCase();
+  const cleanTitle = (prompt || 'CONCEPTUAL LEARNING ROADMAP').toUpperCase();
+
+  // 1. NEURAL NETWORKS & DEEP LEARNING
+  if (p.includes('neural') || p.includes('deep learning') || p.includes('backprop') || p.includes('gradient') || p.includes('perceptron') || p.includes('cnn') || p.includes('rnn')) {
+    return {
+      title: 'NEURAL NETWORKS & DEEP LEARNING: FROM PERCEPTRONS TO BACKPROPAGATION',
+      subtitle: 'Non-Linear Activation, Differentiable Graphs, Gradient Optimization & Generalization',
+      milestones: [
+        { title: '🧭 BIOLOGICAL & ARTIFICIAL INTUITION', color: 'blue', icon: '🧠' },
+        { title: 'MATHEMATICAL FORMULATIONS', color: 'green', icon: '📐' },
+        { title: 'NETWORK TOPOLOGY TAXONOMY', color: 'orange', icon: '🧬' },
+        { title: '🔬 DEEP LEARNING FRONTIERS 🌐', color: 'yellow', icon: '🚀' }
+      ],
+      section1Analogy: {
+        title: 'Synaptic Signal Propagation Analogy',
+        actors: [
+          { id: 'in', name: 'Input Dendrite (X)', avatar: '📥', x: 50, y: 170 },
+          { id: 'soma', name: 'Soma Cell Body (Σ)', avatar: '🧠', x: 170, y: 220 },
+          { id: 'axon', name: 'Axon Terminal (y)', avatar: '⚡', x: 290, y: 170 }
+        ],
+        relations: [
+          { from: 'in', to: 'soma', label: 'Synaptic Weight w_i' },
+          { from: 'soma', to: 'axon', label: 'Activation σ(z)' }
+        ],
+        legend: [
+          { icon: '📥', label: 'Input Vector' },
+          { icon: '⚖️', label: 'Weights & Bias' },
+          { icon: '⚡', label: 'Activation' },
+          { icon: '🎯', label: 'Target Loss' }
+        ],
+        challengeCallout: 'The Challenge: Vanishing & Exploding Gradients in Deep Architectures'
+      },
+      section2Prerequisites: {
+        title: 'Linear Algebra & Calculus Foundations',
+        mathFormulas: [
+          { name: 'Forward Logit Formulation', formula: 'z = W^T x + b, a = σ(z)', icon: '📐' },
+          { name: 'Chain Rule (Backpropagation)', formula: '∂L/∂W = (∂L/∂a)(∂a/∂z)(∂z/∂W)', icon: '∂' },
+          { name: 'Loss Function (Cross-Entropy)', formula: 'L(y, ŷ) = -∑ y_i log(ŷ_i)', icon: '📉' }
+        ],
+        checklist: [
+          '☑ Multivariable Matrix Derivatives & Jacobians',
+          '☑ Non-Linear Activation Functions (ReLU, GELU, Sigmoid)',
+          '☑ Convex vs Non-Convex Optimization Surfaces'
+        ]
+      },
+      section3Taxonomy: {
+        title: 'Taxonomy of Neural Architectures',
+        variants: [
+          { name: 'MULTI-LAYER PERCEPTRON (MLP)', subtext: 'Dense Feedforward Layers', diagramType: 'layers' },
+          { name: 'CONVOLUTIONAL (CNN)', subtext: 'Spatial Receptive Fields', diagramType: 'grid' },
+          { name: 'RECURRENT (RNN / LSTM)', subtext: 'Sequential Temporal Loops', diagramType: 'directed' },
+          { name: 'TRANSFORMER ATTENTION', subtext: 'Scaled Dot-Product Self-Attention', diagramType: 'nodes' }
+        ]
+      },
+      section4ModernFrontiers: {
+        title: 'Modern Deep Learning Ecosystem',
+        knowledgeGraphNodes: [
+          { id: 'kg_attn', label: 'Self\nAttention', color: '#38BDF8' },
+          { id: 'kg_diff', label: 'Diffusion\nModels', color: '#F59E0B' },
+          { id: 'kg_moe', label: 'Mixture\nof Experts', color: '#10B981' },
+          { id: 'kg_rlhf', label: 'RLHF &\nDPO', color: '#A855F7' }
+        ],
+        frameworkBullets: [
+          '🔬 • Scaling Laws: Chinchilla & Compute-Optimal Compute',
+          '🧠 • LoRA / QLoRA Parameter-Efficient Fine-Tuning',
+          '💻 • JAX / PyTorch TPU & GPU Distributed Sharding (vLLM / Megatron)'
+        ]
+      },
+      bottomWorkflow: {
+        title: 'END-TO-END TRAINING & INFERENCE WORKFLOW',
+        step1Problem: {
+          title: 'STEP 1: Data & Objective',
+          subtitle: 'Supervised Feature Embeddings',
+          icon: '📊 🎯',
+          formula: 'D = {(x_1, y_1), ..., (x_N, y_N)}',
+          bullets: ['• Batch normalization & tokenization', '• Zero-mean unit variance normalization']
+        },
+        step2Execution: {
+          title: 'STEP 2: Forward & Loss Pass',
+          input: 'Mini-Batch Tensor X ∈ ℝ^(B×D)',
+          phases: [
+            { name: '1. Layer-by-Layer Activation', desc: 'Compute z^(l) = W^(l) a^(l-1) + b^(l)' },
+            { name: '2. Output Softmax Vector', desc: 'ŷ = exp(z_i) / ∑ exp(z_j)' },
+            { name: '3. Loss Metric Computation', desc: 'Compute scalar batch loss J(θ)' }
+          ]
+        },
+        step3Engine: {
+          title: 'STEP 3: Backward Optimization',
+          subtitle: 'Autograd & Adaptive Optimizers',
+          engines: [
+            { name: 'ADAMW OPTIMIZER', complexity: 'O(Parameters)', items: ['First & second moment estimation (m_t, v_t)', 'Decoupled weight decay regularization'] },
+            { name: 'GRADIENT CLIPPING & SCHEDULING', complexity: 'Cosine Annealing', items: ['Global gradient norm thresholding ||g|| ≤ 1.0', 'Warmup linear learning rate schedule'] }
+          ],
+          callout: '⚡ Guaranteed Convex Subspace Convergence'
+        },
+        step4Applications: [
+          { title: 'Computer Vision', subtitle: 'Object Detection & Segmentation', icon: '👁️', detail: 'Real-time YOLO / ViT' },
+          { title: 'Generative LLMs', subtitle: 'Gemini / Claude / GPT Reasoning', icon: '🤖', detail: 'Autoregressive token generation' },
+          { title: 'Autonomous Driving', subtitle: 'Perception & Trajectory Planning', icon: '🚗', detail: 'End-to-end multi-modal sensor fusion' },
+          { title: 'Biotech Discovery', subtitle: 'AlphaFold Protein Structure', icon: '🧬', detail: 'Atomic-resolution folding' }
+        ]
+      },
+      footerTenets: ['DIFFERENTIABILITY FIRST', 'COMPUTE SCALING HYPOTHESIS', 'GENERALIZATION OVER MEMORIZATION']
+    };
+  }
+
+  // 2. TRANSFORMERS & LARGE LANGUAGE MODELS
+  if (p.includes('transformer') || p.includes('attention') || p.includes('llm') || p.includes('rag') || p.includes('gpt') || p.includes('gemini') || p.includes('prompt')) {
+    return {
+      title: 'TRANSFORMER ARCHITECTURE & ATTENTION MECHANISMS: FROM TOKENS TO REASONING',
+      subtitle: 'Multi-Head Scaled Dot-Product Attention, Positional Encodings & Autoregressive Decoding',
+      milestones: [
+        { title: '🧭 QUERY, KEY & VALUE INTUITION', color: 'blue', icon: '🔍' },
+        { title: 'ATTENTION MATHEMATICS', color: 'green', icon: '📐' },
+        { title: 'LAYER & BLOCK TAXONOMY', color: 'orange', icon: '🧱' },
+        { title: '🔬 MODERN LLM ARCHITECTURES 🌐', color: 'yellow', icon: '⚡' }
+      ],
+      section1Analogy: {
+        title: 'Filing Cabinet & Semantic Lookup Analogy',
+        actors: [
+          { id: 'q', name: 'Query (What I want)', avatar: '🔍', x: 50, y: 170 },
+          { id: 'k', name: 'Key (File Label)', avatar: '🏷️', x: 170, y: 220 },
+          { id: 'v', name: 'Value (File Content)', avatar: '📑', x: 290, y: 170 }
+        ],
+        relations: [
+          { from: 'q', to: 'k', label: 'Dot Product Compatibility' },
+          { from: 'k', to: 'v', label: 'Softmax Weighted Sum' }
+        ],
+        legend: [
+          { icon: '🔍', label: 'Query Vector Q' },
+          { icon: '🏷️', label: 'Key Vector K' },
+          { icon: '📑', label: 'Value Vector V' },
+          { icon: '📊', label: 'Attention Matrix' }
+        ],
+        challengeCallout: 'The Challenge: O(N²) Quadratic Memory & Compute Complexity in Long Context'
+      },
+      section2Prerequisites: {
+        title: 'Scaled Dot-Product Attention Formalisms',
+        mathFormulas: [
+          { name: 'Scaled Dot-Product Attention', formula: 'Attention(Q,K,V) = softmax(QK^T / √d_k) V', icon: '📐' },
+          { name: 'Multi-Head Attention (MHA)', formula: 'MultiHead(Q,K,V) = Concat(head_1..head_h) W^O', icon: '🔀' },
+          { name: 'Rotary Position Embeddings (RoPE)', formula: 'R_Θ,m^d x_m = (x_m1 + i x_m2) e^(i m θ)', icon: '🔄' }
+        ],
+        checklist: [
+          '☑ Bidirectional vs Causal Autoregressive Masking',
+          '☑ Residual Add & RMSNorm / LayerNorm Normalization',
+          '☑ KV-Cache Memory Consumption Calculation'
+        ]
+      },
+      section3Taxonomy: {
+        title: 'Transformer Architecture Family Taxonomy',
+        variants: [
+          { name: 'ENCODER-ONLY (BERT)', subtext: 'Bidirectional Context Extraction', diagramType: 'layers' },
+          { name: 'DECODER-ONLY (GPT/Gemini)', subtext: 'Autoregressive Next-Token Gen', diagramType: 'directed' },
+          { name: 'ENCODER-DECODER (T5)', subtext: 'Cross-Attention Sequence-to-Sequence', diagramType: 'nodes' },
+          { name: 'MIXTURE OF EXPERTS (MoE)', subtext: 'Sparse Dynamic Top-K Routing', diagramType: 'tree' }
+        ]
+      },
+      section4ModernFrontiers: {
+        title: 'Modern Generative AI Frontiers',
+        knowledgeGraphNodes: [
+          { id: 'kg_flash', label: 'Flash\nAttention 3', color: '#38BDF8' },
+          { id: 'kg_mamba', label: 'State Space\nModels (SSM)', color: '#F59E0B' },
+          { id: 'kg_spec', label: 'Speculative\nDecoding', color: '#10B981' },
+          { id: 'kg_agent', label: 'Autonomous\nAgents & Tooling', color: '#A855F7' }
+        ],
+        frameworkBullets: [
+          '🔬 • RingAttention & Infinite Context Windows (1M+ Tokens)',
+          '🧠 • Direct Preference Optimization (DPO) & Constitutional AI',
+          '💻 • vLLM PagedAttention & Continuous Batching Serving'
+        ]
+      },
+      bottomWorkflow: {
+        title: 'AUTOREGRESSIVE TOKEN GENERATION WORKFLOW',
+        step1Problem: {
+          title: 'STEP 1: Prompt Tokenization',
+          subtitle: 'BPE Tokenizer to High-Dim Vectors',
+          icon: '🔤 📥',
+          formula: 'Tokens T = [t_1, t_2, ..., t_k] ∈ ℝ^(k × d_model)',
+          bullets: ['• Byte-Pair Encoding (BPE) subword splitting', '• RoPE positional injection into Q and K']
+        },
+        step2Execution: {
+          title: 'STEP 2: Multi-Layer Transformer Pass',
+          input: 'Input Embeddings + KV-Cache',
+          phases: [
+            { name: '1. Grouped-Query Attention (GQA)', desc: 'Compute QK^T / √d_k with cached K and V' },
+            { name: '2. SwiGLU Feed-Forward Network', desc: 'Non-linear feature expansion FFN(x) = (xW_1 ⊗ σ(xW_2)) W_3' },
+            { name: '3. Residual Connection & RMSNorm', desc: 'x_out = RMSNorm(x + Attention(x))' }
+          ]
+        },
+        step3Engine: {
+          title: 'STEP 3: Logit Sampling & Decoding',
+          subtitle: 'Probability Vector Sampling Engine',
+          engines: [
+            { name: 'TEMPERATURE & TOP-P (NUCLEUS)', complexity: 'Softmax Vector', items: ['P(w_i) = exp(z_i / T) / ∑ exp(z_j / T)', 'Dynamic nucleus cumulative probability threshold'] },
+            { name: 'KV-CACHE ACCELERATOR', complexity: 'O(1) Token Step', items: ['Reuse previously computed Key & Value matrices', 'Eliminates redundant prompt re-computation'] }
+          ],
+          callout: '🚀 Sub-10ms Time-to-First-Token (TTFT) Execution'
+        },
+        step4Applications: [
+          { title: 'Code Synthesis', subtitle: 'Multi-File Architecture', icon: '💻', detail: 'Antigravity / Copilot' },
+          { title: 'Enterprise RAG', subtitle: 'Vertex AI Grounded Search', icon: '🔍', detail: 'Vector index retrieval' },
+          { title: 'Agentic Workflows', subtitle: 'Tool Use & Multi-Turn Planning', icon: '🤖', detail: 'Function calling loop' },
+          { title: 'Multi-Modal Reasoning', subtitle: 'Audio, Vision & Video Synthesis', icon: '🎥', detail: 'Native multimodal tokens' }
+        ]
+      },
+      footerTenets: ['ATTENTION IS ALL YOU NEED', 'AUTOREGRESSIVE EFFICIENCY', 'MULTI-MODAL UNIFICATION']
+    };
+  }
+
+  // 3. GENERIC / UNIVERSAL CONCEPTUAL ROADMAP (ANY TOPIC UNDER THE SUN)
+  return {
+    title: `${cleanTitle}: COMPREHENSIVE LEARNING ROADMAP`,
+    subtitle: `First-Principles Intuition, Mathematical Foundations, Taxonomy & Execution Pipeline for ${cleanTitle}`,
+    milestones: [
+      { title: '🧭 CORE INTUITION & ANALOGY', color: 'blue', icon: '💡' },
+      { title: 'PREREQUISITES & FORMALISMS', color: 'green', icon: '📐' },
+      { title: 'STRUCTURAL TAXONOMY', color: 'orange', icon: '🏗️' },
+      { title: '🔬 MODERN ECOSYSTEM FRONTIERS 🌐', color: 'yellow', icon: '🚀' }
+    ],
+    section1Analogy: {
+      title: 'First-Principles Visual Metaphor',
+      actors: [
+        { id: 'c1', name: 'Producer / Source', avatar: '🟢', x: 50, y: 170 },
+        { id: 'c2', name: 'Core Engine / Mediator', avatar: '⚙️', x: 170, y: 220 },
+        { id: 'c3', name: 'Consumer / Sink', avatar: '🔵', x: 290, y: 170 }
+      ],
+      relations: [
+        { from: 'c1', to: 'c2', label: 'Ingress Protocol' },
+        { from: 'c2', to: 'c3', label: 'Egress State' }
+      ],
+      legend: [
+        { icon: '🟢', label: 'Source Entity' },
+        { icon: '⚙️', label: 'Transformation' },
+        { icon: '🔵', label: 'Target State' },
+        { icon: '🔒', label: 'Invariant' }
+      ],
+      challengeCallout: `Core Challenge: Scaling, Reliability & Complexity Invariance for ${cleanTitle}`
+    },
+    section2Prerequisites: {
+      title: 'Theoretical & Mathematical Foundations',
+      mathFormulas: [
+        { name: 'System State Representation', formula: 'S(t) = f(S(t-1), X(t), θ)', icon: '📐' },
+        { name: 'Conservation & Invariant Constraint', formula: '∑ Flow_in = ∑ Flow_out + ΔStorage', icon: '⚖️' },
+        { name: 'Asymptotic Complexity Bounds', formula: 'Time: O(N log N) | Space: O(N)', icon: '⚡' }
+      ],
+      checklist: [
+        '☑ Foundational Axiom Verification',
+        '☑ Invariant Stability & Convergence Guarantee',
+        '☑ Formal Verification & Error Bounds'
+      ]
+    },
+    section3Taxonomy: {
+      title: 'Classification & Architecture Variants',
+      variants: [
+        { name: 'SYNCHRONOUS / DIRECT', subtext: 'Immediate state transfer', diagramType: 'nodes' },
+        { name: 'ASYNCHRONOUS / EVENT-DRIVEN', subtext: 'Decoupled message buffer', diagramType: 'directed' },
+        { name: 'DISTRIBUTED / CONSENSUS', subtext: 'Quorum fault tolerance', diagramType: 'weighted' },
+        { name: 'HIERARCHICAL / TIERED', subtext: 'Structured abstraction layers', diagramType: 'tree' }
+      ]
+    },
+    section4ModernFrontiers: {
+      title: 'Modern Ecosystem & Scalability Frontiers',
+      knowledgeGraphNodes: [
+        { id: 'kg1', label: 'Cloud\nNative', color: '#38BDF8' },
+        { id: 'kg2', label: 'Automated\nObservability', color: '#F59E0B' },
+        { id: 'kg3', label: 'Zero Trust\nSecurity', color: '#10B981' },
+        { id: 'kg4', label: 'AI/ML\nIntelligence', color: '#A855F7' }
+      ],
+      frameworkBullets: [
+        '🔬 • Modern High-Performance Cloud Architecture',
+        '🧠 • Autonomous Intelligent Self-Healing & Scaling',
+        '💻 • Global Distributed Low-Latency Infrastructure'
+      ]
+    },
+    bottomWorkflow: {
+      title: 'END-TO-END EXECUTION WORKFLOW PIPELINE',
+      step1Problem: {
+        title: 'STEP 1: Problem Definition',
+        subtitle: 'Input Specification & Boundary Conditions',
+        icon: '🎯 📋',
+        formula: 'min Metric J(θ) s.t. Constraints',
+        bullets: ['• Formal input payload ingestion', '• Validation and schema verification']
+      },
+      step2Execution: {
+        title: 'STEP 2: Processing Engine',
+        input: 'Raw Input Stream & Configuration',
+        phases: [
+          { name: '1. Ingestion & Transformation', desc: 'Parse, sanitize, and extract state parameters' },
+          { name: '2. Core Computation Engine', desc: 'Execute state transitions and business logic' },
+          { name: '3. State Persistence & Audit', desc: 'Commit immutable audit record to persistent store' }
+        ]
+      },
+      step3Engine: {
+        title: 'STEP 3: Engine Optimization',
+        subtitle: 'Throughput & Reliability Mechanics',
+        engines: [
+          { name: 'CORE EXECUTION ENGINE', complexity: 'Sub-10ms Latency', items: ['High-throughput parallel worker pool', 'In-memory caching and lock-free concurrency'] },
+          { name: 'FAULT TOLERANCE & RECOVERY', complexity: '99.999% SLA', items: ['Automated retry with exponential backoff', 'Active-active multi-region failover replication'] }
+        ],
+        callout: '⚡ High-Throughput Convergence & 99.999% Availability'
+      },
+      step4Applications: [
+        { title: 'Real-Time Processing', subtitle: 'Sub-second Analytics', icon: '⚡', detail: 'High-throughput stream' },
+        { title: 'Enterprise Cloud', subtitle: 'Auto-Scaling Infrastructure', icon: '☁️', detail: 'Managed platform' },
+        { title: 'Security & Compliance', subtitle: 'Zero-Trust Architecture', icon: '🛡️', detail: 'End-to-end encryption' },
+        { title: 'Autonomous Intelligence', subtitle: 'AI-Driven Decisioning', icon: '🤖', detail: 'Continuous feedback loop' }
+      ]
+    },
+    footerTenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM']
+  };
 }
 
 /**
@@ -115,158 +482,27 @@ export function generateDynamicFirstPrinciplesGraph(
   const p = (prompt || '').toLowerCase();
   const isMultiBand = intent.topologyGrammar === 'composite_multi_band' || intent.actionType === 'band_expansion';
 
-  // 0. GRAPH THEORY & DISCRETE MATHEMATICS (AUTHENTIC FREEFORM GRAPH DRAWING)
-  if (p.includes('graph theory') || (p.includes('graph') && !p.includes('knowledge graph') && !p.includes('spanner')) || p.includes('discrete math') || p.includes('dijkstra') || p.includes('bfs') || p.includes('dfs') || p.includes('tree') || p.includes('node') && p.includes('edge')) {
-    const rawGraph: Studio3SemanticGraph = {
-      title: 'FOUNDATIONS OF GRAPH THEORY: NODES, EDGES & TOPOLOGY',
-      subtitle: 'Discrete Mathematics & Graph Analytics: G = (V, E), Adjacency Representation, and Pathfinding',
-      tenets: ['G = (V, E) TOPOLOGY', 'HANDSHAKING LEMMA Σ deg(v) = 2|E|', 'PATHFINDING & COMPLEXITY'],
+  // 0. UNIVERSAL CONCEPTUAL LEARNING ROADMAP (APPLIES TO ANY TOPIC UNDER THE SUN!)
+  if (
+    intent.abstractionLevel === 'conceptual' ||
+    p.startsWith('teach me') ||
+    p.startsWith('explain') ||
+    p.includes('roadmap') ||
+    p.includes('how does') ||
+    p.includes('concepts')
+  ) {
+    const conceptualRoadmap = generateGenericConceptualRoadmap(prompt, intent);
+    return {
+      title: conceptualRoadmap.title,
+      subtitle: conceptualRoadmap.subtitle || 'Conceptual Learning Roadmap',
+      tenets: conceptualRoadmap.footerTenets,
       abstractionLevel: 'conceptual',
-      layoutType: 'freeform',
-      freeformElements: [
-        // Vertices & Directed Graph Subnetwork
-        {
-          id: 'v1',
-          name: 'Vertex V₁',
-          shape: 'circle',
-          x: 80,
-          y: 180,
-          w: 110,
-          h: 110,
-          color: 'blue',
-          subLabel: 'Source • deg⁺=2, deg⁻=0'
-        },
-        {
-          id: 'v2',
-          name: 'Vertex V₂',
-          shape: 'circle',
-          x: 280,
-          y: 110,
-          w: 110,
-          h: 110,
-          color: 'teal',
-          subLabel: 'Intermediate • deg⁺=1, deg⁻=1'
-        },
-        {
-          id: 'v3',
-          name: 'Vertex V₃',
-          shape: 'circle',
-          x: 480,
-          y: 180,
-          w: 110,
-          h: 110,
-          color: 'purple',
-          subLabel: 'Sink • deg⁺=0, deg⁻=2'
-        },
-        {
-          id: 'v4',
-          name: 'Vertex V₄',
-          shape: 'circle',
-          x: 280,
-          y: 310,
-          w: 110,
-          h: 110,
-          color: 'amber',
-          subLabel: 'Hub • deg⁺=1, deg⁻=1'
-        },
-        {
-          id: 'v5',
-          name: 'Vertex V₅',
-          shape: 'circle',
-          x: 380,
-          y: 470,
-          w: 110,
-          h: 110,
-          color: 'emerald',
-          subLabel: 'Leaf • deg⁺=1, deg⁻=1'
-        },
-        // Adjacency Matrix
-        {
-          id: 'adj_matrix',
-          name: 'ADJACENCY MATRIX A = [a_ij]',
-          shape: 'matrix',
-          x: 640,
-          y: 110,
-          w: 390,
-          h: 240,
-          matrixHeaders: ['V₁', 'V₂', 'V₃', 'V₄', 'V₅'],
-          matrixData: [
-            ['0', '4', '0', '2', '0'],
-            ['0', '0', '7', '0', '0'],
-            ['0', '0', '0', '0', '0'],
-            ['0', '0', '0', '0', '3'],
-            ['0', '0', '1', '0', '0']
-          ],
-          details: [
-            'Weighted Directed Graph representation where a_ij represents edge weight from V_i to V_j',
-            'Space Complexity: O(|V|²), ideal for dense graphs'
-          ]
-        },
-        // Mathematical Theorems & Properties
-        {
-          id: 'math_theorems',
-          name: 'MATHEMATICAL FOUNDATIONS & THEOREMS',
-          shape: 'formula',
-          x: 640,
-          y: 380,
-          w: 390,
-          h: 220,
-          formula: 'G = (V, E)  where  |V| = 5, |E| = 5\n\nHandshaking Theorem: ∑_{v ∈ V} deg(v) = 2|E| = 10\nEuler Characteristic (Planar): V - E + F = 2',
-          details: [
-            'Connectedness: Strong (Directed) vs Weak',
-            'Degree Sum: Sum of in-degrees = Sum of out-degrees'
-          ]
-        },
-        // Traversal Algorithms: BFS vs DFS
-        {
-          id: 'traversal_engine',
-          name: 'GRAPH TRAVERSAL ALGORITHMS',
-          shape: 'rectangle',
-          x: 1070,
-          y: 110,
-          w: 420,
-          h: 240,
-          color: 'teal',
-          badge: 'O(V + E)',
-          details: [
-            'BFS (Breadth-First Search): Explores neighbors level by level via FIFO Queue; guarantees shortest unweighted path',
-            'DFS (Depth-First Search): Explores branch depth via LIFO Stack / Recursion; detects cycles & topological ordering',
-            'Time: O(|V| + |E|)  •  Space: O(|V|) memory footprint'
-          ]
-        },
-        // Shortest Path & Centrality Algorithms
-        {
-          id: 'path_algorithms',
-          name: 'SHORTEST PATH & CENTRALITY METRICS',
-          shape: 'rectangle',
-          x: 1070,
-          y: 380,
-          w: 420,
-          h: 240,
-          color: 'purple',
-          badge: 'Network Science',
-          details: [
-            "Dijkstra's Algorithm: Greedy priority queue finding shortest path in non-negative graphs: O((V+E) log V)",
-            'Bellman-Ford: Dynamic programming solving negative weights and detecting negative cycles: O(V · E)',
-            'Centrality: Degree, Betweenness, Closeness, and Google PageRank eigenvector centrality'
-          ]
-        }
-      ],
+      layoutType: 'conceptual_roadmap',
+      conceptualRoadmap,
       bands: [],
-      connections: [
-        { fromId: 'v1', toId: 'v2', label: 'w = 4', style: 'solid_blue' },
-        { fromId: 'v2', toId: 'v3', label: 'w = 7', style: 'solid_blue' },
-        { fromId: 'v1', toId: 'v4', label: 'w = 2', style: 'dashed_orange' },
-        { fromId: 'v4', toId: 'v5', label: 'w = 3', style: 'dashed_orange' },
-        { fromId: 'v5', toId: 'v3', label: 'w = 1', style: 'green_protocol' },
-        { fromId: 'v3', toId: 'adj_matrix', label: 'Matrix Mapping', style: 'dashed_purple' },
-        { fromId: 'adj_matrix', toId: 'traversal_engine', label: 'Input to BFS/DFS', style: 'solid_blue' },
-        { fromId: 'traversal_engine', toId: 'path_algorithms', label: 'Dijkstra Relaxation', style: 'feedback_teal' }
-      ]
+      connections: []
     };
-    return rawGraph;
   }
-
   // 1. FINANCIAL / LEDGER DOMAIN
   if (p.includes('ledger') || p.includes('financial') || p.includes('spanner') || p.includes('payment') || p.includes('transaction')) {
     const rawGraph: Studio3SemanticGraph = {
