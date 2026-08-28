@@ -4,8 +4,8 @@
  * Compiles ANY prompt or use case into authentic, structured, zero-collision
  * architectural nodes, stages, and cards for Draw.io viewports.
  * 
- * Eliminates hardcoded templates and guarantees 100% visual parity between
- * prompt text, top review summary pills, and the rendered canvas diagram.
+ * Prioritizes high-specificity semantic intents (RAG/Vector Search, GPU/MIG,
+ * Databases, Streaming) to guarantee 100% real-time fidelity to prompt refinements.
  */
 
 import { renderGcpIconHtml, GcpIconDefinition } from './gcpIcons';
@@ -53,7 +53,63 @@ export function compileArchitectureFromPrompt(
   const p = (prompt || '').toLowerCase();
   const title = projectTitle || (projectName && useCaseName ? `${projectName}: ${useCaseName}` : 'Enterprise Google Cloud Platform Architecture');
 
-  // 1. GPU / Compute Engine MIG / Scaling
+  // =========================================================================
+  // 1. SPECIFIC: Vertex AI Vector Search / ScaNN / RAG Grounding / Embeddings
+  // =========================================================================
+  if (p.includes('vector') || p.includes('scann') || p.includes('rag') || p.includes('grounding') || p.includes('similarity') || p.includes('embedding') || p.includes('knowledge graph')) {
+    return {
+      projectTitle: title.includes('Vector') || title.includes('RAG') ? title : `${projectName || 'Vertex AI'}: Real-Time Vector Search & ScaNN RAG Grounding`,
+      subtitle: 'Real-Time Retrieval Flow: Event Stream Ingestion → ScaNN Vector Indexing → Hybrid Similarity Search → Gemini 3.1 Grounded Reasoning',
+      summary: 'Integrated Vertex AI Vector Search (ScaNN) for Real-Time Stream Grounding',
+      targetTier: 'Agentic AI & Vector Search (Tier 4)',
+      changedComponents: ['Vertex Vector Search (ScaNN Index)', 'Real-Time Embedding Pipeline', 'RAG Retrieval Grounding Engine', 'Gemini 3.1 Live Context Injection'],
+      stages: [
+        { num: '1', title: 'Stream Ingress & Security', category: 'ingress', color: '#1A73E8' },
+        { num: '2', title: 'Stream Routing & Embeddings', category: 'orchestration', color: '#1A73E8' },
+        { num: '3', title: 'Chunking & Workers', category: 'compute', color: '#1A73E8' },
+        { num: '4', title: 'Vector & Knowledge Stores', category: 'data', color: '#1A73E8' },
+        { num: '5', title: 'Gemini Grounded Reasoning', category: 'ai', color: '#1E8E3E' },
+        { num: '6', title: 'Safety & Stream Delivery', category: 'ops', color: '#1E8E3E' }
+      ],
+      nodes: {
+        ingress: [
+          { id: 'n_start_users', title: 'Real-Time Event Producers', subtitle: 'Document Feeds, User Queries, CDC Events', icon: 'user_ingress', stage: 1 },
+          { id: 'n_edge_armor', title: 'Cloud Armor & API Gateway', subtitle: 'DDoS Defense & mTLS Authentication', icon: 'cloud_armor', stage: 1 },
+          { id: 'n_edge_iap', title: 'Identity-Aware Proxy', subtitle: 'Zero-Trust IAM Token Verification', icon: 'iap', stage: 1 },
+          { id: 'n_cloud_dlp', title: 'Sensitive Data Protection', subtitle: 'Pre-Embedding PII Redaction & Masking', icon: 'cloud_dlp', stage: 1 }
+        ],
+        routing: [
+          { id: 'n_fast_path', title: 'Cloud Pub/Sub Message Bus', subtitle: 'High-Throughput Vector Ingest (< 10ms)', icon: 'pubsub', stage: 2 },
+          { id: 'gate_task_type', title: 'Query & Document Classifier', subtitle: 'Hybrid Dense + Sparse Router', icon: 'agent_builder', stage: 2 },
+          { id: 'n_supervisor', title: 'Vertex Text-Embedding-005', subtitle: 'High-Dimensional Vector Encoder (768d)', icon: 'vertex_ai', stage: 2, highlight: true },
+          { id: 'n_memory', title: 'Cloud Memorystore Vector Cache', subtitle: 'Sub-ms Embeddings Exact Match Cache', icon: 'memorystore', stage: 2 }
+        ],
+        workers: [
+          { id: 'n_rag_agent', title: 'RAG Retrieval Grounding Engine', subtitle: 'MMR & Reciprocal Rank Fusion (RRF)', icon: 'vertex_vector_search', stage: 3, highlight: true },
+          { id: 'n_sql_agent', title: 'Dataflow Stream Chunking Worker', subtitle: 'Apache Beam Semantic Window Chunker', icon: 'dataflow', stage: 3, highlight: true },
+          { id: 'n_tool_agent', title: 'Document AI OCR Parser', subtitle: 'LayoutLM Multimodal PDF/Table Extraction', icon: 'document_ai', stage: 3 }
+        ],
+        data: [
+          { id: 'n_vector_search', title: 'Vertex Vector Search (ScaNN)', subtitle: 'Sub-5ms Billion-Scale Index (Cosine/Dot)', icon: 'vertex_vector_search', stage: 4, highlight: true },
+          { id: 'n_doc_ingestion', title: 'Cloud Storage (GCS) Knowledge Lake', subtitle: '[Hierarchical Chunk Repository]', icon: 'cloud_storage', stage: 4 },
+          { id: 'n_bigquery_dw', title: 'BigQuery Vector Index (OLAP)', subtitle: 'Embedding Search & SQL Analytics', icon: 'bigquery', stage: 4 },
+          { id: 'n_spanner_db', title: 'Cloud Spanner Knowledge Graph', subtitle: 'Entity-Relation Semantic Graph (GQL)', icon: 'spanner', stage: 4, highlight: true },
+          { id: 'n_hitl_governance_node', title: 'IAM & CMEK Policy Guard', subtitle: 'Hardware HSM Key Encryption', icon: 'cloud_iam', stage: 4 },
+          { id: 'n_vertex_extensions', title: 'Vertex AI Grounding Tools', subtitle: 'Google Search & Enterprise Datastores', icon: 'agent_builder', stage: 4 }
+        ],
+        aiCore: { id: 'n_gemini_core', title: 'Gemini 3.1 Pro & Grounding', subtitle: '2M Token Context • Citation Attribution', icon: 'gemini', stage: 5, highlight: true },
+        delivery: [
+          { id: 'gate_factuality', title: 'Vertex Model Armor', subtitle: 'Factuality & Grounding SLA Filter', icon: 'model_armor', stage: 6 },
+          { id: 'n_delivery', title: 'Grounded Response Stream', subtitle: 'Verified Citations • Sub-Second TTFT', icon: 'vertex_ai', stage: 6 },
+          { id: 'n_audit_logging', title: 'Cloud Logging & GenAI Eval', subtitle: 'Citation Precision • RAG Hallucination Metric', icon: 'cloud_logging', stage: 6 }
+        ]
+      }
+    };
+  }
+
+  // =========================================================================
+  // 2. SPECIFIC: GPU / Compute Engine MIG / Autoscaling
+  // =========================================================================
   if (p.includes('mig') || p.includes('gpu') || p.includes('instance') || p.includes('gce') || p.includes('h100') || p.includes('a3') || p.includes('compute engine') || p.includes('internal lb')) {
     return {
       projectTitle: title,
@@ -105,59 +161,9 @@ export function compileArchitectureFromPrompt(
     };
   }
 
-  // 2. Event Streaming / PubSub / Dataflow
-  if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('kafka') || p.includes('dataflow') || p.includes('cdc') || p.includes('queue')) {
-    return {
-      projectTitle: title,
-      subtitle: 'High-Throughput Streaming Flow: Ingress → Real-Time Pub/Sub Bus → Dataflow Stream Processing → Spanner & BigQuery → Monitoring & Closed Loop',
-      summary: 'Configured Low-Latency Pub/Sub Messaging & Event Orchestration',
-      targetTier: 'Load Balancing & Event Stream (Tier 2)',
-      changedComponents: ['Cloud Pub/Sub Message Bus', 'Cloud Dataflow Engine', 'GKE Stream Workers', 'BigQuery Continuous SQL'],
-      stages: [
-        { num: '1', title: 'Ingress & Security', category: 'ingress', color: '#1A73E8' },
-        { num: '2', title: 'Event Ingestion & Bus', category: 'orchestration', color: '#1A73E8' },
-        { num: '3', title: 'Stream Processing', category: 'compute', color: '#1A73E8' },
-        { num: '4', title: 'Data & State Stores', category: 'data', color: '#1A73E8' },
-        { num: '5', title: 'Stream Analytics & ML', category: 'ai', color: '#1E8E3E' },
-        { num: '6', title: 'Delivery & Ops', category: 'ops', color: '#1E8E3E' }
-      ],
-      nodes: {
-        ingress: [
-          { id: 'n_start_users', title: 'IoT & Telemetry Producers', subtitle: 'Sensors, Mobile Clients, Change Data Streams', icon: 'user_ingress', stage: 1 },
-          { id: 'n_edge_armor', title: 'Cloud Armor & API Gateway', subtitle: 'DDoS Protection & Rate Limiting', icon: 'cloud_armor', stage: 1 },
-          { id: 'n_edge_iap', title: 'Identity-Aware Proxy', subtitle: 'Mutual TLS (mTLS) & Token Auth', icon: 'iap', stage: 1 },
-          { id: 'n_cloud_dlp', title: 'Sensitive Data Protection', subtitle: 'Real-Time Stream PII Redaction', icon: 'cloud_dlp', stage: 1 }
-        ],
-        routing: [
-          { id: 'n_fast_path', title: 'Cloud Pub/Sub Message Bus', subtitle: 'High-Throughput Partitioned Topics (< 10ms)', icon: 'pubsub', stage: 2, highlight: true },
-          { id: 'gate_task_type', title: 'Event Router & Sharder', subtitle: 'Schema Validation & Route Keys', icon: 'agent_builder', stage: 2 },
-          { id: 'n_supervisor', title: 'Cloud Dataflow Engine', subtitle: 'Apache Beam Exactly-Once Stream', icon: 'dataflow', stage: 2, highlight: true },
-          { id: 'n_memory', title: 'Cloud Memorystore Redis', subtitle: 'Sub-ms Window State & Deduplication', icon: 'memorystore', stage: 2 }
-        ],
-        workers: [
-          { id: 'n_rag_agent', title: 'GKE Stream Workers', subtitle: 'Autoscaling Consumer Pods (Subnet B)', icon: 'gke_autopilot', stage: 3, highlight: true },
-          { id: 'n_sql_agent', title: 'Continuous SQL Engine', subtitle: 'BigQuery Real-Time Stream Windows', icon: 'bigquery', stage: 3, highlight: true },
-          { id: 'n_tool_agent', title: 'Eventarc & Cloud Run', subtitle: 'Serverless Event Handlers & DLQ', icon: 'cloud_run', stage: 3 }
-        ],
-        data: [
-          { id: 'n_vector_search', title: 'Vertex Vector Search', subtitle: 'Real-Time ScaNN Embeddings Index', icon: 'vertex_vector_search', stage: 4 },
-          { id: 'n_doc_ingestion', title: 'Cloud Storage (GCS) Raw Lake', subtitle: '[Immutable Bronze/Silver Medallion]', icon: 'cloud_storage', stage: 4 },
-          { id: 'n_bigquery_dw', title: 'BigQuery Lakehouse (OLAP)', subtitle: 'Real-Time Partitioned Streaming Tables', icon: 'bigquery', stage: 4 },
-          { id: 'n_spanner_db', title: 'Cloud Spanner (OLTP)', subtitle: 'Global Multi-Region High-Write OLTP', icon: 'spanner', stage: 4 },
-          { id: 'n_hitl_governance_node', title: 'Policy & IAM Guard', subtitle: 'Stream Egress Authorization', icon: 'cloud_iam', stage: 4 },
-          { id: 'n_vertex_extensions', title: 'External Webhooks', subtitle: 'Kafka, SFTP, Webhooks, REST', icon: 'agent_builder', stage: 4 }
-        ],
-        aiCore: { id: 'n_gemini_core', title: 'Gemini 3.1 Live Inference', subtitle: 'Stream Analytics & Anomaly ML', icon: 'gemini', stage: 5 },
-        delivery: [
-          { id: 'gate_factuality', title: 'Vertex Model Armor', subtitle: 'Factuality & Grounding SLA Filter', icon: 'model_armor', stage: 6 },
-          { id: 'n_delivery', title: 'Real-Time Stream to Consumers', subtitle: 'Low-Latency WebSocket & SSE Feed', icon: 'cloud_cdn', stage: 6 },
-          { id: 'n_audit_logging', title: 'Cloud Logging & Eval', subtitle: 'Audit Trail • Token FinOps • Latency', icon: 'cloud_logging', stage: 6 }
-        ]
-      }
-    };
-  }
-
-  // 3. Database / Spanner / Zero-Trust Microservices
+  // =========================================================================
+  // 3. SPECIFIC: Cloud Spanner / Multi-Region DB / Zero-Trust Mesh
+  // =========================================================================
   if (p.includes('spanner') || p.includes('database') || p.includes('sql') || p.includes('microservice') || p.includes('zero-trust')) {
     return {
       projectTitle: title,
@@ -209,7 +215,63 @@ export function compileArchitectureFromPrompt(
     };
   }
 
-  // Default: Agentic AI Reference Platform
+  // =========================================================================
+  // 4. GENERAL: Event Streaming / PubSub / Dataflow
+  // =========================================================================
+  if (p.includes('stream') || p.includes('event') || p.includes('pubsub') || p.includes('kafka') || p.includes('dataflow') || p.includes('cdc') || p.includes('queue')) {
+    return {
+      projectTitle: title,
+      subtitle: 'High-Throughput Streaming Flow: Ingress → Real-Time Pub/Sub Bus → Dataflow Stream Processing → Spanner & BigQuery → Monitoring & Closed Loop',
+      summary: 'Configured Low-Latency Pub/Sub Messaging & Event Orchestration',
+      targetTier: 'Load Balancing & Event Stream (Tier 2)',
+      changedComponents: ['Cloud Pub/Sub Message Bus', 'Cloud Dataflow Engine', 'GKE Stream Workers', 'BigQuery Continuous SQL'],
+      stages: [
+        { num: '1', title: 'Ingress & Security', category: 'ingress', color: '#1A73E8' },
+        { num: '2', title: 'Event Ingestion & Bus', category: 'orchestration', color: '#1A73E8' },
+        { num: '3', title: 'Stream Processing', category: 'compute', color: '#1A73E8' },
+        { num: '4', title: 'Data & State Stores', category: 'data', color: '#1A73E8' },
+        { num: '5', title: 'Stream Analytics & ML', category: 'ai', color: '#1E8E3E' },
+        { num: '6', title: 'Delivery & Ops', category: 'ops', color: '#1E8E3E' }
+      ],
+      nodes: {
+        ingress: [
+          { id: 'n_start_users', title: 'IoT & Telemetry Producers', subtitle: 'Sensors, Mobile Clients, Change Data Streams', icon: 'user_ingress', stage: 1 },
+          { id: 'n_edge_armor', title: 'Cloud Armor & API Gateway', subtitle: 'DDoS Protection & Rate Limiting', icon: 'cloud_armor', stage: 1 },
+          { id: 'n_edge_iap', title: 'Identity-Aware Proxy', subtitle: 'Mutual TLS (mTLS) & Token Auth', icon: 'iap', stage: 1 },
+          { id: 'n_cloud_dlp', title: 'Sensitive Data Protection', subtitle: 'Real-Time Stream PII Redaction', icon: 'cloud_dlp', stage: 1 }
+        ],
+        routing: [
+          { id: 'n_fast_path', title: 'Cloud Pub/Sub Message Bus', subtitle: 'High-Throughput Partitioned Topics (< 10ms)', icon: 'pubsub', stage: 2, highlight: true },
+          { id: 'gate_task_type', title: 'Event Router & Sharder', subtitle: 'Schema Validation & Route Keys', icon: 'agent_builder', stage: 2 },
+          { id: 'n_supervisor', title: 'Cloud Dataflow Engine', subtitle: 'Apache Beam Exactly-Once Stream', icon: 'dataflow', stage: 2, highlight: true },
+          { id: 'n_memory', title: 'Cloud Memorystore Redis', subtitle: 'Sub-ms Window State & Deduplication', icon: 'memorystore', stage: 2 }
+        ],
+        workers: [
+          { id: 'n_rag_agent', title: 'GKE Stream Workers', subtitle: 'Autoscaling Consumer Pods (Subnet B)', icon: 'gke_autopilot', stage: 3, highlight: true },
+          { id: 'n_sql_agent', title: 'Continuous SQL Engine', subtitle: 'BigQuery Real-Time Stream Windows', icon: 'bigquery', stage: 3, highlight: true },
+          { id: 'n_tool_agent', title: 'Eventarc & Cloud Run', subtitle: 'Serverless Event Handlers & DLQ', icon: 'cloud_run', stage: 3 }
+        ],
+        data: [
+          { id: 'n_vector_search', title: 'Vertex Vector Search', subtitle: 'Real-Time ScaNN Embeddings Index', icon: 'vertex_vector_search', stage: 4 },
+          { id: 'n_doc_ingestion', title: 'Cloud Storage (GCS) Raw Lake', subtitle: '[Immutable Bronze/Silver Medallion]', icon: 'cloud_storage', stage: 4 },
+          { id: 'n_bigquery_dw', title: 'BigQuery Lakehouse (OLAP)', subtitle: 'Real-Time Partitioned Streaming Tables', icon: 'bigquery', stage: 4 },
+          { id: 'n_spanner_db', title: 'Cloud Spanner (OLTP)', subtitle: 'Global Multi-Region High-Write OLTP', icon: 'spanner', stage: 4 },
+          { id: 'n_hitl_governance_node', title: 'Policy & IAM Guard', subtitle: 'Stream Egress Authorization', icon: 'cloud_iam', stage: 4 },
+          { id: 'n_vertex_extensions', title: 'External Webhooks', subtitle: 'Kafka, SFTP, Webhooks, REST', icon: 'agent_builder', stage: 4 }
+        ],
+        aiCore: { id: 'n_gemini_core', title: 'Gemini 3.1 Live Inference', subtitle: 'Stream Analytics & Anomaly ML', icon: 'gemini', stage: 5 },
+        delivery: [
+          { id: 'gate_factuality', title: 'Vertex Model Armor', subtitle: 'Factuality & Grounding SLA Filter', icon: 'model_armor', stage: 6 },
+          { id: 'n_delivery', title: 'Real-Time Stream to Consumers', subtitle: 'Low-Latency WebSocket & SSE Feed', icon: 'cloud_cdn', stage: 6 },
+          { id: 'n_audit_logging', title: 'Cloud Logging & Eval', subtitle: 'Audit Trail • Token FinOps • Latency', icon: 'cloud_logging', stage: 6 }
+        ]
+      }
+    };
+  }
+
+  // =========================================================================
+  // 5. DEFAULT: Standard Enterprise Agentic AI Platform
+  // =========================================================================
   return {
     projectTitle: title,
     subtitle: 'Production Reference Flow: Secure Ingress → Intent Fork → 3-Lane Parallel Execution → Gemini Reasoning → Closed Loop',
