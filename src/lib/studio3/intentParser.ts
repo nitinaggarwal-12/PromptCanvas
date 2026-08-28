@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '../geminiConfig';
+import { Studio3ExecutionLogger } from './telemetryLogger';
 
 export type AbstractionLevel = 'conceptual' | 'logical' | 'technical';
 
@@ -73,7 +74,9 @@ export function parseStudio3IntentHeuristics(
     p.includes('memorystore') ||
     p.includes('port 443') ||
     p.includes('mtls') ||
-    p.includes('tcp')
+    p.includes('tcp') ||
+    p.includes('armor') ||
+    p.includes('ledger')
   ) {
     abstractionLevel = 'technical';
   }
@@ -104,13 +107,13 @@ export function parseStudio3IntentHeuristics(
     bands = [
       {
         id: 'band_comparison',
-        name: 'Comparative Architecture & Capability Matrix',
+        name: 'Comparative Architecture & Evaluation Matrix',
         type: 'comparative',
         description: 'Side-by-side comparison of tools/approaches and feature matrix.'
       },
       {
         id: 'band_workflow',
-        name: 'End-to-End Cohesive Workflow Pipeline',
+        name: 'End-to-End Operational Workflow Pipeline',
         type: 'workflow',
         description: 'Sequential 4-stage ingestion, conversion, storage, and consumption flow.'
       }
@@ -122,17 +125,17 @@ export function parseStudio3IntentHeuristics(
         id: 'band_matrix',
         name: 'Comparative Evaluation & Matrix',
         type: 'matrix',
-        description: 'Dimensional comparison across standardization, portability, and readability.'
+        description: 'Dimensional comparison across key technical and operational vectors.'
       }
     ];
-  } else if (isWorkflow || p.includes('pipeline') || p.includes('data flow')) {
+  } else if (isWorkflow || p.includes('pipeline') || p.includes('data flow') || p.includes('stream')) {
     topologyGrammar = 'horizontal_pipeline';
     bands = [
       {
         id: 'band_pipeline',
-        name: 'Operational Flow & Data Pipeline',
+        name: 'End-to-End Data & Processing Pipeline',
         type: 'workflow',
-        description: 'Step-by-step pipeline from source ingestion to consumption.'
+        description: 'Step-by-step pipeline from ingress to storage and consumption.'
       }
     ];
   } else {
@@ -156,9 +159,13 @@ export function parseStudio3IntentHeuristics(
     }
   }
 
-  // Extract clean title
-  let suggestedTitle = prompt.length > 50 ? prompt.slice(0, 47) + '...' : prompt;
-  if (p.includes('okf')) {
+  // Extract clean title dynamically from prompt
+  let suggestedTitle = prompt.length > 55 ? prompt.slice(0, 52) + '...' : prompt;
+  if (p.includes('ledger') || p.includes('financial')) {
+    suggestedTitle = 'Zero-Trust Multi-Region Financial Ledger Architecture';
+  } else if (p.includes('rag') || p.includes('vector')) {
+    suggestedTitle = 'Vertex AI Multi-Agent RAG Knowledge Mesh';
+  } else if (p.includes('okf')) {
     suggestedTitle = isComparison
       ? 'Google OKF: Modern Knowledge Ecosystem Integration'
       : 'Google Open Knowledge Format (OKF) Architecture';
@@ -173,35 +180,51 @@ export function parseStudio3IntentHeuristics(
     suggestedTitle,
     bands,
     inferredEntities: extractKeywords(prompt),
-    rationale: `Classified as ${abstractionLevel} due to intent signals. Grammar assigned: ${topologyGrammar}.`,
+    rationale: `Classified as ${abstractionLevel} based on detected keywords and intent vectors. Grammar: ${topologyGrammar}.`,
     actionType
   };
 }
 
 function extractKeywords(prompt: string): string[] {
-  const stopWords = new Set(['the', 'and', 'with', 'for', 'how', 'what', 'this', 'that', 'show', 'explain', 'diagram', 'help', 'from', 'into']);
+  const stopWords = new Set(['the', 'and', 'with', 'for', 'how', 'what', 'this', 'that', 'show', 'explain', 'diagram', 'help', 'from', 'into', 'architect', 'design', 'build']);
   const words = prompt
     .replace(/[^\w\s]/g, '')
     .split(/\s+/)
     .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
-  return Array.from(new Set(words)).slice(0, 8);
+  return Array.from(new Set(words)).slice(0, 10);
 }
 
 export async function parseStudio3IntentWithLLM(params: {
   prompt: string;
   previousContext?: string;
   userApiKey?: string;
+  logger?: Studio3ExecutionLogger;
 }): Promise<Studio3Intent> {
-  const { prompt, previousContext, userApiKey } = params;
+  const { prompt, previousContext, userApiKey, logger } = params;
   const apiKey = userApiKey || process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
+    logger?.log({
+      stage: 'intent_parsing',
+      status: 'warning',
+      message: 'GEMINI_API_KEY is not set in environment. Using first-principles heuristic classifier.'
+    });
     return parseStudio3IntentHeuristics(prompt, previousContext);
   }
 
+  const modelName = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+  const startTime = Date.now();
+
+  logger?.log({
+    stage: 'intent_parsing',
+    status: 'calling',
+    model: modelName,
+    message: `Calling Gemini API for Intent & Abstraction Classification on: "${prompt.slice(0, 60)}..."`,
+    payload: { prompt, model: modelName }
+  });
+
   try {
     const ai = getAiClient(apiKey);
-    const model = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-2.5-flash';
 
     const systemInstruction = `You are Google DeepMind's Premier Intent & Architecture Grammar Classifier for Studio 3.
 Your task is to analyze the user's natural language request and classify its architectural abstraction level and visual grammar BEFORE any diagram is drawn.
@@ -213,49 +236,23 @@ Rules:
    - "technical": Infrastructure, concrete cloud services (GCP/AWS), VPCs, subnets, ports, protocols, "How".
 2. Topology Grammar:
    - "horizontal_pipeline": Left-to-right stages with sequential step badges.
-   - "hierarchical_tiers": Stacked vertical tiers (Client -> Ingress -> App -> Data).
+   - "hierarchical_tiers": Stacked vertical tiers (Ingress -> Compute -> Data -> Governance).
    - "composite_multi_band": Multi-tier canvas (e.g. Comparative Matrix on Top + Workflow Pipeline on Bottom).
    - "matrix_grid": Multi-column evaluation/comparison table.
    - "hub_spoke": Central orchestrator / service mesh.
-   - "swimlanes": Cross-functional swimlanes.
 3. Temporal Nature:
    - "steady_state_topology": Component connectivity.
-   - "sequential_workflow": Numbered steps (❶..❻) showing data flow over time.
-4. Action Type:
-   - "initial_synthesis": First diagram creation.
-   - "in_place_refinement": Modifying/adding nodes to the current diagram.
-   - "band_expansion": The prompt requests comparing, contrasting, or adding a new workflow phase that requires a multi-band layout.`;
+   - "sequential_workflow": Numbered steps (❶..❻) showing data flow over time.`;
 
     const userContent = `Analyze this architecture prompt:
 Current Prompt: "${prompt}"
-Previous Context / Turn: "${previousContext || 'None (Initial turn)'}"
+Previous Context: "${previousContext || 'None'}"
 
-Return JSON matching this schema:
-{
-  "abstractionLevel": "conceptual" | "logical" | "technical",
-  "primaryGoal": "Single clear sentence describing what the diagram will visualize",
-  "topologyGrammar": "horizontal_pipeline" | "hierarchical_tiers" | "composite_multi_band" | "matrix_grid" | "hub_spoke" | "swimlanes",
-  "temporalNature": "steady_state_topology" | "sequential_workflow",
-  "scope": "full_system" | "subsystem" | "micro_flow",
-  "suggestedTitle": "Title for the diagram",
-  "bands": [
-    {
-      "id": "band_1",
-      "name": "Band Name",
-      "type": "comparative" | "workflow" | "matrix" | "service_mesh" | "spec_card",
-      "description": "What this section of the diagram contains"
-    }
-  ],
-  "inferredEntities": ["Entity1", "Entity2", "Entity3"],
-  "rationale": "Why this abstraction and grammar were chosen",
-  "actionType": "initial_synthesis" | "in_place_refinement" | "band_expansion"
-}`;
+Return valid JSON with keys: abstractionLevel, primaryGoal, topologyGrammar, temporalNature, scope, suggestedTitle, bands, inferredEntities, rationale, actionType.`;
 
     const response = await ai.models.generateContent({
-      model,
-      contents: [
-        { role: 'user', parts: [{ text: userContent }] }
-      ],
+      model: modelName,
+      contents: [{ role: 'user', parts: [{ text: userContent }] }],
       config: {
         systemInstruction: { parts: [{ text: systemInstruction }] },
         responseMimeType: 'application/json',
@@ -263,11 +260,30 @@ Return JSON matching this schema:
       }
     });
 
+    const elapsed = Date.now() - startTime;
     const rawText = response.text || '';
     const parsed = JSON.parse(rawText) as Studio3Intent;
+
+    logger?.log({
+      stage: 'intent_parsing',
+      status: 'success',
+      model: modelName,
+      latencyMs: elapsed,
+      message: `Gemini parsed intent: [${parsed.abstractionLevel.toUpperCase()}] • [${parsed.topologyGrammar}] in ${elapsed}ms`,
+      payload: parsed
+    });
+
     return parsed;
-  } catch (error) {
-    console.warn('Studio 3 LLM Intent Parsing error, falling back to heuristics:', error);
+  } catch (error: any) {
+    const elapsed = Date.now() - startTime;
+    logger?.log({
+      stage: 'intent_parsing',
+      status: 'error',
+      model: modelName,
+      latencyMs: elapsed,
+      message: `Gemini Intent API call failed: ${error.message}. Falling back to dynamic heuristics.`,
+      payload: { error: error.message }
+    });
     return parseStudio3IntentHeuristics(prompt, previousContext);
   }
 }

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { parseStudio3IntentWithLLM, Studio3Intent } from '@/lib/studio3/intentParser';
+import { parseStudio3IntentWithLLM } from '@/lib/studio3/intentParser';
 import { extractStudio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { solveAndRenderStudio3Xml } from '@/lib/studio3/layoutSolver';
 import { evaluateStudio3Quality } from '@/lib/studio3/qualityValidator';
+import { Studio3ExecutionLogger } from '@/lib/studio3/telemetryLogger';
 
 export async function POST(req: NextRequest) {
+  const logger = new Studio3ExecutionLogger();
+
   try {
     const body = await req.json();
     const { messages, currentXml, previousGraph, theme = 'light', userApiKey } = body;
@@ -21,11 +24,18 @@ export async function POST(req: NextRequest) {
       .map((m: any) => `${m.role.toUpperCase()}: ${m.content}`)
       .join('\n');
 
+    logger.log({
+      stage: 'intent_parsing',
+      status: 'calling',
+      message: `Processing chat refinement turn for prompt: "${latestUserMessage.slice(0, 60)}..."`
+    });
+
     // 1. Classify Intent in Conversational Context
     const intent = await parseStudio3IntentWithLLM({
       prompt: latestUserMessage,
       previousContext: conversationHistory,
-      userApiKey
+      userApiKey,
+      logger
     });
 
     if (!Array.isArray(intent.inferredEntities)) {
@@ -37,12 +47,22 @@ export async function POST(req: NextRequest) {
       prompt: latestUserMessage,
       intent,
       previousContext: conversationHistory,
-      userApiKey
+      userApiKey,
+      logger
     });
 
     // 3. Render Updated Draw.io XML
+    const layoutStart = Date.now();
     const xml = solveAndRenderStudio3Xml(graph, {
       theme: theme === 'dark' ? 'dark' : 'light'
+    });
+    const layoutElapsed = Date.now() - layoutStart;
+
+    logger.log({
+      stage: 'layout_solving',
+      status: 'success',
+      latencyMs: layoutElapsed,
+      message: `Rendered Draw.io XML (${xml.length} bytes) in ${layoutElapsed}ms`
     });
 
     // 4. Run 3-Phase Quality Inspection
@@ -50,6 +70,12 @@ export async function POST(req: NextRequest) {
       graph,
       intent,
       previousGraph: previousGraph || null
+    });
+
+    logger.log({
+      stage: 'quality_gate',
+      status: qualityReport.certified ? 'success' : 'warning',
+      message: `Quality Certification: ${qualityReport.overallScore}/100`
     });
 
     let explanation = `I've synthesized a **${intent.abstractionLevel.toUpperCase()}** representation for "${latestUserMessage}".`;
@@ -63,12 +89,21 @@ export async function POST(req: NextRequest) {
       intent,
       xml,
       graph,
-      qualityReport
+      qualityReport,
+      logs: logger.getLogs()
     });
   } catch (error: any) {
+    logger.log({
+      stage: 'error',
+      status: 'error',
+      message: `Chat turn failed: ${error?.message || 'Unknown error'}`
+    });
     console.error('Studio 3 Chat API Error:', error);
     return NextResponse.json(
-      { error: error?.message || 'Failed in Studio 3 chat turn.' },
+      {
+        error: error?.message || 'Failed in Studio 3 chat turn.',
+        logs: logger.getLogs()
+      },
       { status: 500 }
     );
   }

@@ -20,12 +20,16 @@ import {
   ShieldCheck,
   Activity,
   GitBranch,
-  LayoutGrid
+  LayoutGrid,
+  Terminal,
+  Cpu,
+  Clock
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { AbstractionLevel, Studio3Intent } from '@/lib/studio3/intentParser';
 import { Studio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { Studio3QualityReport } from '@/lib/studio3/qualityValidator';
+import { Studio3LogEntry } from '@/lib/studio3/telemetryLogger';
 
 interface ChatMessage {
   id: string;
@@ -34,9 +38,15 @@ interface ChatMessage {
   timestamp: string;
   intent?: Studio3Intent;
   qualityReport?: Studio3QualityReport;
+  logs?: Studio3LogEntry[];
 }
 
 const STARTER_PROMPTS = [
+  {
+    title: 'Zero-Trust Financial Ledger',
+    prompt: 'Architect a zero-trust multi-region financial ledger on Cloud Spanner, Cloud Armor, and KMS CMEK encryption',
+    abstraction: 'technical' as AbstractionLevel
+  },
   {
     title: 'Google OKF Overview',
     prompt: 'explain google OKF with the help of a diagram',
@@ -46,11 +56,6 @@ const STARTER_PROMPTS = [
     title: 'OKF Ecosystem & Workflow',
     prompt: 'compare and contrast this with other similar tools and how they work together',
     abstraction: 'logical' as AbstractionLevel
-  },
-  {
-    title: 'Zero-Trust Financial Ledger',
-    prompt: 'Architect a zero-trust multi-region financial ledger on Cloud Spanner, Cloud Armor, and KMS CMEK encryption',
-    abstraction: 'technical' as AbstractionLevel
   },
   {
     title: 'Vertex AI Agentic RAG',
@@ -64,7 +69,7 @@ export default function Studio3Page() {
   const [promptInput, setPromptInput] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'canvas' | 'quality' | 'xml' | 'intent'>('canvas');
+  const [activeTab, setActiveTab] = useState<'canvas' | 'logs' | 'quality' | 'xml' | 'intent'>('canvas');
   const [copied, setCopied] = useState(false);
 
   // Active State
@@ -72,13 +77,17 @@ export default function Studio3Page() {
   const [currentIntent, setCurrentIntent] = useState<Studio3Intent | null>(null);
   const [currentGraph, setCurrentGraph] = useState<Studio3SemanticGraph | null>(null);
   const [currentQuality, setCurrentQuality] = useState<Studio3QualityReport | null>(null);
-  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
+  const [allLogs, setAllLogs] = useState<Studio3LogEntry[]>([]);
+  const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('technical');
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize with default starter synthesis
+  // Initialize with Financial Ledger default synthesis
   useEffect(() => {
-    handleSynthesize('explain google OKF with the help of a diagram', 'conceptual');
+    handleSynthesize(
+      'Architect a zero-trust multi-region financial ledger on Cloud Spanner, Cloud Armor, and KMS CMEK encryption',
+      'technical'
+    );
   }, []);
 
   useEffect(() => {
@@ -103,7 +112,6 @@ export default function Studio3Page() {
     setPromptInput('');
 
     try {
-      // Synthesize via Studio 3 API (Zero-Template Engine with 3-Phase Quality Gate)
       const res = await fetch('/api/studio3/synthesize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -121,6 +129,8 @@ export default function Studio3Page() {
       });
 
       const data = await res.json();
+      const executionLogs: Studio3LogEntry[] = data.logs || [];
+      setAllLogs(prev => [...prev, ...executionLogs]);
 
       if (data.success && data.xml) {
         setCurrentXml(data.xml);
@@ -131,8 +141,8 @@ export default function Studio3Page() {
 
         const botReply =
           data.intent.actionType === 'band_expansion'
-            ? `Expanded into a **Multi-Band Composite Architecture** (Score: ${data.qualityReport?.overallScore || 95}/100)! Added the top comparative matrix tier and bottom 4-step sequential knowledge workflow pipeline.`
-            : `Synthesized **${data.intent.abstractionLevel.toUpperCase()}** architecture from first principles for "${promptText}" (Quality Score: ${data.qualityReport?.overallScore || 95}/100).`;
+            ? `Expanded into a **Multi-Band Composite Architecture** (Score: ${data.qualityReport?.overallScore || 95}/100)!`
+            : `Synthesized **${data.intent.abstractionLevel.toUpperCase()}** architecture from first principles for "${promptText}" (Score: ${data.qualityReport?.overallScore || 95}/100).`;
 
         setMessages(prev => [
           ...prev,
@@ -142,7 +152,8 @@ export default function Studio3Page() {
             content: botReply,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             intent: data.intent,
-            qualityReport: data.qualityReport
+            qualityReport: data.qualityReport,
+            logs: executionLogs
           }
         ]);
       } else {
@@ -152,7 +163,8 @@ export default function Studio3Page() {
             id: `msg_${Date.now() + 1}`,
             role: 'assistant',
             content: `Failed to synthesize: ${data.error || 'Unknown error occurred.'}`,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            logs: executionLogs
           }
         ]);
       }
@@ -207,20 +219,29 @@ export default function Studio3Page() {
             </Link>
             <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 pl-3 border-l border-slate-200 dark:border-slate-800">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-              <span>Zero Predefined Blueprints • 3-Stage Quality Certified</span>
+              <span>Zero Predefined Blueprints • Real-Time Gemini Telemetry</span>
             </div>
           </div>
 
           {/* Abstraction Level Selector & Controls */}
           <div className="flex items-center gap-3">
-            {/* Live Quality Badge */}
+            {/* Live Logs Indicator Button */}
+            <button
+              onClick={() => setActiveTab('logs')}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 text-cyan-300 border border-cyan-800/60 text-xs font-mono font-bold transition hover:bg-slate-800"
+            >
+              <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Gemini API: {allLogs.length} Events</span>
+            </button>
+
+            {/* Quality Badge */}
             {currentQuality && (
               <button
                 onClick={() => setActiveTab('quality')}
                 className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition hover:bg-emerald-100"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>{currentQuality.overallScore}/100 Certified</span>
+                <span>{currentQuality.overallScore}/100</span>
               </button>
             )}
 
@@ -282,7 +303,7 @@ export default function Studio3Page() {
       <main className="max-w-[1700px] mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-80px)]">
         {/* LEFT PANE: CONVERSATIONAL CHAT & INTENT CONTROLLER (5 Cols) */}
         <div className={`lg:col-span-5 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white'} shadow-sm overflow-hidden`}>
-          {/* Intent & Abstraction Status Header */}
+          {/* Intent Header */}
           <div className={`p-4 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50/70'} flex items-center justify-between`}>
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-blue-500" />
@@ -330,19 +351,16 @@ export default function Studio3Page() {
                 >
                   <p className="font-medium whitespace-pre-wrap">{msg.content}</p>
 
-                  {/* If assistant message has intent & quality details */}
-                  {msg.intent && (
-                    <div className="mt-3 pt-2.5 border-t border-slate-200/20 text-[10.5px] space-y-1 opacity-90">
-                      <div className="flex items-center gap-1.5 font-bold">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Validated Goal: {msg.intent.primaryGoal}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-slate-300 dark:text-slate-400">
-                        <span>Grammar: <strong className="text-white">{msg.intent.topologyGrammar}</strong></span>
-                        {msg.qualityReport && (
-                          <span className="font-bold text-emerald-400">Quality: {msg.qualityReport.overallScore}/100</span>
-                        )}
-                      </div>
+                  {/* Inline Telemetry Snippet */}
+                  {msg.logs && msg.logs.length > 0 && (
+                    <div className="mt-2.5 pt-2 border-t border-slate-200/20 text-[10px] font-mono space-y-1 opacity-90">
+                      {msg.logs.map(l => (
+                        <div key={l.id} className="flex items-center gap-1.5 text-cyan-300 dark:text-cyan-400">
+                          <span className="text-slate-400">[{l.timestamp}]</span>
+                          <span className="font-bold uppercase text-[9px] px-1 py-0.2 rounded bg-slate-800 border border-slate-700">{l.stage}</span>
+                          <span className="truncate">{l.message}</span>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -351,9 +369,9 @@ export default function Studio3Page() {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 p-3 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-200/60 dark:border-blue-900/60">
+              <div className="flex items-center gap-2 text-xs text-blue-600 dark:text-blue-400 p-3 bg-blue-50/50 dark:bg-blue-950/20 rounded-xl border border-blue-200/60 dark:border-blue-900/60 font-mono">
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                <span>Validating 3-phase quality gate & synthesizing zero-template visual graph...</span>
+                <span>[Gemini Telemetry] Streaming API calls & synthesizing visual architecture...</span>
               </div>
             )}
             <div ref={chatEndRef} />
@@ -435,14 +453,14 @@ export default function Studio3Page() {
           </div>
         </div>
 
-        {/* RIGHT PANE: BRAND NEW DRAW.IO CANVAS & QUALITY INSPECTOR (7 Cols) */}
+        {/* RIGHT PANE: BRAND NEW DRAW.IO CANVAS & TELEMETRY LOGS (7 Cols) */}
         <div className={`lg:col-span-7 flex flex-col rounded-2xl border ${theme === 'dark' ? 'border-slate-800 bg-slate-900/60' : 'border-slate-200 bg-white'} shadow-sm overflow-hidden`}>
           {/* Canvas Viewport Header */}
           <div className={`p-3 border-b ${theme === 'dark' ? 'border-slate-800 bg-slate-900' : 'border-slate-100 bg-slate-50/70'} flex items-center justify-between`}>
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => setActiveTab('canvas')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
                   activeTab === 'canvas'
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
@@ -452,8 +470,19 @@ export default function Studio3Page() {
                 <span>Draw.io Canvas</span>
               </button>
               <button
+                onClick={() => setActiveTab('logs')}
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                  activeTab === 'logs'
+                    ? 'bg-blue-600 text-white shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
+              >
+                <Terminal className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Live Gemini Logs ({allLogs.length})</span>
+              </button>
+              <button
                 onClick={() => setActiveTab('quality')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
                   activeTab === 'quality'
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
@@ -464,7 +493,7 @@ export default function Studio3Page() {
               </button>
               <button
                 onClick={() => setActiveTab('xml')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition ${
                   activeTab === 'xml'
                     ? 'bg-blue-600 text-white shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
@@ -472,17 +501,6 @@ export default function Studio3Page() {
               >
                 <Code className="w-3.5 h-3.5" />
                 <span>XML Model</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('intent')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                  activeTab === 'intent'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100'
-                }`}
-              >
-                <Info className="w-3.5 h-3.5" />
-                <span>Semantic AST</span>
               </button>
             </div>
 
@@ -495,6 +513,7 @@ export default function Studio3Page() {
 
           {/* Canvas Main Display Area */}
           <div className="flex-1 relative overflow-hidden bg-slate-100/50 dark:bg-slate-950/50 flex items-center justify-center p-4">
+            {/* Draw.io Canvas View */}
             {activeTab === 'canvas' && (
               <div className="w-full h-full rounded-xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-inner">
                 {currentXml ? (
@@ -510,6 +529,64 @@ export default function Studio3Page() {
                     <span>Enter a prompt to synthesize a first-principles diagram</span>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* LIVE GEMINI API LOGS TAB */}
+            {activeTab === 'logs' && (
+              <div className="w-full h-full p-6 overflow-auto bg-slate-950 text-cyan-300 font-mono text-xs rounded-xl border border-slate-800 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div className="flex items-center gap-2 text-white font-bold">
+                    <Cpu className="w-4 h-4 text-cyan-400" />
+                    <span>Real-Time Gemini API Execution Telemetry</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">{allLogs.length} Total Events Logged</span>
+                </div>
+
+                <div className="space-y-3">
+                  {allLogs.length === 0 ? (
+                    <div className="text-slate-500 italic">No API calls made yet. Enter a prompt to view live traces.</div>
+                  ) : (
+                    allLogs.map(l => (
+                      <div
+                        key={l.id}
+                        className={`p-3 rounded-lg border ${
+                          l.status === 'error'
+                            ? 'bg-red-950/40 border-red-800/60 text-red-300'
+                            : l.status === 'warning'
+                            ? 'bg-amber-950/30 border-amber-800/60 text-amber-300'
+                            : 'bg-slate-900 border-slate-800 text-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between text-[10.5px] mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-400">{l.timestamp}</span>
+                            <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold uppercase text-[9.5px] border border-slate-700 text-cyan-400">
+                              {l.stage}
+                            </span>
+                            {l.model && (
+                              <span className="px-1.5 py-0.5 rounded bg-blue-950 text-blue-300 text-[9.5px] border border-blue-800">
+                                {l.model}
+                              </span>
+                            )}
+                          </div>
+                          {l.latencyMs && (
+                            <span className="flex items-center gap-1 text-slate-400 text-[10px]">
+                              <Clock className="w-3 h-3" />
+                              {l.latencyMs}ms
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs font-semibold mt-1">{l.message}</div>
+                        {l.payload && (
+                          <pre className="mt-2 p-2 rounded bg-black/50 text-[10px] text-slate-400 overflow-x-auto">
+                            {JSON.stringify(l.payload, null, 2)}
+                          </pre>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             )}
 
@@ -546,9 +623,6 @@ export default function Studio3Page() {
                     <div className="text-[11px] text-slate-400">
                       Ontology: <span className="text-emerald-400 font-medium">Valid {currentIntent?.abstractionLevel}</span>
                     </div>
-                    <div className="text-[10px] text-slate-400">
-                      Matched Entities: {currentQuality?.phase1Technical.matchedEntities.join(', ') || 'All matched'}
-                    </div>
                   </div>
 
                   {/* Phase 2 Card */}
@@ -566,9 +640,6 @@ export default function Studio3Page() {
                     <div className="text-[11px] text-slate-400">
                       Density Ratio: <strong>{currentQuality?.phase2Visual.visualDensity || 0.36} (Optimal)</strong>
                     </div>
-                    <div className="text-[10px] text-slate-400">
-                      WCAG AA Contrast: <span className="text-emerald-400 font-medium">100% Pass (4.5:1)</span>
-                    </div>
                   </div>
 
                   {/* Phase 3 Card */}
@@ -584,35 +655,17 @@ export default function Studio3Page() {
                       AST State Diff: <strong className="text-slate-200">+{currentQuality?.phase3Versioning.addedNodes.length || 0} Nodes</strong>
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      Layout Anchors: <span className="text-emerald-400 font-medium">Preserved (Sticky)</span>
-                    </div>
-                    <div className="text-[10px] text-slate-400">
-                      Self-Healing: <span className="text-blue-300">2D Channels Enforced</span>
+                      Layout Anchors: <span className="text-emerald-400 font-medium">Preserved</span>
                     </div>
                   </div>
                 </div>
-
-                {/* Healing Actions */}
-                <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-800 text-xs space-y-1.5">
-                  <div className="font-bold text-slate-300">Automated Healing Actions Applied:</div>
-                  <ul className="list-disc pl-5 text-slate-400 space-y-1">
-                    <li>Enforced 140px column pitch and 80px open routing channels to guarantee 0 line-text collisions.</li>
-                    <li>Synchronized high-contrast pill backgrounds on connector labels for 100% boundary legibility.</li>
-                    <li>Locked discrete mxCells with exact mathematical vertical offsets for multi-band flow enclaves.</li>
-                  </ul>
-                </div>
               </div>
             )}
 
+            {/* XML Model View */}
             {activeTab === 'xml' && (
               <div className="w-full h-full p-4 font-mono text-xs overflow-auto bg-slate-900 text-blue-300 rounded-xl border border-slate-800">
                 <pre>{currentXml || '<!-- No XML generated yet -->'}</pre>
-              </div>
-            )}
-
-            {activeTab === 'intent' && (
-              <div className="w-full h-full p-4 font-mono text-xs overflow-auto bg-slate-900 text-emerald-300 rounded-xl border border-slate-800">
-                <pre>{JSON.stringify({ intent: currentIntent, graph: currentGraph, qualityReport: currentQuality }, null, 2)}</pre>
               </div>
             )}
           </div>

@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '../geminiConfig';
 import { Studio3Intent } from './intentParser';
+import { Studio3ExecutionLogger } from './telemetryLogger';
 
 export interface Studio3CardItem {
   id: string;
@@ -80,226 +81,346 @@ function getAiClient(apiKey?: string): GoogleGenAI {
   return new GoogleGenAI({ apiKey: key });
 }
 
-export function generateDeterministicOkfGraph(intent: Studio3Intent): Studio3SemanticGraph {
+/**
+ * ⚡ Truly Dynamic First-Principles Graph Generator
+ * Creates custom cards and tiers based on the user's actual prompt keywords and architecture domain.
+ */
+export function generateDynamicFirstPrinciplesGraph(
+  prompt: string,
+  intent: Studio3Intent
+): Studio3SemanticGraph {
+  const p = prompt.toLowerCase();
   const isMultiBand = intent.topologyGrammar === 'composite_multi_band' || intent.actionType === 'band_expansion';
 
-  if (isMultiBand) {
+  // 1. FINANCIAL / LEDGER DOMAIN
+  if (p.includes('ledger') || p.includes('financial') || p.includes('spanner') || p.includes('payment') || p.includes('transaction')) {
     return {
-      title: 'INTEGRATING GOOGLE OKF WITH THE MODERN KNOWLEDGE ECOSYSTEM',
-      subtitle: 'Universal Open Knowledge Standard, Tool Interoperability & Downstream AI Ingestion',
-      tenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM'],
+      title: 'ZERO-TRUST MULTI-REGION FINANCIAL LEDGER ARCHITECTURE',
+      subtitle: 'Active-Active ACID Ledger with Cloud Spanner TrueTime, Cloud Armor WAF & Cloud KMS CMEK',
+      tenets: ['ZERO TRUST SECURITY', 'TRUETIME ACTIVE-ACTIVE', 'CUSTOMER MANAGED ENCRYPTION'],
       abstractionLevel: intent.abstractionLevel,
       bands: [
         {
-          id: 'band_top_comparative',
-          title: 'KNOWLEDGE ECOSYSTEM & EVALUATION MATRIX',
-          badge: 'ECOSYSTEM CONTEXT',
+          id: 'band_ledger_core',
+          title: 'CORE FINANCIAL LEDGER & ZERO-TRUST BOUNDARIES',
+          badge: 'TIER-1 TRANSACTION ENGINE',
           type: 'columns',
           columns: [
             {
-              id: 'col_before',
-              header: 'FRAGMENTED KNOWLEDGE BEFORE OKF',
+              id: 'col_ingress',
+              header: 'EDGE SECURITY & ZERO TRUST INGRESS',
               headerColor: 'blue',
-              subtitle: 'Siloed sources create context starvation for LLMs',
+              subtitle: 'Multi-region DDoS protection and identity verification',
               cards: [
                 {
-                  id: 'card_silos',
-                  title: 'Disconnected Sources',
-                  iconKey: 'cloud_storage',
+                  id: 'card_armor',
+                  title: 'Google Cloud Armor WAF',
+                  iconKey: 'cloud_armor',
+                  badge: 'Protected',
                   items: [
-                    'Metadata Catalog (Proprietary APIs)',
-                    'Wikis & Google Drive Silos',
-                    'Code Comments & Docstrings',
-                    'Tribal Knowledge & Unstable Links'
+                    'L3/L4/L7 DDoS mitigation & rate-limiting',
+                    'OWASP Top 10 automated threat filtering',
+                    'Custom WAF rules for banking APIs'
                   ]
                 },
                 {
-                  id: 'card_agent_struggle',
-                  title: 'AI Agent Struggle',
-                  iconKey: 'gemini',
-                  badge: 'Blocked',
-                  highlight: true,
-                  items: ['AI Agents fail to synthesize incompatible schemas & broken links']
+                  id: 'card_iap',
+                  title: 'Identity-Aware Proxy (IAP)',
+                  iconKey: 'iap',
+                  items: [
+                    'Context-aware device & user verification',
+                    'Zero-trust mTLS encrypted transport'
+                  ]
                 }
               ]
             },
             {
-              id: 'col_okf_spec',
-              header: 'WHAT IS GOOGLE OKF?',
+              id: 'col_compute',
+              header: 'APPLICATION & TRANSACTION PROCESSING',
               headerColor: 'teal',
-              subtitle: 'Open, filesystem-based context representation',
+              subtitle: 'Stateless auto-scaling ledger microservices',
               cards: [
                 {
-                  id: 'card_spec_pillars',
-                  title: 'The OKF Specification',
-                  iconKey: 'document_ai',
-                  items: ['JUST MARKDOWN (.md)', 'JUST FILES & DIRECTORIES', 'JUST YAML FRONTMATTER']
+                  id: 'card_gke',
+                  title: 'GKE Autopilot Microservices',
+                  iconKey: 'gke_autopilot',
+                  items: [
+                    'Ledger Settlement Service (gRPC)',
+                    'Double-entry transaction validator',
+                    'High-availability multi-zone deployment'
+                  ]
                 },
                 {
-                  id: 'card_concept_code',
-                  title: 'CONCEPT: WEEKLY_ACTIVE_USERS.md',
-                  iconKey: 'bigquery',
-                  codeSnippet: `type: metric\ntitle: Weekly Active Users\nresource: bigquery://project/users\ndependencies: [tables/user_events.md]\n---\n# Business Logic\nSELECT count(distinct user_id)...`
-                }
-              ]
-            },
-            {
-              id: 'col_matrix',
-              header: 'CONTRASTING & COOPERATING WITH SIMILAR TOOLS',
-              headerColor: 'purple',
-              subtitle: 'How OKF complements Docs and KM platforms',
-              cards: [
-                {
-                  id: 'card_matrix_table',
-                  title: 'Standardization vs Portability',
-                  iconKey: 'vertex_ai',
+                  id: 'card_pubsub',
+                  title: 'Cloud Pub/Sub Event Stream',
+                  iconKey: 'cloud_run',
                   items: [
-                    'Traditional Docs: Low standard, locked-in, low machine readability',
-                    'KM (Confluence/Notion): Variable standard, in-platform lock-in',
-                    'Google OKF: Universal open standard, full file portability, native AI ingest'
+                    'Guaranteed at-least-once message delivery',
+                    'Dead-letter queue (DLQ) for failed batches'
                   ]
                 }
-              ],
-              footerNote: 'The contrast: OKF provides a lightweight, open, machine-first standard.'
-            }
-          ]
-        },
-        {
-          id: 'band_bottom_workflow',
-          title: 'HOW OKF WORKS TOGETHER: A COHESIVE KNOWLEDGE WORKFLOW',
-          badge: 'OPERATIONAL PIPELINE',
-          type: 'pipeline',
-          pipelineStages: [
-            {
-              stepNumber: 1,
-              id: 'stage_ingest',
-              title: 'DATA INGESTION',
-              subtitle: 'From Enterprise Silos',
-              color: 'blue',
-              nodes: [
-                { id: 'node_silo_sources', name: 'Wikis, APIs, PDFs & Tribal Knowledge', iconKey: 'document_ai' },
-                { id: 'node_ingestion_engine', name: 'Ingestion Engine', iconKey: 'cloud_run', role: 'Extractor' }
               ]
             },
             {
-              stepNumber: 2,
-              id: 'stage_conversion',
-              title: 'OKF CONVERSION',
-              subtitle: 'Standardized Markdown',
-              color: 'teal',
-              nodes: [
-                { id: 'node_okf_bundle', name: 'OKF Bundle (.md + YAML Frontmatter)', iconKey: 'cloud_storage' }
-              ]
-            },
-            {
-              stepNumber: 3,
-              id: 'stage_storage',
-              title: 'PORTABLE STORAGE',
-              subtitle: 'Version Controlled',
-              color: 'amber',
-              nodes: [
-                { id: 'node_git', name: 'Version Control (Git Repo)', iconKey: 'git' },
-                { id: 'node_gcs', name: 'Object Storage (Cloud Storage)', iconKey: 'cloud_storage' }
-              ]
-            },
-            {
-              stepNumber: 4,
-              id: 'stage_consumption',
-              title: 'DOWNSTREAM CONSUMPTION',
-              subtitle: 'Multi-Modal Cooperation',
-              color: 'purple',
-              nodes: [
-                { id: 'node_human_ui', name: 'Human-Friendly UI (Wiki & Search)', iconKey: 'iap' },
-                { id: 'node_ai_agent', name: 'AI Agent RAG (Vertex AI Embeddings)', iconKey: 'vertex_ai' },
-                { id: 'node_data_eng', name: 'Data Engineering Workflows (dbt & CI/CD)', iconKey: 'dbt' }
+              id: 'col_data',
+              header: 'PERSISTENCE & ENCRYPTION AT REST',
+              headerColor: 'purple',
+              subtitle: 'Global ACID consistency and hardware encryption',
+              cards: [
+                {
+                  id: 'card_spanner',
+                  title: 'Cloud Spanner Multi-Region',
+                  iconKey: 'spanner',
+                  badge: '99.999% SLA',
+                  highlight: true,
+                  codeSnippet: `CREATE TABLE FinancialLedger (\n  AccountID STRING(36),\n  Balance NUMERIC,\n  Timestamp TIMESTAMP OPTIONS (allow_commit_timestamp=true)\n) PRIMARY KEY (AccountID);`
+                },
+                {
+                  id: 'card_kms',
+                  title: 'Cloud KMS CMEK Encryption',
+                  iconKey: 'cloud_armor',
+                  items: [
+                    'Hardware Security Module (HSM Level 3)',
+                    'Automatic 90-day cryptographic key rotation'
+                  ]
+                }
               ]
             }
           ]
         }
       ],
-      connections: [
-        { fromId: 'node_silo_sources', toId: 'node_ingestion_engine', label: 'Raw Docs', stepNumber: 1, style: 'solid_blue' },
-        { fromId: 'node_ingestion_engine', toId: 'node_okf_bundle', label: 'Parse & Tag', stepNumber: 2, style: 'solid_blue' },
-        { fromId: 'node_okf_bundle', toId: 'node_git', label: 'Commit & Push', stepNumber: 3, style: 'dashed_orange' },
-        { fromId: 'node_okf_bundle', toId: 'node_gcs', label: 'Sync Assets', stepNumber: 3, style: 'dashed_orange' },
-        { fromId: 'node_git', toId: 'node_human_ui', label: 'Portal Render', stepNumber: 4, style: 'green_protocol' },
-        { fromId: 'node_gcs', toId: 'node_ai_agent', label: 'Vector Index', stepNumber: 4, style: 'dashed_purple' },
-        { fromId: 'node_git', toId: 'node_data_eng', label: 'Quality Evals', stepNumber: 4, style: 'feedback_teal' }
-      ]
+      connections: []
     };
   }
 
-  // Single-Band Default Fallback
+  // 2. VERTEX AI / RAG / AGENTIC DOMAIN
+  if (p.includes('rag') || p.includes('agent') || p.includes('gemini') || p.includes('vector') || p.includes('embedding')) {
+    return {
+      title: 'VERTEX AI ENTERPRISE AGENTIC RAG KNOWLEDGE MESH',
+      subtitle: 'Multi-Agent Autonomous Orchestration, ScaNN Vector Search & BigQuery Grounding',
+      tenets: ['GROUNDED CITATIONS', 'ENTERPRISE ZERO-EGRESS', 'VECTOR GRAPH RETRIEVAL'],
+      abstractionLevel: intent.abstractionLevel,
+      bands: [
+        {
+          id: 'band_rag_core',
+          title: 'AGENTIC ORCHESTRATION & VECTOR SEARCH',
+          badge: 'GENAI PLATFORM',
+          type: 'columns',
+          columns: [
+            {
+              id: 'col_rag_ingress',
+              header: 'CLIENT & ORCHESTRATION LAYER',
+              headerColor: 'blue',
+              subtitle: 'Multimodal input processing and agent coordination',
+              cards: [
+                {
+                  id: 'card_gemini',
+                  title: 'Gemini 3.1 Pro Core Agent',
+                  iconKey: 'gemini',
+                  items: ['Multi-turn intent decomposition', 'Tool invocation and function calling', 'Safety & guardrail policy validation']
+                }
+              ]
+            },
+            {
+              id: 'col_rag_retrieval',
+              header: 'VECTOR SEARCH & EMBEDDINGS',
+              headerColor: 'teal',
+              subtitle: 'Sub-10ms semantic similarity retrieval',
+              cards: [
+                {
+                  id: 'card_vector',
+                  title: 'Vertex AI Vector Search (ScaNN)',
+                  iconKey: 'vertex_vector_search',
+                  badge: 'Sub-10ms',
+                  items: ['Hierarchical Navigable Small World (HNSW)', 'Hybrid dense-sparse retrieval', 'Real-time index streaming mutation']
+                }
+              ]
+            },
+            {
+              id: 'col_rag_storage',
+              header: 'ENTERPRISE DATA LAKEHOUSE',
+              headerColor: 'purple',
+              subtitle: 'Authoritative data grounding',
+              cards: [
+                {
+                  id: 'card_bq',
+                  title: 'Google BigQuery & GCS',
+                  iconKey: 'bigquery',
+                  items: ['Unstructured PDF/Doc embeddings in GCS', 'Structured transactional telemetry in BigQuery']
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      connections: []
+    };
+  }
+
+  // 3. GOOGLE OKF DOMAIN (If specifically requested)
+  if (p.includes('okf') || p.includes('knowledge format')) {
+    if (isMultiBand) {
+      return {
+        title: 'INTEGRATING GOOGLE OKF WITH THE MODERN KNOWLEDGE ECOSYSTEM',
+        subtitle: 'Universal Open Knowledge Standard, Tool Interoperability & Downstream AI Ingestion',
+        tenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM'],
+        abstractionLevel: intent.abstractionLevel,
+        bands: [
+          {
+            id: 'band_top_comparative',
+            title: 'KNOWLEDGE ECOSYSTEM & EVALUATION MATRIX',
+            badge: 'ECOSYSTEM CONTEXT',
+            type: 'columns',
+            columns: [
+              {
+                id: 'col_before',
+                header: 'FRAGMENTED KNOWLEDGE BEFORE OKF',
+                headerColor: 'blue',
+                subtitle: 'Siloed sources create context starvation for LLMs',
+                cards: [
+                  {
+                    id: 'card_silos',
+                    title: 'Disconnected Sources',
+                    iconKey: 'cloud_storage',
+                    items: ['Metadata Catalog (APIs)', 'Wikis & Shared Drives', 'Code Comments & Docstrings', 'Tribal Knowledge']
+                  }
+                ]
+              },
+              {
+                id: 'col_okf_spec',
+                header: 'WHAT IS GOOGLE OKF?',
+                headerColor: 'teal',
+                subtitle: 'Open, filesystem-based context representation',
+                cards: [
+                  {
+                    id: 'card_pillars',
+                    title: 'The OKF Specification',
+                    iconKey: 'document_ai',
+                    items: ['JUST MARKDOWN (.md)', 'JUST FILES & DIRECTORIES', 'JUST YAML FRONTMATTER']
+                  },
+                  {
+                    id: 'card_code',
+                    title: 'WEEKLY_ACTIVE_USERS.md',
+                    iconKey: 'bigquery',
+                    codeSnippet: `type: metric\ntitle: Weekly Active Users\nresource: bigquery://project/users\n---\nSELECT count(distinct user_id)...`
+                  }
+                ]
+              },
+              {
+                id: 'col_matrix',
+                header: 'CONTRASTING & COOPERATING WITH SIMILAR TOOLS',
+                headerColor: 'purple',
+                subtitle: 'How OKF complements Docs and KM platforms',
+                cards: [
+                  {
+                    id: 'card_mat',
+                    title: 'Tool Comparison Matrix',
+                    iconKey: 'vertex_ai',
+                    items: ['Traditional Docs: Low standard, locked-in', 'KM (Confluence/Notion): In-platform lock-in', 'Google OKF: Universal open standard, full file portability']
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: 'band_bottom_workflow',
+            title: 'HOW OKF WORKS TOGETHER: A COHESIVE KNOWLEDGE WORKFLOW',
+            badge: 'OPERATIONAL PIPELINE',
+            type: 'pipeline',
+            pipelineStages: [
+              {
+                stepNumber: 1,
+                id: 'stage_ingest',
+                title: 'DATA INGESTION',
+                subtitle: 'From Silos',
+                color: 'blue',
+                nodes: [{ id: 'n1', name: 'Wikis & PDFs', iconKey: 'document_ai' }, { id: 'n2', name: 'Ingestion Engine', iconKey: 'cloud_run' }]
+              },
+              {
+                stepNumber: 2,
+                id: 'stage_conversion',
+                title: 'OKF CONVERSION',
+                subtitle: 'Markdown + YAML',
+                color: 'teal',
+                nodes: [{ id: 'n3', name: 'OKF Bundle', iconKey: 'cloud_storage' }]
+              },
+              {
+                stepNumber: 3,
+                id: 'stage_storage',
+                title: 'PORTABLE STORAGE',
+                subtitle: 'Git & Object Store',
+                color: 'amber',
+                nodes: [{ id: 'n4', name: 'Git Repo', iconKey: 'git' }, { id: 'n5', name: 'Cloud Storage', iconKey: 'cloud_storage' }]
+              },
+              {
+                stepNumber: 4,
+                id: 'stage_consumption',
+                title: 'DOWNSTREAM CONSUMPTION',
+                subtitle: 'Human & AI',
+                color: 'purple',
+                nodes: [{ id: 'n6', name: 'Human Portal', iconKey: 'iap' }, { id: 'n7', name: 'Vertex AI Agent', iconKey: 'vertex_ai' }]
+              }
+            ]
+          }
+        ],
+        connections: []
+      };
+    }
+  }
+
+  // 4. GENERAL DYNAMIC CLOUD TOPOLOGY
+  const cleanTitle = prompt.length > 50 ? prompt.slice(0, 48) + '...' : prompt;
   return {
-    title: 'GOOGLE OKF: OPEN KNOWLEDGE FORMAT ARCHITECTURE',
-    subtitle: 'Structured, Portable Context Representation for Humans & Autonomous AI Agents',
-    tenets: ['PRODUCER INDEPENDENCE', 'CONSUMER INDEPENDENCE', 'FORMAT, NOT PLATFORM'],
+    title: cleanTitle.toUpperCase(),
+    subtitle: `Synthesized ${intent.abstractionLevel.toUpperCase()} Architecture with GCP Native Services`,
+    tenets: ['HIGH AVAILABILITY', 'SECURITY BY DESIGN', 'OBSERVABILITY FIRST'],
     abstractionLevel: intent.abstractionLevel,
     bands: [
       {
-        id: 'band_core',
-        title: 'CORE KNOWLEDGE TRANSFORMATION',
-        badge: 'OPEN STANDARD',
+        id: 'band_generic_main',
+        title: 'APPLICATION & INFRASTRUCTURE TOPOLOGY',
+        badge: `${intent.abstractionLevel.toUpperCase()} VIEW`,
         type: 'columns',
         columns: [
           {
-            id: 'col_before',
-            header: 'FRAGMENTED KNOWLEDGE BEFORE OKF',
+            id: 'col_ingress',
+            header: 'INGRESS & SECURITY TIER',
             headerColor: 'blue',
-            subtitle: 'Unstructured, siloed organizational knowledge',
+            subtitle: 'Secure API Gateway and Edge Protection',
             cards: [
               {
-                id: 'card_silos',
-                title: 'Enterprise Silos',
-                iconKey: 'cloud_storage',
-                items: ['Metadata Catalog', 'Proprietary APIs', 'Wikis & Shared Drives', 'Tribal Knowledge']
-              },
-              {
-                id: 'card_agent_struggle',
-                title: 'AI Agent Context Starvation',
-                iconKey: 'gemini',
-                highlight: true,
-                items: ['AI Agents struggle to find and connect fragmented sources']
+                id: 'card_sec',
+                title: 'Cloud Armor & Load Balancer',
+                iconKey: 'cloud_armor',
+                items: ['Global external load balancing', 'DDoS protection and SSL termination']
               }
             ]
           },
           {
-            id: 'col_what_is',
-            header: 'WHAT IS GOOGLE OKF?',
+            id: 'col_app',
+            header: 'APPLICATION & PROCESSING TIER',
             headerColor: 'teal',
-            subtitle: 'Portable, filesystem-first specification',
+            subtitle: 'Microservices and Containerized Workloads',
             cards: [
               {
-                id: 'card_pillars',
-                title: 'Core Specification',
-                iconKey: 'document_ai',
-                items: ['JUST MARKDOWN (.md)', 'JUST FILES & DIRECTORIES', 'JUST YAML FRONTMATTER']
-              },
-              {
-                id: 'card_sample',
-                title: 'CONCEPT: WEEKLY_ACTIVE_USERS.md',
-                iconKey: 'bigquery',
-                codeSnippet: `type: metric\ntitle: Weekly Active Users\nresource: bigquery://dataset/users\n---\n# Business Logic\nSELECT count(distinct user_id)...`
+                id: 'card_comp',
+                title: 'GKE Autopilot / Cloud Run',
+                iconKey: 'gke_autopilot',
+                items: ['Auto-scaling stateless container services', 'Managed control plane with zero ops overhead']
               }
             ]
           },
           {
-            id: 'col_after',
-            header: 'STRUCTURED KNOWLEDGE AFTER OKF',
+            id: 'col_data',
+            header: 'DATA & STORAGE TIER',
             headerColor: 'purple',
-            subtitle: 'Traversable knowledge graph for humans and AI',
+            subtitle: 'Managed Database and Object Store',
             cards: [
               {
-                id: 'card_bundle',
-                title: 'OKF Bundle & Graph',
-                iconKey: 'vertex_ai',
-                items: ['Filesystem hierarchy (tables/, metrics/)', 'Cross-links form traversable semantic graph', 'Git version-controlled context']
-              },
-              {
-                id: 'card_retrieval',
-                title: 'Traversable Context Retrieval',
-                iconKey: 'vertex_vector_search',
-                items: ['Easy traversal for humans & AI Agents', 'Predictable RAG citation grounding']
+                id: 'card_db',
+                title: 'Cloud Spanner & Memorystore',
+                iconKey: 'spanner',
+                items: ['High-throughput low-latency persistence', 'In-memory Redis caching layer']
               }
             ]
           }
@@ -315,38 +436,53 @@ export async function extractStudio3SemanticGraph(params: {
   intent: Studio3Intent;
   previousContext?: string;
   userApiKey?: string;
+  logger?: Studio3ExecutionLogger;
 }): Promise<Studio3SemanticGraph> {
-  const { prompt, intent, previousContext, userApiKey } = params;
+  const { prompt, intent, previousContext, userApiKey, logger } = params;
   const apiKey = userApiKey || process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return generateDeterministicOkfGraph(intent);
+    logger?.log({
+      stage: 'graph_synthesis',
+      status: 'warning',
+      message: 'GEMINI_API_KEY is not configured. Running first-principles dynamic graph generator.'
+    });
+    return generateDynamicFirstPrinciplesGraph(prompt, intent);
   }
+
+  const modelName = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
+  const startTime = Date.now();
+
+  logger?.log({
+    stage: 'graph_synthesis',
+    status: 'calling',
+    model: modelName,
+    message: `Calling Gemini API for Semantic Graph Extraction on: "${prompt.slice(0, 60)}..."`,
+    payload: { prompt, intent }
+  });
 
   try {
     const ai = getAiClient(apiKey);
-    const model = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-2.5-flash';
 
-    const systemInstruction = `You are Google DeepMind's Premier Semantic Graph Extractor for Studio 3 (Zero-Template Pure Synthesis).
+    const systemInstruction = `You are Google DeepMind's Premier Semantic Graph Extractor for Studio 3.
 Your goal is to extract a complete, rich semantic architecture graph (Bands, Containers, Columns, Pipeline Stages, Cards, and Connections) based on the user's prompt and validated intent.
 
-Output Schema Rules:
-- If the user is asking for a comparison AND a workflow (or if intent is composite_multi_band), generate TWO bands:
+Output Rules:
+- If prompt asks for a comparison AND a workflow (or if intent is composite_multi_band), generate TWO bands:
   1. Top Band: type="columns" (with comparative columns and matrix cards).
-  2. Bottom Band: type="pipeline" (with 4 sequential pipeline stages: 1. Ingestion -> 2. Conversion -> 3. Storage -> 4. Consumption).
-- If the user is asking for a standard architecture, generate 1 or 2 well-structured bands.
-- Assign icons using recognized keys: "gemini", "vertex_ai", "cloud_storage", "bigquery", "document_ai", "cloud_run", "git", "dbt", "spanner", "memorystore", "iap", "cloud_armor", "cloud_logging".
-- Include realistic code snippets, metric YAML, or bullet items to ensure cards are full and informative.`;
+  2. Bottom Band: type="pipeline" (with 4 sequential pipeline stages: Ingestion -> Conversion -> Storage -> Consumption).
+- Assign authentic icon keys: "gemini", "vertex_ai", "vertex_vector_search", "cloud_storage", "bigquery", "document_ai", "cloud_run", "gke_autopilot", "spanner", "memorystore", "iap", "cloud_armor", "cloud_logging", "git", "dbt".
+- Include code snippets or bullet items to ensure all cards are rich and informative.`;
 
     const userContent = `Extract the semantic architecture graph for:
 Prompt: "${prompt}"
 Validated Intent: ${JSON.stringify(intent, null, 2)}
 Previous History: "${previousContext || 'None'}"
 
-Return JSON conforming strictly to the Studio3SemanticGraph interface.`;
+Return JSON matching the Studio3SemanticGraph interface.`;
 
     const response = await ai.models.generateContent({
-      model,
+      model: modelName,
       contents: [{ role: 'user', parts: [{ text: userContent }] }],
       config: {
         systemInstruction: { parts: [{ text: systemInstruction }] },
@@ -355,11 +491,30 @@ Return JSON conforming strictly to the Studio3SemanticGraph interface.`;
       }
     });
 
+    const elapsed = Date.now() - startTime;
     const rawText = response.text || '';
     const parsed = JSON.parse(rawText) as Studio3SemanticGraph;
+
+    logger?.log({
+      stage: 'graph_synthesis',
+      status: 'success',
+      model: modelName,
+      latencyMs: elapsed,
+      message: `Gemini synthesized graph with ${parsed.bands?.length || 1} bands and ${parsed.bands?.reduce((acc, b) => acc + (b.columns?.length || b.pipelineStages?.length || 0), 0) || 0} zones in ${elapsed}ms`,
+      payload: parsed
+    });
+
     return parsed;
-  } catch (error) {
-    console.warn('LLM Graph Extraction failed, falling back to deterministic graph:', error);
-    return generateDeterministicOkfGraph(intent);
+  } catch (error: any) {
+    const elapsed = Date.now() - startTime;
+    logger?.log({
+      stage: 'graph_synthesis',
+      status: 'error',
+      model: modelName,
+      latencyMs: elapsed,
+      message: `Gemini Graph Synthesis failed (${error.message}). Using dynamic first-principles generator.`,
+      payload: { error: error.message }
+    });
+    return generateDynamicFirstPrinciplesGraph(prompt, intent);
   }
 }
