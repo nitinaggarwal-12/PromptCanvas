@@ -514,7 +514,10 @@ export default function Studio3Page() {
       if (data.diagramId) {
         setDiagramId(data.diagramId);
       }
-      if (data.xml) setCurrentXml(data.xml);
+      if (data.xml) {
+        setCurrentXml(data.xml);
+        setActiveTab('canvas');
+      }
       if (data.intent) {
         setCurrentIntent(data.intent);
         if (data.intent.abstractionLevel) {
