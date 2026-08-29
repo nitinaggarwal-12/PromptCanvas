@@ -13,23 +13,24 @@ export async function GET(req: NextRequest) {
       ? await getMediaAssetsForDiagram(diagramId)
       : await getAllSavedMediaAssets(40);
 
-    const assets = (rawAssets || []).map(a => ({
-      id: a.id,
-      type: a.asset_type || (a as any).type || 'animation',
-      title: a.title,
-      url: a.url || null,
-      htmlCode: a.html_code || (a as any).htmlCode || null,
-      aspectRatio: a.aspect_ratio || (a as any).aspectRatio || '16:9',
-      caption: a.caption || null,
-      category: a.category || 'general',
-      createdAt: a.created_at || (a as any).createdAt
-    }));
+    // Merge curated defaults with any custom user-generated assets from DB
+    const customUserAssets = (rawAssets || [])
+      .filter(a => !DEFAULT_CURATED_MEDIA_ASSETS.some(d => d.id === a.id))
+      .map(a => ({
+        id: a.id,
+        type: a.asset_type || (a as any).type || 'animation',
+        title: a.title,
+        url: a.url || null,
+        htmlCode: a.html_code || (a as any).htmlCode || null,
+        aspectRatio: a.aspect_ratio || (a as any).aspectRatio || '16:9',
+        caption: a.caption || null,
+        category: a.category || 'general',
+        createdAt: a.created_at || (a as any).createdAt
+      }));
 
-    if (assets.length === 0) {
-      return NextResponse.json({ success: true, assets: DEFAULT_CURATED_MEDIA_ASSETS });
-    }
+    const finalAssets = [...DEFAULT_CURATED_MEDIA_ASSETS, ...customUserAssets];
 
-    return NextResponse.json({ success: true, assets });
+    return NextResponse.json({ success: true, assets: finalAssets });
   } catch (error: any) {
     console.error('Failed to fetch media assets:', error);
     return NextResponse.json({ error: error.message || 'Failed to fetch media assets' }, { status: 500 });
