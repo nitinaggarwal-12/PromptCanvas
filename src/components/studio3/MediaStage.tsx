@@ -276,15 +276,36 @@ export const MediaStage: React.FC<MediaStageProps> = ({
               </div>
             )}
 
-            {/* 3. Video Asset */}
+            {/* 3. Video Asset with Ambient Blur Glow */}
             {activeAsset.type === 'video' && activeAsset.url && (
-              <video
-                src={activeAsset.url}
-                controls
-                autoPlay
-                loop
-                className="max-h-[calc(100vh-230px)] max-w-full rounded-xl shadow-2xl border border-slate-800"
-              />
+              <div className="relative flex items-center justify-center max-h-[calc(100vh-230px)] max-w-full">
+                {/* Ambient Glow for 9:16 Reels */}
+                {activeAsset.aspectRatio === '9:16' && (
+                  <video
+                    src={activeAsset.url}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none rounded-2xl"
+                  />
+                )}
+                <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-black flex flex-col items-center">
+                  <video
+                    src={activeAsset.url}
+                    controls
+                    autoPlay
+                    loop
+                    playsInline
+                    className="max-h-[calc(100vh-240px)] rounded-xl object-contain"
+                  />
+                  {activeAsset.caption && (
+                    <div className="w-full bg-slate-950/80 backdrop-blur-md px-3 py-1.5 text-center text-[11px] font-semibold text-slate-300 border-t border-slate-800 truncate">
+                      {activeAsset.caption}
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         )}
