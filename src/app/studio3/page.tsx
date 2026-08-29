@@ -1043,8 +1043,8 @@ export default function Studio3Page() {
             </div>
           </div>
 
-          {/* Canvas Display Area */}
-          <div className={`flex-1 relative overflow-hidden flex items-center justify-center p-3 ${theme === 'dark' ? 'bg-slate-950' : 'bg-slate-100'}`}>
+          {/* Canvas & Media Display Area */}
+          <div className={`flex-1 w-full h-full relative overflow-hidden flex flex-col items-center justify-center p-3 ${theme === 'dark' ? 'bg-slate-950' : 'bg-slate-100'}`}>
             {/* Draw.io Canvas View OR Pre-Show Curtain Stage */}
             {activeTab === 'canvas' && (
               <div className={`w-full h-full rounded-xl overflow-hidden border shadow-inner relative flex items-center justify-center ${theme === 'dark' ? 'border-slate-800 bg-slate-950' : 'border-slate-300 bg-white'}`}>

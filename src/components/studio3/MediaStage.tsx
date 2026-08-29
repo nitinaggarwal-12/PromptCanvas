@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Film,
-  Image as ImageIcon,
   Sparkles,
   Download,
   Maximize2,
@@ -89,10 +88,10 @@ export const MediaStage: React.FC<MediaStageProps> = ({
     }
   };
 
-  // If no media asset is present, show the visual media generator state
+  // If no media asset is present, show empty generator state
   if (!activeAsset) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-gradient-to-b from-slate-950 via-[#0B111E] to-slate-950">
+      <div className="w-full h-full min-h-[600px] flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-gradient-to-b from-slate-950 via-[#0B111E] to-slate-950 rounded-xl">
         <div className="max-w-2xl mx-auto z-10 flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-blue-500 p-0.5 shadow-xl shadow-purple-500/20">
             <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
@@ -109,91 +108,14 @@ export const MediaStage: React.FC<MediaStageProps> = ({
             </p>
           </div>
 
-          {/* Quick Trigger Button to Explore All 30+ Modes */}
+          {/* Quick Trigger Button to Explore All 36+ Modes */}
           <button
             onClick={onOpenModeSelector}
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black transition shadow-lg flex items-center gap-2 active:scale-95"
           >
             <Sparkles className="w-4 h-4" />
-            <span>Browse All 30+ Multimodal Formats</span>
+            <span>Browse All 36+ Multimodal Formats</span>
           </button>
-
-          {/* Quick Preset Visual Prompts */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-2">
-            {[
-              {
-                title: 'Gamified Interactive Quiz',
-                desc: '5-question multiple choice quiz with timer and score tracker',
-                icon: '🎯',
-                category: 'games',
-                type: 'quiz'
-              },
-              {
-                title: 'Interactive Mind Map',
-                desc: 'Radial expandable concept tree with pan & zoom',
-                icon: '🌳',
-                category: 'knowledge',
-                type: 'mindmap'
-              },
-              {
-                title: '16:9 Presentation Slide Deck',
-                desc: 'Executive multi-slide deck with speaker notes',
-                icon: '📑',
-                category: 'decks',
-                type: 'deck'
-              },
-              {
-                title: 'AI Multi-Host Podcast',
-                desc: '2-host conversational audio deep-dive with waveform visualizer',
-                icon: '🎧',
-                category: 'audio',
-                type: 'audio'
-              }
-            ].map((preset, idx) => (
-              <button
-                key={idx}
-                onClick={() => onGenerateMedia?.(preset.title, preset.type, preset.category)}
-                disabled={isGenerating}
-                className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800/90 hover:border-purple-500/50 transition-all text-left group flex items-start gap-3 shadow-lg disabled:opacity-50"
-              >
-                <span className="text-2xl p-2 rounded-lg bg-slate-800/80 group-hover:scale-110 transition-transform">
-                  {preset.icon}
-                </span>
-                <div>
-                  <div className="text-xs font-black text-white group-hover:text-purple-300 transition-colors">
-                    {preset.title}
-                  </div>
-                  <div className="text-[11px] text-slate-400 mt-0.5 line-clamp-2">
-                    {preset.desc}
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Custom Media Prompt Input */}
-          <div className="w-full mt-2 flex gap-2">
-            <input
-              type="text"
-              value={customPrompt}
-              onChange={e => setCustomPrompt(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter' && customPrompt.trim()) {
-                  onGenerateMedia?.(customPrompt.trim(), 'animation', 'general');
-                }
-              }}
-              placeholder="Describe any content to create (e.g. 'CAP Theorem interactive quiz', 'AI history timeline')..."
-              className="flex-1 rounded-xl px-4 py-3 bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-            />
-            <button
-              onClick={() => customPrompt.trim() && onGenerateMedia?.(customPrompt.trim(), 'animation', 'general')}
-              disabled={!customPrompt.trim() || isGenerating}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-black transition shadow-lg disabled:opacity-40 flex items-center gap-2"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Create</span>
-            </button>
-          </div>
         </div>
       </div>
     );
@@ -202,12 +124,12 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   return (
     <div
       id="studio3-media-viewport"
-      className={`flex-1 flex flex-col relative overflow-hidden ${
+      className={`w-full h-full min-h-[620px] flex flex-col relative overflow-hidden rounded-xl border border-slate-800 ${
         theme === 'dark' ? 'bg-[#050811] text-white' : 'bg-slate-900 text-white'
       }`}
     >
       {/* 1. TOP CONTROL BAR */}
-      <div className="px-4 py-2.5 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 flex items-center justify-between z-20">
+      <div className="px-4 py-2.5 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 flex items-center justify-between z-20 shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenModeSelector}
@@ -231,7 +153,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                 onClick={() => setViewMode('preview')}
                 className={`px-2.5 py-1 rounded-md transition ${
                   viewMode === 'preview'
-                    ? 'bg-purple-600 text-white'
+                    ? 'bg-purple-600 text-white shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -241,7 +163,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                 onClick={() => setViewMode('code')}
                 className={`px-2.5 py-1 rounded-md transition ${
                   viewMode === 'code'
-                    ? 'bg-purple-600 text-white'
+                    ? 'bg-purple-600 text-white shadow-sm'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -300,8 +222,8 @@ export const MediaStage: React.FC<MediaStageProps> = ({
         </div>
       </div>
 
-      {/* 2. MAIN MEDIA DISPLAY VIEWPORT */}
-      <div className="flex-1 relative flex items-center justify-center p-3 overflow-auto">
+      {/* 2. MAIN MEDIA DISPLAY VIEWPORT - ENFORCES FULL CONTAINER EXPANSION */}
+      <div className="flex-1 w-full h-full min-h-[460px] relative flex items-center justify-center p-3 overflow-hidden bg-[#050811]">
         {/* VIEW MODE: SOURCE CODE */}
         {viewMode === 'code' && activeAsset.htmlCode ? (
           <div className="w-full h-full max-w-5xl rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs text-emerald-400 overflow-auto whitespace-pre-wrap">
@@ -310,12 +232,12 @@ export const MediaStage: React.FC<MediaStageProps> = ({
         ) : (
           /* VIEW MODE: VISUAL PREVIEW */
           <div
-            className="relative w-full h-full flex items-center justify-center transition-transform duration-150"
+            className="relative w-full h-full flex items-center justify-center"
             style={{
               transform: activeAsset.type === 'image' ? `scale(${zoomLevel})` : 'none',
               transformOrigin: 'center center',
-              maxWidth: '100%',
-              maxHeight: '100%'
+              width: '100%',
+              height: '100%'
             }}
           >
             {/* 1. Image / GIF Asset */}
@@ -329,20 +251,24 @@ export const MediaStage: React.FC<MediaStageProps> = ({
 
             {/* 2. Interactive HTML5 / Canvas / Quiz / Mindmap / Deck Sandbox */}
             {activeAsset.type !== 'image' && activeAsset.type !== 'gif' && activeAsset.type !== 'video' && (
-              <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#050811] flex items-center justify-center">
+              <div className="w-full h-full min-h-[440px] rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#050811] flex items-center justify-center">
                 {activeAsset.htmlCode ? (
                   <iframe
+                    key={activeAsset.id}
                     ref={iframeRef}
                     srcDoc={activeAsset.htmlCode}
                     title={activeAsset.title}
                     sandbox="allow-scripts allow-same-origin allow-forms allow-modals"
-                    className="w-full h-full border-0"
+                    className="w-full h-full min-h-[440px] border-0"
+                    style={{ width: '100%', height: '100%', minHeight: '440px' }}
                   />
                 ) : activeAsset.url ? (
                   <iframe
+                    key={activeAsset.id}
                     src={activeAsset.url}
                     title={activeAsset.title}
-                    className="w-full h-full border-0"
+                    className="w-full h-full min-h-[440px] border-0"
+                    style={{ width: '100%', height: '100%', minHeight: '440px' }}
                   />
                 ) : (
                   <div className="text-slate-500 text-xs font-bold">No application code available.</div>
@@ -365,7 +291,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
       </div>
 
       {/* 3. BOTTOM ITERATIVE MODIFICATION & ASSET CAROUSEL BAR */}
-      <div className="px-4 py-2.5 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 z-20">
+      <div className="px-4 py-2.5 bg-slate-950/95 backdrop-blur-md border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 z-20 shrink-0">
         {/* Iterative Prompt Modification Input */}
         <div className="flex-1 w-full max-w-xl flex items-center gap-2">
           <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
@@ -409,7 +335,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                   onClick={() => onSelectAsset(idx)}
                   className={`px-2 py-1 rounded-md text-[10px] font-bold transition flex items-center gap-1 ${
                     activeAssetIndex === idx
-                      ? 'bg-purple-600 text-white shadow-xs'
+                      ? 'bg-purple-600 text-white shadow-sm'
                       : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
                   }`}
                 >
