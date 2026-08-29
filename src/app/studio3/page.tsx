@@ -49,6 +49,7 @@ import { Studio3LogEntry } from '@/lib/studio3/telemetryLogger';
 import { MediaStage, Studio3MediaAsset } from '@/components/studio3/MediaStage';
 import { MultimodalModeSelector } from '@/components/studio3/MultimodalModeSelector';
 import { MultimodalMode } from '@/lib/studio3/multimodalCatalog';
+import { DEFAULT_CURATED_MEDIA_ASSETS } from '@/lib/studio3/defaultMediaAssets';
 
 interface ChatMessage {
   id: string;
@@ -109,18 +110,8 @@ export default function Studio3Page() {
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Media Stage Assets State
-  const [mediaAssets, setMediaAssets] = useState<Studio3MediaAsset[]>([
-    {
-      id: 'gladiator_arena_hero',
-      type: 'image',
-      title: 'Colosseum Gladiator Duel',
-      url: '/gladiators_rome_arena.jpg',
-      caption: 'Photorealistic Roman Colosseum arena scene with Secutor vs Retiarius in dramatic sunlight and dust.',
-      aspectRatio: '16:9',
-      createdAt: new Date().toISOString()
-    }
-  ]);
+  // Media Stage Assets State - Seeded with 6 rich interactive formats
+  const [mediaAssets, setMediaAssets] = useState<Studio3MediaAsset[]>(DEFAULT_CURATED_MEDIA_ASSETS);
   const [activeAssetIndex, setActiveAssetIndex] = useState<number>(0);
   const [generatingMedia, setGeneratingMedia] = useState<boolean>(false);
   const [isModeSelectorOpen, setIsModeSelectorOpen] = useState<boolean>(false);
@@ -156,9 +147,12 @@ export default function Studio3Page() {
             createdAt: a.createdAt || a.created_at
           }));
           setMediaAssets(mapped);
+        } else {
+          setMediaAssets(DEFAULT_CURATED_MEDIA_ASSETS);
         }
       } catch (e) {
-        console.warn('Failed to load saved media assets:', e);
+        console.warn('Failed to load saved media assets, using curated defaults:', e);
+        setMediaAssets(DEFAULT_CURATED_MEDIA_ASSETS);
       }
     }
     loadSavedMedia();

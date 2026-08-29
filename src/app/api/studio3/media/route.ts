@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { saveMediaAssetRecord, getMediaAssetsForDiagram, getAllSavedMediaAssets } from '@/lib/db';
+import { DEFAULT_CURATED_MEDIA_ASSETS } from '@/lib/studio3/defaultMediaAssets';
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,6 +24,10 @@ export async function GET(req: NextRequest) {
       category: a.category || 'general',
       createdAt: a.created_at || (a as any).createdAt
     }));
+
+    if (assets.length === 0) {
+      return NextResponse.json({ success: true, assets: DEFAULT_CURATED_MEDIA_ASSETS });
+    }
 
     return NextResponse.json({ success: true, assets });
   } catch (error: any) {
