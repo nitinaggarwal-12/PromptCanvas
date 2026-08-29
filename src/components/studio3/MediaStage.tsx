@@ -328,19 +328,19 @@ export const MediaStage: React.FC<MediaStageProps> = ({
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
               Saved Assets ({mediaAssets.length}):
             </span>
-            <div className="flex items-center gap-1.5 overflow-x-auto max-w-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto max-w-sm md:max-w-md">
               {mediaAssets.map((asset, idx) => (
                 <button
                   key={asset.id || idx}
                   onClick={() => onSelectAsset(idx)}
-                  className={`px-2 py-1 rounded-md text-[10px] font-bold transition flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded-md text-[10.5px] font-bold transition flex items-center gap-1 shrink-0 ${
                     activeAssetIndex === idx
-                      ? 'bg-purple-600 text-white shadow-sm'
+                      ? 'bg-purple-600 text-white shadow-sm ring-1 ring-purple-400'
                       : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
                   }`}
                 >
-                  <span>{idx + 1}.</span>
-                  <span className="truncate max-w-[80px]">{asset.title}</span>
+                  <span className="opacity-70">{idx + 1}.</span>
+                  <span className="truncate max-w-[140px] md:max-w-[180px]">{asset.title}</span>
                 </button>
               ))}
             </div>

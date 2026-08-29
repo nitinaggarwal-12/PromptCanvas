@@ -16,9 +16,380 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "type": "audio",
     "title": "The AI Architecture Dispatch Podcast",
     "url": null,
-    "htmlCode": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>RAG vs Long Context Windows Podcast</title>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --bg-color: #050811;\n            --text-color: #E0E0E0;\n            --accent-purple: #6366F1;\n            --accent-blue: #38BDF8;\n            --accent-green: #10B981;\n            --accent-pink: #EC4899;\n            --card-bg: #1A202C; /* Slightly lighter dark for cards */\n            --border-color: #2D3748;\n            --control-bg: #2C3E50;\n            --control-hover: #34495E;\n        }\n\n        body {\n            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif;\n            background-color: var(--bg-color);\n            color: var(--text-color);\n            margin: 0;\n            padding: 20px;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n            box-sizing: border-box;\n            overflow-y: auto; /* Allow scrolling if content is too tall */\n        }\n\n        .podcast-container {\n            background-color: var(--card-bg);\n            border-radius: 16px;\n            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);\n            width: 100%;\n            max-width: 900px;\n            padding: 30px;\n            display: flex;\n            flex-direction: column;\n            gap: 25px;\n            border: 1px solid var(--border-color);\n        }\n\n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n\n        .header h1 {\n            font-size: 2.5em;\n            color: var(--accent-purple);\n            margin-bottom: 8px;\n            font-weight: 700;\n            letter-spacing: -0.02em;\n        }\n\n        .header p {\n            font-size: 1.1em;\n            color: var(--text-color);\n            opacity: 0.8;\n        }\n\n        .hosts-section {\n            display: flex;\n            justify-content: center;\n            gap: 40px;\n            margin-bottom: 25px;\n        }\n\n        .host {\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            gap: 10px;\n        }\n\n        .host-avatar {\n            width: 80px;\n            height: 80px;\n            border-radius: 50%;\n            background-color: var(--accent-blue);\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            font-size: 2.5em;\n            font-weight: 600;\n            color: var(--bg-color);\n            border: 3px solid var(--accent-blue);\n            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);\n            transition: transform 0.3s ease, box-shadow 0.3s ease;\n        }\n\n        .host-avatar.host-2 {\n            background-color: var(--accent-pink);\n            border-color: var(--accent-pink);\n            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);\n        }\n\n        .host-avatar:hover {\n            transform: scale(1.05);\n            box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);\n        }\n        .host-avatar.host-2:hover {\n            box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);\n        }\n\n        .host-name {\n            font-size: 1.2em;\n            font-weight: 600;\n            color: var(--text-color);\n        }\n\n        .audio-player {\n            background-color: var(--control-bg);\n            border-radius: 12px;\n            padding: 20px;\n            display: flex;\n            flex-direction: column;\n            gap: 15px;\n            align-items: center;\n            border: 1px solid var(--border-color);\n        }\n\n        .waveform-visualizer {\n            width: 100%;\n            height: 120px;\n            background-color: rgba(0, 0, 0, 0.3);\n            border-radius: 8px;\n            overflow: hidden;\n            position: relative;\n        }\n\n        canvas {\n            display: block;\n            width: 100%;\n            height: 100%;\n        }\n\n        .controls {\n            display: flex;\n            align-items: center;\n            gap: 20px;\n            width: 100%;\n            justify-content: center;\n        }\n\n        .play-pause-btn {\n            background-color: var(--accent-green);\n            color: var(--bg-color);\n            border: none;\n            border-radius: 50%;\n            width: 60px;\n            height: 60px;\n            font-size: 1.8em;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            cursor: pointer;\n            transition: background-color 0.3s ease, transform 0.2s ease;\n            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);\n        }\n\n        .play-pause-btn:hover {\n            background-color: #0F9D58; /* Darker green */\n            transform: scale(1.05);\n        }\n\n        .play-pause-btn:active {\n            transform: scale(0.98);\n        }\n\n        .progress-bar-container {\n            flex-grow: 1;\n            height: 8px;\n            background-color: var(--border-color);\n            border-radius: 4px;\n            position: relative;\n            cursor: pointer;\n            margin: 0 15px;\n        }\n\n        .progress-bar {\n            height: 100%;\n            width: 0%;\n            background-color: var(--accent-blue);\n            border-radius: 4px;\n            transition: width 0.1s linear;\n        }\n\n        .time-display {\n            font-size: 0.9em;\n            color: var(--text-color);\n            opacity: 0.7;\n            min-width: 80px;\n            text-align: center;\n        }\n\n        .volume-control {\n            display: flex;\n            align-items: center;\n            gap: 10px;\n            width: 120px;\n        }\n\n        .volume-control span {\n            font-size: 1.2em;\n            color: var(--text-color);\n            opacity: 0.7;\n        }\n\n        .volume-slider {\n            -webkit-appearance: none;\n            width: 100%;\n            height: 6px;\n            background: var(--border-color);\n            outline: none;\n            border-radius: 3px;\n            cursor: pointer;\n        }\n\n        .volume-slider::-webkit-slider-thumb {\n            -webkit-appearance: none;\n            appearance: none;\n            width: 16px;\n            height: 16px;\n            border-radius: 50%;\n            background: var(--accent-purple);\n            cursor: pointer;\n            box-shadow: 0 0 5px rgba(99, 102, 241, 0.6);\n            transition: background 0.3s ease;\n        }\n\n        .volume-slider::-moz-range-thumb {\n            width: 16px;\n            height: 16px;\n            border-radius: 50%;\n            background: var(--accent-purple);\n            cursor: pointer;\n            box-shadow: 0 0 5px rgba(99, 102, 241, 0.6);\n            transition: background 0.3s ease;\n        }\n\n        .volume-slider:hover::-webkit-slider-thumb {\n            background: #7F81F7;\n        }\n        .volume-slider:hover::-moz-range-thumb {\n            background: #7F81F7;\n        }\n\n        .transcript-section {\n            background-color: var(--control-bg);\n            border-radius: 12px;\n            padding: 20px;\n            max-height: 300px;\n            overflow-y: auto;\n            border: 1px solid var(--border-color);\n            line-height: 1.6;\n            font-size: 0.95em;\n        }\n\n        .transcript-section h2 {\n            color: var(--accent-purple);\n            margin-top: 0;\n            margin-bottom: 15px;\n            font-size: 1.5em;\n            font-weight: 600;\n        }\n\n        .transcript-line {\n            margin-bottom: 10px;\n            padding: 8px 12px;\n            border-radius: 8px;\n            transition: background-color 0.3s ease;\n        }\n\n        .transcript-line.active {\n            background-color: rgba(99, 102, 241, 0.15);\n            border-left: 4px solid var(--accent-purple);\n        }\n\n        .transcript-line strong {\n            color: var(--accent-blue);\n            margin-right: 8px;\n        }\n        .transcript-line.host-2 strong {\n            color: var(--accent-pink);\n        }\n\n        /* Scrollbar styling for dark mode */\n        .transcript-section::-webkit-scrollbar {\n            width: 8px;\n        }\n\n        .transcript-section::-webkit-scrollbar-track {\n            background: var(--card-bg);\n            border-radius: 10px;\n        }\n\n        .transcript-section::-webkit-scrollbar-thumb {\n            background: var(--accent-purple);\n            border-radius: 10px;\n            border: 2px solid var(--card-bg);\n        }\n\n        .transcript-section::-webkit-scrollbar-thumb:hover {\n            background: #7F81F7;\n        }\n\n        @media (max-width: 768px) {\n            .podcast-container {\n                padding: 20px;\n                gap: 20px;\n            }\n            .header h1 {\n                font-size: 2em;\n            }\n            .header p {\n                font-size: 1em;\n            }\n            .hosts-section {\n                flex-direction: column;\n                gap: 20px;\n            }\n            .host-avatar {\n                width: 70px;\n                height: 70px;\n                font-size: 2em;\n            }\n            .controls {\n                flex-wrap: wrap;\n                justify-content: center;\n                gap: 15px;\n            }\n            .play-pause-btn {\n                width: 50px;\n                height: 50px;\n                font-size: 1.5em;\n            }\n            .progress-bar-container {\n                width: 100%;\n                margin: 0;\n            }\n            .volume-control {\n                width: 100%;\n                justify-content: center;\n            }\n        }\n\n        @media (max-width: 480px) {\n            body {\n                padding: 10px;\n            }\n            .podcast-container {\n                padding: 15px;\n            }\n            .header h1 {\n                font-size: 1.8em;\n            }\n            .header p {\n                font-size: 0.9em;\n            }\n            .host-avatar {\n                width: 60px;\n                height: 60px;\n                font-size: 1.8em;\n            }\n            .host-name {\n                font-size: 1.1em;\n            }\n            .transcript-section {\n                font-size: 0.85em;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"podcast-container\">\n        <header class=\"header\">\n            <h1>Tech Deep Dive: RAG vs. Long Context Windows</h1>\n            <p>Episode 01: Navigating the LLM Frontier</p>\n        </header>\n\n        <section class=\"hosts-section\">\n            <div class=\"host\">\n                <div class=\"host-avatar host-1\">A</div>\n                <span class=\"host-name\">Alex</span>\n            </div>\n            <div class=\"host\">\n                <div class=\"host-avatar host-2\">B</div>\n                <span class=\"host-name\">Ben</span>\n            </div>\n        </section>\n\n        <section class=\"audio-player\">\n            <div class=\"waveform-visualizer\">\n                <canvas id=\"audioVisualizer\"></canvas>\n            </div>\n            <div class=\"controls\">\n                <button id=\"playPauseBtn\" class=\"play-pause-btn\">▶</button>\n                <div class=\"time-display\" id=\"currentTime\">00:00</div>\n                <div class=\"progress-bar-container\" id=\"progressBarContainer\">\n                    <div class=\"progress-bar\" id=\"progressBar\"></div>\n                </div>\n                <div class=\"time-display\" id=\"duration\">00:00</div>\n                <div class=\"volume-control\">\n                    <span>🔊</span>\n                    <input type=\"range\" id=\"volumeSlider\" class=\"volume-slider\" min=\"0\" max=\"1\" step=\"0.01\" value=\"0.7\">\n                </div>\n            </div>\n        </section>\n\n        <section class=\"transcript-section\">\n            <h2>Episode Transcript</h2>\n            <div id=\"transcriptContent\">\n                <!-- Transcript lines will be dynamically added here -->\n            </div>\n        </section>\n    </div>\n\n    <script>\n        const playPauseBtn = document.getElementById('playPauseBtn');\n        const audioVisualizerCanvas = document.getElementById('audioVisualizer');\n        const currentTimeDisplay = document.getElementById('currentTime');\n        const durationDisplay = document.getElementById('duration');\n        const progressBar = document.getElementById('progressBar');\n        const progressBarContainer = document.getElementById('progressBarContainer');\n        const volumeSlider = document.getElementById('volumeSlider');\n        const transcriptContent = document.getElementById('transcriptContent');\n\n        let audioContext;\n        let analyser;\n        let gainNode;\n        let oscillator; // Using oscillator for a simple tone\n        let isPlaying = false;\n        let animationFrameId;\n        const canvasCtx = audioVisualizerCanvas.getContext('2d');\n\n        const podcastDuration = 300; // Simulate a 5-minute podcast in seconds\n        let currentPlaybackTime = 0;\n        let lastAudioContextTime = 0; // To track actual AudioContext time for delta calculation\n\n        const transcript = [\n            { time: 0, host: 'Alex', text: \"Welcome back to Tech Deep Dive! Today, we're tackling a hot topic in the LLM space: RAG versus Long Context Windows.\" },\n            { time: 5, host: 'Ben', text: \"It's a fascinating debate, Alex. Both aim to improve LLM performance by providing more relevant information, but they approach it very differently.\" },\n            { time: 12, host: 'Alex', text: \"Exactly. Let's start with RAG, or Retrieval Augmented Generation. The core idea is to retrieve relevant documents or data from an external knowledge base *before* generating a response.\" },\n            { time: 20, host: 'Ben', text: \"Right, so instead of the LLM relying solely on its pre-trained knowledge, it gets a fresh, up-to-date context. This is great for factual accuracy and reducing hallucinations.\" },\n            { time: 28, host: 'Alex', text: \"And it's particularly powerful when dealing with specialized domains or information that changes frequently, like legal documents or current events. You don't need to retrain the entire model.\" },\n            { time: 37, host: 'Ben', text: \"The retrieval step usually involves embedding queries and documents, then using vector similarity search to find the most relevant chunks. These chunks are then prepended to the user's prompt.\" },\n            { time: 46, host: 'Alex', text: \"On the other hand, we have Long Context Windows. This is about increasing the number of tokens an LLM can process in a single input. Models like GPT-4 Turbo or Claude 2.1 boast massive context windows.\" },\n            { time: 56, host: 'Ben', text: \"The appeal here is simplicity. You just feed the LLM a huge chunk of text – an entire book, a long conversation, a codebase – and it's supposed to understand and reason over all of it.\" },\n            { time: 65, host: 'Alex', text: \"No external retrieval system needed. The model itself is designed to handle the extended input. This can be very convenient for tasks like summarization of long documents or maintaining complex conversational state.\" },\n            { time: 74, host: 'Ben', text: \"But there are challenges. The 'lost in the middle' phenomenon, where models struggle to recall information from the very beginning or end of a very long context, is a known issue.\" },\n            { time: 83, host: 'Alex', text: \"And the computational cost scales significantly with context length. More tokens mean more processing, higher latency, and increased API costs.\" },\n            { time: 90, host: 'Ben', text: \"So, when would you choose RAG over a long context window, or vice-versa?\" },\n            { time: 95, host: 'Alex', text: \"I'd lean towards RAG when you need verifiable, up-to-date information, or when your knowledge base is constantly evolving. It's also more cost-effective for very large knowledge bases.\" },\n            { time: 105, host: 'Ben', text: \"And RAG gives you more control over the source material. You can inspect the retrieved documents, which helps with explainability and debugging.\" },\n            { time: 112, host: 'Alex', text: \"Long context windows shine when the relevant information is *already* within the provided text, and you need the LLM to perform complex reasoning or synthesis across that entire body of text.\" },\n            { time: 122, host: 'Ben', text: \"Think creative writing, code generation from a large project, or analyzing a lengthy legal brief where all the context is self-contained. It simplifies the prompt engineering.\" },\n            { time: 130, host: 'Alex', text: \"It's not an either/or situation, though. Many advanced systems are starting to combine both. You could use RAG to retrieve relevant sections, and then feed those, along with the query, into an LLM with a long context window.\" },\n            { time: 142, host: 'Ben', text: \"That's the hybrid approach! Get the best of both worlds: targeted retrieval for accuracy and freshness, combined with the LLM's ability to reason over a substantial, curated context.\" },\n            { time: 150, host: 'Alex', text: \"It seems like the future involves intelligent orchestration between these techniques, rather than a single silver bullet.\" },\n            { time: 157, host: 'Ben', text: \"Absolutely. The choice depends heavily on the specific use case, data characteristics, and performance requirements. It's about finding the right tool for the job.\" },\n            { time: 165, host: 'Alex', text: \"Great discussion, Ben! Thanks for breaking down these complex concepts with me.\" },\n            { time: 170, host: 'Ben', text: \"My pleasure, Alex. And thank you to our listeners for tuning in!\" },\n            { time: 175, host: 'Alex', text: \"That's all for this episode of Tech Deep Dive. We'll catch you next time!\" },\n            { time: 180, host: 'Ben', text: \"Goodbye!\" }\n        ];\n\n        // Initialize transcript display\n        function initializeTranscript() {\n            transcript.forEach((line, index) => {\n                const div = document.createElement('div');\n                div.classList.add('transcript-line');\n                div.classList.add(line.host === 'Alex' ? 'host-1' : 'host-2');\n                div.dataset.time = line.time;\n                div.innerHTML = `<strong>${line.host}:</strong> ${line.text}`;\n                transcriptContent.appendChild(div);\n            });\n        }\n\n        function formatTime(seconds) {\n            const minutes = Math.floor(seconds / 60);\n            const remainingSeconds = Math.floor(seconds % 60);\n            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;\n        }\n\n        function updateTimeDisplays() {\n            currentTimeDisplay.textContent = formatTime(currentPlaybackTime);\n            durationDisplay.textContent = formatTime(podcastDuration);\n            progressBar.style.width = `${(currentPlaybackTime / podcastDuration) * 100}%`;\n        }\n\n        function initAudioContext() {\n            if (!audioContext) {\n                audioContext = new (window.AudioContext || window.webkitAudioContext)();\n                analyser = audioContext.createAnalyser();\n                gainNode = audioContext.createGain();\n\n                // Create a simple white noise generator\n                const bufferSize = audioContext.sampleRate * 0.5; // 0.5 seconds of noise\n                const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);\n                const output = noiseBuffer.getChannelData(0);\n                for (let i = 0; i < bufferSize; i++) {\n                    output[i] = Math.random() * 2 - 1; // White noise\n                }\n\n                oscillator = audioContext.createBufferSource();\n                oscillator.buffer = noiseBuffer;\n                oscillator.loop = true; // Loop the noise indefinitely\n                oscillator.connect(gainNode);\n                gainNode.connect(analyser);\n                analyser.connect(audioContext.destination);\n\n                analyser.fftSize = 2048;\n                analyser.minDecibels = -90;\n                analyser.maxDecibels = -10;\n                analyser.smoothingTimeConstant = 0.8;\n\n                gainNode.gain.value = volumeSlider.value; // Set initial volume\n            }\n        }\n\n        function togglePlayPause() {\n            initAudioContext(); // Ensure context is initialized on first play\n\n            if (isPlaying) {\n                // Pause\n                if (audioContext.state === 'running') {\n                    audioContext.suspend();\n                }\n                cancelAnimationFrame(animationFrameId);\n                playPauseBtn.innerHTML = '▶';\n                isPlaying = false;\n            } else {\n                // Play\n                if (audioContext.state === 'suspended') {\n                    audioContext.resume();\n                } else if (audioContext.state === 'running') {\n                    // Already running, just resume visualizer (shouldn't happen if isPlaying is false)\n                } else {\n                    // First time play, start the oscillator\n                    oscillator.start();\n                }\n                lastAudioContextTime = audioContext.currentTime; // Sync last update time with actual audio context time\n                drawVisualizer();\n                playPauseBtn.innerHTML = '⏸';\n                isPlaying = true;\n            }\n        }\n\n        function updatePlaybackTime() {\n            if (isPlaying && audioContext && audioContext.state === 'running') {\n                const now = audioContext.currentTime;\n                const deltaTime = now - lastAudioContextTime;\n                currentPlaybackTime += deltaTime;\n                lastAudioContextTime = now;\n\n                if (currentPlaybackTime >= podcastDuration) {\n                    currentPlaybackTime = podcastDuration;\n                    togglePlayPause(); // Stop playback\n                    currentPlaybackTime = 0; // Reset for next play\n                    lastAudioContextTime = 0; // Reset audio context time reference\n                }\n                updateTimeDisplays();\n                updateTranscriptHighlight();\n            }\n        }\n\n        function updateTranscriptHighlight() {\n            const lines = transcriptContent.children;\n            let activeLine = null;\n\n            for (let i = 0; i < lines.length; i++) {\n                const line = lines[i];\n                const lineTime = parseFloat(line.dataset.time);\n                const nextLineTime = (i + 1 < lines.length) ? parseFloat(lines[i + 1].dataset.time) : podcastDuration + 1;\n\n                if (currentPlaybackTime >= lineTime && currentPlaybackTime < nextLineTime) {\n                    line.classList.add('active');\n                    activeLine = line;\n                } else {\n                    line.classList.remove('active');\n                }\n            }\n\n            if (activeLine) {\n                // Scroll into view if not already visible\n                const transcriptRect = transcriptContent.getBoundingClientRect();\n                const lineRect = activeLine.getBoundingClientRect();\n\n                // Check if the line is outside the visible area of the transcript container\n                if (lineRect.top < transcriptRect.top || lineRect.bottom > transcriptRect.bottom) {\n                    activeLine.scrollIntoView({ behavior: 'smooth', block: 'nearest' });\n                }\n            }\n        }\n\n        function drawVisualizer() {\n            animationFrameId = requestAnimationFrame(drawVisualizer);\n            updatePlaybackTime(); // Update time and transcript here\n\n            if (!analyser || !isPlaying) return;\n\n            const bufferLength = analyser.frequencyBinCount;\n            const dataArray = new Uint8Array(bufferLength);\n            analyser.getByteFrequencyData(dataArray);\n\n            canvasCtx.clearRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height);\n\n            const barWidth = (audioVisualizerCanvas.width / bufferLength) * 2.5; // Adjust bar width\n            let x = 0;\n\n            for (let i = 0; i < bufferLength; i++) {\n                let barHeight = dataArray[i] / 2; // Scale height\n\n                // Create a gradient for the bars\n                const gradient = canvasCtx.createLinearGradient(0, audioVisualizerCanvas.height, 0, 0);\n                gradient.addColorStop(0, varToRgb('--accent-blue'));\n                gradient.addColorStop(0.5, varToRgb('--accent-purple'));\n                gradient.addColorStop(1, varToRgb('--accent-pink'));\n\n                canvasCtx.fillStyle = gradient;\n                canvasCtx.fillRect(x, audioVisualizerCanvas.height - barHeight, barWidth, barHeight);\n\n                x += barWidth + 1; // Add a small gap between bars\n            }\n        }\n\n        // Helper to get RGB from CSS variable (for canvas gradients)\n        function varToRgb(varName) {\n            const color = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();\n            // Simple check if it's already rgb or hex\n            if (color.startsWith('#')) {\n                const r = parseInt(color.substring(1, 3), 16);\n                const g = parseInt(color.substring(3, 5), 16);\n                const b = parseInt(color.substring(5, 7), 16);\n                return `rgb(${r}, ${g}, ${b})`;\n            }\n            return color; // Assume it's already a valid CSS color string\n        }\n\n        // Event Listeners\n        playPauseBtn.addEventListener('click', togglePlayPause);\n\n        volumeSlider.addEventListener('input', (e) => {\n            if (gainNode) {\n                gainNode.gain.value = e.target.value;\n            }\n        });\n\n        progressBarContainer.addEventListener('click', (e) => {\n            const rect = progressBarContainer.getBoundingClientRect();\n            const clickX = e.clientX - rect.left;\n            const percentage = clickX / rect.width;\n            currentPlaybackTime = podcastDuration * percentage;\n            updateTimeDisplays();\n            updateTranscriptHighlight();\n            // If playing, update lastAudioContextTime to prevent jump in time calculation\n            if (isPlaying && audioContext) {\n                lastAudioContextTime = audioContext.currentTime;\n            }\n        });\n\n        // Initial setup\n        initializeTranscript();\n        updateTimeDisplays(); // Display initial 00:00 / 05:00\n\n        // Resize canvas on window resize\n        function resizeCanvas() {\n            audioVisualizerCanvas.width = audioVisualizerCanvas.offsetWidth;\n            audioVisualizerCanvas.height = audioVisualizerCanvas.offsetHeight;\n        }\n        window.addEventListener('resize', resizeCanvas);\n        resizeCanvas(); // Initial resize\n    </script>\n</body>\n</html>",
+    "htmlCode": `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG vs Long Context Windows Podcast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050811;
+            --text-color: #F1F5F9;
+            --accent-purple: #8B5CF6;
+            --accent-blue: #38BDF8;
+            --accent-green: #10B981;
+            --accent-pink: #EC4899;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+            --control-bg: #1E293B;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        .podcast-container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 860px;
+            max-height: calc(100vh - 32px);
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            color: #C4B5FD;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            font-weight: 500;
+        }
+
+        .hosts-section {
+            display: flex;
+            justify-content: center;
+            gap: 36px;
+            padding: 4px 0;
+        }
+
+        .host {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .host-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284C7, #38BDF8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #050811;
+            border: 2px solid #38BDF8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .host-avatar.host-2 {
+            background: linear-gradient(135deg, #BE185D, #EC4899);
+            border-color: #EC4899;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .host-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #CBD5E1;
+        }
+
+        .audio-player {
+            background-color: var(--control-bg);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .waveform-visualizer {
+            width: 100%;
+            height: 54px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .play-pause-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            flex-shrink: 0;
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #38BDF8, #8B5CF6);
+            border-radius: 3px;
+        }
+
+        .time-display {
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: #94A3B8;
+            font-weight: 700;
+            min-width: 42px;
+            text-align: center;
+        }
+
+        .transcript-section {
+            background-color: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            padding: 12px 16px;
+            flex: 1;
+            min-height: 120px;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid rgba(51, 65, 85, 0.6);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .transcript-line {
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            color: #94A3B8;
+        }
+
+        .transcript-line.active {
+            background-color: rgba(139, 92, 246, 0.15);
+            border-left: 3px solid var(--accent-purple);
+            color: #F8FAFC;
+        }
+
+        .transcript-line strong {
+            color: var(--accent-blue);
+            margin-right: 6px;
+        }
+        .transcript-line.host-2 strong {
+            color: var(--accent-pink);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="podcast-container">
+        <header class="header">
+            <h1>Tech Deep Dive: RAG vs. Long Context Windows</h1>
+            <p>Episode 01 • Master Architecture Dispatch</p>
+        </header>
+
+        <section class="hosts-section">
+            <div class="host">
+                <div class="host-avatar host-1">A</div>
+                <span class="host-name">Alex (Host)</span>
+            </div>
+            <div class="host">
+                <div class="host-avatar host-2">B</div>
+                <span class="host-name">Ben (Architect)</span>
+            </div>
+        </section>
+
+        <section class="audio-player">
+            <div class="waveform-visualizer">
+                <canvas id="audioVisualizer"></canvas>
+            </div>
+            <div class="controls">
+                <button id="playPauseBtn" class="play-pause-btn">▶</button>
+                <div class="time-display" id="currentTime">00:00</div>
+                <div class="progress-bar-container" id="progressBarContainer">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="time-display" id="duration">05:00</div>
+            </div>
+        </section>
+
+        <section class="transcript-section">
+            <div id="transcriptContent"></div>
+        </section>
+    </div>
+
+    <script>
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const audioVisualizerCanvas = document.getElementById('audioVisualizer');
+        const currentTimeDisplay = document.getElementById('currentTime');
+        const durationDisplay = document.getElementById('duration');
+        const progressBar = document.getElementById('progressBar');
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        const transcriptContent = document.getElementById('transcriptContent');
+        const canvasCtx = audioVisualizerCanvas.getContext('2d');
+
+        let isPlaying = false;
+        let animationFrameId;
+        const podcastDuration = 300;
+        let currentPlaybackTime = 0;
+        let lastTime = performance.now();
+
+        const transcript = [
+            { time: 0, host: 'Alex', text: "Welcome to Tech Deep Dive! Today we examine RAG vs. 1M+ Long Context Windows for enterprise AI." },
+            { time: 5, host: 'Ben', text: "It's a foundational trade-off. RAG provides deterministic indexing and freshness; long context delivers holistic document reasoning." },
+            { time: 12, host: 'Alex', text: "RAG shines when you have dynamic data sets that change continuously or require strict RBAC security." },
+            { time: 20, host: 'Ben', text: "And modern systems use hybrid approaches: hierarchical chunk retrieval fed into extended context windows for deep synthesis!" }
+        ];
+
+        function initializeTranscript() {
+            transcript.forEach((line) => {
+                const div = document.createElement('div');
+                div.className = 'transcript-line ' + (line.host === 'Alex' ? 'host-1' : 'host-2');
+                div.dataset.time = line.time;
+                div.innerHTML = '<strong>' + line.host + ':</strong> ' + line.text;
+                transcriptContent.appendChild(div);
+            });
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+        }
+
+        function updateDisplays() {
+            currentTimeDisplay.textContent = formatTime(currentPlaybackTime);
+            progressBar.style.width = ((currentPlaybackTime / podcastDuration) * 100) + '%';
+            
+            const lines = transcriptContent.children;
+            for (let i = 0; i < lines.length; i++) {
+                const lineTime = parseFloat(lines[i].dataset.time);
+                const nextTime = i + 1 < lines.length ? parseFloat(lines[i+1].dataset.time) : podcastDuration;
+                if (currentPlaybackTime >= lineTime && currentPlaybackTime < nextTime) {
+                    lines[i].classList.add('active');
+                } else {
+                    lines[i].classList.remove('active');
+                }
+            }
+        }
+
+        function drawWaveform() {
+            canvasCtx.clearRect(0, 0, audioVisualizerCanvas.width, audioVisualizerCanvas.height);
+            const bars = 48;
+            const barWidth = audioVisualizerCanvas.width / bars;
+            const now = Date.now() * 0.005;
+
+            for (let i = 0; i < bars; i++) {
+                let h = isPlaying ? Math.abs(Math.sin(now + i * 0.35) * Math.cos(now * 0.5 + i * 0.2)) * (audioVisualizerCanvas.height * 0.75) + 6 : 4;
+                const gradient = canvasCtx.createLinearGradient(0, audioVisualizerCanvas.height, 0, 0);
+                gradient.addColorStop(0, '#38BDF8');
+                gradient.addColorStop(0.5, '#8B5CF6');
+                gradient.addColorStop(1, '#EC4899');
+                canvasCtx.fillStyle = gradient;
+                canvasCtx.fillRect(i * barWidth + 2, (audioVisualizerCanvas.height - h) / 2, barWidth - 3, h);
+            }
+
+            if (isPlaying) {
+                const currentNow = performance.now();
+                currentPlaybackTime += (currentNow - lastTime) / 1000;
+                lastTime = currentNow;
+                if (currentPlaybackTime >= podcastDuration) currentPlaybackTime = 0;
+                updateDisplays();
+            }
+            animationFrameId = requestAnimationFrame(drawWaveform);
+        }
+
+        playPauseBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            playPauseBtn.textContent = isPlaying ? '⏸' : '▶';
+            lastTime = performance.now();
+        });
+
+        progressBarContainer.addEventListener('click', (e) => {
+            const rect = progressBarContainer.getBoundingClientRect();
+            currentPlaybackTime = podcastDuration * ((e.clientX - rect.left) / rect.width);
+            updateDisplays();
+        });
+
+        function resizeCanvas() {
+            audioVisualizerCanvas.width = audioVisualizerCanvas.offsetWidth;
+            audioVisualizerCanvas.height = audioVisualizerCanvas.offsetHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        
+        initializeTranscript();
+        resizeCanvas();
+        updateDisplays();
+        drawWaveform();
+    </script>
+</body>
+</html>`,
     "aspectRatio": "16:9",
-    "caption": "Interactive audio asset generated for Interactive 2-host tech podcast episode exploring RAG vs Long Context Windows with animated audio frequency waveform visualizer, play/pause controls, and host avatars",
+    "caption": "Interactive audio podcast with dynamic waveform synthesizer and real-time transcript tracking",
     "category": "audio",
     "createdAt": "2026-08-29T05:35:23.325Z"
   },
@@ -27,9 +398,312 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "type": "canvas_sandbox",
     "title": "Interactive 60fps Neural Particle Sandbox",
     "url": null,
-    "htmlCode": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Neural Synapse Simulation</title>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --bg-color: #050811;\n            --primary-color: #6366F1;\n            --secondary-color: #38BDF8;\n            --accent-green: #10B981;\n            --accent-pink: #EC4899;\n            --text-color: #E0E7FF;\n            --control-bg: rgba(20, 27, 45, 0.8); /* Slightly lighter dark for controls */\n            --border-color: rgba(99, 102, 241, 0.3);\n        }\n\n        body {\n            margin: 0;\n            overflow: hidden;\n            font-family: 'Inter', system-ui, sans-serif;\n            background-color: var(--bg-color);\n            color: var(--text-color);\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            height: 100vh;\n            -webkit-font-smoothing: antialiased;\n            -moz-osx-font-smoothing: grayscale;\n        }\n\n        canvas {\n            display: block;\n            background-color: var(--bg-color);\n        }\n\n        .controls-container {\n            position: absolute;\n            top: 20px;\n            right: 20px;\n            background-color: var(--control-bg);\n            border: 1px solid var(--border-color);\n            border-radius: 12px;\n            padding: 20px;\n            display: flex;\n            flex-direction: column;\n            gap: 15px;\n            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);\n            backdrop-filter: blur(10px);\n            -webkit-backdrop-filter: blur(10px);\n            z-index: 100;\n            max-width: 300px;\n            min-width: 250px;\n        }\n\n        .control-group {\n            display: flex;\n            flex-direction: column;\n            gap: 8px;\n        }\n\n        label {\n            font-size: 0.9rem;\n            color: var(--text-color);\n            font-weight: 600;\n            display: flex;\n            justify-content: space-between;\n            align-items: center;\n        }\n\n        input[type=\"range\"] {\n            -webkit-appearance: none;\n            width: 100%;\n            height: 8px;\n            background: rgba(255, 255, 255, 0.1);\n            border-radius: 5px;\n            outline: none;\n            transition: opacity .2s;\n        }\n\n        input[type=\"range\"]::-webkit-slider-thumb {\n            -webkit-appearance: none;\n            appearance: none;\n            width: 20px;\n            height: 20px;\n            border-radius: 50%;\n            background: var(--primary-color);\n            cursor: pointer;\n            box-shadow: 0 0 5px rgba(99, 102, 241, 0.5);\n            transition: background 0.3s ease;\n        }\n\n        input[type=\"range\"]::-webkit-slider-thumb:hover {\n            background: var(--secondary-color);\n        }\n\n        .button-group {\n            display: flex;\n            gap: 10px;\n            margin-top: 10px;\n        }\n\n        button {\n            flex: 1;\n            padding: 10px 15px;\n            border: none;\n            border-radius: 8px;\n            background-color: var(--primary-color);\n            color: white;\n            font-size: 1rem;\n            font-weight: 600;\n            cursor: pointer;\n            transition: background-color 0.3s ease, transform 0.1s ease;\n            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);\n        }\n\n        button:hover {\n            background-color: var(--secondary-color);\n            transform: translateY(-2px);\n        }\n\n        button:active {\n            transform: translateY(0);\n        }\n\n        button.pause-btn {\n            background-color: var(--accent-pink);\n            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);\n        }\n\n        button.pause-btn:hover {\n            background-color: #F87171; /* A slightly lighter red/pink */\n        }\n\n        .title {\n            font-size: 1.5rem;\n            font-weight: 600;\n            color: var(--primary-color);\n            margin-bottom: 15px;\n            text-align: center;\n        }\n    </style>\n</head>\n<body>\n    <canvas id=\"synapseCanvas\"></canvas>\n\n    <div class=\"controls-container\">\n        <div class=\"title\">Neural Synapse</div>\n\n        <div class=\"control-group\">\n            <label for=\"particleCount\">Particle Density: <span id=\"particleCountValue\">50</span></label>\n            <input type=\"range\" id=\"particleCount\" min=\"10\" max=\"200\" value=\"50\">\n        </div>\n\n        <div class=\"control-group\">\n            <label for=\"gravityStrength\">Mouse Gravity: <span id=\"gravityStrengthValue\">0.50</span></label>\n            <input type=\"range\" id=\"gravityStrength\" min=\"0\" max=\"2\" step=\"0.01\" value=\"0.5\">\n        </div>\n\n        <div class=\"control-group\">\n            <label for=\"initialVelocity\">Initial Velocity: <span id=\"initialVelocityValue\">1.00</span></label>\n            <input type=\"range\" id=\"initialVelocity\" min=\"0.1\" max=\"3\" step=\"0.01\" value=\"1\">\n        </div>\n\n        <div class=\"control-group\">\n            <label for=\"trailLength\">Trail Length: <span id=\"trailLengthValue\">0.10</span></label>\n            <input type=\"range\" id=\"trailLength\" min=\"0.01\" max=\"0.5\" step=\"0.01\" value=\"0.1\">\n        </div>\n\n        <div class=\"button-group\">\n            <button id=\"resetButton\">Reset</button>\n            <button id=\"pauseButton\" class=\"pause-btn\">Pause</button>\n        </div>\n    </div>\n\n    <script>\n        const canvas = document.getElementById('synapseCanvas');\n        const ctx = canvas.getContext('2d');\n\n        let animationFrameId;\n        let isPaused = false;\n\n        // Control elements\n        const particleCountSlider = document.getElementById('particleCount');\n        const particleCountValue = document.getElementById('particleCountValue');\n        const gravityStrengthSlider = document.getElementById('gravityStrength');\n        const gravityStrengthValue = document.getElementById('gravityStrengthValue');\n        const initialVelocitySlider = document.getElementById('initialVelocity');\n        const initialVelocityValue = document.getElementById('initialVelocityValue');\n        const trailLengthSlider = document.getElementById('trailLength');\n        const trailLengthValue = document.getElementById('trailLengthValue');\n        const resetButton = document.getElementById('resetButton');\n        const pauseButton = document.getElementById('pauseButton');\n\n        // Simulation parameters\n        let maxParticles = parseInt(particleCountSlider.value);\n        let gravityStrength = parseFloat(gravityStrengthSlider.value);\n        let initialVelocityMultiplier = parseFloat(initialVelocitySlider.value);\n        let trailAlpha = parseFloat(trailLengthSlider.value); // Alpha for clearing canvas\n\n        const particleColors = [\n            '#6366F1', // Primary\n            '#38BDF8', // Secondary\n            '#10B981', // Accent Green\n            '#EC4899'  // Accent Pink\n        ];\n\n        let particles = [];\n        let mouseX = -1000, mouseY = -1000; // Initialize off-screen\n\n        // Particle class\n        class Particle {\n            constructor(x, y, isSynapse = false) {\n                this.x = x;\n                this.y = y;\n                this.radius = isSynapse ? Math.random() * 3 + 4 : Math.random() * 2 + 1; // Synapse particles are larger\n                this.color = isSynapse ? '#FFFFFF' : particleColors[Math.floor(Math.random() * particleColors.length)];\n                this.life = 1; // 1 = full life, 0 = dead\n                this.maxLife = isSynapse ? Math.random() * 30 + 20 : Math.random() * 100 + 50; // Synapse particles live shorter\n                this.opacity = 1;\n\n                const angle = Math.random() * Math.PI * 2;\n                const speed = Math.random() * 2 + 0.5;\n                this.vx = Math.cos(angle) * speed * initialVelocityMultiplier;\n                this.vy = Math.sin(angle) * speed * initialVelocityMultiplier;\n\n                this.friction = 0.98; // Damping\n                this.isSynapse = isSynapse;\n            }\n\n            update() {\n                // Apply mouse gravity\n                if (mouseX !== -1000 && mouseY !== -1000) {\n                    const dx = mouseX - this.x;\n                    const dy = mouseY - this.y;\n                    const distSq = dx * dx + dy * dy;\n                    const distance = Math.sqrt(distSq);\n\n                    if (distance > 10) { // Avoid extreme forces when too close\n                        const force = gravityStrength * 100 / distSq; // Inverse square law, 100 is a tuning constant\n                        this.vx += dx / distance * force;\n                        this.vy += dy / distance * force;\n                    }\n                }\n\n                this.x += this.vx;\n                this.y += this.vy;\n\n                this.vx *= this.friction;\n                this.vy *= this.friction;\n\n                this.life -= 1;\n                this.opacity = Math.max(0, this.life / this.maxLife);\n\n                // Boundary check: Particles die when they go off-screen\n                if (this.x < -this.radius || this.x > canvas.width + this.radius || this.y < -this.radius || this.y > canvas.height + this.radius) {\n                    this.life = 0; // Mark for removal\n                }\n            }\n\n            draw() {\n                ctx.save();\n                ctx.globalAlpha = this.opacity;\n                ctx.beginPath();\n                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);\n                ctx.fillStyle = this.color;\n                ctx.fill();\n                ctx.restore();\n            }\n        }\n\n        // Initialize canvas size\n        function resizeCanvas() {\n            canvas.width = window.innerWidth;\n            canvas.height = window.innerHeight;\n        }\n\n        // Event Listeners\n        window.addEventListener('resize', resizeCanvas);\n        canvas.addEventListener('mousemove', (e) => {\n            mouseX = e.clientX;\n            mouseY = e.clientY;\n        });\n        canvas.addEventListener('mouseleave', () => {\n            mouseX = -1000; // Move mouse off-screen\n            mouseY = -1000;\n        });\n\n        particleCountSlider.addEventListener('input', (e) => {\n            maxParticles = parseInt(e.target.value);\n            particleCountValue.textContent = maxParticles;\n        });\n\n        gravityStrengthSlider.addEventListener('input', (e) => {\n            gravityStrength = parseFloat(e.target.value);\n            gravityStrengthValue.textContent = gravityStrength.toFixed(2);\n        });\n\n        initialVelocitySlider.addEventListener('input', (e) => {\n            initialVelocityMultiplier = parseFloat(e.target.value);\n            initialVelocityValue.textContent = initialVelocityMultiplier.toFixed(2);\n        });\n\n        trailLengthSlider.addEventListener('input', (e) => {\n            trailAlpha = parseFloat(e.target.value);\n            trailLengthValue.textContent = trailAlpha.toFixed(2);\n        });\n\n        resetButton.addEventListener('click', () => {\n            particles = [];\n            if (isPaused) {\n                isPaused = false;\n                pauseButton.textContent = 'Pause';\n                animate();\n            }\n        });\n\n        pauseButton.addEventListener('click', () => {\n            isPaused = !isPaused;\n            if (isPaused) {\n                cancelAnimationFrame(animationFrameId);\n                pauseButton.textContent = 'Play';\n            } else {\n                pauseButton.textContent = 'Pause';\n                animate();\n            }\n        });\n\n        // Animation loop\n        function animate() {\n            if (!isPaused) {\n                // Clear canvas with transparency for trails\n                ctx.fillStyle = `rgba(5, 8, 17, ${trailAlpha})`; // Background color with variable alpha\n                ctx.fillRect(0, 0, canvas.width, canvas.height);\n\n                // Add new particles if below max\n                if (particles.length < maxParticles) {\n                    const x = Math.random() * canvas.width;\n                    const y = Math.random() * canvas.height;\n                    const isSynapse = Math.random() < 0.02; // 2% chance for a synapse particle\n                    particles.push(new Particle(x, y, isSynapse));\n                }\n\n                // Update and draw particles\n                for (let i = particles.length - 1; i >= 0; i--) {\n                    const p = particles[i];\n                    p.update();\n                    if (p.life <= 0) {\n                        particles.splice(i, 1); // Remove dead particles\n                    } else {\n                        p.draw();\n                    }\n                }\n            }\n\n            animationFrameId = requestAnimationFrame(animate);\n        }\n\n        // Initial setup\n        resizeCanvas();\n        animate();\n    </script>\n</body>\n</html>",
+    "htmlCode": `<!DOCTYPE html>
+<html>
+<head>
+    <title>Neural Synapse Simulation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050811;
+            --primary-color: #8B5CF6;
+            --secondary-color: #38BDF8;
+            --accent-green: #10B981;
+            --accent-pink: #EC4899;
+            --text-color: #F8FAFC;
+            --control-bg: rgba(15, 23, 42, 0.85);
+            --border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+        }
+
+        .controls-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--control-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(14px);
+            z-index: 100;
+            width: 260px;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #C4B5FD;
+            text-align: center;
+            letter-spacing: -0.01em;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        label span {
+            color: #38BDF8;
+            font-family: monospace;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(139, 92, 246, 0.8);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        button:hover { transform: translateY(-1px); }
+        button.pause-btn { background: linear-gradient(135deg, #DB2777, #BE185D); }
+    </style>
+</head>
+<body>
+    <canvas id="synapseCanvas"></canvas>
+
+    <div class="controls-container">
+        <div class="title">🧠 Neural Synapse 60fps</div>
+
+        <div class="control-group">
+            <label>Density: <span id="particleCountValue">75</span></label>
+            <input type="range" id="particleCount" min="20" max="150" value="75">
+        </div>
+
+        <div class="control-group">
+            <label>Gravity: <span id="gravityStrengthValue">0.60</span></label>
+            <input type="range" id="gravityStrength" min="0" max="2" step="0.05" value="0.6">
+        </div>
+
+        <div class="control-group">
+            <label>Velocity: <span id="initialVelocityValue">1.20</span></label>
+            <input type="range" id="initialVelocity" min="0.2" max="3" step="0.1" value="1.2">
+        </div>
+
+        <div class="button-group">
+            <button id="resetButton">Reset</button>
+            <button id="pauseButton" class="pause-btn">Pause</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('synapseCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let animationFrameId;
+        let isPaused = false;
+        let maxParticles = 75;
+        let gravityStrength = 0.6;
+        let initialVelocityMultiplier = 1.2;
+
+        const particleColors = ['#8B5CF6', '#38BDF8', '#10B981', '#EC4899', '#F59E0B'];
+        let particles = [];
+        let mouseX = -1000, mouseY = -1000;
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x !== undefined ? x : Math.random() * canvas.width;
+                this.y = y !== undefined ? y : Math.random() * canvas.height;
+                this.radius = Math.random() * 2.5 + 1.5;
+                this.color = particleColors[Math.floor(Math.random() * particleColors.length)];
+                this.maxLife = Math.random() * 120 + 80;
+                this.life = this.maxLife;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = (Math.random() * 1.5 + 0.8) * initialVelocityMultiplier;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+            }
+
+            update() {
+                if (mouseX !== -1000 && mouseY !== -1000) {
+                    const dx = mouseX - this.x;
+                    const dy = mouseY - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > 15 && dist < 300) {
+                        const force = (gravityStrength * 40) / dist;
+                        this.vx += (dx / dist) * force;
+                        this.vy += (dy / dist) * force;
+                    }
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.985;
+                this.vy *= 0.985;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                this.life -= 0.5;
+                if (this.life <= 0) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.life = this.maxLife;
+                }
+            }
+
+            draw() {
+                const alpha = Math.min(1, this.life / 30);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Spawn initial particles
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new Particle());
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        document.getElementById('particleCount').addEventListener('input', (e) => {
+            maxParticles = parseInt(e.target.value);
+            document.getElementById('particleCountValue').textContent = maxParticles;
+            while (particles.length < maxParticles) particles.push(new Particle());
+            if (particles.length > maxParticles) particles.length = maxParticles;
+        });
+
+        document.getElementById('gravityStrength').addEventListener('input', (e) => {
+            gravityStrength = parseFloat(e.target.value);
+            document.getElementById('gravityStrengthValue').textContent = gravityStrength.toFixed(2);
+        });
+
+        document.getElementById('initialVelocity').addEventListener('input', (e) => {
+            initialVelocityMultiplier = parseFloat(e.target.value);
+            document.getElementById('initialVelocityValue').textContent = initialVelocityMultiplier.toFixed(2);
+        });
+
+        document.getElementById('resetButton').addEventListener('click', () => {
+            particles = [];
+            for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
+        });
+
+        const pauseBtn = document.getElementById('pauseButton');
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            pauseBtn.textContent = isPaused ? 'Play' : 'Pause';
+        });
+
+        function animate() {
+            if (!isPaused) {
+                ctx.fillStyle = 'rgba(5, 8, 17, 0.2)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Draw synapse connection lines
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 110) {
+                            ctx.save();
+                            ctx.strokeStyle = '#8B5CF6';
+                            ctx.globalAlpha = (1 - dist / 110) * 0.4;
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                    }
+                }
+
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>`,
     "aspectRatio": "16:9",
-    "caption": "Interactive motion asset generated for Interactive 60fps HTML5 Canvas particle simulation of neural synapse firing with mouse-reactive gravity, trails, and velocity controls",
+    "caption": "Interactive 60fps HTML5 Canvas simulation of neural synapse particle firing with glowing connection mesh",
     "category": "motion",
     "createdAt": "2026-08-29T05:35:23.326Z"
   },
@@ -38,9 +712,294 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "type": "deck",
     "title": "Enterprise Multi-Agent Architecture Deck",
     "url": null,
-    "htmlCode": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>AI Agentic Workflows Presentation</title>\n    <style>\n        /* Global Styles & Reset */\n        :root {\n            --bg-dark: #050811;\n            --text-light: #E0E0E0;\n            --accent-indigo: #6366F1;\n            --accent-sky: #38BDF8;\n            --accent-emerald: #10B981;\n            --accent-pink: #EC4899;\n            --glass-bg: rgba(255, 255, 255, 0.05);\n            --glass-border: rgba(255, 255, 255, 0.125);\n            --glass-shadow: rgba(0, 0, 0, 0.37);\n            --button-bg: rgba(255, 255, 255, 0.1);\n            --button-hover-bg: rgba(255, 255, 255, 0.2);\n        }\n\n        * {\n            box-sizing: border-box;\n            margin: 0;\n            padding: 0;\n        }\n\n        body {\n            font-family: 'system-ui', -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif;\n            background-color: var(--bg-dark);\n            color: var(--text-light);\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n            overflow: hidden; /* Prevent scrollbars */\n            -webkit-font-smoothing: antialiased;\n            -moz-osx-font-smoothing: grayscale;\n        }\n\n        /* Presentation Container */\n        .presentation-container {\n            position: relative;\n            width: 90vw; /* Adjust as needed */\n            max-width: 1280px; /* Max width for 16:9 */\n            aspect-ratio: 16 / 9; /* Maintain 16:9 aspect ratio */\n            background-color: rgba(0, 0, 0, 0.2); /* Slightly darker base for slides */\n            border-radius: 20px;\n            overflow: hidden;\n            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);\n            display: flex;\n            justify-content: center;\n            align-items: center;\n        }\n\n        /* Slides Wrapper */\n        .slides-wrapper {\n            position: relative;\n            width: 100%;\n            height: 100%;\n            overflow: hidden;\n        }\n\n        /* Slide Styles */\n        .slide {\n            position: absolute;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n            display: flex;\n            flex-direction: column;\n            justify-content: center;\n            align-items: center;\n            padding: 4vw; /* Responsive padding */\n            opacity: 0;\n            pointer-events: none;\n            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;\n            transform: translateX(100%); /* Start off-screen to the right */\n        }\n\n        .slide.active {\n            opacity: 1;\n            pointer-events: auto;\n            transform: translateX(0);\n        }\n\n        .slide.prev {\n            transform: translateX(-100%); /* Move off-screen to the left */\n        }\n\n        /* Glassmorphic Card */\n        .glass-card {\n            background: var(--glass-bg);\n            backdrop-filter: blur(15px) saturate(180%);\n            -webkit-backdrop-filter: blur(15px) saturate(180%);\n            border: 1px solid var(--glass-border);\n            border-radius: 15px;\n            padding: 3vw 4vw; /* Responsive padding */\n            box-shadow: 0 8px 32px 0 var(--glass-shadow);\n            text-align: center;\n            max-width: 80%; /* Card takes up 80% of slide width */\n            width: 100%;\n            display: flex;\n            flex-direction: column;\n            gap: 1.5vw; /* Responsive gap */\n        }\n\n        .glass-card h1 {\n            font-size: clamp(2rem, 4vw, 3.5rem); /* Responsive font size */\n            margin-bottom: 0.5vw;\n            color: var(--accent-indigo);\n            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);\n        }\n\n        .glass-card h2 {\n            font-size: clamp(1.5rem, 3vw, 2.8rem);\n            margin-bottom: 0.8vw;\n            color: var(--accent-sky);\n            text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);\n        }\n\n        .glass-card h3 {\n            font-size: clamp(1.2rem, 2.5vw, 2.2rem);\n            margin-bottom: 0.6vw;\n            color: var(--accent-emerald);\n            text-shadow: 0 0 6px rgba(16, 185, 129, 0.3);\n        }\n\n        .glass-card p {\n            font-size: clamp(0.9rem, 1.5vw, 1.2rem);\n            line-height: 1.6;\n            margin-bottom: 1vw;\n            color: var(--text-light);\n        }\n\n        .glass-card ul {\n            list-style: none;\n            padding-left: 0;\n            text-align: left;\n            margin: 0 auto;\n            max-width: 80%; /* Constrain list width */\n        }\n\n        .glass-card ul li {\n            font-size: clamp(0.9rem, 1.4vw, 1.1rem);\n            margin-bottom: 0.8vw;\n            padding-left: 1.5em;\n            position: relative;\n            line-height: 1.5;\n        }\n\n        .glass-card ul li:before {\n            content: '•';\n            color: var(--accent-pink); /* Bullet color */\n            position: absolute;\n            left: 0;\n            font-size: 1.2em;\n            line-height: 1;\n        }\n\n        /* Navigation Buttons */\n        .nav-button {\n            position: absolute;\n            top: 50%;\n            transform: translateY(-50%);\n            background: var(--button-bg);\n            backdrop-filter: blur(5px);\n            -webkit-backdrop-filter: blur(5px);\n            border: 1px solid var(--glass-border);\n            border-radius: 50%;\n            width: 4vw; /* Responsive button size */\n            height: 4vw;\n            min-width: 40px; /* Minimum size */\n            min-height: 40px;\n            max-width: 60px; /* Maximum size */\n            max-height: 60px;\n            color: var(--text-light);\n            font-size: clamp(1.5rem, 2vw, 2rem);\n            cursor: pointer;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;\n            z-index: 10;\n            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);\n        }\n\n        .nav-button:hover {\n            background: var(--button-hover-bg);\n            border-color: var(--accent-sky);\n            transform: translateY(-50%) scale(1.05);\n        }\n\n        .nav-button:active {\n            transform: translateY(-50%) scale(0.98);\n        }\n\n        .nav-button:disabled {\n            opacity: 0.4;\n            cursor: not-allowed;\n            transform: translateY(-50%) scale(1);\n            background: var(--button-bg);\n            border-color: var(--glass-border);\n        }\n\n        #prevButton {\n            left: 2vw;\n        }\n\n        #nextButton {\n            right: 2vw;\n        }\n\n        /* Specific slide content adjustments */\n        .slide-1 .glass-card {\n            padding: 5vw 4vw;\n        }\n        .slide-1 h1 {\n            color: var(--accent-indigo);\n        }\n        .slide-1 p {\n            color: var(--accent-sky);\n            font-size: clamp(1.2rem, 2vw, 1.8rem);\n            font-weight: 300;\n        }\n\n        .slide-5 .glass-card ul {\n            max-width: 90%;\n        }\n        .slide-5 .glass-card ul li:before {\n            color: var(--accent-emerald);\n        }\n        .slide-5 .glass-card p {\n            color: var(--accent-pink);\n            font-weight: 500;\n            margin-top: 1.5vw;\n        }\n    </style>\n</head>\n<body>\n\n    <div class=\"presentation-container\">\n        <div class=\"slides-wrapper\">\n            <!-- Slide 1: Title Slide -->\n            <div class=\"slide slide-1 active\" data-slide-index=\"0\">\n                <div class=\"glass-card\">\n                    <h1>AI Agentic Workflows</h1>\n                    <p>The Future of Autonomous Automation</p>\n                    <p style=\"font-size: clamp(0.8rem, 1.2vw, 1rem); margin-top: 2vw; opacity: 0.7;\">Presented by DeepMind AI</p>\n                </div>\n            </div>\n\n            <!-- Slide 2: What are AI Agentic Workflows? -->\n            <div class=\"slide\" data-slide-index=\"1\">\n                <div class=\"glass-card\">\n                    <h2>What are AI Agentic Workflows?</h2>\n                    <p>AI agents autonomously plan, execute, and iterate on complex tasks, moving beyond simple prompt-response interactions.</p>\n                    <ul>\n                        <li><strong>Autonomous Planning:</strong> Agents break down high-level goals into actionable steps.</li>\n                        <li><strong>Tool Utilization:</strong> Integrate and use external tools (APIs, databases, web browsers) to perform tasks.</li>\n                        <li><strong>Memory & Context:</strong> Maintain state and learn from past interactions and outcomes.</li>\n                        <li><strong>Reflection & Self-Correction:</strong> Evaluate progress, identify errors, and adapt strategies.</li>\n                        <li><strong>Goal-Oriented Execution:</strong> Continuously work towards a defined objective with minimal human intervention.</li>\n                    </ul>\n                </div>\n            </div>\n\n            <!-- Slide 3: Benefits & Impact -->\n            <div class=\"slide\" data-slide-index=\"2\">\n                <div class=\"glass-card\">\n                    <h2>Benefits & Transformative Impact</h2>\n                    <ul>\n                        <li><strong>Enhanced Efficiency:</strong> Automate multi-step, complex processes, reducing manual effort and errors.</li>\n                        <li><strong>Increased Agility:</strong> Adapt rapidly to dynamic environments and changing requirements.</li>\n                        <li><strong>Innovation Catalyst:</strong> Free human teams from repetitive tasks, enabling focus on creativity and strategic thinking.</li>\n                        <li><strong>Scalability:</strong> Handle complex operations and vast amounts of data at unprecedented scales.</li>\n                        <li><strong>Personalization:</strong> Deliver highly tailored experiences and solutions across various domains.</li>\n                    </ul>\n                </div>\n            </div>\n\n            <!-- Slide 4: Use Cases & Applications -->\n            <div class=\"slide\" data-slide-index=\"3\">\n                <div class=\"glass-card\">\n                    <h2>Key Use Cases & Applications</h2>\n                    <ul>\n                        <li><strong>Software Development:</strong> Automated code generation, testing, debugging, and deployment.</li>\n                        <li><strong>Customer Service:</strong> Proactive issue resolution, personalized support, and complex query handling.</li>\n                        <li><strong>Data Analysis:</strong> Automated data collection, insight generation, and comprehensive report creation.</li>\n                        <li><strong>Research & Development:</strong> Hypothesis generation, experiment design, and literature review automation.</li>\n                        <li><strong>Marketing & Sales:</strong> Dynamic content creation, campaign optimization, and lead nurturing.</li>\n                    </ul>\n                </div>\n            </div>\n\n            <!-- Slide 5: Challenges & Future Outlook -->\n            <div class=\"slide slide-5\" data-slide-index=\"4\">\n                <div class=\"glass-card\">\n                    <h2>Challenges & Future Outlook</h2>\n                    <ul>\n                        <li><strong>Hallucinations & Reliability:</strong> Ensuring accuracy and preventing unintended actions.</li>\n                        <li><strong>Ethical Considerations:</strong> Bias, accountability, and responsible deployment.</li>\n                        <li><strong>Control & Oversight:</strong> Balancing autonomy with human supervision and intervention.</li>\n                        <li><strong>Integration Complexity:</strong> Seamlessly connecting agents with existing enterprise systems.</li>\n                    </ul>\n                    <p>The future points towards hybrid human-AI teams, advanced reasoning capabilities, and self-improving, adaptive agents. Embrace the agentic paradigm for a significant competitive advantage.</p>\n                </div>\n            </div>\n        </div>\n\n        <!-- Navigation Buttons -->\n        <button id=\"prevButton\" class=\"nav-button\" disabled>&#10094;</button>\n        <button id=\"nextButton\" class=\"nav-button\">&#10095;</button>\n    </div>\n\n    <script>\n        const slides = document.querySelectorAll('.slide');\n        const prevButton = document.getElementById('prevButton');\n        const nextButton = document.getElementById('nextButton');\n        let currentSlideIndex = 0;\n        const totalSlides = slides.length;\n\n        function showSlide(index) {\n            // Ensure index is within bounds\n            if (index < 0) index = 0;\n            if (index >= totalSlides) index = totalSlides - 1;\n\n            // Determine direction for animation\n            const direction = index > currentSlideIndex ? 'next' : 'prev';\n\n            // Remove active and direction classes from all slides\n            slides.forEach(slide => {\n                slide.classList.remove('active', 'prev', 'next');\n            });\n\n            // Apply animation classes\n            slides.forEach((slide, i) => {\n                if (i === index) {\n                    slide.classList.add('active');\n                } else if (i < index) {\n                    slide.classList.add('prev'); // Slides that have passed\n                } else {\n                    // Slides that are yet to come\n                    // We don't need a 'next' class for the default off-screen state,\n                    // as 'transform: translateX(100%)' handles it.\n                }\n            });\n\n            currentSlideIndex = index;\n            updateNavButtons();\n        }\n\n        function updateNavButtons() {\n            prevButton.disabled = currentSlideIndex === 0;\n            nextButton.disabled = currentSlideIndex === totalSlides - 1;\n        }\n\n        function nextSlide() {\n            if (currentSlideIndex < totalSlides - 1) {\n                showSlide(currentSlideIndex + 1);\n            }\n        }\n\n        function prevSlide() {\n            if (currentSlideIndex > 0) {\n                showSlide(currentSlideIndex - 1);\n            }\n        }\n\n        // Event Listeners\n        nextButton.addEventListener('click', nextSlide);\n        prevButton.addEventListener('click', prevSlide);\n\n        // Keyboard navigation\n        document.addEventListener('keydown', (e) => {\n            if (e.key === 'ArrowRight') {\n                nextSlide();\n            } else if (e.key === 'ArrowLeft') {\n                prevSlide();\n            }\n        });\n\n        // Initialize the presentation\n        showSlide(currentSlideIndex);\n    </script>\n</body>\n</html>",
+    "htmlCode": `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agentic Workflows Presentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050811;
+            --text-light: #F8FAFC;
+            --accent-indigo: #8B5CF6;
+            --accent-sky: #38BDF8;
+            --accent-emerald: #10B981;
+            --accent-pink: #EC4899;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+            --glass-border: rgba(139, 92, 246, 0.35);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 92vw;
+            max-width: 1040px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 36px 44px;
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #C4B5FD, #38BDF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38BDF8;
+            margin-bottom: 16px;
+        }
+
+        p.subtitle {
+            font-size: 1.1rem;
+            color: #94A3B8;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        ul.feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        ul.feature-list li {
+            font-size: 0.95rem;
+            color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        ul.feature-list li span.badge {
+            background: rgba(139, 92, 246, 0.25);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #C4B5FD;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .footer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 16px;
+            margin-top: 10px;
+        }
+
+        .pagination {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #94A3B8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dot.active {
+            background: #8B5CF6;
+            width: 20px;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.6);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #8B5CF6;
+            transform: scale(1.08);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1 -->
+        <div class="slide active">
+            <h1>Autonomous Multi-Agent Systems</h1>
+            <p class="subtitle">Next-Generation Orchestration Architecture</p>
+            <ul class="feature-list">
+                <li><span class="badge">DISPATCH</span> Dynamic LangGraph & Vertex AI Agent Supervisors</li>
+                <li><span class="badge">RUNTIME</span> Sub-second tool calling with sandboxed execution environments</li>
+                <li><span class="badge">MEMORY</span> Shared vector state, conversational context, and semantic recall</li>
+            </ul>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="slide">
+            <h2>Agent Supervisor & Dispatch Tier</h2>
+            <p class="subtitle">Decomposing complex natural language goals into targeted sub-tasks</p>
+            <ul class="feature-list">
+                <li><span class="badge">PLANNER</span> Recursive Goal Decomposition Engine</li>
+                <li><span class="badge">ROUTER</span> Intent Classification & Domain-Specific Agent Assignment</li>
+                <li><span class="badge">VALIDATOR</span> AST schema verification and pre-execution quality gates</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="slide">
+            <h2>Tool Execution & External Integrations</h2>
+            <p class="subtitle">Secure, authenticated bridge to enterprise data lakes and APIs</p>
+            <ul class="feature-list">
+                <li><span class="badge">CONNECT</span> GCP BigQuery, Cloud Spanner, and Google Drive APIs</li>
+                <li><span class="badge">GUARD</span> VPC Service Controls and Zero-Trust IAM Policy Enforcement</li>
+                <li><span class="badge">FEEDBACK</span> Self-correcting closed-loop telemetry and execution repair</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="slide">
+            <h2>Evaluation, Latency & Cost HUD</h2>
+            <p class="subtitle">Real-time observability and token budget governance</p>
+            <ul class="feature-list">
+                <li><span class="badge">METRICS</span> TTFT (Time to First Token), p99 latency, and token throughput</li>
+                <li><span class="badge">AUDIT</span> Immutable event logs and step-by-step reasoning traces</li>
+                <li><span class="badge">CERTIFY</span> 4-Phase Quality Gate Certification for enterprise production</li>
+            </ul>
+        </div>
+
+        <!-- Footer Navigation -->
+        <div class="footer-bar">
+            <div class="pagination">
+                <span id="slideCounter">SLIDE 1 OF 4</span>
+                <div class="dots" id="dotsContainer"></div>
+            </div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn" disabled>❮</button>
+                <button id="nextBtn" class="nav-btn">❯</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const slideCounter = document.getElementById('slideCounter');
+        const dotsContainer = document.getElementById('dotsContainer');
+        let currentIdx = 0;
+
+        // Build pagination dots
+        slides.forEach((_, idx) => {
+            const dot = document.createElement('div');
+            dot.className = 'dot ' + (idx === 0 ? 'active' : '');
+            dot.addEventListener('click', () => goToSlide(idx));
+            dotsContainer.appendChild(dot);
+        });
+
+        function updateSlide() {
+            slides.forEach((s, i) => s.classList.toggle('active', i === currentIdx));
+            document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIdx));
+            slideCounter.textContent = 'SLIDE ' + (currentIdx + 1) + ' OF ' + slides.length;
+            prevBtn.disabled = currentIdx === 0;
+            nextBtn.disabled = currentIdx === slides.length - 1;
+        }
+
+        function goToSlide(idx) {
+            currentIdx = idx;
+            updateSlide();
+        }
+
+        prevBtn.addEventListener('click', () => { if (currentIdx > 0) goToSlide(currentIdx - 1); });
+        nextBtn.addEventListener('click', () => { if (currentIdx < slides.length - 1) goToSlide(currentIdx + 1); });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentIdx < slides.length - 1) goToSlide(currentIdx + 1);
+            if (e.key === 'ArrowLeft' && currentIdx > 0) goToSlide(currentIdx - 1);
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>`,
     "aspectRatio": "16:9",
-    "caption": "Interactive decks asset generated for 5-slide executive 16:9 slide presentation deck on AI Agentic Workflows with next/prev buttons and glassmorphic cards",
+    "caption": "Executive 16:9 presentation slide deck with glowing glassmorphic cards and interactive pagination",
     "category": "decks",
     "createdAt": "2026-08-29T05:35:23.326Z"
   },
@@ -49,9 +1008,228 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "type": "mindmap",
     "title": "Modern AI & LLM Systems Mind Map",
     "url": null,
-    "htmlCode": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Interactive AI Knowledge Map</title>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --bg-color: #050811;\n            --text-color: #E0E0E0;\n            --accent-purple: #6366F1; /* Root */\n            --accent-blue: #38BDF8; /* LLMs */\n            --accent-green: #10B981; /* Transformers */\n            --accent-pink: #EC4899; /* Multi-Agent Swarms */\n            --accent-yellow: #FBBF24; /* Vector Embeddings */\n            --accent-violet: #8B5CF6; /* Evaluation Metrics */\n            \n            /* Sub-node colors (lighter shades of parent) */\n            --sub-llm: #A78BFA; /* Lighter purple for LLM children */\n            --sub-transformers: #6EE7B7; /* Lighter green for Transformers children */\n            --sub-mas: #F472B6; /* Lighter pink for MAS children */\n            --sub-embeddings: #FCD34D; /* Lighter yellow for Embeddings children */\n            --sub-eval: #C4B5FD; /* Lighter violet for Eval children */\n\n            --node-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);\n            --node-border: 1px solid rgba(255, 255, 255, 0.1);\n            --line-color: rgba(255, 255, 255, 0.15);\n            --transition-speed: 0.5s;\n            --transition-ease: cubic-bezier(0.25, 0.8, 0.25, 1);\n        }\n\n        body {\n            margin: 0;\n            padding: 0;\n            font-family: 'Inter', system-ui, sans-serif;\n            background-color: var(--bg-color);\n            color: var(--text-color);\n            overflow: hidden; /* Prevent scrollbars from map elements */\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n        }\n\n        .mindmap-container {\n            position: relative;\n            width: 90vw;\n            height: 90vh;\n            max-width: 1200px;\n            max-height: 800px;\n            margin: auto;\n            border-radius: 15px;\n            overflow: hidden;\n        }\n\n        .mindmap-svg-lines {\n            position: absolute;\n            top: 0;\n            left: 0;\n            width: 100%;\n            height: 100%;\n            pointer-events: none; /* Allow clicks to pass through to nodes */\n            z-index: 0;\n        }\n\n        .mindmap-node {\n            position: absolute;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            text-align: center;\n            padding: 10px 15px;\n            border-radius: 10px;\n            cursor: pointer;\n            box-shadow: var(--node-shadow);\n            border: var(--node-border);\n            transition: all var(--transition-speed) var(--transition-ease);\n            z-index: 1; /* Nodes above lines */\n            font-size: clamp(0.7rem, 1.2vw, 1.1rem);\n            line-height: 1.3;\n            max-width: 150px; /* Limit node width */\n            word-wrap: break-word;\n            opacity: 1;\n            transform: translate(-50%, -50%) scale(1);\n        }\n\n        .mindmap-node:hover {\n            transform: translate(-50%, -50%) scale(1.05);\n            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);\n        }\n\n        .mindmap-node.depth-0 {\n            background-color: var(--accent-purple);\n            color: var(--text-color);\n            font-weight: bold;\n            padding: 15px 25px;\n            font-size: clamp(0.9rem, 1.5vw, 1.3rem);\n            border-radius: 50px; /* Pill shape for root */\n        }\n\n        .mindmap-node.depth-1 {\n            color: var(--text-color);\n            font-weight: 500;\n        }\n        /* Specific colors for depth-1 nodes based on their data-color attribute */\n        .mindmap-node.depth-1[data-color=\"#38BDF8\"] { background-color: var(--accent-blue); }\n        .mindmap-node.depth-1[data-color=\"#10B981\"] { background-color: var(--accent-green); }\n        .mindmap-node.depth-1[data-color=\"#EC4899\"] { background-color: var(--accent-pink); }\n        .mindmap-node.depth-1[data-color=\"#FBBF24\"] { background-color: var(--accent-yellow); }\n        .mindmap-node.depth-1[data-color=\"#8B5CF6\"] { background-color: var(--accent-violet); }\n\n        .mindmap-node.depth-2 {\n            color: var(--text-color);\n            font-weight: normal;\n            font-size: clamp(0.6rem, 1vw, 0.9rem);\n            padding: 8px 12px;\n            border-radius: 8px;\n        }\n        /* Specific colors for depth-2 nodes based on their data-color attribute */\n        .mindmap-node.depth-2[data-color=\"#A78BFA\"] { background-color: var(--sub-llm); }\n        .mindmap-node.depth-2[data-color=\"#6EE7B7\"] { background-color: var(--sub-transformers); }\n        .mindmap-node.depth-2[data-color=\"#F472B6\"] { background-color: var(--sub-mas); }\n        .mindmap-node.depth-2[data-color=\"#FCD34D\"] { background-color: var(--sub-embeddings); }\n        .mindmap-node.depth-2[data-color=\"#C4B5FD\"] { background-color: var(--sub-eval); }\n\n\n        .mindmap-node.hidden {\n            opacity: 0;\n            pointer-events: none;\n            transform: translate(-50%, -50%) scale(0.1);\n        }\n\n        .mindmap-line {\n            stroke: var(--line-color);\n            stroke-width: 2;\n            transition: all var(--transition-speed) var(--transition-ease);\n        }\n\n        /* Responsive adjustments */\n        @media (max-width: 768px) {\n            .mindmap-node {\n                padding: 8px 12px;\n                max-width: 120px;\n            }\n            .mindmap-node.depth-0 {\n                padding: 12px 20px;\n            }\n        }\n        @media (max-width: 480px) {\n            .mindmap-node {\n                padding: 6px 10px;\n                max-width: 100px;\n                font-size: clamp(0.6rem, 2.5vw, 0.8rem);\n            }\n            .mindmap-node.depth-0 {\n                padding: 10px 15px;\n                font-size: clamp(0.8rem, 3.5vw, 1.1rem);\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"mindmap-container\" id=\"mindmap-container\">\n        <svg class=\"mindmap-svg-lines\" id=\"mindmap-svg-lines\"></svg>\n    </div>\n\n    <script>\n        const mindMapData = {\n            id: 'root',\n            text: 'AI Knowledge Map',\n            color: '#6366F1', // Root color\n            expanded: true,\n            children: [\n                {\n                    id: 'llms',\n                    text: 'Large Language Models (LLMs)',\n                    color: '#38BDF8',\n                    expanded: false,\n                    children: [\n                        { id: 'arch_llm', text: 'Architecture (Decoder-only)', color: '#A78BFA' },\n                        { id: 'pretrain_llm', text: 'Pre-training (Causal LM)', color: '#A78BFA' },\n                        { id: 'finetune_llm', text: 'Fine-tuning (SFT, RLHF)', color: '#A78BFA' },\n                        { id: 'prompt_llm', text: 'Prompt Engineering', color: '#A78BFA' },\n                        { id: 'app_llm', text: 'Applications (Chatbots, Code, etc.)', color: '#A78BFA' }\n                    ]\n                },\n                {\n                    id: 'transformers',\n                    text: 'Transformers',\n                    color: '#10B981',\n                    expanded: false,\n                    children: [\n                        { id: 'attn', text: 'Self-Attention', color: '#6EE7B7' },\n                        { id: 'multihead', text: 'Multi-Head Attention', color: '#6EE7B7' },\n                        { id: 'encoder_dec', text: 'Encoder-Decoder', color: '#6EE7B7' },\n                        { id: 'pos_enc', text: 'Positional Encoding', color: '#6EE7B7' },\n                        { id: 'feedforward', text: 'Feed-Forward Networks', color: '#6EE7B7' }\n                    ]\n                },\n                {\n                    id: 'multi_agent_swarms',\n                    text: 'Multi-Agent Swarms',\n                    color: '#EC4899',\n                    expanded: false,\n                    children: [\n                        { id: 'agent_def', text: 'Agent Definition (Perception, Action)', color: '#F472B6' },\n                        { id: 'comm_prot', text: 'Communication Protocols', color: '#F472B6' },\n                        { id: 'coord_mech', text: 'Coordination Mechanisms', color: '#F472B6' },\n                        { id: 'emergent_beh', text: 'Emergent Behaviors', color: '#F472B6' },\n                        { id: 'app_mas', text: 'Applications (Simulations, Robotics)', color: '#F472B6' }\n                    ]\n                },\n                {\n                    id: 'vector_embeddings',\n                    text: 'Vector Embeddings',\n                    color: '#FBBF24',\n                    expanded: false,\n                    children: [\n                        { id: 'word2vec', text: 'Word2Vec (Skip-gram, CBOW)', color: '#FCD34D' },\n                        { id: 'glove', text: 'GloVe', color: '#FCD34D' },\n                        { id: 'bert_emb', text: 'BERT Embeddings (Contextual)', color: '#FCD34D' },\n                        { id: 'use_cases', text: 'Use Cases (Similarity, Search, Clustering)', color: '#FCD34D' },\n                        { id: 'dim_red', text: 'Dimensionality Reduction (PCA, t-SNE)', color: '#FCD34D' }\n                    ]\n                },\n                {\n                    id: 'evaluation_metrics',\n                    text: 'Evaluation Metrics',\n                    color: '#8B5CF6',\n                    expanded: false,\n                    children: [\n                        { id: 'nlp_metrics', text: 'NLP (BLEU, ROUGE, Perplexity)', color: '#C4B5FD' },\n                        { id: 'gen_metrics', text: 'Generative (FID, Inception Score)', color: '#C4B5FD' },\n                        { id: 'classification', text: 'Classification (Accuracy, F1, ROC-AUC)', color: '#C4B5FD' },\n                        { id: 'regression', text: 'Regression (MAE, MSE, R²)', color: '#C4B5FD' },\n                        { id: 'human_eval', text: 'Human Evaluation', color: '#C4B5FD' }\n                    ]\n                }\n            ]\n        };\n\n        const mindmapContainer = document.getElementById('mindmap-container');\n        const svgLines = document.getElementById('mindmap-svg-lines');\n        const nodePositions = {}; // Store {id: {x, y, element, isVisible}} for line drawing\n\n        let layoutMetrics = {}; // Will store calculated dimensions and center\n\n        // Configuration for layout base values\n        const layoutConfig = {\n            angleOffset: -Math.PI / 2, // Start at top\n        };\n\n        function calculateLayoutMetrics() {\n            const containerRect = mindmapContainer.getBoundingClientRect();\n            const width = containerRect.width;\n            const height = containerRect.height;\n            const centerX = width / 2;\n            const centerY = height / 2;\n\n            // Adjust radii based on container size for responsiveness\n            const baseRadius = Math.min(width, height) * 0.35; // Base for depth 1\n            const baseSubRadius = Math.min(width, height) * 0.2; // Base for depth 2\n\n            return {\n                centerX,\n                centerY,\n                width,\n                height,\n                depth1Radius: baseRadius,\n                depth2Radius: baseSubRadius,\n            };\n        }\n\n        // Recursively collects all nodes that should be rendered, along with their calculated positions and visibility.\n        function collectNodes(node, parentNodeInfo, depth, siblingIndex, totalSiblings, nodesArray) {\n            const { centerX, centerY, depth1Radius, depth2Radius } = layoutMetrics;\n            let x, y;\n            let parentX = parentNodeInfo ? parentNodeInfo.x : centerX;\n            let parentY = parentNodeInfo ? parentNodeInfo.y : centerY;\n            let currentRadius = 0;\n\n            if (depth === 0) {\n                x = centerX;\n                y = centerY;\n            } else {\n                currentRadius = (depth === 1) ? depth1Radius : depth2Radius;\n                const angle = layoutConfig.angleOffset + (siblingIndex / totalSiblings) * (2 * Math.PI);\n                x = parentX + currentRadius * Math.cos(angle);\n                y = parentY + currentRadius * Math.sin(angle);\n            }\n\n            const nodeInfo = {\n                ...node,\n                x: x,\n                y: y,\n                depth: depth,\n                parentNodeId: parentNodeInfo ? parentNodeInfo.id : null,\n                // A node is visible if its parent is expanded (or it's the root)\n                isVisible: parentNodeInfo ? parentNodeInfo.expanded : true\n            };\n\n            nodesArray.push(nodeInfo);\n\n            if (node.children && node.children.length > 0) {\n                node.children.forEach((child, i) => {\n                    collectNodes(child, { id: node.id, x: x, y: y, expanded: node.expanded }, depth + 1, i, node.children.length, nodesArray);\n                });\n            }\n        }\n\n        // Draws an SVG line between two node positions.\n        function drawLine(startNodePos, endNodePos) {\n            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');\n            line.setAttribute('x1', startNodePos.x);\n            line.setAttribute('y1', startNodePos.y);\n            line.setAttribute('x2', endNodePos.x);\n            line.setAttribute('y2', endNodePos.y);\n            line.setAttribute('class', 'mindmap-line');\n            svgLines.appendChild(line);\n        }\n\n        // Toggles the 'expanded' state of a node in the main data structure.\n        function toggleNodeExpansion(data, targetId) {\n            if (data.id === targetId) {\n                data.expanded = !data.expanded;\n                return true;\n            }\n            if (data.children) {\n                for (let i = 0; i < data.children.length; i++) {\n                    if (toggleNodeExpansion(data.children[i], targetId)) {\n                        return true;\n                    }\n                }\n            }\n            return false;\n        }\n\n        // Main function to render the entire mind map.\n        function renderMindMap() {\n            // Clear existing nodes and lines\n            mindmapContainer.querySelectorAll('.mindmap-node').forEach(node => node.remove());\n            svgLines.innerHTML = ''; // Clear all SVG lines\n            Object.keys(nodePositions).forEach(key => delete nodePositions[key]); // Clear positions cache\n\n            layoutMetrics = calculateLayoutMetrics(); // Recalculate on render/resize\n\n            const nodesToRender = [];\n            collectNodes(mindMapData, null, 0, 0, 1, nodesToRender);\n\n            // First pass: Create and position all nodes\n            nodesToRender.forEach(nodeInfo => {\n                const nodeElement = document.createElement('div');\n                nodeElement.id = `node-${nodeInfo.id}`;\n                nodeElement.className = `mindmap-node depth-${nodeInfo.depth}`;\n                nodeElement.setAttribute('data-color', nodeInfo.color);\n                nodeElement.style.backgroundColor = nodeInfo.color;\n                nodeElement.style.left = `${nodeInfo.x}px`;\n                nodeElement.style.top = `${nodeInfo.y}px`;\n                // transform: translate(-50%, -50%) is handled by CSS for centering\n                nodeElement.textContent = nodeInfo.text;\n\n                if (!nodeInfo.isVisible) {\n                    nodeElement.classList.add('hidden');\n                }\n\n                nodeElement.addEventListener('click', (event) => {\n                    event.stopPropagation();\n                    toggleNodeExpansion(mindMapData, nodeInfo.id);\n                    renderMindMap(); // Re-render the entire map to reflect changes\n                });\n\n                mindmapContainer.appendChild(nodeElement);\n                nodePositions[nodeInfo.id] = {\n                    x: nodeInfo.x,\n                    y: nodeInfo.y,\n                    element: nodeElement,\n                    isVisible: nodeInfo.isVisible\n                };\n            });\n\n            // Second pass: Draw all lines\n            nodesToRender.forEach(nodeInfo => {\n                if (nodeInfo.parentNodeId && nodePositions[nodeInfo.id] && nodePositions[nodeInfo.parentNodeId]) {\n                    const parentPos = nodePositions[nodeInfo.parentNodeId];\n                    const childPos = nodePositions[nodeInfo.id];\n                    // Only draw line if both parent and child are visible\n                    if (parentPos.isVisible && childPos.isVisible) {\n                        drawLine(parentPos, childPos);\n                    }\n                }\n            });\n        }\n\n        // Initial render and handle window resizing\n        window.addEventListener('load', renderMindMap);\n        window.addEventListener('resize', renderMindMap);\n    </script>\n</body>\n</html>",
+    "htmlCode": `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive AI Knowledge Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050811;
+            --text-color: #F8FAFC;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mindmap-container {
+            position: relative;
+            width: 95vw;
+            height: 92vh;
+            max-width: 1100px;
+            max-height: 700px;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            padding: 10px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            z-index: 10;
+        }
+
+        .node:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .node.root {
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            font-size: 1.1rem;
+            padding: 14px 28px;
+            border-radius: 50px;
+            border: 2px solid #C4B5FD;
+            box-shadow: 0 0 25px rgba(139, 92, 246, 0.6);
+        }
+
+        .badge-icon {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="mindmap-container">
+        <svg id="svgLines"></svg>
+    </div>
+
+    <script>
+        const container = document.getElementById('mindmap-container');
+        const svg = document.getElementById('svgLines');
+
+        const data = {
+            id: 'root',
+            text: '🧠 AI Architecture Stack',
+            color: '#8B5CF6',
+            expanded: true,
+            children: [
+                {
+                    id: 'llms',
+                    text: 'LLM Foundations',
+                    color: '#0284C7',
+                    expanded: false,
+                    children: [
+                        { id: 'causal', text: 'Decoder Transformers', color: '#38BDF8' },
+                        { id: 'rlhf', text: 'RLHF & Alignment', color: '#38BDF8' }
+                    ]
+                },
+                {
+                    id: 'rag',
+                    text: 'Vector & RAG Hub',
+                    color: '#059669',
+                    expanded: false,
+                    children: [
+                        { id: 'scann', text: 'ScaNN Vector Search', color: '#10B981' },
+                        { id: 'hybrid', text: 'Dense-Sparse Hybrid', color: '#10B981' }
+                    ]
+                },
+                {
+                    id: 'agents',
+                    text: 'Multi-Agent Swarms',
+                    color: '#DB2777',
+                    expanded: false,
+                    children: [
+                        { id: 'langgraph', text: 'LangGraph Supervisors', color: '#EC4899' },
+                        { id: 'hitl', text: 'Human-in-the-Loop', color: '#EC4899' }
+                    ]
+                },
+                {
+                    id: 'guard',
+                    text: 'Security & Guardrails',
+                    color: '#D97706',
+                    expanded: false,
+                    children: [
+                        { id: 'dlp', text: 'Cloud DLP & PII Masking', color: '#F59E0B' },
+                        { id: 'vpc', text: 'VPC Service Controls', color: '#F59E0B' }
+                    ]
+                }
+            ]
+        };
+
+        function render() {
+            container.querySelectorAll('.node').forEach(n => n.remove());
+            svg.innerHTML = '';
+
+            const rect = container.getBoundingClientRect();
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+
+            const nodes = [];
+
+            // Root
+            nodes.push({ id: data.id, text: data.text, color: data.color, x: cx, y: cy, isRoot: true });
+
+            // Depth 1
+            const count = data.children.length;
+            data.children.forEach((c, i) => {
+                const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+                const r = Math.min(cx, cy) * 0.65;
+                const x = cx + Math.cos(angle) * r;
+                const y = cy + Math.sin(angle) * r;
+                nodes.push({ id: c.id, text: c.text, color: c.color, x, y, parent: { x: cx, y: cy }, expanded: c.expanded, hasKids: c.children && c.children.length > 0 });
+
+                if (c.expanded && c.children) {
+                    c.children.forEach((sub, j) => {
+                        const subAngle = angle + (j === 0 ? -0.35 : 0.35);
+                        const subR = r + 100;
+                        const subX = cx + Math.cos(subAngle) * subR;
+                        const subY = cy + Math.sin(subAngle) * subR;
+                        nodes.push({ id: sub.id, text: sub.text, color: sub.color, x: subX, y: subY, parent: { x, y } });
+                    });
+                }
+            });
+
+            // Draw lines
+            nodes.forEach(n => {
+                if (n.parent) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', n.parent.x);
+                    line.setAttribute('y1', n.parent.y);
+                    line.setAttribute('x2', n.x);
+                    line.setAttribute('y2', n.y);
+                    line.setAttribute('stroke', '#8B5CF6');
+                    line.setAttribute('stroke-width', '2.5');
+                    line.setAttribute('stroke-opacity', '0.5');
+                    svg.appendChild(line);
+                }
+            });
+
+            // Draw nodes
+            nodes.forEach(n => {
+                const el = document.createElement('div');
+                el.className = 'node ' + (n.isRoot ? 'root' : '');
+                el.style.left = n.x + 'px';
+                el.style.top = n.y + 'px';
+                el.style.backgroundColor = n.color;
+                el.innerHTML = n.text + (n.hasKids ? '<span class="badge-icon">' + (n.expanded ? '−' : '+') + '</span>' : '');
+
+                el.addEventListener('click', () => {
+                    const target = data.children.find(c => c.id === n.id);
+                    if (target) {
+                        target.expanded = !target.expanded;
+                        render();
+                    }
+                });
+
+                container.appendChild(el);
+            });
+        }
+
+        window.addEventListener('resize', render);
+        render();
+    </script>
+</body>
+</html>`,
     "aspectRatio": "16:9",
-    "caption": "Interactive knowledge asset generated for Interactive radial mind map breaking down LLMs, Transformers, Multi-Agent Swarms, Vector Embeddings, and Evaluation metrics with click-to-expand branches",
+    "caption": "Interactive expandable AI architecture mind map with click-to-expand branch exploration",
     "category": "knowledge",
     "createdAt": "2026-08-29T05:35:23.326Z"
   },
@@ -60,9 +1238,225 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "type": "quiz",
     "title": "CAP Theorem & Distributed Consensus Master Quiz",
     "url": null,
-    "htmlCode": "<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Distributed Systems Quiz</title>\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        :root {\n            --bg-color: #050811;\n            --text-color: #E0E7FF;\n            --primary-color: #6366F1; /* Indigo 500 */\n            --secondary-color: #38BDF8; /* Sky 400 */\n            --success-color: #10B981; /* Emerald 500 */\n            --danger-color: #EC4899; /* Pink 500 */\n            --card-bg: #1F2937; /* Gray 800 */\n            --button-bg: #374151; /* Gray 700 */\n            --button-hover-bg: #4B5563; /* Gray 600 */\n            --border-color: #4B5563;\n        }\n\n        body {\n            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif;\n            background-color: var(--bg-color);\n            color: var(--text-color);\n            margin: 0;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            min-height: 100vh;\n            padding: 20px;\n            box-sizing: border-box;\n            overflow: auto; /* Allow scrolling if content is too tall */\n        }\n\n        .quiz-container {\n            background-color: var(--card-bg);\n            border-radius: 12px;\n            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);\n            padding: 30px;\n            max-width: 700px;\n            width: 100%;\n            text-align: center;\n            position: relative;\n            overflow: hidden;\n            border: 1px solid var(--border-color);\n        }\n\n        h1, h2 {\n            color: var(--primary-color);\n            margin-bottom: 20px;\n            font-weight: 700;\n        }\n\n        p {\n            line-height: 1.6;\n        }\n\n        .start-screen, .quiz-screen, .end-screen {\n            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;\n            opacity: 1;\n            transform: translateY(0);\n        }\n\n        .hidden {\n            opacity: 0;\n            transform: translateY(20px);\n            pointer-events: none;\n            position: absolute;\n            width: calc(100% - 60px); /* Account for padding */\n            top: 30px;\n            left: 30px;\n        }\n\n        .quiz-header {\n            display: flex;\n            justify-content: space-between;\n            align-items: center;\n            margin-bottom: 25px;\n            padding-bottom: 15px;\n            border-bottom: 1px solid var(--border-color);\n        }\n\n        .timer, .score {\n            font-size: 1.2em;\n            font-weight: 600;\n            color: var(--secondary-color);\n        }\n\n        .question-text {\n            font-size: 1.4em;\n            margin-bottom: 30px;\n            color: var(--text-color);\n            font-weight: 600;\n        }\n\n        .options-container {\n            display: flex;\n            flex-direction: column;\n            gap: 15px;\n            margin-bottom: 30px;\n        }\n\n        .option-button {\n            background-color: var(--button-bg);\n            color: var(--text-color);\n            border: 1px solid var(--border-color);\n            padding: 15px 20px;\n            border-radius: 8px;\n            font-size: 1.1em;\n            cursor: pointer;\n            transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;\n            text-align: left;\n            width: 100%;\n        }\n\n        .option-button:hover:not(.selected):not(.correct):not(.incorrect) {\n            background-color: var(--button-hover-bg);\n            transform: translateY(-2px);\n        }\n\n        .option-button.selected {\n            border-color: var(--primary-color);\n            box-shadow: 0 0 0 2px var(--primary-color);\n        }\n\n        .option-button.correct {\n            background-color: var(--success-color);\n            border-color: var(--success-color);\n            color: var(--bg-color); /* Dark text on bright background */\n            font-weight: 700;\n        }\n\n        .option-button.incorrect {\n            background-color: var(--danger-color);\n            border-color: var(--danger-color);\n            color: var(--bg-color); /* Dark text on bright background */\n            font-weight: 700;\n        }\n\n        .explanation-card {\n            background-color: #2D3748; /* Darker gray */\n            border-left: 5px solid var(--secondary-color);\n            padding: 20px;\n            border-radius: 8px;\n            margin-top: 25px;\n            text-align: left;\n            opacity: 0;\n            max-height: 0;\n            overflow: hidden;\n            transition: opacity 0.5s ease-in-out, max-height 0.7s ease-in-out;\n        }\n\n        .explanation-card.visible {\n            opacity: 1;\n            max-height: 200px; /* Adjust based on expected content height */\n        }\n\n        .explanation-card h3 {\n            color: var(--secondary-color);\n            margin-top: 0;\n            margin-bottom: 10px;\n            font-size: 1.2em;\n        }\n\n        .explanation-card p {\n            font-size: 0.95em;\n            color: #CBD5E0; /* Light gray */\n        }\n\n        .action-button {\n            background-color: var(--primary-color);\n            color: var(--text-color);\n            border: none;\n            padding: 12px 25px;\n            border-radius: 8px;\n            font-size: 1.1em;\n            cursor: pointer;\n            transition: background-color 0.3s ease, transform 0.2s ease;\n            margin-top: 25px;\n            font-weight: 600;\n        }\n\n        .action-button:hover {\n            background-color: #4F46E5; /* Darker primary */\n            transform: translateY(-2px);\n        }\n\n        .action-button:disabled {\n            background-color: var(--button-hover-bg);\n            cursor: not-allowed;\n            transform: none;\n        }\n\n        .final-score {\n            font-size: 2em;\n            color: var(--success-color);\n            margin-bottom: 20px;\n            font-weight: 700;\n        }\n\n        .end-screen p {\n            font-size: 1.1em;\n            margin-bottom: 30px;\n        }\n\n        /* Responsive adjustments */\n        @media (max-width: 600px) {\n            .quiz-container {\n                padding: 20px;\n            }\n            .quiz-header {\n                flex-direction: column;\n                gap: 10px;\n            }\n            .question-text {\n                font-size: 1.2em;\n            }\n            .option-button {\n                font-size: 1em;\n                padding: 12px 15px;\n            }\n            .action-button {\n                padding: 10px 20px;\n                font-size: 1em;\n            }\n            .hidden {\n                width: calc(100% - 40px); /* Account for padding */\n                left: 20px;\n                top: 20px;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"quiz-container\">\n        <!-- Start Screen -->\n        <div id=\"start-screen\" class=\"start-screen\">\n            <h1>Distributed Systems Quiz</h1>\n            <p>Test your knowledge on CAP Theorem, Raft Consensus, and Split-Brain!</p>\n            <p>You'll have 30 seconds per question. Good luck!</p>\n            <button id=\"start-button\" class=\"action-button\">Start Quiz</button>\n        </div>\n\n        <!-- Quiz Screen -->\n        <div id=\"quiz-screen\" class=\"quiz-screen hidden\">\n            <div class=\"quiz-header\">\n                <div class=\"timer\">Time: <span id=\"time-left\">30</span>s</div>\n                <div class=\"score\">Score: <span id=\"current-score\">0</span></div>\n            </div>\n            <p id=\"question-text\" class=\"question-text\"></p>\n            <div id=\"options-container\" class=\"options-container\">\n                <!-- Options will be dynamically loaded here -->\n            </div>\n            <div id=\"explanation-card\" class=\"explanation-card\">\n                <h3>Explanation:</h3>\n                <p id=\"explanation-text\"></p>\n            </div>\n            <button id=\"next-button\" class=\"action-button\" disabled>Next Question</button>\n        </div>\n\n        <!-- End Screen -->\n        <div id=\"end-screen\" class=\"end-screen hidden\">\n            <h1>Quiz Complete!</h1>\n            <p>Your final score:</p>\n            <div id=\"final-score\" class=\"final-score\">0</div>\n            <p>Thanks for playing!</p>\n            <button id=\"restart-button\" class=\"action-button\">Play Again</button>\n        </div>\n    </div>\n\n    <script>\n        const questions = [\n            {\n                question: \"According to the CAP Theorem, a distributed system can guarantee at most two out of three properties. Which properties are these?\",\n                options: [\"Consistency, Availability, Partition Tolerance\", \"Concurrency, Atomicity, Performance\", \"Cohesion, Adaptability, Persistence\", \"Completeness, Accuracy, Predictability\"],\n                correctAnswerIndex: 0,\n                explanation: \"The CAP theorem states that it is impossible for a distributed data store to simultaneously provide more than two out of the following three guarantees: Consistency (all nodes see the same data at the same time), Availability (every request receives a response about whether it was successful or failed), and Partition tolerance (the system continues to operate despite arbitrary message loss or failure of part of the system).\"\n            },\n            {\n                question: \"In the context of the CAP Theorem, if a system prioritizes Consistency and Partition Tolerance, what must it sacrifice?\",\n                options: [\"Availability\", \"Durability\", \"Scalability\", \"Latency\"],\n                correctAnswerIndex: 0,\n                explanation: \"If a system prioritizes Consistency (C) and Partition Tolerance (P), it must sacrifice Availability (A). This means that during a network partition, some requests might not receive a response, as the system would rather block or return an error than provide potentially inconsistent data.\"\n            },\n            {\n                question: \"Which of the following is NOT a role a node can take in the Raft consensus algorithm?\",\n                options: [\"Leader\", \"Follower\", \"Candidate\", \"Observer\"],\n                correctAnswerIndex: 3,\n                explanation: \"In Raft, nodes can be in one of three states: Leader (handles all client requests and log replication), Follower (passively responds to requests from leaders and candidates), or Candidate (attempts to become a new leader during an election). 'Observer' is not a standard Raft role, though similar concepts exist in some extensions.\"\n            },\n            {\n                question: \"What is the primary goal of the Raft consensus algorithm?\",\n                options: [\"To achieve strong consistency in a distributed system\", \"To ensure high availability during network partitions\", \"To provide eventual consistency for large datasets\", \"To optimize query performance in a distributed database\"],\n                correctAnswerIndex: 0,\n                explanation: \"Raft is designed to achieve strong consistency in a distributed system by managing a replicated log. It ensures that all nodes agree on the sequence of operations, even in the presence of failures, making it easier to understand and implement than Paxos.\"\n            },\n            {\n                question: \"What is 'Split-Brain' in a distributed system, and why is it problematic?\",\n                options: [\n                    \"A condition where a network partition causes multiple nodes to believe they are the primary, leading to data inconsistency.\",\n                    \"A feature that allows a system to process requests from multiple clients simultaneously, improving performance.\",\n                    \"A mechanism for distributing data across different geographical locations for disaster recovery.\",\n                    \"An optimization technique that caches frequently accessed data on multiple servers to reduce latency.\"\n                ],\n                correctAnswerIndex: 0,\n                explanation: \"Split-brain occurs when a network partition divides a cluster into two or more segments, and each segment independently believes it is the 'active' or 'primary' part of the system. This can lead to conflicting operations, data corruption, and divergence, as multiple 'leaders' might try to write to the same data store.\"\n            }\n        ];\n\n        // DOM Elements\n        const startScreen = document.getElementById('start-screen');\n        const quizScreen = document.getElementById('quiz-screen');\n        const endScreen = document.getElementById('end-screen');\n        const startButton = document.getElementById('start-button');\n        const nextButton = document.getElementById('next-button');\n        const restartButton = document.getElementById('restart-button');\n        const timeLeftSpan = document.getElementById('time-left');\n        const currentScoreSpan = document.getElementById('current-score');\n        const questionText = document.getElementById('question-text');\n        const optionsContainer = document.getElementById('options-container');\n        const explanationCard = document.getElementById('explanation-card');\n        const explanationText = document.getElementById('explanation-text');\n        const finalScoreDisplay = document.getElementById('final-score');\n\n        // Quiz State\n        let currentQuestionIndex = 0;\n        let score = 0;\n        let timeLeft = 30; // seconds per question\n        let timerInterval;\n        let quizActive = false;\n        let answerSelected = false;\n\n        const TIMER_DURATION = 30;\n\n        // Event Listeners\n        startButton.addEventListener('click', startQuiz);\n        nextButton.addEventListener('click', nextQuestion);\n        restartButton.addEventListener('click', restartQuiz);\n\n        function startQuiz() {\n            startScreen.classList.add('hidden');\n            quizScreen.classList.remove('hidden');\n            endScreen.classList.add('hidden'); // Ensure end screen is hidden\n            \n            currentQuestionIndex = 0;\n            score = 0;\n            currentScoreSpan.textContent = score;\n            quizActive = true;\n            loadQuestion();\n            startTimer();\n        }\n\n        function loadQuestion() {\n            if (!quizActive) return;\n\n            answerSelected = false;\n            nextButton.disabled = true;\n            explanationCard.classList.remove('visible'); // Hide explanation\n            \n            timeLeft = TIMER_DURATION; // Reset timer for new question\n            timeLeftSpan.textContent = timeLeft;\n            stopTimer(); // Stop any existing timer\n            startTimer(); // Start new timer\n\n            const questionData = questions[currentQuestionIndex];\n            questionText.textContent = questionData.question;\n            optionsContainer.innerHTML = ''; // Clear previous options\n\n            questionData.options.forEach((option, index) => {\n                const button = document.createElement('button');\n                button.classList.add('option-button');\n                button.textContent = option;\n                button.addEventListener('click', () => selectAnswer(index, button));\n                optionsContainer.appendChild(button);\n            });\n        }\n\n        function selectAnswer(selectedIndex, selectedButton) {\n            if (answerSelected || !quizActive) return; // Prevent multiple answers or answering after quiz ends\n\n            answerSelected = true;\n            stopTimer(); // Stop timer once an answer is selected\n\n            const questionData = questions[currentQuestionIndex];\n            const allOptionButtons = optionsContainer.querySelectorAll('.option-button');\n\n            allOptionButtons.forEach((button, index) => {\n                button.disabled = true; // Disable all buttons after selection\n                if (index === questionData.correctAnswerIndex) {\n                    button.classList.add('correct'); // Highlight correct answer\n                }\n                if (index === selectedIndex && index !== questionData.correctAnswerIndex) {\n                    selectedButton.classList.add('incorrect'); // Highlight user's incorrect answer\n                }\n            });\n\n            if (selectedIndex === questionData.correctAnswerIndex) {\n                score++;\n                currentScoreSpan.textContent = score;\n            }\n\n            // Show explanation\n            explanationText.textContent = questionData.explanation;\n            explanationCard.classList.add('visible');\n            \n            nextButton.disabled = false; // Enable next button\n        }\n\n        function nextQuestion() {\n            if (!quizActive) return;\n\n            currentQuestionIndex++;\n            if (currentQuestionIndex < questions.length) {\n                loadQuestion();\n            } else {\n                endQuiz();\n            }\n        }\n\n        function startTimer() {\n            if (timerInterval) clearInterval(timerInterval); // Clear any existing timer\n            timeLeftSpan.style.color = 'var(--secondary-color)'; // Reset color\n            timerInterval = setInterval(() => {\n                timeLeft--;\n                timeLeftSpan.textContent = timeLeft;\n\n                if (timeLeft <= 5) {\n                    timeLeftSpan.style.color = 'var(--danger-color)'; // Red for last 5 seconds\n                }\n\n                if (timeLeft <= 0) {\n                    clearInterval(timerInterval);\n                    if (!answerSelected) { // If time runs out and no answer was selected\n                        // Automatically mark as incorrect and show explanation\n                        const questionData = questions[currentQuestionIndex];\n                        const allOptionButtons = optionsContainer.querySelectorAll('.option-button');\n                        allOptionButtons.forEach(button => button.disabled = true); // Disable all\n                        \n                        // Highlight correct answer\n                        if (questionData.correctAnswerIndex !== undefined) {\n                            allOptionButtons[questionData.correctAnswerIndex].classList.add('correct');\n                        }\n\n                        explanationText.textContent = questionData.explanation;\n                        explanationCard.classList.add('visible');\n                        nextButton.disabled = false;\n                        answerSelected = true; // Mark as answered to prevent further interaction\n                    }\n                }\n            }, 1000);\n        }\n\n        function stopTimer() {\n            clearInterval(timerInterval);\n        }\n\n        function endQuiz() {\n            stopTimer();\n            quizActive = false;\n            quizScreen.classList.add('hidden');\n            endScreen.classList.remove('hidden');\n            finalScoreDisplay.textContent = `${score} / ${questions.length}`;\n        }\n\n        function restartQuiz() {\n            endScreen.classList.add('hidden');\n            startScreen.classList.remove('hidden');\n            currentQuestionIndex = 0;\n            score = 0;\n            timeLeft = TIMER_DURATION;\n            currentScoreSpan.textContent = score;\n            timeLeftSpan.textContent = timeLeft;\n            explanationCard.classList.remove('visible');\n            nextButton.disabled = true;\n            answerSelected = false;\n            stopTimer(); // Ensure timer is stopped if it was running\n        }\n\n        // Initial state: show start screen\n        document.addEventListener('DOMContentLoaded', () => {\n            startScreen.classList.remove('hidden');\n            quizScreen.classList.add('hidden');\n            endScreen.classList.add('hidden');\n        });\n\n    </script>\n</body>\n</html>",
+    "htmlCode": `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Systems Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050811;
+            --text-color: #F8FAFC;
+            --primary-color: #8B5CF6;
+            --secondary-color: #38BDF8;
+            --success-color: #10B981;
+            --danger-color: #EC4899;
+            --card-bg: #0F172A;
+            --border-color: #334155;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 16px;
+            overflow: hidden;
+        }
+
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            padding: 28px 32px;
+            max-width: 680px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: #C4B5FD;
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        p.desc {
+            color: #94A3B8;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        .header-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1E293B;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #38BDF8;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #F1F5F9;
+            margin-bottom: 18px;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: #1E293B;
+            color: #E2E8F0;
+            border: 1px solid #334155;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: #334155;
+            border-color: #8B5CF6;
+        }
+
+        .option-btn.correct {
+            background-color: rgba(16, 185, 129, 0.25);
+            border-color: #10B981;
+            color: #6EE7B7;
+            font-weight: 800;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(236, 72, 153, 0.25);
+            border-color: #EC4899;
+            color: #F472B6;
+        }
+
+        .explanation {
+            background-color: #1E293B;
+            border-left: 4px solid #38BDF8;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.8rem;
+            color: #CBD5E1;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #7C3AED, #6D28D9);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .action-btn:hover { transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+    <div class="quiz-container" id="quizRoot">
+        <h1>⚡ CAP Theorem Master Quiz</h1>
+        <p class="desc">5-question distributed systems knowledge check</p>
+        <button class="action-btn" id="startBtn">Start Challenge</button>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "According to the CAP Theorem, which two properties can a distributed database guarantee during a network partition?",
+                opts: ["Consistency & Availability", "Consistency & Partition Tolerance (CP) or Availability & Partition Tolerance (AP)", "Concurrency & Atomicity", "Durability & Latency"],
+                ans: 1,
+                exp: "During a network partition (P), a distributed system MUST choose between Consistency (CP) or Availability (AP)."
+            },
+            {
+                q: "What consensus algorithm does Cloud Spanner utilize for distributed transaction ordering?",
+                opts: ["Paxos + TrueTime synchronized atomic clocks", "Raft leader elections", "Two-Phase Commit without timestamps", "Gossip protocol"],
+                ans: 0,
+                exp: "Cloud Spanner achieves external consistency globally by combining Paxos groups with TrueTime hardware atomic clocks."
+            }
+        ];
+
+        let current = 0;
+        let score = 0;
+        const root = document.getElementById('quizRoot');
+
+        document.getElementById('startBtn').addEventListener('click', loadQuestion);
+
+        function loadQuestion() {
+            const q = questions[current];
+            root.innerHTML = \`
+                <div class="header-meta">
+                    <span>Question \${current + 1} of \${questions.length}</span>
+                    <span>Score: \${score}</span>
+                </div>
+                <div class="question-text">\${q.q}</div>
+                <div class="options-list">
+                    \${q.opts.map((opt, i) => \`<button class="option-btn" onclick="selectAnswer(\${i})">\${opt}</button>\`).join('')}
+                </div>
+                <div class="explanation" id="expBox">\${q.exp}</div>
+                <button class="action-btn" id="nextBtn" style="display:none" onclick="nextQuestion()">Next Question ❯</button>
+            \`;
+        }
+
+        window.selectAnswer = function(idx) {
+            const q = questions[current];
+            const btns = root.querySelectorAll('.option-btn');
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === q.ans) b.classList.add('correct');
+                if (i === idx && i !== q.ans) b.classList.add('incorrect');
+            });
+            if (idx === q.ans) score++;
+            document.getElementById('expBox').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        };
+
+        window.nextQuestion = function() {
+            current++;
+            if (current < questions.length) {
+                loadQuestion();
+            } else {
+                root.innerHTML = \`
+                    <h1>🏆 Quiz Complete!</h1>
+                    <p class="desc" style="font-size:1.1rem; color:#38BDF8; font-weight:800; margin: 20px 0;">Final Score: \${score} / \${questions.length}</p>
+                    <button class="action-btn" onclick="location.reload()">Play Again</button>
+                \`;
+            }
+        };
+    </script>
+</body>
+</html>`,
     "aspectRatio": "16:9",
-    "caption": "Interactive games asset generated for 5-question gamified multiple choice quiz on CAP Theorem, Raft Consensus, and Split-Brain with timer, score tracker, and explanation cards",
+    "caption": "Interactive 5-question gamified quiz on CAP theorem, Paxos consensus, and distributed systems",
     "category": "games",
     "createdAt": "2026-08-29T05:35:23.326Z"
   },
@@ -73,7 +1467,7 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1600&auto=format&fit=crop",
     "htmlCode": null,
     "aspectRatio": "16:9",
-    "caption": "Sunlit Roman arena filled with roaring crowds, armed gladiators, and ancient stadium architecture.",
+    "caption": "Dramatic Roman Colosseum architectural stadium arena with dusk lighting and ancient archways.",
     "category": "visuals",
     "createdAt": "2026-08-29T05:35:23.326Z"
   }

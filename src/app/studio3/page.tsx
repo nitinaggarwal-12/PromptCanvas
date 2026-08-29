@@ -1038,7 +1038,11 @@ export default function Studio3Page() {
               )}
 
               <div className={`hidden sm:flex items-center gap-2 text-xs font-mono text-[11px] ${theme === 'dark' ? 'text-slate-400' : 'text-slate-600'}`}>
-                {currentXml ? (parsedSlides.length > 1 ? `${parsedSlides.length} Slides • 16:9` : '16:9 • 1600x1000px') : 'STAGE CURTAIN CLOSED'}
+                {activeTab === 'media'
+                  ? `MEDIA STAGE ACTIVE • ${mediaAssets.length} ASSETS`
+                  : currentXml
+                  ? (parsedSlides.length > 1 ? `${parsedSlides.length} Slides • 16:9` : '16:9 • 1600x1000px')
+                  : 'STAGE CURTAIN CLOSED'}
               </div>
             </div>
           </div>
