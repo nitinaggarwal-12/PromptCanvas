@@ -144,7 +144,18 @@ export default function Studio3Page() {
         const res = await fetch(url);
         const data = await res.json();
         if (data.success && Array.isArray(data.assets) && data.assets.length > 0) {
-          setMediaAssets(data.assets);
+          const mapped: Studio3MediaAsset[] = data.assets.map((a: any) => ({
+            id: a.id,
+            type: a.type || a.asset_type || 'animation',
+            title: a.title,
+            url: a.url || null,
+            htmlCode: a.htmlCode || a.html_code || null,
+            aspectRatio: a.aspectRatio || a.aspect_ratio || '16:9',
+            caption: a.caption || null,
+            category: a.category || 'general',
+            createdAt: a.createdAt || a.created_at
+          }));
+          setMediaAssets(mapped);
         }
       } catch (e) {
         console.warn('Failed to load saved media assets:', e);

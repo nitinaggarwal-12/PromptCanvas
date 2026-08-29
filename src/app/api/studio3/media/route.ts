@@ -8,12 +8,22 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const diagramId = searchParams.get('diagramId');
 
-    if (diagramId) {
-      const assets = await getMediaAssetsForDiagram(diagramId);
-      return NextResponse.json({ success: true, assets });
-    }
+    const rawAssets = diagramId
+      ? await getMediaAssetsForDiagram(diagramId)
+      : await getAllSavedMediaAssets(40);
 
-    const assets = await getAllSavedMediaAssets(30);
+    const assets = (rawAssets || []).map(a => ({
+      id: a.id,
+      type: a.asset_type || (a as any).type || 'animation',
+      title: a.title,
+      url: a.url || null,
+      htmlCode: a.html_code || (a as any).htmlCode || null,
+      aspectRatio: a.aspect_ratio || (a as any).aspectRatio || '16:9',
+      caption: a.caption || null,
+      category: a.category || 'general',
+      createdAt: a.created_at || (a as any).createdAt
+    }));
+
     return NextResponse.json({ success: true, assets });
   } catch (error: any) {
     console.error('Failed to fetch media assets:', error);
