@@ -528,6 +528,22 @@ export async function ensureTablesExist(): Promise<void> {
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_diagram_versions_lookup ON diagram_versions (diagram_id, architecture_type, version_number DESC);
     `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS media_assets (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT REFERENCES diagrams(id) ON DELETE CASCADE,
+        asset_type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        url TEXT,
+        html_code TEXT,
+        aspect_ratio TEXT DEFAULT '16:9',
+        caption TEXT,
+        category TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_media_assets_diagram ON media_assets (diagram_id);
+      CREATE INDEX IF NOT EXISTS idx_media_assets_type ON media_assets (asset_type);
+    `);
   } else {
     const db = getSqliteDb();
     db.exec(`
@@ -716,6 +732,22 @@ export async function ensureTablesExist(): Promise<void> {
         value INTEGER NOT NULL DEFAULT 0,
         updated_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now'))
       );
+
+      CREATE TABLE IF NOT EXISTS media_assets (
+        id TEXT PRIMARY KEY,
+        diagram_id TEXT,
+        asset_type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        url TEXT,
+        html_code TEXT,
+        aspect_ratio TEXT DEFAULT '16:9',
+        caption TEXT,
+        category TEXT,
+        created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%f', 'now')),
+        FOREIGN KEY (diagram_id) REFERENCES diagrams(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_media_assets_diagram ON media_assets (diagram_id);
+      CREATE INDEX IF NOT EXISTS idx_media_assets_type ON media_assets (asset_type);
     `);
 
     // Schema Evolution Migrations
@@ -2992,4 +3024,125 @@ export async function resetVisitorCount(value: number = 0): Promise<number> {
     return value;
   }
 }
+
+// ----------------------------------------------------
+// MULTIMODAL MEDIA ASSETS PERSISTENCE HELPERS
+// ----------------------------------------------------
+
+export interface MediaAssetRecord {
+  id: string;
+  diagram_id: string | null;
+  asset_type: string;
+  title: string;
+  url: string | null;
+  html_code: string | null;
+  aspect_ratio: string | null;
+  caption: string | null;
+  category: string | null;
+  created_at: string | Date;
+}
+
+export async function saveMediaAssetRecord(asset: {
+  id?: string;
+  diagram_id?: string | null;
+  asset_type: string;
+  title: string;
+  url?: string | null;
+  html_code?: string | null;
+  aspect_ratio?: string | null;
+  caption?: string | null;
+  category?: string | null;
+}): Promise<MediaAssetRecord> {
+  await ensureTablesExist();
+  const assetId = asset.id || uuidv4();
+  const diagramId = asset.diagram_id || null;
+  const assetType = asset.asset_type || 'animation';
+  const title = asset.title || 'Untitled Multimodal Asset';
+  const url = asset.url || null;
+  const htmlCode = asset.html_code || null;
+  const aspectRatio = asset.aspect_ratio || '16:9';
+  const caption = asset.caption || null;
+  const category = asset.category || 'general';
+
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`
+      INSERT INTO media_assets (id, diagram_id, asset_type, title, url, html_code, aspect_ratio, caption, category)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      ON CONFLICT (id) DO UPDATE SET
+        title = EXCLUDED.title,
+        url = EXCLUDED.url,
+        html_code = EXCLUDED.html_code,
+        caption = EXCLUDED.caption,
+        category = EXCLUDED.category
+      RETURNING *;
+    `, [assetId, diagramId, assetType, title, url, htmlCode, aspectRatio, caption, category]);
+    return res.rows[0] as MediaAssetRecord;
+  } else {
+    const db = getSqliteDb();
+    const stmt = db.prepare(`
+      INSERT INTO media_assets (id, diagram_id, asset_type, title, url, html_code, aspect_ratio, caption, category)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        title = excluded.title,
+        url = excluded.url,
+        html_code = excluded.html_code,
+        caption = excluded.caption,
+        category = excluded.category;
+    `);
+    stmt.run(assetId, diagramId, assetType, title, url, htmlCode, aspectRatio, caption, category);
+    const row = db.prepare('SELECT * FROM media_assets WHERE id = ?').get(assetId) as unknown as MediaAssetRecord;
+    return row;
+  }
+}
+
+export async function getMediaAssetsForDiagram(diagramId: string): Promise<MediaAssetRecord[]> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      'SELECT * FROM media_assets WHERE diagram_id = $1 ORDER BY created_at DESC',
+      [diagramId]
+    );
+    return res.rows as MediaAssetRecord[];
+  } else {
+    const db = getSqliteDb();
+    const rows = db.prepare(
+      'SELECT * FROM media_assets WHERE diagram_id = ? ORDER BY created_at DESC'
+    ).all(diagramId) as unknown as MediaAssetRecord[];
+    return rows;
+  }
+}
+
+export async function getAllSavedMediaAssets(limit: number = 50): Promise<MediaAssetRecord[]> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      'SELECT * FROM media_assets ORDER BY created_at DESC LIMIT $1',
+      [limit]
+    );
+    return res.rows as MediaAssetRecord[];
+  } else {
+    const db = getSqliteDb();
+    const rows = db.prepare(
+      'SELECT * FROM media_assets ORDER BY created_at DESC LIMIT ?'
+    ).all(limit) as unknown as MediaAssetRecord[];
+    return rows;
+  }
+}
+
+export async function getMediaAssetById(id: string): Promise<MediaAssetRecord | null> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query('SELECT * FROM media_assets WHERE id = $1', [id]);
+    return (res.rows[0] as MediaAssetRecord) || null;
+  } else {
+    const db = getSqliteDb();
+    const row = db.prepare('SELECT * FROM media_assets WHERE id = ?').get(id) as unknown as MediaAssetRecord | undefined;
+    return row || null;
+  }
+}
+
 

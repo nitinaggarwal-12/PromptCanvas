@@ -14,13 +14,14 @@ import {
 
 export interface Studio3MediaAsset {
   id: string;
-  type: 'image' | 'animation' | 'gif' | 'video' | 'canvas_sandbox';
+  type: string;
   title: string;
-  url?: string;
-  htmlCode?: string;
-  aspectRatio?: '16:9' | '1:1' | '9:16' | '4:3';
-  caption?: string;
-  createdAt?: string;
+  url?: string | null;
+  htmlCode?: string | null;
+  aspectRatio?: string;
+  caption?: string | null;
+  category?: string | null;
+  createdAt?: string | Date;
 }
 
 interface MediaStageProps {
@@ -28,7 +29,8 @@ interface MediaStageProps {
   mediaAssets: Studio3MediaAsset[];
   activeAssetIndex: number;
   onSelectAsset: (index: number) => void;
-  onGenerateMedia?: (prompt: string, type: 'image' | 'animation') => void;
+  onGenerateMedia?: (prompt: string, type?: string, category?: string) => void;
+  onOpenModeSelector?: () => void;
   isGenerating?: boolean;
 }
 
@@ -38,6 +40,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   activeAssetIndex,
   onSelectAsset,
   onGenerateMedia,
+  onOpenModeSelector,
   isGenerating = false
 }) => {
   const [zoomLevel, setZoomLevel] = useState<number>(1);
@@ -69,7 +72,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${activeAsset.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}_animation.html`;
+      a.download = `${activeAsset.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}_multimodal.html`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -89,8 +92,8 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   // If no media asset is present, show the visual media generator state
   if (!activeAsset) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center relative overflow-hidden bg-gradient-to-b from-slate-950 via-[#0B111E] to-slate-950">
-        <div className="max-w-2xl mx-auto z-10 flex flex-col items-center gap-5">
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-gradient-to-b from-slate-950 via-[#0B111E] to-slate-950">
+        <div className="max-w-2xl mx-auto z-10 flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-blue-500 p-0.5 shadow-xl shadow-purple-500/20">
             <div className="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
               <Film className="w-8 h-8 text-purple-400" />
@@ -99,46 +102,59 @@ export const MediaStage: React.FC<MediaStageProps> = ({
 
           <div>
             <h2 className="text-2xl font-black text-white tracking-tight">
-              STUDIO 3 MEDIA &amp; CINEMA STAGE
+              STUDIO 3 MULTIMODAL MEDIA STAGE
             </h2>
-            <p className="text-sm text-slate-400 mt-2 max-w-lg leading-relaxed">
-              Synthesize high-fidelity photorealistic graphics, procedural HTML5 physics animations, motion graphics, and video briefings alongside your system diagrams.
+            <p className="text-xs sm:text-sm text-slate-400 mt-2 max-w-lg leading-relaxed">
+              Create and save interactive Mind Maps, 16:9 Slide Decks, AI Podcasts, Gamified Quizzes, Physics Simulations, 3D Molecular Models, and Photorealistic Visuals.
             </p>
           </div>
+
+          {/* Quick Trigger Button to Explore All 30+ Modes */}
+          <button
+            onClick={onOpenModeSelector}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-black transition shadow-lg flex items-center gap-2 active:scale-95"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>Browse All 30+ Multimodal Formats</span>
+          </button>
 
           {/* Quick Preset Visual Prompts */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-2">
             {[
               {
-                title: 'Gladiators in Rome Arena',
-                desc: 'Photorealistic Colosseum arena scene with dust and dramatic lighting',
-                icon: '⚔️',
-                type: 'image' as const
+                title: 'Gamified Interactive Quiz',
+                desc: '5-question multiple choice quiz with timer and score tracker',
+                icon: '🎯',
+                category: 'games',
+                type: 'quiz'
               },
               {
-                title: 'Neural Synapse 3D Animation',
-                desc: 'Interactive procedural HTML5 canvas particle network',
-                icon: '🧠',
-                type: 'animation' as const
+                title: 'Interactive Mind Map',
+                desc: 'Radial expandable concept tree with pan & zoom',
+                icon: '🌳',
+                category: 'knowledge',
+                type: 'mindmap'
               },
               {
-                title: 'Global Satellite Mesh Orbit',
-                desc: 'Real-time orbital tracking simulation and ray casting',
-                icon: '🛰️',
-                type: 'animation' as const
+                title: '16:9 Presentation Slide Deck',
+                desc: 'Executive multi-slide deck with speaker notes',
+                icon: '📑',
+                category: 'decks',
+                type: 'deck'
               },
               {
-                title: 'Financial Ledger Transaction Flow',
-                desc: 'Animated high-speed token exchange and validation stream',
-                icon: '💳',
-                type: 'animation' as const
+                title: 'AI Multi-Host Podcast',
+                desc: '2-host conversational audio deep-dive with waveform visualizer',
+                icon: '🎧',
+                category: 'audio',
+                type: 'audio'
               }
             ].map((preset, idx) => (
               <button
                 key={idx}
-                onClick={() => onGenerateMedia?.(preset.title, preset.type)}
+                onClick={() => onGenerateMedia?.(preset.title, preset.type, preset.category)}
                 disabled={isGenerating}
-                className="p-4 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800/90 hover:border-purple-500/50 transition-all text-left group flex items-start gap-3.5 shadow-lg disabled:opacity-50"
+                className="p-3.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800/90 hover:border-purple-500/50 transition-all text-left group flex items-start gap-3 shadow-lg disabled:opacity-50"
               >
                 <span className="text-2xl p-2 rounded-lg bg-slate-800/80 group-hover:scale-110 transition-transform">
                   {preset.icon}
@@ -163,19 +179,19 @@ export const MediaStage: React.FC<MediaStageProps> = ({
               onChange={e => setCustomPrompt(e.target.value)}
               onKeyDown={e => {
                 if (e.key === 'Enter' && customPrompt.trim()) {
-                  onGenerateMedia?.(customPrompt.trim(), 'animation');
+                  onGenerateMedia?.(customPrompt.trim(), 'animation', 'general');
                 }
               }}
-              placeholder="Describe a scene, animation, physics simulation, or image to generate..."
+              placeholder="Describe any content to create (e.g. 'CAP Theorem interactive quiz', 'AI history timeline')..."
               className="flex-1 rounded-xl px-4 py-3 bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
             />
             <button
-              onClick={() => customPrompt.trim() && onGenerateMedia?.(customPrompt.trim(), 'animation')}
+              onClick={() => customPrompt.trim() && onGenerateMedia?.(customPrompt.trim(), 'animation', 'general')}
               disabled={!customPrompt.trim() || isGenerating}
               className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white text-xs font-black transition shadow-lg disabled:opacity-40 flex items-center gap-2"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Generate</span>
+              <span>Create</span>
             </button>
           </div>
         </div>
@@ -193,13 +209,14 @@ export const MediaStage: React.FC<MediaStageProps> = ({
       {/* 1. TOP CONTROL BAR */}
       <div className="px-4 py-2.5 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 flex items-center justify-between z-20">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-950/60 border border-purple-800 text-purple-300 text-[11px] font-black uppercase tracking-wider">
-            {activeAsset.type === 'image' && <ImageIcon className="w-3 h-3" />}
-            {activeAsset.type === 'animation' && <Sparkles className="w-3 h-3" />}
-            {activeAsset.type === 'canvas_sandbox' && <Code className="w-3 h-3" />}
-            {activeAsset.type === 'video' && <Film className="w-3 h-3" />}
-            <span>{activeAsset.type.replace('_', ' ')}</span>
-          </div>
+          <button
+            onClick={onOpenModeSelector}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-950/70 hover:bg-purple-900/80 border border-purple-800 text-purple-300 text-[11px] font-black uppercase tracking-wider transition"
+            title="Browse All Content Modes"
+          >
+            <Sparkles className="w-3 h-3 text-purple-400" />
+            <span>{activeAsset.category ? `${activeAsset.category.toUpperCase()} • ${activeAsset.type}` : activeAsset.type.replace('_', ' ')}</span>
+          </button>
 
           <div className="text-xs font-extrabold text-slate-200 truncate max-w-md">
             {activeAsset.title}
@@ -218,7 +235,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Preview
+                Interactive
               </button>
               <button
                 onClick={() => setViewMode('code')}
@@ -228,7 +245,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                Source
+                Code
               </button>
             </div>
           )}
@@ -284,7 +301,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
       </div>
 
       {/* 2. MAIN MEDIA DISPLAY VIEWPORT */}
-      <div className="flex-1 relative flex items-center justify-center p-4 overflow-auto">
+      <div className="flex-1 relative flex items-center justify-center p-3 overflow-auto">
         {/* VIEW MODE: SOURCE CODE */}
         {viewMode === 'code' && activeAsset.htmlCode ? (
           <div className="w-full h-full max-w-5xl rounded-xl bg-slate-950 border border-slate-800 p-4 font-mono text-xs text-emerald-400 overflow-auto whitespace-pre-wrap">
@@ -293,9 +310,9 @@ export const MediaStage: React.FC<MediaStageProps> = ({
         ) : (
           /* VIEW MODE: VISUAL PREVIEW */
           <div
-            className="relative flex items-center justify-center transition-transform duration-150"
+            className="relative w-full h-full flex items-center justify-center transition-transform duration-150"
             style={{
-              transform: `scale(${zoomLevel})`,
+              transform: activeAsset.type === 'image' ? `scale(${zoomLevel})` : 'none',
               transformOrigin: 'center center',
               maxWidth: '100%',
               maxHeight: '100%'
@@ -310,15 +327,15 @@ export const MediaStage: React.FC<MediaStageProps> = ({
               />
             )}
 
-            {/* 2. HTML5 Procedural Animation / WebGL Sandbox */}
-            {(activeAsset.type === 'animation' || activeAsset.type === 'canvas_sandbox') && (
-              <div className="w-full max-w-6xl h-[680px] rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-black flex items-center justify-center">
+            {/* 2. Interactive HTML5 / Canvas / Quiz / Mindmap / Deck Sandbox */}
+            {activeAsset.type !== 'image' && activeAsset.type !== 'gif' && activeAsset.type !== 'video' && (
+              <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl border border-slate-800 bg-[#050811] flex items-center justify-center">
                 {activeAsset.htmlCode ? (
                   <iframe
                     ref={iframeRef}
                     srcDoc={activeAsset.htmlCode}
                     title={activeAsset.title}
-                    sandbox="allow-scripts allow-same-origin"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-modals"
                     className="w-full h-full border-0"
                   />
                 ) : activeAsset.url ? (
@@ -328,7 +345,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                     className="w-full h-full border-0"
                   />
                 ) : (
-                  <div className="text-slate-500 text-xs font-bold">No animation code available.</div>
+                  <div className="text-slate-500 text-xs font-bold">No application code available.</div>
                 )}
               </div>
             )}
@@ -358,17 +375,17 @@ export const MediaStage: React.FC<MediaStageProps> = ({
             onChange={e => setCustomPrompt(e.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter' && customPrompt.trim()) {
-                onGenerateMedia?.(customPrompt.trim(), activeAsset.type === 'image' ? 'image' : 'animation');
+                onGenerateMedia?.(customPrompt.trim(), activeAsset.type, activeAsset.category || 'general');
                 setCustomPrompt('');
               }
             }}
-            placeholder={`Modify this ${activeAsset.type} with prompt (e.g. "make it night time", "add rain", "faster particles")...`}
+            placeholder={`Modify this ${activeAsset.type} with prompt (e.g. "add timer", "make questions harder", "add night sky")...`}
             className="flex-1 rounded-lg px-3 py-1.5 bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
           />
           <button
             onClick={() => {
               if (customPrompt.trim()) {
-                onGenerateMedia?.(customPrompt.trim(), activeAsset.type === 'image' ? 'image' : 'animation');
+                onGenerateMedia?.(customPrompt.trim(), activeAsset.type, activeAsset.category || 'general');
                 setCustomPrompt('');
               }
             }}
@@ -383,7 +400,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
         {mediaAssets.length > 1 && (
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-              Assets ({mediaAssets.length}):
+              Saved Assets ({mediaAssets.length}):
             </span>
             <div className="flex items-center gap-1.5 overflow-x-auto max-w-xs">
               {mediaAssets.map((asset, idx) => (

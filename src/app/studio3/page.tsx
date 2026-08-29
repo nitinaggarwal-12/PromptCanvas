@@ -47,6 +47,8 @@ import { Studio3SemanticGraph } from '@/lib/studio3/graphExtractor';
 import { Studio3QualityReport } from '@/lib/studio3/qualityValidator';
 import { Studio3LogEntry } from '@/lib/studio3/telemetryLogger';
 import { MediaStage, Studio3MediaAsset } from '@/components/studio3/MediaStage';
+import { MultimodalModeSelector } from '@/components/studio3/MultimodalModeSelector';
+import { MultimodalMode } from '@/lib/studio3/multimodalCatalog';
 
 interface ChatMessage {
   id: string;
@@ -121,6 +123,7 @@ export default function Studio3Page() {
   ]);
   const [activeAssetIndex, setActiveAssetIndex] = useState<number>(0);
   const [generatingMedia, setGeneratingMedia] = useState<boolean>(false);
+  const [isModeSelectorOpen, setIsModeSelectorOpen] = useState<boolean>(false);
 
   // Active State & Persistent ID
   const [diagramId, setDiagramId] = useState<string | null>(null);
@@ -133,25 +136,65 @@ export default function Studio3Page() {
   const [selectedAbstraction, setSelectedAbstraction] = useState<AbstractionLevel>('logical');
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
 
-  const handleGenerateMedia = async (prompt: string, type: 'image' | 'animation' = 'animation') => {
+  // Fetch saved media assets on diagramId load
+  useEffect(() => {
+    async function loadSavedMedia() {
+      try {
+        const url = diagramId ? `/api/studio3/media?diagramId=${diagramId}` : '/api/studio3/media';
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.assets) && data.assets.length > 0) {
+          setMediaAssets(data.assets);
+        }
+      } catch (e) {
+        console.warn('Failed to load saved media assets:', e);
+      }
+    }
+    loadSavedMedia();
+  }, [diagramId]);
+
+  const handleGenerateMedia = async (promptText: string, type: string = 'animation', category: string = 'general') => {
     setGeneratingMedia(true);
     try {
       const activeAsset = mediaAssets[activeAssetIndex] || null;
       const res = await fetch('/api/studio3/media', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt, type, previousAsset: activeAsset })
+        body: JSON.stringify({
+          prompt: promptText,
+          type,
+          category,
+          diagramId,
+          previousAsset: activeAsset
+        })
       });
       const data = await res.json();
       if (data.success && data.asset) {
         setMediaAssets(prev => [data.asset, ...prev]);
         setActiveAssetIndex(0);
         setActiveTab('media');
+
+        // Add confirmation message to chat
+        const assistantMessage: ChatMessage = {
+          id: `asst_${Date.now()}`,
+          role: 'assistant',
+          content: `✨ **Created & Saved ${category.toUpperCase()} Asset:** **${data.asset.title}** (switched to **Media Stage**).`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages(prev => [...prev, assistantMessage]);
       }
     } catch (err) {
       console.error('Failed to generate media:', err);
     } finally {
       setGeneratingMedia(false);
+    }
+  };
+
+  const handleSelectMultimodalMode = (mode: MultimodalMode, promptText: string) => {
+    setIsModeSelectorOpen(false);
+    setPromptInput(promptText);
+    if (mode.targetTab === 'media') {
+      setActiveTab('media');
     }
   };
 
@@ -827,11 +870,23 @@ export default function Studio3Page() {
               }}
               className="flex items-center gap-2"
             >
+              <button
+                type="button"
+                onClick={() => setIsModeSelectorOpen(true)}
+                className={`p-2.5 rounded-xl border transition flex items-center justify-center shrink-0 ${
+                  theme === 'dark'
+                    ? 'bg-slate-800 hover:bg-slate-700 text-purple-400 border-slate-700 hover:border-purple-500/50'
+                    : 'bg-slate-100 hover:bg-slate-200 text-purple-600 border-slate-300'
+                }`}
+                title="Browse All 30+ Multimodal Content Modes"
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
               <input
                 type="text"
                 value={promptInput}
                 onChange={e => setPromptInput(e.target.value)}
-                placeholder="Describe your system or expand the active diagram..."
+                placeholder="Describe your system or pick a format with ✨..."
                 disabled={loading}
                 className={`flex-1 rounded-xl px-3.5 py-2.5 text-xs transition font-medium focus:outline-none ${
                   theme === 'dark'
@@ -1059,6 +1114,7 @@ export default function Studio3Page() {
                 activeAssetIndex={activeAssetIndex}
                 onSelectAsset={setActiveAssetIndex}
                 onGenerateMedia={handleGenerateMedia}
+                onOpenModeSelector={() => setIsModeSelectorOpen(true)}
                 isGenerating={generatingMedia}
               />
             )}
@@ -1389,6 +1445,14 @@ export default function Studio3Page() {
           </div>
         </div>
       )}
+
+      {/* 4. SEARCHABLE MULTIMODAL MODE SELECTOR MODAL */}
+      <MultimodalModeSelector
+        isOpen={isModeSelectorOpen}
+        onClose={() => setIsModeSelectorOpen(false)}
+        onSelectMode={handleSelectMultimodalMode}
+        theme={theme}
+      />
     </div>
   );
 }

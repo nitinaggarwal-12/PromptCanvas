@@ -1,10 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { saveMediaAssetRecord, getMediaAssetsForDiagram, getAllSavedMediaAssets } from '@/lib/db';
+
+export async function GET(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const diagramId = searchParams.get('diagramId');
+
+    if (diagramId) {
+      const assets = await getMediaAssetsForDiagram(diagramId);
+      return NextResponse.json({ success: true, assets });
+    }
+
+    const assets = await getAllSavedMediaAssets(30);
+    return NextResponse.json({ success: true, assets });
+  } catch (error: any) {
+    console.error('Failed to fetch media assets:', error);
+    return NextResponse.json({ error: error.message || 'Failed to fetch media assets' }, { status: 500 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, type = 'animation', previousAsset } = await req.json();
+    const { prompt, type = 'animation', category = 'general', diagramId = null, previousAsset = null } = await req.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ error: 'Missing prompt.' }, { status: 400 });
@@ -13,33 +32,82 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY || '';
     const ai = new GoogleGenAI({ apiKey });
 
-    // Handle Gladiator specific photorealistic image mapping if requested
+    // Handle Gladiator specific hero image mapping if requested
     if (prompt.toLowerCase().includes('gladiator') && !previousAsset) {
+      const heroAsset = await saveMediaAssetRecord({
+        id: 'media_gladiator_arena',
+        diagram_id: diagramId,
+        asset_type: 'image',
+        title: 'Colosseum Gladiator Duel',
+        url: '/gladiators_rome_arena.jpg',
+        caption: 'Photorealistic Roman Colosseum arena duel with Secutor vs Retiarius in dramatic sunlight and dust.',
+        aspect_ratio: '16:9',
+        category: 'visuals'
+      });
+
       return NextResponse.json({
         success: true,
         asset: {
-          id: 'media_gladiator_arena',
-          type: 'image',
-          title: 'Colosseum Gladiator Duel',
-          url: '/gladiators_rome_arena.jpg',
-          caption: 'Photorealistic Roman Colosseum arena duel with Secutor vs Retiarius in dramatic sunlight and dust.',
-          aspectRatio: '16:9',
-          createdAt: new Date().toISOString()
+          id: heroAsset.id,
+          type: heroAsset.asset_type,
+          title: heroAsset.title,
+          url: heroAsset.url,
+          caption: heroAsset.caption,
+          aspectRatio: heroAsset.aspect_ratio,
+          category: heroAsset.category,
+          createdAt: heroAsset.created_at
         }
       });
     }
 
-    // Generate or iteratively evolve a standalone HTML5 Canvas / WebGL / CSS procedural interactive animation!
+    // Determine category-specific specialization for high-craft generation
     const isEvolution = Boolean(previousAsset && previousAsset.htmlCode);
-    const systemInstruction = `You are Google DeepMind's Creative Multimodal Graphics & Procedural Animation Specialist.
-Your task is to ${isEvolution ? 'modify and evolve the existing HTML5 animation' : 'generate a complete, standalone, self-contained HTML5 file'} containing rich CSS, JavaScript, HTML5 Canvas 2D/WebGL, and interactive physics for the visual prompt.
+    const lowerPrompt = prompt.toLowerCase();
 
-MANDATORY RULES:
-1. Output ONLY the raw HTML code starting with <!DOCTYPE html> and ending with </html>.
-2. Include all necessary CSS (embedded inside <style>) and JavaScript (embedded inside <script>).
-3. The animation must be modern, responsive, 60fps smooth (requestAnimationFrame), high-contrast, dark-themed (#050811), and visually stunning.
-4. Include interactive mouse controls (hover particles, click ripples, drag orbit, touch).
-5. Never use markdown code blocks or backticks. Output pure executable HTML code.`;
+    let categoryContext = '';
+    if (category === 'games' || lowerPrompt.includes('quiz') || lowerPrompt.includes('trivia')) {
+      categoryContext = `FORMAT SPECIFICATION: GAMIFIED INTERACTIVE QUIZ & TRIVIA
+- Build a complete, playable 4-5 question multiple-choice quiz.
+- Include a sleek progress bar, question timer, score tracker, instant answer check with green/red feedback cards, explanations, and final victory score summary screen with celebration confetti.`;
+    } else if (category === 'knowledge' || lowerPrompt.includes('mindmap') || lowerPrompt.includes('mind map') || lowerPrompt.includes('concept tree')) {
+      categoryContext = `FORMAT SPECIFICATION: INTERACTIVE EXPANDABLE MIND MAP
+- Render an interactive 2D Canvas or SVG radial mind map.
+- Central core theme branching into color-coded child nodes.
+- Support mouse drag/pan, zoom, and clicking nodes to expand/collapse child branches or show detail popups.`;
+    } else if (category === 'decks' || lowerPrompt.includes('slide') || lowerPrompt.includes('presentation') || lowerPrompt.includes('carousel')) {
+      categoryContext = `FORMAT SPECIFICATION: 16:9 INTERACTIVE SLIDE PRESENTATION DECK
+- Build an executive 4-6 slide deck formatted in 16:9 aspect ratio.
+- Include Previous/Next buttons, keyboard arrow navigation, slide indicator pills, animated card transitions, key metric badges, and expandable speaker notes drawer.`;
+    } else if (category === 'audio' || lowerPrompt.includes('podcast') || lowerPrompt.includes('song') || lowerPrompt.includes('speech')) {
+      categoryContext = `FORMAT SPECIFICATION: INTERACTIVE AUDIO EXPERIENCE & SYNTHESIS
+- Build an interactive audio player with animated audio frequency equalizer/waveform bars using HTML5 Canvas.
+- Include Play/Pause controls, timeline scrubber, host avatars with live dialogue transcript highlights, and Web Audio API synthesizer chimes.`;
+    } else if (category === 'science' || lowerPrompt.includes('molecule') || lowerPrompt.includes('surface') || lowerPrompt.includes('circuit')) {
+      categoryContext = `FORMAT SPECIFICATION: INTERACTIVE 3D SCIENCE & MATH SIMULATOR
+- Build an interactive 3D rotatable mathematical or molecular model using HTML5 Canvas/WebGL.
+- Include mouse drag rotation, zoom controls, parameter sliders (e.g. speed, friction, frequency), and live equation overlays.`;
+    } else if (category === 'timelines' || lowerPrompt.includes('timeline') || lowerPrompt.includes('gantt') || lowerPrompt.includes('roadmap')) {
+      categoryContext = `FORMAT SPECIFICATION: INTERACTIVE HORIZONTAL TIMELINE / GANTT ROADMAP
+- Build a smooth horizontal scrolling interactive timeline with chronological epoch cards, status badges, and expandable milestone detail modals.`;
+    } else if (category === 'uiux' || lowerPrompt.includes('wireframe') || lowerPrompt.includes('prototype') || lowerPrompt.includes('mockup')) {
+      categoryContext = `FORMAT SPECIFICATION: CLICKABLE APP WIREFRAME / PROTOTYPE
+- Build a responsive, interactive web or mobile application mockup with functional tab navigation, interactive toggles, working filter modals, and high-contrast dark UI design system.`;
+    } else {
+      categoryContext = `FORMAT SPECIFICATION: 60FPS PROCEDURAL CANVAS SIMULATION & SHADER
+- Build a 60fps high-contrast responsive HTML5 Canvas 2D / WebGL particle physics animation with mouse-reactive gravity, particle trails, and interactive controls.`;
+    }
+
+    const systemInstruction = `You are Google DeepMind's Creative Multimodal Master Engineer & Interactive Experience Specialist.
+Your mission is to generate an interactive, self-contained, high-fidelity HTML5 application for the user prompt.
+
+${categoryContext}
+
+MANDATORY TECHNICAL LAWS:
+1. Output ONLY pure raw HTML starting with <!DOCTYPE html> and ending with </html>.
+2. Embed all CSS inside <style> and all JavaScript inside <script>.
+3. Design for modern dark-mode aesthetic (background: #050811, typography: Inter/system-ui, crisp borders: #1E293B, accents: #6366F1, #38BDF8, #10B981).
+4. Make all buttons, clicks, sliders, and interactions fully functional and responsive within its iframe viewport.
+5. NEVER output markdown fences (no \`\`\`html or \`\`\`). Output pure executable HTML.`;
 
     const userPrompt = isEvolution
       ? `Existing HTML5 Code:
@@ -48,8 +116,8 @@ ${previousAsset.htmlCode}
 Requested Modification / Evolution:
 "${prompt}"
 
-Apply the requested changes to the animation while maintaining 60fps smoothness and interactive controls.`
-      : `Create an interactive, cinematic, 60fps HTML5 Canvas animation / simulation for: "${prompt}"`;
+Apply the requested changes while keeping all interactive mechanics fully functional.`
+      : `Create a complete, fully-functional, interactive ${category} application for: "${prompt}"`;
 
     const response = await ai.models.generateContent({
       model: GEMINI_MODEL_ID,
@@ -63,22 +131,32 @@ Apply the requested changes to the animation while maintaining 60fps smoothness 
     let htmlCode = response.text || '';
     htmlCode = htmlCode.replace(/^\s*```html/i, '').replace(/```\s*$/i, '').trim();
 
+    const title = (isEvolution ? `${previousAsset.title} (Updated)` : prompt.toUpperCase()).slice(0, 48);
+    const assetRecord = await saveMediaAssetRecord({
+      diagram_id: diagramId,
+      asset_type: type === 'image' ? 'image' : (category === 'quiz' ? 'quiz' : (category === 'mindmap' ? 'mindmap' : 'animation')),
+      title,
+      html_code: htmlCode,
+      aspect_ratio: '16:9',
+      caption: isEvolution ? `Evolved based on: "${prompt}"` : `Generated ${category} asset for "${prompt}"`,
+      category
+    });
+
     return NextResponse.json({
       success: true,
       asset: {
-        id: `media_${Date.now()}`,
-        type: type === 'image' ? 'image' : 'animation',
-        title: (isEvolution ? `${previousAsset.title} (Modified)` : prompt.toUpperCase()).slice(0, 45),
-        htmlCode,
-        caption: isEvolution
-          ? `Modified based on prompt: "${prompt}"`
-          : `Interactive 60fps procedural simulation generated for "${prompt}"`,
-        aspectRatio: '16:9',
-        createdAt: new Date().toISOString()
+        id: assetRecord.id,
+        type: assetRecord.asset_type,
+        title: assetRecord.title,
+        htmlCode: assetRecord.html_code,
+        caption: assetRecord.caption,
+        aspectRatio: assetRecord.aspect_ratio,
+        category: assetRecord.category,
+        createdAt: assetRecord.created_at
       }
     });
   } catch (error: any) {
     console.error('Media generation error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to generate media' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Failed to generate multimodal content' }, { status: 500 });
   }
 }
