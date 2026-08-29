@@ -1167,21 +1167,21 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
             // Root
             nodes.push({ id: data.id, text: data.text, color: data.color, x: cx, y: cy, isRoot: true });
 
-            // Depth 1
+            // Depth 1 with generous elliptical margin
             const count = data.children.length;
             data.children.forEach((c, i) => {
                 const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
-                const r = Math.min(cx, cy) * 0.65;
-                const x = cx + Math.cos(angle) * r;
-                const y = cy + Math.sin(angle) * r;
+                const rx = Math.min(cx * 0.75, 300);
+                const ry = Math.min(cy * 0.65, 175);
+                const x = cx + Math.cos(angle) * rx;
+                const y = cy + Math.sin(angle) * ry;
                 nodes.push({ id: c.id, text: c.text, color: c.color, x, y, parent: { x: cx, y: cy }, expanded: c.expanded, hasKids: c.children && c.children.length > 0 });
 
                 if (c.expanded && c.children) {
                     c.children.forEach((sub, j) => {
-                        const subAngle = angle + (j === 0 ? -0.35 : 0.35);
-                        const subR = r + 100;
-                        const subX = cx + Math.cos(subAngle) * subR;
-                        const subY = cy + Math.sin(subAngle) * subR;
+                        const subAngle = angle + (j === 0 ? -0.32 : 0.32);
+                        const subX = cx + Math.cos(subAngle) * (rx + 90);
+                        const subY = cy + Math.sin(subAngle) * (ry + 75);
                         nodes.push({ id: sub.id, text: sub.text, color: sub.color, x: subX, y: subY, parent: { x, y } });
                     });
                 }
@@ -1464,10 +1464,10 @@ export const DEFAULT_CURATED_MEDIA_ASSETS: Studio3MediaAsset[] = [
     "id": "asset_gladiator_default",
     "type": "image",
     "title": "Colosseum Gladiator Duel",
-    "url": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1600&auto=format&fit=crop",
+    "url": "/gladiators_rome_arena.jpg",
     "htmlCode": null,
     "aspectRatio": "16:9",
-    "caption": "Dramatic Roman Colosseum architectural stadium arena with dusk lighting and ancient archways.",
+    "caption": "Photorealistic Roman Colosseum arena duel with Secutor vs Retiarius in dramatic sunlight and dust.",
     "category": "visuals",
     "createdAt": "2026-08-29T05:35:23.326Z"
   }
