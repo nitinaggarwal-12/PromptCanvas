@@ -190,11 +190,19 @@ export default function Studio3Page() {
     }
   };
 
-  const handleSelectMultimodalMode = (mode: MultimodalMode, promptText: string) => {
+  const handleSelectMultimodalMode = (mode: MultimodalMode, promptText: string, autoGenerate: boolean = false) => {
     setIsModeSelectorOpen(false);
     setPromptInput(promptText);
     if (mode.targetTab === 'media') {
       setActiveTab('media');
+      if (autoGenerate) {
+        handleGenerateMedia(promptText, mode.outputType, mode.category);
+      }
+    } else {
+      setActiveTab('canvas');
+      if (autoGenerate) {
+        handleSynthesize(promptText, 'logical');
+      }
     }
   };
 
