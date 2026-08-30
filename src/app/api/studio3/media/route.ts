@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
     } else if (category === 'audio' || lowerPrompt.includes('podcast') || lowerPrompt.includes('song') || lowerPrompt.includes('speech')) {
       categoryContext = `FORMAT SPECIFICATION: INTERACTIVE AUDIO EXPERIENCE & SYNTHESIS
 - Build an interactive audio player with animated audio frequency equalizer/waveform bars using HTML5 Canvas.
-- Include Play/Pause controls, timeline scrubber, host avatars with live dialogue transcript highlights, and Web Audio API synthesizer chimes.`;
+- Include Play/Pause controls, timeline scrubber, host avatars with live dialogue transcript highlights, and Web Audio API synthesizer chimes.
+- For music or soundtrack requests, add clearly labelled genre, mood, arrangement, intensity, and playback controls. Generate the musical experience with Web Audio API; do not claim an external audio file exists.`;
     } else if (category === 'science' || lowerPrompt.includes('molecule') || lowerPrompt.includes('surface') || lowerPrompt.includes('circuit')) {
       categoryContext = `FORMAT SPECIFICATION: INTERACTIVE 3D SCIENCE & MATH SIMULATOR
 - Build an interactive 3D rotatable mathematical or molecular model using HTML5 Canvas/WebGL.

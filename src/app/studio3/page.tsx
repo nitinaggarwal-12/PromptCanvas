@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, History, LoaderCircle, Moon, Plus, Sparkles, Sun } from 'lucide-react';
+import { CheckCircle2, History, LoaderCircle, Moon, Music2, Plus, Sparkles, Sun } from 'lucide-react';
 import { MediaStage, Studio3MediaAsset } from '@/components/studio3/MediaStage';
 import { MultimodalModeSelector } from '@/components/studio3/MultimodalModeSelector';
 import { MultimodalMode } from '@/lib/studio3/multimodalCatalog';
@@ -34,6 +34,9 @@ export default function Studio3Page() {
   const [generating, setGenerating] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [musicGenre, setMusicGenre] = useState('Lo-fi');
+  const [musicMood, setMusicMood] = useState('Focused');
+  const [musicFormat, setMusicFormat] = useState('Instrumental');
 
   useEffect(() => { void loadAssets(); }, []);
 
@@ -73,7 +76,13 @@ export default function Studio3Page() {
     } finally { setGenerating(false); }
   }
 
-  function submit(event: FormEvent<HTMLFormElement>) { event.preventDefault(); void generateContent(prompt); }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const musicDirection = selectedMode?.id === 'audio_song'
+      ? `${prompt}. Create a ${musicFormat.toLowerCase()} ${musicGenre.toLowerCase()} track with a ${musicMood.toLowerCase()} mood.`
+      : prompt;
+    void generateContent(musicDirection);
+  }
   function selectMode(mode: MultimodalMode, samplePrompt: string, autoGenerate = false) {
     setSelectedMode(mode); setPrompt(samplePrompt); setIsModeSelectorOpen(false);
     if (autoGenerate) void generateContent(samplePrompt, mode);
@@ -95,9 +104,17 @@ export default function Studio3Page() {
           <h1 className="mt-5 text-4xl font-black tracking-tight md:text-6xl">Create experiences, not XML.</h1>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-400 md:text-lg">Generate interactive learning content, decks, simulations, quizzes, prototypes, timelines, and creative web experiences. Every item below is saved content—not a seeded demo.</p>
           <form onSubmit={submit} className={`mx-auto mt-8 flex max-w-3xl gap-2 rounded-2xl border p-2 shadow-xl ${theme === 'dark' ? 'border-slate-700 bg-slate-900' : 'border-slate-200 bg-white'}`}><input value={prompt} onChange={event => setPrompt(event.target.value)} placeholder={selectedMode ? `Create a ${selectedMode.name.toLowerCase()}…` : 'Describe what you want to create…'} className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none placeholder:text-slate-500" /><button type="button" onClick={() => setIsModeSelectorOpen(true)} className="rounded-xl border border-slate-700 px-3 text-xs font-bold text-slate-300 hover:bg-slate-800">{selectedMode?.icon || '✦'}<span className="ml-1 hidden sm:inline">Format</span></button><button disabled={!prompt.trim() || generating} type="submit" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 px-5 text-sm font-black text-white transition hover:from-fuchsia-500 hover:to-indigo-500 disabled:cursor-not-allowed disabled:opacity-50">{generating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{generating ? 'Creating' : 'Create'}</button></form>
-          {selectedMode && <p className="mt-3 text-xs text-slate-400">Selected format: <span className="font-bold text-purple-300">{selectedMode.name}</span></p>}{notice && <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400"><CheckCircle2 className="h-4 w-4" />{notice}</p>}{error && <p role="alert" className="mt-4 text-sm font-semibold text-red-400">{error}</p>}
+          {selectedMode && <p className="mt-3 text-xs text-slate-400">Selected format: <span className="font-bold text-purple-300">{selectedMode.name}</span></p>}
+          {selectedMode?.id === 'audio_song' && (
+            <div className={`mx-auto mt-4 grid max-w-3xl grid-cols-1 gap-2 rounded-2xl border p-3 text-left sm:grid-cols-3 ${theme === 'dark' ? 'border-fuchsia-500/25 bg-fuchsia-500/5' : 'border-fuchsia-200 bg-fuchsia-50'}`}>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 flex items-center gap-1 text-fuchsia-300"><Music2 className="h-3.5 w-3.5" />Genre</span><select value={musicGenre} onChange={event => setMusicGenre(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Lo-fi</option><option>Synthwave</option><option>Orchestral</option><option>Ambient</option><option>Hip-hop</option><option>Acoustic</option><option>Bollywood</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-fuchsia-300">Mood</span><select value={musicMood} onChange={event => setMusicMood(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Focused</option><option>Uplifting</option><option>Epic</option><option>Calm</option><option>Playful</option><option>Dark</option><option>Romantic</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-fuchsia-300">Format</span><select value={musicFormat} onChange={event => setMusicFormat(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Instrumental</option><option>Vocal hook</option><option>Background score</option><option>Short intro</option></select></label>
+            </div>
+          )}
+          {notice && <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400"><CheckCircle2 className="h-4 w-4" />{notice}</p>}{error && <p role="alert" className="mt-4 text-sm font-semibold text-red-400">{error}</p>}
         </section>
-        <section className="mt-12"><div className="mb-4 flex items-center justify-between"><div><h2 className="text-xl font-black">Your content</h2><p className="mt-1 text-sm text-slate-400">{loadingAssets ? 'Loading saved work…' : `${assets.length} saved ${assets.length === 1 ? 'item' : 'items'}`}</p></div><History className="h-5 w-5 text-slate-500" /></div>{loadingAssets ? <div className="flex min-h-[500px] items-center justify-center rounded-2xl border border-slate-800"><LoaderCircle className="h-6 w-6 animate-spin text-purple-400" /></div> : <MediaStage theme={theme} mediaAssets={assets} activeAssetIndex={activeAssetIndex} onSelectAsset={setActiveAssetIndex} onGenerateMedia={(nextPrompt) => void generateContent(nextPrompt, null, activeAsset)} onOpenModeSelector={() => setIsModeSelectorOpen(true)} isGenerating={generating} />}</section>
+        <section className="mt-12"><div className="mb-4 flex items-center justify-between"><div><h2 className="text-xl font-black">Your content</h2><p className="mt-1 text-sm text-slate-400">{loadingAssets ? 'Loading saved work…' : `${assets.length} saved ${assets.length === 1 ? 'item' : 'items'}`}</p></div><History className="h-5 w-5 text-slate-500" /></div>{loadingAssets ? <div className="flex min-h-[500px] items-center justify-center rounded-2xl border border-slate-800"><LoaderCircle className="h-6 w-6 animate-spin text-purple-400" /></div> : <MediaStage theme={theme} mediaAssets={assets} activeAssetIndex={activeAssetIndex} onSelectAsset={setActiveAssetIndex} onApplyEdit={(nextPrompt, asset) => generateContent(nextPrompt, null, asset)} onOpenModeSelector={() => setIsModeSelectorOpen(true)} isGenerating={generating} />}</section>
       </main>
       <MultimodalModeSelector isOpen={isModeSelectorOpen} onClose={() => setIsModeSelectorOpen(false)} onSelectMode={selectMode} theme={theme} />
     </div>

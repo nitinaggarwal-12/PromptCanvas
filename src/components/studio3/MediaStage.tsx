@@ -27,7 +27,7 @@ interface MediaStageProps {
   mediaAssets: Studio3MediaAsset[];
   activeAssetIndex: number;
   onSelectAsset: (index: number) => void;
-  onGenerateMedia?: (prompt: string, type?: string, category?: string) => void;
+  onApplyEdit?: (prompt: string, asset: Studio3MediaAsset) => Promise<void>;
   onOpenModeSelector?: () => void;
   isGenerating?: boolean;
 }
@@ -37,7 +37,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   mediaAssets,
   activeAssetIndex,
   onSelectAsset,
-  onGenerateMedia,
+  onApplyEdit,
   onOpenModeSelector,
   isGenerating = false
 }) => {
@@ -57,6 +57,13 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.25, 3));
   const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.25, 0.5));
   const handleResetZoom = () => setZoomLevel(1);
+
+  const applyEdit = async () => {
+    const editPrompt = customPrompt.trim();
+    if (!editPrompt || !activeAsset || isGenerating) return;
+    await onApplyEdit?.(editPrompt, activeAsset);
+    setCustomPrompt('');
+  };
 
   const handleDownload = () => {
     if (!activeAsset) return;
@@ -321,20 +328,15 @@ export const MediaStage: React.FC<MediaStageProps> = ({
             onChange={e => setCustomPrompt(e.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter' && customPrompt.trim()) {
-                onGenerateMedia?.(customPrompt.trim(), activeAsset.type, activeAsset.category || 'general');
-                setCustomPrompt('');
+                e.preventDefault();
+                void applyEdit();
               }
             }}
             placeholder={`Modify this ${activeAsset.type} with prompt (e.g. "add timer", "make questions harder", "add night sky")...`}
             className="flex-1 rounded-lg px-3 py-1.5 bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
           />
           <button
-            onClick={() => {
-              if (customPrompt.trim()) {
-                onGenerateMedia?.(customPrompt.trim(), activeAsset.type, activeAsset.category || 'general');
-                setCustomPrompt('');
-              }
-            }}
+            onClick={() => void applyEdit()}
             disabled={!customPrompt.trim() || isGenerating}
             className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold transition disabled:opacity-40 shrink-0 flex items-center gap-1 shadow-sm"
           >
