@@ -37,6 +37,10 @@ export default function Studio3Page() {
   const [musicGenre, setMusicGenre] = useState('Lo-fi');
   const [musicMood, setMusicMood] = useState('Focused');
   const [musicFormat, setMusicFormat] = useState('Instrumental');
+  const [voiceStyle, setVoiceStyle] = useState('Warm narrator');
+  const [voicePace, setVoicePace] = useState('Natural pace');
+  const [visualStyle, setVisualStyle] = useState('Cinematic');
+  const [visualPalette, setVisualPalette] = useState('Vibrant');
 
   useEffect(() => { void loadAssets(); }, []);
 
@@ -54,7 +58,7 @@ export default function Studio3Page() {
 
   async function generateContent(rawPrompt: string, mode: MultimodalMode | null = selectedMode, previousAsset?: Studio3MediaAsset | null) {
     const finalPrompt = rawPrompt.trim();
-    if (!finalPrompt || generating) return;
+    if (!finalPrompt || generating) return false;
     setGenerating(true); setError(null); setNotice(null);
     try {
       const response = await fetch('/api/studio3/media', {
@@ -70,18 +74,24 @@ export default function Studio3Page() {
       if (!response.ok || !data.success || !data.asset) throw new Error(data.error || 'Content generation failed.');
       const asset = mapAsset(data.asset);
       setAssets(previous => [asset, ...previous.filter(item => item.id !== asset.id)]);
-      setActiveAssetIndex(0); setPrompt(''); setNotice(`Created ${asset.title}.`);
+      setActiveAssetIndex(0); setPrompt(''); setNotice(previousAsset ? `Created an updated version of ${previousAsset.title}.` : `Created ${asset.title}.`);
+      return true;
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Content generation failed.');
+      return false;
     } finally { setGenerating(false); }
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const musicDirection = selectedMode?.id === 'audio_song'
+    const direction = selectedMode?.id === 'audio_song'
       ? `${prompt}. Create a ${musicFormat.toLowerCase()} ${musicGenre.toLowerCase()} track with a ${musicMood.toLowerCase()} mood.`
-      : prompt;
-    void generateContent(musicDirection);
+      : selectedMode?.category === 'audio'
+        ? `${prompt}. Voice: ${voiceStyle}; delivery: ${voicePace}.`
+        : ['visuals', 'video', 'motion'].includes(selectedMode?.category || '')
+          ? `${prompt}. Visual style: ${visualStyle}; color treatment: ${visualPalette}.`
+          : prompt;
+    void generateContent(direction);
   }
   function selectMode(mode: MultimodalMode, samplePrompt: string, autoGenerate = false) {
     setSelectedMode(mode); setPrompt(samplePrompt); setIsModeSelectorOpen(false);
@@ -107,9 +117,21 @@ export default function Studio3Page() {
           {selectedMode && <p className="mt-3 text-xs text-slate-400">Selected format: <span className="font-bold text-purple-300">{selectedMode.name}</span></p>}
           {selectedMode?.id === 'audio_song' && (
             <div className={`mx-auto mt-4 grid max-w-3xl grid-cols-1 gap-2 rounded-2xl border p-3 text-left sm:grid-cols-3 ${theme === 'dark' ? 'border-fuchsia-500/25 bg-fuchsia-500/5' : 'border-fuchsia-200 bg-fuchsia-50'}`}>
-              <label className="text-xs font-bold text-slate-300"><span className="mb-1 flex items-center gap-1 text-fuchsia-300"><Music2 className="h-3.5 w-3.5" />Genre</span><select value={musicGenre} onChange={event => setMusicGenre(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Lo-fi</option><option>Synthwave</option><option>Orchestral</option><option>Ambient</option><option>Hip-hop</option><option>Acoustic</option><option>Bollywood</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 flex items-center gap-1 text-fuchsia-300"><Music2 className="h-3.5 w-3.5" />Music genre</span><select value={musicGenre} onChange={event => setMusicGenre(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Lo-fi</option><option>Synthwave</option><option>Orchestral</option><option>Ambient</option><option>Hip-hop</option><option>Acoustic</option><option>Bollywood</option></select></label>
               <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-fuchsia-300">Mood</span><select value={musicMood} onChange={event => setMusicMood(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Focused</option><option>Uplifting</option><option>Epic</option><option>Calm</option><option>Playful</option><option>Dark</option><option>Romantic</option></select></label>
-              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-fuchsia-300">Format</span><select value={musicFormat} onChange={event => setMusicFormat(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Instrumental</option><option>Vocal hook</option><option>Background score</option><option>Short intro</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-fuchsia-300">Song format</span><select value={musicFormat} onChange={event => setMusicFormat(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Instrumental</option><option>Vocal hook</option><option>Background score</option><option>Short intro</option></select></label>
+            </div>
+          )}
+          {selectedMode?.category === 'audio' && selectedMode.id !== 'audio_song' && (
+            <div className={`mx-auto mt-4 grid max-w-3xl grid-cols-1 gap-2 rounded-2xl border p-3 text-left sm:grid-cols-2 ${theme === 'dark' ? 'border-sky-500/25 bg-sky-500/5' : 'border-sky-200 bg-sky-50'}`}>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-sky-300">Voice</span><select value={voiceStyle} onChange={event => setVoiceStyle(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Warm narrator</option><option>Confident presenter</option><option>Friendly conversational</option><option>Calm documentary</option><option>Energetic host</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-sky-300">Delivery</span><select value={voicePace} onChange={event => setVoicePace(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Natural pace</option><option>Slow and clear</option><option>Fast and energetic</option><option>Measured and authoritative</option></select></label>
+            </div>
+          )}
+          {['visuals', 'video', 'motion'].includes(selectedMode?.category || '') && (
+            <div className={`mx-auto mt-4 grid max-w-3xl grid-cols-1 gap-2 rounded-2xl border p-3 text-left sm:grid-cols-2 ${theme === 'dark' ? 'border-violet-500/25 bg-violet-500/5' : 'border-violet-200 bg-violet-50'}`}>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-violet-300">Visual style</span><select value={visualStyle} onChange={event => setVisualStyle(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Cinematic</option><option>Photorealistic</option><option>Minimal editorial</option><option>3D product render</option><option>Illustrated</option><option>Retro-futurist</option></select></label>
+              <label className="text-xs font-bold text-slate-300"><span className="mb-1 block text-violet-300">Color treatment</span><select value={visualPalette} onChange={event => setVisualPalette(event.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-2 py-2 text-sm font-medium text-white"><option>Vibrant</option><option>Dark neon</option><option>Warm film</option><option>Pastel</option><option>Monochrome</option><option>Brand-safe neutral</option></select></label>
             </div>
           )}
           {notice && <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-400"><CheckCircle2 className="h-4 w-4" />{notice}</p>}{error && <p role="alert" className="mt-4 text-sm font-semibold text-red-400">{error}</p>}

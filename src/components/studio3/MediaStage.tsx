@@ -27,7 +27,7 @@ interface MediaStageProps {
   mediaAssets: Studio3MediaAsset[];
   activeAssetIndex: number;
   onSelectAsset: (index: number) => void;
-  onApplyEdit?: (prompt: string, asset: Studio3MediaAsset) => Promise<void>;
+  onApplyEdit?: (prompt: string, asset: Studio3MediaAsset) => Promise<boolean>;
   onOpenModeSelector?: () => void;
   isGenerating?: boolean;
 }
@@ -61,8 +61,8 @@ export const MediaStage: React.FC<MediaStageProps> = ({
   const applyEdit = async () => {
     const editPrompt = customPrompt.trim();
     if (!editPrompt || !activeAsset || isGenerating) return;
-    await onApplyEdit?.(editPrompt, activeAsset);
-    setCustomPrompt('');
+    const saved = await onApplyEdit?.(editPrompt, activeAsset);
+    if (saved) setCustomPrompt('');
   };
 
   const handleDownload = () => {
