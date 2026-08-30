@@ -7,7 +7,6 @@ import {
   Sparkles,
   ChevronRight,
   Filter,
-  Layers,
   Film,
   Zap,
   Play
@@ -200,14 +199,9 @@ export const MultimodalModeSelector: React.FC<MultimodalModeSelectorProps> = ({
                         </div>
                       </div>
 
-                      {/* Target Tab Badge */}
-                      <span className={`text-[9.5px] font-black px-2 py-0.5 rounded-md border flex items-center gap-1 shrink-0 ${
-                        mode.targetTab === 'canvas'
-                          ? 'bg-blue-950 text-blue-300 border-blue-800'
-                          : 'bg-purple-950 text-purple-300 border-purple-800'
-                      }`}>
-                        {mode.targetTab === 'canvas' ? <Layers className="w-2.5 h-2.5 text-blue-400" /> : <Film className="w-2.5 h-2.5 text-purple-400" />}
-                        <span>{mode.targetTab === 'canvas' ? 'Draw.io' : 'Media Stage'}</span>
+                      <span className="text-[9.5px] font-black px-2 py-0.5 rounded-md border flex items-center gap-1 shrink-0 bg-purple-950 text-purple-300 border-purple-800">
+                        <Film className="w-2.5 h-2.5 text-purple-400" />
+                        <span>Content Studio</span>
                       </span>
                     </div>
 

@@ -7,8 +7,7 @@ import {
   Download,
   Maximize2,
   ZoomIn,
-  ZoomOut,
-  Code
+  ZoomOut
 } from 'lucide-react';
 
 export interface Studio3MediaAsset {
@@ -258,7 +257,7 @@ export const MediaStage: React.FC<MediaStageProps> = ({
                     ref={iframeRef}
                     srcDoc={activeAsset.htmlCode}
                     title={activeAsset.title}
-                    sandbox="allow-scripts allow-same-origin allow-forms allow-modals"
+                    sandbox="allow-scripts allow-forms allow-modals"
                     className="w-full h-full min-h-[440px] border-0"
                     style={{ width: '100%', height: '100%', minHeight: '440px' }}
                   />

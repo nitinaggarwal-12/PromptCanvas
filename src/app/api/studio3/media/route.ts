@@ -1,21 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
-import { saveMediaAssetRecord, getMediaAssetsForDiagram, getAllSavedMediaAssets } from '@/lib/db';
-import { DEFAULT_CURATED_MEDIA_ASSETS } from '@/lib/studio3/defaultMediaAssets';
+import { getAllSavedMediaAssets, saveMediaAssetRecord } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const diagramId = searchParams.get('diagramId');
-
-    const rawAssets = diagramId
-      ? await getMediaAssetsForDiagram(diagramId)
-      : await getAllSavedMediaAssets(40);
-
-    // Merge curated defaults with any custom user-generated assets from DB
-    const customUserAssets = (rawAssets || [])
-      .filter(a => !DEFAULT_CURATED_MEDIA_ASSETS.some(d => d.id === a.id))
+    const rawAssets = await getAllSavedMediaAssets(40);
+    const assets = (rawAssets || [])
       .map(a => ({
         id: a.id,
         type: a.asset_type || (a as any).type || 'animation',
@@ -28,9 +19,7 @@ export async function GET(req: NextRequest) {
         createdAt: a.created_at || (a as any).createdAt
       }));
 
-    const finalAssets = [...DEFAULT_CURATED_MEDIA_ASSETS, ...customUserAssets];
-
-    return NextResponse.json({ success: true, assets: finalAssets });
+    return NextResponse.json({ success: true, assets });
   } catch (error: any) {
     console.error('Failed to fetch media assets:', error);
     return NextResponse.json({ error: error.message || 'Failed to fetch media assets' }, { status: 500 });
@@ -39,42 +28,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { prompt, type = 'animation', category = 'general', diagramId = null, previousAsset = null } = await req.json();
+    const { prompt, type = 'interactive_html', category = 'general', previousAsset = null } = await req.json();
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ error: 'Missing prompt.' }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || '';
-    const ai = new GoogleGenAI({ apiKey });
-
-    // Handle Gladiator specific hero image mapping if requested
-    if (prompt.toLowerCase().includes('gladiator') && !previousAsset) {
-      const heroAsset = await saveMediaAssetRecord({
-        id: 'media_gladiator_arena',
-        diagram_id: diagramId,
-        asset_type: 'image',
-        title: 'Colosseum Gladiator Duel',
-        url: '/gladiators_rome_arena.jpg',
-        caption: 'Photorealistic Roman Colosseum arena duel with Secutor vs Retiarius in dramatic sunlight and dust.',
-        aspect_ratio: '16:9',
-        category: 'visuals'
-      });
-
-      return NextResponse.json({
-        success: true,
-        asset: {
-          id: heroAsset.id,
-          type: heroAsset.asset_type,
-          title: heroAsset.title,
-          url: heroAsset.url,
-          caption: heroAsset.caption,
-          aspectRatio: heroAsset.aspect_ratio,
-          category: heroAsset.category,
-          createdAt: heroAsset.created_at
-        }
-      });
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: 'Content generation is not configured. Set GEMINI_API_KEY on the server.' }, { status: 503 });
     }
+    const ai = new GoogleGenAI({ apiKey });
 
     // Determine category-specific specialization for high-craft generation
     const isEvolution = Boolean(previousAsset && previousAsset.htmlCode);
@@ -149,8 +113,10 @@ Apply the requested changes while keeping all interactive mechanics fully functi
 
     const title = (isEvolution ? `${previousAsset.title} (Updated)` : prompt.toUpperCase()).slice(0, 48);
     const assetRecord = await saveMediaAssetRecord({
-      diagram_id: diagramId,
-      asset_type: type === 'image' ? 'image' : (category === 'quiz' ? 'quiz' : (category === 'mindmap' ? 'mindmap' : 'animation')),
+      // Studio 3 content is independent from the legacy diagram table.
+      diagram_id: null,
+      // Gemini returns a self-contained HTML experience. Do not label it as an image/video without a real media URL.
+      asset_type: type === 'quiz' || category === 'games' ? 'quiz' : type === 'mindmap' ? 'mindmap' : 'interactive_html',
       title,
       html_code: htmlCode,
       aspect_ratio: '16:9',

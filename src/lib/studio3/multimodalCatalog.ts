@@ -5,8 +5,8 @@ export interface MultimodalMode {
   categoryIcon: string;
   icon: string;
   description: string;
-  outputType: 'image' | 'animation' | 'canvas_sandbox' | 'video' | 'audio' | 'deck' | 'quiz' | 'mindmap' | 'interactive_html' | 'drawio';
-  targetTab: 'media' | 'canvas';
+  outputType: 'image' | 'animation' | 'canvas_sandbox' | 'video' | 'audio' | 'deck' | 'quiz' | 'mindmap' | 'interactive_html';
+  targetTab: 'media';
   promptScaffold: string;
   samplePrompt: string;
   badgeColor: string;
@@ -80,20 +80,6 @@ export const MULTIMODAL_MODES: MultimodalMode[] = [
     samplePrompt: 'Quantum computing principles vs classical computing with key milestone timeline',
     badgeColor: 'bg-blue-950 text-blue-300 border-blue-800',
     tags: ['infographic', 'poster', 'cheatsheet', 'educational', 'breakdown', 'stats']
-  },
-  {
-    id: 'drawio_architecture',
-    name: 'Draw.io Architecture Diagram',
-    category: 'visuals',
-    categoryIcon: '🖼️',
-    icon: '🏛️',
-    description: 'Multi-tier cloud topologies, microservices, sequence flows, and system architectures in Draw.io XML.',
-    outputType: 'drawio',
-    targetTab: 'canvas',
-    promptScaffold: 'Multi-tier enterprise cloud architecture for ',
-    samplePrompt: 'Vertex AI Agentic RAG Pipeline with Cloud Armor, GKE Autopilot, and Spanner',
-    badgeColor: 'bg-indigo-950 text-indigo-300 border-indigo-800',
-    tags: ['drawio', 'xml', 'architecture', 'cloud', 'gcp', 'topology', 'microservices', 'diagram']
   },
   {
     id: 'image_3d_product',

@@ -39,7 +39,7 @@ interface NavItem {
 }
 
 const CANONICAL_NAV_ITEMS: NavItem[] = [
-  { id: 'studio3', name: 'Launch Studio 3', icon: Zap, href: '/studio3', badge: 'AI' },
+  { id: 'studio3', name: 'Launch Studio 3', icon: Zap, href: '/studio3', badge: 'CONTENT' },
   { id: 'studio2', name: 'Launch Studio 2', icon: Sparkles, href: '/studio2', badge: 'PRO' },
   { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
@@ -52,7 +52,6 @@ const CANONICAL_NAV_ITEMS: NavItem[] = [
 const CANVAS_SUB_ITEMS: NavItem[] = [
   { id: 'design_canvas', name: 'Design Canvas', icon: Network, href: '/workspace' },
   { id: 'canvas_history', name: 'All History', icon: History, href: '/history' },
-  { id: 'studio3_history', name: 'Studio 3 Canvases', icon: Zap, href: '/history?studio=studio3' },
   { id: 'studio2_history', name: 'Studio 2 Canvases', icon: Sparkles, href: '/history?studio=studio2' },
   { id: 'studio1_history', name: 'Studio 1 Canvases', icon: Layers, href: '/history?studio=studio1' },
 ];

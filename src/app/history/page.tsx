@@ -321,11 +321,6 @@ export default function CanvasHistoryPage() {
     }
   };
 
-  // Open in Studio 3
-  const handleLaunchStudio3 = (diagramId: string) => {
-    router.push(`/studio3?id=${diagramId}`);
-  };
-
   // Clone / Duplicate Diagram
   const handleCloneDiagram = async (diagram: CanvasDiagramItem, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -349,7 +344,7 @@ export default function CanvasHistoryPage() {
       const newDiag = await res.json();
       if (newDiag && newDiag.id) {
         await fetchAllCanvases();
-        router.push(`/studio3?id=${newDiag.id}`);
+        router.push(`/workspace?diagram=${newDiag.id}&tab=editor`);
       }
     } catch (err) {
       console.error('Failed to clone diagram:', err);
@@ -775,7 +770,6 @@ export default function CanvasHistoryPage() {
                       <option value="all">🎨 All Studios &amp; Canvases</option>
                       <option value="studio1">Studio 1 (Prompt &amp; Canonical)</option>
                       <option value="studio2">Studio 2 (Multi-Agent Flowcharts)</option>
-                      <option value="studio3">Studio 3 (First-Principles Stage)</option>
                       <option value="workspace">Workspace &amp; Direct Imports</option>
                     </select>
                   </div>
@@ -906,19 +900,19 @@ export default function CanvasHistoryPage() {
                  diagram.name && diagram.name.toLowerCase().includes('studio 2') ? 'studio2' : 'studio1');
               
               const studioLabel = 
-                rawStudio === 'studio3' ? 'Studio 3' :
+                rawStudio === 'studio3' ? 'Legacy Studio 3 Diagram' :
                 rawStudio === 'studio2' ? 'Studio 2' :
                 rawStudio === 'workspace' ? 'Workspace' : 'Studio 1';
 
               const studioBadgeStyle = 
-                rawStudio === 'studio3' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' :
+                rawStudio === 'studio3' ? 'bg-slate-500/10 text-slate-500 dark:text-slate-400 border-slate-500/30' :
                 rawStudio === 'studio2' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30' :
                 rawStudio === 'workspace' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30' :
                 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30';
 
               const handleLaunchNativeStudio = () => {
                 if (rawStudio === 'studio3') {
-                  router.push(`/studio3?id=${diagram.id}`);
+                  router.push(`/workspace?diagram=${diagram.id}&tab=editor`);
                 } else if (rawStudio === 'studio2') {
                   router.push(`/studio2?diagram=${diagram.id}`);
                 } else if (rawStudio === 'studio1') {
@@ -1132,15 +1126,6 @@ export default function CanvasHistoryPage() {
                     >
                       <Download className="w-3.5 h-3.5 text-slate-400" />
                       <span>Download XML</span>
-                    </button>
-
-                    <button
-                      onClick={() => handleLaunchStudio3(activeModalCanvas.id)}
-                      className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition flex items-center gap-1.5 shadow-md active:scale-95"
-                      title="Open and synthesize further in Studio 3"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Open in Studio 3</span>
                     </button>
 
                     <button
