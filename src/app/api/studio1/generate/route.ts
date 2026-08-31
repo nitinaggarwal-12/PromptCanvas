@@ -2,7 +2,18 @@ import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
 import { normalizeStudio1Graph, renderStudio1GraphXml, Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
-import { applyStudio1Patch, diffStudio1Graphs, embedStudio1State, Studio1ChangePlan, Studio1DecisionLedger, Studio1GenerationContext, Studio1PatchOperation, validateStudio1Change } from '@/lib/studio1ArchitectureCore';
+import {
+  applyStudio1Patch,
+  assessStudio1InitialPrompt,
+  diffStudio1Graphs,
+  embedStudio1State,
+  Studio1ChangePlan,
+  Studio1DecisionLedger,
+  Studio1GenerationContext,
+  Studio1PatchOperation,
+  validateStudio1CandidateDiversity,
+  validateStudio1Change,
+} from '@/lib/studio1ArchitectureCore';
 
 function extractJson(text: string): unknown {
   const cleaned = text.replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/i, '').trim();
@@ -59,6 +70,39 @@ function enforceDepth(graph: Studio1SemanticGraph, context: Studio1GenerationCon
   if (graph.edges.length < minimumEdges) throw new Error(`Architecture is incomplete: expected at least ${minimumEdges} meaningful flows.`);
 }
 
+const stringList = (value: unknown, maximum = 6): string[] => Array.isArray(value)
+  ? value.map(String).map(item => item.trim()).filter(Boolean).slice(0, maximum)
+  : [];
+
+interface RawStudio1Alternative {
+  id: string;
+  name: string;
+  strategy: string;
+  optimizeFor: string[];
+  tradeoffs: string[];
+  recommended: boolean;
+  graph: Studio1SemanticGraph;
+}
+
+function normalizeAlternative(value: unknown, index: number, prompt: string): RawStudio1Alternative {
+  const raw = value && typeof value === 'object' ? value as Record<string, unknown> : {};
+  const defaults = [
+    { id: 'lean', name: 'Lean & Managed' },
+    { id: 'balanced', name: 'Balanced Production' },
+    { id: 'enterprise', name: 'Resilient Enterprise' },
+  ];
+  const fallback = defaults[index] || { id: `option_${index + 1}`, name: `Option ${index + 1}` };
+  return {
+    id: String(raw.id || fallback.id).toLowerCase().replace(/[^a-z0-9_-]+/g, '_').slice(0, 40),
+    name: String(raw.name || fallback.name).slice(0, 80),
+    strategy: String(raw.strategy || 'A distinct architecture strategy for the stated requirements.').slice(0, 360),
+    optimizeFor: stringList(raw.optimizeFor, 5),
+    tradeoffs: stringList(raw.tradeoffs, 5),
+    recommended: raw.recommended === true,
+    graph: normalizeStudio1Graph(raw.graph, prompt),
+  };
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -70,18 +114,63 @@ export async function POST(request: Request) {
     const baseVersionId = typeof body.baseVersionId === 'string' ? body.baseVersionId : null;
     if (prompt.length < 8) return NextResponse.json({ success: false, error: 'Describe the architecture or question in at least eight characters.' }, { status: 400 });
     if (previousGraph && !baseVersionId) return NextResponse.json({ success: false, error: 'Incremental Studio 1 requests require a baseVersionId.' }, { status: 409 });
+    const initialPromptAssessment = !previousGraph ? assessStudio1InitialPrompt(prompt) : null;
+    if (initialPromptAssessment?.disposition === 'clarify') {
+        return NextResponse.json({
+          success: true,
+          mutationApplied: false,
+          promptAssessment: initialPromptAssessment,
+          context,
+          interaction: {
+            intent: initialPromptAssessment.disposition,
+            message: initialPromptAssessment.reason,
+            clarificationQuestion: initialPromptAssessment.question,
+            options: initialPromptAssessment.options,
+            requiresConfirmation: false,
+          },
+          generationSource: 'studio1-deterministic-intent-gate',
+        });
+    }
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return NextResponse.json({ success: false, error: 'Studio 1 requires GEMINI_API_KEY. No static template was returned.', generationSource: 'none' }, { status: 503 });
 
     const model = getGeminiModel('pro');
     const ai = new GoogleGenAI({ apiKey });
+    if (initialPromptAssessment?.disposition === 'discuss') {
+      const discussion = await ai.models.generateContent({
+        model,
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        config: {
+          ...getGenConfig('edit'),
+          systemInstruction: { parts: [{ text: 'You are Studio 1, a concise principal architect. Answer the question accurately without creating or changing a diagram. End with one useful question about whether the user wants a conceptual or technical architecture. Return JSON only: {"assistantMessage":"","clarificationQuestion":"","options":[{"id":"create_conceptual","label":"Create conceptual diagram"},{"id":"create_technical","label":"Create technical diagram"}]}.' }] },
+          responseMimeType: 'application/json',
+          temperature: 0.1,
+        },
+      });
+      const discussed = extractJson(discussion.text || '') as Record<string, unknown>;
+      return NextResponse.json({
+        success: true,
+        mutationApplied: false,
+        promptAssessment: initialPromptAssessment,
+        context,
+        interaction: {
+          intent: 'discuss',
+          message: typeof discussed.assistantMessage === 'string' ? discussed.assistantMessage.slice(0, 1200) : initialPromptAssessment.reason,
+          clarificationQuestion: typeof discussed.clarificationQuestion === 'string' ? discussed.clarificationQuestion.slice(0, 300) : initialPromptAssessment.question,
+          options: Array.isArray(discussed.options) ? discussed.options.slice(0, 3) : initialPromptAssessment.options?.filter(option => option.id !== 'explain_only'),
+          requiresConfirmation: false,
+        },
+        generationSource: 'gemini-initial-discussion',
+        model,
+      });
+    }
     const isRefinement = Boolean(previousGraph);
     const isRefactor = Boolean(previousGraph) && (context.action === 'guided_refactor' || context.action === 'full_refactor');
     const systemInstruction = isRefactor
       ? `You are Studio 1, a principal architect performing a ${context.action}. Produce a complete target semantic graph, not patch operations. Preserve every locked component exactly. For guided refactoring also preserve valid unaffected capabilities and constraints; for full refactoring preserve only explicit requirements, constraints, and locks. Correct technical weaknesses, make trade-offs explicit, and keep stable IDs for retained components. Use 10-30 components for detailed depth and at least 14 for exhaustive. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"summary and trade-offs","refactorPlan":{"problems":[],"majorChanges":[],"migrationConsiderations":[],"requiresConfirmation":true},"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}`
       : isRefinement
       ? `You are Studio 1, a conversational principal architect. Classify the message as discuss, clarify, propose_change, apply_change, refactor, validate, or revert. Questions and hypotheticals MUST NOT mutate the graph. If ambiguous or technically infeasible, explain the conflict and ask one targeted question with 2-4 viable options. For incremental edits return ONLY controlled patch operations against exact existing IDs. Preserve unrelated components and flows. Never return a replacement graph. Supported operations: add_node, update_node, remove_node, add_edge, update_edge, remove_edge, insert_between, change_patterns. New nodes/edges require complete fields. A request affecting roughly more than 35% of the graph is a refactor requiring confirmation. Return JSON only: {"context":${JSON.stringify(context)},"changePlan":{"intent":"discuss|clarify|propose_change|apply_change|refactor|validate|revert","summary":"","rationale":"","operations":[],"preservedNodeIds":[],"requiresConfirmation":false,"clarificationQuestion":"optional","options":[{"id":"x","label":"choice","recommended":true}]},"assistantMessage":"concise response"}`
-      : `You are Studio 1, a principal enterprise and cloud architect. Generate a fresh, detailed semantic architecture, never a canned template. Respect persona, level, viewpoint, lifecycle, depth and platform. Include relevant user/process, network, data, security, failure and observability semantics without irrelevant clutter. Use stable snake_case IDs, explicit decisions, typed flows and ordered steps. Use 6-30 components for standard depth, at least 10 for detailed, and at least 14 for exhaustive. Allowed patterns: layered, event-driven, hub-spoke, network-topology, swimlane, sequence. Node kinds: actor, service, process, decision, datastore, queue, security, observability, external. Flow types: synchronous, asynchronous, data, network, ai, governance, feedback. Allowed GCP serviceKey values: gemini, vertex_ai, vertex_vector_search, document_ai, agent_builder, model_armor, gke, gke_autopilot, cloud_run, cloud_functions, compute_engine, bigquery, spanner, memorystore, cloud_storage, pubsub, dataflow, cloud_armor, iap, cloud_dlp, cloud_iam, vpc_sc, scc, cloud_load_balancing, cloud_cdn, user_ingress, cloud_monitoring, cloud_logging, cloud_deploy, artifact_registry. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"what was inferred","graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}`;
+      : `You are Studio 1, a principal enterprise and cloud architect. Generate exactly THREE technically viable and meaningfully different semantic architecture alternatives for the same requirements. Never return canned templates or cosmetic rearrangements. Tailor the strategies to the workload; common strategies are lean/managed, balanced production, and resilient enterprise, but use more relevant alternatives when appropriate. Mark exactly one recommended option and explain why. Respect persona, level, viewpoint, lifecycle, depth and platform. Include relevant user/process, network, data, security, failure and observability semantics without irrelevant clutter. Each graph needs stable snake_case IDs, explicit decisions where real branching exists, typed flows and ordered steps. Each standard graph uses 6-30 components, detailed at least 10, exhaustive at least 14. Allowed patterns: layered, event-driven, hub-spoke, network-topology, swimlane, sequence. Node kinds: actor, service, process, decision, datastore, queue, security, observability, external. Flow types: synchronous, asynchronous, data, network, ai, governance, feedback. Allowed GCP serviceKey values: gemini, vertex_ai, vertex_vector_search, document_ai, agent_builder, model_armor, gke, gke_autopilot, cloud_run, cloud_functions, compute_engine, bigquery, spanner, memorystore, cloud_storage, pubsub, dataflow, cloud_armor, iap, cloud_dlp, cloud_iam, vpc_sc, scc, cloud_load_balancing, cloud_cdn, user_ingress, cloud_monitoring, cloud_logging, cloud_deploy, artifact_registry. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"inferred workload, audience, level, platform and major assumptions","alternatives":[{"id":"lean","name":"Lean & Managed","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"balanced","name":"Balanced Production","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":true,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"enterprise","name":"Resilient Enterprise","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}`;
 
     const userMessage = `${isRefinement ? `BASE VERSION: ${baseVersionId}\nCURRENT GRAPH:\n${JSON.stringify(previousGraph)}\nDECISION LEDGER:\n${JSON.stringify(ledger)}` : `PROJECT CONTEXT:\n${JSON.stringify(context)}`}\n\nUSER MESSAGE:\n${prompt}`;
     const response = await ai.models.generateContent({ model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } });
@@ -136,16 +225,66 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, changePlan: plan, changeValidation, semanticCritic: criticRaw, certification: rendered.certification, generationSource: 'gemini-semantic-patch', model, baseVersionId, summary: plan.summary, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents, reasoning: assistantMessage || plan.rationale });
     }
 
-    const semanticGraph = normalizeStudio1Graph(raw.graph, prompt);
-    enforceDepth(semanticGraph, resolvedContext);
+    const rawAlternatives = Array.isArray(raw.alternatives) ? raw.alternatives : [];
+    if (rawAlternatives.length !== 3) return NextResponse.json({ success: false, error: 'Studio 1 requires exactly three architecture alternatives for a new design.' }, { status: 422 });
+    const alternatives = rawAlternatives.map((item, index) => normalizeAlternative(item, index, prompt));
+    if (new Set(alternatives.map(candidate => candidate.id)).size !== alternatives.length) return NextResponse.json({ success: false, error: 'Architecture alternatives returned duplicate candidate IDs.' }, { status: 422 });
+    for (const alternative of alternatives) enforceDepth(alternative.graph, resolvedContext);
+    const diversity = validateStudio1CandidateDiversity(alternatives);
+    if (!diversity.valid) return NextResponse.json({ success: false, error: 'The generated options were too similar to represent meaningful architecture alternatives.', candidateDiversity: diversity }, { status: 422 });
+
     const createCriticModel = getGeminiModel('critic');
-    const createCriticResponse = await ai.models.generateContent({ model: createCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nPROPOSED GRAPH:\n${JSON.stringify(semanticGraph)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently assess requirement coverage, abstraction-level fit, service compatibility, actors, data, security, operations, decision branches, typed flows, and unjustified assumptions. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
+    const createCriticResponse = await ai.models.generateContent({ model: createCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nCANDIDATES:\n${JSON.stringify(alternatives)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently compare all candidate architectures. Assess requirement coverage, abstraction-level fit, service compatibility, actors, data, security, reliability, operations, decision branches, typed flows, unjustified assumptions, and whether the strategies are meaningfully distinct. Do not reward complexity by itself. Return JSON only: {"recommendedId":"balanced","comparisonSummary":"","candidates":[{"id":"lean","approved":true,"score":90,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"balanced","approved":true,"score":94,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"enterprise","approved":true,"score":88,"issues":[],"missingRequirements":[],"invalidServices":[]}]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
     const createCritic = extractJson(createCriticResponse.text || '') as Record<string, unknown>;
-    if (createCritic.approved !== true || Number(createCritic.score) < 80 || (Array.isArray(createCritic.invalidServices) && createCritic.invalidServices.length)) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the generated architecture.', semanticCritic: createCritic }, { status: 422 });
-    const nextLedger = ledgerForGraph(semanticGraph);
-    const rendered = renderStudio1GraphXml(semanticGraph, theme);
-    const xml = embedStudio1State(rendered.xml, semanticGraph, resolvedContext, nextLedger);
-    return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, certification: rendered.certification, semanticCritic: createCritic, generationSource: 'gemini-semantic-graph-v2', model, summary: `${semanticGraph.patterns.join(' + ')} architecture with ${semanticGraph.nodes.length} components and ${semanticGraph.edges.length} typed flows`, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents: semanticGraph.nodes.map(node => node.label).slice(0, 10), reasoning: assistantMessage || `Generated a ${resolvedContext.level} ${resolvedContext.viewpoint} architecture for ${resolvedContext.persona}.` });
+    const criticRows = Array.isArray(createCritic.candidates) ? createCritic.candidates : [];
+    const criticById = new Map(criticRows.map(item => {
+      const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
+      return [String(row.id || ''), row] as const;
+    }));
+    const rejected = alternatives.filter(alternative => {
+      const review = criticById.get(alternative.id);
+      return !review || review.approved !== true || Number(review.score) < 80 || stringList(review.invalidServices, 20).length > 0;
+    });
+    if (rejected.length > 0) return NextResponse.json({ success: false, error: `The independent architecture critic rejected ${rejected.map(item => item.name).join(', ')}. No weak option was shown.`, semanticCritic: createCritic, candidateDiversity: diversity }, { status: 422 });
+
+    const recommendedId = alternatives.some(item => item.id === String(createCritic.recommendedId))
+      ? String(createCritic.recommendedId)
+      : alternatives.slice().sort((a, b) => Number(criticById.get(b.id)?.score || 0) - Number(criticById.get(a.id)?.score || 0))[0].id;
+    const candidates = alternatives.map(alternative => {
+      const graph = alternative.graph;
+      const nextLedger = ledgerForGraph(graph);
+      const rendered = renderStudio1GraphXml(graph, theme);
+      const xml = embedStudio1State(rendered.xml, graph, resolvedContext, nextLedger);
+      return {
+        ...alternative,
+        recommended: alternative.id === recommendedId,
+        xml,
+        semanticGraph: graph,
+        context: resolvedContext,
+        decisionLedger: nextLedger,
+        certification: rendered.certification,
+        semanticCritic: criticById.get(alternative.id),
+        summary: `${graph.patterns.join(' + ')} with ${graph.nodes.length} components and ${graph.edges.length} typed flows`,
+        targetTier: graph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '),
+        changedComponents: graph.nodes.map(node => node.label).slice(0, 12),
+      };
+    });
+    return NextResponse.json({
+      success: true,
+      mutationApplied: false,
+      candidateSet: {
+        title: 'Choose the architecture strategy to use as your baseline',
+        message: assistantMessage || `Generated three validated alternatives for a ${resolvedContext.level} ${resolvedContext.viewpoint} architecture.`,
+        comparisonSummary: typeof createCritic.comparisonSummary === 'string' ? createCritic.comparisonSummary.slice(0, 800) : '',
+        recommendedId,
+        diversity,
+        candidates,
+      },
+      context: resolvedContext,
+      promptAssessment: assessStudio1InitialPrompt(prompt),
+      generationSource: 'gemini-semantic-candidate-tournament-v1',
+      model,
+    });
   } catch (error: any) {
     console.error('[studio1/generate] Studio 1 transaction failed:', error);
     return NextResponse.json({ success: false, error: error?.message || 'Studio 1 request failed.', generationSource: 'none' }, { status: 500 });

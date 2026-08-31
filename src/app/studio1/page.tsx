@@ -202,6 +202,41 @@ interface PendingVerificationState {
   previousDiagrams: StudioDiagramTab[];
 }
 
+interface Studio1ArchitectureCandidate {
+  id: string;
+  name: string;
+  strategy: string;
+  optimizeFor: string[];
+  tradeoffs: string[];
+  recommended: boolean;
+  xml: string;
+  semanticGraph: Studio1SemanticGraph;
+  context: Studio1GenerationContext;
+  decisionLedger: Studio1DecisionLedger;
+  certification: { certified: boolean; score: number; violations: string[] };
+  semanticCritic?: { approved?: boolean; score?: number; issues?: string[]; missingRequirements?: string[] };
+  summary: string;
+  targetTier: string;
+  changedComponents: string[];
+}
+
+interface Studio1CandidateSelectionState {
+  title: string;
+  message: string;
+  comparisonSummary?: string;
+  recommendedId: string;
+  diversity: { valid: boolean; minimumDistance: number; duplicatePairs: string[] };
+  candidates: Studio1ArchitectureCandidate[];
+  prompt: string;
+  projectTitle: string;
+  previousXml: string;
+  previousDiagrams: StudioDiagramTab[];
+  microVersionTag: string;
+  proposedVersionTag: string;
+  generationSource: string;
+  model: string;
+}
+
 // Helper to intelligently infer logical Project Name & Use Case Name if not provided
 function inferLogicalProjectAndUseCase(
   prompt: string,
@@ -351,6 +386,7 @@ function Studio1Content() {
   const [decisionLedger, setDecisionLedger] = useState<Studio1DecisionLedger>({
     confirmedRequirements: [], constraints: [], lockedNodeIds: [], rejectedOptions: [], assumptions: [], openQuestions: []
   });
+  const [candidateSelection, setCandidateSelection] = useState<Studio1CandidateSelectionState | null>(null);
 
   // Past Projects & Use Cases State (Pre-seeded with Rich GCP Architectures + LocalStorage)
   const [pastProjects, setPastProjects] = useState<PastProject[]>(() => {
@@ -1164,6 +1200,29 @@ function Studio1Content() {
           throw new Error(data.error || `Studio 1 generation failed with HTTP ${res.status}. No static fallback was rendered.`);
         }
 
+        if (data.candidateSet && Array.isArray(data.candidateSet.candidates)) {
+          if (data.context) setGenerationContext(data.context);
+          setCandidateSelection({
+            ...data.candidateSet,
+            prompt: promptToUse,
+            projectTitle: titleToUse,
+            previousXml: previousXmlSnapshot,
+            previousDiagrams: previousDiagramsSnapshot,
+            microVersionTag,
+            proposedVersionTag,
+            generationSource: data.generationSource || 'studio1-candidate-tournament',
+            model: data.model || 'architecture-model',
+          });
+          setChatMessages((previous) => [...previous, {
+            id: `ast_${Date.now()}`,
+            sender: 'assistant',
+            text: `${data.candidateSet.message}\n\nI have not changed the canvas. Compare the three validated strategies and choose the baseline you want to develop.`,
+            timestamp: 'Just now'
+          }]);
+          showToast('Three architecture strategies are ready for comparison');
+          return;
+        }
+
         if (data.mutationApplied === false) {
           if (data.context) setGenerationContext(data.context);
           const interaction = data.interaction || {};
@@ -1184,7 +1243,11 @@ function Studio1Content() {
             options: Array.isArray(interaction.options)
               ? interaction.options.map((option: any) => ({
                   ...option,
-                  prompt: option.id === 'confirm_high_impact' ? promptToUse : option.label
+                  prompt: option.id === 'confirm_high_impact'
+                    ? promptToUse
+                    : String(option.id || '').startsWith('create_')
+                      ? `${option.label} for this topic and requirement: ${promptToUse}`
+                      : `${promptToUse}\nClarification selected: ${option.label}`
                 }))
               : undefined
           }]);
@@ -1269,6 +1332,12 @@ function Studio1Content() {
       } catch (err: any) {
         console.error('[Studio1] Hybrid synthesis error:', err);
         setProjectScopePrompt(promptToUse);
+        setChatMessages((previous) => [...previous, {
+          id: `ast_${Date.now()}`,
+          sender: 'assistant',
+          text: `I could not produce a safe architecture result: ${err?.message || 'Unknown error'}\n\nYour canvas was not changed. You can revise the request or try again.`,
+          timestamp: 'Just now'
+        }]);
         showToast(`❌ Synthesis error: ${err?.message || 'Unknown error'}`);
       } finally {
         setIsSynthesizing(false);
@@ -1291,6 +1360,55 @@ function Studio1Content() {
       showToast
     ]
   );
+
+  const handleSelectArchitectureCandidate = useCallback((candidate: Studio1ArchitectureCandidate) => {
+    if (!candidateSelection) return;
+    const isGenericTab = activeDiagram?.source === 'generic_architecture';
+    const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diagram) => diagram.id === activeDiagramId
+      ? {
+          ...diagram,
+          title: `${candidateSelection.projectTitle} • ${candidate.name}`,
+          xml: candidate.xml,
+          source: isGenericTab ? 'generic_architecture' : 'functional_flowchart',
+          lastPrompt: candidateSelection.prompt,
+          semanticGraph: candidate.semanticGraph,
+          generationContext: candidate.context,
+          decisionLedger: candidate.decisionLedger,
+          reconciliationRequired: false,
+        }
+      : diagram);
+
+    setDiagrams(updatedDiagrams);
+    setGenerationContext(candidate.context);
+    setDecisionLedger(candidate.decisionLedger);
+    setPendingVerification({
+      isPending: true,
+      prompt: candidateSelection.prompt,
+      summary: `${candidate.name}: ${candidate.summary}`,
+      targetTier: candidate.targetTier,
+      changedComponents: candidate.changedComponents,
+      microVersionTag: candidateSelection.microVersionTag,
+      proposedVersionTag: candidateSelection.proposedVersionTag,
+      candidateXml: candidate.xml,
+      previousXml: candidateSelection.previousXml,
+      previousDiagrams: candidateSelection.previousDiagrams,
+    });
+    setDynamicSuggestions(computeDynamicNextSuggestions(candidateSelection.prompt, projectName, candidate.changedComponents));
+    setChatMessages((previous) => [...previous, {
+      id: `ast_${Date.now()}`,
+      sender: 'assistant',
+      text: `Selected ${candidate.name} as the reviewable draft.\n${candidate.strategy}\n\nTechnical review: ${Math.round(Number(candidate.semanticCritic?.score || 0))}/100 • deterministic render rules: ${candidate.certification.score}/100. Accept it to establish the baseline, or continue refining the draft.`,
+      timestamp: 'Just now',
+      options: [
+        { id: 'explain_candidate', label: 'Explain this design', prompt: `Explain the architecture decisions and tradeoffs in the selected ${candidate.name} option without changing the diagram.`, recommended: true },
+        { id: 'more_technical', label: 'Make more technical', prompt: 'Increase the diagram to a technical level while preserving its selected architecture strategy.' },
+        { id: 'network_focus', label: 'Add network detail', prompt: 'Add the missing network flow and trust-boundary detail at the technically correct locations.' },
+        { id: 'security_focus', label: 'Strengthen security', prompt: 'Strengthen security controls using a safe incremental change and explain any assumptions.' },
+      ],
+    }]);
+    setCandidateSelection(null);
+    showToast(`${candidate.name} selected • review before accepting the baseline`);
+  }, [activeDiagram?.source, activeDiagramId, candidateSelection, diagrams, projectName, showToast]);
 
   // Direct Execution Handler for Dynamic Suggestions
   const handleExecuteSuggestion = useCallback(
@@ -1869,7 +1987,7 @@ function Studio1Content() {
                     { key: 'lifecycleState', label: 'State', values: [['current', 'Current State'], ['transition', 'Transition State'], ['target', 'Target State']] },
                   ].map((control) => (
                     <label key={control.key} className="text-[9px] font-bold uppercase tracking-wide text-slate-500">
-                      <span className="sr-only">{control.label}</span>
+                      <span className="block mb-1 px-0.5">{control.label}</span>
                       <select
                         value={String(generationContext[control.key as keyof Studio1GenerationContext] || 'auto')}
                         onChange={(event) => setGenerationContext((previous) => ({ ...previous, [control.key]: event.target.value } as Studio1GenerationContext))}
@@ -1880,6 +1998,12 @@ function Studio1Content() {
                     </label>
                   ))}
                 </div>
+
+                {!activeDiagram.semanticGraph && (
+                  <div className="rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50/80 dark:bg-indigo-950/30 px-3 py-2 text-[10px] leading-relaxed text-indigo-800 dark:text-indigo-200">
+                    <strong>New architecture:</strong> Studio 1 will qualify the request, generate three distinct strategies, and leave the canvas unchanged until you choose one.
+                  </div>
+                )}
 
                 {/* Prompt Textarea */}
                 <textarea
@@ -2215,13 +2339,144 @@ function Studio1Content() {
                 </div>
 
                 <div className="text-[11px] font-mono text-slate-500">
-                  Active Target: <span className="font-bold text-teal-600 dark:text-teal-400">GCP Cloud Architecture Functional Flowchart</span>
+                  Active Target:{' '}
+                  <span className="font-bold text-teal-600 dark:text-teal-400">
+                    {generationContext.platform === 'auto'
+                      ? 'Auto-detected cloud architecture'
+                      : `${generationContext.platform.replace('_', ' ').toUpperCase()} architecture`}
+                    {' · '}{generationContext.level === 'auto' ? 'Auto level' : generationContext.level.replace('_', ' ')}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* New architectures remain isolated candidates until the customer deliberately chooses a baseline. */}
+      {candidateSelection && (
+        <div
+          className="fixed inset-0 z-[70] bg-slate-950/85 backdrop-blur-md overflow-y-auto p-4 md:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="studio1-candidate-title"
+        >
+          <div className={`mx-auto w-full max-w-[1600px] rounded-3xl border shadow-2xl overflow-hidden ${
+            isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#07101f] border-slate-700'
+          }`}>
+            <div className={`px-6 py-5 md:px-8 border-b flex items-start justify-between gap-6 ${
+              isLight ? 'bg-white border-slate-200' : 'bg-slate-950 border-slate-800'
+            }`}>
+              <div className="max-w-4xl">
+                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.18em] text-teal-600 dark:text-teal-400">
+                  <Sparkles className="w-4 h-4" /> Architecture candidate tournament
+                </div>
+                <h2 id="studio1-candidate-title" className="mt-2 text-2xl md:text-3xl font-black text-slate-950 dark:text-white">
+                  {candidateSelection.title}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                  {candidateSelection.message}
+                </p>
+                {candidateSelection.comparisonSummary && (
+                  <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                    {candidateSelection.comparisonSummary}
+                  </p>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setCandidateSelection(null)}
+                className="p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                title="Cancel without changing the canvas"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 p-5 md:p-8">
+              {candidateSelection.candidates.map((candidate) => (
+                <article
+                  key={candidate.id}
+                  aria-label={`${candidate.name}${candidate.recommended ? ', recommended' : ''}`}
+                  className={`relative rounded-2xl border overflow-hidden flex flex-col shadow-lg ${
+                    candidate.recommended
+                      ? 'border-teal-500 ring-2 ring-teal-500/20 bg-white dark:bg-slate-900'
+                      : isLight ? 'border-slate-200 bg-white' : 'border-slate-800 bg-slate-900'
+                  }`}
+                >
+                  {candidate.recommended && (
+                    <div className="absolute top-3 right-3 z-20 rounded-full bg-teal-600 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-lg">
+                      Recommended
+                    </div>
+                  )}
+                  <div className="h-[250px] bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 overflow-hidden">
+                    <DiagramViewerRenderSafe
+                      key={`candidate_${candidate.id}_${studio1ContentDigest(candidate.xml)}`}
+                      diagramId={`studio1_candidate_${candidate.id}`}
+                      diagramType="functional_flowchart"
+                      xml={candidate.xml}
+                      aspectRatioId="16:9"
+                      bgTheme={isLight ? 'light' : 'dark'}
+                      allowFullScaleScroll={false}
+                    />
+                  </div>
+
+                  <div className="p-5 flex-1 flex flex-col">
+                    <div className="pr-24">
+                      <h3 className="text-lg font-black text-slate-950 dark:text-white">{candidate.name}</h3>
+                      <p className="mt-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{candidate.strategy}</p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      <span className="rounded-lg bg-indigo-50 dark:bg-indigo-950/60 px-2 py-1 text-[10px] font-black text-indigo-700 dark:text-indigo-300">
+                        Technical {Math.round(Number(candidate.semanticCritic?.score || 0))}/100
+                      </span>
+                      <span className="rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-2 py-1 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
+                        Render rules {candidate.certification.score}/100
+                      </span>
+                      <span className="rounded-lg bg-slate-100 dark:bg-slate-800 px-2 py-1 text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                        {candidate.semanticGraph.nodes.length} components · {candidate.semanticGraph.edges.length} flows
+                      </span>
+                    </div>
+
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-3 text-xs">
+                      <div className="rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900 p-3">
+                        <div className="font-black text-emerald-800 dark:text-emerald-300 mb-1.5">Optimizes for</div>
+                        <ul className="space-y-1 text-emerald-950/80 dark:text-emerald-100/80">
+                          {(candidate.optimizeFor.length ? candidate.optimizeFor : ['Requirement fit']).map(item => <li key={item}>• {item}</li>)}
+                        </ul>
+                      </div>
+                      <div className="rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900 p-3">
+                        <div className="font-black text-amber-800 dark:text-amber-300 mb-1.5">Tradeoffs</div>
+                        <ul className="space-y-1 text-amber-950/80 dark:text-amber-100/80">
+                          {(candidate.tradeoffs.length ? candidate.tradeoffs : ['Confirm operating constraints']).map(item => <li key={item}>• {item}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSelectArchitectureCandidate(candidate)}
+                      className={`mt-5 w-full px-5 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 transition shadow-md ${
+                        candidate.recommended
+                          ? 'bg-teal-600 hover:bg-teal-700 text-white shadow-teal-600/20'
+                          : 'bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-white text-white dark:text-slate-950'
+                      }`}
+                    >
+                      <Check className="w-4 h-4" /> Use {candidate.name}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="px-6 py-4 md:px-8 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+              <span>No candidate has modified your canvas. Selection creates a reviewable draft, not an accepted baseline.</span>
+              <span className="font-mono">Distinctness floor passed · distance {candidateSelection.diversity.minimumDistance.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Inline Draw.io Modal */}
       {showInlineDrawioModal && (

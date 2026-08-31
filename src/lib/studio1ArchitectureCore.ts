@@ -81,6 +81,139 @@ export interface Studio1EmbeddedState {
   decisionLedger: Studio1DecisionLedger;
 }
 
+export type Studio1PromptDisposition = 'generate' | 'clarify' | 'discuss';
+
+export interface Studio1PromptAssessment {
+  disposition: Studio1PromptDisposition;
+  confidence: number;
+  architecturalSignals: string[];
+  workloadSignals: string[];
+  question?: string;
+  options?: Array<{ id: string; label: string; recommended?: boolean }>;
+  reason: string;
+}
+
+export interface Studio1CandidateDiversity {
+  valid: boolean;
+  minimumDistance: number;
+  duplicatePairs: string[];
+}
+
+const ARCHITECTURE_TERMS = new Set([
+  'architecture', 'architect', 'diagram', 'system', 'platform', 'application', 'app', 'service',
+  'microservice', 'pipeline', 'workflow', 'network', 'vpc', 'subnet', 'cloud', 'gcp', 'aws', 'azure',
+  'api', 'gateway', 'database', 'datastore', 'queue', 'stream', 'event', 'security', 'identity',
+  'deployment', 'kubernetes', 'serverless', 'data', 'analytics', 'ai', 'ml', 'rag', 'agent',
+]);
+
+const WORKLOAD_TERMS = new Set([
+  'payment', 'commerce', 'retail', 'healthcare', 'clinical', 'pharma', 'patient', 'scheduling',
+  'banking', 'fraud', 'insurance', 'manufacturing', 'supply', 'logistics', 'telecom', 'iot',
+  'genomics', 'document', 'search', 'recommendation', 'chatbot', 'migration', 'etl', 'warehouse',
+  'lakehouse', 'realtime', 'real-time', 'batch', 'streaming', 'saas', 'mobile', 'web', 'enterprise',
+]);
+
+const CREATE_TERMS = new Set(['create', 'design', 'build', 'draw', 'generate', 'architect', 'model', 'show']);
+
+function promptTokens(prompt: string): string[] {
+  return prompt.toLowerCase().replace(/[^a-z0-9-]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+}
+
+/** Deterministic floor before any expensive model call. It rejects chatter and asks for
+ * missing architectural intent without pretending that an LLM confidence score is proof. */
+export function assessStudio1InitialPrompt(prompt: string): Studio1PromptAssessment {
+  const normalized = prompt.trim();
+  const tokens = promptTokens(normalized);
+  const architecturalSignals = [...new Set(tokens.filter(token => ARCHITECTURE_TERMS.has(token)))];
+  const workloadSignals = [...new Set(tokens.filter(token => WORKLOAD_TERMS.has(token)))];
+  const createSignals = tokens.filter(token => CREATE_TERMS.has(token));
+  const beginsAsQuestion = /^(what|why|how|when|where|who|is|are|can|could|should|would|does|do)\b/i.test(normalized);
+  const hasExplicitArchitectureRequest = createSignals.length > 0 && architecturalSignals.length > 0;
+  const hasWorkloadContext = workloadSignals.length > 0 || tokens.length >= 7;
+
+  if (beginsAsQuestion && !hasExplicitArchitectureRequest) {
+    return {
+      disposition: 'discuss', confidence: 0.96, architecturalSignals, workloadSignals,
+      question: 'Would you like an explanation only, or should I create an architecture from this topic?',
+      options: [
+        { id: 'explain_only', label: 'Explain only', recommended: true },
+        { id: 'create_conceptual', label: 'Create conceptual diagram' },
+        { id: 'create_technical', label: 'Create technical diagram' },
+      ],
+      reason: 'The message is phrased as a question and does not explicitly request a diagram.',
+    };
+  }
+
+  if (architecturalSignals.length === 0 && workloadSignals.length === 0) {
+    return {
+      disposition: 'clarify', confidence: 0.98, architecturalSignals, workloadSignals,
+      question: 'What system or workload should the architecture represent?',
+      options: [
+        { id: 'web_application', label: 'Web or mobile application' },
+        { id: 'data_platform', label: 'Data and analytics platform' },
+        { id: 'ai_platform', label: 'AI or agent platform' },
+        { id: 'describe_workload', label: 'Describe another workload', recommended: true },
+      ],
+      reason: 'No architectural or workload signal was found.',
+    };
+  }
+
+  if (!hasWorkloadContext && architecturalSignals.length <= 2) {
+    return {
+      disposition: 'clarify', confidence: 0.9, architecturalSignals, workloadSignals,
+      question: 'What workload, users, and primary outcome should this architecture support?',
+      options: [
+        { id: 'lean_managed', label: 'Lean managed-service design' },
+        { id: 'balanced_production', label: 'Balanced production design', recommended: true },
+        { id: 'resilient_enterprise', label: 'Highly resilient enterprise design' },
+        { id: 'add_requirements', label: 'Add requirements first' },
+      ],
+      reason: 'The request names architecture but not enough workload context to compare meaningful alternatives.',
+    };
+  }
+
+  return {
+    disposition: 'generate',
+    confidence: Math.min(0.99, 0.72 + architecturalSignals.length * 0.04 + workloadSignals.length * 0.05 + (createSignals.length ? 0.05 : 0)),
+    architecturalSignals,
+    workloadSignals,
+    reason: 'The request contains sufficient architecture and workload context for candidate generation.',
+  };
+}
+
+function candidateFeatures(graph: Studio1SemanticGraph): Set<string> {
+  return new Set([
+    ...graph.patterns.map(pattern => `pattern:${pattern}`),
+    ...graph.nodes.map(node => `node:${node.serviceKey || node.technology || `${node.kind}:${node.label.toLowerCase()}`}`),
+    ...graph.edges.map(edge => `flow:${edge.flowType}`),
+  ]);
+}
+
+function featureDistance(a: Set<string>, b: Set<string>): number {
+  const union = new Set([...a, ...b]);
+  if (union.size === 0) return 0;
+  let shared = 0;
+  for (const feature of a) if (b.has(feature)) shared += 1;
+  return Number((1 - shared / union.size).toFixed(3));
+}
+
+/** Prevents three cosmetic rearrangements from being presented as architecture alternatives. */
+export function validateStudio1CandidateDiversity(
+  candidates: Array<{ id: string; graph: Studio1SemanticGraph }>,
+  threshold = 0.18,
+): Studio1CandidateDiversity {
+  const duplicatePairs: string[] = [];
+  let minimumDistance = 1;
+  for (let left = 0; left < candidates.length; left += 1) {
+    for (let right = left + 1; right < candidates.length; right += 1) {
+      const distance = featureDistance(candidateFeatures(candidates[left].graph), candidateFeatures(candidates[right].graph));
+      minimumDistance = Math.min(minimumDistance, distance);
+      if (distance < threshold) duplicatePairs.push(`${candidates[left].id}:${candidates[right].id}`);
+    }
+  }
+  return { valid: candidates.length >= 2 && duplicatePairs.length === 0, minimumDistance, duplicatePairs };
+}
+
 const cloneGraph = (graph: Studio1SemanticGraph): Studio1SemanticGraph => JSON.parse(JSON.stringify(graph));
 
 function canonical(value: unknown): string {
