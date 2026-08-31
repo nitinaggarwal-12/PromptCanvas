@@ -117,12 +117,12 @@ export default function CanvasHistoryPage() {
   const [selectedArchFilter, setSelectedArchFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<'recent' | 'versions' | 'oldest' | 'name' | 'starred'>('recent');
 
-  // URL query parameter synchronization on load (e.g. ?studio=studio3)
+  // Studio 2 and Studio 3 are intentionally hidden while Studio 1 is developed.
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const studio = params.get('studio');
-      if (studio) {
+      if (studio === 'studio1' || studio === 'workspace') {
         setSelectedStudioFilter(studio);
       }
     }
@@ -420,6 +420,14 @@ export default function CanvasHistoryPage() {
         return true;
       });
     }
+
+    // Preserve Studio 2/3 records in storage while keeping them out of the UI.
+    list = list.filter(d => {
+      const studio = d.created_studio ||
+        (d.architecture_type && d.architecture_type.includes('studio3') ? 'studio3' :
+         d.name && d.name.toLowerCase().includes('studio 2') ? 'studio2' : 'studio1');
+      return studio !== 'studio2' && studio !== 'studio3';
+    });
 
     // Studio Filter
     if (selectedStudioFilter !== 'all') {
@@ -767,9 +775,8 @@ export default function CanvasHistoryPage() {
                           : 'bg-slate-950 border-slate-700/80 text-slate-200 focus:border-teal-400'
                       }`}
                     >
-                      <option value="all">🎨 All Studios &amp; Canvases</option>
+                      <option value="all">🎨 Studio 1 &amp; Workspace Canvases</option>
                       <option value="studio1">Studio 1 (Prompt &amp; Canonical)</option>
-                      <option value="studio2">Studio 2 (Multi-Agent Flowcharts)</option>
                       <option value="workspace">Workspace &amp; Direct Imports</option>
                     </select>
                   </div>
