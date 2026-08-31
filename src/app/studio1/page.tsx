@@ -50,6 +50,12 @@ import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopolo
 import { sanitizeDrawioXmlAttributes, injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { compileArchitectureFromPrompt } from '@/lib/dynamicArchitectureCompiler';
 import type { Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
+import {
+  extractStudio1State,
+  studio1ContentDigest,
+  type Studio1DecisionLedger,
+  type Studio1GenerationContext,
+} from '@/lib/studio1ArchitectureCore';
 
 interface PastProject {
   id: string;
@@ -126,6 +132,10 @@ interface StudioDiagramTab {
   xml: string;
   source: 'functional_flowchart' | 'generic_architecture' | 'custom';
   lastPrompt?: string;
+  semanticGraph?: Studio1SemanticGraph;
+  generationContext?: Studio1GenerationContext;
+  decisionLedger?: Studio1DecisionLedger;
+  reconciliationRequired?: boolean;
 }
 
 interface StudioVersionSnapshot {
@@ -176,6 +186,7 @@ interface StudioChatMessage {
     aiReasoning: string;
   };
   suggestedPrompts?: string[];
+  options?: Array<{ id: string; label: string; recommended?: boolean; prompt?: string }>;
 }
 
 interface PendingVerificationState {
@@ -333,7 +344,13 @@ function Studio1Content() {
   const [useCaseName, setUseCaseName] = useState<string>('');
   const [projectTitle, setProjectTitle] = useState<string>('');
   const [projectScopePrompt, setProjectScopePrompt] = useState<string>('');
-  const [semanticGraphByDiagram, setSemanticGraphByDiagram] = useState<Record<string, Studio1SemanticGraph>>({});
+  const [generationContext, setGenerationContext] = useState<Studio1GenerationContext>({
+    action: 'auto', persona: 'auto', level: 'auto', viewpoint: 'auto', depth: 'auto',
+    lifecycleState: 'target', platform: 'auto'
+  });
+  const [decisionLedger, setDecisionLedger] = useState<Studio1DecisionLedger>({
+    confirmedRequirements: [], constraints: [], lockedNodeIds: [], rejectedOptions: [], assumptions: [], openQuestions: []
+  });
 
   // Past Projects & Use Cases State (Pre-seeded with Rich GCP Architectures + LocalStorage)
   const [pastProjects, setPastProjects] = useState<PastProject[]>(() => {
@@ -545,7 +562,7 @@ function Studio1Content() {
     {
       id: 'msg_welcome',
       sender: 'assistant',
-      text: '⚡ Live GCP architecture canvas ready. Enter a prompt or select a suggested step below to update.',
+      text: 'Studio 1 is ready. Create an architecture, ask a question, request a precise edit, or choose a refactor mode. Auto controls will infer the context and clarify before unsafe changes.',
       timestamp: 'Just now'
     }
   ]);
@@ -554,6 +571,7 @@ function Studio1Content() {
   const activeDiagram = useMemo(() => {
     return diagrams.find((d) => d.id === activeDiagramId) || diagrams[0];
   }, [diagrams, activeDiagramId]);
+  const activeDiagramDigest = useMemo(() => studio1ContentDigest(activeDiagram?.xml || ''), [activeDiagram?.xml]);
 
   // Auto-scroll chat feed
   useEffect(() => {
@@ -681,7 +699,7 @@ function Studio1Content() {
       {
         promptText: pendingVerification.prompt,
         targetTier: pendingVerification.targetTier,
-        model: 'Gemini 3.1 Pro Architecture Compiler',
+        model: 'Studio 1 validated architecture transaction',
         summary: pendingVerification.summary,
         changedComponents: pendingVerification.changedComponents
       }
@@ -797,6 +815,7 @@ function Studio1Content() {
           prompt: project.suggestedPrompt,
           theme: isLight ? 'light' : 'dark'
         });
+      const restoredState = extractStudio1State(reloadedXml);
 
       const updatedDiagrams: StudioDiagramTab[] = [
         {
@@ -805,12 +824,17 @@ function Studio1Content() {
           templateId: 'gcp_functional_flowchart',
           xml: reloadedXml,
           source: 'functional_flowchart',
-          lastPrompt: project.suggestedPrompt
+          lastPrompt: project.suggestedPrompt,
+          semanticGraph: restoredState?.graph,
+          generationContext: restoredState?.context,
+          decisionLedger: restoredState?.decisionLedger
         }
       ];
 
       setDiagrams(updatedDiagrams);
       setActiveDiagramId('diag_1');
+      if (restoredState?.context) setGenerationContext(restoredState.context);
+      if (restoredState?.decisionLedger) setDecisionLedger(restoredState.decisionLedger);
 
       // Add notification to chat messages
       const now = new Date();
@@ -857,7 +881,7 @@ function Studio1Content() {
       setIsUseCaseDropdownOpen(false);
 
       // Re-flavor existing architecture if project name is present
-      if (projectName) {
+      if (projectName && !activeDiagram.semanticGraph) {
         setProjectTitle(`${projectName}: ${selectedUseCase}`);
         const reloadedXml = generateGcpFunctionalFlowchartXml({
           projectName: projectName,
@@ -875,7 +899,7 @@ function Studio1Content() {
         showToast(`🎯 Updated use case to "${selectedUseCase}"`);
       }
     },
-    [projectName, projectScopePrompt, isLight, diagrams, activeDiagramId, showToast]
+    [projectName, projectScopePrompt, isLight, diagrams, activeDiagramId, activeDiagram.semanticGraph, showToast]
   );
 
   // Undo Functionality
@@ -890,6 +914,9 @@ function Studio1Content() {
         setProjectName(snap.projectName);
         setUseCaseName(snap.useCaseName);
         setProjectTitle(snap.projectTitle);
+        const restored = snap.diagrams.find((diagram) => diagram.id === snap.activeDiagramId);
+        if (restored?.generationContext) setGenerationContext(restored.generationContext);
+        if (restored?.decisionLedger) setDecisionLedger(restored.decisionLedger);
         showToast(`↺ Restored state: ${snap.versionTag} (${snap.actionSummary})`);
       }
     }
@@ -902,6 +929,9 @@ function Studio1Content() {
     if (snap.projectName) setProjectName(snap.projectName);
     if (snap.useCaseName) setUseCaseName(snap.useCaseName);
     if (snap.projectTitle) setProjectTitle(snap.projectTitle);
+    const restored = snap.diagrams.find((diagram) => diagram.id === snap.activeDiagramId);
+    if (restored?.generationContext) setGenerationContext(restored.generationContext);
+    if (restored?.decisionLedger) setDecisionLedger(restored.decisionLedger);
     setShowDiffModal(false);
     showToast(`↺ Restored active canvas to version ${snap.versionTag}!`);
   }, [showToast]);
@@ -931,6 +961,9 @@ function Studio1Content() {
         setProjectName(snap.projectName);
         setUseCaseName(snap.useCaseName);
         setProjectTitle(snap.projectTitle);
+        const restored = snap.diagrams.find((diagram) => diagram.id === snap.activeDiagramId);
+        if (restored?.generationContext) setGenerationContext(restored.generationContext);
+        if (restored?.decisionLedger) setDecisionLedger(restored.decisionLedger);
         showToast(`↻ Redone to state: ${snap.versionTag} (${snap.actionSummary})`);
       }
     }
@@ -987,7 +1020,8 @@ function Studio1Content() {
               return {
                 ...diag,
                 xml,
-                source: 'custom'
+                source: 'custom',
+                reconciliationRequired: Boolean(diag.semanticGraph)
               };
             }
             return diag;
@@ -1032,10 +1066,21 @@ function Studio1Content() {
 
   // Main Prompt Synthesis Handler (with live Gemini Architecture Validation & Auto-Correction)
   const handleSynthesizeArchitecture = useCallback(
-    async (customPrompt?: string) => {
+    async (customPrompt?: string, confirmHighImpact = false) => {
       const rawPrompt = (customPrompt || projectScopePrompt).trim();
       const basePrompt = rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || 'Enterprise Google Cloud Native Architecture';
       const promptToUse = basePrompt.trim();
+
+      if (activeDiagram.reconciliationRequired) {
+        setChatMessages((previous) => [...previous, {
+          id: `ast_${Date.now()}`,
+          sender: 'assistant',
+          text: 'This canvas contains manual Draw.io changes that are not reconciled with the semantic graph. I will not overwrite them. Restore the last semantic version or start a new architecture before applying another AI edit.',
+          timestamp: 'Just now'
+        }]);
+        showToast('Semantic reconciliation is required before AI editing');
+        return;
+      }
 
       // Intelligently infer logical Project Name & Use Case Name if blank
       const inferred = inferLogicalProjectAndUseCase(promptToUse, projectName, useCaseName);
@@ -1105,12 +1150,50 @@ function Studio1Content() {
             projectTitle: titleToUse,
             prompt: promptToUse,
             theme: isLight ? 'light' : 'dark',
-            previousGraph: semanticGraphByDiagram[activeDiagramId] || null
+            previousGraph: generationContext.action === 'create' ? null : (activeDiagram.semanticGraph || null),
+            baseVersionId: generationContext.action !== 'create' && activeDiagram.semanticGraph
+              ? studio1ContentDigest(JSON.stringify(activeDiagram.semanticGraph))
+              : null,
+            context: generationContext,
+            decisionLedger,
+            confirmHighImpact
           })
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.success || !data.xml || !data.semanticGraph) {
+        if (!res.ok || !data.success) {
           throw new Error(data.error || `Studio 1 generation failed with HTTP ${res.status}. No static fallback was rendered.`);
+        }
+
+        if (data.mutationApplied === false) {
+          if (data.context) setGenerationContext(data.context);
+          const interaction = data.interaction || {};
+          if (interaction.clarificationQuestion) {
+            setDecisionLedger((previous) => ({
+              ...previous,
+              openQuestions: Array.from(new Set([...previous.openQuestions, interaction.clarificationQuestion])).slice(-20)
+            }));
+          }
+          const responseText = [interaction.message, interaction.clarificationQuestion]
+            .filter(Boolean)
+            .join('\n\n');
+          setChatMessages((previous) => [...previous, {
+            id: `ast_${Date.now()}`,
+            sender: 'assistant',
+            text: responseText || 'I need one more detail before changing the architecture.',
+            timestamp: 'Just now',
+            options: Array.isArray(interaction.options)
+              ? interaction.options.map((option: any) => ({
+                  ...option,
+                  prompt: option.id === 'confirm_high_impact' ? promptToUse : option.label
+                }))
+              : undefined
+          }]);
+          showToast(interaction.requiresConfirmation ? 'Review required before changing the architecture' : 'Studio 1 responded without changing the canvas');
+          return;
+        }
+
+        if (!data.xml || !data.semanticGraph) {
+          throw new Error('Studio 1 returned no validated architecture candidate.');
         }
 
         finalXml = data.xml;
@@ -1121,17 +1204,22 @@ function Studio1Content() {
         apiReasoning = data.reasoning;
         generationSource = data.generationSource;
         generationModel = data.model;
-        setSemanticGraphByDiagram((previous) => ({ ...previous, [activeDiagramId]: data.semanticGraph }));
+        if (data.context) setGenerationContext(data.context);
+        const nextDecisionLedger: Studio1DecisionLedger = data.decisionLedger || decisionLedger;
+        setDecisionLedger(nextDecisionLedger);
 
         // Autosave mutated XML to active diagram in canvas immediately
         const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
           if (diag.id === activeDiagramId) {
             return {
               ...diag,
-              title: `${titleToUse} • ${isGenericTab ? 'Generic Architecture' : 'Functional Flowchart'}`,
+              title: `${titleToUse} • Studio 1 ${data.context?.level && data.context.level !== 'auto' ? data.context.level : 'Architecture'}`,
               xml: finalXml,
               source: isGenericTab ? 'generic_architecture' : 'functional_flowchart',
-              lastPrompt: promptToUse
+              lastPrompt: promptToUse,
+              semanticGraph: data.semanticGraph,
+              generationContext: data.context || generationContext,
+              decisionLedger: nextDecisionLedger
             };
           }
           return diag;
@@ -1196,8 +1284,10 @@ function Studio1Content() {
       diagrams,
       activeDiagram,
       activeDiagramId,
-      semanticGraphByDiagram,
+      generationContext,
+      decisionLedger,
       versionHistory,
+      currentHistoryIndex,
       showToast
     ]
   );
@@ -1705,7 +1795,7 @@ function Studio1Content() {
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block truncate">
                     4. Scope &amp; Topology Prompt
                   </label>
-                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Gemini 3.1 Pro Engine</span>
+                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Two-way Architecture Copilot</span>
                 </div>
 
                 {/* Scrollable Prompt & Enhancement History Feed */}
@@ -1728,6 +1818,25 @@ function Studio1Content() {
                           }`}
                         >
                           <p className="text-[11.5px] leading-relaxed">{msg.text}</p>
+                          {msg.sender === 'assistant' && msg.options && msg.options.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                              {msg.options.map((option) => (
+                                <button
+                                  key={option.id}
+                                  type="button"
+                                  onClick={() => handleSynthesizeArchitecture(option.prompt || option.label, option.id === 'confirm_high_impact')}
+                                  disabled={isSynthesizing}
+                                  className={`px-2 py-1 rounded-lg text-[9.5px] font-bold border transition cursor-pointer disabled:opacity-50 ${
+                                    option.recommended
+                                      ? 'bg-teal-600 border-teal-500 text-white'
+                                      : isLight ? 'bg-white border-slate-300 text-slate-700 hover:border-teal-500' : 'bg-slate-800 border-slate-700 text-slate-200 hover:border-teal-500'
+                                  }`}
+                                >
+                                  {option.label}{option.recommended ? ' · Recommended' : ''}
+                                </button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                         <span className="text-[8.5px] text-slate-400 mt-0.5 px-1">{msg.timestamp}</span>
                       </div>
@@ -1736,12 +1845,41 @@ function Studio1Content() {
                     {isAiThinking && (
                       <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-2">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        <span>AI Assistant is analyzing context &amp; updating functional flowchart...</span>
+                        <span>Architecture Copilot is interpreting intent and validating a candidate response...</span>
                       </div>
                     )}
                     <div ref={chatMessagesEndRef} />
                   </div>
                 )}
+
+                {/* Prompt-first controls: every value remains Auto unless the user chooses otherwise. */}
+                {activeDiagram.reconciliationRequired && (
+                  <div className="p-2 rounded-lg border border-amber-400/60 bg-amber-500/10 text-[10px] font-bold text-amber-700 dark:text-amber-300">
+                    Manual canvas changes require semantic reconciliation before AI editing.
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { key: 'action', label: 'Action', values: [['auto', 'Auto'], ['create', 'Create'], ['incremental_edit', 'Edit'], ['guided_refactor', 'Guided Refactor'], ['full_refactor', 'Full Refactor']] },
+                    { key: 'persona', label: 'Persona', values: [['auto', 'Auto Persona'], ['executive', 'Executive'], ['product_manager', 'Product Manager'], ['solution_architect', 'Solution Architect'], ['developer', 'Developer'], ['data_engineer', 'Data Engineer'], ['network_engineer', 'Network Engineer'], ['security_architect', 'Security Architect'], ['sre', 'SRE'], ['mixed', 'Mixed Audience']] },
+                    { key: 'level', label: 'Level', values: [['auto', 'Auto Level'], ['executive', 'Executive'], ['conceptual', 'Conceptual'], ['logical', 'Logical'], ['technical', 'Technical'], ['operational', 'Operational'], ['implementation', 'Implementation']] },
+                    { key: 'viewpoint', label: 'View', values: [['auto', 'Auto View'], ['end_to_end', 'End-to-End'], ['user_flow', 'User Flow'], ['application', 'Application'], ['integration', 'Integration'], ['network', 'Network'], ['data', 'Data'], ['security', 'Security'], ['ai_ml', 'AI / ML'], ['deployment', 'Deployment'], ['observability', 'Observability'], ['migration', 'Migration']] },
+                    { key: 'depth', label: 'Depth', values: [['auto', 'Auto Depth'], ['standard', 'Standard'], ['detailed', 'Detailed'], ['exhaustive', 'Exhaustive']] },
+                    { key: 'platform', label: 'Platform', values: [['auto', 'Auto Platform'], ['gcp', 'GCP'], ['aws', 'AWS'], ['azure', 'Azure'], ['hybrid', 'Hybrid'], ['vendor_neutral', 'Vendor-neutral']] },
+                    { key: 'lifecycleState', label: 'State', values: [['current', 'Current State'], ['transition', 'Transition State'], ['target', 'Target State']] },
+                  ].map((control) => (
+                    <label key={control.key} className="text-[9px] font-bold uppercase tracking-wide text-slate-500">
+                      <span className="sr-only">{control.label}</span>
+                      <select
+                        value={String(generationContext[control.key as keyof Studio1GenerationContext] || 'auto')}
+                        onChange={(event) => setGenerationContext((previous) => ({ ...previous, [control.key]: event.target.value } as Studio1GenerationContext))}
+                        className={`w-full px-2 py-1.5 rounded-lg border text-[10px] font-bold normal-case tracking-normal outline-none ${isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-slate-950 border-slate-700 text-slate-200'}`}
+                      >
+                        {control.values.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                      </select>
+                    </label>
+                  ))}
+                </div>
 
                 {/* Prompt Textarea */}
                 <textarea
@@ -1754,7 +1892,7 @@ function Studio1Content() {
                       handleSynthesizeArchitecture();
                     }
                   }}
-                  placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Synthesize)"
+                  placeholder="Create, question, edit, validate, or refactor the architecture… Studio 1 will clarify before unsafe changes."
                   className={`w-full p-3 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
                     isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-950 border-slate-800 text-white'
                   }`}
@@ -1775,7 +1913,7 @@ function Studio1Content() {
                   ) : (
                     <>
                       <Zap className="w-4 h-4 text-amber-300" />
-                      <span>Synthesize Architecture Now</span>
+                      <span>{activeDiagram.semanticGraph ? 'Send to Architecture Copilot' : 'Generate Architecture Draft'}</span>
                     </>
                   )}
                 </button>
@@ -2000,7 +2138,7 @@ function Studio1Content() {
                   }}
                 >
                   <DiagramViewerRenderSafe
-                    key={`studio1_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
+                    key={`studio1_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagramDigest}`}
                     diagramId="gcp_functional_flowchart"
                     diagramType="functional_flowchart"
                     xml={activeDiagram.xml}
@@ -2307,13 +2445,19 @@ function Studio1Content() {
                         <button
                           onClick={() => {
                             if (d.xml_content) {
+                              const restoredState = extractStudio1State(d.xml_content);
                               setDiagrams(prev => [{
                                 id: 'diag_restored_' + Date.now(),
                                 title: d.name,
                                 templateId: d.architecture_type || 'gcp_flowchart',
                                 xml: d.xml_content,
-                                source: 'custom'
+                                source: 'custom',
+                                semanticGraph: restoredState?.graph,
+                                generationContext: restoredState?.context,
+                                decisionLedger: restoredState?.decisionLedger
                               }]);
+                              if (restoredState?.context) setGenerationContext(restoredState.context);
+                              if (restoredState?.decisionLedger) setDecisionLedger(restoredState.decisionLedger);
                               setProjectTitle(d.name);
                               setShowSavedDrawer(false);
                               showToast(`Loaded "${d.name}" into Studio 1!`);
