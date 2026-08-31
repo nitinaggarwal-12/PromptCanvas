@@ -99,6 +99,34 @@ export interface Studio1CandidateDiversity {
   duplicatePairs: string[];
 }
 
+export interface Studio1GraphCompleteness {
+  valid: boolean;
+  minimumNodes: number;
+  minimumEdges: number;
+  actualNodes: number;
+  actualEdges: number;
+  violations: string[];
+}
+
+export function validateStudio1GraphCompleteness(
+  graph: Studio1SemanticGraph,
+  depth: Studio1Depth,
+): Studio1GraphCompleteness {
+  const minimumNodes = depth === 'exhaustive' ? 14 : depth === 'detailed' ? 10 : 6;
+  const minimumEdges = Math.max(5, minimumNodes - 1);
+  const violations: string[] = [];
+  if (graph.nodes.length < minimumNodes) violations.push(`Expected at least ${minimumNodes} meaningful components; received ${graph.nodes.length}.`);
+  if (graph.edges.length < minimumEdges) violations.push(`Expected at least ${minimumEdges} meaningful flows; received ${graph.edges.length}.`);
+  return {
+    valid: violations.length === 0,
+    minimumNodes,
+    minimumEdges,
+    actualNodes: graph.nodes.length,
+    actualEdges: graph.edges.length,
+    violations,
+  };
+}
+
 const ARCHITECTURE_TERMS = new Set([
   'architecture', 'architect', 'diagram', 'system', 'platform', 'application', 'app', 'service',
   'microservice', 'pipeline', 'workflow', 'network', 'vpc', 'subnet', 'cloud', 'gcp', 'aws', 'azure',

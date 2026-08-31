@@ -13,6 +13,7 @@ import {
   Studio1PatchOperation,
   validateStudio1CandidateDiversity,
   validateStudio1Change,
+  validateStudio1GraphCompleteness,
 } from '@/lib/studio1ArchitectureCore';
 
 function extractJson(text: string): unknown {
@@ -64,10 +65,8 @@ function normalizePlan(value: unknown): Studio1ChangePlan {
 }
 
 function enforceDepth(graph: Studio1SemanticGraph, context: Studio1GenerationContext): void {
-  const minimumNodes = context.depth === 'exhaustive' ? 14 : context.depth === 'detailed' ? 10 : 6;
-  const minimumEdges = Math.max(5, minimumNodes - 1);
-  if (graph.nodes.length < minimumNodes) throw new Error(`Architecture is incomplete for ${context.depth === 'auto' ? 'standard' : context.depth} depth: expected at least ${minimumNodes} components.`);
-  if (graph.edges.length < minimumEdges) throw new Error(`Architecture is incomplete: expected at least ${minimumEdges} meaningful flows.`);
+  const completeness = validateStudio1GraphCompleteness(graph, context.depth);
+  if (!completeness.valid) throw new Error(completeness.violations.join(' '));
 }
 
 const stringList = (value: unknown, maximum = 6): string[] => Array.isArray(value)
@@ -227,9 +226,61 @@ export async function POST(request: Request) {
 
     const rawAlternatives = Array.isArray(raw.alternatives) ? raw.alternatives : [];
     if (rawAlternatives.length !== 3) return NextResponse.json({ success: false, error: 'Studio 1 requires exactly three architecture alternatives for a new design.' }, { status: 422 });
-    const alternatives = rawAlternatives.map((item, index) => normalizeAlternative(item, index, prompt));
+    let alternatives = rawAlternatives.map((item, index) => normalizeAlternative(item, index, prompt));
     if (new Set(alternatives.map(candidate => candidate.id)).size !== alternatives.length) return NextResponse.json({ success: false, error: 'Architecture alternatives returned duplicate candidate IDs.' }, { status: 422 });
-    for (const alternative of alternatives) enforceDepth(alternative.graph, resolvedContext);
+    let completeness = alternatives.map(candidate => ({
+      id: candidate.id,
+      ...validateStudio1GraphCompleteness(candidate.graph, resolvedContext.depth),
+    }));
+    const incompleteIds = new Set(completeness.filter(result => !result.valid).map(result => result.id));
+    if (incompleteIds.size > 0) {
+      try {
+        const requirements = completeness.find(result => !result.valid)!;
+        const repairResponse = await ai.models.generateContent({
+          model,
+          contents: [{
+            role: 'user',
+            parts: [{
+              text: `ORIGINAL REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nINCOMPLETE CANDIDATES:\n${JSON.stringify(alternatives.filter(candidate => incompleteIds.has(candidate.id)))}\nVALIDATION FAILURES:\n${JSON.stringify(completeness.filter(result => !result.valid))}`,
+            }],
+          }],
+          config: {
+            ...getGenConfig('generate'),
+            systemInstruction: { parts: [{ text: `Repair only the incomplete architecture candidates. Every repaired graph must contain at least ${requirements.minimumNodes} meaningful, workload-relevant components and ${requirements.minimumEdges} coherent typed flows. Add missing ingress, processing, data, security, reliability, failure handling, or observability capabilities only when appropriate; never add filler nodes. Preserve each candidate ID, strategy, and distinct optimization objective. Use valid node IDs, stages, zones, supported node kinds, and directed relationships. Return JSON only: {"repaired":[{"id":"candidate_id","graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}.` }] },
+            responseMimeType: 'application/json',
+            temperature: 0.1,
+          },
+        });
+        const repairRaw = extractJson(repairResponse.text || '') as Record<string, unknown>;
+        const repairedRows = Array.isArray(repairRaw.repaired) ? repairRaw.repaired : [];
+        const repairedById = new Map(repairedRows.map(item => {
+          const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
+          return [String(row.id || ''), row] as const;
+        }));
+        alternatives = alternatives.map((candidate, index) => {
+          if (!incompleteIds.has(candidate.id)) return candidate;
+          const repaired = repairedById.get(candidate.id);
+          return repaired?.graph
+            ? normalizeAlternative({ ...candidate, graph: repaired.graph }, index, prompt)
+            : candidate;
+        });
+        completeness = alternatives.map(candidate => ({
+          id: candidate.id,
+          ...validateStudio1GraphCompleteness(candidate.graph, resolvedContext.depth),
+        }));
+      } catch (repairError) {
+        console.error('[studio1/generate] Candidate completeness repair failed:', repairError);
+      }
+    }
+    const unresolvedCompleteness = completeness.filter(result => !result.valid);
+    if (unresolvedCompleteness.length > 0) {
+      return NextResponse.json({
+        success: false,
+        error: 'Studio 1 could not produce three complete architecture alternatives after an automatic repair pass. Your canvas was not changed. Please retry or add the required users, workload, scale, and reliability expectations.',
+        candidateCompleteness: completeness,
+        generationSource: 'candidate-completeness-rejected',
+      }, { status: 422 });
+    }
     const diversity = validateStudio1CandidateDiversity(alternatives);
     if (!diversity.valid) return NextResponse.json({ success: false, error: 'The generated options were too similar to represent meaningful architecture alternatives.', candidateDiversity: diversity }, { status: 422 });
 
