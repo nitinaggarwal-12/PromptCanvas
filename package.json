@@ -18,6 +18,7 @@
     "validate:canvas": "tsx scripts/check-canvas-generator-quality.ts",
     "validate:visual": "tsx scripts/visual-qa-blueprints.ts",
     "test": "vitest run",
+    "test:studio1": "vitest run src/lib/__tests__/studio1GenerationQuality.test.ts",
     "eval:geometry": "tsx evals/score_geometry.ts",
     "eval:geometry:gate": "tsx evals/score_geometry.ts --baseline evals/results/geometry-baseline.json diagrams/latest/*.xml",
     "eval:templates": "tsx evals/check_template_integrity.ts templates/master_blueprints/xml/*.xml",

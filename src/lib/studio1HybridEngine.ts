@@ -111,6 +111,10 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
     };
   }).filter(edge => edge.source !== edge.target && nodeIds.has(edge.source) && nodeIds.has(edge.target));
 
+  edges.sort((left, right) => left.step - right.step).forEach((edge, index) => {
+    edge.step = index + 1;
+  });
+
   if (edges.length < 2) throw new Error('The architecture model returned insufficient component relationships.');
 
   const patterns = (Array.isArray(raw.patterns) ? raw.patterns : [])
@@ -130,10 +134,22 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
 export function certifyStudio1Graph(graph: Studio1SemanticGraph): Studio1Certification {
   const violations: string[] = [];
   const ids = new Set(graph.nodes.map(node => node.id));
+  if (ids.size !== graph.nodes.length) violations.push('Component IDs must be unique');
+  const degree = new Map(graph.nodes.map(node => [node.id, 0]));
+  const edgeIds = new Set<string>();
+  const relationshipKeys = new Set<string>();
   const decisions = graph.nodes.filter(node => node.kind === 'decision');
   for (const edge of graph.edges) {
     if (!ids.has(edge.source) || !ids.has(edge.target)) violations.push(`Dangling connector ${edge.id}`);
+    if (edgeIds.has(edge.id)) violations.push(`Duplicate connector ID ${edge.id}`);
+    edgeIds.add(edge.id);
+    const relationshipKey = `${edge.source}>${edge.target}:${edge.flowType}:${edge.label.toLowerCase()}`;
+    if (relationshipKeys.has(relationshipKey)) violations.push(`Duplicate relationship ${edge.id}`);
+    relationshipKeys.add(relationshipKey);
+    degree.set(edge.source, (degree.get(edge.source) || 0) + 1);
+    degree.set(edge.target, (degree.get(edge.target) || 0) + 1);
   }
+  for (const [id, count] of degree) if (count === 0) violations.push(`Orphaned component ${id}`);
   for (const decision of decisions) {
     const outgoing = graph.edges.filter(edge => edge.source === decision.id);
     if (outgoing.length < 2) violations.push(`Decision ${decision.label} needs at least two outgoing branches`);
@@ -141,8 +157,9 @@ export function certifyStudio1Graph(graph: Studio1SemanticGraph): Studio1Certifi
   }
   const stages = new Set(graph.nodes.map(node => node.stage));
   if (stages.size < 2) violations.push('Architecture must span at least two stages');
-  if (!graph.edges.some(edge => edge.step > 0)) violations.push('Flows need explicit step sequencing');
-  const score = Math.max(0, 100 - violations.length * 15);
+  const orderedSteps = graph.edges.map(edge => edge.step).slice().sort((a, b) => a - b);
+  if (!orderedSteps.every((step, index) => step === index + 1)) violations.push('Flows need a unique contiguous step sequence');
+  const score = Math.max(0, 100 - violations.length * 10);
   return {
     certified: score >= 75 && violations.length === 0,
     score,
@@ -201,8 +218,17 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
   });
 
   const maxRows = Math.max(...rowsByStage.values());
+  const routingEdgeCount = graph.edges.filter(edge => {
+    const source = positions.get(edge.source);
+    const target = positions.get(edge.target);
+    if (!source || !target) return false;
+    const sourceColumn = stageIndex.get(source.stage) || 0;
+    const targetColumn = stageIndex.get(target.stage) || 0;
+    return edge.flowType === 'feedback' || targetColumn < sourceColumn || Math.abs(targetColumn - sourceColumn) > 1;
+  }).length;
   const pageWidth = Math.max(1600, left * 2 + activeStages.length * columnWidth + Math.max(0, activeStages.length - 1) * gapX);
-  const pageHeight = Math.max(960, top + maxRows * (nodeHeight + gapY) + 180);
+  const contentBottom = top + maxRows * (nodeHeight + gapY) - gapY;
+  const pageHeight = Math.max(960, contentBottom + 190 + routingEdgeCount * 14);
   const bg = theme === 'dark' ? '#0F172A' : '#FFFFFF';
   const cardBg = theme === 'dark' ? '#1E293B' : '#FFFFFF';
   const text = theme === 'dark' ? '#F8FAFC' : '#0F172A';
@@ -238,7 +264,8 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     vertex(node.id, label, node.x, node.y, node.width, node.height, `${shape}rounded=1;arcSize=10;fillColor=${cardBg};strokeColor=${border};strokeWidth=1.5;shadow=1;align=center;verticalAlign=middle;spacing=6;`);
   }
 
-  const feedbackY = pageHeight - 72;
+  const feedbackY = contentBottom + 42;
+  let routedEdgeIndex = 0;
   graph.edges.sort((a, b) => a.step - b.step).forEach((edge, index) => {
     const source = positions.get(edge.source)!;
     const target = positions.get(edge.target)!;
@@ -247,6 +274,7 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     const forward = targetColumn > sourceColumn;
     const sameColumn = targetColumn === sourceColumn;
     const isFeedback = edge.flowType === 'feedback' || targetColumn < sourceColumn;
+    const skipsStage = Math.abs(targetColumn - sourceColumn) > 1;
     const label = `${edge.step}. ${edge.condition || edge.label}`;
     const edgeStyle = `${FLOW_STYLE[edge.flowType]}endArrow=block;endFill=1;rounded=1;html=1;labelBackgroundColor=${theme === 'dark' ? '#0F172A' : '#FFFFFF'};labelBorderColor=${theme === 'dark' ? '#475569' : '#CBD5E1'};fontColor=${theme === 'dark' ? '#F8FAFC' : '#0F172A'};fontSize=9;fontStyle=1;spacing=3;`;
     let exitX = forward ? 1 : 0;
@@ -254,19 +282,28 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     let exitY = 0.5;
     let entryY = 0.5;
     let points = '';
-    if (isFeedback) {
-      const routeY = feedbackY - index * 8;
+    let routing = 'edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;';
+    if (isFeedback || skipsStage) {
+      const routeY = feedbackY + routedEdgeIndex * 14;
+      routedEdgeIndex += 1;
       exitX = 0.5; exitY = 1; entryX = 0.5; entryY = 1;
       points = `<Array as="points"><mxPoint x="${source.x + source.width / 2}" y="${routeY}"/><mxPoint x="${target.x + target.width / 2}" y="${routeY}"/></Array>`;
     } else if (sameColumn) {
       const channelX = source.x + source.width + 36 + index * 4;
       exitX = 1; entryX = 1;
       points = `<Array as="points"><mxPoint x="${channelX}" y="${source.y + source.height / 2}"/><mxPoint x="${channelX}" y="${target.y + target.height / 2}"/></Array>`;
+    } else if (source.row === target.row) {
+      const sourceCenterY = source.y + source.height / 2;
+      const targetCenterY = target.y + target.height / 2;
+      const lineY = (sourceCenterY + targetCenterY) / 2;
+      exitY = Math.max(0.1, Math.min(0.9, (lineY - source.y) / source.height));
+      entryY = Math.max(0.1, Math.min(0.9, (lineY - target.y) / target.height));
+      routing = 'edgeStyle=none;';
     } else {
       const channelX = source.x + source.width + gapX / 2;
       points = `<Array as="points"><mxPoint x="${channelX}" y="${source.y + source.height / 2}"/><mxPoint x="${channelX}" y="${target.y + target.height / 2}"/></Array>`;
     }
-    cells.push(`<mxCell id="${escapeXml(edge.id || `edge_${index + 1}`)}" value="${escapeXml(label)}" edge="1" parent="1" source="${escapeXml(edge.source)}" target="${escapeXml(edge.target)}" style="edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle}"><mxGeometry relative="1" as="geometry">${points}</mxGeometry></mxCell>`);
+    cells.push(`<mxCell id="${escapeXml(edge.id || `edge_${index + 1}`)}" value="${escapeXml(label)}" edge="1" parent="1" source="${escapeXml(edge.source)}" target="${escapeXml(edge.target)}" style="${routing}exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle}"><mxGeometry relative="1" as="geometry">${points}</mxGeometry></mxCell>`);
   });
 
   if (graph.assumptions.length) {

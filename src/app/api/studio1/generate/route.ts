@@ -7,12 +7,14 @@ import {
   assessStudio1InitialPrompt,
   diffStudio1Graphs,
   embedStudio1State,
+  inferStudio1RequiredCapabilities,
   Studio1ChangePlan,
   Studio1DecisionLedger,
   Studio1GenerationContext,
   Studio1PatchOperation,
   validateStudio1CandidateDiversity,
   validateStudio1Change,
+  validateStudio1ArchitectureQuality,
   validateStudio1GraphCompleteness,
 } from '@/lib/studio1ArchitectureCore';
 
@@ -165,11 +167,12 @@ export async function POST(request: Request) {
     }
     const isRefinement = Boolean(previousGraph);
     const isRefactor = Boolean(previousGraph) && (context.action === 'guided_refactor' || context.action === 'full_refactor');
+    const requiredCapabilities = inferStudio1RequiredCapabilities(context, prompt);
     const systemInstruction = isRefactor
       ? `You are Studio 1, a principal architect performing a ${context.action}. Produce a complete target semantic graph, not patch operations. Preserve every locked component exactly. For guided refactoring also preserve valid unaffected capabilities and constraints; for full refactoring preserve only explicit requirements, constraints, and locks. Correct technical weaknesses, make trade-offs explicit, and keep stable IDs for retained components. Use 10-30 components for detailed depth and at least 14 for exhaustive. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"summary and trade-offs","refactorPlan":{"problems":[],"majorChanges":[],"migrationConsiderations":[],"requiresConfirmation":true},"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}`
       : isRefinement
       ? `You are Studio 1, a conversational principal architect. Classify the message as discuss, clarify, propose_change, apply_change, refactor, validate, or revert. Questions and hypotheticals MUST NOT mutate the graph. If ambiguous or technically infeasible, explain the conflict and ask one targeted question with 2-4 viable options. For incremental edits return ONLY controlled patch operations against exact existing IDs. Preserve unrelated components and flows. Never return a replacement graph. Supported operations: add_node, update_node, remove_node, add_edge, update_edge, remove_edge, insert_between, change_patterns. New nodes/edges require complete fields. A request affecting roughly more than 35% of the graph is a refactor requiring confirmation. Return JSON only: {"context":${JSON.stringify(context)},"changePlan":{"intent":"discuss|clarify|propose_change|apply_change|refactor|validate|revert","summary":"","rationale":"","operations":[],"preservedNodeIds":[],"requiresConfirmation":false,"clarificationQuestion":"optional","options":[{"id":"x","label":"choice","recommended":true}]},"assistantMessage":"concise response"}`
-      : `You are Studio 1, a principal enterprise and cloud architect. Generate exactly THREE technically viable and meaningfully different semantic architecture alternatives for the same requirements. Never return canned templates or cosmetic rearrangements. Tailor the strategies to the workload; common strategies are lean/managed, balanced production, and resilient enterprise, but use more relevant alternatives when appropriate. Mark exactly one recommended option and explain why. Respect persona, level, viewpoint, lifecycle, depth and platform. Include relevant user/process, network, data, security, failure and observability semantics without irrelevant clutter. Each graph needs stable snake_case IDs, explicit decisions where real branching exists, typed flows and ordered steps. Each standard graph uses 6-30 components, detailed at least 10, exhaustive at least 14. Allowed patterns: layered, event-driven, hub-spoke, network-topology, swimlane, sequence. Node kinds: actor, service, process, decision, datastore, queue, security, observability, external. Flow types: synchronous, asynchronous, data, network, ai, governance, feedback. Allowed GCP serviceKey values: gemini, vertex_ai, vertex_vector_search, document_ai, agent_builder, model_armor, gke, gke_autopilot, cloud_run, cloud_functions, compute_engine, bigquery, spanner, memorystore, cloud_storage, pubsub, dataflow, cloud_armor, iap, cloud_dlp, cloud_iam, vpc_sc, scc, cloud_load_balancing, cloud_cdn, user_ingress, cloud_monitoring, cloud_logging, cloud_deploy, artifact_registry. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"inferred workload, audience, level, platform and major assumptions","alternatives":[{"id":"lean","name":"Lean & Managed","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"balanced","name":"Balanced Production","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":true,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"enterprise","name":"Resilient Enterprise","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}`;
+      : `You are Studio 1, a principal enterprise and cloud architect. Generate exactly THREE technically viable and meaningfully different semantic architecture alternatives for the same requirements. Never return canned templates or cosmetic rearrangements. Tailor the strategies to the workload; common strategies are lean/managed, balanced production, and resilient enterprise, but use more relevant alternatives when appropriate. Mark exactly one recommended option and explain why. Respect persona, level, viewpoint, lifecycle, depth and platform. The deterministic quality contract requires these capabilities in every option: ${requiredCapabilities.join(', ')}. Represent each required capability with workload-relevant components and flows, not filler. Every component must participate in one connected end-to-end topology. Relationships must use unique IDs, coherent direction, a unique contiguous step sequence, and correct flow types. Backward paths must be feedback or governance. Use decision nodes only for real branching, with at least two uniquely labelled conditional outcomes. Include explicit assumptions. Each standard graph uses 6-30 components, detailed at least 10, exhaustive at least 14. Allowed patterns: layered, event-driven, hub-spoke, network-topology, swimlane, sequence. Node kinds: actor, service, process, decision, datastore, queue, security, observability, external. Flow types: synchronous, asynchronous, data, network, ai, governance, feedback. Allowed GCP serviceKey values: gemini, vertex_ai, vertex_vector_search, document_ai, agent_builder, model_armor, gke, gke_autopilot, cloud_run, cloud_functions, compute_engine, bigquery, spanner, memorystore, cloud_storage, pubsub, dataflow, cloud_armor, iap, cloud_dlp, cloud_iam, vpc_sc, scc, cloud_load_balancing, cloud_cdn, user_ingress, cloud_monitoring, cloud_logging, cloud_deploy, artifact_registry. Return JSON only: {"context":${JSON.stringify(context)},"assistantMessage":"inferred workload, audience, level, platform and major assumptions","alternatives":[{"id":"lean","name":"Lean & Managed","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"balanced","name":"Balanced Production","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":true,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}},{"id":"enterprise","name":"Resilient Enterprise","strategy":"","optimizeFor":[],"tradeoffs":[],"recommended":false,"graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}`;
 
     const userMessage = `${isRefinement ? `BASE VERSION: ${baseVersionId}\nCURRENT GRAPH:\n${JSON.stringify(previousGraph)}\nDECISION LEDGER:\n${JSON.stringify(ledger)}` : `PROJECT CONTEXT:\n${JSON.stringify(context)}`}\n\nUSER MESSAGE:\n${prompt}`;
     const response = await ai.models.generateContent({ model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } });
@@ -228,25 +231,25 @@ export async function POST(request: Request) {
     if (rawAlternatives.length !== 3) return NextResponse.json({ success: false, error: 'Studio 1 requires exactly three architecture alternatives for a new design.' }, { status: 422 });
     let alternatives = rawAlternatives.map((item, index) => normalizeAlternative(item, index, prompt));
     if (new Set(alternatives.map(candidate => candidate.id)).size !== alternatives.length) return NextResponse.json({ success: false, error: 'Architecture alternatives returned duplicate candidate IDs.' }, { status: 422 });
-    let completeness = alternatives.map(candidate => ({
+    let qualityContracts = alternatives.map(candidate => ({
       id: candidate.id,
-      ...validateStudio1GraphCompleteness(candidate.graph, resolvedContext.depth),
+      ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
     }));
-    const incompleteIds = new Set(completeness.filter(result => !result.valid).map(result => result.id));
+    const incompleteIds = new Set(qualityContracts.filter(result => !result.valid).map(result => result.id));
     if (incompleteIds.size > 0) {
       try {
-        const requirements = completeness.find(result => !result.valid)!;
+        const requirements = qualityContracts.find(result => !result.valid)!;
         const repairResponse = await ai.models.generateContent({
           model,
           contents: [{
             role: 'user',
             parts: [{
-              text: `ORIGINAL REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nINCOMPLETE CANDIDATES:\n${JSON.stringify(alternatives.filter(candidate => incompleteIds.has(candidate.id)))}\nVALIDATION FAILURES:\n${JSON.stringify(completeness.filter(result => !result.valid))}`,
+              text: `ORIGINAL REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nINCOMPLETE CANDIDATES:\n${JSON.stringify(alternatives.filter(candidate => incompleteIds.has(candidate.id)))}\nDETERMINISTIC QUALITY FAILURES:\n${JSON.stringify(qualityContracts.filter(result => !result.valid))}`,
             }],
           }],
           config: {
             ...getGenConfig('generate'),
-            systemInstruction: { parts: [{ text: `Repair only the incomplete architecture candidates. Every repaired graph must contain at least ${requirements.minimumNodes} meaningful, workload-relevant components and ${requirements.minimumEdges} coherent typed flows. Add missing ingress, processing, data, security, reliability, failure handling, or observability capabilities only when appropriate; never add filler nodes. Preserve each candidate ID, strategy, and distinct optimization objective. Use valid node IDs, stages, zones, supported node kinds, and directed relationships. Return JSON only: {"repaired":[{"id":"candidate_id","graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}.` }] },
+            systemInstruction: { parts: [{ text: `Repair only the rejected architecture candidates against every deterministic failure supplied. Every repaired graph must contain at least ${requirements.completeness.minimumNodes} meaningful, workload-relevant components and ${requirements.completeness.minimumEdges} coherent typed flows. It must represent all required capabilities: ${requirements.requiredCapabilities.join(', ')}. Every component must participate in one connected end-to-end topology; flows must be unique, directed, typed, and ordered; backward flows must be feedback or governance; decisions need two uniquely named conditional outcomes. Add ingress, processing, data, security, reliability, failure handling, and observability only when required by the request and controls—never filler. Preserve candidate ID, strategy, and optimization objective. Return JSON only: {"repaired":[{"id":"candidate_id","graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}.` }] },
             responseMimeType: 'application/json',
             temperature: 0.1,
           },
@@ -264,21 +267,21 @@ export async function POST(request: Request) {
             ? normalizeAlternative({ ...candidate, graph: repaired.graph }, index, prompt)
             : candidate;
         });
-        completeness = alternatives.map(candidate => ({
+        qualityContracts = alternatives.map(candidate => ({
           id: candidate.id,
-          ...validateStudio1GraphCompleteness(candidate.graph, resolvedContext.depth),
+          ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
         }));
       } catch (repairError) {
         console.error('[studio1/generate] Candidate completeness repair failed:', repairError);
       }
     }
-    const unresolvedCompleteness = completeness.filter(result => !result.valid);
+    const unresolvedCompleteness = qualityContracts.filter(result => !result.valid);
     if (unresolvedCompleteness.length > 0) {
       return NextResponse.json({
         success: false,
-        error: 'Studio 1 could not produce three complete architecture alternatives after an automatic repair pass. Your canvas was not changed. Please retry or add the required users, workload, scale, and reliability expectations.',
-        candidateCompleteness: completeness,
-        generationSource: 'candidate-completeness-rejected',
+        error: 'Studio 1 could not produce three complete and structurally correct architecture alternatives after an automatic repair pass. Your canvas was not changed. Please retry or clarify the workload, users, scale, reliability, and security expectations.',
+        candidateQuality: qualityContracts,
+        generationSource: 'candidate-quality-rejected',
       }, { status: 422 });
     }
     const diversity = validateStudio1CandidateDiversity(alternatives);
@@ -314,6 +317,7 @@ export async function POST(request: Request) {
         context: resolvedContext,
         decisionLedger: nextLedger,
         certification: rendered.certification,
+        qualityContract: qualityContracts.find(contract => contract.id === alternative.id),
         semanticCritic: criticById.get(alternative.id),
         summary: `${graph.patterns.join(' + ')} with ${graph.nodes.length} components and ${graph.edges.length} typed flows`,
         targetTier: graph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '),
