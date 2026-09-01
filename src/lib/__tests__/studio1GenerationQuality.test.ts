@@ -194,6 +194,18 @@ describe('Studio 1 deterministic generation quality gate', () => {
     }
   });
 
+  it('orders the streaming and ingress paths by semantics rather than description keywords', () => {
+    const graph = structuredClone(streamingGraph);
+    const subscription = graph.nodes.find(node => node.id === 'streaming_subscription');
+    if (subscription) subscription.description = 'Pull delivery with retry and dead-letter policy';
+    const rendered = renderStudio1GraphXml(graph);
+    const y = (id: string) => Number(rendered.xml.match(new RegExp(`id="${id}"[^>]*>[\\s\\S]*?<mxGeometry x="[\\d.]+" y="([\\d.]+)"`))?.[1]);
+    expect(y('event_topic')).toBeLessThan(y('streaming_subscription'));
+    expect(y('streaming_subscription')).toBeLessThan(y('dead_letter'));
+    expect(y('load_balancer')).toBeLessThan(y('ingestion_api'));
+    expect(y('ingestion_api')).toBeLessThan(y('armor'));
+  });
+
   it('normalizes Cloud Armor into a policy protecting Cloud Load Balancing', () => {
     const graph = structuredClone(streamingGraph);
     const rendered = renderStudio1GraphXml(graph);

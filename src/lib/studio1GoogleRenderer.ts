@@ -161,11 +161,18 @@ function displayName(node: Studio1SemanticNode): string {
 }
 
 function orderWithinGroup(node: Studio1SemanticNode, groupId: GroupId): number {
+  const label = node.label.toLowerCase();
   const text = `${node.label} ${node.description}`.toLowerCase();
+  if (groupId === 'ingress') {
+    if (node.serviceKey === 'cloud_load_balancing' || /load balanc/.test(label)) return 0;
+    if (['cloud_run', 'gke', 'gke_autopilot'].includes(node.serviceKey || '') || /ingest|receiver|api/.test(label)) return 1;
+    if (node.serviceKey === 'cloud_armor' || /armor|waf|ddos/.test(label)) return 2;
+  }
   if (groupId === 'messaging') {
-    if (/dead[- ]?letter|dlq/.test(text)) return 2;
-    if (/subscription/.test(text)) return 1;
-    if (/topic/.test(text) || node.serviceKey === 'pubsub') return 0;
+    if (/dead[- ]?letter|dlq/.test(label)) return 3;
+    if (/subscription/.test(label)) return 2;
+    if (/schema/.test(label)) return 1;
+    if (/topic/.test(label) || node.serviceKey === 'pubsub') return 0;
   }
   if (groupId === 'processing') {
     if (node.serviceKey === 'dataflow' || /processor|transform|enrich/.test(text)) return 0;
