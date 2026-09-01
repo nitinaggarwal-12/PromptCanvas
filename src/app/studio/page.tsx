@@ -1327,43 +1327,31 @@ function StudioContent() {
               </button>
             </div>
 
-            {/* View Mode Switcher */}
+            {/* View Mode Switcher: Clean 2-Way Segmented Control */}
             <div className="flex items-center gap-0.5 p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setStudioMode('diagrams')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   studioMode === 'diagrams'
                     ? 'bg-teal-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Network className="w-3 h-3" />
-                <span className="hidden sm:inline">Diagrams</span>
+                <Network className="w-3.5 h-3.5" />
+                <span>Diagrams</span>
               </button>
               <button
                 type="button"
                 onClick={() => setStudioMode('documents')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   studioMode === 'documents'
                     ? 'bg-sky-600 text-white shadow-xs'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <FileText className="w-3 h-3" />
-                <span className="hidden sm:inline">Documents</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setStudioMode('both')}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  studioMode === 'both'
-                    ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                <Zap className="w-3 h-3" />
-                <span className="hidden sm:inline">Both</span>
+                <FileText className="w-3.5 h-3.5" />
+                <span>Specifications</span>
               </button>
             </div>
 
@@ -1776,39 +1764,14 @@ function StudioContent() {
                     <div className={`absolute left-0 top-full mt-1.5 w-80 rounded-2xl border shadow-2xl z-50 p-2 text-xs flex flex-col gap-1.5 ${
                       isLight ? 'bg-white border-slate-200 text-slate-800 shadow-slate-300/60' : 'bg-[#0E1526] border-slate-800 text-slate-200 shadow-black/90'
                     }`}>
-                      {/* Header & Quick Add Dual Options */}
-                      <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200/80 dark:border-slate-800">
+                      {/* Clean Header */}
+                      <div className="flex items-center justify-between px-2.5 py-1.5 border-b border-slate-200/80 dark:border-slate-800">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
                           Open Diagrams ({diagrams.length})
                         </span>
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              handleAddBlankDiagramTab();
-                              setShowDiagramsMenu(false);
-                            }}
-                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-bold text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/60 transition-colors cursor-pointer"
-                            title="Add Blank Canvas Diagram"
-                          >
-                            <Plus className="w-2.5 h-2.5" />
-                            <span>+ Blank</span>
-                          </button>
-                          <span className="text-slate-300 dark:text-slate-700 text-[10px]">•</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setBlueprintModalMode('add_tab');
-                              setShowDiagramsMenu(false);
-                              setShowReplaceModal(true);
-                            }}
-                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition-colors cursor-pointer"
-                            title="Choose from 50+ Canonical Blueprints"
-                          >
-                            <Layers className="w-2.5 h-2.5" />
-                            <span>+ Blueprint</span>
-                          </button>
-                        </div>
+                        <span className="text-[9.5px] font-mono font-bold text-teal-600 dark:text-teal-400 px-1.5 py-0.2 rounded bg-teal-500/10 border border-teal-500/20">
+                          Active: #{activeDiagramIndex + 1}
+                        </span>
                       </div>
 
                       {/* Diagrams List / Switcher */}
