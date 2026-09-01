@@ -169,7 +169,7 @@ function graphText(graph: Studio1SemanticGraph): string {
     graph.subtitle,
     ...graph.assumptions,
     ...graph.nodes.flatMap(node => [node.label, node.description, node.zone, node.provider || '', node.serviceKey || '', node.technology || '']),
-    ...graph.edges.flatMap(edge => [edge.label, edge.condition || '', edge.flowType]),
+    ...graph.edges.flatMap(edge => [edge.label, edge.condition || '', edge.flowType, edge.relationType || '']),
   ].join(' ').toLowerCase();
 }
 
@@ -279,6 +279,24 @@ export function validateStudio1ArchitectureQuality(
   const hasAiFlow = graph.edges.some(edge => edge.flowType === 'ai') || /\b(gemini|vertex|bedrock|sagemaker|azure openai|llm|model endpoint)\b/i.test(text);
   const hasNetwork = graph.edges.some(edge => edge.flowType === 'network') || /\b(vpc|subnet|load balanc|firewall|nat|dns|cdn|network)\b/i.test(text);
   const hasFailureSemantics = graph.nodes.some(node => node.kind === 'decision') || graph.edges.some(edge => edge.flowType === 'feedback' || Boolean(edge.condition)) || /\b(retry|dead[- ]letter|dlq|failover|circuit breaker|backup|replica|recovery)\b/i.test(text);
+  const gcpStreaming = STREAMING_SIGNAL.test(`${prompt} ${context.purpose || ''}`) && context.platform === 'gcp';
+  const serviceNodes = (serviceKey: string) => graph.nodes.filter(node => node.serviceKey === serviceKey);
+  const pubsubNodes = serviceNodes('pubsub');
+  const topicNodes = pubsubNodes.filter(node => /\btopic\b/i.test(`${node.label} ${node.description}`) && !/dead[- ]?letter|dlq/i.test(`${node.label} ${node.description}`));
+  const subscriptionNodes = pubsubNodes.filter(node => /\bsubscription\b/i.test(`${node.label} ${node.description}`) && !/dead[- ]?letter|dlq/i.test(`${node.label} ${node.description}`));
+  const deadLetterNodes = pubsubNodes.filter(node => /dead[- ]?letter|dlq/i.test(`${node.label} ${node.description}`));
+  const validationNodes = graph.nodes.filter(node => node.kind === 'decision' && /schema|valid|quality|malformed/i.test(`${node.label} ${node.description}`));
+  const armorNodes = serviceNodes('cloud_armor');
+  const loadBalancerNodes = serviceNodes('cloud_load_balancing');
+  const ingestionNodes = graph.nodes.filter(node => ['cloud_run', 'gke', 'gke_autopilot'].includes(node.serviceKey || '') && /ingest|admission|api|receiver/i.test(`${node.label} ${node.description} ${node.zone}`));
+  const hasArmorPolicy = armorNodes.some(armor => loadBalancerNodes.some(loadBalancer => graph.edges.some(edge => edge.source === armor.id && edge.target === loadBalancer.id && (edge.relationType === 'protects' || edge.flowType === 'governance'))));
+  const hasTopicSubscriptionPath = topicNodes.some(topic => subscriptionNodes.some(subscription => graph.edges.some(edge => edge.source === topic.id && edge.target === subscription.id)));
+  const hasDlqPath = deadLetterNodes.length > 0 && graph.edges.some(edge => deadLetterNodes.some(node => node.id === edge.source || node.id === edge.target) && (edge.flowType === 'feedback' || /fail|dead|retry|replay/i.test(`${edge.label} ${edge.condition || ''}`)));
+  const hasArchive = serviceNodes('cloud_storage').length > 0;
+  const hasAnalytics = serviceNodes('bigquery').length > 0;
+  const hasIdentity = serviceNodes('cloud_iam').length > 0;
+  const hasMonitoring = serviceNodes('cloud_monitoring').length > 0;
+  const hasLogging = serviceNodes('cloud_logging').length > 0;
 
   if (hasActor) detected.add('actor_or_external');
   if (hasProcessing) detected.add('processing');
@@ -303,6 +321,16 @@ export function validateStudio1ArchitectureQuality(
   addCheck('ordered_flow', 'Unambiguous contiguous flow sequence', contiguousSteps && uniqueSteps.size === graph.edges.length, 'Flow steps must be unique and contiguous from 1 through the final relationship.', orderedSteps.map(String));
   addCheck('stage_direction', 'Coherent stage direction', backwardsNonFeedback.length === 0, backwardsNonFeedback.length ? `Backward non-feedback flows: ${backwardsNonFeedback.map(edge => edge.id).join(', ')}.` : 'Backward relationships are explicitly typed as feedback or governance.', backwardsNonFeedback.map(edge => edge.id));
   addCheck('decision_branches', 'Explicit decision outcomes', invalidDecisions.length === 0, invalidDecisions.length ? `Decisions need at least two uniquely labelled conditional branches: ${invalidDecisions.map(node => node.id).join(', ')}.` : 'All decision branches are explicit and unambiguous.', invalidDecisions.map(node => node.id));
+  if (gcpStreaming) {
+    addCheck('gcp_streaming_depth', 'Production streaming depth', graph.nodes.length >= 14 && graph.edges.length >= 13, `A standard production GCP streaming architecture needs at least 14 components and 13 relationships; received ${graph.nodes.length} and ${graph.edges.length}.`, [`${graph.nodes.length} nodes`, `${graph.edges.length} edges`]);
+    addCheck('gcp_secure_ingress', 'Secure ingress topology', armorNodes.length > 0 && loadBalancerNodes.length > 0 && ingestionNodes.length > 0 && hasArmorPolicy, 'Secure ingress requires Cloud Armor protecting Cloud Load Balancing plus a distinct ingestion runtime.', [...armorNodes, ...loadBalancerNodes, ...ingestionNodes].map(node => node.id));
+    addCheck('gcp_pubsub_roles', 'Explicit Pub/Sub topic and subscription', topicNodes.length > 0 && subscriptionNodes.length > 0 && hasTopicSubscriptionPath, 'Represent the Pub/Sub topic and subscription as distinct resources with a directed topic-to-subscription relationship.', [...topicNodes, ...subscriptionNodes].map(node => node.id));
+    addCheck('gcp_validation_branch', 'Schema validation decision', validationNodes.length > 0 && validationNodes.every(node => !invalidDecisions.some(invalid => invalid.id === node.id)), 'Show a schema/data-quality decision with explicit valid and invalid outcomes.', validationNodes.map(node => node.id));
+    addCheck('gcp_dead_letter', 'Dead-letter and replay semantics', hasDlqPath, 'Show a distinct Pub/Sub dead-letter resource and a typed failure/retry/replay path.', deadLetterNodes.map(node => node.id));
+    addCheck('gcp_data_sinks', 'Raw and analytical data sinks', hasArchive && hasAnalytics, 'Production streaming needs both a raw Cloud Storage archive and a BigQuery analytical sink.', [...serviceNodes('cloud_storage'), ...serviceNodes('bigquery')].map(node => node.id));
+    addCheck('gcp_identity', 'Workload identity', hasIdentity, 'Represent Identity and Access Management separately from edge protection.', serviceNodes('cloud_iam').map(node => node.id));
+    addCheck('gcp_operations', 'Monitoring and logging', hasMonitoring && hasLogging, 'Represent Cloud Monitoring and Cloud Logging as distinct cross-cutting operational controls.', [...serviceNodes('cloud_monitoring'), ...serviceNodes('cloud_logging')].map(node => node.id));
+  }
   const incompatibleProviderNodes = graph.nodes.filter(node => {
     const provider = (node.provider || '').toLowerCase();
     if (context.platform === 'gcp') return Boolean(provider && !['gcp', 'google cloud'].includes(provider));

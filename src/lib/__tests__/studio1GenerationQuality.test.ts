@@ -29,21 +29,35 @@ const streamingGraph: Studio1SemanticGraph = {
   assumptions: ['Events are retained for replay and failed records use a dead-letter path.'],
   nodes: [
     { id: 'producer', label: 'Event Producers', description: 'Applications and devices', kind: 'actor', stage: 1, zone: 'Sources' },
-    { id: 'ingress', label: 'Protected Ingress', description: 'Authenticated event admission', kind: 'security', stage: 2, zone: 'Edge', provider: 'GCP', serviceKey: 'cloud_armor' },
-    { id: 'event_bus', label: 'Pub/Sub', description: 'Durable event backbone', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
-    { id: 'dead_letter', label: 'Dead-letter Topic', description: 'Failed event isolation and replay', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+    { id: 'armor', label: 'Cloud Armor', description: 'WAF and DDoS security policy', kind: 'security', stage: 2, zone: 'Edge', provider: 'GCP', serviceKey: 'cloud_armor' },
+    { id: 'load_balancer', label: 'Global external Application Load Balancer', description: 'Global HTTPS entry point', kind: 'service', stage: 2, zone: 'Edge', provider: 'GCP', serviceKey: 'cloud_load_balancing' },
+    { id: 'ingestion_api', label: 'Ingestion API', description: 'Receives and authenticates incoming events', kind: 'service', stage: 2, zone: 'Ingestion', provider: 'GCP', serviceKey: 'cloud_run' },
+    { id: 'event_topic', label: 'Pub/Sub event topic', description: 'Durable event backbone', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+    { id: 'streaming_subscription', label: 'Pub/Sub streaming subscription', description: 'Delivers events with retry policy', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+    { id: 'validator', label: 'Schema valid?', description: 'Validate event contract and required fields', kind: 'decision', stage: 4, zone: 'Processing' },
     { id: 'processor', label: 'Dataflow', description: 'Streaming transforms and enrichment', kind: 'process', stage: 4, zone: 'Processing', provider: 'GCP', serviceKey: 'dataflow' },
     { id: 'warehouse', label: 'BigQuery', description: 'Analytics storage', kind: 'datastore', stage: 5, zone: 'Data', provider: 'GCP', serviceKey: 'bigquery' },
-    { id: 'operations', label: 'Cloud Monitoring', description: 'Metrics, logs, traces, and alerts', kind: 'observability', stage: 6, zone: 'Operations', provider: 'GCP', serviceKey: 'cloud_monitoring' },
+    { id: 'raw_archive', label: 'Cloud Storage raw archive', description: 'Immutable replay and reprocessing source', kind: 'datastore', stage: 5, zone: 'Data', provider: 'GCP', serviceKey: 'cloud_storage' },
+    { id: 'dead_letter', label: 'Pub/Sub dead-letter topic', description: 'Failed event isolation and replay', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+    { id: 'iam', label: 'Identity and Access Management', description: 'Least-privilege workload identities', kind: 'security', stage: 6, zone: 'Controls', provider: 'GCP', serviceKey: 'cloud_iam' },
+    { id: 'logging', label: 'Cloud Logging', description: 'Central application and pipeline logs', kind: 'observability', stage: 6, zone: 'Operations', provider: 'GCP', serviceKey: 'cloud_logging' },
+    { id: 'monitoring', label: 'Cloud Monitoring', description: 'Metrics, SLOs, alerts, and dashboards', kind: 'observability', stage: 6, zone: 'Operations', provider: 'GCP', serviceKey: 'cloud_monitoring' },
   ],
   edges: [
-    { id: 'producer_ingress', source: 'producer', target: 'ingress', label: 'Submit events', flowType: 'synchronous', step: 1 },
-    { id: 'ingress_bus', source: 'ingress', target: 'event_bus', label: 'Publish', flowType: 'asynchronous', step: 2 },
-    { id: 'bus_processor', source: 'event_bus', target: 'processor', label: 'Consume stream', flowType: 'asynchronous', step: 3 },
-    { id: 'processor_store', source: 'processor', target: 'warehouse', label: 'Write analytics', flowType: 'data', step: 4 },
-    { id: 'processor_dlq', source: 'processor', target: 'dead_letter', label: 'Failed event', flowType: 'feedback', step: 5 },
-    { id: 'dlq_processor', source: 'dead_letter', target: 'processor', label: 'Replay', flowType: 'asynchronous', step: 6 },
-    { id: 'processor_ops', source: 'processor', target: 'operations', label: 'Emit telemetry', flowType: 'governance', step: 7 },
+    { id: 'producer_lb', source: 'producer', target: 'load_balancer', label: 'Submit HTTPS events', flowType: 'network', relationType: 'routes', step: 1 },
+    { id: 'armor_lb', source: 'armor', target: 'load_balancer', label: 'Apply WAF policy', flowType: 'governance', relationType: 'protects', step: 2 },
+    { id: 'lb_api', source: 'load_balancer', target: 'ingestion_api', label: 'Route valid traffic', flowType: 'network', relationType: 'routes', step: 3 },
+    { id: 'api_topic', source: 'ingestion_api', target: 'event_topic', label: 'Publish events', flowType: 'asynchronous', relationType: 'publishes', step: 4 },
+    { id: 'topic_subscription', source: 'event_topic', target: 'streaming_subscription', label: 'Deliver retained events', flowType: 'asynchronous', relationType: 'contains', step: 5 },
+    { id: 'subscription_validator', source: 'streaming_subscription', target: 'validator', label: 'Consume subscription', flowType: 'asynchronous', relationType: 'subscribes', step: 6 },
+    { id: 'valid_processor', source: 'validator', target: 'processor', label: 'Process valid event', flowType: 'data', relationType: 'processes', condition: 'schema_valid', step: 7 },
+    { id: 'invalid_dlq', source: 'validator', target: 'dead_letter', label: 'Route invalid event', flowType: 'feedback', relationType: 'feedback', condition: 'schema_invalid', step: 8 },
+    { id: 'processor_store', source: 'processor', target: 'warehouse', label: 'Write analytics', flowType: 'data', relationType: 'writes', step: 9 },
+    { id: 'processor_archive', source: 'processor', target: 'raw_archive', label: 'Archive raw events', flowType: 'data', relationType: 'writes', step: 10 },
+    { id: 'dlq_replay', source: 'dead_letter', target: 'streaming_subscription', label: 'Replay corrected event', flowType: 'feedback', relationType: 'feedback', step: 11 },
+    { id: 'iam_api', source: 'iam', target: 'ingestion_api', label: 'Authorize service account', flowType: 'governance', relationType: 'authorizes', step: 12 },
+    { id: 'logging_api', source: 'logging', target: 'ingestion_api', label: 'Collect request logs', flowType: 'governance', relationType: 'observes', step: 13 },
+    { id: 'monitoring_processor', source: 'monitoring', target: 'processor', label: 'Monitor pipeline SLOs', flowType: 'governance', relationType: 'observes', step: 14 },
   ],
 };
 
@@ -102,7 +116,7 @@ describe('Studio 1 deterministic generation quality gate', () => {
     const raw = structuredClone(streamingGraph);
     raw.edges.forEach(edge => { edge.step = 1; });
     const normalized = normalizeStudio1Graph(raw, 'streaming platform');
-    expect(normalized.edges.map(edge => edge.step)).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    expect(normalized.edges.map(edge => edge.step)).toEqual(Array.from({ length: streamingGraph.edges.length }, (_, index) => index + 1));
   });
 
   it('preserves meaningful product names when the model uses common schema aliases', () => {
@@ -165,7 +179,8 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(rendered.xml).not.toContain('Balanced domain layout v2');
     expect(rendered.xml).not.toContain('lane_6');
 
-    const coordinates = [...rendered.xml.matchAll(/id="(producer|ingress|event_bus|dead_letter|processor|warehouse|operations)"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)]
+    const nodePattern = streamingGraph.nodes.map(node => node.id).join('|');
+    const coordinates = [...rendered.xml.matchAll(new RegExp(`id="(${nodePattern})"[^>]*>[\\s\\S]*?<mxGeometry x="([\\d.]+)" y="([\\d.]+)" width="([\\d.]+)" height="([\\d.]+)"`, 'g'))]
       .map(match => ({ id: match[1], x: Number(match[2]), y: Number(match[3]), width: Number(match[4]), height: Number(match[5]) }));
     expect(coordinates).toHaveLength(streamingGraph.nodes.length);
     for (let leftIndex = 0; leftIndex < coordinates.length; leftIndex += 1) {
@@ -180,24 +195,16 @@ describe('Studio 1 deterministic generation quality gate', () => {
 
   it('normalizes Cloud Armor into a policy protecting Cloud Load Balancing', () => {
     const graph = structuredClone(streamingGraph);
-    graph.nodes.splice(2, 0, { id: 'load_balancer', label: 'Global external Application Load Balancer', description: 'Global HTTPS entry point', kind: 'service', stage: 2, zone: 'Edge', provider: 'GCP', serviceKey: 'cloud_load_balancing' });
-    graph.edges.forEach((edge, index) => { edge.step = index + 1; });
     const rendered = renderStudio1GraphXml(graph);
     expect(rendered.xml).toContain('source="producer" target="load_balancer"');
-    expect(rendered.xml).toContain('source="ingress" target="load_balancer"');
+    expect(rendered.xml).toContain('source="armor" target="load_balancer"');
     expect(rendered.xml).toContain('Applies security policy');
     expect(rendered.xml).toContain('strokeColor=#D93025');
-    expect(rendered.xml).toContain('source="load_balancer" target="event_bus"');
+    expect(rendered.xml).toContain('source="load_balancer" target="ingestion_api"');
   });
 
   it('places an ingestion runtime with edge services instead of creating a backward messaging loop', () => {
     const graph = structuredClone(streamingGraph);
-    graph.nodes.push({ id: 'ingestion_api', label: 'Ingestion API', description: 'Receives and validates incoming events', kind: 'service', stage: 2, zone: 'Ingestion', provider: 'GCP', serviceKey: 'cloud_run' });
-    graph.edges = [
-      { id: 'producer_api', source: 'producer', target: 'ingestion_api', label: 'Submit events', flowType: 'synchronous', step: 1, relationType: 'invokes' },
-      { id: 'api_bus', source: 'ingestion_api', target: 'event_bus', label: 'Publish events', flowType: 'asynchronous', step: 2, relationType: 'publishes' },
-      ...graph.edges.slice(2).map((edge, index) => ({ ...edge, step: index + 3 })),
-    ];
     const rendered = renderStudio1GraphXml(graph);
     const ingressGroupX = Number(rendered.xml.match(/id="group_ingress"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)"/)?.[1]);
     const ingestionX = Number(rendered.xml.match(/id="ingestion_api"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)"/)?.[1]);

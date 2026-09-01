@@ -214,11 +214,17 @@ interface Studio1ArchitectureCandidate {
   context: Studio1GenerationContext;
   decisionLedger: Studio1DecisionLedger;
   certification: { certified: boolean; score: number; violations: string[] };
+  qualityContract?: { valid: boolean; score: number; violations: string[] };
   semanticCritic?: { approved?: boolean; score?: number; issues?: string[]; missingRequirements?: string[] };
   summary: string;
   targetTier: string;
   changedComponents: string[];
 }
+
+const candidateTechnicalScore = (candidate: Studio1ArchitectureCandidate): number => Math.min(
+  Math.round(Number(candidate.semanticCritic?.score || 0)),
+  Math.round(Number(candidate.qualityContract?.score ?? 100)),
+);
 
 interface Studio1CandidateSelectionState {
   title: string;
@@ -1463,7 +1469,7 @@ function Studio1Content() {
     setChatMessages((previous) => [...previous, {
       id: `ast_${Date.now()}`,
       sender: 'assistant',
-      text: `Selected ${candidate.name} as the reviewable draft.\n${candidate.strategy}\n\nTechnical review: ${Math.round(Number(candidate.semanticCritic?.score || 0))}/100 • deterministic render rules: ${candidate.certification.score}/100. Accept it to establish the baseline, or continue refining the draft.`,
+      text: `Selected ${candidate.name} as the reviewable draft.\n${candidate.strategy}\n\nTechnical review: ${candidateTechnicalScore(candidate)}/100 • deterministic render rules: ${candidate.certification.score}/100. Accept it to establish the baseline, or continue refining the draft.`,
       timestamp: 'Just now',
       options: [
         { id: 'explain_candidate', label: 'Explain this design', prompt: `Explain the architecture decisions and tradeoffs in the selected ${candidate.name} option without changing the diagram.`, recommended: true },
@@ -2551,7 +2557,7 @@ function Studio1Content() {
 
                     <div className="flex flex-wrap gap-2 mt-4">
                       <span className="rounded-lg bg-indigo-50 dark:bg-indigo-950/60 px-2 py-1 text-[10px] font-black text-indigo-700 dark:text-indigo-300">
-                        Technical {Math.round(Number(candidate.semanticCritic?.score || 0))}/100
+                        Technical {candidateTechnicalScore(candidate)}/100
                       </span>
                       <span className="rounded-lg bg-emerald-50 dark:bg-emerald-950/60 px-2 py-1 text-[10px] font-black text-emerald-700 dark:text-emerald-300">
                         Render rules {candidate.certification.score}/100

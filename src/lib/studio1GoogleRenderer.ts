@@ -172,11 +172,11 @@ function layoutGraph(graph: Studio1SemanticGraph): {
   pageHeight: number;
   layoutViolations: string[];
 } {
-  const pageWidth = 1760;
-  const externalBox = { x: 36, y: 218, width: 224, height: 520 };
-  const cloudBox = { x: 288, y: 132, width: 1436, height: 0 };
-  const projectBox = { x: 312, y: 180, width: 1388, height: 0 };
-  const regionBox = { x: 336, y: 232, width: 1340, height: 0 };
+  const pageWidth = 1500;
+  const externalBox = { x: 30, y: 218, width: 190, height: 520 };
+  const cloudBox = { x: 242, y: 132, width: 1228, height: 0 };
+  const projectBox = { x: 264, y: 180, width: 1184, height: 0 };
+  const regionBox = { x: 286, y: 232, width: 1140, height: 0 };
   const groupDefinitions = [
     { id: 'ingress', label: 'Edge and ingress', description: 'Global entry point and application admission' },
     { id: 'messaging', label: 'Messaging', description: 'Topics, subscriptions, delivery and retry' },
@@ -191,7 +191,7 @@ function layoutGraph(graph: Studio1SemanticGraph): {
   const groupAreaWidth = regionBox.width - 40;
   const groupWidth = Math.floor((groupAreaWidth - Math.max(0, activeDefinitions.length - 1) * groupGap) / Math.max(1, activeDefinitions.length));
   const maxGroupNodes = Math.max(1, ...activeDefinitions.map(definition => graph.nodes.filter(node => groupFor(node) === definition.id).length));
-  const groupHeight = 64 + maxGroupNodes * 88 + Math.max(0, maxGroupNodes - 1) * 32 + 24;
+  const groupHeight = 64 + maxGroupNodes * 96 + Math.max(0, maxGroupNodes - 1) * 32 + 24;
   regionBox.height = groupHeight + 44;
   const groups: FunctionalGroup[] = [];
   activeDefinitions.forEach((definition, groupIndex) => {
@@ -202,9 +202,9 @@ function layoutGraph(graph: Studio1SemanticGraph): {
     const positionedNodes = nodes.map((node, row): PositionedNode => ({
       ...node,
       x: x + 16,
-      y: regionBox.y + 72 + row * 120,
+      y: regionBox.y + 72 + row * 128,
       width: groupWidth - 32,
-      height: node.kind === 'decision' ? 88 : 88,
+      height: 96,
       groupId: definition.id,
       groupIndex,
       row,
@@ -213,13 +213,13 @@ function layoutGraph(graph: Studio1SemanticGraph): {
     groups.push({ ...definition, x, y: regionBox.y + 36, width: groupWidth, height: groupHeight, nodes: positionedNodes });
   });
 
-  externalBox.height = Math.max(280, 74 + external.length * 88 + Math.max(0, external.length - 1) * 32 + 28);
+  externalBox.height = Math.max(280, 74 + external.length * 96 + Math.max(0, external.length - 1) * 32 + 28);
   external.forEach((node, row) => positions.set(node.id, {
     ...node,
     x: externalBox.x + 16,
-    y: externalBox.y + 58 + row * 120,
+    y: externalBox.y + 58 + row * 128,
     width: externalBox.width - 32,
-    height: 88,
+    height: 96,
     groupId: 'external',
     groupIndex: -1,
     row,
@@ -250,7 +250,7 @@ function layoutGraph(graph: Studio1SemanticGraph): {
 
   projectBox.height = regionBox.height + (controlsBox.height ? controlsBox.height + 52 : 28) + 76;
   cloudBox.height = projectBox.height + 72;
-  const pageHeight = Math.max(980, cloudBox.y + cloudBox.height + (graph.assumptions.length ? 118 : 58), externalBox.y + externalBox.height + 58);
+  const pageHeight = Math.max(760, cloudBox.y + cloudBox.height + (graph.assumptions.length ? 104 : 44), externalBox.y + externalBox.height + 44);
   const layoutViolations: string[] = [];
   const cards = [...positions.values()];
   for (let i = 0; i < cards.length; i += 1) {
@@ -337,12 +337,12 @@ export function renderStudio1GoogleCloudXml(
   for (const node of layout.positions.values()) {
     const title = displayName(node);
     const subtitle = node.label !== title && !/^component/i.test(node.label) ? `${node.label} • ${node.description}` : node.description;
-    const icon = node.serviceKey ? renderGcpIconHtml(node.serviceKey, 32, node.id) : '';
+    const icon = node.serviceKey ? renderGcpIconHtml(node.serviceKey, 36, node.id) : '';
     if (node.kind === 'decision') {
-      vertex(node.id, `<div style="font-family:Google Sans,Arial,sans-serif;text-align:center;"><div style="font-size:10px;font-weight:700;color:${GOOGLE.ink};">${title}</div><div style="font-size:8px;color:${GOOGLE.muted};margin-top:3px;">${node.description}</div></div>`, node.x + 20, node.y, node.width - 40, node.height, `shape=rhombus;perimeter=rhombusPerimeter;fillColor=#FFFFFF;strokeColor=${GOOGLE.yellow};strokeWidth=1.7;align=center;verticalAlign=middle;spacing=7;`);
+      vertex(node.id, `<div style="font-family:Google Sans,Arial,sans-serif;text-align:center;"><div style="font-size:12px;font-weight:700;color:${GOOGLE.ink};">${title}</div><div style="font-size:9px;color:${GOOGLE.muted};margin-top:3px;">${node.description}</div></div>`, node.x + 18, node.y, node.width - 36, node.height, `shape=rhombus;perimeter=rhombusPerimeter;fillColor=#FFFFFF;strokeColor=${GOOGLE.yellow};strokeWidth=1.7;align=center;verticalAlign=middle;spacing=7;`);
       continue;
     }
-    const html = `<div style="font-family:Google Sans,Arial,sans-serif;padding:8px;text-align:left;display:flex;align-items:center;gap:9px;">${icon}<div><div style="font-size:10.5px;font-weight:700;color:${GOOGLE.ink};">${title}</div><div style="font-size:8px;color:${GOOGLE.muted};line-height:1.25;margin-top:3px;">${subtitle}</div>${node.technology ? `<div style="font-size:7.5px;color:${GOOGLE.blue};margin-top:3px;">${node.technology}</div>` : ''}</div></div>`;
+    const html = `<div style="font-family:Google Sans,Arial,sans-serif;padding:9px;text-align:left;display:flex;align-items:center;gap:10px;">${icon}<div><div style="font-size:12px;font-weight:700;color:${GOOGLE.ink};">${title}</div><div style="font-size:9px;color:${GOOGLE.muted};line-height:1.3;margin-top:3px;">${subtitle}</div>${node.technology ? `<div style="font-size:8.5px;color:${GOOGLE.blue};margin-top:3px;">${node.technology}</div>` : ''}</div></div>`;
     const isPolicy = node.serviceKey === 'cloud_armor' || node.serviceKey === 'cloud_iam' || node.kind === 'security';
     vertex(node.id, html, node.x, node.y, node.width, node.height, `rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=${isPolicy ? GOOGLE.red : GOOGLE.border};strokeWidth=${isPolicy ? 1.6 : 1.2};align=left;verticalAlign=middle;spacing=5;`);
   }
@@ -388,7 +388,7 @@ export function renderStudio1GoogleCloudXml(
     }
     const mainNumber = isControl ? `C${++controlFlowNumber}` : String(++mainFlowNumber);
     const label = `${mainNumber}. ${edge.condition || edge.label}`;
-    const style = `edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=14;rounded=1;html=1;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle(edge, relation)}labelBackgroundColor=#FFFFFF;labelBorderColor=${GOOGLE.border};fontColor=${GOOGLE.ink};fontSize=8.5;fontStyle=1;spacing=3;`;
+    const style = `edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=14;rounded=1;html=1;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle(edge, relation)}labelBackgroundColor=#FFFFFF;labelBorderColor=${GOOGLE.border};fontColor=${GOOGLE.ink};fontSize=9.5;fontStyle=1;spacing=3;`;
     cells.splice(edgeInsertIndex + edgeCount, 0, `<mxCell id="${escapeXml(edge.id)}" value="${escapeXml(label)}" edge="1" parent="1" source="${escapeXml(edge.source)}" target="${escapeXml(edge.target)}" style="${style}"><mxGeometry relative="1" as="geometry">${points}</mxGeometry></mxCell>`);
     edgeCount += 1;
   });
