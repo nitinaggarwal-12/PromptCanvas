@@ -141,23 +141,28 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(renderStudio1GraphXml(normalized).certification.violations).toEqual([]);
   });
 
-  it('renders a certified Draw.io envelope with official local icons and straight adjacent routes', () => {
+  it('renders a certified Draw.io envelope with official local icons', () => {
     const rendered = renderStudio1GraphXml(streamingGraph);
     expect(rendered.certification.certified).toBe(true);
     expect(rendered.xml).toContain('<mxfile host="embed.diagrams.net">');
-    expect(rendered.xml).toContain('<diagram id="studio1_hybrid"');
+    expect(rendered.xml).toContain('<diagram id="studio1_google_cloud"');
     expect(rendered.xml).toContain('<mxGraphModel');
-    expect(rendered.xml).toContain('edgeStyle=none;');
+    expect(rendered.xml).toContain('data-google-cloud-icon=&quot;official&quot;');
     expect(rendered.xml).not.toContain('https://api.iconify.design');
   });
 
-  it('uses balanced horizontal domain bands instead of unbounded stage columns', () => {
+  it('uses Google Cloud boundaries, functional groups, and cross-cutting controls', () => {
     const rendered = renderStudio1GraphXml(streamingGraph);
-    expect(rendered.xml).toContain('Balanced domain layout v2');
-    expect(rendered.xml).toContain('band_experience');
-    expect(rendered.xml).toContain('band_platform');
-    expect(rendered.xml).toContain('band_data');
-    expect(rendered.xml).toContain('band_controls');
+    expect(rendered.xml).toContain('Google Cloud visual profile');
+    expect(rendered.xml).toContain('google_cloud_scope');
+    expect(rendered.xml).toContain('project_scope');
+    expect(rendered.xml).toContain('region_scope');
+    expect(rendered.xml).toContain('group_ingress');
+    expect(rendered.xml).toContain('group_messaging');
+    expect(rendered.xml).toContain('group_processing');
+    expect(rendered.xml).toContain('group_data');
+    expect(rendered.xml).toContain('cross_cutting_controls');
+    expect(rendered.xml).not.toContain('Balanced domain layout v2');
     expect(rendered.xml).not.toContain('lane_6');
 
     const coordinates = [...rendered.xml.matchAll(/id="(producer|ingress|event_bus|dead_letter|processor|warehouse|operations)"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)]
@@ -171,5 +176,17 @@ describe('Studio 1 deterministic generation quality gate', () => {
         expect(separated, `${left.id} overlaps ${right.id}`).toBe(true);
       }
     }
+  });
+
+  it('normalizes Cloud Armor into a policy protecting Cloud Load Balancing', () => {
+    const graph = structuredClone(streamingGraph);
+    graph.nodes.splice(2, 0, { id: 'load_balancer', label: 'Global external Application Load Balancer', description: 'Global HTTPS entry point', kind: 'service', stage: 2, zone: 'Edge', provider: 'GCP', serviceKey: 'cloud_load_balancing' });
+    graph.edges.forEach((edge, index) => { edge.step = index + 1; });
+    const rendered = renderStudio1GraphXml(graph);
+    expect(rendered.xml).toContain('source="producer" target="load_balancer"');
+    expect(rendered.xml).toContain('source="ingress" target="load_balancer"');
+    expect(rendered.xml).toContain('Applies security policy');
+    expect(rendered.xml).toContain('strokeColor=#D93025');
+    expect(rendered.xml).toContain('source="load_balancer" target="event_bus"');
   });
 });

@@ -1,8 +1,11 @@
+import { GOOGLE_CLOUD_OFFICIAL_SVG, hasOfficialGoogleCloudIcon } from './gcpOfficialSvgAssets';
+
 /**
- * 🏛️ Google Cloud Platform (GCP) Native Architecture Icon & Vector Asset Library
- * 
- * Authentic, pristine vector SVGs for official Google Cloud products and architectures.
- * 100% Offline, Self-Contained, Zero External CDN / HTTP dependencies.
+ * Google Cloud icon metadata plus compatibility fallbacks.
+ *
+ * GOOGLE_CLOUD_OFFICIAL_SVG contains unmodified assets from Google's published
+ * icon packages. The inline SVG values below remain only for products that are
+ * not present in those packages; they must never be reported as official.
  * 
  * Covers all official Google Cloud Architecture Center categories:
  * - AI & Machine Learning (Gemini, Vertex AI, ScaNN Vector Search, Document AI, Agent Builder, Model Armor)
@@ -291,9 +294,9 @@ export const GCP_OFFICIAL_ICONS: Record<string, GcpIconDefinition> = {
 };
 
 /**
- * Generates an inline HTML box with authentic GCP vector SVG for Draw.io nodes and HTML labels.
+ * Generates an inline Google Cloud product icon for Draw.io HTML labels.
  */
-export function renderGcpIconHtml(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string, size = 24): string {
+export function renderGcpIconHtml(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string, size = 24, instanceKey = 'icon'): string {
   const safeSize = Math.max(16, size || 24);
   const cleanKey = String(iconKey || '').trim().toLowerCase();
   const icon = GCP_OFFICIAL_ICONS[cleanKey];
@@ -302,20 +305,45 @@ export function renderGcpIconHtml(iconKey: keyof typeof GCP_OFFICIAL_ICONS | str
     return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${safeSize}px;height:${safeSize}px;border-radius:6px;background:#EFF6FF;color:#1A73E8;flex-shrink:0;"><svg width="${Math.round(safeSize * 0.75)}" height="${Math.round(safeSize * 0.75)}" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#4285F4"/></svg></div>`;
   }
 
-  // Adjust width and height in svg tag to safeSize
-  const scaledSvg = icon.svg
-    .replace(/width="24"/, `width="${safeSize}"`)
-    .replace(/height="24"/, `height="${safeSize}"`);
+  let sourceSvg = (GOOGLE_CLOUD_OFFICIAL_SVG[cleanKey] || icon.svg)
+    .replace(/<\?xml[^>]*>/g, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .trim();
+  const namespace = `gcp_${cleanKey}_${String(instanceKey).replace(/[^a-z0-9_-]+/gi, '_')}_`;
+  const ids = [...sourceSvg.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+  const classes = new Set<string>();
+  sourceSvg.replace(/\bclass="([^"]+)"/g, (_match, value: string) => {
+    value.split(/\s+/).filter(Boolean).forEach((name: string) => classes.add(name));
+    return _match;
+  });
+  for (const id of ids) {
+    sourceSvg = sourceSvg
+      .replaceAll(`id="${id}"`, `id="${namespace}${id}"`)
+      .replaceAll(`url(#${id})`, `url(#${namespace}${id})`)
+      .replaceAll(`href="#${id}"`, `href="#${namespace}${id}"`);
+  }
+  for (const className of classes) {
+    sourceSvg = sourceSvg
+      .replace(new RegExp(`\\.${className}(?=[\\s,.{:#>+~\\[])`, 'g'), `.${namespace}${className}`)
+      .replace(new RegExp(`(?<=class="[^"]*)\\b${className}\\b`, 'g'), `${namespace}${className}`);
+  }
+  const scaledSvg = sourceSvg
+    .replace(/\swidth="[^"]*"/, '')
+    .replace(/\sheight="[^"]*"/, '')
+    .replace(/<svg\b/, `<svg width="${safeSize}" height="${safeSize}"`);
 
-  return `<div style="display:inline-flex;align-items:center;justify-content:center;width:${safeSize}px;height:${safeSize}px;border-radius:6px;background:${icon.bgColor};color:${icon.primaryColor};flex-shrink:0;">${scaledSvg}</div>`;
+  return `<div data-google-cloud-icon="${hasOfficialGoogleCloudIcon(cleanKey) ? 'official' : 'fallback'}" style="display:inline-flex;align-items:center;justify-content:center;width:${safeSize}px;height:${safeSize}px;background:#FFFFFF;flex-shrink:0;">${scaledSvg}</div>`;
 }
 
 /**
  * Returns clean SVG string for embedding directly in XML templates.
  */
 export function getGcpSvg(iconKey: keyof typeof GCP_OFFICIAL_ICONS | string): string {
-  return GCP_OFFICIAL_ICONS[iconKey]?.svg || GCP_OFFICIAL_ICONS['gemini'].svg;
+  const cleanKey = String(iconKey || '').trim().toLowerCase();
+  return GOOGLE_CLOUD_OFFICIAL_SVG[cleanKey] || GCP_OFFICIAL_ICONS[cleanKey]?.svg || GCP_OFFICIAL_ICONS['gemini'].svg;
 }
+
+export { hasOfficialGoogleCloudIcon };
 
 /**
  * Helper to encode SVG into data URI for mxCell image styles.
