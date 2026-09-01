@@ -332,7 +332,7 @@ function StudioContent() {
     {
       id: 'welcome',
       sender: 'assistant',
-      text: '👋 Welcome to Launch Studio! Fill out your project requirements above and click **Synthesize Architecture Now**, or describe what you want directly in chat. The right pane shows a generic GCP reference model until synthesized.',
+      text: '👋 Welcome to Launch Studio! Fill out your project requirements above and click **Send**, or describe what you want directly in chat. The right pane shows a generic GCP reference model until synthesized.',
       timestamp: 'Just now',
       suggestedPrompts: [
         'Architect a high-throughput event streaming platform with Pub/Sub & Dataflow',
@@ -1025,17 +1025,16 @@ function StudioContent() {
             </div>
           </div>
 
-          {/* MAIN SPLIT-SCREEN WORKSPACE */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* MAIN SPLIT-SCREEN WORKSPACE: 30% Left Form/Chat, 70% Right Canvas */}
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-start">
             
-            {/* LEFT COLUMN (6 COLS): 
-                TOP: SPECIFICATION INPUT FORM (5-FIELDS)
-                BOTTOM: ARCHITECTURAL CHATBOT & ASSISTANT
+            {/* LEFT COLUMN (3 COLS / 30%): 
+                SPECIFICATION INPUT FORM & ARCHITECTURAL CHAT ASSISTANT
             */}
-            <div className="lg:col-span-6 space-y-5">
+            <div className="lg:col-span-3 space-y-5">
               
-              {/* TOP LEFT: ARCHITECTURE SPECIFICATION FORM (5-FIELDS ONLY) */}
-              <div className={`p-6 rounded-3xl border shadow-sm space-y-4 ${
+              {/* TOP LEFT: ARCHITECTURE SPECIFICATION FORM */}
+              <div className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
                 isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
               }`}>
                 <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
@@ -1128,17 +1127,8 @@ function StudioContent() {
                   />
                 </div>
 
-                {/* 5. Architectural Scope & Topology Requirements */}
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                      5. Architectural Scope &amp; Topology Requirements
-                    </label>
-                    <span className="text-[10px] font-mono text-slate-400">
-                      Gemini 3.7 &bull; Real-Time AST
-                    </span>
-                  </div>
-
+                {/* Chatbox & Prompt Area */}
+                <div className="space-y-3 pt-1">
                   {/* Scrollable Prompt & Enhancement History Feed */}
                   {chatMessages.length > 0 && (
                     <div className={`p-3 rounded-2xl border max-h-[220px] overflow-y-auto space-y-2.5 ${
@@ -1225,7 +1215,7 @@ function StudioContent() {
                                       type="button"
                                       onClick={() => {
                                         setProjectScopePrompt(p);
-                                        showToast(`💡 Loaded prompt into scope editor. Press "⚡ Synthesize Architecture Now" to apply.`);
+                                        showToast(`💡 Loaded prompt into scope editor. Press "Send" to apply.`);
                                       }}
                                       className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
                                     >
@@ -1250,9 +1240,9 @@ function StudioContent() {
                     </div>
                   )}
 
-                  {/* Prompt Textarea */}
+                  {/* Prompt Textarea - Enlarged */}
                   <textarea
-                    rows={3}
+                    rows={5}
                     value={projectScopePrompt}
                     onChange={(e) => setProjectScopePrompt(e.target.value)}
                     onKeyDown={(e) => {
@@ -1261,13 +1251,13 @@ function StudioContent() {
                         handleSynthesizeArchitecture();
                       }
                     }}
-                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Synthesize)"
-                    className={`w-full p-3 rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans ${
-                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
+                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
+                    className={`w-full p-3.5 min-h-[130px] rounded-2xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
+                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
                     }`}
                   />
 
-                  {/* Enter Button directly under textarea */}
+                  {/* Send Button */}
                   <button
                     type="button"
                     onClick={() => handleSynthesizeArchitecture()}
@@ -1277,12 +1267,12 @@ function StudioContent() {
                     {isSynthesizing ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>AI Synthesizing Tailored Architecture...</span>
+                        <span>Sending...</span>
                       </>
                     ) : (
                       <>
-                        <Zap className="w-4 h-4 fill-current" />
-                        <span>⚡ Synthesize Architecture Now</span>
+                        <Send className="w-4 h-4 fill-current" />
+                        <span>Send</span>
                       </>
                     )}
                   </button>
@@ -1291,10 +1281,10 @@ function StudioContent() {
 
             </div>
 
-            {/* RIGHT COLUMN (6 COLS): 
+            {/* RIGHT COLUMN (7 COLS / 70%): 
                 LIVE 16:9 INTERACTIVE PREVIEW, MULTI-DIAGRAM TABS & FRAME ACTIONS 
             */}
-            <div className="lg:col-span-6 sticky top-16 space-y-4">
+            <div className="lg:col-span-7 sticky top-16 space-y-4">
               <div className={`rounded-3xl border shadow-xl overflow-hidden ${
                 isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
               }`}>
