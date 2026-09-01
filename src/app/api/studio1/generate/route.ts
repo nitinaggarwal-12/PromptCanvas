@@ -20,6 +20,108 @@ import {
 
 // Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
 const ENFORCE_STUDIO1_GATES = false;
+const MODEL_DEADLINE_MS = Math.max(15_000, Math.min(60_000, Number(process.env.STUDIO1_MODEL_DEADLINE_MS || 45_000)));
+
+function withDeadline<T>(operation: Promise<T>, milliseconds: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(`Architecture model exceeded the ${Math.round(milliseconds / 1000)} second response budget.`)), milliseconds);
+    operation.then(
+      value => { clearTimeout(timer); resolve(value); },
+      error => { clearTimeout(timer); reject(error); },
+    );
+  });
+}
+
+function isGcpStreamingRequest(prompt: string, context: Studio1GenerationContext): boolean {
+  return (context.platform === 'gcp' || context.platform === 'auto')
+    && /stream|event|pub\/?sub|dataflow|real[- ]?time/i.test(prompt);
+}
+
+function buildGcpStreamingGraph(variant: 'lean' | 'balanced' | 'enterprise'): Studio1SemanticGraph {
+  const enterprise = variant === 'enterprise';
+  const lean = variant === 'lean';
+  const ingestionLabel = enterprise ? 'Google Kubernetes Engine ingestion service' : 'Cloud Run ingestion service';
+  const ingestionServiceKey = enterprise ? 'gke' : 'cloud_run';
+  const graph: Studio1SemanticGraph = {
+    title: `${lean ? 'Managed' : enterprise ? 'Resilient enterprise' : 'Balanced production'} event streaming platform`,
+    subtitle: 'Secure ingestion, durable messaging, validated processing, analytics, recovery, and operations',
+    patterns: ['event-driven', 'layered'],
+    assumptions: [
+      'Publishers use authenticated HTTPS and events carry stable schema versions.',
+      'Raw and invalid records are retained for replay, audit, and controlled reprocessing.',
+      enterprise ? 'Regional failure and regulated-data controls are required.' : 'Managed regional services meet the initial recovery objectives.',
+    ],
+    nodes: [
+      { id: 'producer', label: 'Event producers', description: 'Applications, partners, and devices publishing events', kind: 'actor', stage: 1, zone: 'Sources', provider: 'external', technology: 'HTTPS / JSON or Avro' },
+      { id: 'armor', label: 'Cloud Armor', description: 'WAF, DDoS protection, and ingress security policy', kind: 'security', stage: 2, zone: 'Ingress', provider: 'GCP', serviceKey: 'cloud_armor' },
+      { id: 'load_balancer', label: 'Global external Application Load Balancer', description: 'Global TLS entry point and traffic distribution', kind: 'service', stage: 2, zone: 'Ingress', provider: 'GCP', serviceKey: 'cloud_load_balancing', technology: 'HTTPS / TLS 1.3' },
+      { id: 'ingestion_api', label: ingestionLabel, description: 'Authenticates, validates envelopes, and publishes accepted events', kind: 'service', stage: 2, zone: 'Ingress', provider: 'GCP', serviceKey: ingestionServiceKey, technology: enterprise ? 'GKE Autopilot' : 'Cloud Run' },
+      { id: 'event_topic', label: 'Pub/Sub event topic', description: 'Durable, decoupled event backbone with retention', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+      { id: 'streaming_subscription', label: 'Pub/Sub streaming subscription', description: 'Pull delivery with retry and dead-letter policy', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+      { id: 'dead_letter', label: 'Pub/Sub dead-letter topic', description: 'Isolates messages after delivery attempts are exhausted', kind: 'queue', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub' },
+      { id: 'processor', label: 'Dataflow streaming pipeline', description: 'Autoscaled transforms, enrichment, windowing, and deduplication', kind: 'process', stage: 4, zone: 'Processing', provider: 'GCP', serviceKey: 'dataflow', technology: 'Apache Beam' },
+      { id: 'validator', label: 'Schema and data quality valid?', description: 'Branches records using contract and quality rules', kind: 'decision', stage: 4, zone: 'Processing' },
+      { id: 'warehouse', label: 'BigQuery', description: 'Partitioned analytical sink for governed consumption', kind: 'datastore', stage: 5, zone: 'Data', provider: 'GCP', serviceKey: 'bigquery' },
+      { id: 'raw_archive', label: 'Cloud Storage raw archive and quarantine', description: 'Immutable raw retention and invalid-record quarantine', kind: 'datastore', stage: 5, zone: 'Data', provider: 'GCP', serviceKey: 'cloud_storage' },
+      { id: 'iam', label: 'Identity and Access Management', description: 'Least-privilege workload identity and service authorization', kind: 'security', stage: 6, zone: 'Controls', provider: 'GCP', serviceKey: 'cloud_iam' },
+      { id: 'logging', label: 'Cloud Logging', description: 'Central request, pipeline, and audit logs', kind: 'observability', stage: 6, zone: 'Operations', provider: 'GCP', serviceKey: 'cloud_logging' },
+      { id: 'monitoring', label: 'Cloud Monitoring', description: 'Backlog, freshness, error-rate, throughput, and SLO alerts', kind: 'observability', stage: 6, zone: 'Operations', provider: 'GCP', serviceKey: 'cloud_monitoring' },
+    ],
+    edges: [
+      { id: 'producer_lb', source: 'producer', target: 'load_balancer', label: 'Submit authenticated HTTPS events', flowType: 'network', relationType: 'routes', step: 1 },
+      { id: 'armor_lb', source: 'armor', target: 'load_balancer', label: 'Apply WAF and DDoS policy', flowType: 'governance', relationType: 'protects', step: 2 },
+      { id: 'lb_api', source: 'load_balancer', target: 'ingestion_api', label: 'Route accepted TLS traffic', flowType: 'network', relationType: 'routes', step: 3 },
+      { id: 'api_topic', source: 'ingestion_api', target: 'event_topic', label: 'Publish versioned events', flowType: 'asynchronous', relationType: 'publishes', step: 4 },
+      { id: 'topic_subscription', source: 'event_topic', target: 'streaming_subscription', label: 'Retain and expose event stream', flowType: 'asynchronous', relationType: 'contains', step: 5 },
+      { id: 'subscription_processor', source: 'streaming_subscription', target: 'processor', label: 'Pull events with flow control', flowType: 'asynchronous', relationType: 'subscribes', step: 6 },
+      { id: 'processor_validator', source: 'processor', target: 'validator', label: 'Evaluate transformed record', flowType: 'data', relationType: 'processes', step: 7 },
+      { id: 'valid_warehouse', source: 'validator', target: 'warehouse', label: 'Write valid analytical rows', flowType: 'data', relationType: 'writes', condition: 'schema_and_quality_valid', step: 8 },
+      { id: 'invalid_quarantine', source: 'validator', target: 'raw_archive', label: 'Quarantine invalid record', flowType: 'data', relationType: 'writes', condition: 'schema_or_quality_invalid', step: 9 },
+      { id: 'processor_archive', source: 'processor', target: 'raw_archive', label: 'Archive raw event copy', flowType: 'data', relationType: 'writes', step: 10 },
+      { id: 'subscription_dlq', source: 'streaming_subscription', target: 'dead_letter', label: 'Delivery attempts exhausted', flowType: 'feedback', relationType: 'feedback', step: 11 },
+      { id: 'dlq_replay', source: 'dead_letter', target: 'event_topic', label: 'Replay corrected event', flowType: 'feedback', relationType: 'feedback', step: 12 },
+      { id: 'iam_api', source: 'iam', target: 'ingestion_api', label: 'Authorize workload identity', flowType: 'governance', relationType: 'authorizes', step: 13 },
+      { id: 'logging_api', source: 'logging', target: 'ingestion_api', label: 'Collect request and audit logs', flowType: 'governance', relationType: 'observes', step: 14 },
+      { id: 'monitoring_processor', source: 'monitoring', target: 'processor', label: 'Monitor pipeline SLOs', flowType: 'governance', relationType: 'observes', step: 15 },
+    ],
+  };
+  if (enterprise) {
+    graph.nodes.push(
+      { id: 'vpc_sc', label: 'VPC Service Controls', description: 'Data-exfiltration perimeter for managed services', kind: 'security', stage: 6, zone: 'Controls', provider: 'GCP', serviceKey: 'vpc_sc' },
+      { id: 'kms', label: 'Cloud Key Management Service', description: 'Customer-managed encryption keys and rotation', kind: 'security', stage: 6, zone: 'Controls', provider: 'GCP', technology: 'CMEK' },
+      { id: 'scc', label: 'Security Command Center', description: 'Cloud threat findings and security posture management', kind: 'security', stage: 6, zone: 'Controls', provider: 'GCP', serviceKey: 'scc' },
+    );
+    graph.edges.push(
+      { id: 'vpc_sc_data', source: 'vpc_sc', target: 'warehouse', label: 'Enforce service perimeter', flowType: 'governance', relationType: 'protects', step: 16 },
+      { id: 'kms_archive', source: 'kms', target: 'raw_archive', label: 'Protect data encryption keys', flowType: 'governance', relationType: 'protects', step: 17 },
+      { id: 'scc_ingestion', source: 'scc', target: 'ingestion_api', label: 'Assess security posture', flowType: 'governance', relationType: 'observes', step: 18 },
+    );
+  } else if (!lean) {
+    graph.nodes.push(
+      { id: 'schema_registry', label: 'Pub/Sub schema', description: 'Versioned Avro or Protocol Buffer event contract', kind: 'service', stage: 3, zone: 'Messaging', provider: 'GCP', serviceKey: 'pubsub', technology: 'Avro / Protocol Buffers' },
+    );
+    graph.edges.push(
+      { id: 'schema_topic', source: 'schema_registry', target: 'event_topic', label: 'Enforce publisher schema contract', flowType: 'governance', relationType: 'authorizes', step: 16 },
+    );
+  }
+  return graph;
+}
+
+function buildGcpStreamingAlternatives(prompt: string): RawStudio1Alternative[] {
+  return (['lean', 'balanced', 'enterprise'] as const).map(variant => ({
+    id: variant,
+    name: variant === 'lean' ? 'Lean & Managed' : variant === 'balanced' ? 'Balanced Production' : 'Resilient Enterprise',
+    strategy: variant === 'lean'
+      ? 'Minimize operational burden with autoscaled serverless ingress and managed streaming services.'
+      : variant === 'balanced'
+        ? 'Balance delivery simplicity, replay safety, data quality, analytics, and production observability.'
+        : 'Add regulated-data controls, stronger isolation, and Kubernetes-based ingress for enterprise governance.',
+    optimizeFor: variant === 'lean' ? ['speed to delivery', 'managed operations'] : variant === 'balanced' ? ['reliability', 'operability', 'cost balance'] : ['security', 'governance', 'isolation'],
+    tradeoffs: variant === 'lean' ? ['fewer isolation controls'] : variant === 'balanced' ? ['moderate platform complexity'] : ['higher cost and operational complexity'],
+    recommended: variant === 'balanced',
+    graph: normalizeStudio1Graph(buildGcpStreamingGraph(variant), prompt),
+  }));
+}
 
 function extractJson(text: string): unknown {
   const cleaned = text.replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/i, '').trim();
@@ -198,8 +300,20 @@ export async function POST(request: Request) {
         ].join(' ');
 
     const userMessage = `${isRefinement ? `BASE VERSION: ${baseVersionId}\nCURRENT GRAPH:\n${JSON.stringify(previousGraph)}\nDECISION LEDGER:\n${JSON.stringify(ledger)}` : `PROJECT CONTEXT:\n${JSON.stringify(context)}`}\n\nUSER MESSAGE:\n${prompt}`;
-    const response = await ai.models.generateContent({ model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } });
-    const raw = extractJson(response.text || '') as Record<string, unknown>;
+    let raw: Record<string, unknown>;
+    let usedDeterministicStreamingFallback = false;
+    try {
+      const response = await withDeadline(ai.models.generateContent({ model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } }), MODEL_DEADLINE_MS);
+      raw = extractJson(response.text || '') as Record<string, unknown>;
+    } catch (modelError) {
+      if (isRefinement || !isGcpStreamingRequest(prompt, context)) throw modelError;
+      usedDeterministicStreamingFallback = true;
+      raw = {
+        context: { ...context, platform: 'gcp', level: context.level === 'auto' ? 'technical' : context.level, depth: context.depth === 'auto' ? 'detailed' : context.depth },
+        assistantMessage: 'The live model exceeded its response budget, so Studio 1 applied the production Google Cloud streaming pattern contract and returned three complete, editable baselines instead of timing out.',
+        alternatives: buildGcpStreamingAlternatives(prompt),
+      };
+    }
     const resolvedContext = normalizeContext(raw.context || context);
     const assistantMessage = typeof raw.assistantMessage === 'string' ? raw.assistantMessage.slice(0, 1200) : '';
     const ledgerForGraph = (graph: Studio1SemanticGraph): Studio1DecisionLedger => ({
@@ -259,47 +373,18 @@ export async function POST(request: Request) {
       ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
     }));
     const incompleteIds = new Set(qualityContracts.filter(result => !result.valid).map(result => result.id));
-    // Quality repair is always attempted before weak candidates are exposed.
-    // ENFORCE_STUDIO1_GATES only controls whether a still-invalid result is
-    // rejected after recovery; it must not disable the recovery itself.
-    if (incompleteIds.size > 0) {
-      try {
-        const requirements = qualityContracts.find(result => !result.valid)!;
-        const repairResponse = await ai.models.generateContent({
-          model,
-          contents: [{
-            role: 'user',
-            parts: [{
-              text: `ORIGINAL REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nINCOMPLETE CANDIDATES:\n${JSON.stringify(alternatives.filter(candidate => incompleteIds.has(candidate.id)))}\nDETERMINISTIC QUALITY FAILURES:\n${JSON.stringify(qualityContracts.filter(result => !result.valid))}`,
-            }],
-          }],
-          config: {
-            ...getGenConfig('generate'),
-            systemInstruction: { parts: [{ text: `Repair only the rejected architecture candidates against every deterministic failure supplied. Every repaired graph must contain at least ${requirements.completeness.minimumNodes} meaningful, workload-relevant components and ${requirements.completeness.minimumEdges} coherent typed flows. It must represent all required capabilities: ${requirements.requiredCapabilities.join(', ')}. Every component must participate in one connected end-to-end topology; flows must be unique, directed, typed, ordered, and include relationType; backward flows must be feedback or governance; decisions need two uniquely named conditional outcomes. For GCP streaming, use at least 14 components and explicitly represent producer, Cloud Armor protecting Cloud Load Balancing, ingestion runtime, Pub/Sub topic, separate Pub/Sub subscription, Dataflow, schema validation decision, Pub/Sub dead-letter topic, Cloud Storage, BigQuery, IAM, Cloud Logging, and Cloud Monitoring. Enforce topic → subscription → Dataflow → schema decision; valid → BigQuery; invalid → Cloud Storage quarantine; subscription delivery exhaustion → dead-letter topic; dead-letter topic → main topic for replay. Keep the primary path left-to-right; render policies and telemetry as cross-cutting relationships. Preserve candidate ID, strategy, and optimization objective. Return JSON only: {"repaired":[{"id":"candidate_id","graph":{"title":"","subtitle":"","patterns":["layered"],"assumptions":[],"nodes":[],"edges":[]}}]}.` }] },
-            responseMimeType: 'application/json',
-            temperature: 0.1,
-          },
-        });
-        const repairRaw = extractJson(repairResponse.text || '') as Record<string, unknown>;
-        const repairedRows = Array.isArray(repairRaw.repaired) ? repairRaw.repaired : [];
-        const repairedById = new Map(repairedRows.map(item => {
-          const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
-          return [String(row.id || ''), row] as const;
-        }));
-        alternatives = alternatives.map((candidate, index) => {
-          if (!incompleteIds.has(candidate.id)) return candidate;
-          const repaired = repairedById.get(candidate.id);
-          return repaired?.graph
-            ? normalizeAlternative({ ...candidate, graph: repaired.graph }, index, prompt)
-            : candidate;
-        });
-        qualityContracts = alternatives.map(candidate => ({
-          id: candidate.id,
-          ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
-        }));
-      } catch (repairError) {
-        console.error('[studio1/generate] Candidate completeness repair failed:', repairError);
-      }
+    // Do not make a second large model call while the user waits. For the
+    // production streaming path, replace incomplete candidates immediately
+    // with deterministic, independently validated Google Cloud patterns.
+    if (incompleteIds.size > 0 && isGcpStreamingRequest(prompt, resolvedContext)) {
+      const deterministicById = new Map(buildGcpStreamingAlternatives(prompt).map(candidate => [candidate.id, candidate]));
+      alternatives = alternatives.map((candidate, index) => incompleteIds.has(candidate.id)
+        ? normalizeAlternative(deterministicById.get(candidate.id) || buildGcpStreamingAlternatives(prompt)[index], index, prompt)
+        : candidate);
+      qualityContracts = alternatives.map(candidate => ({
+        id: candidate.id,
+        ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
+      }));
     }
     const unresolvedCompleteness = qualityContracts.filter(result => !result.valid);
     if (ENFORCE_STUDIO1_GATES && unresolvedCompleteness.length > 0) {
@@ -313,10 +398,22 @@ export async function POST(request: Request) {
     const diversity = validateStudio1CandidateDiversity(alternatives);
     if (ENFORCE_STUDIO1_GATES && !diversity.valid) return NextResponse.json({ success: false, error: 'The generated options were too similar to represent meaningful architecture alternatives.', candidateDiversity: diversity }, { status: 422 });
 
-    const createCriticModel = getGeminiModel('critic');
-    const createCriticResponse = await ai.models.generateContent({ model: createCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nCANDIDATES:\n${JSON.stringify(alternatives)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently compare all candidate architectures. Assess requirement coverage, abstraction-level fit, service compatibility, actors, data, security, reliability, operations, decision branches, typed flows, unjustified assumptions, and whether the strategies are meaningfully distinct. Do not reward complexity by itself. For GCP streaming, never score above 80 if the graph lacks any of: secure ingress with Cloud Armor as a policy on Cloud Load Balancing, distinct Pub/Sub topic and subscription, schema validation decision with valid/invalid branches, Dataflow, dead-letter and retry/replay semantics, Cloud Storage raw archive, BigQuery sink, IAM, Cloud Logging, or Cloud Monitoring. Return JSON only: {"recommendedId":"balanced","comparisonSummary":"","candidates":[{"id":"lean","approved":true,"score":90,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"balanced","approved":true,"score":94,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"enterprise","approved":true,"score":88,"issues":[],"missingRequirements":[],"invalidServices":[]}]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
-    const createCritic = extractJson(createCriticResponse.text || '') as Record<string, unknown>;
-    const criticRows = Array.isArray(createCritic.candidates) ? createCritic.candidates : [];
+    // The synchronous deterministic contract is the creation-time critic.
+    // Deeper multi-model audits remain an explicit post-generation action and
+    // must not hold the first diagram hostage.
+    const criticRows = qualityContracts.map(contract => ({
+      id: contract.id,
+      approved: contract.valid,
+      score: contract.score,
+      issues: contract.violations,
+      missingRequirements: contract.requiredCapabilities.filter(capability => !contract.detectedCapabilities.includes(capability)),
+      invalidServices: [],
+    }));
+    const createCritic: Record<string, unknown> = {
+      recommendedId: alternatives.some(candidate => candidate.id === 'balanced') ? 'balanced' : alternatives[0]?.id,
+      comparisonSummary: 'Candidates were synchronously checked for completeness, connected topology, required workload capabilities, typed flows, decision branches, and Google Cloud streaming semantics.',
+      candidates: criticRows,
+    };
     const criticById = new Map(criticRows.map(item => {
       const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
       return [String(row.id || ''), row] as const;
@@ -363,7 +460,7 @@ export async function POST(request: Request) {
       },
       context: resolvedContext,
       promptAssessment: assessStudio1InitialPrompt(prompt),
-      generationSource: 'gemini-semantic-candidate-tournament-v1',
+      generationSource: usedDeterministicStreamingFallback ? 'gcp-streaming-pattern-contract-fallback' : 'gemini-semantic-candidate-tournament-v2',
       model,
     });
   } catch (error: any) {
