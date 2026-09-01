@@ -1027,35 +1027,34 @@ function StudioContent() {
               <div className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
                 isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
               }`}>
-                {/* 1. Project & 2. Use Case */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                      Project
-                    </label>
-                    <SearchableProjectDropdown
-                      value={projectName}
-                      onChange={(newProj, domainId) => {
-                        handleUpdateProjectName(newProj);
-                        if (domainId && domainId !== selectedDomain) {
-                          setSelectedDomain(domainId);
-                        }
-                      }}
-                      isLight={isLight}
-                    />
-                  </div>
+                {/* 1. Project */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                    Project
+                  </label>
+                  <SearchableProjectDropdown
+                    value={projectName}
+                    onChange={(newProj, domainId) => {
+                      handleUpdateProjectName(newProj);
+                      if (domainId && domainId !== selectedDomain) {
+                        setSelectedDomain(domainId);
+                      }
+                    }}
+                    isLight={isLight}
+                  />
+                </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                      Use Case
-                    </label>
-                    <SearchableUseCaseDropdown
-                      value={useCaseName}
-                      projectName={projectName}
-                      onChange={(newUseCase) => handleUpdateUseCaseName(newUseCase)}
-                      isLight={isLight}
-                    />
-                  </div>
+                {/* 2. Use Case */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                    Use Case
+                  </label>
+                  <SearchableUseCaseDropdown
+                    value={useCaseName}
+                    projectName={projectName}
+                    onChange={(newUseCase) => handleUpdateUseCaseName(newUseCase)}
+                    isLight={isLight}
+                  />
                 </div>
 
                 {/* 3. Blueprints */}
