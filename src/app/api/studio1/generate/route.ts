@@ -1,7 +1,4 @@
 import { NextResponse } from 'next/server';
-
-// Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
-const ENFORCE_STUDIO1_GATES = false;
 import { GoogleGenAI } from '@google/genai';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
 import { normalizeStudio1Graph, renderStudio1GraphXml, Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
@@ -20,6 +17,9 @@ import {
   validateStudio1ArchitectureQuality,
   validateStudio1GraphCompleteness,
 } from '@/lib/studio1ArchitectureCore';
+
+// Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
+const ENFORCE_STUDIO1_GATES = false;
 
 function extractJson(text: string): unknown {
   const cleaned = text.replace(/^\s*```(?:json)?/i, '').replace(/```\s*$/i, '').trim();
