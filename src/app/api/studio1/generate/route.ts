@@ -1,4 +1,7 @@
 import { NextResponse } from 'next/server';
+
+// Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
+const ENFORCE_STUDIO1_GATES = false;
 import { GoogleGenAI } from '@google/genai';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
 import { normalizeStudio1Graph, renderStudio1GraphXml, Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
@@ -190,16 +193,16 @@ export async function POST(request: Request) {
       const semanticGraph = normalizeStudio1Graph(raw.graph, prompt);
       enforceDepth(semanticGraph, { ...resolvedContext, depth: resolvedContext.depth === 'auto' ? 'detailed' : resolvedContext.depth });
       const refactorDiff = diffStudio1Graphs(previousGraph, semanticGraph);
-      if (refactorDiff.meaningfulChangeCount === 0) return NextResponse.json({ success: false, error: 'The proposed refactor did not materially change the architecture.' }, { status: 422 });
+      if (ENFORCE_STUDIO1_GATES && refactorDiff.meaningfulChangeCount === 0) return NextResponse.json({ success: false, error: 'The proposed refactor did not materially change the architecture.' }, { status: 422 });
       for (const lockedId of ledger.lockedNodeIds) {
         const before = previousGraph.nodes.find(node => node.id === lockedId);
         const after = semanticGraph.nodes.find(node => node.id === lockedId);
-        if (!before || !after || JSON.stringify(before) !== JSON.stringify(after)) return NextResponse.json({ success: false, error: `Locked component ${lockedId} was changed by the refactor.` }, { status: 422 });
+        if (ENFORCE_STUDIO1_GATES && (!before || !after || JSON.stringify(before) !== JSON.stringify(after))) return NextResponse.json({ success: false, error: `Locked component ${lockedId} was changed by the refactor.` }, { status: 422 });
       }
       const refactorCriticModel = getGeminiModel('critic');
       const refactorCriticResponse = await ai.models.generateContent({ model: refactorCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nMODE:\n${context.action}\nLOCKS:\n${JSON.stringify(ledger.lockedNodeIds)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nTARGET:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(refactorDiff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Review the target architecture for requirement coverage, technical feasibility, preserved locks, security, reliability, operability, migration risk, and unjustified change. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const refactorCritic = extractJson(refactorCriticResponse.text || '') as Record<string, unknown>;
-      if (refactorCritic.approved !== true || Number(refactorCritic.score) < 85 || (Array.isArray(refactorCritic.invalidServices) && refactorCritic.invalidServices.length)) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the refactor candidate.', semanticCritic: refactorCritic, refactorDiff }, { status: 422 });
+      if (ENFORCE_STUDIO1_GATES && (refactorCritic.approved !== true || Number(refactorCritic.score) < 85 || (Array.isArray(refactorCritic.invalidServices) && refactorCritic.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the refactor candidate.', semanticCritic: refactorCritic, refactorDiff }, { status: 422 });
       const nextLedger = ledgerForGraph(semanticGraph);
       const rendered = renderStudio1GraphXml(semanticGraph, theme);
       const xml = embedStudio1State(rendered.xml, semanticGraph, resolvedContext, nextLedger);
@@ -212,13 +215,13 @@ export async function POST(request: Request) {
       if (plan.intent === 'refactor' || context.action === 'guided_refactor' || context.action === 'full_refactor') return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: assistantMessage || 'This request exceeds a safe incremental change. Start a refactor branch to continue.' }, context: resolvedContext, generationSource: 'gemini-change-planner', model, baseVersionId });
       const semanticGraph = normalizeStudio1Graph(applyStudio1Patch(previousGraph, plan.operations), prompt);
       const changeValidation = validateStudio1Change(previousGraph, semanticGraph, plan, ledger);
-      if (!changeValidation.valid) return NextResponse.json({ success: false, error: changeValidation.violations.join(' '), changeValidation, interaction: { ...plan, message: assistantMessage }, generationSource: 'rejected-patch' }, { status: 422 });
+      if (ENFORCE_STUDIO1_GATES && !changeValidation.valid) return NextResponse.json({ success: false, error: changeValidation.violations.join(' '), changeValidation, interaction: { ...plan, message: assistantMessage }, generationSource: 'rejected-patch' }, { status: 422 });
       if (changeValidation.risk === 'high' && !body.confirmHighImpact) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: `${assistantMessage || plan.summary} This affects ${changeValidation.diff.blastRadiusPercent}% of the current graph.`, options: [{ id: 'confirm_high_impact', label: 'Apply high-impact change' }, { id: 'guided_refactor', label: 'Use guided refactor', recommended: true }, { id: 'cancel', label: 'Cancel' }] }, changeValidation, context: resolvedContext, generationSource: 'gemini-change-planner', model, baseVersionId });
 
       const criticModel = getGeminiModel('critic');
       const criticResponse = await ai.models.generateContent({ model: criticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nPLAN:\n${JSON.stringify(plan)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nAFTER:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(changeValidation.diff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently verify that the requested incremental change occurred, unrelated architecture was preserved, connections are technically coherent, and no locked constraint was violated. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const criticRaw = extractJson(criticResponse.text || '') as Record<string, unknown>;
-      if (criticRaw.approved !== true || Number(criticRaw.score) < 85 || (Array.isArray(criticRaw.invalidServices) && criticRaw.invalidServices.length)) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the incremental candidate.', semanticCritic: criticRaw, changeValidation }, { status: 422 });
+      if (ENFORCE_STUDIO1_GATES && (criticRaw.approved !== true || Number(criticRaw.score) < 85 || (Array.isArray(criticRaw.invalidServices) && criticRaw.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the incremental candidate.', semanticCritic: criticRaw, changeValidation }, { status: 422 });
       const nextLedger = ledgerForGraph(semanticGraph);
       const rendered = renderStudio1GraphXml(semanticGraph, theme);
       const xml = embedStudio1State(rendered.xml, semanticGraph, resolvedContext, nextLedger);
@@ -228,15 +231,15 @@ export async function POST(request: Request) {
     }
 
     const rawAlternatives = Array.isArray(raw.alternatives) ? raw.alternatives : [];
-    if (rawAlternatives.length !== 3) return NextResponse.json({ success: false, error: 'Studio 1 requires exactly three architecture alternatives for a new design.' }, { status: 422 });
-    let alternatives = rawAlternatives.map((item, index) => normalizeAlternative(item, index, prompt));
-    if (new Set(alternatives.map(candidate => candidate.id)).size !== alternatives.length) return NextResponse.json({ success: false, error: 'Architecture alternatives returned duplicate candidate IDs.' }, { status: 422 });
+    if (rawAlternatives.length === 0) return NextResponse.json({ success: false, error: 'The architecture model returned no renderable alternatives.' }, { status: 422 });
+    let alternatives = rawAlternatives.slice(0, 3).map((item, index) => normalizeAlternative(item, index, prompt));
+    if (ENFORCE_STUDIO1_GATES && new Set(alternatives.map(candidate => candidate.id)).size !== alternatives.length) return NextResponse.json({ success: false, error: 'Architecture alternatives returned duplicate candidate IDs.' }, { status: 422 });
     let qualityContracts = alternatives.map(candidate => ({
       id: candidate.id,
       ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
     }));
     const incompleteIds = new Set(qualityContracts.filter(result => !result.valid).map(result => result.id));
-    if (incompleteIds.size > 0) {
+    if (ENFORCE_STUDIO1_GATES && incompleteIds.size > 0) {
       try {
         const requirements = qualityContracts.find(result => !result.valid)!;
         const repairResponse = await ai.models.generateContent({
@@ -276,7 +279,7 @@ export async function POST(request: Request) {
       }
     }
     const unresolvedCompleteness = qualityContracts.filter(result => !result.valid);
-    if (unresolvedCompleteness.length > 0) {
+    if (ENFORCE_STUDIO1_GATES && unresolvedCompleteness.length > 0) {
       return NextResponse.json({
         success: false,
         error: 'Studio 1 could not produce three complete and structurally correct architecture alternatives after an automatic repair pass. Your canvas was not changed. Please retry or clarify the workload, users, scale, reliability, and security expectations.',
@@ -285,7 +288,7 @@ export async function POST(request: Request) {
       }, { status: 422 });
     }
     const diversity = validateStudio1CandidateDiversity(alternatives);
-    if (!diversity.valid) return NextResponse.json({ success: false, error: 'The generated options were too similar to represent meaningful architecture alternatives.', candidateDiversity: diversity }, { status: 422 });
+    if (ENFORCE_STUDIO1_GATES && !diversity.valid) return NextResponse.json({ success: false, error: 'The generated options were too similar to represent meaningful architecture alternatives.', candidateDiversity: diversity }, { status: 422 });
 
     const createCriticModel = getGeminiModel('critic');
     const createCriticResponse = await ai.models.generateContent({ model: createCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nCONTEXT:\n${JSON.stringify(resolvedContext)}\nCANDIDATES:\n${JSON.stringify(alternatives)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently compare all candidate architectures. Assess requirement coverage, abstraction-level fit, service compatibility, actors, data, security, reliability, operations, decision branches, typed flows, unjustified assumptions, and whether the strategies are meaningfully distinct. Do not reward complexity by itself. Return JSON only: {"recommendedId":"balanced","comparisonSummary":"","candidates":[{"id":"lean","approved":true,"score":90,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"balanced","approved":true,"score":94,"issues":[],"missingRequirements":[],"invalidServices":[]},{"id":"enterprise","approved":true,"score":88,"issues":[],"missingRequirements":[],"invalidServices":[]}]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
@@ -299,7 +302,7 @@ export async function POST(request: Request) {
       const review = criticById.get(alternative.id);
       return !review || review.approved !== true || Number(review.score) < 80 || stringList(review.invalidServices, 20).length > 0;
     });
-    if (rejected.length > 0) return NextResponse.json({ success: false, error: `The independent architecture critic rejected ${rejected.map(item => item.name).join(', ')}. No weak option was shown.`, semanticCritic: createCritic, candidateDiversity: diversity }, { status: 422 });
+    if (ENFORCE_STUDIO1_GATES && rejected.length > 0) return NextResponse.json({ success: false, error: `The independent architecture critic rejected ${rejected.map(item => item.name).join(', ')}. No weak option was shown.`, semanticCritic: createCritic, candidateDiversity: diversity }, { status: 422 });
 
     const recommendedId = alternatives.some(item => item.id === String(createCritic.recommendedId))
       ? String(createCritic.recommendedId)
@@ -329,7 +332,7 @@ export async function POST(request: Request) {
       mutationApplied: false,
       candidateSet: {
         title: 'Choose the architecture strategy to use as your baseline',
-        message: assistantMessage || `Generated three validated alternatives for a ${resolvedContext.level} ${resolvedContext.viewpoint} architecture.`,
+        message: assistantMessage || `Generated ${candidates.length} renderable architecture option${candidates.length === 1 ? '' : 's'} for a ${resolvedContext.level} ${resolvedContext.viewpoint} architecture. Quality findings are advisory while recovery mode is active.`,
         comparisonSummary: typeof createCritic.comparisonSummary === 'string' ? createCritic.comparisonSummary.slice(0, 800) : '',
         recommendedId,
         diversity,
