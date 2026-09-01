@@ -957,23 +957,39 @@ function StudioContent() {
     pushNewVersion(`Replaced ${activeDiagram.title} with #${template.id} (${template.name})`, 'User', updatedDiagrams);
   };
 
-  const handleResetToScratch = () => {
-    const scratchXml = generateBlankScratchXml(projectTitle || 'Custom Google Cloud Architecture', isLight ? 'light' : 'dark', selectedDomain);
-    const updatedDiagrams: StudioDiagramTab[] = diagrams.map((diag) => {
-      if (diag.id === activeDiagramId) {
-        return {
-          ...diag,
-          title: `${projectTitle || 'Custom Architecture'} • GCP Native Topology`,
-          templateId: 'gcp_native',
-          xml: scratchXml,
-          source: 'scratch'
-        };
-      }
-      return diag;
-    });
+  const handleNewProject = () => {
+    setProjectName('');
+    setUseCaseName('');
+    setProjectTitle('');
+    setProjectScopePrompt('');
+    setHasSynthesized(false);
 
-    setDiagrams(updatedDiagrams);
-    pushNewVersion(`Reset ${activeDiagram.title} to Scratch Canvas`, 'User', updatedDiagrams);
+    const scratchXml = generateBlankScratchXml('New Architecture Project', isLight ? 'light' : 'dark', selectedDomain);
+    const blankDiagramTab: StudioDiagramTab = {
+      id: 'diag_1',
+      title: 'Diagram 1 • Blank Canvas',
+      templateId: 'gcp_native',
+      xml: scratchXml,
+      source: 'scratch'
+    };
+
+    setDiagrams([blankDiagramTab]);
+    setActiveDiagramId('diag_1');
+    setChatMessages([]);
+    showToast('✨ Initialized blank canvas. Fill in requirements or click Prefill Sample, then hit Send!');
+  };
+
+  const handlePrefillSample = () => {
+    setProjectName('OmniChannel Commerce Platform');
+    setUseCaseName('Real-Time Order Ingestion & Fraud Detection');
+    setProjectTitle('Google Cloud Multi-Region Microservices & Event-Driven Fraud Detection Engine');
+    setSelectedDomain('ecommerce');
+    setProjectScopePrompt('Architect a multi-region Google Cloud event-driven microservices platform with Apigee API Gateway, GKE Autopilot, Pub/Sub Event Mesh, Dataflow real-time streaming ETL, Vertex AI ScaNN Vector Search for fraud scoring, and Cloud Spanner multi-region database with zero downtime.');
+    showToast('⚡ Pre-populated sample architecture brief. Click Send to synthesize!');
+  };
+
+  const handleResetToScratch = () => {
+    handleNewProject();
   };
 
   const handleDeleteDiagramTab = (idToDelete: string) => {
@@ -1123,14 +1139,26 @@ function StudioContent() {
                   Specification Brief
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={handleResetToScratch}
-                className="text-[11px] font-semibold text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
-                title="Reset to blank canvas"
-              >
-                Clear
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={handleNewProject}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all cursor-pointer"
+                  title="Create New Blank Architecture (Clears inputs & opens clean blank canvas)"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>+ New</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePrefillSample}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/20 transition-all cursor-pointer"
+                  title="Prefill sample enterprise architecture requirements"
+                >
+                  <Sparkles className="w-3 h-3 text-teal-500" />
+                  <span className="hidden sm:inline">Prefill</span>
+                </button>
+              </div>
             </div>
 
             {/* Left Card Scrollable Body */}
@@ -1607,23 +1635,49 @@ function StudioContent() {
               canvasTheme === 'light' ? 'bg-white' : 'bg-[#070A13]'
             }`}>
               {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) ? (
-                <div
-                  className="w-full h-full flex items-center justify-center transition-transform duration-150"
-                  style={{
-                    transform: `scale(${canvasZoom})`,
-                    transformOrigin: 'center center',
-                  }}
-                >
-                  <DiagramViewerRenderSafe
-                    key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${canvasTheme}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
-                    diagramId={activeDiagram.templateId}
-                    diagramType={activeDiagram.source === 'scratch' ? 'custom' : `canonical_${activeDiagram.templateId}`}
-                    xml={activeDiagram.xml}
-                    aspectRatioId="16:9"
-                    bgTheme={canvasTheme}
-                    useCaseName={useCaseName || projectTitle || 'Generic GCP Architecture'}
-                  />
-                </div>
+                (!hasSynthesized && activeDiagram.source === 'scratch') ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4">
+                    <div className="w-16 h-16 rounded-3xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-500 shadow-xl shadow-teal-500/10">
+                      <Sparkles className="w-8 h-8 animate-pulse" />
+                    </div>
+                    <div className="max-w-md space-y-1.5">
+                      <h3 className="text-base font-black text-slate-900 dark:text-white">
+                        Blank Architecture Canvas
+                      </h3>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Enter your project scope, cloud services, and security requirements on the left, then click <b>Send &amp; Synthesize</b> (or press Enter).
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={handlePrefillSample}
+                        className="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Prefill Sample &amp; Test</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    className="w-full h-full flex items-center justify-center transition-transform duration-150"
+                    style={{
+                      transform: `scale(${canvasZoom})`,
+                      transformOrigin: 'center center',
+                    }}
+                  >
+                    <DiagramViewerRenderSafe
+                      key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${canvasTheme}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
+                      diagramId={activeDiagram.templateId}
+                      diagramType={activeDiagram.source === 'scratch' ? 'custom' : `canonical_${activeDiagram.templateId}`}
+                      xml={activeDiagram.xml}
+                      aspectRatioId="16:9"
+                      bgTheme={canvasTheme}
+                      useCaseName={useCaseName || projectTitle || 'Generic GCP Architecture'}
+                    />
+                  </div>
+                )
               ) : (
                 <div className="w-full h-full p-5 text-left space-y-4 overflow-y-auto">
                   <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
