@@ -80,7 +80,7 @@ function groupFor(node: Studio1SemanticNode): GroupId {
   if (node.kind === 'actor' || node.kind === 'external') return 'external';
   if (node.kind === 'observability' || (node.kind === 'security' && node.serviceKey !== 'cloud_armor') || (node.serviceKey && CONTROL_KEYS.has(node.serviceKey) && node.serviceKey !== 'cloud_armor')) return 'controls';
   if (node.kind === 'datastore' || (node.serviceKey && DATA_KEYS.has(node.serviceKey))) return 'data';
-  if (node.serviceKey === 'cloud_armor' || node.serviceKey === 'cloud_load_balancing' || node.serviceKey === 'cloud_cdn' || node.serviceKey === 'iap' || /ingress|gateway|load balanc|edge/.test(text)) return 'ingress';
+  if (node.serviceKey === 'cloud_armor' || node.serviceKey === 'cloud_load_balancing' || node.serviceKey === 'cloud_cdn' || node.serviceKey === 'iap' || /ingress|ingest|admission|api gateway|load balanc|edge/.test(text)) return 'ingress';
   if (node.kind === 'queue' || node.serviceKey === 'pubsub' || /topic|subscription|messag|event bus|queue/.test(text)) return 'messaging';
   return 'processing';
 }

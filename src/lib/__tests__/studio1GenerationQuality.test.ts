@@ -189,4 +189,19 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(rendered.xml).toContain('strokeColor=#D93025');
     expect(rendered.xml).toContain('source="load_balancer" target="event_bus"');
   });
+
+  it('places an ingestion runtime with edge services instead of creating a backward messaging loop', () => {
+    const graph = structuredClone(streamingGraph);
+    graph.nodes.push({ id: 'ingestion_api', label: 'Ingestion API', description: 'Receives and validates incoming events', kind: 'service', stage: 2, zone: 'Ingestion', provider: 'GCP', serviceKey: 'cloud_run' });
+    graph.edges = [
+      { id: 'producer_api', source: 'producer', target: 'ingestion_api', label: 'Submit events', flowType: 'synchronous', step: 1, relationType: 'invokes' },
+      { id: 'api_bus', source: 'ingestion_api', target: 'event_bus', label: 'Publish events', flowType: 'asynchronous', step: 2, relationType: 'publishes' },
+      ...graph.edges.slice(2).map((edge, index) => ({ ...edge, step: index + 3 })),
+    ];
+    const rendered = renderStudio1GraphXml(graph);
+    const ingressGroupX = Number(rendered.xml.match(/id="group_ingress"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)"/)?.[1]);
+    const ingestionX = Number(rendered.xml.match(/id="ingestion_api"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)"/)?.[1]);
+    expect(ingestionX).toBeGreaterThan(ingressGroupX);
+    expect(ingestionX).toBeLessThan(ingressGroupX + 320);
+  });
 });
