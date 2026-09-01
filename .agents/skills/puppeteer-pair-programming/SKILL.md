@@ -84,5 +84,17 @@ const exists = await page.evaluate((text) => {
 ## 5. Visual Review Delivery
 
 Present captured screenshots as clickable `file://` Markdown links in the response:
-- `[01_initial_load.png](file:///path/to/scratch/screenshots_<task_id>/01_initial_load.png)`
-- `[02_after_submit.png](file:///path/to/scratch/screenshots_<task_id>/02_after_submit.png)`
+- `[01_before_baseline.png](file:///path/to/scratch/screenshots_<task_id>/01_before_baseline.png)`
+- `[02_after_modified.png](file:///path/to/scratch/screenshots_<task_id>/02_after_modified.png)`
+
+## 6. Strict 3-Step Execution Sequence
+
+1. **Step 1: Local Development & Validation**:
+   - Make all changes locally on the codebase.
+   - Run typecheck (`npx tsc --noEmit`) and verify on local dev server (`http://localhost:3000`).
+2. **Step 2: Mandatory Before & After Visual Review**:
+   - Capture `01_before_baseline.png` (or baseline reference) and `02_after_modified.png`.
+   - Present both screenshots as clickable Markdown `file://` links to the user for visual confirmation.
+3. **Step 3: Deferred Git Commit & Deployment**:
+   - Only execute `git commit` and `git push origin main` AFTER local validation and screenshot presentation.
+   - Trigger the 1-minute Railway deployment monitoring loop post-push.

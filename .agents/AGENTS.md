@@ -198,6 +198,22 @@
 
 ---
 
+# 📸 Local-First Development, Before/After Visual Review & Deferred Git Commit Law
+
+* **Strict 3-Step Execution Sequence**:
+  1. **Step 1: Local Implementation & Verification**:
+     - Apply code changes strictly on local workspace files.
+     - Verify compilation (`npx tsc --noEmit`) and local runtime (`http://localhost:3000`).
+  2. **Step 2: Mandatory Before & After Screenshots**:
+     - Run headless Puppeteer in the background to capture visual screenshots before (or baseline) and after the changes.
+     - Store artifacts in `<project_root>/scratch/screenshots_<task_id>/`.
+     - Present both `Before` and `After` screenshots to the user using clickable `file://` markdown links.
+  3. **Step 3: Deferred Git Commit & Push**:
+     - Only execute `git commit` and `git push origin main` AFTER successful local validation and screenshot presentation.
+     - Trigger the 1-minute Railway deployment monitoring loop post-push.
+
+---
+
 # 🚀 Independent Live Deployment Verification & Railway Monitoring Protocol
 
 * **Santa Workstation Blocker Bypass for Railway CLI**:
