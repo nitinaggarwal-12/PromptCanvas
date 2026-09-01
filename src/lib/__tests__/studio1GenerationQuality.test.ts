@@ -105,6 +105,25 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(normalized.edges.map(edge => edge.step)).toEqual([1, 2, 3, 4, 5, 6, 7]);
   });
 
+  it('preserves meaningful product names when the model uses common schema aliases', () => {
+    const normalized = normalizeStudio1Graph({
+      title: 'Streaming platform',
+      nodes: [
+        { id: 'devices', name: 'IoT Devices', purpose: 'Publish telemetry', kind: 'actor', stage: 1, domain: 'Sources' },
+        { id: 'events', name: 'Cloud Pub/Sub', purpose: 'Durable event backbone', kind: 'queue', stage: 2, domain: 'Messaging' },
+        { id: 'analytics', name: 'BigQuery', purpose: 'Serve analytical queries', kind: 'datastore', stage: 3, domain: 'Data' },
+      ],
+      edges: [
+        { id: 'publish', from: 'devices', to: 'events', name: 'Publish telemetry', type: 'asynchronous', step: 1 },
+        { id: 'persist', from: 'events', to: 'analytics', name: 'Write events', type: 'data', step: 2 },
+      ],
+    }, 'streaming platform');
+    expect(normalized.nodes.map(node => node.label)).toEqual(['IoT Devices', 'Cloud Pub/Sub', 'BigQuery']);
+    expect(normalized.nodes.find(node => node.id === 'events')?.serviceKey).toBe('pubsub');
+    expect(normalized.nodes.find(node => node.id === 'analytics')?.serviceKey).toBe('bigquery');
+    expect(normalized.edges.map(edge => edge.label)).toEqual(['Publish telemetry', 'Write events']);
+  });
+
   it('renders a certified Draw.io envelope with official local icons and straight adjacent routes', () => {
     const rendered = renderStudio1GraphXml(streamingGraph);
     expect(rendered.certification.certified).toBe(true);
@@ -113,5 +132,27 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(rendered.xml).toContain('<mxGraphModel');
     expect(rendered.xml).toContain('edgeStyle=none;');
     expect(rendered.xml).not.toContain('https://api.iconify.design');
+  });
+
+  it('uses balanced horizontal domain bands instead of unbounded stage columns', () => {
+    const rendered = renderStudio1GraphXml(streamingGraph);
+    expect(rendered.xml).toContain('Balanced domain layout v2');
+    expect(rendered.xml).toContain('band_experience');
+    expect(rendered.xml).toContain('band_platform');
+    expect(rendered.xml).toContain('band_data');
+    expect(rendered.xml).toContain('band_controls');
+    expect(rendered.xml).not.toContain('lane_6');
+
+    const coordinates = [...rendered.xml.matchAll(/id="(producer|ingress|event_bus|dead_letter|processor|warehouse|operations)"[^>]*>[\s\S]*?<mxGeometry x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)]
+      .map(match => ({ id: match[1], x: Number(match[2]), y: Number(match[3]), width: Number(match[4]), height: Number(match[5]) }));
+    expect(coordinates).toHaveLength(streamingGraph.nodes.length);
+    for (let leftIndex = 0; leftIndex < coordinates.length; leftIndex += 1) {
+      for (let rightIndex = leftIndex + 1; rightIndex < coordinates.length; rightIndex += 1) {
+        const left = coordinates[leftIndex];
+        const right = coordinates[rightIndex];
+        const separated = left.x + left.width + 29 < right.x || right.x + right.width + 29 < left.x || left.y + left.height + 29 < right.y || right.y + right.height + 29 < left.y;
+        expect(separated, `${left.id} overlaps ${right.id}`).toBe(true);
+      }
+    }
   });
 });

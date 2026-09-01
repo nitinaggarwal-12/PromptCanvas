@@ -58,6 +58,34 @@ function cleanId(value: unknown, fallback: string): string {
   return id || fallback;
 }
 
+const SERVICE_KEY_ALIASES: Array<[RegExp, string]> = [
+  [/\b(pub\/?sub|event bus|event backbone|topic|subscription)\b/i, 'pubsub'],
+  [/\bdataflow\b/i, 'dataflow'],
+  [/\bbigquery\b/i, 'bigquery'],
+  [/\b(cloud storage|gcs|object storage)\b/i, 'cloud_storage'],
+  [/\bspanner\b/i, 'spanner'],
+  [/\bmemorystore|\bredis\b/i, 'memorystore'],
+  [/\bcloud run\b/i, 'cloud_run'],
+  [/\bcloud functions?\b/i, 'cloud_functions'],
+  [/\bgke(?: autopilot)?|kubernetes/i, 'gke_autopilot'],
+  [/\bcompute engine\b/i, 'compute_engine'],
+  [/\bcloud (?:load balancing|load balancer)\b/i, 'cloud_load_balancing'],
+  [/\bcloud armor\b/i, 'cloud_armor'],
+  [/\b(identity-aware proxy|iap)\b/i, 'iap'],
+  [/\b(?:cloud )?iam\b/i, 'cloud_iam'],
+  [/\bvpc service controls?|vpc-sc\b/i, 'vpc_sc'],
+  [/\bsecurity command center|\bscc\b/i, 'scc'],
+  [/\bcloud monitoring\b/i, 'cloud_monitoring'],
+  [/\bcloud logging\b/i, 'cloud_logging'],
+  [/\bvertex ai\b/i, 'vertex_ai'],
+  [/\bgemini\b/i, 'gemini'],
+];
+
+function inferServiceKey(...values: unknown[]): string | undefined {
+  const haystack = values.filter(value => typeof value === 'string').join(' ');
+  return SERVICE_KEY_ALIASES.find(([pattern]) => pattern.test(haystack))?.[1];
+}
+
 export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1SemanticGraph {
   if (!input || typeof input !== 'object') throw new Error('The architecture model returned no semantic graph.');
   const raw = input as Record<string, unknown>;
@@ -74,18 +102,25 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
     const kind = NODE_KINDS.has(node.kind as Studio1NodeKind) ? node.kind as Studio1NodeKind : 'service';
     const requestedStage = Number(node.stage);
     const stage = Number.isFinite(requestedStage) ? Math.max(1, Math.min(6, Math.round(requestedStage))) : Math.min(6, index + 1);
-    const requestedKey = cleanId(node.serviceKey, '');
-    const serviceKey = requestedKey && GCP_OFFICIAL_ICONS[requestedKey] ? requestedKey : undefined;
+    const labelSource = node.label ?? node.name ?? node.title ?? node.service ?? node.component;
+    const descriptionSource = node.description ?? node.purpose ?? node.responsibility ?? node.role;
+    const requestedKey = cleanId(node.serviceKey ?? node.service_key ?? node.icon, '');
+    const inferredKey = inferServiceKey(labelSource, descriptionSource, node.technology);
+    const serviceKey = requestedKey && GCP_OFFICIAL_ICONS[requestedKey]
+      ? requestedKey
+      : inferredKey && GCP_OFFICIAL_ICONS[inferredKey]
+        ? inferredKey
+        : undefined;
     return {
       id,
-      label: cleanText(node.label, `Component ${index + 1}`, 72),
-      description: cleanText(node.description, 'Prompt-derived architecture component', 150),
+      label: cleanText(labelSource, `Architecture Component ${index + 1}`, 72),
+      description: cleanText(descriptionSource, 'Prompt-derived architecture responsibility', 150),
       kind,
       stage,
-      zone: cleanText(node.zone, `Stage ${stage}`, 48),
+      zone: cleanText(node.zone ?? node.domain ?? node.layer, `Stage ${stage}`, 48),
       provider: cleanText(node.provider, '', 32) || undefined,
       serviceKey,
-      technology: cleanText(node.technology, '', 54) || undefined,
+      technology: cleanText(node.technology ?? node.product, '', 54) || undefined,
     };
   });
 
@@ -93,9 +128,10 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
   const edgeIds = new Set<string>();
   const edges: Studio1SemanticEdge[] = rawEdges.map((item, index) => {
     const edge = (item && typeof item === 'object' ? item : {}) as Record<string, unknown>;
-    const source = cleanId(edge.source, '');
-    const target = cleanId(edge.target, '');
-    const flowType = FLOW_TYPES.has(edge.flowType as Studio1FlowType) ? edge.flowType as Studio1FlowType : 'synchronous';
+    const source = cleanId(edge.source ?? edge.from ?? edge.sourceId, '');
+    const target = cleanId(edge.target ?? edge.to ?? edge.targetId, '');
+    const requestedFlowType = edge.flowType ?? edge.flow_type ?? edge.type;
+    const flowType = FLOW_TYPES.has(requestedFlowType as Studio1FlowType) ? requestedFlowType as Studio1FlowType : 'synchronous';
     let id = cleanId(edge.id, `edge_${index + 1}`);
     while (edgeIds.has(id)) id = `${id}_${index + 1}`;
     edgeIds.add(id);
@@ -103,10 +139,10 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
       id,
       source,
       target,
-      label: cleanText(edge.label, flowType === 'asynchronous' ? 'Event' : 'Request', 44),
+      label: cleanText(edge.label ?? edge.name ?? edge.protocol, flowType === 'asynchronous' ? 'Event' : 'Request', 44),
       flowType,
       step: Math.max(1, Math.min(99, Number(edge.step) || index + 1)),
-      condition: cleanText(edge.condition, '', 36) || undefined,
+      condition: cleanText(edge.condition ?? edge.when, '', 36) || undefined,
     };
   }).filter(edge => edge.source !== edge.target && nodeIds.has(edge.source) && nodeIds.has(edge.target));
 
@@ -136,6 +172,8 @@ export function certifyStudio1Graph(graph: Studio1SemanticGraph): Studio1Certifi
   const edgeIds = new Set<string>();
   const relationshipKeys = new Set<string>();
   const decisions = graph.nodes.filter(node => node.kind === 'decision');
+  const genericLabels = graph.nodes.filter(node => /^(?:architecture )?component\s+\d+$/i.test(node.label));
+  if (genericLabels.length) violations.push(`Generic component labels: ${genericLabels.map(node => node.id).join(', ')}`);
   for (const edge of graph.edges) {
     if (!ids.has(edge.source) || !ids.has(edge.target)) violations.push(`Dangling connector ${edge.id}`);
     if (edgeIds.has(edge.id)) violations.push(`Duplicate connector ID ${edge.id}`);
@@ -181,49 +219,135 @@ const FLOW_STYLE: Record<Studio1FlowType, string> = {
   feedback: 'strokeColor=#0D9488;strokeWidth=2;dashed=1;dashPattern=5 5;',
 };
 
-const STAGE_COLORS = ['#2563EB', '#0D9488', '#7C3AED', '#0284C7', '#059669', '#64748B'];
+interface PositionedNode extends Studio1SemanticNode {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  bandIndex: number;
+  row: number;
+  column: number;
+}
 
-interface PositionedNode extends Studio1SemanticNode { x: number; y: number; width: number; height: number; row: number; }
+interface LayoutBand {
+  id: string;
+  label: string;
+  subtitle: string;
+  accent: string;
+  fill: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  nodes: PositionedNode[];
+}
 
-export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light' | 'dark' = 'light'): { xml: string; certification: Studio1Certification } {
-  const certification = certifyStudio1Graph(graph);
-  const activeStages = [...new Set(graph.nodes.map(node => node.stage))].sort((a, b) => a - b);
-  const stageIndex = new Map(activeStages.map((stage, index) => [stage, index]));
-  const columnWidth = 220;
-  const gapX = 140;
-  const left = 56;
-  const top = 152;
-  const nodeHeight = 92;
-  const gapY = 80;
+const DATA_SERVICE_KEYS = new Set(['bigquery', 'spanner', 'memorystore', 'cloud_storage']);
+const CONTROL_SERVICE_KEYS = new Set(['cloud_armor', 'iap', 'cloud_iam', 'vpc_sc', 'scc', 'cloud_monitoring', 'cloud_logging']);
+
+function classifyLayoutBand(node: Studio1SemanticNode): 'experience' | 'platform' | 'data' | 'controls' {
+  if (node.kind === 'actor' || node.kind === 'external' || node.stage <= 1) return 'experience';
+  if (node.kind === 'observability' || (node.serviceKey && CONTROL_SERVICE_KEYS.has(node.serviceKey)) || (node.kind === 'security' && node.stage >= 4)) return 'controls';
+  if (node.kind === 'datastore' || (node.serviceKey && DATA_SERVICE_KEYS.has(node.serviceKey))) return 'data';
+  return 'platform';
+}
+
+function buildBalancedBandLayout(graph: Studio1SemanticGraph): {
+  positions: Map<string, PositionedNode>;
+  bands: LayoutBand[];
+  pageWidth: number;
+  pageHeight: number;
+  contentBottom: number;
+  layoutViolations: string[];
+} {
+  const pageWidth = 1680;
+  const canvasX = 60;
+  const canvasWidth = pageWidth - 120;
+  const innerX = canvasX + 28;
+  const innerWidth = canvasWidth - 56;
+  const maxColumns = 5;
+  const cardHeight = 96;
+  const gapX = 30;
+  const gapY = 32;
+  const bandGap = 26;
+  const bandHeader = 48;
+  const bandBottom = 44;
+  const edgeOrder = new Map<string, number>();
+  graph.edges.forEach((edge) => {
+    edgeOrder.set(edge.source, Math.min(edgeOrder.get(edge.source) ?? Number.MAX_SAFE_INTEGER, edge.step - 0.25));
+    edgeOrder.set(edge.target, Math.min(edgeOrder.get(edge.target) ?? Number.MAX_SAFE_INTEGER, edge.step));
+  });
+  const orderedNodes = graph.nodes.slice().sort((left, right) =>
+    left.stage - right.stage ||
+    (edgeOrder.get(left.id) ?? 999) - (edgeOrder.get(right.id) ?? 999) ||
+    left.label.localeCompare(right.label)
+  );
+  const definitions = [
+    { id: 'experience', label: 'CLIENTS, CHANNELS & SOURCES', subtitle: 'Actors, devices, partners and entry points', accent: '#2563EB', fill: '#EFF6FF' },
+    { id: 'platform', label: 'APPLICATION, EVENT & PROCESSING PLATFORM', subtitle: 'Ingress, orchestration, messaging and workload execution', accent: '#7C3AED', fill: '#F5F3FF' },
+    { id: 'data', label: 'DATA, ANALYTICS & STATE', subtitle: 'Durable records, streaming history and analytical consumption', accent: '#059669', fill: '#ECFDF5' },
+    { id: 'controls', label: 'SECURITY, RELIABILITY & OPERATIONS', subtitle: 'Cross-cutting protection, telemetry, governance and recovery', accent: '#0D9488', fill: '#F0FDFA' },
+  ] as const;
   const positions = new Map<string, PositionedNode>();
-  const rowsByStage = new Map<number, number>();
+  const bands: LayoutBand[] = [];
+  let currentY = 136;
 
-  graph.nodes.forEach(node => {
-    const row = rowsByStage.get(node.stage) || 0;
-    rowsByStage.set(node.stage, row + 1);
-    const column = stageIndex.get(node.stage) || 0;
-    positions.set(node.id, {
-      ...node,
-      x: left + column * (columnWidth + gapX),
-      y: top + row * (nodeHeight + gapY),
-      width: columnWidth,
-      height: node.kind === 'decision' ? 112 : nodeHeight,
-      row,
-    });
+  definitions.forEach((definition, bandIndex) => {
+    const nodes = orderedNodes.filter(node => classifyLayoutBand(node) === definition.id);
+    if (!nodes.length) return;
+    const rows = Math.ceil(nodes.length / maxColumns);
+    const height = bandHeader + rows * cardHeight + Math.max(0, rows - 1) * gapY + bandBottom;
+    const positionedNodes: PositionedNode[] = [];
+    for (let row = 0; row < rows; row += 1) {
+      const rowNodes = nodes.slice(row * maxColumns, (row + 1) * maxColumns);
+      const columns = rowNodes.length;
+      const cardWidth = Math.min(280, Math.floor((innerWidth - Math.max(0, columns - 1) * gapX) / Math.max(1, columns)));
+      const rowWidth = columns * cardWidth + Math.max(0, columns - 1) * gapX;
+      const startX = innerX + Math.max(0, (innerWidth - rowWidth) / 2);
+      rowNodes.forEach((node, column) => {
+        const positioned: PositionedNode = {
+          ...node,
+          x: Math.round(startX + column * (cardWidth + gapX)),
+          y: currentY + bandHeader + row * (cardHeight + gapY),
+          width: cardWidth,
+          height: cardHeight,
+          bandIndex,
+          row,
+          column,
+        };
+        positions.set(node.id, positioned);
+        positionedNodes.push(positioned);
+      });
+    }
+    bands.push({ ...definition, x: canvasX, y: currentY, width: canvasWidth, height, nodes: positionedNodes });
+    currentY += height + bandGap;
   });
 
-  const maxRows = Math.max(...rowsByStage.values());
-  const routingEdgeCount = graph.edges.filter(edge => {
-    const source = positions.get(edge.source);
-    const target = positions.get(edge.target);
-    if (!source || !target) return false;
-    const sourceColumn = stageIndex.get(source.stage) || 0;
-    const targetColumn = stageIndex.get(target.stage) || 0;
-    return edge.flowType === 'feedback' || targetColumn < sourceColumn || Math.abs(targetColumn - sourceColumn) > 1;
-  }).length;
-  const pageWidth = Math.max(1600, left * 2 + activeStages.length * columnWidth + Math.max(0, activeStages.length - 1) * gapX);
-  const contentBottom = top + maxRows * (nodeHeight + gapY) - gapY;
-  const pageHeight = Math.max(960, contentBottom + 190 + routingEdgeCount * 14);
+  const contentBottom = currentY - bandGap;
+  const assumptionsHeight = graph.assumptions.length ? Math.min(84, 34 + graph.assumptions.length * 12) : 0;
+  const pageHeight = Math.max(1000, contentBottom + assumptionsHeight + 78);
+  const layoutViolations: string[] = [];
+  const positioned = [...positions.values()];
+  for (let leftIndex = 0; leftIndex < positioned.length; leftIndex += 1) {
+    for (let rightIndex = leftIndex + 1; rightIndex < positioned.length; rightIndex += 1) {
+      const left = positioned[leftIndex];
+      const right = positioned[rightIndex];
+      const separated = left.x + left.width + 29 < right.x || right.x + right.width + 29 < left.x || left.y + left.height + 29 < right.y || right.y + right.height + 29 < left.y;
+      if (!separated) layoutViolations.push(`Layout clearance below 30px between ${left.id} and ${right.id}`);
+    }
+  }
+  return { positions, bands, pageWidth, pageHeight, contentBottom, layoutViolations };
+}
+
+export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light' | 'dark' = 'light'): { xml: string; certification: Studio1Certification } {
+  const semanticCertification = certifyStudio1Graph(graph);
+  const { positions, bands, pageWidth, pageHeight, contentBottom, layoutViolations } = buildBalancedBandLayout(graph);
+  const certification: Studio1Certification = {
+    ...semanticCertification,
+    certified: semanticCertification.certified && layoutViolations.length === 0,
+    score: Math.max(0, semanticCertification.score - layoutViolations.length * 10),
+    violations: [...semanticCertification.violations, ...layoutViolations],
+  };
   const bg = theme === 'dark' ? '#0F172A' : '#FFFFFF';
   const cardBg = theme === 'dark' ? '#1E293B' : '#FFFFFF';
   const text = theme === 'dark' ? '#F8FAFC' : '#0F172A';
@@ -234,17 +358,16 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     cells.push(`<mxCell id="${escapeXml(id)}" value="${escapeXml(value)}" style="html=1;whiteSpace=wrap;${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${width}" height="${height}" as="geometry"/></mxCell>`);
   };
 
-  vertex('studio1_title', `<div style="font-family:Google Sans,Arial,sans-serif;text-align:left;"><div style="font-size:24px;font-weight:800;color:${text};">${graph.title}</div><div style="font-size:12px;font-weight:600;color:#4F46E5;margin-top:4px;">${graph.subtitle}</div></div>`, 40, 24, pageWidth - 80, 58, 'strokeColor=none;fillColor=none;align=left;verticalAlign=middle;');
-  vertex('studio1_meta', `Patterns: ${graph.patterns.join(' + ')}  •  ${graph.nodes.length} components  •  ${graph.edges.length} typed flows  •  Certified ${certification.score}/100`, 40, 88, pageWidth - 80, 30, `rounded=1;arcSize=14;fillColor=${theme === 'dark' ? '#172554' : '#EFF6FF'};strokeColor=#93C5FD;fontColor=${theme === 'dark' ? '#BFDBFE' : '#1E3A8A'};fontSize=10;fontStyle=1;align=left;spacingLeft=12;`);
+  vertex('studio1_title', `<div style="font-family:Google Sans,Arial,sans-serif;text-align:left;"><div style="font-size:24px;font-weight:800;color:${text};">${graph.title}</div><div style="font-size:12px;font-weight:600;color:#4F46E5;margin-top:4px;">${graph.subtitle}</div></div>`, 40, 22, pageWidth - 80, 60, 'strokeColor=none;fillColor=none;align=left;verticalAlign=middle;');
+  const qualityLabel = certification.certified ? `Quality checks passed ${certification.score}/100` : `Quality findings advisory • ${certification.violations.length} finding${certification.violations.length === 1 ? '' : 's'}`;
+  vertex('studio1_meta', `Balanced domain layout v2  •  ${graph.patterns.join(' + ')}  •  ${graph.nodes.length} components  •  ${graph.edges.length} typed flows  •  ${qualityLabel}`, 40, 88, pageWidth - 80, 30, `rounded=1;arcSize=14;fillColor=${theme === 'dark' ? '#172554' : '#EFF6FF'};strokeColor=#93C5FD;fontColor=${theme === 'dark' ? '#BFDBFE' : '#1E3A8A'};fontSize=10;fontStyle=1;align=left;spacingLeft=12;`);
 
-  activeStages.forEach((stage, index) => {
-    const nodes = graph.nodes.filter(node => node.stage === stage);
-    const label = nodes[0]?.zone || `Stage ${stage}`;
-    const x = left + index * (columnWidth + gapX) - 18;
-    const height = maxRows * (nodeHeight + gapY) - gapY + 48;
-    vertex(`lane_${stage}`, '', x, 126, columnWidth + 36, height, `rounded=1;arcSize=12;fillColor=${theme === 'dark' ? '#111827' : '#F8FAFC'};fillOpacity=70;strokeColor=${theme === 'dark' ? '#334155' : '#CBD5E1'};dashed=1;dashPattern=3 3;`);
-    vertex(`lane_label_${stage}`, `${stage}. ${label.toUpperCase()}`, x + 8, 132, columnWidth + 20, 24, `rounded=1;arcSize=12;fillColor=${STAGE_COLORS[index % STAGE_COLORS.length]};strokeColor=none;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;`);
+  bands.forEach((band, index) => {
+    const bandFill = theme === 'dark' ? '#111827' : band.fill;
+    vertex(`band_${band.id}`, '', band.x, band.y, band.width, band.height, `rounded=1;arcSize=14;fillColor=${bandFill};fillOpacity=${theme === 'dark' ? 88 : 72};strokeColor=${theme === 'dark' ? '#334155' : '#CBD5E1'};strokeWidth=1.2;`);
+    vertex(`band_label_${band.id}`, `${index + 1}. ${band.label}  •  ${band.subtitle}`, band.x + 20, band.y + 10, band.width - 40, 26, `rounded=1;arcSize=12;fillColor=${band.accent};strokeColor=none;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=left;spacingLeft=12;verticalAlign=middle;`);
   });
+  const edgeInsertIndex = cells.length;
 
   for (const node of positions.values()) {
     if (node.kind === 'decision') {
@@ -259,17 +382,18 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     vertex(node.id, label, node.x, node.y, node.width, node.height, `${shape}rounded=1;arcSize=10;fillColor=${cardBg};strokeColor=${border};strokeWidth=1.5;shadow=1;align=center;verticalAlign=middle;spacing=6;`);
   }
 
-  const feedbackY = contentBottom + 42;
   let routedEdgeIndex = 0;
+  let edgeCellCount = 0;
   graph.edges.sort((a, b) => a.step - b.step).forEach((edge, index) => {
-    const source = positions.get(edge.source)!;
-    const target = positions.get(edge.target)!;
-    const sourceColumn = stageIndex.get(source.stage) || 0;
-    const targetColumn = stageIndex.get(target.stage) || 0;
-    const forward = targetColumn > sourceColumn;
-    const sameColumn = targetColumn === sourceColumn;
-    const isFeedback = edge.flowType === 'feedback' || targetColumn < sourceColumn;
-    const skipsStage = Math.abs(targetColumn - sourceColumn) > 1;
+    const source = positions.get(edge.source);
+    const target = positions.get(edge.target);
+    if (!source || !target) return;
+    const sameBand = source.bandIndex === target.bandIndex;
+    const sameRow = sameBand && source.row === target.row;
+    const adjacent = sameRow && Math.abs(source.column - target.column) === 1;
+    const forward = target.x >= source.x;
+    const skipsBand = Math.abs(target.bandIndex - source.bandIndex) > 1;
+    const isFeedback = edge.flowType === 'feedback' || target.bandIndex < source.bandIndex || (sameRow && !forward);
     const label = `${edge.step}. ${edge.condition || edge.label}`;
     const edgeStyle = `${FLOW_STYLE[edge.flowType]}endArrow=block;endFill=1;rounded=1;html=1;labelBackgroundColor=${theme === 'dark' ? '#0F172A' : '#FFFFFF'};labelBorderColor=${theme === 'dark' ? '#475569' : '#CBD5E1'};fontColor=${theme === 'dark' ? '#F8FAFC' : '#0F172A'};fontSize=9;fontStyle=1;spacing=3;`;
     let exitX = forward ? 1 : 0;
@@ -278,31 +402,46 @@ export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light
     let entryY = 0.5;
     let points = '';
     let routing = 'edgeStyle=orthogonalEdgeStyle;orthogonalLoop=1;jettySize=auto;';
-    if (isFeedback || skipsStage) {
-      const routeY = feedbackY + routedEdgeIndex * 14;
+    if (isFeedback || skipsBand) {
+      // Long and return paths use dedicated rails outside every band, keeping
+      // their vertical segments clear of component cards in intermediate bands.
+      const routeX = pageWidth - 34 + (routedEdgeIndex % 3) * 7;
       routedEdgeIndex += 1;
-      exitX = 0.5; exitY = 1; entryX = 0.5; entryY = 1;
-      points = `<Array as="points"><mxPoint x="${source.x + source.width / 2}" y="${routeY}"/><mxPoint x="${target.x + target.width / 2}" y="${routeY}"/></Array>`;
-    } else if (sameColumn) {
-      const channelX = source.x + source.width + 36 + index * 4;
-      exitX = 1; entryX = 1;
-      points = `<Array as="points"><mxPoint x="${channelX}" y="${source.y + source.height / 2}"/><mxPoint x="${channelX}" y="${target.y + target.height / 2}"/></Array>`;
-    } else if (source.row === target.row) {
+      exitX = 1; entryX = 1; exitY = 0.72; entryY = 0.72;
+      points = `<Array as="points"><mxPoint x="${routeX}" y="${source.y + source.height * 0.72}"/><mxPoint x="${routeX}" y="${target.y + target.height * 0.72}"/></Array>`;
+    } else if (adjacent) {
       const sourceCenterY = source.y + source.height / 2;
       const targetCenterY = target.y + target.height / 2;
       const lineY = (sourceCenterY + targetCenterY) / 2;
       exitY = Math.max(0.1, Math.min(0.9, (lineY - source.y) / source.height));
       entryY = Math.max(0.1, Math.min(0.9, (lineY - target.y) / target.height));
       routing = 'edgeStyle=none;';
+    } else if (sameBand) {
+      const band = bands.find(item => item.nodes.some(node => node.id === source.id));
+      if (sameRow) {
+        const channelY = (band ? band.y + band.height : Math.max(source.y, target.y) + source.height + 44) - 18 - (index % 4) * 3;
+        exitX = 0.5; entryX = 0.5; exitY = 1; entryY = 1;
+        points = `<Array as="points"><mxPoint x="${source.x + source.width / 2}" y="${channelY}"/><mxPoint x="${target.x + target.width / 2}" y="${channelY}"/></Array>`;
+      } else {
+        const channelX = pageWidth - 34 + (index % 3) * 7;
+        exitX = 1; entryX = 1; exitY = 0.5; entryY = 0.5;
+        points = `<Array as="points"><mxPoint x="${channelX}" y="${source.y + source.height / 2}"/><mxPoint x="${channelX}" y="${target.y + target.height / 2}"/></Array>`;
+      }
     } else {
-      const channelX = source.x + source.width + gapX / 2;
-      points = `<Array as="points"><mxPoint x="${channelX}" y="${source.y + source.height / 2}"/><mxPoint x="${channelX}" y="${target.y + target.height / 2}"/></Array>`;
+      const sourceBelow = target.bandIndex > source.bandIndex;
+      const corridorY = sourceBelow
+        ? source.y + source.height + 14 + (index % 4) * 3
+        : target.y + target.height + 14 + (index % 4) * 3;
+      exitX = 0.5; entryX = 0.5; exitY = sourceBelow ? 1 : 0; entryY = sourceBelow ? 0 : 1;
+      points = `<Array as="points"><mxPoint x="${source.x + source.width / 2}" y="${corridorY}"/><mxPoint x="${target.x + target.width / 2}" y="${corridorY}"/></Array>`;
     }
-    cells.push(`<mxCell id="${escapeXml(edge.id || `edge_${index + 1}`)}" value="${escapeXml(label)}" edge="1" parent="1" source="${escapeXml(edge.source)}" target="${escapeXml(edge.target)}" style="${routing}exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle}"><mxGeometry relative="1" as="geometry">${points}</mxGeometry></mxCell>`);
+    cells.splice(edgeInsertIndex + edgeCellCount, 0, `<mxCell id="${escapeXml(edge.id || `edge_${index + 1}`)}" value="${escapeXml(label)}" edge="1" parent="1" source="${escapeXml(edge.source)}" target="${escapeXml(edge.target)}" style="${routing}exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};exitPerimeter=1;entryPerimeter=1;${edgeStyle}"><mxGeometry relative="1" as="geometry">${points}</mxGeometry></mxCell>`);
+    edgeCellCount += 1;
   });
 
   if (graph.assumptions.length) {
-    vertex('assumptions', `<div style="font-family:Google Sans,Arial,sans-serif;text-align:left;"><b>Assumptions</b><br/>${graph.assumptions.map((item, index) => `${index + 1}. ${item}`).join('<br/>')}</div>`, 40, pageHeight - 54, pageWidth - 80, 42, `rounded=1;arcSize=8;fillColor=${theme === 'dark' ? '#1E293B' : '#FFFBEB'};strokeColor=#F59E0B;fontColor=${text};fontSize=8.5;align=left;verticalAlign=middle;spacingLeft=10;`);
+    const assumptionHeight = Math.min(84, 34 + graph.assumptions.length * 12);
+    vertex('assumptions', `<div style="font-family:Google Sans,Arial,sans-serif;text-align:left;"><b>Assumptions</b><br/>${graph.assumptions.map((item, index) => `${index + 1}. ${item}`).join('<br/>')}</div>`, 40, contentBottom + 24, pageWidth - 80, assumptionHeight, `rounded=1;arcSize=8;fillColor=${theme === 'dark' ? '#1E293B' : '#FFFBEB'};strokeColor=#F59E0B;fontColor=${text};fontSize=8.5;align=left;verticalAlign=middle;spacingLeft=10;`);
   }
 
   const xml = `<mxfile host="embed.diagrams.net"><diagram id="studio1_hybrid" name="${escapeXml(graph.title)}"><mxGraphModel dx="${pageWidth}" dy="${pageHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${pageWidth}" pageHeight="${pageHeight}" background="${bg}" math="0" shadow="0"><root>${cells.join('')}</root></mxGraphModel></diagram></mxfile>`;
