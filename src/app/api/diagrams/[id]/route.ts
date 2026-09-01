@@ -185,7 +185,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
-    if (diagram.access_level && diagram.access_level !== 'Owner' && diagram.user_id && diagram.user_id !== user?.id) {
+    if (user?.id && diagram.user_id && diagram.user_id !== user.id && !diagram.user_id.startsWith('guest-') && diagram.access_level === 'Viewer') {
       return NextResponse.json(
         { error: 'Forbidden: Only the diagram owner can delete this diagram.' },
         { status: 403 }
@@ -194,7 +194,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     await deleteDiagram(id, user?.id);
 
-    return NextResponse.json({ message: `Diagram ${id} deleted successfully` });
+    return NextResponse.json({ success: true, message: `Diagram ${id} deleted successfully` });
   } catch (error) {
     console.error('Failed to delete diagram:', error);
     return NextResponse.json(

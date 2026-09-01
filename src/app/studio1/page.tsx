@@ -679,6 +679,49 @@ function Studio1Content() {
     setTimeout(() => setToastNotification(null), 3500);
   }, []);
 
+  // Hydrate Diagram from URL query parameter (?diagram=<id> or ?id=<id>)
+  useEffect(() => {
+    const diagId = searchParams.get('diagram') || searchParams.get('id');
+    if (!diagId) return;
+
+    let isMounted = true;
+    (async () => {
+      try {
+        const res = await fetch(`/api/diagrams/${diagId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!isMounted || !data) return;
+
+        if (data.name) setProjectTitle(data.name);
+        if (data.project_title) setProjectTitle(data.project_title);
+        if (data.project_name) setProjectName(data.project_name);
+        if (data.use_case) setUseCaseName(data.use_case);
+        if (data.prompt) setProjectScopePrompt(data.prompt);
+
+        const latestXml = data.xml_content || (data.versions && data.versions[0]?.xml_content);
+        if (latestXml) {
+          const loadedTab: StudioDiagramTab = {
+            id: data.id || 'diag_loaded',
+            title: data.name || 'Imported Architecture',
+            templateId: data.architecture_type || 'custom',
+            xml: latestXml,
+            source: 'custom'
+          };
+          setDiagrams([loadedTab]);
+          setActiveDiagramId(loadedTab.id);
+          setHasGeneratedDiagram(true);
+          showToast(`✨ Loaded architecture "${data.name || 'Diagram'}" from Library`);
+        }
+      } catch (err) {
+        console.error('Failed to hydrate diagram in Studio 1:', err);
+      }
+    })();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [searchParams, showToast]);
+
   const handleNewProject = useCallback(() => {
     setWorkspaceMode('create');
     setHasGeneratedDiagram(false);

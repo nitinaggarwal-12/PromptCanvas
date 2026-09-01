@@ -49,8 +49,7 @@ const CANONICAL_NAV_ITEMS: NavItem[] = [
 
 const CANVAS_SUB_ITEMS: NavItem[] = [
   { id: 'design_canvas', name: 'Design Canvas', icon: Network, href: '/workspace' },
-  { id: 'canvas_history', name: 'All History', icon: History, href: '/history' },
-  { id: 'studio1_history', name: 'Studio 1 Canvases', icon: Layers, href: '/history?studio=studio1' },
+  { id: 'architecture_library', name: 'Architecture Library', icon: LayoutGrid, href: '/library' },
 ];
 
 function UnifiedAppSidebarInner() {
@@ -92,7 +91,7 @@ function UnifiedAppSidebarInner() {
     return true;
   });
 
-  const isCanvasActive = (pathname === '/workspace' && searchParams.get('tab') !== 'audit' && searchParams.get('tab') !== 'settings') || pathname.startsWith('/history');
+  const isCanvasActive = (pathname === '/workspace' && searchParams.get('tab') !== 'audit' && searchParams.get('tab') !== 'settings') || pathname.startsWith('/history') || pathname.startsWith('/library');
   const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState<boolean>(true);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);

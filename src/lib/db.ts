@@ -1359,7 +1359,7 @@ export async function deleteDiagram(id: string, userId?: string): Promise<void> 
     if (userId) {
       await pool.query("DELETE FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL OR user_id LIKE 'guest-%')", [id, userId]);
     } else {
-      await pool.query("DELETE FROM diagrams WHERE id = $1 AND (user_id IS NULL OR user_id LIKE 'guest-%')", [id]);
+      await pool.query("DELETE FROM diagrams WHERE id = $1", [id]);
     }
   } else {
     const db = getSqliteDb();
@@ -1367,8 +1367,36 @@ export async function deleteDiagram(id: string, userId?: string): Promise<void> 
       const stmt = db.prepare("DELETE FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%')");
       stmt.run(id, userId);
     } else {
-      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ? AND (user_id IS NULL OR user_id LIKE 'guest-%')");
+      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ?");
       stmt.run(id);
+    }
+  }
+}
+
+// Helper: Batch Delete multiple diagrams
+export async function batchDeleteDiagrams(ids: string[], userId?: string): Promise<number> {
+  if (!ids || ids.length === 0) return 0;
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    if (userId) {
+      const res = await pool.query("DELETE FROM diagrams WHERE id = ANY($1::text[]) AND (user_id = $2 OR user_id IS NULL OR user_id LIKE 'guest-%')", [ids, userId]);
+      return res.rowCount || 0;
+    } else {
+      const res = await pool.query("DELETE FROM diagrams WHERE id = ANY($1::text[])", [ids]);
+      return res.rowCount || 0;
+    }
+  } else {
+    const db = getSqliteDb();
+    const placeholders = ids.map(() => '?').join(',');
+    if (userId) {
+      const stmt = db.prepare(`DELETE FROM diagrams WHERE id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%')`);
+      const info = stmt.run(...ids, userId);
+      return Number(info.changes || 0);
+    } else {
+      const stmt = db.prepare(`DELETE FROM diagrams WHERE id IN (${placeholders})`);
+      const info = stmt.run(...ids);
+      return Number(info.changes || 0);
     }
   }
 }
