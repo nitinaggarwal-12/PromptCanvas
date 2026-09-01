@@ -981,9 +981,9 @@ function StudioContent() {
   };
 
   const handlePrefillSample = () => {
-    setProjectName('OmniChannel Commerce Platform');
-    setUseCaseName('Real-Time Order Ingestion & Fraud Detection');
-    setProjectTitle('Google Cloud Multi-Region Microservices & Event-Driven Fraud Detection Engine');
+    setProjectName('Omnichannel Commerce & Order Orchestration');
+    setUseCaseName('Real-Time Order Ingestion & Fraud Scoring Mesh');
+    setProjectTitle('Google Cloud Multi-Region Microservices & Event-Driven Commerce Engine');
     setSelectedDomain('retail');
     setProjectScopePrompt('Architect a multi-region Google Cloud event-driven microservices platform with Apigee API Gateway, GKE Autopilot, Pub/Sub Event Mesh, Dataflow real-time streaming ETL, Vertex AI ScaNN Vector Search for fraud scoring, and Cloud Spanner multi-region database with zero downtime.');
     showToast('⚡ Pre-populated sample architecture brief. Click Send to synthesize!');
@@ -1172,6 +1172,7 @@ function StudioContent() {
                   </label>
                   <SearchableProjectDropdown
                     value={projectName}
+                    selectedDomainId={selectedDomain}
                     onChange={(newProj, domainId) => {
                       handleUpdateProjectName(newProj);
                       if (domainId && domainId !== selectedDomain) {
@@ -1189,6 +1190,7 @@ function StudioContent() {
                   <SearchableUseCaseDropdown
                     value={useCaseName}
                     projectName={projectName}
+                    selectedDomainId={selectedDomain}
                     onChange={(newUseCase) => handleUpdateUseCaseName(newUseCase)}
                     isLight={isLight}
                   />
@@ -1203,6 +1205,7 @@ function StudioContent() {
                   </label>
                   <SearchablePromptSuggestionsDropdown
                     isLight={isLight}
+                    selectedDomainId={selectedDomain}
                     onSelectPrompt={(selectedPrompt: PromptOption) => {
                       setProjectScopePrompt(selectedPrompt.prompt);
                       if (selectedPrompt.domainId && selectedPrompt.domainId !== selectedDomain) {
