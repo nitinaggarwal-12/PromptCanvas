@@ -56,6 +56,8 @@ import { injectDomainFlavorXml } from '@/lib/canonical/canonicalTemplates';
 import {
   SearchablePromptSuggestionsDropdown,
   SearchableDomainFlavorDropdown,
+  SearchableProjectDropdown,
+  SearchableUseCaseDropdown,
   EXTENDED_DOMAIN_OPTIONS,
   type PromptOption,
   type DomainOption,
@@ -328,19 +330,7 @@ function StudioContent() {
   // Chat State
   const [chatInput, setChatInput] = useState<string>('');
   const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
-  const [chatMessages, setChatMessages] = useState<StudioChatMessage[]>([
-    {
-      id: 'welcome',
-      sender: 'assistant',
-      text: '👋 Welcome to Launch Studio! Fill out your project requirements above and click **Send**, or describe what you want directly in chat. The right pane shows a generic GCP reference model until synthesized.',
-      timestamp: 'Just now',
-      suggestedPrompts: [
-        'Architect a high-throughput event streaming platform with Pub/Sub & Dataflow',
-        'Design a zero-trust multi-region microservices architecture with Cloud Spanner',
-        'Build a Vertex AI RAG knowledge graph with ScaNN vector search'
-      ]
-    }
-  ]);
+  const [chatMessages, setChatMessages] = useState<StudioChatMessage[]>([]);
 
   // Find active diagram object
   const activeDiagram = useMemo(() => {
@@ -1039,33 +1029,31 @@ function StudioContent() {
               }`}>
                 {/* 1. Project & 2. Use Case */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
-                      Project [either choose existing or create new]
+                  <div className="space-y-1">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                      Project
                     </label>
-                    <input
-                      type="text"
+                    <SearchableProjectDropdown
                       value={projectName}
-                      onChange={(e) => handleUpdateProjectName(e.target.value)}
-                      placeholder="e.g. Bio-Pharma Clinical Platform"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                        isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
-                      }`}
+                      onChange={(newProj, domainId) => {
+                        handleUpdateProjectName(newProj);
+                        if (domainId && domainId !== selectedDomain) {
+                          setSelectedDomain(domainId);
+                        }
+                      }}
+                      isLight={isLight}
                     />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
+                  <div className="space-y-1">
+                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
                       Use Case
                     </label>
-                    <input
-                      type="text"
+                    <SearchableUseCaseDropdown
                       value={useCaseName}
-                      onChange={(e) => handleUpdateUseCaseName(e.target.value)}
-                      placeholder="e.g. Genomics Analysis & Regulatory AI"
-                      className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                        isLight ? 'bg-slate-50 border-slate-200 text-slate-900' : 'bg-slate-900 border-slate-800 text-white'
-                      }`}
+                      projectName={projectName}
+                      onChange={(newUseCase) => handleUpdateUseCaseName(newUseCase)}
+                      isLight={isLight}
                     />
                   </div>
                 </div>

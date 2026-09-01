@@ -598,3 +598,445 @@ export function SearchableDomainFlavorDropdown({
     </div>
   );
 }
+
+// =========================================================================
+// PROJECT & USE CASE CURATED PRESETS & SEARCHABLE DROPDOWNS
+// =========================================================================
+
+export interface ProjectPreset {
+  id: string;
+  name: string;
+  icon?: string;
+  domainId?: string;
+  useCases: string[];
+}
+
+export const CURATED_PROJECT_PRESETS: ProjectPreset[] = [
+  {
+    id: 'biopharma-platform',
+    name: 'Bio-Pharma Clinical Platform',
+    icon: '🧬',
+    domainId: 'biopharma',
+    useCases: [
+      'Genomics Analysis & Regulatory AI',
+      'FDA 21 CFR Part 11 Adverse Event Triage',
+      'Clinical Genomics Knowledge Graph',
+      'GxP Multi-Region Sovereign Data Mesh'
+    ]
+  },
+  {
+    id: 'fintech-autonomous',
+    name: 'Autonomous Wealth & Real-Time Payments',
+    icon: '💳',
+    domainId: 'fintech',
+    useCases: [
+      'Sub-5ms High-Frequency Fraud Detection',
+      'ISO 20022 Cross-Border Settlement Engine',
+      'Multi-Tier Double-Entry Spanner Ledger',
+      'PCI-DSS Tokenization & Enclave Vault'
+    ]
+  },
+  {
+    id: 'industrial-iot',
+    name: 'Smart Manufacturing & Industrial IoT Twin',
+    icon: '🏭',
+    domainId: 'manufacturing',
+    useCases: [
+      'SCADA PLC Telemetry Ingestion & Digital Twin',
+      'Predictive Maintenance AI with Vertex ScaNN',
+      'Autonomous AGV Warehouse Swarm Mesh',
+      'Real-Time OEE Metrics & Computer Vision QC'
+    ]
+  },
+  {
+    id: 'omnichannel-retail',
+    name: 'Omnichannel Retail & Intelligent Supply Chain',
+    icon: '🛍️',
+    domainId: 'retail',
+    useCases: [
+      'Global Inventory Mesh & Dynamic Pricing Engine',
+      'Personalized Real-Time Recommendation Graph',
+      'Event-Driven Order Fulfillment & Logistics Hub',
+      'Omnichannel Point-of-Sale Event Stream'
+    ]
+  },
+  {
+    id: 'enterprise-saas',
+    name: 'Enterprise Multi-Tenant Cloud Platform',
+    icon: '🏢',
+    domainId: 'saas',
+    useCases: [
+      'Zero-Trust Multi-Region Sharded Microservices',
+      'Tenant Isolation & Distributed Redis Caching',
+      'SOC 2 Type II Event-Driven Audit Ledger',
+      'Global API Gateway with Cloud Armor & Rate Limiting'
+    ]
+  },
+  {
+    id: 'clinical-healthcare',
+    name: 'Clinical EHR & Health Interoperability Hub',
+    icon: '🩺',
+    domainId: 'healthcare',
+    useCases: [
+      'FHIR R4 / HL7 v2 Clinical Ingestion Gateway',
+      'Sub-15ms ICU Patient Telemetry Dataflow Hub',
+      'HIPAA Compliant Medical Image AI Classification',
+      'Provider Credentialing & Claims Automation'
+    ]
+  },
+  {
+    id: 'smart-energy',
+    name: 'Clean Energy Grid & Battery Storage Mesh',
+    icon: '⚡',
+    domainId: 'energy',
+    useCases: [
+      'Smart Grid SCADA & OCPP 2.0.1 Ingestion',
+      'BESS Battery Load Balancing & Peak Shaving',
+      'Microgrid V2G Bidirectional Energy Trading',
+      'Renewable Forecast & Automated Dispatch Engine'
+    ]
+  },
+  {
+    id: 'cyber-soc',
+    name: 'Zero-Trust Cybersecurity & SOC SecOps Hub',
+    icon: '🔒',
+    domainId: 'cybersecurity',
+    useCases: [
+      'Chronicle SIEM Real-Time Ingestion & Threat Graph',
+      'Gemini AI SOAR Playbook Automation & Auto-Remediation',
+      'VPC Service Controls & Zero-Trust Access Perimeter',
+      'Endpoint XDR Telemetry & Behavioral Anomaly Detection'
+    ]
+  }
+];
+
+export interface SearchableProjectDropdownProps {
+  value: string;
+  onChange: (projectName: string, domainId?: string) => void;
+  isLight?: boolean;
+}
+
+export function SearchableProjectDropdown({
+  value,
+  onChange,
+  isLight = false,
+}: SearchableProjectDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredPresets = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return CURATED_PROJECT_PRESETS;
+    return CURATED_PROJECT_PRESETS.filter(
+      (p) => p.name.toLowerCase().includes(q) || p.useCases.some((u) => u.toLowerCase().includes(q))
+    );
+  }, [searchQuery]);
+
+  const handleSelect = (name: string, domainId?: string) => {
+    onChange(name, domainId);
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
+  const isExactMatch = filteredPresets.some(
+    (p) => p.name.toLowerCase() === searchQuery.toLowerCase().trim()
+  );
+
+  return (
+    <div className="relative w-full" ref={containerRef}>
+      {/* Trigger Button */}
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setSearchQuery('');
+        }}
+        className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-between gap-2 transition-all cursor-pointer text-left ${
+          isOpen ? 'ring-2 ring-teal-500 border-teal-500' : ''
+        } ${
+          isLight
+            ? 'bg-slate-50 hover:bg-slate-100/80 border-slate-200 text-slate-900'
+            : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-white'
+        }`}
+      >
+        <span className="truncate">{value || 'Select or type project...'}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Popover / Dropdown Menu */}
+      {isOpen && (
+        <div
+          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[360px] ${
+            isLight
+              ? 'bg-white border-slate-200 shadow-slate-400/30'
+              : 'bg-[#0F172A] border-slate-800 shadow-2xl shadow-black/80'
+          }`}
+        >
+          {/* Search Header */}
+          <div className={`p-2.5 border-b flex items-center gap-2 shrink-0 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+            <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  e.preventDefault();
+                  handleSelect(searchQuery.trim());
+                }
+              }}
+              placeholder="Search or type custom project..."
+              className={`w-full bg-transparent text-xs focus:outline-none placeholder-slate-400 ${isLight ? 'text-slate-900' : 'text-white'}`}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Custom Create Option if Search Query is Present and Not Exact Match */}
+          {searchQuery.trim() && !isExactMatch && (
+            <button
+              type="button"
+              onClick={() => handleSelect(searchQuery.trim())}
+              className={`w-full text-left px-3 py-2.5 text-xs font-bold flex items-center gap-2 border-b cursor-pointer transition-colors ${
+                isLight
+                  ? 'bg-teal-50 hover:bg-teal-100/70 text-teal-800 border-slate-200'
+                  : 'bg-teal-950/50 hover:bg-teal-900/60 text-teal-300 border-slate-800'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+              <span className="truncate">Use custom: &ldquo;{searchQuery.trim()}&rdquo;</span>
+            </button>
+          )}
+
+          {/* Preset Options List */}
+          <div className={`flex-1 overflow-y-auto p-1.5 space-y-1 divide-y ${
+            isLight ? 'divide-slate-100' : 'divide-slate-800/50'
+          }`}>
+            {filteredPresets.length === 0 && !searchQuery.trim() ? (
+              <div className="p-4 text-center text-xs text-slate-400">
+                No preset projects available.
+              </div>
+            ) : (
+              filteredPresets.map((preset) => {
+                const isSelected = preset.name.toLowerCase() === value.toLowerCase();
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    onClick={() => handleSelect(preset.name, preset.domainId)}
+                    className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
+                      isSelected
+                        ? isLight
+                          ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                          : 'bg-teal-950/60 text-teal-300 font-bold border border-teal-800'
+                        : isLight
+                        ? 'hover:bg-slate-50 text-slate-700'
+                        : 'hover:bg-slate-900 text-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-sm shrink-0">{preset.icon || '📁'}</span>
+                      <span className="text-xs truncate">{preset.name}</span>
+                    </div>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-teal-500 shrink-0" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export interface SearchableUseCaseDropdownProps {
+  value: string;
+  projectName?: string;
+  onChange: (useCaseName: string) => void;
+  isLight?: boolean;
+}
+
+export function SearchableUseCaseDropdown({
+  value,
+  projectName = '',
+  onChange,
+  isLight = false,
+}: SearchableUseCaseDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Curated use cases prioritized by current project
+  const allUseCases = useMemo(() => {
+    const matchedProject = CURATED_PROJECT_PRESETS.find(
+      (p) => p.name.toLowerCase() === projectName.toLowerCase()
+    );
+
+    const projectCases = matchedProject ? matchedProject.useCases : [];
+    const otherCases = CURATED_PROJECT_PRESETS.filter(
+      (p) => !matchedProject || p.id !== matchedProject.id
+    ).flatMap((p) => p.useCases);
+
+    return Array.from(new Set([...projectCases, ...otherCases]));
+  }, [projectName]);
+
+  const filteredUseCases = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return allUseCases;
+    return allUseCases.filter((u) => u.toLowerCase().includes(q));
+  }, [searchQuery, allUseCases]);
+
+  const handleSelect = (name: string) => {
+    onChange(name);
+    setIsOpen(false);
+    setSearchQuery('');
+  };
+
+  const isExactMatch = filteredUseCases.some(
+    (u) => u.toLowerCase() === searchQuery.toLowerCase().trim()
+  );
+
+  return (
+    <div className="relative w-full" ref={containerRef}>
+      {/* Trigger Button */}
+      <button
+        type="button"
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setSearchQuery('');
+        }}
+        className={`w-full px-3.5 py-2.5 rounded-xl border text-xs font-semibold flex items-center justify-between gap-2 transition-all cursor-pointer text-left ${
+          isOpen ? 'ring-2 ring-teal-500 border-teal-500' : ''
+        } ${
+          isLight
+            ? 'bg-slate-50 hover:bg-slate-100/80 border-slate-200 text-slate-900'
+            : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-white'
+        }`}
+      >
+        <span className="truncate">{value || 'Select or type use case...'}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      {/* Popover / Dropdown Menu */}
+      {isOpen && (
+        <div
+          className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-2xl border shadow-2xl overflow-hidden flex flex-col max-h-[360px] ${
+            isLight
+              ? 'bg-white border-slate-200 shadow-slate-400/30'
+              : 'bg-[#0F172A] border-slate-800 shadow-2xl shadow-black/80'
+          }`}
+        >
+          {/* Search Header */}
+          <div className={`p-2.5 border-b flex items-center gap-2 shrink-0 ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'}`}>
+            <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  e.preventDefault();
+                  handleSelect(searchQuery.trim());
+                }
+              }}
+              placeholder="Search or type custom use case..."
+              className={`w-full bg-transparent text-xs focus:outline-none placeholder-slate-400 ${isLight ? 'text-slate-900' : 'text-white'}`}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+
+          {/* Custom Create Option if Search Query is Present and Not Exact Match */}
+          {searchQuery.trim() && !isExactMatch && (
+            <button
+              type="button"
+              onClick={() => handleSelect(searchQuery.trim())}
+              className={`w-full text-left px-3 py-2.5 text-xs font-bold flex items-center gap-2 border-b cursor-pointer transition-colors ${
+                isLight
+                  ? 'bg-teal-50 hover:bg-teal-100/70 text-teal-800 border-slate-200'
+                  : 'bg-teal-950/50 hover:bg-teal-900/60 text-teal-300 border-slate-800'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-teal-500 shrink-0" />
+              <span className="truncate">Use custom: &ldquo;{searchQuery.trim()}&rdquo;</span>
+            </button>
+          )}
+
+          {/* Preset Options List */}
+          <div className={`flex-1 overflow-y-auto p-1.5 space-y-1 divide-y ${
+            isLight ? 'divide-slate-100' : 'divide-slate-800/50'
+          }`}>
+            {filteredUseCases.length === 0 && !searchQuery.trim() ? (
+              <div className="p-4 text-center text-xs text-slate-400">
+                No preset use cases available.
+              </div>
+            ) : (
+              filteredUseCases.map((useCase) => {
+                const isSelected = useCase.toLowerCase() === value.toLowerCase();
+                return (
+                  <button
+                    key={useCase}
+                    type="button"
+                    onClick={() => handleSelect(useCase)}
+                    className={`w-full text-left p-2.5 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
+                      isSelected
+                        ? isLight
+                          ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                          : 'bg-teal-950/60 text-teal-300 font-bold border border-teal-800'
+                        : isLight
+                        ? 'hover:bg-slate-50 text-slate-700'
+                        : 'hover:bg-slate-900 text-slate-300'
+                    }`}
+                  >
+                    <span className="text-xs truncate">{useCase}</span>
+                    {isSelected && <Check className="w-3.5 h-3.5 text-teal-500 shrink-0" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
