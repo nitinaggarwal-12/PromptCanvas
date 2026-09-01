@@ -18,6 +18,7 @@ import {
   Undo2,
   Redo2,
   History,
+  LayoutGrid,
   Plus,
   Trash2,
   Edit3,
@@ -989,124 +990,155 @@ function StudioContent() {
   };
 
   return (
-    <div className={`flex min-h-screen ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#060911] text-slate-100'}`}>
+    <div className={`flex h-screen overflow-hidden ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-[#060911] text-slate-100'}`}>
       <UnifiedAppSidebar />
 
-      <main className="flex-1 min-w-0 flex flex-col pt-4 pb-16">
-        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-5">
-          
-          {/* TOP HEADER: BREADCRUMB, TITLE & TOP CONTROLS */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-slate-400">
-                <Link href="/" className="hover:text-teal-500 transition-colors">PromptCanvas</Link>
-                <ChevronRight className="w-3.5 h-3.5" />
-                <span className="font-bold text-teal-600 dark:text-teal-400">Launch Studio</span>
-              </div>
-              <div className="flex items-center gap-3 mt-1.5">
-                <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                  <Layers className="w-7 h-7 text-teal-500" />
-                  AI Architecture &amp; Specification Studio
-                </h1>
-              </div>
+      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
+        {/* SLEEK SINGLE-ROW TOP HEADER */}
+        <header className="h-14 shrink-0 px-4 sm:px-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 bg-white/90 dark:bg-[#080D1A]/90 backdrop-blur-md z-10">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-1.5 text-xs text-slate-400 shrink-0">
+              <Link href="/" className="hover:text-teal-500 transition-colors">PromptCanvas</Link>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
             </div>
-
-            {/* VERSION CONTROL & MODE CONTROLS */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              
-              {/* VCS Ring Buffer Controls: Undo / Redo / History Dropdown */}
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={handleUndo}
-                  disabled={currentHistoryIndex >= versionHistory.length - 1 || versionHistory.length === 0}
-                  className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 transition-all cursor-pointer"
-                  title="Undo (Ctrl+Z / Cmd+Z)"
-                >
-                  <Undo2 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRedo}
-                  disabled={currentHistoryIndex <= 0}
-                  className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 transition-all cursor-pointer"
-                  title="Redo (Ctrl+Y / Cmd+Shift+Z)"
-                >
-                  <Redo2 className="w-4 h-4" />
-                </button>
-                <div className="h-4 w-px bg-slate-300 dark:bg-slate-700 mx-0.5" />
-                <button
-                  type="button"
-                  onClick={() => setShowHistoryModal(true)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/40 transition-all cursor-pointer"
-                  title="View Rolling 10-Snapshot Version History & Restores"
-                >
-                  <History className="w-3.5 h-3.5" />
-                  <span>{currentVersionTag}</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-teal-500/20 font-mono font-bold">
-                    {versionHistory.length}/10
-                  </span>
-                  <ChevronDown className="w-3 h-3 text-slate-400" />
-                </button>
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="p-1 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400">
+                <Layers className="w-4 h-4" />
               </div>
-
-              {/* View Mode Switcher */}
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setStudioMode('diagrams')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    studioMode === 'diagrams'
-                      ? 'bg-teal-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Network className="w-3.5 h-3.5" />
-                  <span>Diagrams</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStudioMode('documents')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    studioMode === 'documents'
-                      ? 'bg-sky-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Documents</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStudioMode('both')}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    studioMode === 'both'
-                      ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  <span>Both</span>
-                </button>
-              </div>
+              <h1 className="text-sm sm:text-base font-black tracking-tight text-slate-900 dark:text-white truncate">
+                Launch Studio
+              </h1>
+              <span className="hidden md:inline text-xs text-slate-400 font-medium">| AI Architecture &amp; Specification Studio</span>
+              <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                PRO
+              </span>
             </div>
           </div>
 
-          {/* MAIN SPLIT-SCREEN WORKSPACE: 30% Left Form/Chat, 70% Right Canvas */}
-          <div className="grid grid-cols-1 lg:grid-cols-10 gap-6 items-start">
+          {/* TOP CONTROLS: VCS, MODE SWITCHER & QUICK ACCESS */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* VCS Controls: Undo / Redo / History Dropdown */}
+            <div className="flex items-center gap-0.5 p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={handleUndo}
+                disabled={currentHistoryIndex >= versionHistory.length - 1 || versionHistory.length === 0}
+                className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 transition-all cursor-pointer"
+                title="Undo (Ctrl+Z / Cmd+Z)"
+              >
+                <Undo2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleRedo}
+                disabled={currentHistoryIndex <= 0}
+                className="p-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 transition-all cursor-pointer"
+                title="Redo (Ctrl+Y / Cmd+Shift+Z)"
+              >
+                <Redo2 className="w-3.5 h-3.5" />
+              </button>
+              <div className="h-3.5 w-px bg-slate-300 dark:bg-slate-700 mx-0.5" />
+              <button
+                type="button"
+                onClick={() => setShowHistoryModal(true)}
+                className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[11px] font-bold text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/40 transition-all cursor-pointer"
+                title="View Rolling 10-Snapshot Version History & Restores"
+              >
+                <History className="w-3 h-3" />
+                <span>{currentVersionTag}</span>
+                <span className="text-[9px] px-1 py-0.2 rounded-full bg-teal-500/20 font-mono font-bold">
+                  {versionHistory.length}/10
+                </span>
+                <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
+              </button>
+            </div>
+
+            {/* View Mode Switcher */}
+            <div className="flex items-center gap-0.5 p-0.5 rounded-xl bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300/60 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setStudioMode('diagrams')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  studioMode === 'diagrams'
+                    ? 'bg-teal-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Network className="w-3 h-3" />
+                <span className="hidden sm:inline">Diagrams</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStudioMode('documents')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  studioMode === 'documents'
+                    ? 'bg-sky-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <FileText className="w-3 h-3" />
+                <span className="hidden sm:inline">Documents</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setStudioMode('both')}
+                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                  studioMode === 'both'
+                    ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <Zap className="w-3 h-3" />
+                <span className="hidden sm:inline">Both</span>
+              </button>
+            </div>
+
+            {/* Quick Link to Architecture Library */}
+            <Link
+              href="/library"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/40 border border-teal-500/20 transition-all cursor-pointer"
+              title="Open Architecture Library"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Library</span>
+            </Link>
+          </div>
+        </header>
+
+        {/* MAIN SPLIT-SCREEN WORKSPACE: EXACT FULL HEIGHT MATCH */}
+        <div className="flex-1 min-h-0 w-full max-w-[1760px] mx-auto p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-3.5 overflow-hidden">
+          
+          {/* LEFT COLUMN (4 COLS / ~33%): SPECIFICATION & PROMPT BRIEF */}
+          <div className={`lg:col-span-4 h-full flex flex-col min-h-0 rounded-2xl border shadow-sm overflow-hidden ${
+            isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
+          }`}>
             
-            {/* LEFT COLUMN (3 COLS / 30%): 
-                SPECIFICATION INPUT FORM & ARCHITECTURAL CHAT ASSISTANT
-            */}
-            <div className="lg:col-span-3 space-y-5">
-              
-              {/* TOP LEFT: ARCHITECTURE SPECIFICATION FORM */}
-              <div className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
-                isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
-              }`}>
-                {/* 1. Project */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+            {/* Left Card Header */}
+            <div className={`px-4 py-2.5 border-b flex items-center justify-between shrink-0 ${
+              isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900/60 border-slate-800'
+            }`}>
+              <div className="flex items-center gap-2">
+                <FileText className="w-3.5 h-3.5 text-teal-500" />
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  Specification Brief
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleResetToScratch}
+                className="text-[11px] font-semibold text-slate-400 hover:text-red-500 transition-colors cursor-pointer"
+                title="Reset to blank canvas"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Left Card Scrollable Body */}
+            <div className="flex-1 min-h-0 flex flex-col p-3.5 space-y-3 overflow-y-auto">
+              {/* 1. Project & Use Case in 2-Col Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
                     Project
                   </label>
                   <SearchableProjectDropdown
@@ -1121,9 +1153,8 @@ function StudioContent() {
                   />
                 </div>
 
-                {/* 2. Use Case */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
                     Use Case
                   </label>
                   <SearchableUseCaseDropdown
@@ -1133,10 +1164,12 @@ function StudioContent() {
                     isLight={isLight}
                   />
                 </div>
+              </div>
 
-                {/* 3. Blueprints */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+              {/* 2. Blueprints & Domain in 2-Col Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
                     Blueprints
                   </label>
                   <SearchablePromptSuggestionsDropdown
@@ -1151,9 +1184,8 @@ function StudioContent() {
                   />
                 </div>
 
-                {/* 4. Domain */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                <div className="space-y-1">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
                     Domain
                   </label>
                   <SearchableDomainFlavorDropdown
@@ -1166,531 +1198,497 @@ function StudioContent() {
                     }}
                   />
                 </div>
+              </div>
 
-                {/* Chatbox & Prompt Area */}
-                <div className="space-y-3 pt-1">
-                  {/* Prompt Textarea - Enlarged */}
-                  <textarea
-                    rows={5}
-                    value={projectScopePrompt}
-                    onChange={(e) => setProjectScopePrompt(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSynthesizeArchitecture();
-                      }
-                    }}
-                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
-                    className={`w-full p-3.5 min-h-[130px] rounded-2xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
-                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
-                    }`}
-                  />
+              {/* 3. Prompt Textarea & Send Button */}
+              <div className="space-y-2 pt-1">
+                <textarea
+                  rows={4}
+                  value={projectScopePrompt}
+                  onChange={(e) => setProjectScopePrompt(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSynthesizeArchitecture();
+                    }
+                  }}
+                  placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
+                  className={`w-full p-3 min-h-[90px] max-h-[140px] rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
+                    isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
+                  }`}
+                />
 
-                  {/* Send Button */}
-                  <button
-                    type="button"
-                    onClick={() => handleSynthesizeArchitecture()}
-                    disabled={isSynthesizing}
-                    className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isSynthesizing ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Sending...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 fill-current" />
-                        <span>Send</span>
-                      </>
-                    )}
-                  </button>
+                <button
+                  type="button"
+                  onClick={() => handleSynthesizeArchitecture()}
+                  disabled={isSynthesizing}
+                  className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-md shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isSynthesizing ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Synthesizing Architecture...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-3.5 h-3.5 fill-current" />
+                      <span>Send &amp; Synthesize Architecture</span>
+                    </>
+                  )}
+                </button>
+              </div>
 
-                  {/* Scrollable Prompt & Enhancement History Feed - BELOW SEND BUTTON */}
-                  {chatMessages.length > 0 && (
-                    <div className={`p-3 rounded-2xl border max-h-[280px] overflow-y-auto space-y-2.5 ${
-                      isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/80 border-slate-800'
-                    }`}>
-                      {chatMessages.map((msg) => (
-                        <div
-                          key={msg.id}
-                          className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
-                        >
-                          <div
-                            className={`p-2.5 rounded-xl text-xs max-w-[92%] leading-relaxed ${
-                              msg.sender === 'user'
-                                ? 'bg-teal-600 text-white font-medium rounded-tr-xs shadow-xs'
-                                : isLight
-                                ? 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/80 shadow-xs'
-                                : 'bg-slate-950 text-slate-200 rounded-tl-xs border border-slate-800'
-                            }`}
-                          >
-                            <p className="text-[11.5px]">{msg.text}</p>
+              {/* 4. Chat & Change Feed (Expands dynamically into remaining vertical space) */}
+              {chatMessages.length > 0 && (
+                <div className={`flex-1 min-h-[140px] p-3 rounded-xl border overflow-y-auto space-y-2.5 ${
+                  isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
+                }`}>
+                  {chatMessages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
+                    >
+                      <div
+                        className={`p-2.5 rounded-xl text-xs max-w-[94%] leading-relaxed ${
+                          msg.sender === 'user'
+                            ? 'bg-teal-600 text-white font-medium rounded-tr-xs shadow-xs'
+                            : isLight
+                            ? 'bg-white text-slate-800 rounded-tl-xs border border-slate-200/80 shadow-xs'
+                            : 'bg-slate-950 text-slate-200 rounded-tl-xs border border-slate-800'
+                        }`}
+                      >
+                        <p className="text-[11.5px]">{msg.text}</p>
 
-                            {/* Action Badge & Change Verification Breakdown */}
-                            {msg.actionApplied && (
-                              <div className="mt-2.5 p-2 rounded-xl bg-teal-500/10 border border-teal-500/30 space-y-1.5 text-xs">
-                                <div className="flex items-center justify-between gap-2">
-                                  <span className="font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1 text-[11px]">
-                                    <Check className="w-3.5 h-3.5 text-teal-500" />
-                                    {msg.actionApplied.summary}
-                                  </span>
-                                  <span className="font-mono font-bold text-teal-700 dark:text-teal-300 px-1.5 py-0.5 rounded bg-teal-500/20 text-[10px]">
-                                    {msg.actionApplied.versionTag}
-                                  </span>
-                                </div>
+                        {/* Action Badge & Change Verification Breakdown */}
+                        {msg.actionApplied && (
+                          <div className="mt-2 p-2 rounded-xl bg-teal-500/10 border border-teal-500/30 space-y-1 text-xs">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-bold text-teal-700 dark:text-teal-300 flex items-center gap-1 text-[11px]">
+                                <Check className="w-3 h-3 text-teal-500" />
+                                {msg.actionApplied.summary}
+                              </span>
+                              <span className="font-mono font-bold text-teal-700 dark:text-teal-300 px-1.5 py-0.2 rounded bg-teal-500/20 text-[9.5px]">
+                                {msg.actionApplied.versionTag}
+                              </span>
+                            </div>
 
-                                {/* Where the change happened */}
-                                {msg.actionApplied.targetTier && (
-                                  <div className="text-[10px] text-slate-600 dark:text-slate-300 flex items-center gap-1 font-semibold">
-                                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px]">📍 Target Tier:</span>
-                                    <span>{msg.actionApplied.targetTier}</span>
-                                  </div>
-                                )}
-
-                                {/* Specific components modified */}
-                                {msg.actionApplied.changedComponents && msg.actionApplied.changedComponents.length > 0 && (
-                                  <div className="space-y-0.5 pt-1 border-t border-teal-500/20">
-                                    <span className="text-[9px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 block">
-                                      ✨ Injected / Updated Nodes:
-                                    </span>
-                                    <div className="flex flex-wrap gap-1">
-                                      {msg.actionApplied.changedComponents.map((comp) => (
-                                        <span key={comp} className="inline-flex items-center gap-1 text-[9.5px] font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-2 py-0.5 rounded-md border border-emerald-300 dark:border-emerald-700">
-                                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                          {comp.replace(/&amp;/g, '&')}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                {/* Direct Button to open Visual Diff */}
-                                <div className="pt-1 flex items-center justify-end">
-                                  <button
-                                    type="button"
-                                    onClick={() => setShowDiffModal(true)}
-                                    className="text-[10px] font-bold text-teal-700 dark:text-teal-300 hover:text-teal-900 dark:hover:text-white flex items-center gap-1 px-2 py-1 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 transition-all cursor-pointer"
-                                  >
-                                    <GitCompare className="w-3 h-3 text-teal-500" />
-                                    <span>🔍 Verify &amp; Compare Changes (Diff)</span>
-                                  </button>
-                                </div>
+                            {msg.actionApplied.targetTier && (
+                              <div className="text-[10px] text-slate-600 dark:text-slate-300 flex items-center gap-1 font-semibold">
+                                <span className="text-slate-400 font-bold uppercase tracking-wider text-[8.5px]">📍 Tier:</span>
+                                <span>{msg.actionApplied.targetTier}</span>
                               </div>
                             )}
 
-                            {/* Suggested Prompt Chips */}
-                            {msg.suggestedPrompts && (
-                              <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
-                                <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
-                                  Suggested Next Iterations (Click to Execute):
-                                </span>
-                                <div className="flex flex-col gap-0.5">
-                                  {msg.suggestedPrompts.map((p) => (
-                                    <button
-                                      key={p}
-                                      type="button"
-                                      onClick={() => {
-                                        setProjectScopePrompt(p);
-                                        showToast(`🚀 Executing: "${p}"`);
-                                        handleSynthesizeArchitecture(p);
-                                      }}
-                                      className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
-                                    >
-                                      &rarr; {p}
-                                    </button>
+                            {msg.actionApplied.changedComponents && msg.actionApplied.changedComponents.length > 0 && (
+                              <div className="space-y-0.5 pt-1 border-t border-teal-500/20">
+                                <div className="flex flex-wrap gap-1">
+                                  {msg.actionApplied.changedComponents.map((comp) => (
+                                    <span key={comp} className="inline-flex items-center gap-1 text-[9px] font-medium bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-300 dark:border-emerald-700">
+                                      <span className="w-1 h-1 rounded-full bg-emerald-500" />
+                                      {comp.replace(/&amp;/g, '&')}
+                                    </span>
                                   ))}
                                 </div>
                               </div>
                             )}
-                          </div>
-                          <span className="text-[8.5px] text-slate-400 mt-0.5 px-1">{msg.timestamp}</span>
-                        </div>
-                      ))}
 
-                      {isAiThinking && (
-                        <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-2">
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                          <span>AI Assistant is analyzing context &amp; updating diagram...</span>
-                        </div>
-                      )}
-                      <div ref={chatMessagesEndRef} />
+                            <div className="pt-0.5 flex items-center justify-end">
+                              <button
+                                type="button"
+                                onClick={() => setShowDiffModal(true)}
+                                className="text-[9.5px] font-bold text-teal-700 dark:text-teal-300 hover:text-teal-900 dark:hover:text-white flex items-center gap-1 px-1.5 py-0.5 rounded bg-teal-500/20 hover:bg-teal-500/30 transition-all cursor-pointer"
+                              >
+                                <GitCompare className="w-2.5 h-2.5 text-teal-500" />
+                                <span>Verify Diff</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Suggested Prompts */}
+                        {msg.suggestedPrompts && (
+                          <div className="mt-1.5 pt-1 border-t border-slate-200/60 dark:border-slate-800 space-y-0.5">
+                            <span className="text-[8.5px] font-black uppercase tracking-wider text-slate-400 block">
+                              Suggested Iterations:
+                            </span>
+                            <div className="flex flex-col gap-0.5">
+                              {msg.suggestedPrompts.map((p) => (
+                                <button
+                                  key={p}
+                                  type="button"
+                                  onClick={() => {
+                                    setProjectScopePrompt(p);
+                                    showToast(`🚀 Executing: "${p}"`);
+                                    handleSynthesizeArchitecture(p);
+                                  }}
+                                  className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
+                                >
+                                  &rarr; {p}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <span className="text-[8px] text-slate-400 mt-0.5 px-1">{msg.timestamp}</span>
+                    </div>
+                  ))}
+
+                  {isAiThinking && (
+                    <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-1.5">
+                      <RefreshCw className="w-3 h-3 animate-spin" />
+                      <span>Synthesizing changes into architecture...</span>
                     </div>
                   )}
+                  <div ref={chatMessagesEndRef} />
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN (8 COLS / ~67%): FULL-HEIGHT LIVE CANVAS VIEWPORT */}
+          <div className={`lg:col-span-8 h-full flex flex-col min-h-0 rounded-2xl border shadow-xl overflow-hidden ${
+            isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
+          }`}>
+            
+            {/* SINGLE CONSOLIDATED RIGHT PANE TOOLBAR HEADER */}
+            <div className={`px-3.5 py-2 border-b flex flex-wrap items-center justify-between gap-2 shrink-0 ${
+              isLight ? 'bg-slate-50/90 border-slate-100' : 'bg-slate-900 border-slate-800'
+            }`}>
+              
+              {/* Left Side: Window dots + Diagram Tabs + Active Title */}
+              <div className="flex items-center gap-2 min-w-0 overflow-x-auto">
+                <div className="flex items-center gap-1.5 mr-1 shrink-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
+                </div>
+
+                {/* Diagram Tabs */}
+                <div className="flex items-center gap-1 shrink-0">
+                  {diagrams.map((d, index) => (
+                    <div
+                      key={d.id}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                        activeDiagramId === d.id
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : isLight
+                          ? 'bg-slate-200/70 text-slate-700 hover:bg-slate-200'
+                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      }`}
+                      onClick={() => setActiveDiagramId(d.id)}
+                    >
+                      <Network className="w-3 h-3" />
+                      <span>Diagram {index + 1}</span>
+                      {diagrams.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteDiagramTab(d.id);
+                          }}
+                          className="ml-0.5 hover:text-red-300 transition-colors p-0.5"
+                          title="Delete diagram"
+                        >
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={handleAddDiagramTab}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold bg-slate-200/50 dark:bg-slate-800/60 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 transition-all cursor-pointer"
+                    title="Add Diagram Tab"
+                  >
+                    <Plus className="w-3 h-3" />
+                    <span className="hidden sm:inline">Add</span>
+                  </button>
+                </div>
+
+                {/* Title badge */}
+                <span className="hidden xl:inline text-xs font-bold text-slate-500 truncate max-w-[200px]">
+                  • {projectName || activeDiagram.title}
+                </span>
               </div>
 
-            </div>
+              {/* Right Side Actions: Edit in Canvas, Export, Diff, Replace, Zoom & Viewport */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                {/* Primary Action: Edit in Canvas */}
+                <Link
+                  href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
+                  className="px-2.5 py-1 rounded-xl font-bold text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all flex items-center gap-1"
+                  title="Open in Design Canvas Workspace"
+                >
+                  <Edit3 className="w-3 h-3" />
+                  <span>Edit in Canvas</span>
+                </Link>
 
-            {/* RIGHT COLUMN (7 COLS / 70%): 
-                LIVE 16:9 INTERACTIVE PREVIEW, MULTI-DIAGRAM TABS & FRAME ACTIONS 
-            */}
-            <div className="lg:col-span-7 sticky top-16 space-y-4">
-              <div className={`rounded-3xl border shadow-xl overflow-hidden ${
-                isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
-              }`}>
-                
-                {/* PREVIEW FRAME HEADER: MULTI-DIAGRAM TABS & VIEWPORT CONTROLS */}
-                <div className={`px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-2 ${
-                  isLight ? 'bg-slate-50/90 border-slate-100' : 'bg-slate-900 border-slate-800'
-                }`}>
-                  
-                  {/* Left Side: Window dots + Diagram Tabs */}
-                  <div className="flex items-center gap-2 overflow-x-auto">
-                    <div className="flex items-center gap-1.5 mr-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
-                    </div>
+                {/* Export Dropdown */}
+                <div className="relative" ref={exportMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowExportMenu(!showExportMenu)}
+                    className="px-2 py-1 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-teal-500 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                    title="Export formats"
+                  >
+                    <Download className="w-3 h-3 text-teal-600 dark:text-teal-400" />
+                    <span>Export</span>
+                    <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
+                  </button>
 
-                    {/* Diagram Tabs */}
-                    <div className="flex items-center gap-1">
-                      {diagrams.map((d, index) => (
-                        <div
-                          key={d.id}
-                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                            activeDiagramId === d.id
-                              ? 'bg-teal-600 text-white shadow-xs'
-                              : isLight
-                              ? 'bg-slate-200/70 text-slate-700 hover:bg-slate-200'
-                              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                          }`}
-                          onClick={() => setActiveDiagramId(d.id)}
-                        >
-                          <Network className="w-3 h-3" />
-                          <span>Diagram {index + 1}</span>
-                          {diagrams.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteDiagramTab(d.id);
-                              }}
-                              className="ml-1 hover:text-red-300 transition-colors p-0.5"
-                              title="Delete diagram"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                          )}
-                        </div>
-                      ))}
-
-                      {/* Add Another Diagram Button */}
+                  {showExportMenu && (
+                    <div className={`absolute right-0 top-full mt-1.5 w-52 z-50 rounded-2xl border shadow-2xl p-1.5 space-y-1 ${
+                      isLight ? 'bg-white border-slate-200 shadow-slate-400/30' : 'bg-[#0F172A] border-slate-800 shadow-2xl'
+                    }`}>
                       <button
                         type="button"
-                        onClick={handleAddDiagramTab}
-                        className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold bg-slate-200/50 dark:bg-slate-800/60 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 transition-all cursor-pointer"
-                        title="Add Another Diagram Tab"
+                        onClick={handleExportSvg}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
                       >
-                        <Plus className="w-3 h-3" />
-                        <span>Add Diagram</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Right Side: Canvas Theme Toggle + Zoom Controls + Mode Switcher + Aspect Ratio */}
-                  <div className="flex items-center gap-2">
-                    {/* Canvas Theme Toggle (Light/Dark canvas background) */}
-                    <button
-                      type="button"
-                      onClick={() => setCanvasTheme(canvasTheme === 'light' ? 'dark' : 'light')}
-                      className={`p-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                        canvasTheme === 'dark'
-                          ? 'bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700'
-                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                      title={`Switch Canvas Viewport Theme (Current: ${canvasTheme})`}
-                    >
-                      {canvasTheme === 'dark' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
-                    </button>
-
-                    {/* Viewport Zoom Controls */}
-                    <div className="flex items-center rounded-lg border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 p-0.5 text-xs">
-                      <button
-                        type="button"
-                        onClick={() => setCanvasZoom(z => Math.max(0.6, Number((z - 0.1).toFixed(1))))}
-                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-                        title="Zoom Out"
-                      >
-                        <ZoomOut className="w-3 h-3" />
+                        <FileDown className="w-3.5 h-3.5 text-teal-500" />
+                        <span>Download SVG (.svg)</span>
                       </button>
                       <button
                         type="button"
-                        onClick={() => setCanvasZoom(1)}
-                        className="px-1.5 py-0.5 text-[10px] font-mono font-bold text-slate-600 dark:text-slate-300 hover:text-teal-500 cursor-pointer"
-                        title="Reset Zoom to 100%"
+                        onClick={handleExportDrawioXml}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
                       >
-                        {Math.round(canvasZoom * 100)}%
+                        <Code2 className="w-3.5 h-3.5 text-sky-500" />
+                        <span>Download Draw.io XML</span>
                       </button>
                       <button
                         type="button"
-                        onClick={() => setCanvasZoom(z => Math.min(1.8, Number((z + 0.1).toFixed(1))))}
-                        className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-                        title="Zoom In"
+                        onClick={() => {
+                          navigator.clipboard.writeText(activeDiagram.xml);
+                          setCopiedXml(true);
+                          setShowExportMenu(false);
+                          showToast('📋 Copied Draw.io XML to clipboard!');
+                          setTimeout(() => setCopiedXml(false), 2000);
+                        }}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
                       >
-                        <ZoomIn className="w-3 h-3" />
+                        <Copy className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>Copy Draw.io XML</span>
                       </button>
-                    </div>
-
-                    {/* Fullscreen Expand Toggle */}
-                    <button
-                      type="button"
-                      onClick={() => setIsFullscreen(!isFullscreen)}
-                      className={`p-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                        isFullscreen
-                          ? 'bg-teal-600 text-white border-teal-500'
-                          : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-teal-500'
-                      }`}
-                      title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
-                    >
-                      {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-                    </button>
-
-                    {studioMode === 'both' && (
-                      <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-bold">
-                        <button
-                          type="button"
-                          onClick={() => setPreviewTab('diagram')}
-                          className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
-                            previewTab === 'diagram' ? 'bg-white dark:bg-slate-900 text-teal-600 shadow-xs' : 'text-slate-500'
-                          }`}
-                        >
-                          📐 Blueprint
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setPreviewTab('spec')}
-                          className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
-                            previewTab === 'spec' ? 'bg-white dark:bg-slate-900 text-sky-600 shadow-xs' : 'text-slate-500'
-                          }`}
-                        >
-                          📑 Spec
-                        </button>
-                      </div>
-                    )}
-
-                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950 dark:text-teal-400 dark:border-teal-800">
-                      16:9 Vector GCP
-                    </span>
-                  </div>
-                </div>
-
-                {/* DIAGRAM ACTION TOOLBAR: DYNAMIC ARCHITECTURE TITLE, EDIT & EXPORT MENU */}
-                <div className={`px-4 py-2 border-b flex flex-wrap items-center justify-between gap-2 text-xs ${
-                  isLight ? 'bg-slate-100/60 border-slate-100' : 'bg-slate-900/60 border-slate-800'
-                }`}>
-                  {/* Dynamic Title */}
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-black text-slate-800 dark:text-white text-xs truncate flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-500 shrink-0" />
-                      <span className="truncate">{projectName || activeDiagram.title}</span>
-                      {useCaseName && (
-                        <>
-                          <span className="text-slate-400 font-normal">/</span>
-                          <span className="text-teal-700 dark:text-teal-300 font-semibold truncate">{useCaseName}</span>
-                        </>
-                      )}
-                    </span>
-                  </div>
-
-                  {/* Actions Toolbar */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {/* Primary Action: Edit in Canvas */}
-                    <Link
-                      href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
-                      className="px-3 py-1.5 rounded-xl font-black text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-sm shadow-teal-600/30 transition-all flex items-center gap-1.5"
-                      title="Open active architecture diagram in full interactive Design Canvas Workspace"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                      <span>Edit in Canvas</span>
-                    </Link>
-
-                    {/* Quick Export Dropdown */}
-                    <div className="relative" ref={exportMenuRef}>
+                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-1" />
                       <button
                         type="button"
-                        onClick={() => setShowExportMenu(!showExportMenu)}
-                        className="px-2.5 py-1.5 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-teal-500 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
-                        title="Export diagram formats (PNG, SVG, Draw.io XML)"
+                        onClick={() => {
+                          handleOpenInDrawio();
+                          setShowExportMenu(false);
+                        }}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
                       >
-                        <Download className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                        <span>Export</span>
-                        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${showExportMenu ? 'rotate-180' : ''}`} />
+                        <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
+                        <span>Open in diagrams.net</span>
                       </button>
-
-                      {showExportMenu && (
-                        <div className={`absolute right-0 top-full mt-1.5 w-56 z-50 rounded-2xl border shadow-2xl p-1.5 space-y-1 ${
-                          isLight ? 'bg-white border-slate-200 shadow-slate-400/30' : 'bg-[#0F172A] border-slate-800 shadow-2xl'
-                        }`}>
-                          <button
-                            type="button"
-                            onClick={handleExportSvg}
-                            className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
-                              isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
-                            }`}
-                          >
-                            <FileDown className="w-3.5 h-3.5 text-teal-500" />
-                            <span>Download SVG (.svg)</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleExportDrawioXml}
-                            className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
-                              isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
-                            }`}
-                          >
-                            <Code2 className="w-3.5 h-3.5 text-sky-500" />
-                            <span>Download Draw.io XML (.drawio)</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              navigator.clipboard.writeText(activeDiagram.xml);
-                              setCopiedXml(true);
-                              setShowExportMenu(false);
-                              showToast('📋 Copied Draw.io XML to clipboard!');
-                              setTimeout(() => setCopiedXml(false), 2000);
-                            }}
-                            className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
-                              isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
-                            }`}
-                          >
-                            <Copy className="w-3.5 h-3.5 text-emerald-500" />
-                            <span>Copy Draw.io XML</span>
-                          </button>
-                          <div className="h-px bg-slate-200 dark:bg-slate-800 my-1" />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              handleOpenInDrawio();
-                              setShowExportMenu(false);
-                            }}
-                            className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
-                              isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
-                            }`}
-                          >
-                            <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
-                            <span>Open in diagrams.net</span>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Secondary Actions: Compare Diff */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setDiffBaseIndex(versionHistory.length > 1 ? 1 : 0);
-                        setShowDiffModal(true);
-                      }}
-                      className="px-2.5 py-1.5 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
-                      title="Compare current diagram against previous version (Visual Diff)"
-                    >
-                      <GitCompare className="w-3.5 h-3.5 text-teal-500" />
-                      <span className="hidden sm:inline">Diff</span>
-                    </button>
-
-                    {/* Replace Blueprint Button */}
-                    <button
-                      type="button"
-                      onClick={() => setShowReplaceModal(true)}
-                      className="px-2.5 py-1.5 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
-                      title="Replace existing diagram with a different blueprint"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span className="hidden sm:inline">Replace</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* VIEWPORT CONTENT */}
-                <div className={`p-3 flex items-center justify-center min-h-[480px] h-[520px] max-h-[580px] overflow-hidden relative transition-colors ${
-                  canvasTheme === 'light' ? 'bg-white' : 'bg-[#070A13]'
-                }`}>
-                  {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) ? (
-                    <div
-                      className="w-full h-full min-h-[460px] flex items-center justify-center transition-transform duration-150"
-                      style={{
-                        transform: `scale(${canvasZoom})`,
-                        transformOrigin: 'center center',
-                      }}
-                    >
-                      <DiagramViewerRenderSafe
-                        key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${canvasTheme}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
-                        diagramId={activeDiagram.templateId}
-                        diagramType={activeDiagram.source === 'scratch' ? 'custom' : `canonical_${activeDiagram.templateId}`}
-                        xml={activeDiagram.xml}
-                        aspectRatioId="16:9"
-                        bgTheme={canvasTheme}
-                        useCaseName={useCaseName || projectTitle || 'Generic GCP Architecture'}
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-full p-5 text-left space-y-4 max-h-[500px] overflow-y-auto">
-                      <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
-                        <span className="text-[10px] font-black text-sky-600 uppercase tracking-wider">{activeArchetypeMeta.name}</span>
-                        <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{projectTitle || 'Enterprise Architecture Specification'}</h3>
-                        <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
-                          <span>Audience: {activeArchetypeMeta.audience}</span>
-                          <span>&bull;</span>
-                          <span>{diagrams.length} Attached Blueprint Views</span>
-                        </div>
-                      </div>
-                      <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
-                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-                          <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">1. Executive Summary &amp; Scope</h4>
-                          <p className="leading-relaxed">
-                            {projectScopePrompt || 'Enterprise Google Cloud reference architecture with automated workload orchestration and zero-trust controls.'}
-                          </p>
-                        </div>
-                        <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-                          <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">2. Architecture Blueprint Pack</h4>
-                          <div className="grid grid-cols-2 gap-2 mt-2">
-                            {diagrams.map((diag, i) => (
-                              <div key={diag.id} className="p-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px]">
-                                <span className="font-bold text-teal-600">Diagram {i + 1}:</span> {diag.title}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* VIEWPORT FOOTER ACTION BAR */}
-                <div className={`px-5 py-3 border-t flex flex-wrap items-center justify-between gap-3 ${
-                  isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900 border-slate-800'
-                }`}>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleOpenInDrawio}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-teal-500/20"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Open in Draw.io</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        navigator.clipboard.writeText(activeDiagram.xml);
-                        setCopiedXml(true);
-                        showToast('📋 Copied Draw.io XML to clipboard!');
-                        setTimeout(() => setCopiedXml(false), 2000);
-                      }}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1.5 cursor-pointer"
-                    >
-                      {copiedXml ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedXml ? 'Copied Draw.io XML!' : 'Copy XML'}</span>
-                    </button>
-                  </div>
+                {/* Diff */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDiffBaseIndex(versionHistory.length > 1 ? 1 : 0);
+                    setShowDiffModal(true);
+                  }}
+                  className="px-2 py-1 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
+                  title="Compare Diff"
+                >
+                  <GitCompare className="w-3 h-3 text-teal-500" />
+                  <span className="hidden sm:inline">Diff</span>
+                </button>
 
-                  <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
-                    <span>Active Target: <b>{activeDiagram.title.split('•')[0].trim()}</b></span>
-                  </div>
+                {/* Replace */}
+                <button
+                  type="button"
+                  onClick={() => setShowReplaceModal(true)}
+                  className="px-2 py-1 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
+                  title="Replace Blueprint"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span className="hidden sm:inline">Replace</span>
+                </button>
+
+                {/* Canvas Theme Toggle */}
+                <button
+                  type="button"
+                  onClick={() => setCanvasTheme(canvasTheme === 'light' ? 'dark' : 'light')}
+                  className={`p-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                    canvasTheme === 'dark'
+                      ? 'bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                  }`}
+                  title={`Canvas Theme (${canvasTheme})`}
+                >
+                  {canvasTheme === 'dark' ? <Moon className="w-3 h-3" /> : <Sun className="w-3 h-3 text-amber-500" />}
+                </button>
+
+                {/* Zoom */}
+                <div className="flex items-center rounded-lg border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 p-0.5 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(z => Math.max(0.6, Number((z - 0.1).toFixed(1))))}
+                    className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-2.5 h-2.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(1)}
+                    className="px-1 py-0.5 text-[9.5px] font-mono font-bold text-slate-600 dark:text-slate-300 hover:text-teal-500 cursor-pointer"
+                    title="Reset Zoom"
+                  >
+                    {Math.round(canvasZoom * 100)}%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(z => Math.min(1.8, Number((z + 0.1).toFixed(1))))}
+                    className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-2.5 h-2.5" />
+                  </button>
                 </div>
 
+                {/* Fullscreen Expand */}
+                <button
+                  type="button"
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className={`p-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                    isFullscreen
+                      ? 'bg-teal-600 text-white border-teal-500'
+                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-teal-500'
+                  }`}
+                  title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
+                >
+                  {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3" />}
+                </button>
+
+                {studioMode === 'both' && (
+                  <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-bold">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewTab('diagram')}
+                      className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                        previewTab === 'diagram' ? 'bg-white dark:bg-slate-900 text-teal-600 shadow-xs' : 'text-slate-500'
+                      }`}
+                    >
+                      Blueprint
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewTab('spec')}
+                      className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
+                        previewTab === 'spec' ? 'bg-white dark:bg-slate-900 text-sky-600 shadow-xs' : 'text-slate-500'
+                      }`}
+                    >
+                      Spec
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* FULL-HEIGHT VIEWPORT CONTENT (FILLS 100% OF REMAINING HEIGHT) */}
+            <div className={`flex-1 min-h-0 w-full relative flex items-center justify-center overflow-hidden transition-colors ${
+              canvasTheme === 'light' ? 'bg-white' : 'bg-[#070A13]'
+            }`}>
+              {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) ? (
+                <div
+                  className="w-full h-full flex items-center justify-center transition-transform duration-150"
+                  style={{
+                    transform: `scale(${canvasZoom})`,
+                    transformOrigin: 'center center',
+                  }}
+                >
+                  <DiagramViewerRenderSafe
+                    key={`studio_viewport_${activeDiagram.id}_${activeDiagram.templateId}_${selectedDomain}_${canvasTheme}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagram.xml.length}`}
+                    diagramId={activeDiagram.templateId}
+                    diagramType={activeDiagram.source === 'scratch' ? 'custom' : `canonical_${activeDiagram.templateId}`}
+                    xml={activeDiagram.xml}
+                    aspectRatioId="16:9"
+                    bgTheme={canvasTheme}
+                    useCaseName={useCaseName || projectTitle || 'Generic GCP Architecture'}
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full p-5 text-left space-y-4 overflow-y-auto">
+                  <div className="border-b pb-3 border-slate-200 dark:border-slate-800">
+                    <span className="text-[10px] font-black text-sky-600 uppercase tracking-wider">{activeArchetypeMeta.name}</span>
+                    <h3 className="text-base font-black text-slate-900 dark:text-white mt-1">{projectTitle || 'Enterprise Architecture Specification'}</h3>
+                    <div className="flex items-center gap-2 mt-1 text-[10px] text-slate-400">
+                      <span>Audience: {activeArchetypeMeta.audience}</span>
+                      <span>&bull;</span>
+                      <span>{diagrams.length} Attached Blueprint Views</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                      <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">1. Executive Summary &amp; Scope</h4>
+                      <p className="leading-relaxed">
+                        {projectScopePrompt || 'Enterprise Google Cloud reference architecture with automated workload orchestration and zero-trust controls.'}
+                      </p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+                      <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-1">2. Architecture Blueprint Pack</h4>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        {diagrams.map((diag, i) => (
+                          <div key={diag.id} className="p-2 rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px]">
+                            <span className="font-bold text-teal-600">Diagram {i + 1}:</span> {diag.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* MINIMAL SUBTLE FOOTER STATUS BAR */}
+            <div className={`px-4 py-2 border-t flex items-center justify-between gap-2 shrink-0 text-xs ${
+              isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900/80 border-slate-800'
+            }`}>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenInDrawio}
+                  className="px-2 py-1 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  <span>Draw.io</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(activeDiagram.xml);
+                    setCopiedXml(true);
+                    showToast('📋 Copied Draw.io XML to clipboard!');
+                    setTimeout(() => setCopiedXml(false), 2000);
+                  }}
+                  className="px-2 py-1 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  {copiedXml ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
+                <span className="truncate">Target: <b>{activeDiagram.title.split('•')[0].trim()}</b></span>
+                <span>&bull;</span>
+                <span className="px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold">16:9 Vector GCP</span>
               </div>
             </div>
 
