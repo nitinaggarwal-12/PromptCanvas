@@ -1129,9 +1129,46 @@ function StudioContent() {
 
                 {/* Chatbox & Prompt Area */}
                 <div className="space-y-3 pt-1">
-                  {/* Scrollable Prompt & Enhancement History Feed */}
+                  {/* Prompt Textarea - Enlarged */}
+                  <textarea
+                    rows={5}
+                    value={projectScopePrompt}
+                    onChange={(e) => setProjectScopePrompt(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSynthesizeArchitecture();
+                      }
+                    }}
+                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
+                    className={`w-full p-3.5 min-h-[130px] rounded-2xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
+                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
+                    }`}
+                  />
+
+                  {/* Send Button */}
+                  <button
+                    type="button"
+                    onClick={() => handleSynthesizeArchitecture()}
+                    disabled={isSynthesizing}
+                    className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isSynthesizing ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 fill-current" />
+                        <span>Send</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Scrollable Prompt & Enhancement History Feed - BELOW SEND BUTTON */}
                   {chatMessages.length > 0 && (
-                    <div className={`p-3 rounded-2xl border max-h-[220px] overflow-y-auto space-y-2.5 ${
+                    <div className={`p-3 rounded-2xl border max-h-[280px] overflow-y-auto space-y-2.5 ${
                       isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/80 border-slate-800'
                     }`}>
                       {chatMessages.map((msg) => (
@@ -1206,7 +1243,7 @@ function StudioContent() {
                             {msg.suggestedPrompts && (
                               <div className="mt-2 pt-1.5 border-t border-slate-200/60 dark:border-slate-800 space-y-1">
                                 <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">
-                                  Suggested Next Iterations (Click to Load):
+                                  Suggested Next Iterations (Click to Execute):
                                 </span>
                                 <div className="flex flex-col gap-0.5">
                                   {msg.suggestedPrompts.map((p) => (
@@ -1215,7 +1252,8 @@ function StudioContent() {
                                       type="button"
                                       onClick={() => {
                                         setProjectScopePrompt(p);
-                                        showToast(`💡 Loaded prompt into scope editor. Press "Send" to apply.`);
+                                        showToast(`🚀 Executing: "${p}"`);
+                                        handleSynthesizeArchitecture(p);
                                       }}
                                       className="text-left text-[10px] font-semibold text-teal-600 dark:text-teal-400 hover:underline hover:text-teal-500 transition-colors cursor-pointer"
                                     >
@@ -1239,43 +1277,6 @@ function StudioContent() {
                       <div ref={chatMessagesEndRef} />
                     </div>
                   )}
-
-                  {/* Prompt Textarea - Enlarged */}
-                  <textarea
-                    rows={5}
-                    value={projectScopePrompt}
-                    onChange={(e) => setProjectScopePrompt(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSynthesizeArchitecture();
-                      }
-                    }}
-                    placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
-                    className={`w-full p-3.5 min-h-[130px] rounded-2xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
-                      isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
-                    }`}
-                  />
-
-                  {/* Send Button */}
-                  <button
-                    type="button"
-                    onClick={() => handleSynthesizeArchitecture()}
-                    disabled={isSynthesizing}
-                    className="w-full py-3 px-5 rounded-2xl text-xs font-black bg-gradient-to-r from-teal-500 via-sky-600 to-indigo-600 hover:opacity-95 text-white shadow-lg shadow-teal-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isSynthesizing ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Sending...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 fill-current" />
-                        <span>Send</span>
-                      </>
-                    )}
-                  </button>
                 </div>
               </div>
 
