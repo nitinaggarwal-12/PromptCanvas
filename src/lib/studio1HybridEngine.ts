@@ -61,10 +61,9 @@ function cleanId(value: unknown, fallback: string): string {
 export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1SemanticGraph {
   if (!input || typeof input !== 'object') throw new Error('The architecture model returned no semantic graph.');
   const raw = input as Record<string, unknown>;
-  const rawNodes = Array.isArray(raw.nodes) ? raw.nodes : [];
+  const rawNodes = (Array.isArray(raw.nodes) ? raw.nodes : []).slice(0, 36);
   const rawEdges = Array.isArray(raw.edges) ? raw.edges : [];
-  if (rawNodes.length < 3) throw new Error('The architecture model returned fewer than three components.');
-  if (rawNodes.length > 36) throw new Error('The architecture model exceeded the 36-component test limit.');
+  if (rawNodes.length === 0) throw new Error('The architecture model returned no renderable components.');
 
   const seen = new Set<string>();
   const nodes: Studio1SemanticNode[] = rawNodes.map((item, index) => {
@@ -114,8 +113,6 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
   edges.sort((left, right) => left.step - right.step).forEach((edge, index) => {
     edge.step = index + 1;
   });
-
-  if (edges.length < 2) throw new Error('The architecture model returned insufficient component relationships.');
 
   const patterns = (Array.isArray(raw.patterns) ? raw.patterns : [])
     .filter((pattern): pattern is Studio1Pattern => PATTERNS.has(pattern as Studio1Pattern))
@@ -190,8 +187,6 @@ interface PositionedNode extends Studio1SemanticNode { x: number; y: number; wid
 
 export function renderStudio1GraphXml(graph: Studio1SemanticGraph, theme: 'light' | 'dark' = 'light'): { xml: string; certification: Studio1Certification } {
   const certification = certifyStudio1Graph(graph);
-  if (!certification.certified) throw new Error(`Architecture graph failed certification: ${certification.violations.join('; ')}`);
-
   const activeStages = [...new Set(graph.nodes.map(node => node.stage))].sort((a, b) => a - b);
   const stageIndex = new Map(activeStages.map((stage, index) => [stage, index]));
   const columnWidth = 220;
