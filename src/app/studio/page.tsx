@@ -1037,20 +1037,11 @@ function StudioContent() {
               <div className={`p-5 sm:p-6 rounded-3xl border shadow-sm space-y-4 ${
                 isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-xl'
               }`}>
-                <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <Sliders className="w-4 h-4 text-teal-500" />
-                    <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                      Architecture Scope &amp; User Information
-                    </span>
-                  </div>
-                </div>
-
-                {/* 1. Project Name & 2. Use Case Name */}
+                {/* 1. Project & 2. Use Case */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
-                      1. Project / Program Name
+                      Project [either choose existing or create new]
                     </label>
                     <input
                       type="text"
@@ -1065,7 +1056,7 @@ function StudioContent() {
 
                   <div>
                     <label className="text-xs font-black uppercase tracking-wider text-slate-500 block mb-1">
-                      2. Architectural Use Case Name
+                      Use Case
                     </label>
                     <input
                       type="text"
@@ -1079,10 +1070,10 @@ function StudioContent() {
                   </div>
                 </div>
 
-                {/* 3. Dynamic Prompt Suggestions */}
+                {/* 3. Blueprints */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                    3. Dynamic Prompt Suggestions
+                    Blueprints
                   </label>
                   <SearchablePromptSuggestionsDropdown
                     isLight={isLight}
@@ -1091,22 +1082,22 @@ function StudioContent() {
                       if (selectedPrompt.domainId && selectedPrompt.domainId !== selectedDomain) {
                         setSelectedDomain(selectedPrompt.domainId);
                       }
-                      showToast(`💡 Loaded dynamic prompt: "${selectedPrompt.label}"`);
+                      showToast(`💡 Loaded blueprint prompt: "${selectedPrompt.label}"`);
                     }}
                   />
                 </div>
 
-                {/* 4. Enterprise Domain Flavor */}
+                {/* 4. Domain */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                    4. Enterprise Domain Flavor
+                    Domain
                   </label>
                   <SearchableDomainFlavorDropdown
                     selectedDomainId={selectedDomain}
                     isLight={isLight}
                     onSelectDomain={(domain: DomainOption) => {
                       setSelectedDomain(domain.id);
-                      showToast(`🏢 Switched domain flavor: "${domain.name}"`);
+                      showToast(`🏢 Switched domain: "${domain.name}"`);
                       handleSynthesizeArchitecture(undefined, domain.id);
                     }}
                   />
