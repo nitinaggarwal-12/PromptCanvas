@@ -1129,17 +1129,17 @@ function StudioContent() {
             isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
           }`}>
             
-            {/* Left Card Header */}
-            <div className={`px-4 py-2.5 border-b flex items-center justify-between shrink-0 ${
-              isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900/60 border-slate-800'
+            {/* Left Card Header - Synchronized Height & Styling */}
+            <div className={`h-12 px-4 border-b flex items-center justify-between shrink-0 ${
+              isLight ? 'bg-slate-50/90 border-slate-200/80' : 'bg-[#0E1526] border-slate-800'
             }`}>
-              <div className="flex items-center gap-2">
-                <FileText className="w-3.5 h-3.5 text-teal-500" />
-                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <div className="flex items-center gap-2 min-w-0">
+                <FileText className="w-4 h-4 text-teal-500 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 truncate">
                   Specification Brief
                 </span>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 shrink-0">
                 <button
                   type="button"
                   onClick={handleNewProject}
@@ -1379,13 +1379,13 @@ function StudioContent() {
             isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
           }`}>
             
-            {/* SINGLE CONSOLIDATED RIGHT PANE TOOLBAR HEADER */}
-            <div className={`px-3.5 py-2 border-b flex flex-wrap items-center justify-between gap-2 shrink-0 ${
-              isLight ? 'bg-slate-50/90 border-slate-100' : 'bg-slate-900 border-slate-800'
+            {/* SINGLE CONSOLIDATED RIGHT PANE TOOLBAR HEADER - Synchronized Height & Styling */}
+            <div className={`h-12 px-3.5 border-b flex items-center justify-between gap-2 shrink-0 ${
+              isLight ? 'bg-slate-50/90 border-slate-200/80' : 'bg-[#0E1526] border-slate-800'
             }`}>
               
               {/* Left Side: Window dots + Diagram Tabs + Active Title */}
-              <div className="flex items-center gap-2 min-w-0 overflow-x-auto">
+              <div className="flex items-center gap-2 min-w-0">
                 <div className="flex items-center gap-1.5 mr-1 shrink-0">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
