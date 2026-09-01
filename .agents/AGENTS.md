@@ -196,4 +196,20 @@
 * **Visual Gallery Delivery**: Include clickable `file://` Markdown links to all captured screenshots in your response so the user can visually inspect and confirm UI integrity.
 * **Zero CLI-Only Assumptions**: Never declare a feature or fix complete based purely on exit code `0` or compilation without visual browser DOM verification.
 
+---
+
+# 🚀 Independent Live Deployment Verification & Railway Monitoring Protocol
+
+* **Santa Workstation Blocker Bypass for Railway CLI**:
+  - Never execute the raw `railway` CLI binary directly on the local macOS workstation to avoid Santa security policy blocks.
+  - Execute `railway` CLI operations via **Cloudtop** (`rw nitinagga.c.googlers.com`) or use Railway REST/GraphQL API & live HTTP endpoint polling.
+* **Mandatory Post-Push Deployment Polling**:
+  - Immediately following any `git push origin main` (or Railway deployment kickoff), initiate an automated background monitoring loop.
+* **1-Minute Cadence Status Updates**:
+  - Check Railway deployment status / build progress / live endpoint health at **1-minute intervals** (`every 1 min`).
+  - Report concise progress to the user at each interval (e.g. `[Min 1] Building container...`, `[Min 2] Next.js compilation...`, `[Min 3] Container healthy & deployed to https://promptcanvas.up.railway.app`).
+* **Independent Live String Verification**:
+  - Never declare a Railway or Vercel deployment "live" based purely on CLI exit codes (`0`) or dashboard green status badges.
+  - Perform an HTTP request (`curl -s <live_url>`) to search the delivered HTML/JS asset for a **unique string literal** present only in the newly added code changes to confirm CDN cache invalidation before reporting completion.
+
 
