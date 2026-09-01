@@ -182,3 +182,18 @@
    - All synthesized diagrams and conversational turns must automatically persist to the database and update the browser address bar with their unique ID.
    - Direct page reloads or deep-link navigation to `/studio3?id=<id>` must seamlessly restore the exact diagram, chat history, and configuration with zero state loss.
 
+---
+
+# 🧪 Autonomous Headless Puppeteer E2E & Visual Screenshot Verification Mandate
+
+* **Mandatory Post-Change E2E Automation**: After making ANY code change (frontend, backend API, layout, or database) in any project, you MUST automatically execute an asynchronous headless Puppeteer E2E test script in the background.
+* **Deterministic Execution & Installed Chrome**: Always run headless with the installed Chrome executable (`executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'`) or Cloudtop browser to bypass workstation security blockers.
+* **DOM Verification & String Match**: Physically inspect the live browser DOM and assert that modified components, text strings, and layout attributes actually rendered and responded to interactions.
+* **Clean Screenshot Storage Protocol**:
+  1. Store all captured visual artifacts in a dedicated task folder: `<project_root>/scratch/screenshots_<task_id>/`.
+  2. Purge stale images before running tests (`rm -rf scratch/screenshots_<task_id>/`).
+  3. Produce uniquely named screenshots capturing each visual state transition (e.g. `01_initial_load.png`, `02_user_interaction.png`).
+* **Visual Gallery Delivery**: Include clickable `file://` Markdown links to all captured screenshots in your response so the user can visually inspect and confirm UI integrity.
+* **Zero CLI-Only Assumptions**: Never declare a feature or fix complete based purely on exit code `0` or compilation without visual browser DOM verification.
+
+
