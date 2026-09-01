@@ -160,6 +160,24 @@ function displayName(node: Studio1SemanticNode): string {
   return official;
 }
 
+function orderWithinGroup(node: Studio1SemanticNode, groupId: GroupId): number {
+  const text = `${node.label} ${node.description}`.toLowerCase();
+  if (groupId === 'messaging') {
+    if (/dead[- ]?letter|dlq/.test(text)) return 2;
+    if (/subscription/.test(text)) return 1;
+    if (/topic/.test(text) || node.serviceKey === 'pubsub') return 0;
+  }
+  if (groupId === 'processing') {
+    if (node.serviceKey === 'dataflow' || /processor|transform|enrich/.test(text)) return 0;
+    if (node.kind === 'decision' || /valid|quality|schema/.test(text)) return 1;
+  }
+  if (groupId === 'data') {
+    if (node.serviceKey === 'bigquery') return 0;
+    if (node.serviceKey === 'cloud_storage') return 1;
+  }
+  return 0;
+}
+
 function layoutGraph(graph: Studio1SemanticGraph): {
   positions: Map<string, PositionedNode>;
   groups: FunctionalGroup[];
@@ -198,7 +216,7 @@ function layoutGraph(graph: Studio1SemanticGraph): {
     const x = regionBox.x + 20 + groupIndex * (groupWidth + groupGap);
     const nodes = graph.nodes
       .filter(node => groupFor(node) === definition.id)
-      .sort((left, right) => left.stage - right.stage || left.label.localeCompare(right.label));
+      .sort((left, right) => orderWithinGroup(left, definition.id) - orderWithinGroup(right, definition.id) || left.stage - right.stage || left.label.localeCompare(right.label));
     const positionedNodes = nodes.map((node, row): PositionedNode => ({
       ...node,
       x: x + 16,

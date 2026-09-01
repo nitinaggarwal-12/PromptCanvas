@@ -297,6 +297,22 @@ export function validateStudio1ArchitectureQuality(
   const hasIdentity = serviceNodes('cloud_iam').length > 0;
   const hasMonitoring = serviceNodes('cloud_monitoring').length > 0;
   const hasLogging = serviceNodes('cloud_logging').length > 0;
+  const processorNodes = serviceNodes('dataflow');
+  const hasAccurateStreamingPath = topicNodes.some(topic => subscriptionNodes.some(subscription =>
+    graph.edges.some(edge => edge.source === topic.id && edge.target === subscription.id) &&
+    processorNodes.some(processor =>
+      graph.edges.some(edge => edge.source === subscription.id && edge.target === processor.id && edge.relationType === 'subscribes') &&
+      validationNodes.some(validation =>
+        graph.edges.some(edge => edge.source === processor.id && edge.target === validation.id) &&
+        graph.edges.some(edge => edge.source === validation.id && serviceNodes('bigquery').some(node => node.id === edge.target) && /valid/i.test(edge.condition || edge.label)) &&
+        graph.edges.some(edge => edge.source === validation.id && serviceNodes('cloud_storage').some(node => node.id === edge.target) && /invalid|quarantine/i.test(edge.condition || edge.label))
+      )
+    ) &&
+    deadLetterNodes.some(deadLetter =>
+      graph.edges.some(edge => edge.source === subscription.id && edge.target === deadLetter.id && /deliver|attempt|dead|fail/i.test(`${edge.label} ${edge.condition || ''}`)) &&
+      graph.edges.some(edge => edge.source === deadLetter.id && edge.target === topic.id && edge.flowType === 'feedback')
+    )
+  ));
 
   if (hasActor) detected.add('actor_or_external');
   if (hasProcessing) detected.add('processing');
@@ -330,6 +346,7 @@ export function validateStudio1ArchitectureQuality(
     addCheck('gcp_data_sinks', 'Raw and analytical data sinks', hasArchive && hasAnalytics, 'Production streaming needs both a raw Cloud Storage archive and a BigQuery analytical sink.', [...serviceNodes('cloud_storage'), ...serviceNodes('bigquery')].map(node => node.id));
     addCheck('gcp_identity', 'Workload identity', hasIdentity, 'Represent Identity and Access Management separately from edge protection.', serviceNodes('cloud_iam').map(node => node.id));
     addCheck('gcp_operations', 'Monitoring and logging', hasMonitoring && hasLogging, 'Represent Cloud Monitoring and Cloud Logging as distinct cross-cutting operational controls.', [...serviceNodes('cloud_monitoring'), ...serviceNodes('cloud_logging')].map(node => node.id));
+    addCheck('gcp_streaming_path', 'Accurate streaming and failure path', hasAccurateStreamingPath, 'Required path: Pub/Sub topic → subscription → Dataflow → schema decision; valid records → BigQuery, invalid records → Cloud Storage quarantine; exhausted subscription deliveries → dead-letter topic → replay to the main topic.', graph.edges.map(edge => edge.id));
   }
   const incompatibleProviderNodes = graph.nodes.filter(node => {
     const provider = (node.provider || '').toLowerCase();
