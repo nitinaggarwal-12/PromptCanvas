@@ -1718,7 +1718,7 @@ function Studio1Content() {
                 </p>
               </div>
 
-              <fieldset disabled={workspaceMode === 'reference'} className={`space-y-4 ${workspaceMode === 'reference' ? 'opacity-70' : ''}`}>
+              <fieldset disabled={workspaceMode === 'reference'} className="space-y-4">
               {/* 1. Project Name & 2. Use Case Name with Searchable Dropdown & Architecture Reload */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 1. Project Name Dropdown */}
