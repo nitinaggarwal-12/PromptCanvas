@@ -146,6 +146,17 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
     };
   }).filter(edge => edge.source !== edge.target && nodeIds.has(edge.source) && nodeIds.has(edge.target));
 
+  // Models commonly express a decision outcome as the edge label even when
+  // the optional condition property is omitted. Preserve that meaning as an
+  // explicit branch condition so a visually correct decision is also
+  // semantically certifiable.
+  const decisionIds = new Set(nodes.filter(node => node.kind === 'decision').map(node => node.id));
+  for (const edge of edges) {
+    if (decisionIds.has(edge.source) && !edge.condition && !/^(?:request|event)$/i.test(edge.label)) {
+      edge.condition = edge.label;
+    }
+  }
+
   edges.sort((left, right) => left.step - right.step).forEach((edge, index) => {
     edge.step = index + 1;
   });

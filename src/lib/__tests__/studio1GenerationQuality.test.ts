@@ -124,6 +124,23 @@ describe('Studio 1 deterministic generation quality gate', () => {
     expect(normalized.edges.map(edge => edge.label)).toEqual(['Publish telemetry', 'Write events']);
   });
 
+  it('promotes meaningful decision-edge labels to explicit branch conditions', () => {
+    const normalized = normalizeStudio1Graph({
+      title: 'Validated stream',
+      nodes: [
+        { id: 'validator', label: 'Schema Valid?', description: 'Validate each event', kind: 'decision', stage: 3, zone: 'Processing' },
+        { id: 'warehouse', label: 'BigQuery', description: 'Persist valid rows', kind: 'datastore', stage: 4, zone: 'Data' },
+        { id: 'dlq', label: 'Dead-letter Topic', description: 'Hold invalid events', kind: 'queue', stage: 4, zone: 'Recovery' },
+      ],
+      edges: [
+        { id: 'valid', source: 'validator', target: 'warehouse', label: 'valid_schema', flowType: 'data', step: 1 },
+        { id: 'invalid', source: 'validator', target: 'dlq', label: 'invalid_schema', flowType: 'asynchronous', step: 2 },
+      ],
+    }, 'validated stream');
+    expect(normalized.edges.map(edge => edge.condition)).toEqual(['valid_schema', 'invalid_schema']);
+    expect(renderStudio1GraphXml(normalized).certification.violations).toEqual([]);
+  });
+
   it('renders a certified Draw.io envelope with official local icons and straight adjacent routes', () => {
     const rendered = renderStudio1GraphXml(streamingGraph);
     expect(rendered.certification.certified).toBe(true);
