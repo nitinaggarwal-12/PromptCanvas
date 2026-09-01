@@ -334,12 +334,7 @@ export function SearchablePromptSuggestionsDropdown({
             {searchQuery ? `Filtering: "${searchQuery}"` : 'Select from 20+ Curated Architecture Prompts...'}
           </span>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400">
-            {EXTENDED_PROMPT_LIBRARY.length} options
-          </span>
-          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-        </div>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Popover / Dropdown Menu */}
@@ -423,11 +418,6 @@ export function SearchablePromptSuggestionsDropdown({
                       <span className="text-sm">{item.icon}</span>
                       <span>{item.label}</span>
                     </div>
-                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded shrink-0 ${
-                      isLight ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-slate-800 text-slate-300 border border-slate-700'
-                    }`}>
-                      {item.domainName.split(' ')[0]}
-                    </span>
                   </div>
 
                   <p className="text-[11.5px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
@@ -518,14 +508,7 @@ export function SearchableDomainFlavorDropdown({
           <span className="text-sm shrink-0">{activeDomain.icon || '🏢'}</span>
           <span className="truncate">{activeDomain.name}</span>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
-          {activeDomain.prefix && (
-            <span className="text-[9.5px] font-mono font-bold px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-700 dark:text-teal-300">
-              {activeDomain.prefix}
-            </span>
-          )}
-          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-        </div>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Popover / Dropdown Menu */}
@@ -581,8 +564,8 @@ export function SearchableDomainFlavorDropdown({
                     className={`w-full text-left p-3 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       isSelected
                         ? isLight
-                          ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
-                          : 'bg-teal-950/60 text-teal-300 font-bold border border-teal-800'
+                        ? 'bg-teal-50 text-teal-900 font-bold border border-teal-200'
+                        : 'bg-teal-950/60 text-teal-300 font-bold border border-teal-800'
                         : isLight
                         ? 'hover:bg-slate-50 text-slate-700'
                         : 'hover:bg-slate-900 text-slate-300'
@@ -603,11 +586,6 @@ export function SearchableDomainFlavorDropdown({
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
-                      {domain.prefix && (
-                        <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500">
-                          {domain.prefix}
-                        </span>
-                      )}
                       {isSelected && <Check className="w-3.5 h-3.5 text-teal-500" />}
                     </div>
                   </button>

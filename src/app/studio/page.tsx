@@ -1044,9 +1044,6 @@ function StudioContent() {
                       Architecture Scope &amp; User Information
                     </span>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">
-                    System Intelligence Autonomy
-                  </span>
                 </div>
 
                 {/* 1. Project Name & 2. Use Case Name */}
@@ -1084,15 +1081,9 @@ function StudioContent() {
 
                 {/* 3. Dynamic Prompt Suggestions */}
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                      3. Dynamic Prompt Suggestions
-                    </label>
-                    <span className="text-[10px] font-mono text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-amber-500" />
-                      Searchable &bull; Click to Populate
-                    </span>
-                  </div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                    3. Dynamic Prompt Suggestions
+                  </label>
                   <SearchablePromptSuggestionsDropdown
                     isLight={isLight}
                     onSelectPrompt={(selectedPrompt: PromptOption) => {
@@ -1107,15 +1098,9 @@ function StudioContent() {
 
                 {/* 4. Enterprise Domain Flavor */}
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
-                      4. Enterprise Domain Flavor
-                    </label>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Live Domain Sync
-                    </span>
-                  </div>
+                  <label className="text-xs font-black uppercase tracking-wider text-slate-500 block">
+                    4. Enterprise Domain Flavor
+                  </label>
                   <SearchableDomainFlavorDropdown
                     selectedDomainId={selectedDomain}
                     isLight={isLight}
