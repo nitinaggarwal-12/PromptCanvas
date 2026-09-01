@@ -962,9 +962,10 @@ function StudioContent() {
     setUseCaseName('');
     setProjectTitle('');
     setProjectScopePrompt('');
+    setSelectedDomain('biopharma');
     setHasSynthesized(false);
 
-    const scratchXml = generateBlankScratchXml('New Architecture Project', isLight ? 'light' : 'dark', selectedDomain);
+    const scratchXml = generateBlankScratchXml('New Architecture Project', isLight ? 'light' : 'dark', 'biopharma');
     const blankDiagramTab: StudioDiagramTab = {
       id: 'diag_1',
       title: 'Diagram 1 • Blank Canvas',
@@ -983,7 +984,7 @@ function StudioContent() {
     setProjectName('OmniChannel Commerce Platform');
     setUseCaseName('Real-Time Order Ingestion & Fraud Detection');
     setProjectTitle('Google Cloud Multi-Region Microservices & Event-Driven Fraud Detection Engine');
-    setSelectedDomain('ecommerce');
+    setSelectedDomain('retail');
     setProjectScopePrompt('Architect a multi-region Google Cloud event-driven microservices platform with Apigee API Gateway, GKE Autopilot, Pub/Sub Event Mesh, Dataflow real-time streaming ETL, Vertex AI ScaNN Vector Search for fraud scoring, and Cloud Spanner multi-region database with zero downtime.');
     showToast('⚡ Pre-populated sample architecture brief. Click Send to synthesize!');
   };
@@ -1139,24 +1140,24 @@ function StudioContent() {
                   Specification Brief
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={handleNewProject}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 shadow-xs transition-all cursor-pointer"
                   title="Create New Blank Architecture (Clears inputs & opens clean blank canvas)"
                 >
-                  <Plus className="w-3 h-3" />
+                  <Plus className="w-3.5 h-3.5 text-teal-500" />
                   <span>+ New</span>
                 </button>
                 <button
                   type="button"
                   onClick={handlePrefillSample}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/20 transition-all cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 hover:border-teal-500 shadow-xs transition-all cursor-pointer"
                   title="Prefill sample enterprise architecture requirements"
                 >
-                  <Sparkles className="w-3 h-3 text-teal-500" />
-                  <span className="hidden sm:inline">Prefill</span>
+                  <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                  <span>Prefill</span>
                 </button>
               </div>
             </div>
@@ -1241,7 +1242,7 @@ function StudioContent() {
                     }
                   }}
                   placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
-                  className={`w-full p-3 min-h-[90px] max-h-[140px] rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
+                  className={`w-full p-3 min-h-[105px] max-h-[160px] rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
                     isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
                   }`}
                 />
@@ -1384,8 +1385,8 @@ function StudioContent() {
               isLight ? 'bg-slate-50/90 border-slate-200/80' : 'bg-[#0E1526] border-slate-800'
             }`}>
               
-              {/* Left Side: Window dots + Diagram Tabs + Active Title */}
-              <div className="flex items-center gap-2 min-w-0">
+              {/* Left Side: Window dots + Diagram Tabs */}
+              <div className="flex items-center gap-2 shrink-0">
                 <div className="flex items-center gap-1.5 mr-1 shrink-0">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-400 inline-block" />
                   <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
@@ -1434,11 +1435,6 @@ function StudioContent() {
                     <span className="hidden sm:inline">Add</span>
                   </button>
                 </div>
-
-                {/* Title badge */}
-                <span className="hidden xl:inline text-xs font-bold text-slate-500 truncate max-w-[200px]">
-                  • {projectName || activeDiagram.title}
-                </span>
               </div>
 
               {/* Right Side Actions: Edit in Canvas, Export, Diff, Replace, Zoom & Viewport */}
