@@ -126,6 +126,140 @@ export interface StudioChatMessage {
   suggestedPrompts?: string[];
 }
 
+export interface EnterprisePreset {
+  id: string;
+  domainId: string;
+  domainName: string;
+  projectName: string;
+  useCaseName: string;
+  projectTitle: string;
+  prompt: string;
+  icon: string;
+  badge: string;
+}
+
+export const ENTERPRISE_PRESET_LIBRARY: EnterprisePreset[] = [
+  {
+    id: 'retail-omnichannel',
+    domainId: 'retail',
+    domainName: 'Omnichannel Retail & Intelligent Supply Chain',
+    projectName: 'Omnichannel Commerce & Order Orchestration',
+    useCaseName: 'Real-Time Order Ingestion & Fraud Scoring Mesh',
+    projectTitle: 'Google Cloud Multi-Region Microservices & Event-Driven Commerce Engine',
+    prompt: 'Architect a multi-region Google Cloud event-driven microservices platform with Apigee API Gateway, GKE Autopilot, Pub/Sub Event Mesh, Dataflow real-time streaming ETL, Vertex AI ScaNN Vector Search for fraud scoring, and Cloud Spanner multi-region database with zero downtime.',
+    icon: '🛍️',
+    badge: 'Retail & Commerce'
+  },
+  {
+    id: 'biopharma-oncology',
+    domainId: 'biopharma',
+    domainName: 'Bio-Pharma Precision Oncology & Regulatory AI',
+    projectName: 'Precision Oncology Knowledge Graph & Drug Discovery',
+    useCaseName: 'FDA 21 CFR Part 11 Adverse Event Triage & Variant Graph',
+    projectTitle: 'Bio-Pharma GxP Precision Oncology Knowledge Graph & Adverse Event Triage',
+    prompt: 'Design a GxP-compliant precision oncology architecture on Google Cloud featuring Cloud Spanner Property Graph for genomic variant modeling, Vertex AI Gemini 2.5 Flash for FDA 21 CFR Part 11 adverse event triage, and Cloud Healthcare API for FHIR clinical harmonization.',
+    icon: '🧬',
+    badge: 'Life Sciences'
+  },
+  {
+    id: 'fintech-payments',
+    domainId: 'fintech',
+    domainName: 'FinTech Autonomous Wealth & High-Speed Payments',
+    projectName: 'Tier-1 Real-Time ISO 20022 Payments & Fraud Engine',
+    useCaseName: 'Sub-5ms Pre-Trade Fraud Detection & Multi-Region Ledger',
+    projectTitle: 'FinTech High-Throughput Real-Time Payments Gateway & Fraud Mesh',
+    prompt: 'Architect an ISO 20022 real-time payments platform on Google Cloud with sub-5ms transaction authorization, Cloud Spanner double-entry distributed ledger, Vertex AI Vector Search fraud anomaly detection, and Cloud Armor DDoS zero-trust protection.',
+    icon: '💳',
+    badge: 'FinTech & Banking'
+  },
+  {
+    id: 'manufacturing-iot',
+    domainId: 'manufacturing',
+    domainName: 'Smart Manufacturing & Industrial IoT Digital Twin',
+    projectName: 'Factory Automation & Industrial IoT Telemetry Mesh',
+    useCaseName: 'Sub-10ms PLC Sensor Telemetry & Predictive Maintenance',
+    projectTitle: 'Smart Factory Industrial IoT Edge Telemetry & Digital Twin Platform',
+    prompt: 'Design an industrial IoT smart manufacturing platform with Google Cloud Distributed Cloud Edge (GDCE) for sub-10ms PLC ingestion, MQTT broker mesh, Dataflow real-time streaming anomaly detection, and BigQuery Medallion Lakehouse for predictive equipment maintenance.',
+    icon: '🏭',
+    badge: 'Smart Factory'
+  },
+  {
+    id: 'telecom-5g',
+    domainId: 'telecom',
+    domainName: 'Telecommunications & 5G Core Network Slicing (O-RAN)',
+    projectName: '5G Core Network Slicing & Edge Telemetry Mesh',
+    useCaseName: 'O-RAN Low-Latency Telemetry & Autonomous MEC Scaling',
+    projectTitle: '5G Telco O-RAN Multi-Access Edge Cloud & Network Slicing Engine',
+    prompt: 'Architect a 5G Core Network Slicing telemetry and control plane using Anthos Telecom Multi-Cloud, Kafka on GKE Autopilot, Vertex AI automated QoS optimization, and Cloud Bigtable for petabyte-scale cell tower timeseries storage.',
+    icon: '📡',
+    badge: '5G & Telco'
+  },
+  {
+    id: 'cybersecurity-soc',
+    domainId: 'cybersecurity',
+    domainName: 'Zero-Trust Cybersecurity & SOC SecOps (SIEM / SOAR)',
+    projectName: 'Enterprise Zero-Trust Mesh & Autonomous SIEM / SOAR',
+    useCaseName: 'Chronicle Real-Time Threat Hunting & Gemini Remediation',
+    projectTitle: 'Enterprise Zero-Trust SOC Cloud Perimeter & Automated Incident Response',
+    prompt: 'Design an enterprise Zero-Trust cybersecurity mesh on Google Cloud with Chronicle SIEM log ingestion, Gemini Security AI for automated playbook remediation, BeyondCorp Enterprise Identity-Aware Proxy (IAP), and VPC Service Controls sovereign perimeters.',
+    icon: '🔒',
+    badge: 'Cybersecurity'
+  },
+  {
+    id: 'saas-multitenant',
+    domainId: 'saas',
+    domainName: 'Enterprise SaaS Multi-Tenant Cloud Platform',
+    projectName: 'Global Multi-Tenant B2B Cloud Platform',
+    useCaseName: 'Zero-Trust Tenant Sharding & Distributed Redis Caching',
+    projectTitle: 'Global Multi-Tenant SaaS Platform with GKE Autopilot & Spanner Multi-Region',
+    prompt: 'Architect a high-scale multi-tenant B2B SaaS platform on Google Cloud with GKE Autopilot microservices, Cloud Memorystore Redis clusters, Cloud Spanner tenant-isolated tables, Apigee API Management rate limiting, and Cloud Armor WAF.',
+    icon: '🏢',
+    badge: 'Enterprise SaaS'
+  },
+  {
+    id: 'media-genai',
+    domainId: 'media',
+    domainName: 'Media Streaming, 4K Live Transcoding & CDN Edge',
+    projectName: 'Real-Time 4K Video Transcoding & Generative Content Engine',
+    useCaseName: 'Low-Latency HLS Streaming & Gemini Multimodal Video RAG',
+    projectTitle: 'Next-Gen Media Live 4K Streaming & Veo / Gemini Multimodal Content Studio',
+    prompt: 'Design a global live streaming and AI video platform with Live Transcoder API, Cloud CDN Edge low-latency delivery, Google DeepMind Veo / Imagen 3 generative studio pipelines, and BigQuery vector search for video scene retrieval.',
+    icon: '🎬',
+    badge: 'Media & GenAI'
+  },
+  {
+    id: 'supplychain-logistics',
+    domainId: 'supplychain',
+    domainName: 'Global Supply Chain & Medallion Cold-Chain Lakehouse',
+    projectName: 'Autonomous Logistics & Cold-Chain Telemetry Tracking',
+    useCaseName: 'RFID Geofencing & Real-Time Temperature Anomaly Alerting',
+    projectTitle: 'Global Cold-Chain Supply Chain Lakehouse & Real-Time Fleet Telematics',
+    prompt: 'Architect a global supply chain IoT platform on Google Cloud with real-time GPS and cold-chain temperature telemetry ingestion via Pub/Sub, Dataflow geofencing anomaly alerts, BigQuery Iceberg Lakehouse, and Vertex AI dynamic route optimization.',
+    icon: '📦',
+    badge: 'Logistics & Supply'
+  },
+  {
+    id: 'healthcare-ehr',
+    domainId: 'healthcare',
+    domainName: 'Healthcare & Clinical EHR Interoperability (FHIR / HL7)',
+    projectName: 'Clinical EHR Interoperability & Medical AI Copilot',
+    useCaseName: 'FHIR R4 Streaming Ingestion & HIPAA Clinical Reasoning',
+    projectTitle: 'Healthcare FHIR Interoperability Cloud with HIPAA Compliant Vertex AI Copilot',
+    prompt: 'Architect a HIPAA-compliant healthcare data platform with Apigee X API Gateway, Cloud Healthcare API for FHIR R4 and DICOM imaging, BigQuery BigLake clinical analytics, and Vertex AI MedLM / Gemini for automated clinical documentation summaries.',
+    icon: '🩺',
+    badge: 'Healthcare EHR'
+  }
+];
+
+export const QUICK_REQUIREMENT_CHIPS = [
+  { label: '+ Spanner Multi-Region', snippet: ', with Cloud Spanner multi-region dual-entry replication' },
+  { label: '+ Vertex AI ScaNN RAG', snippet: ', incorporating Vertex AI ScaNN vector embeddings and Gemini 2.5 Flash RAG' },
+  { label: '+ Pub/Sub Event Mesh', snippet: ', decoupled via Pub/Sub event mesh with dead-letter queue routing' },
+  { label: '+ Zero-Trust IAP & VPC-SC', snippet: ', protected by BeyondCorp Identity-Aware Proxy (IAP) and VPC Service Controls' },
+  { label: '+ GKE Autopilot Pods', snippet: ', orchestrated across GKE Autopilot clusters with autoscaling' },
+  { label: '+ BigLake Medallion Lakehouse', snippet: ', backed by BigQuery BigLake medallion streaming lakehouse (Bronze/Silver/Gold)' },
+];
+
 const MAX_ROLLING_VERSIONS = 10;
 
 // Helper to extract changed components and affected layer from prompt
@@ -245,6 +379,7 @@ function StudioContent() {
 
   // UI Modals & Menus
   const [showReplaceModal, setShowReplaceModal] = useState<boolean>(false);
+  const [blueprintModalMode, setBlueprintModalMode] = useState<'replace' | 'add_tab'>('replace');
   const [replaceModalTab, setReplaceModalTab] = useState<'diagrams' | 'documents'>('diagrams');
   const [showHistoryModal, setShowHistoryModal] = useState<boolean>(false);
   const [showDiffModal, setShowDiffModal] = useState<boolean>(false);
@@ -252,6 +387,11 @@ function StudioContent() {
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [toastNotification, setToastNotification] = useState<string | null>(null);
+
+  // Prefill Presets Menu State
+  const [presetCycleIndex, setPresetCycleIndex] = useState<number>(0);
+  const [showPrefillMenu, setShowPrefillMenu] = useState<boolean>(false);
+  const prefillMenuRef = useRef<HTMLDivElement>(null);
 
   // Diagrams Dropdown & Actions State
   const [showDiagramsMenu, setShowDiagramsMenu] = useState<boolean>(false);
@@ -460,6 +600,9 @@ function StudioContent() {
       }
       if (diagramsMenuRef.current && !diagramsMenuRef.current.contains(event.target as Node)) {
         setShowDiagramsMenu(false);
+      }
+      if (prefillMenuRef.current && !prefillMenuRef.current.contains(event.target as Node)) {
+        setShowPrefillMenu(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -927,25 +1070,59 @@ function StudioContent() {
   // ==========================================
   // 3. DIAGRAM ACTION BUTTONS (ADD, REPLACE, CLONE, RENAME, RESET, DELETE)
   // ==========================================
-  const handleAddDiagramTab = () => {
+  const handleAddBlankDiagramTab = () => {
     const newId = `diag_${Date.now()}`;
-    const nextTemplateId = diagrams.length === 1 ? '08' : diagrams.length === 2 ? '15' : '43';
-    const template = CANONICAL_TEMPLATES.find((t) => t.id === nextTemplateId) || CANONICAL_TEMPLATES[0];
+    const newIndex = diagrams.length + 1;
+    const scratchXml = generateBlankScratchXml(`Diagram ${newIndex} (Blank Canvas)`, isLight ? 'light' : 'dark', selectedDomain);
 
     const newTab: StudioDiagramTab = {
       id: newId,
-      title: `Diagram ${diagrams.length + 1} • ${template.name}`,
-      templateId: nextTemplateId,
-      xml: template.generateXml(selectedDomain, isLight ? 'light' : 'dark'),
+      title: `Diagram ${newIndex} (Blank Canvas)`,
+      templateId: 'scratch',
+      xml: scratchXml,
+      source: 'scratch'
+    };
+
+    const nextDiagrams = [...diagrams, newTab];
+    setDiagrams(nextDiagrams);
+    setActiveDiagramId(newId);
+    pushNewVersion(`Added Diagram ${newIndex} (Blank Canvas)`, 'User', nextDiagrams);
+    showToast(`➕ Added Diagram ${newIndex} (Blank Canvas)`);
+  };
+
+  const handleAddFromBlueprint = (templateId: string) => {
+    const template = CANONICAL_TEMPLATES.find((t) => t.id === templateId) || CANONICAL_TEMPLATES[0];
+    const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === selectedDomain) || EXTENDED_DOMAIN_OPTIONS[0];
+    const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : domainObj.name);
+    const baseXml = template.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+    const newXml = injectUseCaseFlavor(baseXml, titleToUse, projectScopePrompt);
+
+    const newId = `diag_${Date.now()}`;
+    const newIndex = diagrams.length + 1;
+    const newTab: StudioDiagramTab = {
+      id: newId,
+      title: `Diagram ${newIndex} • ${template.name}`,
+      templateId: template.id,
+      xml: newXml,
       source: 'blueprint'
     };
 
     const nextDiagrams = [...diagrams, newTab];
     setDiagrams(nextDiagrams);
     setActiveDiagramId(newId);
-    pushNewVersion(`Added Diagram ${diagrams.length + 1} (${template.name})`, 'User', nextDiagrams);
-    showToast(`➕ Added new diagram tab: Diagram ${diagrams.length + 1}`);
+    setShowReplaceModal(false);
+    pushNewVersion(
+      `Added Diagram ${newIndex} from Blueprint #${template.id} (${template.name})`,
+      'User',
+      nextDiagrams,
+      [`Instantiated Diagram ${newIndex}: Blueprint #${template.id} (${template.name})`],
+      'Architecture Blueprint Tab'
+    );
+    showToast(`➕ Added Diagram ${newIndex} from Blueprint #${template.id} (${template.name})`);
   };
+
+  // Backwards-compatible alias
+  const handleAddDiagramTab = () => handleAddBlankDiagramTab();
 
   const handleCloneDiagramTab = (idToClone?: string) => {
     const sourceId = idToClone || activeDiagramId;
@@ -1032,13 +1209,40 @@ function StudioContent() {
     showToast('✨ Initialized blank canvas. Fill in requirements or click Prefill Sample, then hit Send!');
   };
 
-  const handlePrefillSample = () => {
-    setProjectName('Omnichannel Commerce & Order Orchestration');
-    setUseCaseName('Real-Time Order Ingestion & Fraud Scoring Mesh');
-    setProjectTitle('Google Cloud Multi-Region Microservices & Event-Driven Commerce Engine');
-    setSelectedDomain('retail');
-    setProjectScopePrompt('Architect a multi-region Google Cloud event-driven microservices platform with Apigee API Gateway, GKE Autopilot, Pub/Sub Event Mesh, Dataflow real-time streaming ETL, Vertex AI ScaNN Vector Search for fraud scoring, and Cloud Spanner multi-region database with zero downtime.');
-    showToast('⚡ Pre-populated sample architecture brief. Click Send to synthesize!');
+  const applyEnterprisePreset = (preset: EnterprisePreset) => {
+    setProjectName(preset.projectName);
+    setUseCaseName(preset.useCaseName);
+    setProjectTitle(preset.projectTitle);
+    setSelectedDomain(preset.domainId);
+    setProjectScopePrompt(preset.prompt);
+    setShowPrefillMenu(false);
+    showToast(`✨ Loaded [${preset.badge}] ${preset.projectName}`);
+  };
+
+  const handlePrefillSample = (presetId?: string) => {
+    if (presetId) {
+      const found = ENTERPRISE_PRESET_LIBRARY.find((p) => p.id === presetId);
+      if (found) {
+        applyEnterprisePreset(found);
+        return;
+      }
+    }
+
+    // Determine candidate preset pool: prioritize matching domain if specific, else full library
+    const matchingPresets = ENTERPRISE_PRESET_LIBRARY.filter((p) => p.domainId === selectedDomain);
+    const pool = matchingPresets.length > 0 && selectedDomain !== 'biopharma' ? matchingPresets : ENTERPRISE_PRESET_LIBRARY;
+    
+    const nextIdx = presetCycleIndex % pool.length;
+    const chosenPreset = pool[nextIdx];
+    setPresetCycleIndex((prev) => prev + 1);
+
+    setProjectName(chosenPreset.projectName);
+    setUseCaseName(chosenPreset.useCaseName);
+    setProjectTitle(chosenPreset.projectTitle);
+    setSelectedDomain(chosenPreset.domainId);
+    setProjectScopePrompt(chosenPreset.prompt);
+
+    showToast(`✨ Loaded Preset (${nextIdx + 1}/${pool.length}): [${chosenPreset.badge}] ${chosenPreset.projectName} (Click again to cycle)`);
   };
 
   const handleResetToScratch = () => {
@@ -1193,7 +1397,7 @@ function StudioContent() {
                   Specification Brief
                 </span>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-1.5 shrink-0 relative" ref={prefillMenuRef}>
                 <button
                   type="button"
                   onClick={handleNewProject}
@@ -1203,25 +1407,101 @@ function StudioContent() {
                   <Plus className="w-3.5 h-3.5 text-teal-500" />
                   <span>+ New</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={handlePrefillSample}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-500/10 hover:bg-teal-500/20 text-teal-700 dark:text-teal-300 border border-teal-500/30 hover:border-teal-500 shadow-xs transition-all cursor-pointer"
-                  title="Prefill sample enterprise architecture requirements"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-teal-500" />
-                  <span>Prefill</span>
-                </button>
+
+                {/* Prefill Button with Popover Toggle */}
+                <div className="flex items-center rounded-lg bg-teal-500/10 border border-teal-500/30 text-teal-700 dark:text-teal-300 shadow-xs">
+                  <button
+                    type="button"
+                    onClick={() => handlePrefillSample()}
+                    className="flex items-center gap-1 px-2 py-1 text-xs font-bold hover:bg-teal-500/20 rounded-l-lg transition-colors cursor-pointer"
+                    title="Click to cycle through 10+ Enterprise Architecture Presets"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                    <span>Prefill</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowPrefillMenu(!showPrefillMenu)}
+                    className="px-1.5 py-1 text-xs font-bold hover:bg-teal-500/25 border-l border-teal-500/30 rounded-r-lg transition-colors cursor-pointer"
+                    title="Pick specific enterprise industry preset"
+                  >
+                    <ChevronDown className="w-3 h-3 text-teal-500" />
+                  </button>
+                </div>
+
+                {/* Enterprise Presets Dropdown Menu */}
+                {showPrefillMenu && (
+                  <div className={`absolute right-0 top-full mt-1.5 w-80 max-h-96 overflow-y-auto rounded-2xl border shadow-2xl z-50 p-2 text-xs flex flex-col gap-1 ${
+                    isLight ? 'bg-white border-slate-200 text-slate-800 shadow-slate-300/60' : 'bg-[#0E1526] border-slate-800 text-slate-200 shadow-black/90'
+                  }`}>
+                    <div className="flex items-center justify-between px-2 py-1 border-b border-slate-200/80 dark:border-slate-800">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                        10+ Enterprise Presets
+                      </span>
+                      <span className="text-[9.5px] font-bold text-teal-600 dark:text-teal-400">
+                        1-Click Load
+                      </span>
+                    </div>
+                    {ENTERPRISE_PRESET_LIBRARY.map((preset) => (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => applyEnterprisePreset(preset)}
+                        className={`w-full text-left p-2 rounded-xl transition-all flex items-start gap-2.5 cursor-pointer ${
+                          selectedDomain === preset.domainId
+                            ? 'bg-teal-50 dark:bg-teal-950/40 border border-teal-500/30 font-bold'
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        <span className="text-base shrink-0 pt-0.5">{preset.icon}</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="text-xs font-bold truncate text-slate-900 dark:text-white">
+                              {preset.projectName}
+                            </span>
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20 shrink-0 font-medium">
+                              {preset.badge}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                            {preset.useCaseName}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Left Card Scrollable Body */}
             <div className="flex-1 min-h-0 flex flex-col p-3.5 space-y-3 overflow-y-auto">
-              {/* 1. Project & Use Case in 2-Col Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* 1. DOMAIN & INDUSTRY FLAVOR (Full Width) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
+                    Domain / Industry Vertical
+                  </label>
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold">
+                    16 Domain Flavors
+                  </span>
+                </div>
+                <SearchableDomainFlavorDropdown
+                  selectedDomainId={selectedDomain}
+                  isLight={isLight}
+                  onSelectDomain={(domain: DomainOption) => {
+                    setSelectedDomain(domain.id);
+                    showToast(`🏢 Switched domain: "${domain.name}"`);
+                    handleSynthesizeArchitecture(undefined, domain.id);
+                  }}
+                />
+              </div>
+
+              {/* 2. PROJECT & USE CASE (Clean Stacked with Full Visibility) */}
+              <div className="space-y-2.5 pt-0.5">
                 <div className="space-y-1">
                   <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
-                    Project
+                    Project / Solution Scope
                   </label>
                   <SearchableProjectDropdown
                     value={projectName}
@@ -1238,7 +1518,7 @@ function StudioContent() {
 
                 <div className="space-y-1">
                   <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
-                    Use Case
+                    Architectural Use Case
                   </label>
                   <SearchableUseCaseDropdown
                     value={useCaseName}
@@ -1250,43 +1530,40 @@ function StudioContent() {
                 </div>
               </div>
 
-              {/* 2. Blueprints & Domain in 2-Col Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="space-y-1">
+              {/* 3. ARCHITECTURE BLUEPRINT PATTERNS (Full Width) */}
+              <div className="space-y-1 pt-0.5">
+                <div className="flex items-center justify-between">
                   <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
-                    Blueprints
+                    Architecture Blueprint Pattern
                   </label>
-                  <SearchablePromptSuggestionsDropdown
-                    isLight={isLight}
-                    selectedDomainId={selectedDomain}
-                    onSelectPrompt={(selectedPrompt: PromptOption) => {
-                      setProjectScopePrompt(selectedPrompt.prompt);
-                      if (selectedPrompt.domainId && selectedPrompt.domainId !== selectedDomain) {
-                        setSelectedDomain(selectedPrompt.domainId);
-                      }
-                      showToast(`💡 Loaded blueprint prompt: "${selectedPrompt.label}"`);
-                    }}
-                  />
+                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold">
+                    50+ Blueprints
+                  </span>
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
-                    Domain
-                  </label>
-                  <SearchableDomainFlavorDropdown
-                    selectedDomainId={selectedDomain}
-                    isLight={isLight}
-                    onSelectDomain={(domain: DomainOption) => {
-                      setSelectedDomain(domain.id);
-                      showToast(`🏢 Switched domain: "${domain.name}"`);
-                      handleSynthesizeArchitecture(undefined, domain.id);
-                    }}
-                  />
-                </div>
+                <SearchablePromptSuggestionsDropdown
+                  isLight={isLight}
+                  selectedDomainId={selectedDomain}
+                  onSelectPrompt={(selectedPrompt: PromptOption) => {
+                    setProjectScopePrompt(selectedPrompt.prompt);
+                    if (selectedPrompt.domainId && selectedPrompt.domainId !== selectedDomain) {
+                      setSelectedDomain(selectedPrompt.domainId);
+                    }
+                    showToast(`💡 Loaded blueprint prompt: "${selectedPrompt.label}"`);
+                  }}
+                />
               </div>
 
-              {/* 3. Prompt Textarea & Send Button */}
+              {/* 4. PROMPT TEXTAREA & 1-CLICK QUICK REQUIREMENT CHIPS */}
               <div className="space-y-2 pt-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10.5px] font-black uppercase tracking-wider text-slate-500 block">
+                    Requirements &amp; Technical Scope Brief
+                  </label>
+                  <span className="text-[9.5px] text-slate-400 font-sans">
+                    Press ⏎ to Send
+                  </span>
+                </div>
+
                 <textarea
                   rows={4}
                   value={projectScopePrompt}
@@ -1297,11 +1574,34 @@ function StudioContent() {
                       handleSynthesizeArchitecture();
                     }
                   }}
-                  placeholder="Describe your target cloud services, data flow, throughput requirements, security policies, and integrations... (Press Enter to Send)"
-                  className={`w-full p-3 min-h-[105px] max-h-[160px] rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
+                  placeholder="Describe target cloud services, data pipelines, throughput SLAs, security guardrails, and third-party integrations... (Press Enter to Send)"
+                  className={`w-full p-3 min-h-[95px] max-h-[160px] rounded-xl border text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 font-sans resize-y ${
                     isLight ? 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400' : 'bg-slate-900 border-slate-800 text-white placeholder:text-slate-500'
                   }`}
                 />
+
+                {/* 1-Click Requirement Pills */}
+                <div className="space-y-1">
+                  <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider block">
+                    + Quick Architecture Pills:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {QUICK_REQUIREMENT_CHIPS.map((chip) => (
+                      <button
+                        key={chip.label}
+                        type="button"
+                        onClick={() => {
+                          setProjectScopePrompt((prev) => (prev ? `${prev.trim()}${chip.snippet}` : chip.snippet.slice(2)));
+                          showToast(`Added requirement: ${chip.label}`);
+                        }}
+                        className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-teal-50 dark:bg-slate-800/80 dark:hover:bg-teal-950/50 text-slate-600 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 border border-slate-200 dark:border-slate-700/80 transition-colors cursor-pointer"
+                        title="Append to prompt"
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 <button
                   type="button"
@@ -1476,22 +1776,39 @@ function StudioContent() {
                     <div className={`absolute left-0 top-full mt-1.5 w-80 rounded-2xl border shadow-2xl z-50 p-2 text-xs flex flex-col gap-1.5 ${
                       isLight ? 'bg-white border-slate-200 text-slate-800 shadow-slate-300/60' : 'bg-[#0E1526] border-slate-800 text-slate-200 shadow-black/90'
                     }`}>
-                      {/* Header & Quick Add */}
-                      <div className="flex items-center justify-between px-2 py-1 border-b border-slate-200/80 dark:border-slate-800">
+                      {/* Header & Quick Add Dual Options */}
+                      <div className="flex items-center justify-between px-2 py-1.5 border-b border-slate-200/80 dark:border-slate-800">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
                           Open Diagrams ({diagrams.length})
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleAddDiagramTab();
-                            setShowDiagramsMenu(false);
-                          }}
-                          className="flex items-center gap-1 text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline cursor-pointer"
-                        >
-                          <Plus className="w-3 h-3" />
-                          <span>Add New</span>
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleAddBlankDiagramTab();
+                              setShowDiagramsMenu(false);
+                            }}
+                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-bold text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-950/60 transition-colors cursor-pointer"
+                            title="Add Blank Canvas Diagram"
+                          >
+                            <Plus className="w-2.5 h-2.5" />
+                            <span>+ Blank</span>
+                          </button>
+                          <span className="text-slate-300 dark:text-slate-700 text-[10px]">•</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBlueprintModalMode('add_tab');
+                              setShowDiagramsMenu(false);
+                              setShowReplaceModal(true);
+                            }}
+                            className="flex items-center gap-1 px-1.5 py-0.5 rounded text-[10.5px] font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/60 transition-colors cursor-pointer"
+                            title="Choose from 50+ Canonical Blueprints"
+                          >
+                            <Layers className="w-2.5 h-2.5" />
+                            <span>+ Blueprint</span>
+                          </button>
+                        </div>
                       </div>
 
                       {/* Diagrams List / Switcher */}
@@ -1530,7 +1847,7 @@ function StudioContent() {
                                       e.stopPropagation();
                                       handleDeleteDiagramTab(d.id);
                                     }}
-                                    className="p-1 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-md transition-colors"
+                                    className="p-1 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-md transition-colors cursor-pointer"
                                     title="Delete Diagram"
                                   >
                                     <Trash2 className="w-3 h-3" />
@@ -1543,7 +1860,7 @@ function StudioContent() {
                       </div>
 
                       {/* Actions Divider */}
-                      <div className="border-t border-slate-200/80 dark:border-slate-800 pt-1.5 space-y-0.5">
+                      <div className="border-t border-slate-200/80 dark:border-slate-800 pt-1.5 space-y-1">
                         {/* Rename Action */}
                         <button
                           type="button"
@@ -1581,18 +1898,51 @@ function StudioContent() {
                           <span>Delete Current Diagram</span>
                         </button>
 
-                        {/* Add New Action */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            handleAddDiagramTab();
-                            setShowDiagramsMenu(false);
-                          }}
-                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors text-left cursor-pointer"
-                        >
-                          <Plus className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                          <span>+ Add New Blank Diagram</span>
-                        </button>
+                        {/* Add New Section with 2 Explicit Choices */}
+                        <div className="pt-1.5 border-t border-slate-200/60 dark:border-slate-850 space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-slate-400 font-mono px-1 block">
+                            + Add New Diagram Tab:
+                          </span>
+                          
+                          {/* Option A: Blank Diagram */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleAddBlankDiagramTab();
+                              setShowDiagramsMenu(false);
+                            }}
+                            className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-teal-50/70 dark:bg-teal-950/40 text-teal-800 dark:text-teal-200 hover:bg-teal-100/90 dark:hover:bg-teal-900/60 font-semibold transition-colors text-left cursor-pointer border border-teal-500/20"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Plus className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 shrink-0" />
+                              <div>
+                                <div className="text-xs font-bold text-teal-900 dark:text-teal-100">Blank Diagram</div>
+                                <div className="text-[10px] text-teal-600/80 dark:text-teal-400/80 font-normal">Start from empty canvas</div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400">&rarr;</span>
+                          </button>
+
+                          {/* Option B: Choose from Blueprint */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setBlueprintModalMode('add_tab');
+                              setShowDiagramsMenu(false);
+                              setShowReplaceModal(true);
+                            }}
+                            className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-800 dark:text-indigo-200 hover:bg-indigo-100/90 dark:hover:bg-indigo-900/60 font-semibold transition-colors text-left cursor-pointer border border-indigo-500/20"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Layers className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                              <div>
+                                <div className="text-xs font-bold text-indigo-900 dark:text-indigo-100">Choose from Blueprint</div>
+                                <div className="text-[10px] text-indigo-600/80 dark:text-indigo-400/80 font-normal">Pick from 50+ Canonical Templates</div>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">&rarr;</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1699,7 +2049,10 @@ function StudioContent() {
                 {/* Replace */}
                 <button
                   type="button"
-                  onClick={() => setShowReplaceModal(true)}
+                  onClick={() => {
+                    setBlueprintModalMode('replace');
+                    setShowReplaceModal(true);
+                  }}
                   className="px-2 py-1 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
                   title="Replace Blueprint"
                 >
@@ -1809,7 +2162,7 @@ function StudioContent() {
                     <div className="flex items-center gap-2 pt-2">
                       <button
                         type="button"
-                        onClick={handlePrefillSample}
+                        onClick={() => handlePrefillSample()}
                         className="px-4 py-2 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-md shadow-teal-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
@@ -1977,9 +2330,15 @@ function StudioContent() {
           }`}>
             <div className="flex items-center justify-between border-b pb-3 border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <RefreshCw className="w-5 h-5 text-teal-500" />
+                {blueprintModalMode === 'add_tab' ? (
+                  <Plus className="w-5 h-5 text-teal-500" />
+                ) : (
+                  <RefreshCw className="w-5 h-5 text-teal-500" />
+                )}
                 <h3 className="text-base font-black text-slate-900 dark:text-white">
-                  Replace Diagram with Blueprint or Document Archetype
+                  {blueprintModalMode === 'add_tab'
+                    ? 'Add New Diagram from Blueprint or Archetype'
+                    : 'Replace Diagram with Blueprint or Document Archetype'}
                 </h3>
               </div>
               <button
@@ -2022,7 +2381,9 @@ function StudioContent() {
             {replaceModalTab === 'diagrams' ? (
               <>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Select a canonical blueprint template to replace the diagram shown in <b>{activeDiagram.title}</b>, or choose generic design from scratch.
+                  {blueprintModalMode === 'add_tab'
+                    ? 'Select a canonical architecture blueprint (#01–#50) to instantiate as a new diagram tab, or start from a blank canvas.'
+                    : `Select a canonical blueprint template to replace the diagram shown in ${activeDiagram.title}, or choose generic design from scratch.`}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 overflow-y-auto p-1 flex-1">
@@ -2030,7 +2391,11 @@ function StudioContent() {
                   <button
                     type="button"
                     onClick={() => {
-                      handleResetToScratch();
+                      if (blueprintModalMode === 'add_tab') {
+                        handleAddBlankDiagramTab();
+                      } else {
+                        handleResetToScratch();
+                      }
                       setShowReplaceModal(false);
                     }}
                     className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
@@ -2051,7 +2416,7 @@ function StudioContent() {
                       </p>
                     </div>
                     <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mt-2">
-                      Select Scratch &rarr;
+                      {blueprintModalMode === 'add_tab' ? '+ Add Blank Tab →' : 'Select Scratch →'}
                     </span>
                   </button>
 
@@ -2060,9 +2425,15 @@ function StudioContent() {
                     <button
                       key={tpl.id}
                       type="button"
-                      onClick={() => handleSelectBlueprintToReplace(tpl.id)}
+                      onClick={() => {
+                        if (blueprintModalMode === 'add_tab') {
+                          handleAddFromBlueprint(tpl.id);
+                        } else {
+                          handleSelectBlueprintToReplace(tpl.id);
+                        }
+                      }}
                       className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                        activeDiagram.templateId === tpl.id
+                        activeDiagram.templateId === tpl.id && blueprintModalMode === 'replace'
                           ? 'bg-teal-50 dark:bg-teal-950/40 border-teal-500 ring-2 ring-teal-500/30'
                           : isLight
                           ? 'bg-slate-50 hover:bg-teal-50/50 border-slate-200'
@@ -2086,7 +2457,7 @@ function StudioContent() {
                         </p>
                       </div>
                       <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 mt-2">
-                        Apply Blueprint &rarr;
+                        {blueprintModalMode === 'add_tab' ? '+ Add as New Tab →' : 'Apply Blueprint →'}
                       </span>
                     </button>
                   ))}
