@@ -1910,8 +1910,8 @@ export function sanitizeDrawioXmlAttributes(xml: string): string {
   // Clean any legacy invalid surrogate numeric character entities (&#55296; to &#57343;)
   cleaned = cleaned.replace(/&#(?:5[5-6][0-9]{3}|57[0-2][0-9]{2}|573[0-3][0-9]|5734[0-3]);/g, '');
 
-  // 2. Fix unescaped raw '<' and '&quot;' inside value attributes
-  cleaned = cleaned.replace(/\bvalue="([\s\S]*?)"(?=\s+[a-zA-Z_:][a-zA-Z0-9_:-]*=|\s*\/?>)/g, (match, valContent) => {
+  // 2. Fix unescaped raw '<' and '&quot;' inside value attributes without prematurely terminating on inner self-closing tags like <path ... />
+  cleaned = cleaned.replace(/\bvalue="([\s\S]*?)"(?=\s+(?:style|vertex|edge|parent|source|target|id|visible|collapsed|connectable|as|geometry)=[^\n>]*|\s*\/?>\s*(?:<mxGeometry|<\/mxCell>|<mxCell|\s*$))/g, (match, valContent) => {
     const sanitized = valContent
       // Convert &quot; and inner double quotes to single quotes to prevent breaking out of attribute
       .replace(/&quot;/g, "'")
@@ -1925,7 +1925,10 @@ export function sanitizeDrawioXmlAttributes(xml: string): string {
     return `value="${sanitized}"`;
   });
 
-  // Ensure &amp; entities are valid
+  // Ensure all unescaped & characters are converted to &amp; entities
+  cleaned = cleaned.replace(/&(?!(?:amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g, '&amp;');
+
+  // Ensure double-escaped &amp; entities are normalized
   cleaned = cleaned.replace(/&amp;amp;/g, '&amp;');
 
   // 3. XSS Sanitization: Neutralize <script>, javascript: pseudo-protocols, and inline DOM event attributes

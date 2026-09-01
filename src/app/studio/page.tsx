@@ -253,6 +253,12 @@ function StudioContent() {
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [toastNotification, setToastNotification] = useState<string | null>(null);
 
+  // Diagrams Dropdown & Actions State
+  const [showDiagramsMenu, setShowDiagramsMenu] = useState<boolean>(false);
+  const [isRenamingDiagram, setIsRenamingDiagram] = useState<boolean>(false);
+  const [renameTitleInput, setRenameTitleInput] = useState<string>('');
+  const diagramsMenuRef = useRef<HTMLDivElement>(null);
+
   // Draw.io Child Window Ref for live Bidirectional postMessage Sync
   const drawioChildWindowRef = useRef<Window | null>(null);
 
@@ -390,6 +396,11 @@ function StudioContent() {
     return diagrams.find((d) => d.id === activeDiagramId) || diagrams[0];
   }, [diagrams, activeDiagramId]);
 
+  // Active diagram 0-based index
+  const activeDiagramIndex = useMemo(() => {
+    return Math.max(0, diagrams.findIndex((d) => d.id === activeDiagramId));
+  }, [diagrams, activeDiagramId]);
+
   // Active Archetype Metadata
   const activeArchetypeMeta: DocArchetypeMeta = useMemo(() => {
     const found = DOC_ARCHETYPES_META.find((a) => a.id === selectedArchetypeId);
@@ -441,11 +452,14 @@ function StudioContent() {
     setCanvasTheme(isLight ? 'light' : 'dark');
   }, [isLight]);
 
-  // Close export menu on click outside
+  // Close menus on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
         setShowExportMenu(false);
+      }
+      if (diagramsMenuRef.current && !diagramsMenuRef.current.contains(event.target as Node)) {
+        setShowDiagramsMenu(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -911,10 +925,10 @@ function StudioContent() {
   };
 
   // ==========================================
-  // 3. DIAGRAM ACTION BUTTONS (ADD, REPLACE, RESET, DELETE)
+  // 3. DIAGRAM ACTION BUTTONS (ADD, REPLACE, CLONE, RENAME, RESET, DELETE)
   // ==========================================
   const handleAddDiagramTab = () => {
-    const newId = `diag_${diagrams.length + 1}`;
+    const newId = `diag_${Date.now()}`;
     const nextTemplateId = diagrams.length === 1 ? '08' : diagrams.length === 2 ? '15' : '43';
     const template = CANONICAL_TEMPLATES.find((t) => t.id === nextTemplateId) || CANONICAL_TEMPLATES[0];
 
@@ -930,6 +944,36 @@ function StudioContent() {
     setDiagrams(nextDiagrams);
     setActiveDiagramId(newId);
     pushNewVersion(`Added Diagram ${diagrams.length + 1} (${template.name})`, 'User', nextDiagrams);
+    showToast(`➕ Added new diagram tab: Diagram ${diagrams.length + 1}`);
+  };
+
+  const handleCloneDiagramTab = (idToClone?: string) => {
+    const sourceId = idToClone || activeDiagramId;
+    const sourceDiagram = diagrams.find((d) => d.id === sourceId) || activeDiagram;
+    const newId = `diag_${Date.now()}`;
+    const newTab: StudioDiagramTab = {
+      id: newId,
+      title: `${sourceDiagram.title} (Clone)`,
+      templateId: sourceDiagram.templateId,
+      xml: sourceDiagram.xml,
+      source: sourceDiagram.source
+    };
+
+    const nextDiagrams = [...diagrams, newTab];
+    setDiagrams(nextDiagrams);
+    setActiveDiagramId(newId);
+    setShowDiagramsMenu(false);
+    pushNewVersion(`Cloned "${sourceDiagram.title}"`, 'User', nextDiagrams);
+    showToast(`📑 Duplicated "${sourceDiagram.title}" as new diagram tab`);
+  };
+
+  const handleRenameDiagramTab = (idToRename: string, newTitle: string) => {
+    if (!newTitle.trim()) return;
+    const updated = diagrams.map((d) => (d.id === idToRename ? { ...d, title: newTitle.trim() } : d));
+    setDiagrams(updated);
+    setIsRenamingDiagram(false);
+    pushNewVersion(`Renamed diagram to "${newTitle.trim()}"`, 'User', updated);
+    showToast(`✏️ Renamed diagram to "${newTitle.trim()}"`);
   };
 
   const handleSelectBlueprintToReplace = (templateId: string) => {
@@ -954,7 +998,15 @@ function StudioContent() {
 
     setDiagrams(updatedDiagrams);
     setShowReplaceModal(false);
-    pushNewVersion(`Replaced ${activeDiagram.title} with #${template.id} (${template.name})`, 'User', updatedDiagrams);
+    const newTag = pushNewVersion(
+      `Replaced with Blueprint #${template.id} (${template.name})`,
+      'User',
+      updatedDiagrams,
+      [`Applied Architecture Blueprint #${template.id}: ${template.name}`],
+      'Full Diagram Architecture Model'
+    );
+    setDiffBaseIndex(1);
+    showToast(`🔄 Replaced active diagram with #${template.id} (${template.name}) [${newTag}]`);
   };
 
   const handleNewProject = () => {
@@ -1004,6 +1056,7 @@ function StudioContent() {
       setActiveDiagramId(filtered[0].id);
     }
     pushNewVersion(`Deleted Diagram Tab`, 'User', filtered);
+    showToast('🗑️ Deleted diagram tab');
   };
 
   return (
@@ -1396,47 +1449,153 @@ function StudioContent() {
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
                 </div>
 
-                {/* Diagram Tabs */}
-                <div className="flex items-center gap-1 shrink-0">
-                  {diagrams.map((d, index) => (
-                    <div
-                      key={d.id}
-                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                        activeDiagramId === d.id
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : isLight
-                          ? 'bg-slate-200/70 text-slate-700 hover:bg-slate-200'
-                          : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                      }`}
-                      onClick={() => setActiveDiagramId(d.id)}
-                    >
-                      <Network className="w-3 h-3" />
-                      <span>Diagram {index + 1}</span>
-                      {diagrams.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteDiagramTab(d.id);
-                          }}
-                          className="ml-0.5 hover:text-red-300 transition-colors p-0.5"
-                          title="Delete diagram"
-                        >
-                          <X className="w-2.5 h-2.5" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-
+                {/* Diagrams Dropdown Menu (Select, Edit/Rename, Clone, Delete, Add) */}
+                <div className="relative" ref={diagramsMenuRef}>
                   <button
                     type="button"
-                    onClick={handleAddDiagramTab}
-                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold bg-slate-200/50 dark:bg-slate-800/60 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-600 dark:text-slate-300 hover:text-teal-600 transition-all cursor-pointer"
-                    title="Add Diagram Tab"
+                    onClick={() => setShowDiagramsMenu(!showDiagramsMenu)}
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                      showDiagramsMenu
+                        ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                        : isLight
+                        ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300/80 shadow-2xs'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 shadow-2xs'
+                    }`}
+                    title="Diagram switcher & management options"
                   >
-                    <Plus className="w-3 h-3" />
-                    <span className="hidden sm:inline">Add</span>
+                    <Network className="w-3.5 h-3.5 text-teal-500" />
+                    <span>Diagram {activeDiagramIndex + 1}</span>
+                    <span className="text-[10.5px] opacity-75 max-w-[130px] truncate hidden md:inline font-medium">
+                      • {activeDiagram.title.replace(/^Diagram \d+\s*•\s*/, '')}
+                    </span>
+                    <ChevronDown className="w-3 h-3 ml-0.5 opacity-70" />
                   </button>
+
+                  {/* Diagrams Dropdown Menu Popover */}
+                  {showDiagramsMenu && (
+                    <div className={`absolute left-0 top-full mt-1.5 w-80 rounded-2xl border shadow-2xl z-50 p-2 text-xs flex flex-col gap-1.5 ${
+                      isLight ? 'bg-white border-slate-200 text-slate-800 shadow-slate-300/60' : 'bg-[#0E1526] border-slate-800 text-slate-200 shadow-black/90'
+                    }`}>
+                      {/* Header & Quick Add */}
+                      <div className="flex items-center justify-between px-2 py-1 border-b border-slate-200/80 dark:border-slate-800">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                          Open Diagrams ({diagrams.length})
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleAddDiagramTab();
+                            setShowDiagramsMenu(false);
+                          }}
+                          className="flex items-center gap-1 text-[11px] font-bold text-teal-600 dark:text-teal-400 hover:underline cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" />
+                          <span>Add New</span>
+                        </button>
+                      </div>
+
+                      {/* Diagrams List / Switcher */}
+                      <div className="max-h-52 overflow-y-auto space-y-1 py-1">
+                        {diagrams.map((d, index) => {
+                          const isActive = d.id === activeDiagramId;
+                          return (
+                            <div
+                              key={d.id}
+                              className={`flex items-center justify-between p-2 rounded-xl cursor-pointer transition-all ${
+                                isActive
+                                  ? 'bg-teal-50 dark:bg-teal-950/50 text-teal-900 dark:text-teal-200 border border-teal-500/30 font-bold shadow-2xs'
+                                  : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+                              }`}
+                              onClick={() => {
+                                setActiveDiagramId(d.id);
+                                setShowDiagramsMenu(false);
+                              }}
+                            >
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <span className={`w-5 h-5 rounded-lg flex items-center justify-center text-[10px] font-mono shrink-0 ${
+                                  isActive ? 'bg-teal-600 text-white font-bold' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                                }`}>
+                                  {index + 1}
+                                </span>
+                                <span className="truncate text-xs">
+                                  {d.title}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1 shrink-0 ml-2">
+                                {isActive && <Check className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />}
+                                {diagrams.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteDiagramTab(d.id);
+                                    }}
+                                    className="p-1 hover:bg-red-500/20 text-slate-400 hover:text-red-500 rounded-md transition-colors"
+                                    title="Delete Diagram"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Actions Divider */}
+                      <div className="border-t border-slate-200/80 dark:border-slate-800 pt-1.5 space-y-0.5">
+                        {/* Rename Action */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setRenameTitleInput(activeDiagram.title);
+                            setIsRenamingDiagram(true);
+                            setShowDiagramsMenu(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
+                        >
+                          <Edit3 className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Rename Current Diagram...</span>
+                        </button>
+
+                        {/* Clone Action */}
+                        <button
+                          type="button"
+                          onClick={() => handleCloneDiagramTab()}
+                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/70 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
+                        >
+                          <Copy className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Duplicate / Clone Diagram</span>
+                        </button>
+
+                        {/* Delete Action */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleDeleteDiagramTab(activeDiagramId);
+                            setShowDiagramsMenu(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/30 text-red-600 dark:text-red-400 transition-colors text-left cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                          <span>Delete Current Diagram</span>
+                        </button>
+
+                        {/* Add New Action */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleAddDiagramTab();
+                            setShowDiagramsMenu(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 font-bold hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors text-left cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                          <span>+ Add New Blank Diagram</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -2226,25 +2385,29 @@ function StudioContent() {
                 </div>
 
                 <div className="h-[360px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#070A13] flex items-center justify-center relative">
-                  {versionHistory[diffBaseIndex]?.diagrams?.[0]?.xml ? (
-                    <DiagramViewerRenderSafe
-                      key={`diff_base_${diffBaseIndex}_${versionHistory[diffBaseIndex].versionTag}`}
-                      diagramId={versionHistory[diffBaseIndex].diagrams[0].templateId}
-                      diagramType="custom"
-                      xml={versionHistory[diffBaseIndex].diagrams[0].xml}
-                      aspectRatioId="16:9"
-                      bgTheme={isLight ? 'light' : 'dark'}
-                      useCaseName={versionHistory[diffBaseIndex].projectTitle || 'Base Version'}
-                    />
-                  ) : (
-                    <div className="text-xs text-slate-400">No XML in snapshot</div>
-                  )}
+                  {(() => {
+                    const baseSnap = versionHistory[diffBaseIndex];
+                    const baseDiagram = baseSnap?.diagrams?.find((d) => d.id === activeDiagramId) || baseSnap?.diagrams?.[0];
+                    return baseDiagram?.xml ? (
+                      <DiagramViewerRenderSafe
+                        key={`diff_base_${diffBaseIndex}_${baseSnap.versionTag}_${baseDiagram.id}`}
+                        diagramId={baseDiagram.templateId}
+                        diagramType="custom"
+                        xml={baseDiagram.xml}
+                        aspectRatioId="16:9"
+                        bgTheme={isLight ? 'light' : 'dark'}
+                        useCaseName={baseSnap.projectTitle || 'Base Version'}
+                      />
+                    ) : (
+                      <div className="text-xs text-slate-400">No baseline diagram XML in this snapshot</div>
+                    );
+                  })()}
                 </div>
 
-                {/* Rollback to this version action */}
+                {/* Rollback / Revert to baseline action */}
                 <div className="pt-1 flex items-center justify-between">
                   <span className="text-[10.5px] text-slate-400">
-                    Revert entire diagram to this point
+                    Discard replacement &amp; revert active diagram
                   </span>
                   <button
                     type="button"
@@ -2260,12 +2423,13 @@ function StudioContent() {
                         setProjectScopePrompt(snap.projectScopePrompt);
                         setSelectedDomain(snap.selectedDomain);
                         setShowDiffModal(false);
-                        showToast(`⏪ Reverted to ${snap.versionTag}!`);
+                        showToast(`⏪ Reverted to baseline ${snap.versionTag}!`);
                       }
                     }}
-                    className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition-all cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-all cursor-pointer flex items-center gap-1.5"
                   >
-                    Restore {versionHistory[diffBaseIndex]?.versionTag}
+                    <Undo2 className="w-3.5 h-3.5" />
+                    <span>Revert to {versionHistory[diffBaseIndex]?.versionTag || 'Base'}</span>
                   </button>
                 </div>
               </div>
@@ -2282,7 +2446,7 @@ function StudioContent() {
                     </span>
                   </div>
                   <span className="text-[10px] text-emerald-500 font-bold">
-                    ✨ Modified
+                    ✨ Modified / Replaced
                   </span>
                 </div>
 
@@ -2298,21 +2462,88 @@ function StudioContent() {
                   />
                 </div>
 
-                {/* Confirm and keep current */}
+                {/* Confirm and accept replacement */}
                 <div className="pt-1 flex items-center justify-between">
                   <span className="text-[10.5px] text-teal-600 dark:text-teal-400 font-semibold">
-                    Current active version is rendered in workspace
+                    Accept replacement &amp; keep as active diagram
                   </span>
                   <button
                     type="button"
-                    onClick={() => setShowDiffModal(false)}
-                    className="px-4 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all cursor-pointer"
+                    onClick={() => {
+                      setShowDiffModal(false);
+                      showToast(`✅ Accepted ${currentVersionTag} changes!`);
+                    }}
+                    className="px-4 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
                   >
-                    Keep &amp; Close Diff
+                    <Check className="w-3.5 h-3.5" />
+                    <span>Accept &amp; Keep {currentVersionTag}</span>
                   </button>
                 </div>
               </div>
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==========================================
+          MODAL 4: RENAME DIAGRAM MODAL
+      ========================================== */}
+      {isRenamingDiagram && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className={`w-full max-w-md rounded-2xl border shadow-2xl p-5 flex flex-col gap-4 ${
+            isLight ? 'bg-white border-slate-200 shadow-slate-300/50' : 'bg-[#0E1526] border-slate-800 shadow-black/80'
+          }`}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <Edit3 className="w-4 h-4 text-teal-500" />
+                <span>Rename Diagram</span>
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsRenamingDiagram(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
+                Diagram Title (Tab {activeDiagramIndex + 1})
+              </label>
+              <input
+                type="text"
+                value={renameTitleInput}
+                onChange={(e) => setRenameTitleInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleRenameDiagramTab(activeDiagramId, renameTitleInput);
+                  if (e.key === 'Escape') setIsRenamingDiagram(false);
+                }}
+                placeholder="e.g. Logical Process Flow, Data Lakehouse"
+                autoFocus
+                className={`w-full px-3 py-2 rounded-xl border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                  isLight ? 'bg-slate-50 border-slate-300 text-slate-900' : 'bg-slate-900 border-slate-700 text-white'
+                }`}
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsRenamingDiagram(false)}
+                className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRenameDiagramTab(activeDiagramId, renameTitleInput)}
+                className="px-4 py-1.5 rounded-xl text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>Save Title</span>
+              </button>
             </div>
           </div>
         </div>
