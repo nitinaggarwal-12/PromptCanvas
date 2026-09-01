@@ -369,16 +369,34 @@ function computeDynamicNextSuggestions(prompt: string, projectName: string, chan
 
 const MAX_ROLLING_VERSIONS = 20;
 
+type Studio1WorkspaceMode = 'reference' | 'create' | 'clone' | 'working';
+
+const STUDIO1_REFERENCE = {
+  projectName: 'Agentic AI Harness',
+  useCaseName: 'Enterprise Multi-Agent Orchestration',
+  projectTitle: 'Agentic AI Harness — Reference Architecture',
+  prompt: 'Design an enterprise agentic AI platform with governed orchestration, secure tool access, shared memory, observability, and a GCP-native deployment option.'
+};
+
+const STUDIO1_NEW_PROJECT = {
+  projectName: 'Real-Time Event Platform',
+  useCaseName: 'High-Throughput Event Streaming',
+  projectTitle: 'Real-Time Event Platform — Target Architecture',
+  prompt: 'Architect a high-throughput event streaming platform with secure ingestion, durable messaging, stream processing, operational observability, and analytics.'
+};
+
 function Studio1Content() {
   const searchParams = useSearchParams();
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
   // 1. Project & Use Case Scope Inputs & Searchable Dropdowns
-  const [projectName, setProjectName] = useState<string>('');
-  const [useCaseName, setUseCaseName] = useState<string>('');
-  const [projectTitle, setProjectTitle] = useState<string>('');
-  const [projectScopePrompt, setProjectScopePrompt] = useState<string>('');
+  const [workspaceMode, setWorkspaceMode] = useState<Studio1WorkspaceMode>('reference');
+  const [hasGeneratedDiagram, setHasGeneratedDiagram] = useState<boolean>(true);
+  const [projectName, setProjectName] = useState<string>(STUDIO1_REFERENCE.projectName);
+  const [useCaseName, setUseCaseName] = useState<string>(STUDIO1_REFERENCE.useCaseName);
+  const [projectTitle, setProjectTitle] = useState<string>(STUDIO1_REFERENCE.projectTitle);
+  const [projectScopePrompt, setProjectScopePrompt] = useState<string>(STUDIO1_REFERENCE.prompt);
   const [generationContext, setGenerationContext] = useState<Studio1GenerationContext>({
     action: 'auto', persona: 'auto', level: 'auto', viewpoint: 'auto', depth: 'auto',
     lifecycleState: 'target', platform: 'auto'
@@ -582,10 +600,10 @@ function Studio1Content() {
         actionSummary: 'Default Baseline: Option 1 Generic & Option 2 GCP Native Blueprints',
         activeDiagramId: 'diag_1',
         diagrams: initDiagrams,
-        projectName: '',
-        useCaseName: '',
-        projectTitle: '',
-        projectScopePrompt: '',
+        projectName: STUDIO1_REFERENCE.projectName,
+        useCaseName: STUDIO1_REFERENCE.useCaseName,
+        projectTitle: STUDIO1_REFERENCE.projectTitle,
+        projectScopePrompt: STUDIO1_REFERENCE.prompt,
         changedComponents: ['Perimeter & Ingress', 'Planning & Routing', 'Service Swarm', 'Data & Integration', 'AI Core & Safety'],
         targetTier: 'Enterprise Architecture'
       }
@@ -654,6 +672,48 @@ function Studio1Content() {
     setToastNotification(msg);
     setTimeout(() => setToastNotification(null), 3500);
   }, []);
+
+  const handleNewProject = useCallback(() => {
+    setWorkspaceMode('create');
+    setHasGeneratedDiagram(false);
+    setProjectName(STUDIO1_NEW_PROJECT.projectName);
+    setProjectSearchQuery(STUDIO1_NEW_PROJECT.projectName);
+    setUseCaseName(STUDIO1_NEW_PROJECT.useCaseName);
+    setUseCaseSearchQuery(STUDIO1_NEW_PROJECT.useCaseName);
+    setProjectTitle(STUDIO1_NEW_PROJECT.projectTitle);
+    setProjectScopePrompt(STUDIO1_NEW_PROJECT.prompt);
+    setGenerationContext({
+      action: 'create', persona: 'auto', level: 'auto', viewpoint: 'auto', depth: 'standard',
+      lifecycleState: 'target', platform: 'auto'
+    });
+    setDecisionLedger({ confirmedRequirements: [], constraints: [], lockedNodeIds: [], rejectedOptions: [], assumptions: [], openQuestions: [] });
+    setPendingVerification(null);
+    setCandidateSelection(null);
+    setChatMessages([{
+      id: `msg_new_${Date.now()}`,
+      sender: 'assistant',
+      text: 'New project is ready. Review the populated brief, adjust any controls, then generate. The canvas stays blank until a validated architecture is ready.',
+      timestamp: 'Just now'
+    }]);
+    showToast('New Studio 1 project ready');
+  }, [showToast]);
+
+  const handleCloneReference = useCallback(() => {
+    setWorkspaceMode('clone');
+    setHasGeneratedDiagram(true);
+    setProjectName(`${projectName || STUDIO1_REFERENCE.projectName} — Copy`);
+    setProjectTitle(`${projectTitle || STUDIO1_REFERENCE.projectTitle} — Copy`);
+    setGenerationContext((previous) => ({ ...previous, action: 'incremental_edit' }));
+    setPendingVerification(null);
+    setCandidateSelection(null);
+    setChatMessages((previous) => [...previous, {
+      id: `msg_clone_${Date.now()}`,
+      sender: 'assistant',
+      text: 'Editable copy created. The reference remains unchanged; prompts and manual edits now apply only to this working copy.',
+      timestamp: 'Just now'
+    }]);
+    showToast('Editable copy created');
+  }, [projectName, projectTitle, showToast]);
 
   // Snapshot Creation Helper (supports explicit version override e.g. v2.0 promotion)
   const pushNewVersion = useCallback(
@@ -931,6 +991,8 @@ function Studio1Content() {
           d.id === activeDiagramId ? { ...d, xml: reloadedXml, title: `Diagram 1 • ${projectName}` } : d
         );
         setDiagrams(updatedDiagrams);
+        setHasGeneratedDiagram(true);
+        setWorkspaceMode('working');
 
         showToast(`🎯 Updated use case to "${selectedUseCase}"`);
       }
@@ -1289,6 +1351,8 @@ function Studio1Content() {
         });
 
         setDiagrams(updatedDiagrams);
+        setHasGeneratedDiagram(true);
+        setWorkspaceMode('working');
 
         const analysis = analyzePromptChanges(promptToUse);
         const resolvedSummary = apiSummary || analysis.summary;
@@ -1379,6 +1443,8 @@ function Studio1Content() {
       : diagram);
 
     setDiagrams(updatedDiagrams);
+    setHasGeneratedDiagram(true);
+    setWorkspaceMode('working');
     setGenerationContext(candidate.context);
     setDecisionLedger(candidate.decisionLedger);
     setPendingVerification({
@@ -1590,24 +1656,33 @@ function Studio1Content() {
               </span>
             </button>
 
-            {/* Saved Canvases Drawer & History Manager Links */}
             <button
               type="button"
-              onClick={openSavedHistoryDrawer}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-purple-500 shadow-xs transition cursor-pointer"
-              title="Open saved Studio 1 architecture history"
+              onClick={handleNewProject}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-teal-600 hover:bg-teal-700 text-white border border-teal-500 shadow-sm transition"
+              title="Start a new Studio 1 architecture"
             >
-              <History className="w-3.5 h-3.5 text-purple-500" />
-              <span>Saved Canvases</span>
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Project</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleCloneReference}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-purple-500 shadow-xs transition cursor-pointer"
+              title="Create an editable copy of the current architecture"
+            >
+              <CopyPlus className="w-3.5 h-3.5 text-purple-500" />
+              <span>Clone</span>
             </button>
 
             <Link
               href="/history?studio=studio1"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-purple-50 hover:bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:hover:bg-purple-900 dark:text-purple-300 border border-purple-300 dark:border-purple-500/50 shadow-xs transition"
-              title="Full Canvas History Page filtered to Studio 1"
+              title="Open the Studio 1-only project library"
             >
               <FolderOpen className="w-3.5 h-3.5 text-purple-500" />
-              <span>History Manager ➔</span>
+              <span>Studio 1 Library</span>
             </Link>
           </div>
         </div>
@@ -1619,6 +1694,31 @@ function Studio1Content() {
             <div className={`p-4 md:p-5 rounded-2xl border shadow-sm space-y-4 ${
               isLight ? 'bg-white border-slate-200' : 'bg-slate-900/90 border-slate-800'
             }`}>
+              <div className={`rounded-xl border px-3 py-2.5 ${
+                workspaceMode === 'reference'
+                  ? 'border-indigo-200 bg-indigo-50 text-indigo-900 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-200'
+                  : workspaceMode === 'create'
+                    ? 'border-teal-200 bg-teal-50 text-teal-900 dark:border-teal-800 dark:bg-teal-950/40 dark:text-teal-200'
+                    : 'border-purple-200 bg-purple-50 text-purple-900 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-200'
+              }`}>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-black uppercase tracking-[0.14em]">
+                    {workspaceMode === 'reference' ? 'Reference architecture' : workspaceMode === 'create' ? 'New project' : 'Editable working copy'}
+                  </span>
+                  <span className="rounded-full bg-white/70 dark:bg-slate-950/50 px-2 py-0.5 text-[9px] font-bold">
+                    {workspaceMode === 'reference' ? 'View only' : 'Editable'}
+                  </span>
+                </div>
+                <p className="mt-1 text-[10px] leading-relaxed opacity-80">
+                  {workspaceMode === 'reference'
+                    ? 'These inputs describe the diagram on the right. Clone it to edit, or start a new project for a blank canvas.'
+                    : workspaceMode === 'create'
+                      ? 'Adjust the populated brief and controls. Generate when ready; no stale diagram is shown on the blank canvas.'
+                      : 'Prompt edits, controls, versioning, and manual canvas changes apply to this copy.'}
+                </p>
+              </div>
+
+              <fieldset disabled={workspaceMode === 'reference'} className={`space-y-4 ${workspaceMode === 'reference' ? 'opacity-70' : ''}`}>
               {/* 1. Project Name & 2. Use Case Name with Searchable Dropdown & Architecture Reload */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 1. Project Name Dropdown */}
@@ -2074,6 +2174,7 @@ function Studio1Content() {
                   </div>
                 </div>
               </div>
+              </fieldset>
             </div>
           </div>
 
@@ -2261,15 +2362,34 @@ function Studio1Content() {
                     height: zoomLevel !== 1.0 ? `${(100 / zoomLevel).toFixed(2)}%` : '100%',
                   }}
                 >
-                  <DiagramViewerRenderSafe
-                    key={`studio1_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagramDigest}`}
-                    diagramId="gcp_functional_flowchart"
-                    diagramType="functional_flowchart"
-                    xml={activeDiagram.xml}
-                    aspectRatioId="16:9"
-                    bgTheme={isLight ? 'light' : 'dark'}
-                    allowFullScaleScroll={false}
-                  />
+                  {!hasGeneratedDiagram && workspaceMode === 'create' ? (
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_center,_rgba(20,184,166,0.08),_transparent_38%)]">
+                      <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.16)_1px,transparent_1px)] [background-size:32px_32px]" />
+                      <div className="relative max-w-md text-center px-8">
+                        <div className="mx-auto w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/25 flex items-center justify-center text-teal-600 dark:text-teal-400 shadow-sm">
+                          <Layers className="w-7 h-7" />
+                        </div>
+                        <h2 className="mt-5 text-xl font-black text-slate-900 dark:text-white">Blank architecture canvas</h2>
+                        <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                          Studio 1 will place a fresh, validated architecture here after it understands the brief. No reference template is silently reused.
+                        </p>
+                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 px-3 py-1.5 text-[11px] font-bold text-slate-600 dark:text-slate-300 shadow-sm">
+                          <Sparkles className="w-3.5 h-3.5 text-teal-500" />
+                          Review inputs → Generate → Compare 3 options
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <DiagramViewerRenderSafe
+                      key={`studio1_viewport_${activeDiagram.id}_${isLight ? 'light' : 'dark'}_${versionHistory[currentHistoryIndex]?.id || currentHistoryIndex}_${activeDiagramDigest}`}
+                      diagramId="gcp_functional_flowchart"
+                      diagramType="functional_flowchart"
+                      xml={activeDiagram.xml}
+                      aspectRatioId="16:9"
+                      bgTheme={isLight ? 'light' : 'dark'}
+                      allowFullScaleScroll={false}
+                    />
+                  )}
                 </div>
 
                 {/* Floating Bottom-Right Quick Zoom Pill */}
@@ -2308,7 +2428,8 @@ function Studio1Content() {
                   <button
                     type="button"
                     onClick={handleOpenDrawioInline}
-                    className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                    disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+                    className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                     <span>Inline Draw.io Editor</span>
@@ -2317,7 +2438,8 @@ function Studio1Content() {
                   <button
                     type="button"
                     onClick={handleOpenDrawioNewTab}
-                    className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                    disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+                    className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
                     <span>Open in New Tab</span>
