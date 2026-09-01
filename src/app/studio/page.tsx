@@ -1370,8 +1370,8 @@ function StudioContent() {
         {/* MAIN SPLIT-SCREEN WORKSPACE: EXACT FULL HEIGHT MATCH */}
         <div className="flex-1 min-h-0 w-full max-w-[1760px] mx-auto p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-12 gap-3.5 overflow-hidden">
           
-          {/* LEFT COLUMN (4 COLS / ~33%): SPECIFICATION & PROMPT BRIEF */}
-          <div className={`lg:col-span-4 h-full flex flex-col min-h-0 rounded-2xl border shadow-sm overflow-hidden ${
+          {/* LEFT COLUMN (3 COLS / 25%): SPECIFICATION & PROMPT BRIEF */}
+          <div className={`lg:col-span-3 h-full flex flex-col min-h-0 rounded-2xl border shadow-sm overflow-hidden ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#0B111E] border-slate-800'
           }`}>
             
@@ -1719,8 +1719,8 @@ function StudioContent() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN (8 COLS / ~67%): FULL-HEIGHT LIVE CANVAS VIEWPORT */}
-          <div className={`lg:col-span-8 h-full flex flex-col min-h-0 rounded-2xl border shadow-xl overflow-hidden ${
+          {/* RIGHT COLUMN (9 COLS / 75%): FULL-HEIGHT LIVE CANVAS VIEWPORT */}
+          <div className={`lg:col-span-9 h-full flex flex-col min-h-0 rounded-2xl border shadow-xl overflow-hidden ${
             isLight ? 'bg-white border-slate-200 shadow-slate-200/50' : 'bg-[#0B111E] border-slate-800 shadow-2xl'
           }`}>
             
@@ -2184,42 +2184,6 @@ function StudioContent() {
                 </div>
               )}
             </div>
-
-            {/* MINIMAL SUBTLE FOOTER STATUS BAR */}
-            <div className={`px-4 py-2 border-t flex items-center justify-between gap-2 shrink-0 text-xs ${
-              isLight ? 'bg-slate-50/80 border-slate-100' : 'bg-slate-900/80 border-slate-800'
-            }`}>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleOpenInDrawio}
-                  className="px-2 py-1 rounded-lg text-xs font-bold bg-teal-600 hover:bg-teal-500 text-white transition-all flex items-center gap-1 cursor-pointer shadow-xs"
-                >
-                  <ExternalLink className="w-3 h-3" />
-                  <span>Draw.io</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(activeDiagram.xml);
-                    setCopiedXml(true);
-                    showToast('📋 Copied Draw.io XML to clipboard!');
-                    setTimeout(() => setCopiedXml(false), 2000);
-                  }}
-                  className="px-2 py-1 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer"
-                >
-                  {copiedXml ? <CheckCircle2 className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-                  <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2 text-[11px] text-slate-400 font-mono">
-                <span className="truncate">Target: <b>{activeDiagram.title.split('•')[0].trim()}</b></span>
-                <span>&bull;</span>
-                <span className="px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-600 dark:text-teal-400 font-bold">16:9 Vector GCP</span>
-              </div>
-            </div>
-
           </div>
 
         </div>
