@@ -90,6 +90,7 @@ export const BIOPHARMA_REFERENCE_TIERS: BiopharmaReferenceTier[] = [
   { tierNumber: 6, tierName: 'Tier 6: Cross-Cutting Sovereign Security & GxP Observability', subsystem: 'Sovereign Cloud Residency, Workload Identity & Immutable Audit Ledger', gcpTechStack: 'Assured Workloads (EU/US Sovereignty), IAM Workload Identity Federation, Cloud Audit Logs, Security Command Center', visualGrammars: ['17 IAM Flow', '18 Security / Trust Boundary', '21 SRE Observability', '34 Geographic'], complianceControls: 'EU GDPR Patient Data Residency, HIPAA BAA Compliance, Tamper-Proof Audit Trails' },
 ];
 
+import { generateTemplate00GcpEnterpriseArchXml } from "./template00GcpEnterpriseArch";
 import { generateTemplate01ExactV3Xml } from "./template01ExactV3";
 import { generateTemplate02CapabilityMapXml } from "./template02CapabilityMap";
 import { generateTemplate03SwimlaneXml } from "./template03Swimlane";
@@ -156,6 +157,18 @@ interface RawCanonicalTemplate {
 }
 
 const RAW_TEMPLATES: RawCanonicalTemplate[] = [
+  {
+    id: '00',
+    name: 'GCP Enterprise Architecture',
+    family: 'Reference Architectures',
+    level: 'L1',
+    primaryPurpose: 'Production-grade Google Cloud native topology across 6 balanced zones with Gemini 3.7 Flash & Pro hybrid engine',
+    examples: 'Multi-Region Microservices, Vertex AI GenAI Studio, Real-Time Event Streaming & Unified Lakehouse',
+    defaultDomain: 'Enterprise Google Cloud Native Architecture',
+    previewImage: '/templates/gcp_enterprise_architecture.png',
+    keyComponents: ['Ingress & Edge', 'Application Core Mesh', 'Real-Time Event Streaming', 'Vertex AI & Intelligence Hub', 'Multi-Region Lakehouse & DB', 'Zero-Trust Security Baseline'],
+    generateXml: generateTemplate00GcpEnterpriseArchXml
+  },
   {
     id: '01',
     name: 'System Context',

@@ -20,6 +20,20 @@ export interface CanonicalContract {
 }
 
 export const CANONICAL_CONTRACTS: Record<string, CanonicalContract> = {
+  '00': {
+    id: '00',
+    grammar: 'GCP Enterprise Architecture',
+    family: 'Reference Architectures',
+    level: ['L1', 'L2'],
+    semanticQuestion: 'What is the end-to-end multi-tier Google Cloud enterprise topology spanning edge ingress, application mesh, event streaming, Vertex AI, multi-region lakehouse, and zero-trust security?',
+    requiredElements: ['edge-ingress', 'application-mesh', 'event-streaming', 'vertex-ai-hub', 'multi-region-lakehouse', 'zero-trust-baseline'],
+    forbiddenElements: ['untyped-connectors', 'crossing-lines-over-text', 'unverified-external-urls'],
+    edgeTypes: ['direct-straight-sync', 'cdc-event-stream', 'vertex-rag', 'react-tool-loop', 'lakehouse-sync'],
+    iconPolicy: 'authentic-brand',
+    sourceImage: '00.png',
+    generatorVersion: '3.0',
+    certificationStatus: 'certified'
+  },
   '01': {
     id: '01',
     grammar: 'System Context',
