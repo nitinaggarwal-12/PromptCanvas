@@ -237,10 +237,10 @@ function StudioMain() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+    <div className="h-screen max-h-screen w-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
       
       {/* 1. SINGLE SLIM HEADER (48px) */}
-      <header className="w-full bg-white border-b border-slate-200 px-6 py-2 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+      <header className="w-full h-12 flex-shrink-0 bg-white border-b border-slate-200 px-6 py-2 flex items-center justify-between z-40 shadow-sm">
         
         {/* Left: Brand & Title with Version Dropdown */}
         <div className="flex items-center gap-3.5">
@@ -396,13 +396,13 @@ function StudioMain() {
       </header>
 
       {/* 2. MAIN WORKSPACE */}
-      <main className="flex-1 flex overflow-hidden">
+      <main className="flex-1 min-h-0 w-full flex overflow-hidden">
         
-        {/* LEFT: INTERACTIVE ARCHITECTURE ARCASSIST (330px) */}
-        <section className="w-[340px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col justify-between shadow-sm z-10">
+        {/* LEFT: INTERACTIVE ARCHITECTURE ARCASSIST (340px) */}
+        <section className="w-[340px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full min-h-0 overflow-hidden shadow-sm z-10">
           
           {/* Header */}
-          <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+          <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70 flex-shrink-0">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
               <Bot className="w-4 h-4 text-purple-600" />
               <span>ArcAssist</span>
@@ -411,7 +411,7 @@ function StudioMain() {
           </div>
 
           {/* Starter Chips (FTUX Pillar 1) */}
-          <div className="p-3 border-b border-slate-100 bg-slate-50/50 space-y-1.5">
+          <div className="p-3 border-b border-slate-100 bg-slate-50/50 space-y-1.5 flex-shrink-0">
             <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Instant 1-Click Starter Scenarios:</div>
             <div className="flex flex-col gap-1.5">
               <button
@@ -436,7 +436,7 @@ function StudioMain() {
           </div>
 
           {/* Messages Scroll Stream */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
+          <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3.5 text-xs">
             {messages.map(msg => {
               const isUser = msg.sender === 'user';
               return (
@@ -483,7 +483,7 @@ function StudioMain() {
           </div>
 
           {/* Sticky Prompt Composer */}
-          <div className="p-3 border-t border-slate-200 bg-slate-50/60 space-y-2">
+          <div className="p-3 border-t border-slate-200 bg-slate-50/60 space-y-2 flex-shrink-0">
             <div className="relative">
               <textarea
                 value={promptInput}
@@ -518,10 +518,10 @@ function StudioMain() {
         {activeView === 'diagram' ? (
           
           // VIEW 1: FULL 16:9 DIAGRAM CANVAS
-          <section className="flex-1 bg-[#F1F5F9] flex flex-col relative overflow-hidden">
+          <section className="flex-1 min-h-0 h-full bg-[#F1F5F9] flex flex-col relative overflow-hidden">
             
             {/* Inset Canvas Toolbar */}
-            <div className="px-6 py-2 border-b border-slate-200 bg-white/90 flex items-center justify-between text-xs">
+            <div className="px-6 py-2 border-b border-slate-200 bg-white/90 flex items-center justify-between text-xs flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1 bg-slate-100 border border-slate-200 px-2 py-1 rounded-md text-slate-700 font-medium">
                   <button onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')} className="px-1.5 hover:text-blue-600 font-bold">+ Add Node</button>
@@ -551,7 +551,7 @@ function StudioMain() {
             </div>
 
             {/* Canvas Viewport */}
-            <div className="flex-1 p-6 flex items-center justify-center overflow-auto">
+            <div className="flex-1 min-h-0 p-6 flex items-center justify-center overflow-auto">
               <div 
                 onClick={() => {
                   // Default sample click inspector for Cloud Spanner
