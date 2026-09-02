@@ -76,13 +76,19 @@ function StudioMain() {
   const searchParams = useSearchParams();
 
   // 1. Session UUID & Core Architecture State (AST & Living Specs)
-  const [sessionId, setSessionId] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      const urlId = new URLSearchParams(window.location.search).get('id');
-      if (urlId) return urlId;
+  const [sessionId, setSessionId] = useState<string>('ses_live_session');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const urlId = new URLSearchParams(window.location.search).get('id');
+    if (urlId) {
+      setSessionId(urlId);
+    } else {
+      const generated = 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+      setSessionId(generated);
     }
-    return 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-  });
+  }, []);
 
   const [ast, setAst] = useState<ArchitectureAst>(() => createDefaultFintechAst());
   const [activeView, setActiveView] = useState<'diagram' | 'specs'>('diagram');
@@ -415,7 +421,7 @@ function StudioMain() {
             title="Click to copy Persistent Unique Session ID"
           >
             <span className="text-slate-400 font-sans">Session:</span>
-            <span className="font-bold text-blue-600">{sessionId}</span>
+            <span className="font-bold text-blue-600" suppressHydrationWarning>{isClient ? sessionId : 'ses_...'}</span>
           </button>
 
           {/* New Session Button */}
