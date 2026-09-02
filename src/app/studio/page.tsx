@@ -43,7 +43,8 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  FileDown
+  FileDown,
+  MoreHorizontal
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -586,6 +587,8 @@ function StudioContent() {
   const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>(isLight ? 'light' : 'dark');
   const [showExportMenu, setShowExportMenu] = useState<boolean>(false);
   const exportMenuRef = useRef<HTMLDivElement>(null);
+  const [showMoreMenu, setShowMoreMenu] = useState<boolean>(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
 
   // Sync canvas theme with global theme by default
   useEffect(() => {
@@ -597,6 +600,9 @@ function StudioContent() {
     function handleClickOutside(event: MouseEvent) {
       if (exportMenuRef.current && !exportMenuRef.current.contains(event.target as Node)) {
         setShowExportMenu(false);
+      }
+      if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+        setShowMoreMenu(false);
       }
       if (diagramsMenuRef.current && !diagramsMenuRef.current.contains(event.target as Node)) {
         setShowDiagramsMenu(false);
@@ -1912,12 +1918,12 @@ function StudioContent() {
                 </div>
               </div>
 
-              {/* Right Side Actions: Edit in Canvas, Export, Diff, Replace, Zoom & Viewport */}
+              {/* Right Side Actions: Edit in Canvas, Export, More (Diff, Replace, XML) */}
               <div className="flex items-center gap-1.5 shrink-0">
                 {/* Primary Action: Edit in Canvas */}
                 <Link
                   href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
-                  className="px-2.5 py-1 rounded-xl font-bold text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-xl font-bold text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer"
                   title="Open in Design Canvas Workspace"
                 >
                   <Edit3 className="w-3 h-3" />
@@ -1929,7 +1935,7 @@ function StudioContent() {
                   <button
                     type="button"
                     onClick={() => setShowExportMenu(!showExportMenu)}
-                    className="px-2 py-1 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-teal-500 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                    className="px-2.5 py-1 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-teal-500 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer shadow-xs"
                     title="Export formats"
                   >
                     <Download className="w-3 h-3 text-teal-600 dark:text-teal-400" />
@@ -1961,12 +1967,66 @@ function StudioContent() {
                         <Code2 className="w-3.5 h-3.5 text-sky-500" />
                         <span>Download Draw.io XML</span>
                       </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* More Actions Dropdown (Diff, Replace, Copy XML, diagrams.net) */}
+                <div className="relative" ref={moreMenuRef}>
+                  <button
+                    type="button"
+                    onClick={() => setShowMoreMenu(!showMoreMenu)}
+                    className="p-1.5 rounded-xl font-bold text-xs bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-teal-500 text-slate-700 dark:text-slate-200 transition-all flex items-center justify-center cursor-pointer shadow-xs"
+                    title="More actions (Diff, Replace, XML, Editor)"
+                  >
+                    <MoreHorizontal className="w-3.5 h-3.5" />
+                  </button>
+
+                  {showMoreMenu && (
+                    <div className={`absolute right-0 top-full mt-1.5 w-56 z-50 rounded-2xl border shadow-2xl p-1.5 space-y-1 ${
+                      isLight ? 'bg-white border-slate-200 shadow-slate-400/30' : 'bg-[#0F172A] border-slate-800 shadow-2xl'
+                    }`}>
+                      {/* Compare Diff */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDiffBaseIndex(versionHistory.length > 1 ? 1 : 0);
+                          setShowDiffModal(true);
+                          setShowMoreMenu(false);
+                        }}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
+                      >
+                        <GitCompare className="w-3.5 h-3.5 text-teal-500" />
+                        <span>Compare Version Diff</span>
+                      </button>
+
+                      {/* Replace Blueprint */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setBlueprintModalMode('replace');
+                          setShowReplaceModal(true);
+                          setShowMoreMenu(false);
+                        }}
+                        className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
+                          isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
+                        }`}
+                      >
+                        <RefreshCw className="w-3.5 h-3.5 text-indigo-500" />
+                        <span>Replace Blueprint...</span>
+                      </button>
+
+                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-1" />
+
+                      {/* Copy XML */}
                       <button
                         type="button"
                         onClick={() => {
                           navigator.clipboard.writeText(activeDiagram.xml);
                           setCopiedXml(true);
-                          setShowExportMenu(false);
+                          setShowMoreMenu(false);
                           showToast('📋 Copied Draw.io XML to clipboard!');
                           setTimeout(() => setCopiedXml(false), 2000);
                         }}
@@ -1977,130 +2037,24 @@ function StudioContent() {
                         <Copy className="w-3.5 h-3.5 text-emerald-500" />
                         <span>Copy Draw.io XML</span>
                       </button>
-                      <div className="h-px bg-slate-200 dark:bg-slate-800 my-1" />
+
+                      {/* Open in diagrams.net */}
                       <button
                         type="button"
                         onClick={() => {
                           handleOpenInDrawio();
-                          setShowExportMenu(false);
+                          setShowMoreMenu(false);
                         }}
                         className={`w-full text-left p-2 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition ${
                           isLight ? 'hover:bg-slate-100 text-slate-800' : 'hover:bg-slate-800 text-slate-200'
                         }`}
                       >
-                        <ExternalLink className="w-3.5 h-3.5 text-indigo-500" />
+                        <ExternalLink className="w-3.5 h-3.5 text-sky-500" />
                         <span>Open in diagrams.net</span>
                       </button>
                     </div>
                   )}
                 </div>
-
-                {/* Diff */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDiffBaseIndex(versionHistory.length > 1 ? 1 : 0);
-                    setShowDiffModal(true);
-                  }}
-                  className="px-2 py-1 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
-                  title="Compare Diff"
-                >
-                  <GitCompare className="w-3 h-3 text-teal-500" />
-                  <span className="hidden sm:inline">Diff</span>
-                </button>
-
-                {/* Replace */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setBlueprintModalMode('replace');
-                    setShowReplaceModal(true);
-                  }}
-                  className="px-2 py-1 rounded-xl font-bold text-xs bg-slate-200 dark:bg-slate-800 hover:bg-teal-50 dark:hover:bg-teal-950/40 text-slate-700 dark:text-slate-200 hover:text-teal-600 transition-all flex items-center gap-1 cursor-pointer"
-                  title="Replace Blueprint"
-                >
-                  <RefreshCw className="w-3 h-3" />
-                  <span className="hidden sm:inline">Replace</span>
-                </button>
-
-                {/* Canvas Theme Toggle */}
-                <button
-                  type="button"
-                  onClick={() => setCanvasTheme(canvasTheme === 'light' ? 'dark' : 'light')}
-                  className={`p-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                    canvasTheme === 'dark'
-                      ? 'bg-slate-800 text-amber-300 border-slate-700 hover:bg-slate-700'
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
-                  }`}
-                  title={`Canvas Theme (${canvasTheme})`}
-                >
-                  {canvasTheme === 'dark' ? <Moon className="w-3 h-3" /> : <Sun className="w-3 h-3 text-amber-500" />}
-                </button>
-
-                {/* Zoom */}
-                <div className="flex items-center rounded-lg border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 p-0.5 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => setCanvasZoom(z => Math.max(0.6, Number((z - 0.1).toFixed(1))))}
-                    className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-                    title="Zoom Out"
-                  >
-                    <ZoomOut className="w-2.5 h-2.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCanvasZoom(1)}
-                    className="px-1 py-0.5 text-[9.5px] font-mono font-bold text-slate-600 dark:text-slate-300 hover:text-teal-500 cursor-pointer"
-                    title="Reset Zoom"
-                  >
-                    {Math.round(canvasZoom * 100)}%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCanvasZoom(z => Math.min(1.8, Number((z + 0.1).toFixed(1))))}
-                    className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer"
-                    title="Zoom In"
-                  >
-                    <ZoomIn className="w-2.5 h-2.5" />
-                  </button>
-                </div>
-
-                {/* Fullscreen Expand */}
-                <button
-                  type="button"
-                  onClick={() => setIsFullscreen(!isFullscreen)}
-                  className={`p-1 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-                    isFullscreen
-                      ? 'bg-teal-600 text-white border-teal-500'
-                      : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:text-teal-500'
-                  }`}
-                  title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
-                >
-                  {isFullscreen ? <Minimize2 className="w-3 h-3" /> : <Maximize2 className="w-3 h-3" />}
-                </button>
-
-                {studioMode === 'both' && (
-                  <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-[10px] font-bold">
-                    <button
-                      type="button"
-                      onClick={() => setPreviewTab('diagram')}
-                      className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
-                        previewTab === 'diagram' ? 'bg-white dark:bg-slate-900 text-teal-600 shadow-xs' : 'text-slate-500'
-                      }`}
-                    >
-                      Blueprint
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPreviewTab('spec')}
-                      className={`px-1.5 py-0.5 rounded transition-all cursor-pointer ${
-                        previewTab === 'spec' ? 'bg-white dark:bg-slate-900 text-sky-600 shadow-xs' : 'text-slate-500'
-                      }`}
-                    >
-                      Spec
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
 
@@ -2108,6 +2062,73 @@ function StudioContent() {
             <div className={`flex-1 min-h-0 w-full relative flex items-center justify-center overflow-hidden transition-colors ${
               canvasTheme === 'light' ? 'bg-white' : 'bg-[#070A13]'
             }`}>
+              {/* FLOATING CANVAS CONTROLS (BOTTOM-RIGHT GLASS PILL - Figma/Miro style) */}
+              {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) && (
+                <div className="absolute bottom-4 right-4 z-30 flex items-center gap-1 p-1 rounded-xl bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 shadow-xl text-xs">
+                  {/* Canvas Theme Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => setCanvasTheme(canvasTheme === 'light' ? 'dark' : 'light')}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      canvasTheme === 'dark'
+                        ? 'text-amber-300 hover:bg-slate-800'
+                        : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                    title={`Canvas Theme (${canvasTheme})`}
+                  >
+                    {canvasTheme === 'dark' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
+                  </button>
+
+                  <div className="w-px h-3.5 bg-slate-200 dark:bg-slate-800 my-auto" />
+
+                  {/* Zoom Out */}
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(z => Math.max(0.6, Number((z - 0.1).toFixed(1))))}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer transition-colors"
+                    title="Zoom Out"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Reset Zoom */}
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(1)}
+                    className="px-1.5 py-0.5 text-[10.5px] font-mono font-bold text-slate-700 dark:text-slate-200 hover:text-teal-500 cursor-pointer"
+                    title="Reset Zoom"
+                  >
+                    {Math.round(canvasZoom * 100)}%
+                  </button>
+
+                  {/* Zoom In */}
+                  <button
+                    type="button"
+                    onClick={() => setCanvasZoom(z => Math.min(1.8, Number((z + 0.1).toFixed(1))))}
+                    className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 cursor-pointer transition-colors"
+                    title="Zoom In"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+
+                  <div className="w-px h-3.5 bg-slate-200 dark:bg-slate-800 my-auto" />
+
+                  {/* Fullscreen Expand */}
+                  <button
+                    type="button"
+                    onClick={() => setIsFullscreen(!isFullscreen)}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      isFullscreen
+                        ? 'bg-teal-600 text-white'
+                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-teal-500'
+                    }`}
+                    title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
+                  >
+                    {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              )}
+
               {(studioMode === 'diagrams' || (studioMode === 'both' && previewTab === 'diagram')) ? (
                 (!hasSynthesized && activeDiagram.source === 'scratch') ? (
                   <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center space-y-4">
