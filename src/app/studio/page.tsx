@@ -572,6 +572,9 @@ function StudioMain() {
             activeDocId={activeDocId}
             onSelectDoc={id => setActiveDocId(id)}
             onSwitchToDiagramView={() => setActiveView('diagram')}
+            currentXml={xml}
+            projectName={ast.metadata.projectTitle}
+            useCaseName={ast.metadata.domain}
           />
 
         )}
