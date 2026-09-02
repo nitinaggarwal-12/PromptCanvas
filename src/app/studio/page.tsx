@@ -34,6 +34,7 @@ import { ComponentInspectorDrawer } from '@/components/studio/ComponentInspector
 import { BrainGroundingModal } from '@/components/studio/BrainGroundingModal';
 import { AudioBriefingModal } from '@/components/studio/AudioBriefingModal';
 import { LivingSpecsViewer } from '@/components/studio/LivingSpecsViewer';
+import { HierarchicalSyncCard } from '@/components/studio/HierarchicalSyncCard';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -457,19 +458,24 @@ function StudioMain() {
                   </p>
 
                   {msg.actionSummary && (
-                    <div className="bg-white border border-slate-200 rounded-lg p-2.5 space-y-1.5 text-[10.5px] shadow-2xs mt-2">
-                      <div className="font-bold text-slate-700 flex items-center justify-between">
-                        <span>⚡ Synced in {msg.actionSummary.versionTag}:</span>
-                      </div>
-                      <div className="space-y-1 text-slate-600">
-                        <div className="flex items-start gap-1.5 text-emerald-700 font-medium">
-                          <span>📐</span> <span>{msg.actionSummary.canvasDiff}</span>
-                        </div>
-                        <div className="flex items-start gap-1.5 text-blue-700 font-medium">
-                          <span>📑</span> <span>{msg.actionSummary.specDiff}</span>
-                        </div>
-                      </div>
-                    </div>
+                    <HierarchicalSyncCard
+                      versionTag={msg.actionSummary.versionTag}
+                      canvasDiff={msg.actionSummary.canvasDiff}
+                      specDiff={msg.actionSummary.specDiff}
+                      projectTitle={ast.metadata.projectTitle}
+                      domain={ast.metadata.domain}
+                      livingSpecs={livingSpecs}
+                      components={ast.components}
+                      onSelectDoc={(docId) => {
+                        setActiveView('specs');
+                        setActiveDocId(docId);
+                      }}
+                      onSelectNode={(comp) => {
+                        setActiveView('diagram');
+                        setSelectedComponent(comp);
+                      }}
+                      onSwitchToDiagram={() => setActiveView('diagram')}
+                    />
                   )}
                 </div>
               );
