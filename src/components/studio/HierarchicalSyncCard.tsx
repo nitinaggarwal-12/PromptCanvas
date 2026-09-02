@@ -12,7 +12,10 @@ import {
   Sparkles,
   Layers,
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Share2,
+  Copy,
+  Check
 } from 'lucide-react';
 import { LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
 import { AstComponent } from '@/lib/ast/architectureAst';
@@ -28,6 +31,7 @@ export interface HierarchicalSyncCardProps {
   onSelectDoc: (docId: string) => void;
   onSelectNode: (component: AstComponent) => void;
   onSwitchToDiagram: () => void;
+  onShareObject?: (targetType: 'project' | 'doc' | 'node', id: string, title: string) => void;
 }
 
 export function HierarchicalSyncCard({
@@ -40,15 +44,32 @@ export function HierarchicalSyncCard({
   components,
   onSelectDoc,
   onSelectNode,
-  onSwitchToDiagram
+  onSwitchToDiagram,
+  onShareObject
 }: HierarchicalSyncCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const showHierarchy = isOpen || isHovered;
 
   // Highlight top 6 critical core nodes for horizontal pill tray
   const coreNodes = components.slice(0, 6);
+
+  const handleCopyQuickLink = (e: React.MouseEvent, type: 'project' | 'doc' | 'node', id: string, title: string) => {
+    e.stopPropagation();
+    if (onShareObject) {
+      onShareObject(type, id, title);
+    } else {
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      let url = `${origin}/studio?project=${encodeURIComponent(projectTitle)}&v=${versionTag}`;
+      if (type === 'doc') url += `&view=specs&doc=${id}`;
+      if (type === 'node') url += `&view=diagram&node=${id}`;
+      navigator.clipboard.writeText(url);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    }
+  };
 
   return (
     <div 
@@ -85,8 +106,16 @@ export function HierarchicalSyncCard({
           
           {/* Level 1 & 2: Project & Use Case Breadcrumb */}
           <div className="space-y-1 pb-2 border-b border-slate-100">
-            <div className="flex items-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-              <span>Hierarchy Drill-Down</span>
+            <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              <span>Hierarchy Drill-Down & Unique IDs</span>
+              <button
+                type="button"
+                onClick={(e) => handleCopyQuickLink(e, 'project', 'proj_root', projectTitle)}
+                className="text-blue-600 hover:underline flex items-center gap-0.5 normal-case font-semibold text-[9px]"
+              >
+                <Share2 className="w-2.5 h-2.5" />
+                <span>Share Project</span>
+              </button>
             </div>
             
             <div className="flex items-center gap-1.5 flex-wrap text-slate-800 font-medium">
@@ -96,7 +125,7 @@ export function HierarchicalSyncCard({
                   onSelectDoc('DOC-01');
                 }}
                 className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 transition border border-slate-200 truncate max-w-[130px]"
-                title={projectTitle}
+                title={`Project ID: proj_${projectTitle.toLowerCase().replace(/[^a-z0-9]/g, '_')}`}
               >
                 <Building2 className="w-2.5 h-2.5 text-blue-600 shrink-0" />
                 <span className="truncate">{projectTitle}</span>
@@ -110,7 +139,7 @@ export function HierarchicalSyncCard({
                   onSelectDoc('DOC-01');
                 }}
                 className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 transition border border-slate-200 truncate max-w-[120px]"
-                title={domain}
+                title={`Use Case ID: uc_${domain.toLowerCase().replace(/[^a-z0-9]/g, '_')}`}
               >
                 <Target className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
                 <span className="truncate">{domain}</span>
@@ -125,21 +154,37 @@ export function HierarchicalSyncCard({
                 <FileText className="w-3 h-3 text-indigo-500" />
                 <span>Synchronized Living Specs ({livingSpecs.length})</span>
               </span>
-              <span className="text-[9px] text-slate-400">Click to view doc</span>
+              <span className="text-[9px] text-slate-400">Click pill or share icon</span>
             </div>
 
             <div className="flex flex-wrap gap-1 max-h-[90px] overflow-y-auto p-0.5">
               {livingSpecs.map(doc => (
-                <button
+                <div
                   key={doc.id}
-                  type="button"
-                  onClick={() => onSelectDoc(doc.id)}
-                  className="px-2 py-0.5 rounded-md bg-indigo-50/60 hover:bg-indigo-100 text-indigo-800 hover:text-indigo-950 border border-indigo-200/80 transition text-[9.5px] font-semibold flex items-center gap-1 shadow-2xs"
-                  title={`${doc.id}: ${doc.title}`}
+                  className="group relative flex items-center bg-indigo-50/60 hover:bg-indigo-100 text-indigo-800 hover:text-indigo-950 border border-indigo-200/80 rounded-md transition shadow-2xs"
                 >
-                  <span className="font-mono text-[9px] font-bold text-indigo-600">{doc.id}</span>
-                  <span className="truncate max-w-[75px]">{doc.shortTitle || doc.title.split(' ')[0]}</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => onSelectDoc(doc.id)}
+                    className="px-2 py-0.5 text-[9.5px] font-semibold flex items-center gap-1"
+                    title={`Unique ID: ${doc.id} - ${doc.title}`}
+                  >
+                    <span className="font-mono text-[9px] font-bold text-indigo-600">{doc.id}</span>
+                    <span className="truncate max-w-[70px]">{doc.shortTitle || doc.title.split(' ')[0]}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleCopyQuickLink(e, 'doc', doc.id, `${doc.id}: ${doc.title}`)}
+                    className="p-1 hover:bg-indigo-200/80 text-indigo-600 rounded-r-md transition"
+                    title={`Share ${doc.id} deep link`}
+                  >
+                    {copiedId === doc.id ? (
+                      <Check className="w-2.5 h-2.5 text-emerald-600" />
+                    ) : (
+                      <Share2 className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100" />
+                    )}
+                  </button>
+                </div>
               ))}
             </div>
           </div>
@@ -163,28 +208,44 @@ export function HierarchicalSyncCard({
 
             <div className="flex flex-wrap gap-1 max-h-[85px] overflow-y-auto p-0.5">
               {coreNodes.map(comp => (
-                <button
+                <div
                   key={comp.id}
-                  type="button"
-                  onClick={() => {
-                    onSwitchToDiagram();
-                    onSelectNode(comp);
-                  }}
-                  className="px-2 py-0.5 rounded-md bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 hover:text-emerald-950 border border-emerald-200/80 transition text-[9.5px] font-medium flex items-center gap-1 shadow-2xs truncate max-w-[135px]"
-                  title={`Inspect ${comp.name} (${comp.service})`}
+                  className="group relative flex items-center bg-emerald-50/60 hover:bg-emerald-100 text-emerald-800 hover:text-emerald-950 border border-emerald-200/80 rounded-md transition shadow-2xs"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span className="truncate">{comp.name}</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSwitchToDiagram();
+                      onSelectNode(comp);
+                    }}
+                    className="px-2 py-0.5 text-[9.5px] font-medium flex items-center gap-1 truncate max-w-[125px]"
+                    title={`Unique ID: ${comp.id} • Service: ${comp.service}`}
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span className="truncate">{comp.name}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleCopyQuickLink(e, 'node', comp.id, comp.name)}
+                    className="p-1 hover:bg-emerald-200/80 text-emerald-600 rounded-r-md transition"
+                    title={`Share ${comp.name} deep link`}
+                  >
+                    {copiedId === comp.id ? (
+                      <Check className="w-2.5 h-2.5 text-emerald-600" />
+                    ) : (
+                      <Share2 className="w-2.5 h-2.5 opacity-60 group-hover:opacity-100" />
+                    )}
+                  </button>
+                </div>
               ))}
             </div>
           </div>
 
           {/* Diff Summary Footer */}
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[9px] text-slate-400">
-            <span className="truncate max-w-[200px] text-emerald-700">📐 {canvasDiff}</span>
+            <span className="truncate max-w-[180px] text-emerald-700">📐 {canvasDiff}</span>
             <span className="text-slate-300">|</span>
-            <span className="truncate max-w-[100px] text-indigo-700">📑 {specDiff}</span>
+            <span className="truncate max-w-[110px] text-indigo-700">📑 {specDiff}</span>
           </div>
 
         </div>

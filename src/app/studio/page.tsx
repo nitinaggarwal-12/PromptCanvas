@@ -24,7 +24,9 @@ import {
   ArrowRight,
   Sliders,
   Shield,
-  Server
+  Server,
+  Share2,
+  Users
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
@@ -35,6 +37,7 @@ import { BrainGroundingModal } from '@/components/studio/BrainGroundingModal';
 import { AudioBriefingModal } from '@/components/studio/AudioBriefingModal';
 import { LivingSpecsViewer } from '@/components/studio/LivingSpecsViewer';
 import { HierarchicalSyncCard } from '@/components/studio/HierarchicalSyncCard';
+import { ObjectShareModal } from '@/components/studio/ObjectShareModal';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -105,6 +108,68 @@ function StudioMain() {
     }
   ]);
   const [activeVersionTag, setActiveVersionTag] = useState('v1.1');
+
+  // Object-Level Granular Sharing & Collaboration State
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareTargetType, setShareTargetType] = useState<'project' | 'doc' | 'node' | 'version'>('project');
+  const [shareTargetId, setShareTargetId] = useState('proj_root');
+  const [shareTargetTitle, setShareTargetTitle] = useState(ast.metadata.projectTitle);
+
+  const handleOpenShare = useCallback((type: 'project' | 'doc' | 'node' | 'version', id: string, title: string) => {
+    setShareTargetType(type);
+    setShareTargetId(id);
+    setShareTargetTitle(title);
+    setIsShareModalOpen(true);
+  }, []);
+
+  // Hydrate State from URL Deep-Link parameters on initial mount
+  useEffect(() => {
+    if (!searchParams) return;
+    const viewParam = searchParams.get('view');
+    const docParam = searchParams.get('doc');
+    const nodeParam = searchParams.get('node');
+    const vParam = searchParams.get('v');
+
+    if (viewParam === 'specs' || viewParam === 'diagram') {
+      setActiveView(viewParam);
+    }
+    if (docParam) {
+      setActiveDocId(docParam);
+      setActiveView('specs');
+    }
+    if (nodeParam) {
+      const paramLower = nodeParam.toLowerCase();
+      const matched = ast.components.find(
+        c => c.id.toLowerCase() === paramLower ||
+             c.name.toLowerCase().includes(paramLower) ||
+             c.service.toLowerCase().includes(paramLower) ||
+             paramLower.includes(c.id.toLowerCase())
+      );
+      if (matched) {
+        setSelectedComponent(matched);
+        setActiveView('diagram');
+      }
+    }
+    if (vParam) {
+      setActiveVersionTag(vParam);
+    }
+  }, [searchParams, ast.components]);
+
+  // Continuously synchronize browser URL with active object hierarchy without page reloads
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams();
+    if (ast.metadata.projectTitle) params.set('project', ast.metadata.projectTitle);
+    params.set('v', activeVersionTag);
+    params.set('view', activeView);
+    if (activeView === 'specs' && activeDocId) {
+      params.set('doc', activeDocId);
+    } else if (activeView === 'diagram' && selectedComponent) {
+      params.set('node', selectedComponent.id);
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+  }, [activeView, activeDocId, selectedComponent, activeVersionTag, ast.metadata.projectTitle]);
 
   // 4. Conversational Turn Stream
   const [messages, setMessages] = useState<StudioChatMessage[]>([
@@ -314,8 +379,18 @@ function StudioMain() {
         </div>
 
         {/* Right: Audio Briefing, Brain Grounding & Export */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           
+          {/* Share & Collaborate Granular Object Button */}
+          <button
+            onClick={() => handleOpenShare('project', 'proj_root', ast.metadata.projectTitle)}
+            className="flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-lg transition shadow-2xs"
+            title="Share & Collaborate at Object Hierarchy Level"
+          >
+            <Share2 className="w-3.5 h-3.5 text-blue-600" />
+            <span>Share & Collaborate</span>
+          </button>
+
           {/* Audio Overview Pill */}
           <button
             onClick={() => setIsAudioModalOpen(true)}
@@ -475,6 +550,7 @@ function StudioMain() {
                         setSelectedComponent(comp);
                       }}
                       onSwitchToDiagram={() => setActiveView('diagram')}
+                      onShareObject={(type, id, title) => handleOpenShare(type, id, title)}
                     />
                   )}
                 </div>
@@ -578,6 +654,7 @@ function StudioMain() {
             activeDocId={activeDocId}
             onSelectDoc={id => setActiveDocId(id)}
             onSwitchToDiagramView={() => setActiveView('diagram')}
+            onShareDoc={doc => handleOpenShare('doc', doc.id, `${doc.id}: ${doc.title}`)}
             currentXml={xml}
             projectName={ast.metadata.projectTitle}
             useCaseName={ast.metadata.domain}
@@ -592,6 +669,7 @@ function StudioMain() {
         component={selectedComponent}
         onClose={() => setSelectedComponent(null)}
         onAiRefinePrompt={prompt => handleExecutePrompt(prompt)}
+        onShareNode={node => handleOpenShare('node', node.id, node.name)}
       />
 
       <BrainGroundingModal
@@ -605,6 +683,19 @@ function StudioMain() {
         isOpen={isAudioModalOpen}
         onClose={() => setIsAudioModalOpen(false)}
         title={ast.metadata.projectTitle}
+      />
+
+      <ObjectShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        targetType={shareTargetType}
+        targetId={shareTargetId}
+        targetTitle={shareTargetTitle}
+        projectTitle={ast.metadata.projectTitle}
+        domain={ast.metadata.domain}
+        activeVersionTag={activeVersionTag}
+        activeDoc={livingSpecs.find(d => d.id === activeDocId)}
+        activeNode={selectedComponent}
       />
 
     </div>

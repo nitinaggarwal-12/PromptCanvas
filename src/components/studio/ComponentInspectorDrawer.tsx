@@ -1,16 +1,17 @@
 'use client';
 
 import React from 'react';
-import { X, Copy, Check, Shield, Server, Zap, ExternalLink, Sparkles } from 'lucide-react';
+import { X, Copy, Check, Shield, Server, Zap, ExternalLink, Sparkles, Share2 } from 'lucide-react';
 import { AstComponent } from '@/lib/ast/architectureAst';
 
 interface ComponentInspectorProps {
   component: AstComponent | null;
   onClose: () => void;
   onAiRefinePrompt?: (prompt: string) => void;
+  onShareNode?: (component: AstComponent) => void;
 }
 
-export function ComponentInspectorDrawer({ component, onClose, onAiRefinePrompt }: ComponentInspectorProps) {
+export function ComponentInspectorDrawer({ component, onClose, onAiRefinePrompt, onShareNode }: ComponentInspectorProps) {
   const [copiedTf, setCopiedTf] = React.useState(false);
 
   if (!component) return null;
@@ -44,15 +45,29 @@ export function ComponentInspectorDrawer({ component, onClose, onAiRefinePrompt 
           </div>
           <div>
             <h3 className="font-bold text-sm text-slate-900 leading-tight">{component.name}</h3>
-            <p className="text-[11px] text-slate-500 font-mono">{component.service} • {component.region}</p>
+            <p className="text-[11px] text-slate-500 font-mono">
+              ID: <span className="text-blue-600 font-semibold">{component.id}</span> • {component.service}
+            </p>
           </div>
         </div>
-        <button 
-          onClick={onClose}
-          className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-700 transition"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {onShareNode && (
+            <button
+              onClick={() => onShareNode(component)}
+              className="p-1.5 hover:bg-blue-50 text-blue-600 rounded-lg transition border border-transparent hover:border-blue-200 flex items-center gap-1 text-[11px] font-semibold"
+              title="Share Node Deep Link"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>Share</span>
+            </button>
+          )}
+          <button 
+            onClick={onClose}
+            className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-700 transition"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Body Content */}

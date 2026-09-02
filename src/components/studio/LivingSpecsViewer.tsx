@@ -29,6 +29,7 @@ interface LivingSpecsViewerProps {
   activeDocId: string;
   onSelectDoc: (id: string) => void;
   onSwitchToDiagramView: () => void;
+  onShareDoc?: (doc: LivingSpecDocument) => void;
   currentXml?: string;
   projectName?: string;
   useCaseName?: string;
@@ -39,6 +40,7 @@ export function LivingSpecsViewer({
   activeDocId,
   onSelectDoc,
   onSwitchToDiagramView,
+  onShareDoc,
   currentXml = "",
   projectName = "Google Cloud Enterprise",
   useCaseName = "Multi-Tier Native Reference Architecture"
@@ -117,9 +119,20 @@ export function LivingSpecsViewer({
             <span>{isEditing ? "Preview" : "Edit"}</span>
           </button>
 
+          {onShareDoc && (
+            <button
+              onClick={() => onShareDoc(activeDoc)}
+              className="px-2.5 py-1 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
+              title="Share Document Deep Link"
+            >
+              <Share2 className="w-3.5 h-3.5 text-blue-600" />
+              <span>Share Doc</span>
+            </button>
+          )}
+
           <button
             onClick={handleDownload}
-            className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition"
+            className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
             title="Download Markdown Spec"
           >
             <Download className="w-3.5 h-3.5" />
@@ -128,7 +141,7 @@ export function LivingSpecsViewer({
           
           <button
             onClick={handleCopy}
-            className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition"
+            className="px-2.5 py-1 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition"
           >
             {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? "Copied!" : "Copy Spec"}</span>
