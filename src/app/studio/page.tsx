@@ -307,7 +307,7 @@ function StudioMain() {
               activeView === 'specs' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <span>📑</span> <span>Living Specs (10 Docs)</span>
+            <span>📑</span> <span>Living Specs ({livingSpecs.length} Docs)</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
           </button>
         </div>
@@ -385,7 +385,7 @@ function StudioMain() {
                   className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-800 font-medium flex items-center gap-2"
                 >
                   <FileText className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Download 10-Spec Bundle</span>
+                  <span>Download 16-Spec Bundle</span>
                 </button>
               </div>
             )}

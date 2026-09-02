@@ -349,7 +349,7 @@ export function generateTemplate24RagKnowledgeFlowXml(
     }
   });
 
-  cell("lbl_flow_footer", `<div style="font-size:7.5px;font-weight:700;color:#1E40AF;text-align:center;line-height:1.35;padding:4px 6px;"><b>Production Data Flow SLA:</b> Real-time semantic context retrieval pipeline with continuous relevance evaluation and RAG Triad verification (Faithfulness &gt; 0.98)</div>`, 256, 882, 476, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+  cell("lbl_flow_footer", `<div style="font-size:7.5px;font-weight:700;color:#1E40AF;text-align:center;line-height:1.3;padding:2px 8px;"><b>Production Data Flow SLA:</b> Real-time semantic context retrieval pipeline with continuous relevance evaluation and RAG Triad verification (Faithfulness &gt; 0.98)</div>`, 262, 880, 464, 44, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
 
   // 3. Observability & Monitoring (w=230)
   cell("box_b_obs", "", 742, 726, 230, 228, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
