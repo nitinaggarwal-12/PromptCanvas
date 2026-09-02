@@ -220,7 +220,7 @@ function StudioMain() {
   // Open in diagrams.net Web Editor
   const handleOpenDiagramsNet = () => {
     const encoded = encodeURIComponent(xml);
-    window.open(`https://app.diagrams.net/?embed=1&ui=min#R${encoded}`, '_blank');
+    window.open(`https://app.diagrams.net/#R${encoded}`, '_blank');
   };
 
   // Export 10-Spec Markdown Bundle
@@ -397,14 +397,14 @@ function StudioMain() {
       {/* 2. MAIN WORKSPACE */}
       <main className="flex-1 flex overflow-hidden">
         
-        {/* LEFT: INTERACTIVE ARCHITECTURE CO-PILOT (330px) */}
+        {/* LEFT: INTERACTIVE ARCHITECTURE ARCASSIST (330px) */}
         <section className="w-[340px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col justify-between shadow-sm z-10">
           
           {/* Header */}
           <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
               <Bot className="w-4 h-4 text-purple-600" />
-              <span>Architecture Co-Pilot</span>
+              <span>ArcAssist</span>
             </div>
             <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-semibold">Gemini 2.5 Pro</span>
           </div>
@@ -447,7 +447,7 @@ function StudioMain() {
                 >
                   <div className="flex items-center justify-between text-[11px]">
                     <span className={`font-bold ${isUser ? 'text-blue-900' : 'text-slate-700'}`}>
-                      {isUser ? '👤 You asked:' : '🤖 Co-Pilot Synthesis:'}
+                      {isUser ? '👤 You asked:' : '🤖 ArcAssist Synthesis:'}
                     </span>
                     <span className="font-mono text-[10px] text-slate-400">{msg.timestamp}</span>
                   </div>
@@ -489,7 +489,7 @@ function StudioMain() {
                   }
                 }}
                 rows={2}
-                placeholder="Ask Co-Pilot to edit diagram or update specs..."
+                placeholder="Ask ArcAssist to edit diagram or update specs..."
                 className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-sm"
               />
               <button

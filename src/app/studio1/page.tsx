@@ -1118,7 +1118,7 @@ function Studio1Content() {
 
   // Open in Draw.io New Tab
   const handleOpenDrawioNewTab = useCallback(() => {
-    const url = 'https://app.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
+    const url = 'https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
     const child = window.open(url, '_blank');
     if (child) {
       drawioChildWindowRef.current = child;
@@ -2062,7 +2062,7 @@ function Studio1Content() {
                   <label className="text-xs font-black uppercase tracking-wider text-slate-500 block truncate">
                     4. Scope &amp; Topology Prompt
                   </label>
-                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Two-way Architecture Copilot</span>
+                  <span className="text-[9.5px] font-mono text-teal-600 dark:text-teal-400 font-bold shrink-0">Two-way ArcAssist</span>
                 </div>
 
                 {/* Scrollable Prompt & Enhancement History Feed */}
@@ -2112,7 +2112,7 @@ function Studio1Content() {
                     {isAiThinking && (
                       <div className="flex items-center gap-2 text-xs text-teal-600 font-bold p-2">
                         <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                        <span>Architecture Copilot is interpreting intent and validating a candidate response...</span>
+                        <span>ArcAssist is interpreting intent and validating a candidate response...</span>
                       </div>
                     )}
                     <div ref={chatMessagesEndRef} />
@@ -2186,7 +2186,7 @@ function Studio1Content() {
                   ) : (
                     <>
                       <Zap className="w-4 h-4 text-amber-300" />
-                      <span>{activeDiagram.semanticGraph ? 'Send to Architecture Copilot' : 'Generate Architecture Draft'}</span>
+                      <span>{activeDiagram.semanticGraph ? 'Send to ArcAssist' : 'Generate Architecture Draft'}</span>
                     </>
                   )}
                 </button>

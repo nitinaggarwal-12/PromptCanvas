@@ -978,7 +978,7 @@ function Studio2Content() {
 
   // Open in Draw.io New Tab
   const handleOpenDrawioNewTab = useCallback(() => {
-    const url = 'https://app.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
+    const url = 'https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
     const child = window.open(url, '_blank');
     if (child) {
       drawioChildWindowRef.current = child;

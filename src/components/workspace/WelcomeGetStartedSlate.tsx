@@ -356,7 +356,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
                 }`}>
                   <CheckCircle2 className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                   <div>
-                    <div className={`text-xs font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>AI Co-Pilot On Demand</div>
+                    <div className={`text-xs font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>AI ArcAssist On Demand</div>
                     <div className={`text-[10px] mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Ask Gemini to expand, audit, or refactor anytime</div>
                   </div>
                 </div>
