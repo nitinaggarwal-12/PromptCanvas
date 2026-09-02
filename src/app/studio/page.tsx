@@ -27,7 +27,8 @@ import {
   Server,
   Share2,
   Users,
-  Plus
+  Plus,
+  Bookmark
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
@@ -39,6 +40,7 @@ import { AudioBriefingModal } from '@/components/studio/AudioBriefingModal';
 import { LivingSpecsViewer } from '@/components/studio/LivingSpecsViewer';
 import { HierarchicalSyncCard } from '@/components/studio/HierarchicalSyncCard';
 import { ObjectShareModal } from '@/components/studio/ObjectShareModal';
+import { SaveToLibraryModal } from '@/components/studio/SaveToLibraryModal';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -123,6 +125,10 @@ function StudioMain() {
   const [shareTargetType, setShareTargetType] = useState<'project' | 'doc' | 'node' | 'version'>('project');
   const [shareTargetId, setShareTargetId] = useState('proj_root');
   const [shareTargetTitle, setShareTargetTitle] = useState(ast.metadata.projectTitle);
+
+  // Save to Library Promotion State
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isSavedInLibrary, setIsSavedInLibrary] = useState(() => sessionId.startsWith('proj_'));
 
   const handleOpenShare = useCallback((type: 'project' | 'doc' | 'node' | 'version', id: string, title: string) => {
     setShareTargetType(type);
@@ -378,7 +384,24 @@ function StudioMain() {
               PC
             </Link>
             <div>
-              <h1 className="font-bold text-sm text-slate-900 tracking-tight leading-none">{ast.metadata.projectTitle}</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="font-bold text-sm text-slate-900 tracking-tight leading-none">{ast.metadata.projectTitle}</h1>
+                {isSavedInLibrary ? (
+                  <Link 
+                    href="/library" 
+                    className="hidden xl:flex items-center gap-1 text-[9.5px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-1.5 py-0.2 rounded-full font-semibold transition"
+                    title="View saved blueprint in Architecture Library"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Saved in Library ↗</span>
+                  </Link>
+                ) : (
+                  <span className="hidden xl:flex items-center gap-1 text-[9.5px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded-full font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span>Sandbox (Unsaved)</span>
+                  </span>
+                )}
+              </div>
               <p className="text-[10px] text-slate-400 font-mono mt-0.5">Google Cloud Enterprise Reference Architecture • 6-Zone Certified</p>
             </div>
           </div>
@@ -467,6 +490,20 @@ function StudioMain() {
         {/* Right: Audio Briefing, Brain Grounding & Export */}
         <div className="flex items-center gap-2.5">
           
+          {/* Save to Library Action Button */}
+          <button
+            onClick={() => setIsSaveModalOpen(true)}
+            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-xs ${
+              isSavedInLibrary
+                ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+            }`}
+            title="Save this architecture sandbox state as a permanent blueprint in your Library"
+          >
+            <Bookmark className="w-3.5 h-3.5" />
+            <span>{isSavedInLibrary ? 'Saved Blueprint ▾' : 'Save to Library'}</span>
+          </button>
+
           {/* Share & Collaborate Granular Object Button */}
           <button
             onClick={() => handleOpenShare('project', 'proj_root', ast.metadata.projectTitle)}
@@ -782,6 +819,30 @@ function StudioMain() {
         activeVersionTag={activeVersionTag}
         activeDoc={livingSpecs.find(d => d.id === activeDocId)}
         activeNode={selectedComponent}
+      />
+
+      <SaveToLibraryModal
+        isOpen={isSaveModalOpen}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSaveSuccess={({ id, name, domain }) => {
+          setIsSavedInLibrary(true);
+          setSessionId(id);
+          setAst(prev => ({
+            ...prev,
+            metadata: {
+              ...prev.metadata,
+              projectTitle: name,
+              domain: domain
+            }
+          }));
+        }}
+        initialProjectTitle={ast.metadata.projectTitle}
+        initialDomain={ast.metadata.domain}
+        ast={ast}
+        xml={xml}
+        versions={versions}
+        messages={messages}
+        activeVersionTag={activeVersionTag}
       />
 
     </div>
