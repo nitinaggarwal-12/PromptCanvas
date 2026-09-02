@@ -26,7 +26,8 @@ import {
   Shield,
   Server,
   Share2,
-  Users
+  Users,
+  Plus
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
@@ -72,7 +73,15 @@ export default function StudioPage() {
 function StudioMain() {
   const searchParams = useSearchParams();
 
-  // 1. Core Architecture State (AST & Living Specs)
+  // 1. Session UUID & Core Architecture State (AST & Living Specs)
+  const [sessionId, setSessionId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const urlId = new URLSearchParams(window.location.search).get('id');
+      if (urlId) return urlId;
+    }
+    return 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+  });
+
   const [ast, setAst] = useState<ArchitectureAst>(() => createDefaultFintechAst());
   const [activeView, setActiveView] = useState<'diagram' | 'specs'>('diagram');
   const [activeDocId, setActiveDocId] = useState<string>('DOC-01');
@@ -122,55 +131,6 @@ function StudioMain() {
     setIsShareModalOpen(true);
   }, []);
 
-  // Hydrate State from URL Deep-Link parameters on initial mount
-  useEffect(() => {
-    if (!searchParams) return;
-    const viewParam = searchParams.get('view');
-    const docParam = searchParams.get('doc');
-    const nodeParam = searchParams.get('node');
-    const vParam = searchParams.get('v');
-
-    if (viewParam === 'specs' || viewParam === 'diagram') {
-      setActiveView(viewParam);
-    }
-    if (docParam) {
-      setActiveDocId(docParam);
-      setActiveView('specs');
-    }
-    if (nodeParam) {
-      const paramLower = nodeParam.toLowerCase();
-      const matched = ast.components.find(
-        c => c.id.toLowerCase() === paramLower ||
-             c.name.toLowerCase().includes(paramLower) ||
-             c.service.toLowerCase().includes(paramLower) ||
-             paramLower.includes(c.id.toLowerCase())
-      );
-      if (matched) {
-        setSelectedComponent(matched);
-        setActiveView('diagram');
-      }
-    }
-    if (vParam) {
-      setActiveVersionTag(vParam);
-    }
-  }, [searchParams, ast.components]);
-
-  // Continuously synchronize browser URL with active object hierarchy without page reloads
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams();
-    if (ast.metadata.projectTitle) params.set('project', ast.metadata.projectTitle);
-    params.set('v', activeVersionTag);
-    params.set('view', activeView);
-    if (activeView === 'specs' && activeDocId) {
-      params.set('doc', activeDocId);
-    } else if (activeView === 'diagram' && selectedComponent) {
-      params.set('node', selectedComponent.id);
-    }
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
-  }, [activeView, activeDocId, selectedComponent, activeVersionTag, ast.metadata.projectTitle]);
-
   // 4. Conversational Turn Stream
   const [messages, setMessages] = useState<StudioChatMessage[]>([
     {
@@ -210,6 +170,93 @@ function StudioMain() {
   ]);
 
   const [promptInput, setPromptInput] = useState('');
+
+  // Hydrate State from URL Deep-Link parameters and localStorage on initial mount
+  useEffect(() => {
+    if (!searchParams) return;
+    const urlId = searchParams.get('id');
+    const viewParam = searchParams.get('view');
+    const docParam = searchParams.get('doc');
+    const nodeParam = searchParams.get('node');
+    const vParam = searchParams.get('v');
+
+    if (urlId) {
+      setSessionId(urlId);
+      // Restore from localStorage if available
+      try {
+        const saved = localStorage.getItem(`promptcanvas_studio_${urlId}`);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.ast) setAst(parsed.ast);
+          if (parsed.xml) setXml(parsed.xml);
+          if (parsed.versions) setVersions(parsed.versions);
+          if (parsed.messages) setMessages(parsed.messages);
+          if (parsed.activeVersionTag) setActiveVersionTag(parsed.activeVersionTag);
+        }
+      } catch {
+        // storage fallback
+      }
+    }
+
+    if (viewParam === 'specs' || viewParam === 'diagram') {
+      setActiveView(viewParam);
+    }
+    if (docParam) {
+      setActiveDocId(docParam);
+      setActiveView('specs');
+    }
+    if (nodeParam) {
+      const paramLower = nodeParam.toLowerCase();
+      const matched = ast.components.find(
+        c => c.id.toLowerCase() === paramLower ||
+             c.name.toLowerCase().includes(paramLower) ||
+             c.service.toLowerCase().includes(paramLower) ||
+             paramLower.includes(c.id.toLowerCase())
+      );
+      if (matched) {
+        setSelectedComponent(matched);
+        setActiveView('diagram');
+      }
+    }
+    if (vParam) {
+      setActiveVersionTag(vParam);
+    }
+  }, [searchParams]);
+
+  // Continuously synchronize browser URL & LocalStorage with active session hierarchy
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams();
+    params.set('id', sessionId);
+    if (ast.metadata.projectTitle) params.set('project', ast.metadata.projectTitle);
+    params.set('v', activeVersionTag);
+    params.set('view', activeView);
+    if (activeView === 'specs' && activeDocId) {
+      params.set('doc', activeDocId);
+    } else if (activeView === 'diagram' && selectedComponent) {
+      params.set('node', selectedComponent.id);
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+
+    // Auto-save session state
+    try {
+      localStorage.setItem(`promptcanvas_studio_${sessionId}`, JSON.stringify({
+        id: sessionId,
+        projectTitle: ast.metadata.projectTitle,
+        activeVersionTag,
+        activeView,
+        activeDocId,
+        ast,
+        xml,
+        versions,
+        messages,
+        lastSaved: new Date().toISOString()
+      }));
+    } catch {
+      // storage safeguard
+    }
+  }, [sessionId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
 
   // 5. Living Specs derived from AST
   const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast), [ast]);
@@ -301,6 +348,23 @@ function StudioMain() {
     URL.revokeObjectURL(url);
   };
 
+  // Start New Studio Architecture Session with Fresh UUID
+  const handleNewSession = () => {
+    const newId = 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+    setSessionId(newId);
+    setAst(createDefaultFintechAst());
+    setXml(generateGcpNativeArchitectureXml());
+    setActiveVersionTag('v1.0');
+    setMessages([
+      {
+        id: `msg_${Date.now()}`,
+        sender: 'assistant',
+        text: 'Started a new Google Cloud Enterprise Architecture session. Tell me your project requirements or select a starter scenario below.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
+  };
+
   return (
     <div className="h-screen max-h-screen w-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
       
@@ -318,6 +382,28 @@ function StudioMain() {
               <p className="text-[10px] text-slate-400 font-mono mt-0.5">Google Cloud Enterprise Reference Architecture • 6-Zone Certified</p>
             </div>
           </div>
+
+          {/* Unique Session ID Badge */}
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(sessionId);
+            }}
+            className="hidden md:flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2 py-1 rounded-md text-[10.5px] font-mono text-slate-600 transition"
+            title="Click to copy Persistent Unique Session ID"
+          >
+            <span className="text-slate-400 font-sans">Session:</span>
+            <span className="font-bold text-blue-600">{sessionId}</span>
+          </button>
+
+          {/* New Session Button */}
+          <button
+            onClick={handleNewSession}
+            className="hidden md:flex items-center gap-1 bg-white hover:bg-slate-50 border border-slate-200 px-2 py-1 rounded-md text-[11px] font-medium text-slate-700 transition shadow-2xs"
+            title="Create a new architecture canvas session"
+          >
+            <Plus className="w-3 h-3 text-slate-500" />
+            <span>New</span>
+          </button>
 
           {/* Version Snapshot Dropdown */}
           <div className="relative">
