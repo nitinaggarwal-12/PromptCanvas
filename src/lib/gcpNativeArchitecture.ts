@@ -744,61 +744,80 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   });
 
   // -------------------------------------------------------------------------------------------------------------------
-  // TYPED CONNECTORS & FLOW STEP BADGES (❶..❻)
+  // COLLISION-FREE TYPED CONNECTORS & FLOW STEP BADGES (❶..❻)
   // -------------------------------------------------------------------------------------------------------------------
 
-  // 1. GCLB to Apigee (TLS 1.3 / Ingress)
+  // 1. GCLB to Apigee (Direct Ingress)
   edge(
     'conn_ingress',
-    '❶ HTTPS / TLS 1.3',
+    '❶ HTTPS / TLS 1.3 Ingress',
     'pod_gclb',
     'pod_apigee',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#1D4ED8;labelBackgroundColor=${cardBg};labelBorderColor=#93C5FD;`
+    `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#1D4ED8;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#1D4ED8;labelBackgroundColor=${cardBg};labelBorderColor=#93C5FD;`
   );
 
-  // 2. Apigee to GKE Autopilot (mTLS / API Dispatch)
+  // 2. Apigee to GKE Autopilot (Direct Vertical API Mesh)
   edge(
     'conn_api_gke',
     '❷ API Mesh Dispatch',
     'pod_apigee',
     'pod_gke',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#7C3AED;labelBackgroundColor=${cardBg};labelBorderColor=#C4B5FD;`
+    `edgeStyle=straight;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#7C3AED;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#7C3AED;labelBackgroundColor=${cardBg};labelBorderColor=#C4B5FD;lblX=32;lblY=-10;align=left;`
   );
 
-  // 3. GKE to Vertex AI Gemini (GenAI RAG Inference)
+  // 3. GKE Autopilot to Gemini 2.5 (GenAI RAG Inference)
   edge(
     'conn_gke_ai',
-    '❸ Gemini 2.5 Inference & RAG',
+    '❸ Gemini 2.5 Inference &amp; RAG',
     'pod_gke',
     'pod_gemini',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#D97706;strokeWidth=2;dashed=1;dashPattern=4 4;fontSize=9;fontStyle=1;fontColor=#D97706;labelBackgroundColor=${cardBg};labelBorderColor=#FDE68A;`
+    `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#D97706;strokeWidth=2;dashed=1;dashPattern=4 4;fontSize=9;fontStyle=1;fontColor=#D97706;labelBackgroundColor=${cardBg};labelBorderColor=#FDE68A;`,
+    [
+      { x: 645, y: 325 },
+      { x: 645, y: 215 }
+    ]
   );
 
-  // 4. Cloud Run to Pub/Sub (Async Event Publish)
+  // 4. Gemini to ScaNN Vector Search (Internal AI Stack Query)
   edge(
-    'conn_compute_pubsub',
-    '❹ Async Event Stream',
-    'pod_cloudrun',
-    'pod_pubsub',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=2;dashed=1;dashPattern=6 4;fontSize=9;fontStyle=1;fontColor=#0D9488;labelBackgroundColor=${cardBg};labelBorderColor=#99F6E4;`
+    'conn_ai_scann',
+    '❹ Vector Embeddings Query',
+    'pod_gemini',
+    'pod_scann',
+    `edgeStyle=straight;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#2563EB;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#2563EB;labelBackgroundColor=${cardBg};labelBorderColor=#BFDBFE;lblX=28;lblY=-10;align=left;`
   );
 
-  // 5. Pub/Sub to Dataflow to BigQuery (Streaming ETL)
+  // 5. Dataflow to BigQuery (Streaming ETL)
   edge(
     'conn_stream_bq',
-    '❺ Real-Time Beam ETL',
+    '❺ Real-Time Streaming ETL',
     'pod_dataflow',
     'pod_bigquery',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};labelBorderColor=#A7F3D0;`
+    `edgeStyle=straight;rounded=0;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#059669;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};labelBorderColor=#A7F3D0;`
   );
 
-  // 6. GKE Autopilot to Cloud Spanner (ACID TrueTime Transact)
+  // 6. Pub/Sub to Dataflow (Internal Streaming Pipeline)
+  edge(
+    'conn_pubsub_df',
+    'Event Stream',
+    'pod_pubsub',
+    'pod_dataflow',
+    `edgeStyle=straight;rounded=0;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#0D9488;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#0D9488;labelBackgroundColor=${cardBg};labelBorderColor=#99F6E4;lblX=24;lblY=-10;align=left;`
+  );
+
+  // 7. GKE Autopilot to Spanner via Open Top Channel Waypoints (Collision-Free ACID Transact)
   edge(
     'conn_gke_spanner',
-    '❻ Multi-Region ACID Transact',
+    '❻ Multi-Region ACID Transact (TrueTime)',
     'pod_gke',
     'pod_spanner',
-    `edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};labelBorderColor=#A7F3D0;`
+    `edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.2;entryX=0;entryY=0.2;strokeColor=#059669;strokeWidth=2;fontSize=9;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};labelBorderColor=#A7F3D0;`,
+    [
+      { x: 645, y: 295 },
+      { x: 645, y: 98 },
+      { x: 1255, y: 98 },
+      { x: 1255, y: 184 }
+    ]
   );
 
   return `<mxfile host="embed.diagrams.net">
