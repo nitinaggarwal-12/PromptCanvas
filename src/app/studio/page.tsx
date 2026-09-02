@@ -43,8 +43,10 @@ import {
   Sun,
   Moon,
   ChevronDown,
+  ChevronLeft,
   FileDown,
-  MoreHorizontal
+  MoreHorizontal,
+  Save
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -592,6 +594,8 @@ function StudioContent() {
   const [fullscreenPromptInput, setFullscreenPromptInput] = useState<string>('');
   const [showFullscreenExportMenu, setShowFullscreenExportMenu] = useState<boolean>(false);
   const fullscreenExportMenuRef = useRef<HTMLDivElement>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // Sync canvas theme with global theme by default
   useEffect(() => {
@@ -1198,6 +1202,118 @@ function StudioContent() {
     showToast(`🔄 Replaced active diagram with #${template.id} (${template.name}) [${newTag}]`);
   };
 
+  // Step Backward / Forward for quick validation (without version bumps)
+  const handleStepPreviousDiagram = () => {
+    if (diagrams.length > 1) {
+      const prevIndex = (activeDiagramIndex - 1 + diagrams.length) % diagrams.length;
+      setActiveDiagramId(diagrams[prevIndex].id);
+      showToast(`◀ Switched to Diagram ${prevIndex + 1}: ${diagrams[prevIndex].title}`);
+    } else {
+      // Single diagram: Cycle through canonical blueprint templates in quick preview mode without version bump
+      const templateIds = CANONICAL_TEMPLATES.map((t) => t.id);
+      const curTemplateId = activeDiagram.templateId || '01';
+      const curIdx = Math.max(0, templateIds.indexOf(curTemplateId));
+      const prevIdx = (curIdx - 1 + templateIds.length) % templateIds.length;
+      const prevTpl = CANONICAL_TEMPLATES[prevIdx];
+
+      const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === selectedDomain) || EXTENDED_DOMAIN_OPTIONS[0];
+      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : domainObj.name);
+      const baseXml = prevTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const newXml = injectUseCaseFlavor(baseXml, titleToUse, projectScopePrompt);
+
+      setDiagrams((prev) =>
+        prev.map((d) =>
+          d.id === activeDiagramId
+            ? {
+                ...d,
+                templateId: prevTpl.id,
+                title: `Diagram 1 • ${prevTpl.name}`,
+                xml: newXml,
+                source: 'blueprint',
+              }
+            : d
+        )
+      );
+      showToast(`◀ Previewing Blueprint #${prevTpl.id}: ${prevTpl.name} (Draft Preview — no version bump)`);
+    }
+  };
+
+  const handleStepNextDiagram = () => {
+    if (diagrams.length > 1) {
+      const nextIndex = (activeDiagramIndex + 1) % diagrams.length;
+      setActiveDiagramId(diagrams[nextIndex].id);
+      showToast(`▶ Switched to Diagram ${nextIndex + 1}: ${diagrams[nextIndex].title}`);
+    } else {
+      // Single diagram: Cycle through canonical blueprint templates in quick preview mode without version bump
+      const templateIds = CANONICAL_TEMPLATES.map((t) => t.id);
+      const curTemplateId = activeDiagram.templateId || '01';
+      const curIdx = Math.max(0, templateIds.indexOf(curTemplateId));
+      const nextIdx = (curIdx + 1) % templateIds.length;
+      const nextTpl = CANONICAL_TEMPLATES[nextIdx];
+
+      const domainObj = EXTENDED_DOMAIN_OPTIONS.find((d) => d.id === selectedDomain) || EXTENDED_DOMAIN_OPTIONS[0];
+      const titleToUse = projectTitle || (projectName && useCaseName ? `${projectName} — ${useCaseName}` : projectName ? `${projectName} • ${domainObj.name}` : domainObj.name);
+      const baseXml = nextTpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
+      const newXml = injectUseCaseFlavor(baseXml, titleToUse, projectScopePrompt);
+
+      setDiagrams((prev) =>
+        prev.map((d) =>
+          d.id === activeDiagramId
+            ? {
+                ...d,
+                templateId: nextTpl.id,
+                title: `Diagram 1 • ${nextTpl.name}`,
+                xml: newXml,
+                source: 'blueprint',
+              }
+            : d
+        )
+      );
+      showToast(`▶ Previewing Blueprint #${nextTpl.id}: ${nextTpl.name} (Draft Preview — no version bump)`);
+    }
+  };
+
+  // Explicit Save Handler
+  const handleExplicitSave = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+    try {
+      // 1. Push a formal version snapshot to version history
+      pushNewVersion(`Explicit user save: ${activeDiagram.title}`, 'User');
+
+      // 2. Persist to /api/diagrams database
+      const payload = {
+        name: activeDiagram.title,
+        architecture_type: activeDiagram.templateId || 'canonical_v1',
+        xml_content: activeDiagram.xml,
+        created_studio: 'studio1',
+      };
+
+      const res = await fetch('/api/diagrams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        setIsSaved(true);
+        showToast('💾 Diagram explicitly saved to database & version history!');
+        setTimeout(() => setIsSaved(false), 3000);
+      } else {
+        setIsSaved(true);
+        showToast('💾 Diagram state snapshot saved to version history!');
+        setTimeout(() => setIsSaved(false), 3000);
+      }
+    } catch (err) {
+      console.error('Save diagram error:', err);
+      setIsSaved(true);
+      showToast('💾 Diagram state snapshot saved to version history!');
+      setTimeout(() => setIsSaved(false), 3000);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleNewProject = () => {
     setProjectName('');
     setUseCaseName('');
@@ -1749,27 +1865,43 @@ function StudioContent() {
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
                 </div>
 
-                {/* Diagrams Dropdown Menu (Select, Edit/Rename, Clone, Delete, Add) */}
-                <div className="relative" ref={diagramsMenuRef}>
+                {/* Stepper Navigation & Diagrams Dropdown Menu */}
+                <div className="flex items-center gap-1">
+                  {/* Backward Stepper Arrow (Quick Validation - No Version Bump) */}
                   <button
                     type="button"
-                    onClick={() => setShowDiagramsMenu(!showDiagramsMenu)}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                      showDiagramsMenu
-                        ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
-                        : isLight
-                        ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300/80 shadow-2xs'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 shadow-2xs'
+                    onClick={handleStepPreviousDiagram}
+                    className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                      isLight
+                        ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300/80 hover:border-teal-500 shadow-2xs'
+                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700 hover:border-teal-500 shadow-2xs'
                     }`}
-                    title="Diagram switcher & management options"
+                    title={diagrams.length > 1 ? "Previous Diagram Tab (no version bump)" : "Previous Blueprint Preview (no version bump)"}
                   >
-                    <Network className="w-3.5 h-3.5 text-teal-500" />
-                    <span>Diagram {activeDiagramIndex + 1}</span>
-                    <span className="text-[10.5px] opacity-75 max-w-[130px] truncate hidden md:inline font-medium">
-                      • {activeDiagram.title.replace(/^Diagram \d+\s*•\s*/, '')}
-                    </span>
-                    <ChevronDown className="w-3 h-3 ml-0.5 opacity-70" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
+
+                  {/* Diagrams Dropdown Menu (Select, Edit/Rename, Clone, Delete, Add) */}
+                  <div className="relative" ref={diagramsMenuRef}>
+                    <button
+                      type="button"
+                      onClick={() => setShowDiagramsMenu(!showDiagramsMenu)}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                        showDiagramsMenu
+                          ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                          : isLight
+                          ? 'bg-white hover:bg-slate-100 text-slate-800 border-slate-300/80 shadow-2xs'
+                          : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 shadow-2xs'
+                      }`}
+                      title="Diagram switcher & management options"
+                    >
+                      <Network className="w-3.5 h-3.5 text-teal-500" />
+                      <span>Diagram {activeDiagramIndex + 1}</span>
+                      <span className="text-[10.5px] opacity-75 max-w-[130px] truncate hidden md:inline font-medium">
+                        • {activeDiagram.title.replace(/^Diagram \d+\s*•\s*/, '')}
+                      </span>
+                      <ChevronDown className="w-3 h-3 ml-0.5 opacity-70" />
+                    </button>
 
                   {/* Diagrams Dropdown Menu Popover */}
                   {showDiagramsMenu && (
@@ -1922,19 +2054,56 @@ function StudioContent() {
                     </div>
                   )}
                 </div>
-              </div>
 
-              {/* Right Side Actions: Edit in Canvas, Export, More (Diff, Replace, XML) */}
-              <div className="flex items-center gap-1.5 shrink-0">
-                {/* Primary Action: Edit in Canvas */}
-                <Link
-                  href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
-                  className="px-2.5 py-1 rounded-xl font-bold text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer"
-                  title="Open in Design Canvas Workspace"
+                {/* Forward Stepper Arrow (Quick Validation - No Version Bump) */}
+                <button
+                  type="button"
+                  onClick={handleStepNextDiagram}
+                  className={`p-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                    isLight
+                      ? 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300/80 hover:border-teal-500 shadow-2xs'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700 hover:border-teal-500 shadow-2xs'
+                  }`}
+                  title={diagrams.length > 1 ? "Next Diagram Tab (no version bump)" : "Next Blueprint Preview (no version bump)"}
                 >
-                  <Edit3 className="w-3 h-3" />
-                  <span>Edit in Canvas</span>
-                </Link>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Right Side Actions: Save, Edit in Canvas, Export, More (Diff, Replace, XML) */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              {/* Explicit Save Action */}
+              <button
+                type="button"
+                onClick={handleExplicitSave}
+                disabled={isSaving}
+                className={`px-2.5 py-1 rounded-xl font-bold text-xs transition-all flex items-center gap-1 cursor-pointer border shadow-2xs ${
+                  isSaved
+                    ? 'bg-emerald-600 border-emerald-500 text-white'
+                    : isLight
+                    ? 'bg-white hover:bg-emerald-50 text-emerald-700 border-emerald-300/80 hover:border-emerald-500'
+                    : 'bg-slate-800 hover:bg-emerald-950/40 text-emerald-400 border-emerald-500/40 hover:border-emerald-500'
+                }`}
+                title="Explicitly save diagram state & create version snapshot"
+              >
+                {isSaving ? (
+                  <RefreshCw className="w-3 h-3 animate-spin text-emerald-500" />
+                ) : (
+                  <Save className="w-3 h-3" />
+                )}
+                <span>{isSaved ? 'Saved' : isSaving ? 'Saving...' : 'Save'}</span>
+              </button>
+
+              {/* Primary Action: Edit in Canvas */}
+              <Link
+                href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
+                className="px-2.5 py-1 rounded-xl font-bold text-xs bg-teal-600 hover:bg-teal-500 text-white shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                title="Open in Design Canvas Workspace"
+              >
+                <Edit3 className="w-3 h-3" />
+                <span>Edit in Canvas</span>
+              </Link>
 
                 {/* Export Dropdown */}
                 <div className="relative" ref={exportMenuRef}>
@@ -2231,9 +2400,30 @@ function StudioContent() {
         <div className="fixed inset-0 z-50 flex flex-col bg-slate-950/95 backdrop-blur-md p-3 sm:p-5 animate-in fade-in duration-200 overflow-hidden">
           {/* Top Fullscreen Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0 gap-3">
-            {/* Left Info */}
-            <div className="flex items-center gap-2.5 min-w-0">
+            {/* Left Info & Steppers */}
+            <div className="flex items-center gap-2 min-w-0">
               <Sparkles className="w-5 h-5 text-teal-400 shrink-0" />
+              
+              {/* Stepper Buttons for Quick Validation (No Version Bump) */}
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={handleStepPreviousDiagram}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500 text-xs font-bold transition cursor-pointer"
+                  title={diagrams.length > 1 ? "Previous Diagram Tab (no version bump)" : "Previous Blueprint Preview (no version bump)"}
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleStepNextDiagram}
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:border-teal-500 text-xs font-bold transition cursor-pointer"
+                  title={diagrams.length > 1 ? "Next Diagram Tab (no version bump)" : "Next Blueprint Preview (no version bump)"}
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
               <div className="flex items-center gap-2 min-w-0">
                 <h3 className="text-sm sm:text-base font-black text-white truncate">
                   {projectName || activeDiagram.title}
@@ -2252,8 +2442,28 @@ function StudioContent() {
               </span>
             </div>
 
-            {/* Right Action Suite: Edit in Canvas, Export, Replace, Diff, Theme, Exit */}
+            {/* Right Action Suite: Save, Edit in Canvas, Export, Replace, Diff, Theme, Exit */}
             <div className="flex items-center gap-2 shrink-0">
+              {/* Explicit Save Action in Fullscreen */}
+              <button
+                type="button"
+                onClick={handleExplicitSave}
+                disabled={isSaving}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
+                  isSaved
+                    ? 'bg-emerald-600 border-emerald-500 text-white shadow-md shadow-emerald-500/20'
+                    : 'bg-emerald-950/60 hover:bg-emerald-900/80 text-emerald-300 border-emerald-500/40 hover:border-emerald-400'
+                }`}
+                title="Explicitly save diagram state & create version snapshot"
+              >
+                {isSaving ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-300" />
+                ) : (
+                  <Save className="w-3.5 h-3.5 text-emerald-300" />
+                )}
+                <span>{isSaved ? 'Saved' : isSaving ? 'Saving...' : 'Save'}</span>
+              </button>
+
               {/* Edit in Design Canvas Workspace */}
               <Link
                 href={`/workspace?blueprint=${activeDiagram.templateId || '01'}&domain=${selectedDomain}&title=${encodeURIComponent(projectTitle || activeDiagram.title)}&prompt=${encodeURIComponent(projectScopePrompt || '')}`}
