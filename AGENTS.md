@@ -278,4 +278,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 * **Visual Gallery Delivery**: Include clickable `file://` Markdown links to all captured screenshots in your response so the user can visually inspect and confirm UI integrity.
 * **Zero CLI-Only Assumptions**: Never declare a feature or fix complete based purely on exit code `0` or compilation without visual browser DOM verification.
 
+---
 
+# 🧩 Technical Architecture Diagramming & Vector Icon Embedding Laws
+
+18. **Production Platform & Tool Vector Icon Embedding Standard**:
+    - For all cloud, multi-agent, enterprise SaaS, and database architectures, every service node MUST feature its official vector SVG icon embedded as an inline RFC 2397 `data:image/svg+xml` data URI (`image=data:image/svg+xml,...;imageWidth=24-26;imageHeight=24-26;imageAlign=left;spacingLeft=38-42;`).
+    - **Zero External HTTP/HTTPS Icon URLs**: Never use unverified external icon CDNs (e.g. `https://api.iconify.design/...`) which break in air-gapped, offline, headless, or security-sandboxed environments.
+    - **Zero Generic Emojis**: Never substitute enterprise platforms (GCP, SAP, AWS, Azure, Kafka, Kubernetes) with toy emojis.
+
+19. **True Technical Depth & Production Specificity Law**:
+    - Architecture diagrams must depict concrete production infrastructure: explicit VPC subnets, CIDR blocks (`10.128.0.0/16`), security perimeters (VPC-SC), private ingress/egress endpoints (PSC, Direct VPC Egress), transport protocols (`JSON-RPC over mTLS`, `gRPC :443`, `Delta Sharing`, `SNC Encryption`), exact container runtimes (Cloud Run, Kyma K8s), and hardware/DB deployment modes (Multi-AZ HSR, High-Availability Clusters).
+    - Avoid superficial generic box-and-arrow diagrams that omit production network boundaries, encryption layers, or concrete data transfer mechanisms.
