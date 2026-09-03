@@ -315,7 +315,59 @@ function StudioMain() {
         const updated = { ...prevAst };
         const lower = cleanPrompt.toLowerCase();
 
-        if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('sla')) {
+        if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
+          // Multi-Zone 4-Component Expansion
+          const newComps: AstComponent[] = [
+            {
+              id: 'comp_cdn',
+              name: 'Cloud CDN & Media Edge',
+              service: 'Cloud CDN',
+              tier: 'ingress',
+              region: 'global',
+              role: 'Global Anycast Edge Cache & HTTP/3 Ingress',
+              description: 'Low-latency static and dynamic media caching with sub-8ms p99 cache hits.',
+              sla: '99.99%',
+              protocols: ['HTTP/3', 'QUIC', 'TLS 1.3']
+            },
+            {
+              id: 'comp_token_vault',
+              name: 'Payment Token Vault',
+              service: 'Cloud Run',
+              tier: 'compute',
+              region: 'us-central1',
+              role: 'Confidential Computing Tokenization Enclave',
+              description: 'Hardware-isolated microservice for PCI-DSS Level 1 tokenization.',
+              sla: '99.999%',
+              protocols: ['gRPC mTLS', 'Cloud KMS API']
+            },
+            {
+              id: 'comp_kafka_mirror',
+              name: 'Managed Kafka Mirror',
+              service: 'Apache Kafka on GKE',
+              tier: 'compute',
+              region: 'us-central1',
+              role: 'Hybrid Event Replicator & CDC Mirror',
+              description: 'Strimzi Kafka broker mirroring on-premise transactional CDC streams into Pub/Sub.',
+              sla: '99.95%',
+              protocols: ['Kafka Protocol', 'TLS']
+            },
+            {
+              id: 'comp_doc_ai',
+              name: 'Document AI OCR Hub',
+              service: 'Document AI',
+              tier: 'compute',
+              region: 'us-central1',
+              role: 'Multi-lingual Form & Layout Parser',
+              description: 'Optical character recognition, form entity extraction, and clinical table parser.',
+              sla: '99.9%',
+              protocols: ['HTTPS REST', 'gRPC']
+            }
+          ];
+
+          updated.components = [...updated.components.filter(c => !newComps.some(nc => nc.id === c.id)), ...newComps];
+          canvasDiff = '+ Added 4 Enterprise Nodes: Cloud CDN (Zone 1), Token Vault (Zone 2 Pod Grid), Managed Kafka Mirror (Zone 3), and Document AI OCR Hub (Zone 4).';
+          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (Component Catalog), and DOC-05 (Infrastructure & DDL).';
+        } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('sla')) {
           updated.metadata = {
             ...updated.metadata,
             slaTarget: '99.999%',

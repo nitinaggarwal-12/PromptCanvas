@@ -226,9 +226,13 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     ? `Multi-Region DR: ${ast.metadata.drRegions.join(', ')} (nam3)` 
     : "nam3 Multi-Region";
 
-  // Check persona additions
+  // Check persona and new component additions
   const hasPatientPortal = ast?.components?.some(c => c.id === 'comp_patient_portal');
   const hasHsmCmEk = ast?.components?.some(c => c.id === 'comp_hsm_cmek');
+  const hasCdn = ast?.components?.some(c => c.id === 'comp_cdn' || c.service.includes('CDN'));
+  const hasTokenVault = ast?.components?.some(c => c.id === 'comp_token_vault' || c.name.includes('Token'));
+  const hasKafka = ast?.components?.some(c => c.id === 'comp_kafka_mirror' || c.service.includes('Kafka'));
+  const hasDocAi = ast?.components?.some(c => c.id === 'comp_doc_ai' || c.service.includes('Document AI'));
   const isMultiRegionDr = (ast?.metadata?.drRegions?.length || 0) > 0;
   const isFinOpsOptimized = (ast?.metadata?.latencyBudgetMs || 50) < 40;
 
@@ -294,34 +298,83 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   );
 
   // ZONE 1: INGRESS (X=40, W=210, Card W=178, X_pos=56)
-  cells.push(
-    createNodeCard("n_client", "External Clients", "Web, Mobile, Partner APIs", "TLS 1.3 / QUIC", "INTERNET", "compute_engine", 56, 125, 178, 105, "#0284C7", [
-      "TLS 1.3 / HTTP/3 Ingress",
-      "Global Anycast Edge PoPs",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_armor", "Cloud Armor & DNS", "L7 WAF & DDoS Shield", "CRS 3.3 • 10k/min", "SECURITY", "cloud_armor", 56, 290, 178, 105, "#DC2626", [
-      "OWASP Top 10 Mitigation",
-      "Adaptive DDoS Layer 3/7",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_gclb", "Global HTTPS LB", "Anycast L7 App LB", "p99 SSL <12ms", "EDGE LB", "cloud_armor", 56, 455, 178, 105, "#0284C7", [
-      "Single Virtual IP Routing",
-      "Global SSL Acceleration",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_apigee", "Apigee X Gateway", "API Management & Auth", "50k TPS • OIDC JWT", "GATEWAY", "iap", 56, 620, 178, 105, "#7C3AED", [
-      "OAuth2 & OIDC Token Verify",
-      "Token Bucket Rate Limit",
-    ], isDark)
-  );
+  if (hasCdn) {
+    cells.push(
+      createNodeCard("n_client", "External Clients", "Web, Mobile, Partner APIs", "TLS 1.3 / QUIC", "INTERNET", "compute_engine", 56, 110, 178, 90, "#0284C7", [
+        "TLS 1.3 / HTTP/3 Ingress",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_cdn", "Cloud CDN & Media Edge", "Global Anycast Content Cache", "p99 <8ms • Edge Hits", "EDGE CACHE", "cloud_storage", 56, 215, 178, 90, "#059669", [
+        "Dynamic Media & Asset Cache",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_armor", "Cloud Armor & DNS", "L7 WAF & DDoS Shield", "CRS 3.3 • 10k/min", "SECURITY", "cloud_armor", 56, 320, 178, 90, "#DC2626", [
+        "OWASP Top 10 Mitigation",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_gclb", "Global HTTPS LB", "Anycast L7 App LB", "p99 SSL <12ms", "EDGE LB", "cloud_armor", 56, 425, 178, 90, "#0284C7", [
+        "Single Anycast IP Routing",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_apigee", "Apigee X Gateway", "API Management & Auth", "50k TPS • OIDC JWT", "GATEWAY", "iap", 56, 530, 178, 90, "#7C3AED", [
+        "OAuth2 & Token Bucket Rate Limit",
+      ], isDark)
+    );
+  } else {
+    cells.push(
+      createNodeCard("n_client", "External Clients", "Web, Mobile, Partner APIs", "TLS 1.3 / QUIC", "INTERNET", "compute_engine", 56, 125, 178, 105, "#0284C7", [
+        "TLS 1.3 / HTTP/3 Ingress",
+        "Global Anycast Edge PoPs",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_armor", "Cloud Armor & DNS", "L7 WAF & DDoS Shield", "CRS 3.3 • 10k/min", "SECURITY", "cloud_armor", 56, 290, 178, 105, "#DC2626", [
+        "OWASP Top 10 Mitigation",
+        "Adaptive DDoS Layer 3/7",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_gclb", "Global HTTPS LB", "Anycast L7 App LB", "p99 SSL <12ms", "EDGE LB", "cloud_armor", 56, 455, 178, 105, "#0284C7", [
+        "Single Virtual IP Routing",
+        "Global SSL Acceleration",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_apigee", "Apigee X Gateway", "API Management & Auth", "50k TPS • OIDC JWT", "GATEWAY", "iap", 56, 620, 178, 105, "#7C3AED", [
+        "OAuth2 & OIDC Token Verify",
+        "Token Bucket Rate Limit",
+      ], isDark)
+    );
+  }
 
   // ZONE 2: APP VPC (X=265, W=560)
-  if (hasPatientPortal) {
-    // Product Manager persona added Patient Portal
+  if (hasTokenVault) {
+    // 2-Column Pod Grid Partitioning (Strategy 2)
+    cells.push(
+      createNodeCard("n_gke", "GKE Autopilot Pods", "Microservices Orchestration Mesh", "c3-standard-8 • Cilium", "K8S MESH", "gke_autopilot", 287, 130, 250, 100, "#2563EB", [
+        "Keyless Workload Identity",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_token_vault", "Payment Token Vault", "Confidential Serverless Vault", "PCI-DSS Level 1 Enclave", "TOKEN VAULT", "cloud_run", 287, 245, 250, 100, "#10B981", [
+        "Hardware-Isolated Enclave",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_cloudrun", "Cloud Run Services", "Serverless Ingestion & Microservices", "Direct Serverless VPC Egress", "CONTAINER", "cloud_run", 552, 130, 250, 100, "#2563EB", [
+        "0-to-N Auto-Scaling",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_redis", "Memorystore Redis 7.2", "Session & Query Cache (<1ms)", "Multi-AZ Auto-Failover", "CACHE", "memorystore", 552, 245, 250, 100, "#D97706", [
+        "<1ms In-Memory Fleet",
+      ], isDark)
+    );
+  } else if (hasPatientPortal) {
     cells.push(
       createNodeCard("n_portal", "Emergency Patient Ingress", "Patient Engagement & FHIR R4 Intake", "99.999% SLA • Sub-10ms", "PATIENT INGRESS", "cloud_run", 287, 130, 515, 68, "#10B981", [
         "Real-Time Patient Admission & Emergency Triage Gateway",
@@ -346,7 +399,6 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
       ], isDark)
     );
   } else {
-    // Standard Zone 2 cards
     cells.push(
       createNodeCard("n_gke", "GKE Autopilot Pods", "Microservices Orchestration Cluster", "c3-standard-8 • Cilium eBPF", "K8S MESH", "gke_autopilot", 287, 130, 515, 90, "#2563EB", [
         "Workload Identity Federation (Keyless) & Envoy Mesh (mTLS)",
@@ -368,49 +420,100 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   }
 
   // ZONE 3: EVENT STREAMING
-  cells.push(
-    createNodeCard("n_pubsub", "Cloud Pub/Sub", "Real-Time Message Bus", "10M+ msg/s • Schema Reg", "EVENT BUS", "cloud_storage", 287, 515, 242, 95, "#EA580C", [
-      "Exact-Once Delivery & DLQ",
-      "Avro/Protobuf Schema Registry",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_datastream", "Datastream CDC", "Serverless DB WAL Stream", "<1s Replication Lag", "CDC SYNC", "spanner", 560, 515, 242, 95, "#D97706", [
-      "Serverless PostgreSQL/MySQL Stream",
-      "Automated Schema Evolution",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_dataflow", "Cloud Dataflow Engine", "Apache Beam Stream ETL Pipeline", "10s Sliding Windows • Liquid Sharding", "STREAM ETL", "bigquery", 287, 625, 515, 105, "#059669", [
-      "Liquid Sharding Auto-Rebalancing for Dynamic Hot-Spot Elimination",
-      "Sliding Window Aggregation, Deduplication & Exact-Once Sinks into Lakehouse",
-    ], isDark)
-  );
+  if (hasKafka) {
+    cells.push(
+      createNodeCard("n_pubsub", "Cloud Pub/Sub", "Real-Time Message Bus", "10M+ msg/s", "EVENT BUS", "cloud_storage", 287, 515, 165, 95, "#EA580C", [
+        "Exact-Once Delivery",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_kafka", "Managed Kafka Mirror", "Hybrid On-Prem Event Bus", "p99 <3ms • Strimzi", "STREAM MIRROR", "cloud_run", 462, 515, 165, 95, "#D97706", [
+        "Multi-Cluster Replicator",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_datastream", "Datastream CDC", "Serverless DB WAL Stream", "<1s Lag", "CDC SYNC", "spanner", 637, 515, 165, 95, "#D97706", [
+        "WAL PostgreSQL Stream",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_dataflow", "Cloud Dataflow Engine", "Apache Beam Stream ETL Pipeline", "10s Sliding Windows • Liquid Sharding", "STREAM ETL", "bigquery", 287, 625, 515, 105, "#059669", [
+        "Liquid Sharding Auto-Rebalancing for Dynamic Hot-Spot Elimination",
+        "Sliding Window Aggregation, Deduplication & Exact-Once Sinks into Lakehouse",
+      ], isDark)
+    );
+  } else {
+    cells.push(
+      createNodeCard("n_pubsub", "Cloud Pub/Sub", "Real-Time Message Bus", "10M+ msg/s • Schema Reg", "EVENT BUS", "cloud_storage", 287, 515, 242, 95, "#EA580C", [
+        "Exact-Once Delivery & DLQ",
+        "Avro/Protobuf Schema Registry",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_datastream", "Datastream CDC", "Serverless DB WAL Stream", "<1s Replication Lag", "CDC SYNC", "spanner", 560, 515, 242, 95, "#D97706", [
+        "Serverless PostgreSQL/MySQL Stream",
+        "Automated Schema Evolution",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_dataflow", "Cloud Dataflow Engine", "Apache Beam Stream ETL Pipeline", "10s Sliding Windows • Liquid Sharding", "STREAM ETL", "bigquery", 287, 625, 515, 105, "#059669", [
+        "Liquid Sharding Auto-Rebalancing for Dynamic Hot-Spot Elimination",
+        "Sliding Window Aggregation, Deduplication & Exact-Once Sinks into Lakehouse",
+      ], isDark)
+    );
+  }
 
   // ZONE 4: VERTEX AI & INTELLIGENCE HUB
-  cells.push(
-    createNodeCard("n_scann", "Vertex Vector Search (ScaNN)", "768-dim Embeddings & Search Grounding", "p99 <2.5ms @ 10M vectors", "EMBEDDINGS", "vertex_vector_search", 865, 130, 325, 140, "#7C3AED", [
-      "Tree-AH Quantized Vector Index & Graph Partitioning",
-      "Google Search & Enterprise Document Grounding",
-      "Dynamic Real-Time Index Sharding & Continuous Sync",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_armor_ai", "Model Armor Shield", "L7 Prompt & Model Safety Guardrails", "Redact PII • Jailbreak Filter", "GUARDRAIL", "cloud_dlp", 865, 285, 325, 145, "#6D28D9", [
-      "Automated Sensitive Data Protection (DLP) Redaction",
-      "Real-Time Adversarial Jailbreak & Injection Defense",
-      "Enterprise Toxicity & Hallucination Filter Gate",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_gemini", "Gemini 3.7 Flash & Pro Engine", "3.7 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
-      "Gemini 3.7 Flash Native Dynamic Thinking & Reasoning",
-      "Gemini 2.5 Pro Deep ReAct Orchestration & Planning",
-      "Vertex AI Context Caching (TTL-based KV Memory)",
-      "Tool Calling AST & Ephemeral Sandbox Execution",
-      "Constrained Decoding & Strict JSON Schema Enforcement",
-    ], isDark)
-  );
+  if (hasDocAi) {
+    cells.push(
+      createNodeCard("n_doc_ai", "Document AI OCR Hub", "Form & Layout Parser for Clinical/Financials", "p99 <180ms • Multi-lingual", "DOCUMENT AI", "document_ai", 865, 130, 325, 90, "#059669", [
+        "Layout Parser & Entity Extraction",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_scann", "Vertex Vector Search (ScaNN)", "768-dim Embeddings & Search Grounding", "p99 <2.5ms @ 10M vectors", "EMBEDDINGS", "vertex_vector_search", 865, 230, 325, 95, "#7C3AED", [
+        "Tree-AH Quantized Vector Index",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_armor_ai", "Model Armor Shield", "L7 Prompt & Model Safety Guardrails", "Redact PII • Jailbreak Filter", "GUARDRAIL", "cloud_dlp", 865, 335, 325, 95, "#6D28D9", [
+        "Sensitive Data Protection (DLP) Redaction",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_gemini", "Gemini 3.7 Flash & Pro Engine", "3.7 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
+        "Gemini 3.7 Flash Native Dynamic Thinking & Reasoning",
+        "Gemini 2.5 Pro Deep ReAct Orchestration & Planning",
+        "Vertex AI Context Caching (TTL-based KV Memory)",
+        "Tool Calling AST & Ephemeral Sandbox Execution",
+        "Constrained Decoding & Strict JSON Schema Enforcement",
+      ], isDark)
+    );
+  } else {
+    cells.push(
+      createNodeCard("n_scann", "Vertex Vector Search (ScaNN)", "768-dim Embeddings & Search Grounding", "p99 <2.5ms @ 10M vectors", "EMBEDDINGS", "vertex_vector_search", 865, 130, 325, 140, "#7C3AED", [
+        "Tree-AH Quantized Vector Index & Graph Partitioning",
+        "Google Search & Enterprise Document Grounding",
+        "Dynamic Real-Time Index Sharding & Continuous Sync",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_armor_ai", "Model Armor Shield", "L7 Prompt & Model Safety Guardrails", "Redact PII • Jailbreak Filter", "GUARDRAIL", "cloud_dlp", 865, 285, 325, 145, "#6D28D9", [
+        "Automated Sensitive Data Protection (DLP) Redaction",
+        "Real-Time Adversarial Jailbreak & Injection Defense",
+        "Enterprise Toxicity & Hallucination Filter Gate",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_gemini", "Gemini 3.7 Flash & Pro Engine", "3.7 Flash (Thinking) + 2.5 Pro (Deep ReAct)", "2M Context • Dynamic Thinking", "HYBRID REASONING", "gemini", 1270, 130, 350, 300, "#9333EA", [
+        "Gemini 3.7 Flash Native Dynamic Thinking & Reasoning",
+        "Gemini 2.5 Pro Deep ReAct Orchestration & Planning",
+        "Vertex AI Context Caching (TTL-based KV Memory)",
+        "Tool Calling AST & Ephemeral Sandbox Execution",
+        "Constrained Decoding & Strict JSON Schema Enforcement",
+      ], isDark)
+    );
+  }
 
   // ZONE 5: MULTI-REGION LAKEHOUSE & DB
   const spannerTitle = isMultiRegionDr ? "Cloud Spanner nam3 (DR)" : "Cloud Spanner (nam3)";
@@ -461,83 +564,62 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     );
   });
 
-  // CONNECTORS
-  cells.push(createEdge("e1", "n_client", "n_armor", "❶", "HTTPS / 443", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-  cells.push(createEdge("e2", "n_armor", "n_gclb", "❷", "WAF Verified", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-  cells.push(createEdge("e3", "n_gclb", "n_apigee", "❸", "L7 Terminated", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  // CONNECTORS WITH ZERO COLLISION & PERFECT CHANNEL WAYPOINTS
+  if (hasCdn) {
+    cells.push(createEdge("e1_cdn", "n_client", "n_cdn", "❶", "HTTPS / Anycast", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e2_cdn", "n_cdn", "n_armor", "❷", "Edge Ingress", "#059669", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e3_cdn", "n_armor", "n_gclb", "❸", "WAF Shielded", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e4_cdn", "n_gclb", "n_apigee", "❹", "L7 Terminated", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  } else {
+    cells.push(createEdge("e1", "n_client", "n_armor", "❶", "HTTPS / 443", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e2", "n_armor", "n_gclb", "❷", "WAF Verified", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e3", "n_gclb", "n_apigee", "❸", "L7 Terminated", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  }
 
-  if (hasPatientPortal) {
+  // Zone 2 Compute Connectors
+  if (hasTokenVault) {
+    cells.push(createEdge("e4_apigee_gke", "n_apigee", "n_gke", "❺a", "mTLS / gRPC Direct", "#2563EB", { exitX: 1, exitY: 0.4, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 550 }, { x: 248, y: 180 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e4_gke_vault", "n_gke", "n_token_vault", "❺b", "Tokenize Cardholder Data", "#10B981", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, directStraight: true, labelPosition: "right", isDark }));
+    cells.push(createEdge("e4_apigee_cr", "n_apigee", "n_cloudrun", "❺c", "Serverless Route", "#2563EB", { exitX: 1, exitY: 0.6, entryX: 0, entryY: 0.5, waypoints: [{ x: 258, y: 570 }, { x: 258, y: 180 }, { x: 540, y: 180 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e4_cr_redis", "n_cloudrun", "n_redis", "❺d", "Cache Check (<1ms)", "#D97706", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, directStraight: true, labelPosition: "right", isDark }));
+  } else if (hasPatientPortal) {
     cells.push(createEdge("e4_portal", "n_apigee", "n_portal", "❹", "Emergency FHIR R4 Ingress", "#10B981", { exitX: 1, exitY: 0.2, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 640 }, { x: 248, y: 164 }], labelPosition: "above", isDark }));
     cells.push(createEdge("e4a", "n_portal", "n_gke", "❺", "mTLS / gRPC Gateway", "#2563EB", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, directStraight: true, labelPosition: "right", isDark }));
   } else {
     cells.push(createEdge("e4a", "n_apigee", "n_gke", "❹a", "mTLS / gRPC Direct", "#2563EB", { exitX: 1, exitY: 0.4, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 662 }, { x: 248, y: 175 }], labelPosition: "above", isDark }));
     cells.push(createEdge("e4b", "n_apigee", "n_cloudrun", "❹b", "Serverless Route", "#2563EB", { exitX: 1, exitY: 0.6, entryX: 0, entryY: 0.5, waypoints: [{ x: 258, y: 683 }, { x: 258, y: 280 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e5", "n_gke", "n_redis", "❺", "Cache Check (<1ms)", "#D97706", { exitX: 0, exitY: 0.8, entryX: 0, entryY: 0.5, waypoints: [{ x: 276, y: 202 }, { x: 276, y: 385 }], labelPosition: "right", isDark }));
   }
 
-  cells.push(createEdge("e5", "n_gke", "n_redis", "❺", "Cache Check (<1ms)", "#D97706", { exitX: 0, exitY: 0.8, entryX: 0, entryY: 0.5, waypoints: [{ x: 276, y: 202 }, { x: 276, y: 385 }], labelPosition: "right", isDark }));
-  cells.push(createEdge("e6", "n_gke", "n_pubsub", "❻", "Publish CDC Event", "#EA580C", { dashed: 1, exitX: 1, exitY: 0.8, entryX: 0.4, entryY: 0, waypoints: [{ x: 824, y: 202 }, { x: 824, y: 502 }, { x: 384, y: 502 }], labelPosition: "above", isDark }));
-  cells.push(createEdge("e7", "n_datastream", "n_pubsub", "❼", "WAL CDC", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  // Zone 3 Streaming Connectors
+  if (hasKafka) {
+    cells.push(createEdge("e6_kafka", "n_kafka", "n_pubsub", "❻a", "Mirror Streams", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e7_cdc", "n_datastream", "n_kafka", "❻b", "CDC Replicate", "#D97706", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e8_flow", "n_pubsub", "n_dataflow", "❼", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  } else {
+    cells.push(createEdge("e6", "n_gke", "n_pubsub", "❻", "Publish CDC Event", "#EA580C", { dashed: 1, exitX: 1, exitY: 0.8, entryX: 0.4, entryY: 0, waypoints: [{ x: 824, y: 202 }, { x: 824, y: 502 }, { x: 384, y: 502 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e7", "n_datastream", "n_pubsub", "❼", "WAL CDC", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  }
+
+  // Zone 4 AI Hub Connectors
+  if (hasDocAi) {
+    cells.push(createEdge("e12_docai_scann", "n_doc_ai", "n_scann", "⓬", "Ingest & Vectorize", "#059669", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, directStraight: true, labelPosition: "right", isDark }));
+    cells.push(createEdge("e13_docai_gemini", "n_doc_ai", "n_gemini", "⓭", "OCR Table Extraction", "#059669", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.15, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e14_scann_gemini", "n_scann", "n_gemini", "⓮", "RAG Context", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.45, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e15_armor_gemini", "n_armor_ai", "n_gemini", "⓯", "L7 Guardrails", "#6D28D9", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.75, labelPosition: "above", directStraight: true, isDark }));
+  } else {
+    cells.push(createEdge("e12_scann", "n_gke", "n_scann", "⓬a", "Vector RAG", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.321429, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e12_armor", "n_gke", "n_armor_ai", "⓬b", "L7 Guardrail & DLP", "#6D28D9", { dashed: 1, exitX: 1, exitY: 0.7, entryX: 0, entryY: 0.5, waypoints: [{ x: 840, y: 193 }, { x: 840, y: 357.5 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e13_prompt", "n_armor_ai", "n_gemini", "⓭", "Clean Prompt", "#6D28D9", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.758333, labelPosition: "above", directStraight: true, isDark }));
+    cells.push(createEdge("e14_rag", "n_scann", "n_gemini", "⓮", "RAG Context", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.233333, labelPosition: "above", directStraight: true, isDark }));
+  }
+
+  // Zone 5 DB & Lakehouse Connectors
   cells.push(createEdge("e9", "n_gke", "n_spanner", "❾", "ACID Transact", "#059669", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.22093, waypoints: [{ x: 835, y: 175 }, { x: 835, y: 562.5 }], labelPosition: "above", isDark }));
   cells.push(createEdge("e10_cdc", "n_spanner", "n_datastream", "❿", "Change Stream", "#D97706", { dashed: 1, exitX: 0, exitY: 0.22093, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
   cells.push(createEdge("e11_lake", "n_dataflow", "n_bigquery", "⓫", "Streaming Micro-batch", "#059669", { exitX: 1, exitY: 0.5, entryX: 0.5, entryY: 1, waypoints: [{ x: 835, y: 677.5 }, { x: 835, y: 742 }, { x: 1242.5, y: 742 }], labelPosition: "above", isDark }));
-  cells.push(createEdge("e12_scann", "n_gke", "n_scann", "⓬a", "Vector RAG", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.321429, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e12_armor", "n_gke", "n_armor_ai", "⓬b", "L7 Guardrail & DLP", "#6D28D9", { dashed: 1, exitX: 1, exitY: 0.7, entryX: 0, entryY: 0.5, waypoints: [{ x: 840, y: 193 }, { x: 840, y: 357.5 }], labelPosition: "above", isDark }));
-  cells.push(createEdge("e13_prompt", "n_armor_ai", "n_gemini", "⓭", "Clean Prompt", "#6D28D9", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.758333, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e14_rag", "n_scann", "n_gemini", "⓮", "RAG Context", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.233333, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e15_react", "n_gemini", "n_gke", "⓯", "ReAct Tool Calling Loop", "#9333EA", { dashed: 1, exitX: 0.5, exitY: 0, entryX: 0.452, entryY: 0, waypoints: [{ x: 1445, y: 78 }, { x: 520, y: 78 }], labelPosition: "below", isDark }));
   cells.push(createEdge("e16_gcs", "n_bigquery", "n_gcs", "⓰", "BigLake Sync", "#0D9488", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e17_evals", "n_gemini", "n_bigquery", "⓱", "Evals & Tracing", "#64748B", { dashed: 1, exitX: 0, exitY: 0.9, entryX: 0.5, entryY: 0, waypoints: [{ x: 1242.5, y: 400 }], labelPosition: "above", isDark }));
-
-  // CONNECTORS WITH ZERO COLLISION & PERFECT CHANNEL WAYPOINTS
-  // ❶ Ingress Flow - 100% Straight Geometrical Vertical Lines (X=145)
-  cells.push(createEdge("e1", "n_client", "n_armor", "❶", "HTTPS / 443", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-  cells.push(createEdge("e2", "n_armor", "n_gclb", "❷", "WAF Verified", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-  cells.push(createEdge("e3", "n_gclb", "n_apigee", "❸", "L7 Terminated", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-
-  // ❹ Ingress to Compute Tier (GKE + Cloud Run) - Two Distinct Non-Overlapping Channels
-  cells.push(createEdge("e4a", "n_apigee", "n_gke", "❹a", "mTLS / gRPC Direct", "#2563EB", { exitX: 1, exitY: 0.4, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 662 }, { x: 248, y: 175 }], labelPosition: "above", isDark }));
-  cells.push(createEdge("e4b", "n_apigee", "n_cloudrun", "❹b", "Serverless Route", "#2563EB", { exitX: 1, exitY: 0.6, entryX: 0, entryY: 0.5, waypoints: [{ x: 258, y: 683 }, { x: 258, y: 280 }], labelPosition: "above", isDark }));
-
-  // ❺ App Mesh internal cache check - Clean 90-degree Orthogonal Loop
-  cells.push(createEdge("e5", "n_gke", "n_redis", "❺", "Cache Check (<1ms)", "#D97706", { exitX: 0, exitY: 0.8, entryX: 0, entryY: 0.5, waypoints: [{ x: 276, y: 202 }, { x: 276, y: 385 }], labelPosition: "right", isDark }));
-
-  // ❻ App to Event Bus - Drops in Channel X=824 down to Y=502 (below Zone 3 title, above Pub/Sub)
-  cells.push(createEdge("e6", "n_gke", "n_pubsub", "❻", "Publish CDC Event", "#EA580C", { dashed: 1, exitX: 1, exitY: 0.8, entryX: 0.4, entryY: 0, waypoints: [{ x: 824, y: 202 }, { x: 824, y: 502 }, { x: 384, y: 502 }], labelPosition: "above", isDark }));
-
-  // ❼ Event Streaming pipeline - 100% Straight Geometrical Horizontal Line (Y=562.5)
-  cells.push(createEdge("e7", "n_datastream", "n_pubsub", "❼", "WAL CDC", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-  cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
-
-  // ❾ App to Primary ACID DB (Lane X=835) - Clean 90-degree Orthogonal Route
-  cells.push(createEdge("e9", "n_gke", "n_spanner", "❾", "ACID Transact", "#059669", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.22093, waypoints: [{ x: 835, y: 175 }, { x: 835, y: 562.5 }], labelPosition: "above", isDark }));
-
-  // ❿ Database Change Streams to CDC - 100% Straight Geometrical Horizontal Line (Y=562.5)
-  cells.push(createEdge("e10_cdc", "n_spanner", "n_datastream", "❿", "Change Stream", "#D97706", { dashed: 1, exitX: 0, exitY: 0.22093, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-
-  // ⓫ Streaming ETL to Lakehouse - Clean 90-degree Orthogonal Route into BigQuery Bottom
-  cells.push(createEdge("e11_lake", "n_dataflow", "n_bigquery", "⓫", "Streaming Micro-batch", "#059669", { exitX: 1, exitY: 0.5, entryX: 0.5, entryY: 1, waypoints: [{ x: 835, y: 677.5 }, { x: 835, y: 742 }, { x: 1242.5, y: 742 }], labelPosition: "above", isDark }));
-
-  // ⓬-⓯ AGENTIC AI CLOSED LOOP
-  // ⓬a GKE -> Vertex ScaNN - 100% Straight Geometrical Horizontal Line (Y=175)
-  cells.push(createEdge("e12_scann", "n_gke", "n_scann", "⓬a", "Vector RAG", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.321429, labelPosition: "above", directStraight: true, isDark }));
-
-  // ⓬b GKE -> Model Armor Shield - Clean 90-degree Orthogonal Channel (Lane X=840)
-  cells.push(createEdge("e12_armor", "n_gke", "n_armor_ai", "⓬b", "L7 Guardrail & DLP", "#6D28D9", { dashed: 1, exitX: 1, exitY: 0.7, entryX: 0, entryY: 0.5, waypoints: [{ x: 840, y: 193 }, { x: 840, y: 357.5 }], labelPosition: "above", isDark }));
-
-  // ⓭ Model Armor -> Gemini Core - 100% Straight Geometrical Horizontal Line (Y=357.5)
-  cells.push(createEdge("e13_prompt", "n_armor_ai", "n_gemini", "⓭", "Clean Prompt", "#6D28D9", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.758333, labelPosition: "above", directStraight: true, isDark }));
-
-  // ⓮ ScaNN -> Gemini Core - 100% Straight Geometrical Horizontal Line (Y=200)
-  cells.push(createEdge("e14_rag", "n_scann", "n_gemini", "⓮", "RAG Context", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.233333, labelPosition: "above", directStraight: true, isDark }));
-
-  // ⓯ Gemini -> GKE - Enters GKE top at X=520 (in 100% open space between 'APPLICATION CORE MESH' and 'VPC' badge)
-  cells.push(createEdge("e15_react", "n_gemini", "n_gke", "⓯", "ReAct Tool Calling Loop", "#9333EA", { dashed: 1, exitX: 0.5, exitY: 0, entryX: 0.452, entryY: 0, waypoints: [{ x: 1445, y: 78 }, { x: 520, y: 78 }], labelPosition: "below", isDark }));
-
-  // ⓰ BigQuery to Lake Storage - 100% Straight Geometrical Horizontal Line (Y=622.5)
-  cells.push(createEdge("e16_gcs", "n_bigquery", "n_gcs", "⓰", "BigLake Sync", "#0D9488", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-
-  // ⓱ Gemini LLMOps Telemetry to BigQuery Lakehouse - Clean 90-degree Orthogonal Route
   cells.push(createEdge("e17_evals", "n_gemini", "n_bigquery", "⓱", "Evals & Tracing", "#64748B", { dashed: 1, exitX: 0, exitY: 0.9, entryX: 0.5, entryY: 0, waypoints: [{ x: 1242.5, y: 400 }], labelPosition: "above", isDark }));
 
   return (
