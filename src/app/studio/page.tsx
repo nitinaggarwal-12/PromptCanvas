@@ -394,6 +394,12 @@ function StudioMain() {
           specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
         }
 
+        const updatedXml = generateGcpNativeArchitectureXml(
+          { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
+          updated
+        );
+        setXml(updatedXml);
+
         const aiMsg: StudioChatMessage = {
           id: `msg_${Date.now() + 1}`,
           sender: 'assistant',
@@ -416,14 +422,14 @@ function StudioMain() {
           author: detectedPersona as any,
           actionSummary: `${detectedPersona}: ${cleanPrompt}`,
           ast: updated,
-          xml: xml
+          xml: updatedXml
         };
 
         setVersions(prev => [...prev, newSnapshot]);
         return updated;
       });
     }, 600);
-  }, [xml, versions.length]);
+  }, [versions.length]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {
@@ -559,6 +565,8 @@ function StudioMain() {
                     key={v.id}
                     onClick={() => {
                       setActiveVersionTag(v.versionTag);
+                      if (v.ast) setAst(v.ast);
+                      if (v.xml) setXml(v.xml);
                       setIsVersionDropdownOpen(false);
                     }}
                     className={`w-full text-left p-2 rounded-lg transition flex items-start gap-2 ${

@@ -10,6 +10,7 @@
  */
 
 import { GCP_OFFICIAL_ICONS } from "./gcpIcons";
+import { ArchitectureAst } from "./ast/architectureAst";
 
 function encodeXml(str: string): string {
   return (str || "")
@@ -199,17 +200,29 @@ export interface GcpNativeArchOptions {
   theme?: "light" | "dark";
 }
 
-export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions = {}): string {
+export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions = {}, ast?: ArchitectureAst): string {
   const isDark = options.theme === "dark";
   const canvasBg = isDark ? "#0B111E" : "#FFFFFF";
   const cells: string[] = [];
 
   const title =
+    ast?.metadata?.projectTitle ||
     options.projectTitle ||
     (options.projectName && options.useCaseName
       ? `${options.projectName} — ${options.useCaseName}`
       : "Google Cloud Enterprise Reference Architecture");
-  const domainBadge = options.domain ? options.domain.toUpperCase() : "PRODUCTION TOPOLOGY";
+  
+  const domainBadge = ast?.metadata?.domain ? ast.metadata.domain.toUpperCase() : (options.domain ? options.domain.toUpperCase() : "PRODUCTION TOPOLOGY");
+  const slaText = ast?.metadata?.slaTarget || "99.999% SLA";
+  const drText = ast?.metadata?.drRegions && ast.metadata.drRegions.length > 0 
+    ? `Multi-Region DR: ${ast.metadata.drRegions.join(', ')} (nam3)` 
+    : "nam3 Multi-Region";
+
+  // Check persona additions
+  const hasPatientPortal = ast?.components?.some(c => c.id === 'comp_patient_portal');
+  const hasHsmCmEk = ast?.components?.some(c => c.id === 'comp_hsm_cmek');
+  const isMultiRegionDr = (ast?.metadata?.drRegions?.length || 0) > 0;
+  const isFinOpsOptimized = (ast?.metadata?.latencyBudgetMs || 50) < 40;
 
   // 1. TOP HEADER BANNER - Fully filling X=40 to X=1640 (W=1600, H=52)
   const headerHtml =
@@ -223,7 +236,7 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     `</div>` +
     `<div style="display:flex;align-items:center;gap:18px;font-size:11px;color:#E2E8F0;font-weight:600;">` +
     `<span>🌐 Dual-Hub VPC: <b style="color:#FFFFFF;">10.100.0.0/16 • 10.200.0.0/16</b></span>` +
-    `<span style="color:#34D399;">● 99.999% SLA (nam3 Multi-Region)</span>` +
+    `<span style="color:#34D399;">● ${encodeXml(slaText)} (${encodeXml(drText)})</span>` +
     `<span style="color:#C084FC;">✦ Vertex AI & Gemini 3.7 Flash Reasoning</span>` +
     `</div>` +
     `</div>`;
@@ -233,9 +246,6 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   );
 
   // 2. BODY ZONES: Exact Symmetrical Distribution
-  // Left Zone 1: Ingress (X=40..250, W=210)
-  // Middle Zone 2 & 3: Compute & Streaming (X=265..825, W=560)
-  // Right Zone 4 & 5: Vertex AI & Lakehouse (X=845..1640, W=795)
   const z1Bg = isDark ? "#061811" : "#F0FDF4";
   const z1Stroke = isDark ? "#10B981" : "#86EFAC";
   const z2Bg = isDark ? "#081528" : "#EFF6FF";
@@ -256,11 +266,15 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   cells.push(createZoneBox("z5", "5. MULTI-REGION LAKEHOUSE & DB", "nam3 Multi-Region", 845, 465, 795, 280, z5Bg, z5Stroke, isDark));
 
   // 3. FOOTER ZONE 6 (Zero-Trust Security Baseline spanning X=40 to X=1640, Y=760, W=1600, H=140)
+  const zone6Subtitle = hasHsmCmEk 
+    ? "VPC Service Controls: 08492041284 • FIPS 140-3 HSM CMEK Keys Enforced" 
+    : "VPC Service Controls: 08492041284";
+
   cells.push(
     createZoneBox(
       "z6",
       "6. ZERO-TRUST SECURITY, SRE OBSERVABILITY & GOVERNANCE BASELINE",
-      "VPC Service Controls: 08492041284",
+      zone6Subtitle,
       40,
       760,
       1600,
@@ -271,7 +285,7 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     )
   );
 
-  // ZONE 1: INGRESS (X=40, W=210, Card W=178, X_pos=56) - 4 cards evenly distributed across full height (Y=125..725)
+  // ZONE 1: INGRESS (X=40, W=210, Card W=178, X_pos=56)
   cells.push(
     createNodeCard("n_client", "External Clients", "Web, Mobile, Partner APIs", "TLS 1.3 / QUIC", "INTERNET", "compute_engine", 56, 125, 178, 105, "#0284C7", [
       "TLS 1.3 / HTTP/3 Ingress",
@@ -297,27 +311,55 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     ], isDark)
   );
 
-  // ZONE 2: APP VPC (X=265, W=560, Card W=515, X_pos=287)
-  cells.push(
-    createNodeCard("n_gke", "GKE Autopilot Pods", "Microservices Orchestration Cluster", "c3-standard-8 • Cilium eBPF", "K8S MESH", "gke_autopilot", 287, 130, 515, 90, "#2563EB", [
-      "Workload Identity Federation (Keyless) & Envoy Mesh (mTLS)",
-      "Horizontal Pod Autoscaling with Cloud Operations Telemetry",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_cloudrun", "Cloud Run Services", "Serverless Microservices & Ingestion APIs", "Direct VPC Egress 10.200.16.0/20", "CONTAINER", "cloud_run", 287, 235, 515, 90, "#2563EB", [
-      "Automated 0-to-N Autoscaling with Concurrent Multi-Threading",
-      "Direct Serverless VPC Ingress Connector with Internal LB",
-    ], isDark)
-  );
-  cells.push(
-    createNodeCard("n_redis", "Memorystore Redis 7.2", "Session State & Low-Latency Query Cache", "<1ms read/write latency • Multi-AZ", "CACHE", "memorystore", 287, 340, 515, 90, "#D97706", [
-      "In-Memory Read Replica Fleet (<1ms) with Auto-Failover SLA",
-      "VPC Peering Low-Latency & TLS-Encrypted Transport",
-    ], isDark)
-  );
+  // ZONE 2: APP VPC (X=265, W=560)
+  if (hasPatientPortal) {
+    // Product Manager persona added Patient Portal
+    cells.push(
+      createNodeCard("n_portal", "Emergency Patient Ingress", "Patient Engagement & FHIR R4 Intake", "99.999% SLA • Sub-10ms", "PATIENT INGRESS", "cloud_run", 287, 130, 515, 68, "#10B981", [
+        "Real-Time Patient Admission & Emergency Triage Gateway",
+        "Direct FHIR R4 Adapter with Zero-Trust Workload Identity",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_gke", "GKE Autopilot Pods", "Microservices Orchestration Cluster", "c3-standard-8 • Cilium eBPF", "K8S MESH", "gke_autopilot", 287, 205, 515, 75, "#2563EB", [
+        "Workload Identity Federation (Keyless) & Envoy Mesh (mTLS)",
+        "Horizontal Pod Autoscaling with Cloud Operations Telemetry",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_cloudrun", "Cloud Run Services", isFinOpsOptimized ? "Serverless Microservices (0-to-N Off-Peak)" : "Serverless Microservices & Ingestion APIs", isFinOpsOptimized ? "0 Min-Instances Off-Peak" : "Direct VPC Egress 10.200.16.0/20", "CONTAINER", "cloud_run", 287, 288, 515, 75, "#2563EB", [
+        "Automated 0-to-N Autoscaling with Concurrent Multi-Threading",
+        "Direct Serverless VPC Ingress Connector with Internal LB",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_redis", "Memorystore Redis 7.2", "Session State & Low-Latency Query Cache", "<1ms read/write latency • Multi-AZ", "CACHE", "memorystore", 287, 370, 515, 65, "#D97706", [
+        "In-Memory Read Replica Fleet (<1ms) with Auto-Failover SLA",
+      ], isDark)
+    );
+  } else {
+    // Standard Zone 2 cards
+    cells.push(
+      createNodeCard("n_gke", "GKE Autopilot Pods", "Microservices Orchestration Cluster", "c3-standard-8 • Cilium eBPF", "K8S MESH", "gke_autopilot", 287, 130, 515, 90, "#2563EB", [
+        "Workload Identity Federation (Keyless) & Envoy Mesh (mTLS)",
+        "Horizontal Pod Autoscaling with Cloud Operations Telemetry",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_cloudrun", "Cloud Run Services", isFinOpsOptimized ? "Serverless Microservices (0-to-N Off-Peak)" : "Serverless Microservices & Ingestion APIs", isFinOpsOptimized ? "0 Min-Instances Off-Peak" : "Direct VPC Egress 10.200.16.0/20", "CONTAINER", "cloud_run", 287, 235, 515, 90, "#2563EB", [
+        "Automated 0-to-N Autoscaling with Concurrent Multi-Threading",
+        "Direct Serverless VPC Ingress Connector with Internal LB",
+      ], isDark)
+    );
+    cells.push(
+      createNodeCard("n_redis", "Memorystore Redis 7.2", "Session State & Low-Latency Query Cache", "<1ms read/write latency • Multi-AZ", "CACHE", "memorystore", 287, 340, 515, 90, "#D97706", [
+        "In-Memory Read Replica Fleet (<1ms) with Auto-Failover SLA",
+        "VPC Peering Low-Latency & TLS-Encrypted Transport",
+      ], isDark)
+    );
+  }
 
-  // ZONE 3: EVENT STREAMING (X=265, W=560, Cards X_pos=287, Total W=515)
+  // ZONE 3: EVENT STREAMING
   cells.push(
     createNodeCard("n_pubsub", "Cloud Pub/Sub", "Real-Time Message Bus", "10M+ msg/s • Schema Reg", "EVENT BUS", "cloud_storage", 287, 515, 242, 95, "#EA580C", [
       "Exact-Once Delivery & DLQ",
@@ -337,8 +379,7 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     ], isDark)
   );
 
-  // ZONE 4: VERTEX AI & INTELLIGENCE HUB (X=845, W=795, Total inside W=755, X_pos=865..1620)
-  // Left Column W=325 (X=865..1190), Gap = 80px (X=1190..1270), Right Column (Gemini) W=350 (X=1270..1620)
+  // ZONE 4: VERTEX AI & INTELLIGENCE HUB
   cells.push(
     createNodeCard("n_scann", "Vertex Vector Search (ScaNN)", "768-dim Embeddings & Search Grounding", "p99 <2.5ms @ 10M vectors", "EMBEDDINGS", "vertex_vector_search", 865, 130, 325, 140, "#7C3AED", [
       "Tree-AH Quantized Vector Index & Graph Partitioning",
@@ -363,48 +404,82 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     ], isDark)
   );
 
-  // ZONE 5: MULTI-REGION LAKEHOUSE & DB (X=845, W=795) - 3 EQUAL CARDS (W=225) & EQUAL GAPS (40px)
+  // ZONE 5: MULTI-REGION LAKEHOUSE & DB
+  const spannerTitle = isMultiRegionDr ? "Cloud Spanner nam3 (DR)" : "Cloud Spanner (nam3)";
+  const spannerSub = isMultiRegionDr ? "Dual-Leader Active-Active with Witness in europe-west1" : "Multi-Region ACID Database";
+  const spannerBadge = isMultiRegionDr ? "MULTI-REGION DR" : "PRIMARY DB";
+  const spannerBadgeColor = isMultiRegionDr ? "#0D9488" : "#059669";
+  const spannerSpec = isMultiRegionDr ? "RPO < 1s • RTO < 15s (nam3)" : "TrueTime <5ms • 99.999%";
+
   cells.push(
-    createNodeCard("n_spanner", "Cloud Spanner (nam3)", "Multi-Region ACID Database", "TrueTime <5ms • 99.999%", "PRIMARY DB", "spanner", 865, 515, 225, 215, "#059669", [
-      "nam3 Multi-Region Topology",
+    createNodeCard("n_spanner", spannerTitle, spannerSub, spannerSpec, spannerBadge, "spanner", 865, 515, 225, 215, spannerBadgeColor, [
+      isMultiRegionDr ? "Multi-Region Paxos us-central1 + europe-west1" : "nam3 Multi-Region Topology",
       "100k QPS Distributed ACID",
       "Zero Maintenance SLA",
       "Automatic Data Sharding",
     ], isDark)
   );
   cells.push(
-    createNodeCard("n_bigquery", "BigQuery Lakehouse", "Serverless Analytics & Storage", "BigLake Iceberg Engine", "ANALYTICS", "bigquery", 1130, 515, 225, 215, "#0284C7", [
+    createNodeCard("n_bigquery", "BigQuery Lakehouse", isFinOpsOptimized ? "Serverless Analytics (BI Engine 50GB Cache)" : "Serverless Analytics & Storage", isFinOpsOptimized ? "BI Engine 50GB Reserved" : "BigLake Iceberg Engine", "ANALYTICS", "bigquery", 1130, 515, 225, 215, "#0284C7", [
       "Iceberg Metadata Tables on GCS",
       "Real-time Continuous Ingestion",
       "BigQuery Studio SQL Analytics",
-      "BI Engine In-Memory Query",
+      isFinOpsOptimized ? "BI Engine 50GB In-Memory Cache Active" : "BI Engine In-Memory Query",
     ], isDark)
   );
   cells.push(
-    createNodeCard("n_gcs", "Cloud Storage (Dual-Region)", "Data Lake & Cold Archival", "CMEK • Object Lock WORM", "LAKE STORE", "cloud_storage", 1395, 515, 225, 215, "#0D9488", [
+    createNodeCard("n_gcs", "Cloud Storage (Dual-Region)", "Data Lake & Cold Archival", hasHsmCmEk ? "FIPS 140-3 CMEK HSM Key" : "CMEK • Object Lock WORM", "LAKE STORE", "cloud_storage", 1395, 515, 225, 215, "#0D9488", [
       "Dual-Region Bucket Redundancy",
       "Automated Autoclass Tiering",
-      "FIPS 140-3 CMEK Key Security",
+      hasHsmCmEk ? "Cloud KMS HSM FIPS 140-3 Level 3" : "FIPS 140-3 CMEK Key Security",
       "Immutable Object Retention",
     ], isDark)
   );
 
-  // ZONE 6: ZERO-TRUST BASELINE (X=40, W=1600)
+  // ZONE 6: ZERO-TRUST BASELINE
   const secNodes = [
-    { id: "n_vpcsc", title: "VPC Service Controls", sub: "Perimeter Isolation", spec: "Policy 08492041284", badge: "ZERO TRUST", icon: "vpc_sc" as const },
-    { id: "n_wif", title: "Workload Identity", sub: "OIDC/SPIFFE Tokens", spec: "Keyless Auth 3600s", badge: "IAM", icon: "iap" as const },
-    { id: "n_kms", title: "Cloud KMS HSM", sub: "FIPS 140-3 Hardware Key", spec: "AES-256 CMEK Auto-Rot", badge: "CRYPTO", icon: "scc" as const },
-    { id: "n_secrets", title: "Secret Manager", sub: "Encrypted Credentials", spec: "Versioned API Keys", badge: "VAULT", icon: "cloud_dlp" as const },
-    { id: "n_dataplex", title: "Dataplex Governance", sub: "Catalog & Lineage", spec: "Attribute-Based Policy", badge: "METADATA", icon: "cloud_logging" as const },
-    { id: "n_scc", title: "Cloud SCC Premium", sub: "SIEM & Threat Detection", spec: "Real-time SecOps", badge: "OBSERVABILITY", icon: "cloud_monitoring" as const },
+    { id: "n_vpcsc", title: "VPC Service Controls", sub: "Perimeter Isolation", spec: "Policy 08492041284", badge: "ZERO TRUST", icon: "vpc_sc" as const, color: "#475569" },
+    { id: "n_wif", title: "Workload Identity", sub: "OIDC/SPIFFE Tokens", spec: "Keyless Auth 3600s", badge: "IAM", icon: "iap" as const, color: "#475569" },
+    { id: "n_kms", title: hasHsmCmEk ? "Cloud KMS HSM (CMEK)" : "Cloud KMS HSM", sub: hasHsmCmEk ? "FIPS 140-3 Level 3 Keys" : "FIPS 140-3 Hardware Key", spec: hasHsmCmEk ? "Auto-Rotated CMEK Envelope" : "AES-256 CMEK Auto-Rot", badge: hasHsmCmEk ? "HSM HARDENED" : "CRYPTO", icon: "scc" as const, color: hasHsmCmEk ? "#7C3AED" : "#475569" },
+    { id: "n_secrets", title: "Secret Manager", sub: "Encrypted Credentials", spec: "Versioned API Keys", badge: "VAULT", icon: "cloud_dlp" as const, color: "#475569" },
+    { id: "n_dataplex", title: "Dataplex Governance", sub: "Catalog & Lineage", spec: "Attribute-Based Policy", badge: "METADATA", icon: "cloud_logging" as const, color: "#475569" },
+    { id: "n_scc", title: "Cloud SCC Premium", sub: "SIEM & Threat Detection", spec: "Real-time SecOps", badge: "OBSERVABILITY", icon: "cloud_monitoring" as const, color: "#475569" },
   ];
 
   secNodes.forEach((node, idx) => {
     const xPos = 56 + idx * 265;
     cells.push(
-      createNodeCard(node.id, node.title, node.sub, node.spec, node.badge, node.icon, xPos, 805, 248, 75, "#475569", undefined, isDark)
+      createNodeCard(node.id, node.title, node.sub, node.spec, node.badge, node.icon, xPos, 805, 248, 75, node.color, undefined, isDark)
     );
   });
+
+  // CONNECTORS
+  cells.push(createEdge("e1", "n_client", "n_armor", "❶", "HTTPS / 443", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  cells.push(createEdge("e2", "n_armor", "n_gclb", "❷", "WAF Verified", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  cells.push(createEdge("e3", "n_gclb", "n_apigee", "❸", "L7 Terminated", "#0284C7", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+
+  if (hasPatientPortal) {
+    cells.push(createEdge("e4_portal", "n_apigee", "n_portal", "❹", "Emergency FHIR R4 Ingress", "#10B981", { exitX: 1, exitY: 0.2, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 640 }, { x: 248, y: 164 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e4a", "n_portal", "n_gke", "❺", "mTLS / gRPC Gateway", "#2563EB", { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, directStraight: true, labelPosition: "right", isDark }));
+  } else {
+    cells.push(createEdge("e4a", "n_apigee", "n_gke", "❹a", "mTLS / gRPC Direct", "#2563EB", { exitX: 1, exitY: 0.4, entryX: 0, entryY: 0.5, waypoints: [{ x: 248, y: 662 }, { x: 248, y: 175 }], labelPosition: "above", isDark }));
+    cells.push(createEdge("e4b", "n_apigee", "n_cloudrun", "❹b", "Serverless Route", "#2563EB", { exitX: 1, exitY: 0.6, entryX: 0, entryY: 0.5, waypoints: [{ x: 258, y: 683 }, { x: 258, y: 280 }], labelPosition: "above", isDark }));
+  }
+
+  cells.push(createEdge("e5", "n_gke", "n_redis", "❺", "Cache Check (<1ms)", "#D97706", { exitX: 0, exitY: 0.8, entryX: 0, entryY: 0.5, waypoints: [{ x: 276, y: 202 }, { x: 276, y: 385 }], labelPosition: "right", isDark }));
+  cells.push(createEdge("e6", "n_gke", "n_pubsub", "❻", "Publish CDC Event", "#EA580C", { dashed: 1, exitX: 1, exitY: 0.8, entryX: 0.4, entryY: 0, waypoints: [{ x: 824, y: 202 }, { x: 824, y: 502 }, { x: 384, y: 502 }], labelPosition: "above", isDark }));
+  cells.push(createEdge("e7", "n_datastream", "n_pubsub", "❼", "WAL CDC", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+  cells.push(createEdge("e9", "n_gke", "n_spanner", "❾", "ACID Transact", "#059669", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.22093, waypoints: [{ x: 835, y: 175 }, { x: 835, y: 562.5 }], labelPosition: "above", isDark }));
+  cells.push(createEdge("e10_cdc", "n_spanner", "n_datastream", "❿", "Change Stream", "#D97706", { dashed: 1, exitX: 0, exitY: 0.22093, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e11_lake", "n_dataflow", "n_bigquery", "⓫", "Streaming Micro-batch", "#059669", { exitX: 1, exitY: 0.5, entryX: 0.5, entryY: 1, waypoints: [{ x: 835, y: 677.5 }, { x: 835, y: 742 }, { x: 1242.5, y: 742 }], labelPosition: "above", isDark }));
+  cells.push(createEdge("e12_scann", "n_gke", "n_scann", "⓬a", "Vector RAG", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.321429, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e12_armor", "n_gke", "n_armor_ai", "⓬b", "L7 Guardrail & DLP", "#6D28D9", { dashed: 1, exitX: 1, exitY: 0.7, entryX: 0, entryY: 0.5, waypoints: [{ x: 840, y: 193 }, { x: 840, y: 357.5 }], labelPosition: "above", isDark }));
+  cells.push(createEdge("e13_prompt", "n_armor_ai", "n_gemini", "⓭", "Clean Prompt", "#6D28D9", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.758333, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e14_rag", "n_scann", "n_gemini", "⓮", "RAG Context", "#7C3AED", { dashed: 1, exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.233333, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e15_react", "n_gemini", "n_gke", "⓯", "ReAct Tool Calling Loop", "#9333EA", { dashed: 1, exitX: 0.5, exitY: 0, entryX: 0.452, entryY: 0, waypoints: [{ x: 1445, y: 78 }, { x: 520, y: 78 }], labelPosition: "below", isDark }));
+  cells.push(createEdge("e16_gcs", "n_bigquery", "n_gcs", "⓰", "BigLake Sync", "#0D9488", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
+  cells.push(createEdge("e17_evals", "n_gemini", "n_bigquery", "⓱", "Evals & Tracing", "#64748B", { dashed: 1, exitX: 0, exitY: 0.9, entryX: 0.5, entryY: 0, waypoints: [{ x: 1242.5, y: 400 }], labelPosition: "above", isDark }));
 
   // CONNECTORS WITH ZERO COLLISION & PERFECT CHANNEL WAYPOINTS
   // ❶ Ingress Flow - 100% Straight Geometrical Vertical Lines (X=145)
