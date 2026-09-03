@@ -32,9 +32,11 @@ Every diagram generated across any system MUST strictly follow these core pillar
 2. **16:9 Ultra-Wide Responsive Viewport Geometry**:
    - Default canvas dimensions are $1600 \times 960\text{px}$ to $1680 \times 1040\text{px}$ (16:9 aspect ratio). Never squash templates into narrow 4:3 or 21:9 viewports in embeds.
 
-3. **Zero External URL / Network Dependencies**:
-   - Never reference `https://api.iconify.design/...` or external HTTP image URLs.
-   - Always use native vector Unicode emojis and symbols (`🧬`, `🔬`, `🩺`, `⚖️`, `🛡️`, `🏭`, `📊`, `📁`, `✨`, `🔒`, `🏢`, `☁️`, `🤝`, `🏛️`, `🏆`, `🚀`, `🗄️`, `🌐`, `🎧`, `⚙️`, `🎯`, `📥`, `📑`, `🔄`, `📦`, `🔗`, `🧠`) or inline SVGs.
+3. **Official Multi-Vendor Vector Icon Catalogs & RFC 2397 Mandate**:
+   - For all cloud, multi-agent, enterprise SaaS, and database architectures, every recognized vendor service node MUST feature its official vector SVG icon embedded as an inline RFC 2397 `data:image/svg+xml` data URI (`image=data:image/svg+xml,...;imageWidth=24-26;imageHeight=24-26;imageAlign=left;spacingLeft=38-44;`).
+   - Reference [`src/lib/gcpIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/gcpIcons.ts) for Google Cloud and [`src/lib/sapIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/sapIcons.ts) for SAP Ecosystem (Joule, BTP, APIM, Datasphere, HANA, S/4HANA, SuccessFactors, Concur, Ariba, SAC, Fiori, Cloud Connector).
+   - **Zero Generic Boxes**: Never render vendor services as plain text boxes or substitute enterprise platforms with toy emojis.
+   - **Zero External URLs**: Never reference `https://api.iconify.design/...` or external HTTP image URLs which fail in headless or air-gapped environments.
 
 4. **Zero-Mutation Preflight Passthrough for Master Blueprints**:
    - Layout engines and repair sanitizers must recognize structured canonical master blueprints and pass them through with **zero coordinate or geometric mutation**.
@@ -50,18 +52,22 @@ Every diagram generated across any system MUST strictly follow these core pillar
    - When connecting between shapes with different heights, widths, or center coordinates, never rely on default `exitY=0.5;entryY=0.5;` with `edgeStyle=orthogonalEdgeStyle;` across narrow gaps, which forces ugly $90^\circ$ steps along container borders.
    - Always compute exact matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and enforce `edgeStyle=none;` for direct straight point-to-point connectors.
 
-2. **High-Contrast Label Pill Badges**:
+2. **Geometric Waypoint Highway Planning & Zero Text Intersection**:
+   - Cross-tier connector lines spanning across columns MUST route through designated open inter-row channels (e.g. gaps between cards) with explicit intermediate waypoints (`<mxPoint x="..." y="...">`).
+   - Line paths must maintain a minimum **$12\text{px}$ safety margin** from all card boundaries, container headers, subheaders, and character descenders. Never route lines through the text bounding box of a card or container title.
+
+3. **High-Contrast Label Pill Badges**:
    - All edge labels crossing container boundaries MUST use solid white or high-contrast pill badges:
      `labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;fontColor=#0F172A;`
 
-3. **Decision Diamond & Rhombus Offset Geometry**:
+4. **Decision Diamond & Rhombus Offset Geometry**:
    - Horizontal lines entering a Rhombus shape: `lblX = -50, lblY = -18` (positions text 50px before the left tip in 100% open space).
    - Horizontal lines exiting a Rhombus shape: `lblX = 50, lblY = -18` (positions text 50px after the right tip in 100% open space).
 
-4. **Vertical Line Side Offsets**:
+5. **Vertical Line Side Offsets**:
    - Position vertical edge labels 28px to the right of connector lines with `lblX = 28, lblY = -10; align=left; spacingLeft=8;` so vertical arrow lines never cut through or cross text.
 
-5. **Mandatory Typed 6-Color Connector Palette**:
+6. **Mandatory Typed 6-Color Connector Palette**:
    - **Synchronous / Direct Ingestion**: Solid blue (`strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;endFill=1;`)
    - **Asynchronous / Event Stream / CDC**: Dashed orange (`strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;`)
    - **AI Copilot / Vertex RAG Grounding**: Dashed purple (`strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;endArrow=block;endFill=1;`)
@@ -69,28 +75,34 @@ Every diagram generated across any system MUST strictly follow these core pillar
    - **Governance & Policy Oversight**: Dashed slate (`strokeColor=#64748B;strokeWidth=1.2;dashed=1;dashPattern=2 4;endArrow=open;`)
    - **Closed-Loop Feedback Returns**: Dashed teal/green (`strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=5 5;endArrow=block;`) looping back to source systems.
 
-6. **Sequential Step Number Badges (❶..❻ / 1..6)**:
+7. **Sequential Step Number Badges (❶..❻ / 1..6)**:
    - All process flows and data pipelines must feature explicit sequential step number badges showing execution sequence with vertical drop-lines into storage/processing tiers.
 
-7. **Open Routing Corridors & Zero Slicing**:
+8. **Open Routing Corridors & Zero Slicing**:
    - Maintain minimum $140\text{px}$ horizontal column pitch ($gapX$) and $80\text{px}$ inter-row channel pitch ($gapY$). Connector paths must NEVER slice through intermediate cards or table vertices.
 
 ---
 
 ## 🛡️ Pillar 3: Shapes, Containers & 2D Collision Safety
 
-1. **Zero Surrounding Empty Space & Full Viewport Breadth Law**:
+1. **Strict Container Fill & Void Elimination Law ($\ge 85\%$ Fill Ratio)**:
+   - Every container column (e.g. Ingress, VPC Subnets, On-Prem Core) must maintain a vertical fill ratio $\ge 85\%$:
+     $$\text{Fill Ratio} = \frac{\sum \text{Child Heights} + \sum \text{Gaps}}{\text{Container Inner Height}} \ge 0.85$$
+   - Never leave $>40\text{px}$ of dead void at the bottom of any container column.
+   - If child elements stop short, either scale card heights/gaps proportionally or populate the complete production infrastructure baseline (such as HA System Replication, Dedicated Interconnect, Certificate Manager, Security Command Center, and Web Dispatcher).
+
+2. **Zero Surrounding Empty Space & Full Viewport Breadth Law**:
    - Diagram viewports and parent container wrappers must utilize 100% of available screen width (`w-full max-w-none` or `max-w-8xl` (1440px) / `max-w-[1600px]`) with responsive padding (`p-6 md:p-8`). Never constrain main containers with narrow centered grids (`max-w-4xl`, `max-w-5xl`) that introduce empty white side gutters on desktop monitors.
    - Internal zone boxes and cards must scale proportionally in height and width to eliminate awkward empty dead voids inside containers and across the screen.
 
-2. **Rounded Container Corner Insetting ($\ge 20\text{px}$ Margin)**:
+3. **Rounded Container Corner Insetting ($\ge 20\text{px}$ Margin)**:
    - Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
    - Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
 
-3. **2D Bounding Box Collision Auto-Healing**:
+4. **2D Bounding Box Collision Auto-Healing**:
    - Layout engines must perform 2D bounding box intersection checks (with 30px safety padding margin) and push overlapping nodes rightward (for same-tier overlaps) or downward (for vertical overlaps).
 
-4. **Container Padding Standards**:
+5. **Container Padding Standards**:
    - Maintain a minimum of $24\text{px} - 32\text{px}$ top padding in outer containers to provide clearance for container headers and icons.
 
 ---

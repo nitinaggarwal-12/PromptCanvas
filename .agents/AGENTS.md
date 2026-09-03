@@ -227,17 +227,24 @@
   - Report concise progress to the user at each interval (e.g. `[Min 1] Building container...`, `[Min 2] Next.js compilation...`, `[Min 3] Container healthy & deployed to https://promptcanvas.up.railway.app`).
 * **Independent Live String Verification**:
   - Never declare a Railway or Vercel deployment "live" based purely on CLI exit codes (`0`) or dashboard green status badges.
-  - Perform an HTTP request (`curl -s <live_url>`) to search the delivered HTML/JS asset for a **unique string literal** present only in the newly added code changes to confirm CDN cache invalidation before reporting completion.
-
----
-
-# 🧩 Technical Architecture Diagramming & Vector Icon Embedding Laws
+  - # 🧩 Technical Architecture Diagramming & Vector Icon Embedding Laws
 
 18. **Production Platform & Tool Vector Icon Embedding Standard**:
-    - For all cloud, multi-agent, enterprise SaaS, and database architectures, every service node MUST feature its official vector SVG icon embedded as an inline RFC 2397 `data:image/svg+xml` data URI (`image=data:image/svg+xml,...;imageWidth=24-26;imageHeight=24-26;imageAlign=left;spacingLeft=38-42;`).
+    - For all cloud, multi-agent, enterprise SaaS, and database architectures, every service node MUST feature its official vector SVG icon embedded as an inline RFC 2397 `data:image/svg+xml` data URI (`image=data:image/svg+xml,...;imageWidth=24-26;imageHeight=24-26;imageAlign=left;spacingLeft=38-44;`).
+    - Reference [`src/lib/gcpIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/gcpIcons.ts) for Google Cloud and [`src/lib/sapIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/sapIcons.ts) for SAP Ecosystem (Joule, BTP, APIM, Datasphere, HANA, S/4HANA, SuccessFactors, Concur, Ariba, SAC, Fiori, Cloud Connector).
     - **Zero External HTTP/HTTPS Icon URLs**: Never use unverified external icon CDNs (e.g. `https://api.iconify.design/...`) which break in air-gapped, offline, headless, or security-sandboxed environments.
-    - **Zero Generic Emojis**: Never substitute enterprise platforms (GCP, SAP, AWS, Azure, Kafka, Kubernetes) with toy emojis.
+    - **Zero Generic Emojis & Zero Plain Boxes**: Never substitute enterprise platforms with toy emojis or render them as plain unbranded boxes.
 
 19. **True Technical Depth & Production Specificity Law**:
     - Architecture diagrams must depict concrete production infrastructure: explicit VPC subnets, CIDR blocks (`10.128.0.0/16`), security perimeters (VPC-SC), private ingress/egress endpoints (PSC, Direct VPC Egress), transport protocols (`JSON-RPC over mTLS`, `gRPC :443`, `Delta Sharing`, `SNC Encryption`), exact container runtimes (Cloud Run, Kyma K8s), and hardware/DB deployment modes (Multi-AZ HSR, High-Availability Clusters).
     - Avoid superficial generic box-and-arrow diagrams that omit production network boundaries, encryption layers, or concrete data transfer mechanisms.
+
+20. **Strict Container Vertical Fill Ratio & Void Elimination Law ($\ge 85\%$ Fill Ratio)**:
+    - Every container column (e.g. Ingress, VPC Subnets, On-Prem Core) must calculate:
+      $$\text{Fill Ratio} = \frac{\sum \text{Child Heights} + \sum \text{Gaps}}{\text{Container Inner Height}} \ge 85\%$$
+    - Never leave $>40\text{px}$ of dead void at the bottom of any container column.
+    - If child elements stop short, either scale card heights/gaps proportionally to fill the parent container smoothly, or populate the complete production infrastructure baseline (such as HA System Replication, Dedicated Interconnect, Certificate Manager, Security Command Center, and Web Dispatcher).
+
+21. **Geometric Waypoint Highway Planning & Zero Text Intersection**:
+    - Cross-tier connector lines spanning across columns MUST route through designated open inter-row channels (e.g. gaps between cards) with explicit intermediate waypoints (`<mxPoint x="..." y="...">`).
+    - Line paths must maintain a minimum **$12\text{px}$ safety margin** from all card boundaries, container headers, subheaders, and character descenders. Never route lines through the text bounding box of a card or container title.

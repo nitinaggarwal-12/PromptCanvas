@@ -1,0 +1,693 @@
+import * as fs from "fs";
+import * as path from "path";
+import puppeteer from "puppeteer";
+import * as http from "http";
+import { getGcpDataUri } from "../src/lib/gcpIcons";
+import { getSapDataUri } from "../src/lib/sapIcons";
+
+// 1. Vector Icon URIs (Clean authentic vector SVGs)
+const iconGemini = getGcpDataUri("gemini");
+const iconVertexAi = getGcpDataUri("vertex_ai");
+const iconVectorSearch = getGcpDataUri("vertex_vector_search");
+const iconCloudRun = getGcpDataUri("cloud_run");
+const iconPubSub = getGcpDataUri("pubsub");
+
+const iconSapLogo = getSapDataUri("sap_logo");
+const iconSapJoule = getSapDataUri("sap_joule");
+const iconSapBtp = getSapDataUri("sap_btp");
+const iconSapIntegration = getSapDataUri("sap_integration_suite");
+const iconSapApim = getSapDataUri("sap_apim");
+const iconSapDatasphere = getSapDataUri("sap_datasphere");
+const iconSapS4Hana = getSapDataUri("sap_s4hana");
+const iconSapSuccessFactors = getSapDataUri("sap_successfactors");
+const iconSapAriba = getSapDataUri("sap_ariba");
+const iconSapCx = getSapDataUri("sap_cx");
+
+// Domain specific vector icons (Inline clean SVG Data URIs)
+const iconOmnichannel = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="12" rx="2" stroke="#2563EB" stroke-width="1.8" fill="#EFF6FF"/><path d="M7 20H17M12 16V20" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="10" r="2.5" fill="#2563EB"/></svg>')}`;
+const iconChannelInterface = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="#2563EB" stroke-width="1.8" fill="#EFF6FF"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="#2563EB" stroke-width="1.8" fill="#EFF6FF"/><rect x="3" y="13" width="18" height="8" rx="1.5" stroke="#2563EB" stroke-width="1.8" fill="#DBEAFE"/></svg>')}`;
+const iconPortals = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="#2563EB" stroke-width="1.8" fill="#EFF6FF"/><path d="M3.6 9H20.4M3.6 15H20.4M12 3C14.5 6 15.5 9 15.5 12C15.5 15 14.5 18 12 21C9.5 18 8.5 15 8.5 12C8.5 9 9.5 6 12 3Z" stroke="#2563EB" stroke-width="1.5"/></svg>')}`;
+const iconCollab = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 15C21 15.53 20.78 16.04 20.41 16.41C20.04 16.78 19.53 17 19 17H7L3 21V5C3 4.46 3.21 3.95 3.58 3.58C3.95 3.21 4.46 3 5 3H19C19.53 3 20.04 3.21 20.41 3.58C20.78 3.95 21 4.46 21 5V15Z" stroke="#2563EB" stroke-width="1.8" fill="#EFF6FF"/><path d="M8 9H16M8 13H13" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/></svg>')}`;
+const iconAdminSec = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L4 5.5V11.5C4 16.5 7.4 21.1 12 22.5C16.6 21.1 20 16.5 20 11.5V5.5L12 2Z" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.8"/><circle cx="12" cy="11" r="3" stroke="#2563EB" stroke-width="1.8"/><path d="M12 14V17" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round"/></svg>')}`;
+
+const iconApiGateway = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#D97706" stroke-width="1.8" fill="#FEF3C7"/><path d="M7 12H17M12 8L16 12L12 16" stroke="#D97706" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>')}`;
+const iconProcessHub = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="#D97706"/><circle cx="12" cy="4" r="2" fill="#D97706"/><circle cx="20" cy="12" r="2" fill="#D97706"/><circle cx="12" cy="20" r="2" fill="#D97706"/><circle cx="4" cy="12" r="2" fill="#D97706"/><path d="M12 6V9M18 12H15M12 18V15M6 12H9" stroke="#D97706" stroke-width="1.8"/></svg>')}`;
+const iconApiServices = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="7" height="7" rx="1.5" fill="#D97706"/><rect x="14" y="3" width="7" height="7" rx="1.5" fill="#F59E0B"/><rect x="3" y="14" width="7" height="7" rx="1.5" fill="#F59E0B"/><rect x="14" y="14" width="7" height="7" rx="1.5" fill="#D97706"/><path d="M10 6.5H14M6.5 10V14M17.5 10V14M10 17.5H14" stroke="#D97706" stroke-width="1.5"/></svg>')}`;
+const iconP2pPart = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="3.5" stroke="#D97706" stroke-width="1.8" fill="#FEF3C7"/><circle cx="17" cy="7" r="3.5" stroke="#D97706" stroke-width="1.8" fill="#FEF3C7"/><circle cx="12" cy="17" r="3.5" stroke="#D97706" stroke-width="1.8" fill="#FEF3C7"/><path d="M9.5 8.5L14.5 8.5M8.5 10L10.5 14M15.5 10L13.5 14" stroke="#D97706" stroke-width="1.5"/></svg>')}`;
+
+const iconGraphSemantic = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="3" fill="#0D9488"/><circle cx="18" cy="6" r="3" fill="#0D9488"/><circle cx="12" cy="18" r="3" fill="#0D9488"/><path d="M8.5 7.5L15.5 7.5M7.5 8.5L10.5 15.5M16.5 8.5L13.5 15.5" stroke="#0D9488" stroke-width="1.8"/></svg>')}`;
+const iconDataMesh = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12" cy="5" rx="7" ry="2.5" fill="#0D9488" stroke="#0F766E" stroke-width="1.5"/><path d="M5 5V19C5 20.38 8.13 21.5 12 21.5C15.87 21.5 19 20.38 19 19V5" stroke="#0D9488" stroke-width="1.8"/><path d="M5 12C5 13.38 8.13 14.5 12 14.5C15.87 14.5 19 13.38 19 12" stroke="#0D9488" stroke-width="1.5"/></svg>')}`;
+const iconKnowledgeGraph = `data:image/svg+xml,${encodeURIComponent('<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3.5" fill="#0D9488"/><circle cx="5" cy="6" r="2.5" fill="#14B8A6"/><circle cx="19" cy="6" r="2.5" fill="#14B8A6"/><circle cx="5" cy="18" r="2.5" fill="#14B8A6"/><circle cx="19" cy="18" r="2.5" fill="#14B8A6"/><path d="M7 7.5L9.5 10M17 7.5L14.5 10M7 16.5L9.5 14M17 16.5L14.5 14" stroke="#0D9488" stroke-width="1.8"/></svg>')}`;
+
+const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-09-03T18:59:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="conceptual_sap_agents_master" name="Conceptual Architecture - Enterprise Multi-Agent AI &amp; SAP Ecosystem">
+    <mxGraphModel dx="1810" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1810" pageHeight="1050" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ========================================================================= -->
+        <!-- MASTER HEADER & TOP LEGEND PILLS                                          -->
+        <!-- ========================================================================= -->
+        <mxCell id="hdr_title" value="Conceptual Architecture: Enterprise Multi-Agent AI &amp; SAP Ecosystem" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=22;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="16" width="980" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_sub" value="The Conceptual Architecture supporting end-to-end integration across Multi-Agent Grid, Semantic SAP Services, and Enterprise Core." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11.5;fontStyle=0;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="30" y="44" width="980" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Top Right Mini Legend Bar -->
+        <mxCell id="top_leg_1" value="■ New Accounts Plan" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="24" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="top_leg_2" value="■ SAP Agent Services" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#7C3AED;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="24" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="top_leg_3" value="■ SAP Talent Tools" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0D9488;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="24" width="130" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="top_leg_4" value="■ SAP Enterprise Services" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#D97706;" vertex="1" parent="1">
+          <mxGeometry x="1470" y="24" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="top_leg_5" value="■ Product Groups" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0284C7;" vertex="1" parent="1">
+          <mxGeometry x="1630" y="24" width="130" height="20" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 1: ENTERPRISE SERVICES & CHANNELS (x=30, w=290, y=78)              -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_1_bg" value="" style="rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="78" width="290" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="col_1_hdr" value="Enterprise Services &amp; Channels" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#1E40AF;" vertex="1" parent="1">
+          <mxGeometry x="30" y="84" width="290" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Top User Section -->
+        <mxCell id="c1_user_container" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="42" y="110" width="266" height="114" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_user_avatar" value="👥" style="shape=ellipse;fillColor=#2563EB;strokeColor=none;fontColor=#FFFFFF;fontSize=16;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="157" y="118" width="36" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_user_title" value="User Interaction in External Channels &amp; Interfaces" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="44" y="152" width="262" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_pill_input" value="User input integration" style="rounded=1;arcSize=50;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#334155;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="50" y="172" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c1_pill_notif" value="Notification / notifications" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="50" y="196" width="250" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Channel Card 1: Omnichannel Client -->
+        <mxCell id="c1_card_omni" value="Omnichannel Client&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Client Communication&lt;br&gt;• User notifications, support&lt;br&gt;• Real-time client messaging&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DBEAFE;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconOmnichannel};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="234" width="266" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Channel Card 2: Channel Interface -->
+        <mxCell id="c1_card_iface" value="Channel Interface&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• User interface integration&lt;br&gt;• Notification management&lt;br&gt;• Ingress request validation&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DBEAFE;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconChannelInterface};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="324" width="266" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Channel Card 3: Enterprise Portals & Engagements -->
+        <mxCell id="c1_card_engage" value="Enterprise Portals &amp; Engagement&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Administrative interaction&lt;br&gt;• Real-time communications&lt;br&gt;• Executive operations desk&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DBEAFE;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconPortals};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="414" width="266" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Channel Card 4: Enterprise Communication -->
+        <mxCell id="c1_card_comm" value="Enterprise Collaboration &amp; Chat&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• User intention processing&lt;br&gt;• Context matching &amp; search&lt;br&gt;• Human-in-the-loop approvals&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DBEAFE;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconCollab};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="504" width="266" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Channel Card 5: Enterprise Administration -->
+        <mxCell id="c1_card_admin" value="Managing in Enterprise Administration&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• System configuration &amp; connectivity management&lt;br&gt;• Identity governance &amp; enterprise policy enforcement&lt;br&gt;• Audit logging &amp; compliance reporting&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DBEAFE;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconAdminSec};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="594" width="266" height="114" as="geometry" />
+        </mxCell>
+
+        <!-- Column 1 Footer Pill -->
+        <mxCell id="c1_footer" value="Enterprise Services + Channels" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="42" y="730" width="266" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 2: COGNITIVE AGENT HUB & COGNITIVE SERVICES (x=335, w=350, y=78)   -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_2_bg" value="" style="rounded=1;arcSize=4;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="335" y="78" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="col_2_hdr" value="Cognitive Agent Hub &amp; Cognitive Services" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#065F46;" vertex="1" parent="1">
+          <mxGeometry x="335" y="84" width="350" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="col_2_sub" value="Centralized agent orchestration &amp; intelligence" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=0;fontColor=#047857;" vertex="1" parent="1">
+          <mxGeometry x="335" y="99" width="350" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- Top Hero Multi-Agent Orchestrator -->
+        <mxCell id="c2_hero_orch" value="Multi-Agent Orchestrator&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #475569; line-height: 1.3;&quot;&gt;Centralized agent administration, business process orchestration, cognitive operations.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconGemini};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="347" y="118" width="326" height="48" as="geometry" />
+        </mxCell>
+
+        <!-- 2x2 Agent Grid -->
+        <!-- Agent 1: Supply Chain -->
+        <mxCell id="c2_ag_supply" value="Supply Chain Agent&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Stock replenishment&lt;br&gt;• Supplier management&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=28;image=${iconVertexAi};imageWidth=16;imageHeight=16;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="347" y="172" width="158" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 2: Finance Agent AI -->
+        <mxCell id="c2_ag_finance" value="Finance Agent AI&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Discrepancy matching&lt;br&gt;• Invoice reconciliation&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=28;image=${iconVertexAi};imageWidth=16;imageHeight=16;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="515" y="172" width="158" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 3: Finance HR Agent -->
+        <mxCell id="c2_ag_fin_hr" value="Finance HR Agent&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Payroll audit&lt;br&gt;• Compensation reviews&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=28;image=${iconVertexAi};imageWidth=16;imageHeight=16;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="347" y="228" width="158" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Agent 4: HR Customer Agent -->
+        <mxCell id="c2_ag_hr_cust" value="HR Customer Agent&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Talent onboarding&lt;br&gt;• Employee support&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=28;image=${iconVertexAi};imageWidth=16;imageHeight=16;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="515" y="228" width="158" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Middle Card 1: Digital Running Strategy Center -->
+        <mxCell id="c2_card_strategy" value="Digital Running Strategy Center&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Enterprise-wide decision framework&lt;br&gt;• Executive summary generation&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="347" y="284" width="326" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Middle Card 2: Analytics & Reconciliation Functions -->
+        <mxCell id="c2_card_analytics" value="Analytics &amp; Reconciliation Functions&lt;br&gt;&lt;span style=&quot;font-size: 7.5px; font-weight: normal; color: #64748B;&quot;&gt;• Cross-system telemetry correlation&lt;br&gt;• Financial &amp; operational discrepancy checks&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="347" y="330" width="326" height="42" as="geometry" />
+        </mxCell>
+
+        <!-- Divider Bar Tier 1: Multi-Agent Agent Orchestrator Pill -->
+        <mxCell id="c2_div_badge_orch" value="Multi-Agent Agent orchestrator" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#6EE7B7;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#065F46;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="405" y="378" width="210" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Divider Bar Tier 2: Cognitive Services Sub-Header -->
+        <mxCell id="c2_div_hdr_cog" value="Cognitive Services Orchestration Hub" style="rounded=1;arcSize=6;fillColor=#D1FAE5;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#065F46;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="347" y="402" width="326" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Lower Sub-Zone: Multi-Agent Hub Orchestrator Container -->
+        <mxCell id="c2_sub_container" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="347" y="430" width="326" height="284" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-Zone Card 1: Multi-Agent Hub Orchestrator -->
+        <mxCell id="c2_card_hub_orch" value="Multi-Agent Hub Orchestrator&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Centralized agent routing and intent dispatch&lt;br&gt;• Vertex AI Agent Engine coordinator&lt;br&gt;• Real-time multi-agent context mediation&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconGemini};imageWidth=20;imageHeight=20;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="357" y="442" width="306" height="82" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-Zone Card 2: SAP AIP Service Automation -->
+        <mxCell id="c2_card_sap_aip" value="SAP AIP Service Automation&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Autonomous discrepancy handling &amp; matching&lt;br&gt;• SAP AI Core &amp; Joule bridge adapter&lt;br&gt;• Automated transactional workflow execution&lt;br&gt;• Feedback loops to ERP core&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconSapJoule};imageWidth=20;imageHeight=20;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="357" y="534" width="306" height="106" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-Zone Pill: Cognitive Agent Node Functions -->
+        <mxCell id="c2_pill_node_fn" value="Cognitive Agent Node Functions" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1D4ED8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="390" y="658" width="240" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Column 2 Footer Pill -->
+        <mxCell id="c2_footer" value="Organizational System &amp; Back-office Hub" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="347" y="730" width="326" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 3: APPLICATION & iPAAS LAYER (iPaaS) (x=700, w=350, y=78)          -->
+        <!-- ALL 6 CARDS ARE BEAUTIFULLY AND UNIFORMLY PROPORTIONED                    -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_3_bg" value="" style="rounded=1;arcSize=4;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="78" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="col_3_hdr" value="Application &amp; iPaaS Layer (iPaaS)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#92400E;" vertex="1" parent="1">
+          <mxGeometry x="700" y="84" width="350" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="col_3_sub" value="Modern middleware and workflow orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=0;fontColor=#B45309;" vertex="1" parent="1">
+          <mxGeometry x="700" y="99" width="350" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- Card 1: API Integration & Management (h=74) -->
+        <mxCell id="c3_card_apim" value="API Integration &amp; Management&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• API Gateway &amp; Developer Portal lifecycle&lt;br&gt;• Policy enforcement &amp; throttling rules&lt;br&gt;• Centralized endpoint registry&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconSapApim};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="118" width="326" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Card 2: API Gateway & Security (h=74) -->
+        <mxCell id="c3_card_apigw" value="API Gateway &amp; Security&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• OAuth2 / mTLS zero-trust authentication&lt;br&gt;• Threat protection &amp; WAF ingress filtering&lt;br&gt;• Token exchange &amp; identity propagation&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconApiGateway};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="200" width="326" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Card 3: Process Orchestration Hub (h=74) -->
+        <mxCell id="c3_card_proc_hub" value="Process Orchestration Hub&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• SAP Cloud Integration enterprise pipelines&lt;br&gt;• Multi-step saga transaction choreography&lt;br&gt;• State machine &amp; compensation flows&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconProcessHub};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="282" width="326" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Card 4: API Integration & Management (h=74) -->
+        <mxCell id="c3_card_apim2" value="API Integration &amp; Management&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Real-time Pub/Sub event streaming&lt;br&gt;• Protocol mediation &amp; XML/JSON transformation&lt;br&gt;• Async event-driven architecture hub&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconSapIntegration};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="364" width="326" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Card 5: API Services (h=74) -->
+        <mxCell id="c3_card_apisvc" value="API Services&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• REST / OData v4 / gRPC native adapters&lt;br&gt;• Event mesh &amp; enterprise message queuing&lt;br&gt;• High-throughput backpressure controls&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconApiServices};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="446" width="326" height="74" as="geometry" />
+        </mxCell>
+
+        <!-- Card 6: Process Procure-to-Pay Part (h=196) -->
+        <mxCell id="c3_card_p2p" value="Process Procure-to-Pay Part&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.45;&quot;&gt;• Autonomous P2P Process Engine&lt;br&gt;• Purchase Requisition to Purchase Order automation&lt;br&gt;• 3-Way invoice verification &amp; Goods Receipt matching&lt;br&gt;• Discrepancy exception management &amp; supplier notifications&lt;br&gt;• Autonomous payment scheduling &amp; release execution&lt;br&gt;• Closed-loop reconciliation with SAP S/4HANA Core&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconP2pPart};imageWidth=24;imageHeight=24;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="528" width="326" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Column 3 Footer Pill -->
+        <mxCell id="c3_footer" value="Organizational Security Hierarchy" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="712" y="730" width="326" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 4: SEMANTIC DATA LAYER & KNOWLEDGE (x=1065, w=350, y=78)            -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_4_bg" value="" style="rounded=1;arcSize=4;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="78" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="col_4_hdr" value="Semantic Data Layer &amp; Knowledge" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#0F766E;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="84" width="350" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="col_4_sub" value="Structured business graph and context" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=0;fontColor=#0D9488;" vertex="1" parent="1">
+          <mxGeometry x="1065" y="99" width="350" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- Card 1: SAP Graph & Semantic Model (h=68) -->
+        <mxCell id="c4_card_graph_sem" value="SAP Graph &amp; Semantic Model&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Unified business data ontology&lt;br&gt;• Single GraphQL API endpoint for SAP data&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconGraphSemantic};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="118" width="326" height="68" as="geometry" />
+        </mxCell>
+
+        <!-- Card 2: SAP Graph Data Model & Relations (h=68) -->
+        <mxCell id="c4_card_graph_rel" value="SAP Graph Data Model &amp; Relations&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Cross-system entity relationships&lt;br&gt;• Business Partner &amp; Document mapping&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconSapDatasphere};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="194" width="326" height="68" as="geometry" />
+        </mxCell>
+
+        <!-- Card 3: Data Mesh / Fabric (h=68) -->
+        <mxCell id="c4_card_data_mesh" value="Data Mesh / Fabric&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Federated data governance&lt;br&gt;• Decentralized domain data products&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconDataMesh};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="270" width="326" height="68" as="geometry" />
+        </mxCell>
+
+        <!-- Card 4: Enterprise Knowledge Graph (h=76) -->
+        <mxCell id="c4_card_ekg" value="Enterprise Knowledge Graph&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Semantic reasoning &amp; embeddings&lt;br&gt;• Vertex AI Vector Search grounding&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconKnowledgeGraph};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="346" width="326" height="76" as="geometry" />
+        </mxCell>
+
+        <!-- Structured Graph Bridge Label 1 -->
+        <mxCell id="c4_bridge_1" value="Structured graph" style="rounded=1;arcSize=50;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=1;dashed=1;dashPattern=3 3;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0F766E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1155" y="430" width="170" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Card 5: Enterprise Knowledge Context & Ontologies (h=108) -->
+        <mxCell id="c4_card_ekg2" value="Enterprise Knowledge Context &amp; Ontologies&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Enterprise Knowledge Graph domain models&lt;br&gt;• Communication ontologies &amp; message graph&lt;br&gt;• Contextual enterprise information retrieval&lt;br&gt;• Semantic knowledge bases &amp; grounded vectors&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconVectorSearch};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="456" width="326" height="108" as="geometry" />
+        </mxCell>
+
+        <!-- Structured Graph Bridge Label 2 -->
+        <mxCell id="c4_bridge_2" value="Structured Graph" style="rounded=1;arcSize=50;fillColor=#F0FDFA;strokeColor=#5EEAD4;strokeWidth=1;dashed=1;dashPattern=3 3;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0F766E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1155" y="572" width="170" height="18" as="geometry" />
+        </mxCell>
+
+        <!-- Card 6: SAP BTP Services & Enterprise Context (h=118) -->
+        <mxCell id="c4_card_btp_resp" value="SAP BTP Services &amp; Context Platform&lt;br&gt;&lt;span style=&quot;font-size: 8px; font-weight: normal; color: #64748B; line-height: 1.35;&quot;&gt;• Enterprise wide business processes coordination&lt;br&gt;• Centralized platform instances &amp; services&lt;br&gt;• Semantic knowledge graph domain ontology&lt;br&gt;• Real-time transactional telemetry &amp; audit&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=38;image=${iconSapBtp};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="598" width="326" height="118" as="geometry" />
+        </mxCell>
+
+        <!-- Column 4 Footer Pill -->
+        <mxCell id="c4_footer" value="IP Enterprise Knowledge Graph" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1077" y="730" width="326" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 5: SAP ENTERPRISE SYSTEMS OF RECORD (x=1430, w=350, y=78)          -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_5_bg" value="" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="78" width="350" height="700" as="geometry" />
+        </mxCell>
+        <mxCell id="col_5_hdr" value="SAP Enterprise Systems of Record" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#1E3A8A;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="84" width="350" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="col_5_sub" value="Core transaction systems" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="99" width="350" height="14" as="geometry" />
+        </mxCell>
+
+        <!-- Card 1: SAP S/4HANA -->
+        <mxCell id="c5_card_s4hana" value="SAP S/4HANA&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #64748B; line-height: 1.3;&quot;&gt;Core financial and ERP data&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=46;image=${iconSapS4Hana};imageWidth=26;imageHeight=26;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="118" width="326" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- Card 2: SAP SuccessFactors -->
+        <mxCell id="c5_card_sf" value="SAP SuccessFactors&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #64748B; line-height: 1.3;&quot;&gt;HR data &amp; Global Talent Management&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=46;image=${iconSapSuccessFactors};imageWidth=26;imageHeight=26;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="236" width="326" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- Card 3: SAP Ariba -->
+        <mxCell id="c5_card_ariba" value="SAP Ariba&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #64748B; line-height: 1.3;&quot;&gt;Procurement data, Supplier Network &amp; Contracts&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=46;image=${iconSapAriba};imageWidth=26;imageHeight=26;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="354" width="326" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- Card 4: SAP Customer Experience (CX) -->
+        <mxCell id="c5_card_cx" value="SAP Customer Experience&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #64748B; line-height: 1.3;&quot;&gt;SAP Customer Experience, CRM &amp; Service Cloud&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=46;image=${iconSapCx};imageWidth=26;imageHeight=26;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="472" width="326" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- Card 5: SAP BTP Services -->
+        <mxCell id="c5_card_btp_svc" value="SAP BTP Services&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #64748B; line-height: 1.3;&quot;&gt;Clear, simplified resources of SAP BTP Services&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=46;image=${iconSapBtp};imageWidth=26;imageHeight=26;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="590" width="326" height="96" as="geometry" />
+        </mxCell>
+
+        <!-- Column 5 Footer Pill -->
+        <mxCell id="c5_footer" value="SAP Enterprise Systems of Record" style="rounded=1;arcSize=50;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1442" y="730" width="326" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 6: END-TO-END BUSINESS VALUE SCENARIO WALKTHROUGH (y=795, h=180)    -->
+        <!-- ========================================================================= -->
+        <mxCell id="domain_scenario" value="End-to-End Enterprise Scenario: Autonomous Procure-to-Pay &amp; Discrepancy Resolution" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=20;spacingTop=10;fontFamily=Google Sans, sans-serif;fontSize=12.5;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="795" width="1750" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 1 -->
+        <mxCell id="sc_card_1" value="Stage 1: Enterprise Trigger &amp; Event&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.35;&quot;&gt;• Analyze business event and initiate response.&lt;br&gt;• Validate trigger and data accuracy.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="45" y="832" width="326" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_1" value="Begin Enterprise Scenario" style="rounded=1;arcSize=50;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#DC2626;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="118" y="924" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 2 -->
+        <mxCell id="sc_card_2" value="Stage 2: 3-Way Match &amp; Risk Assessment&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.35;&quot;&gt;• Identify discrepancies in purchase order, receipt,&lt;br&gt;  and invoice. Risk scoring and exception handling.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="395" y="832" width="326" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_2" value="Start Scenario Resolution" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="468" y="924" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 3 -->
+        <mxCell id="sc_card_3" value="Stage 3: Auto-Resolution &amp; Decision&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.35;&quot;&gt;• Automated negotiation and resolution based on&lt;br&gt;  rules and historic data. Execute corrective actions.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="745" y="832" width="326" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_3" value="Start Resolution Workflow" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1D4ED8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="818" y="924" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 4 -->
+        <mxCell id="sc_card_4" value="Stage 4: Exception &amp; Discrepancy Case&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.35;&quot;&gt;• Detailed discrepancy case for manual review&lt;br&gt;  when necessary. Record action taken.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="832" width="326" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_4" value="End Resolution" style="rounded=1;arcSize=50;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1168" y="924" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Stage 5 -->
+        <mxCell id="sc_card_5" value="Stage 5: Process Loop &amp; Optimization&lt;br&gt;&lt;span style=&quot;font-size: 8.5px; font-weight: normal; color: #475569; line-height: 1.35;&quot;&gt;• Loop for process improvement. Track performance&lt;br&gt;  metrics. Define process improvement steps.&lt;/span&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;align=left;verticalAlign=middle;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="1445" y="832" width="326" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_5" value="Complete Scenario" style="rounded=1;arcSize=50;fillColor=#ECFDF5;strokeColor=#6EE7B7;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#047857;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1518" y="924" width="180" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Scenario Connectors -->
+        <mxCell id="sc_edge_1_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_1" target="sc_card_2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_edge_2_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_2" target="sc_card_3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_edge_3_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_3" target="sc_card_4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_edge_4_5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_4" target="sc_card_5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 7: BOTTOM LEGEND BAR (x=30, y=988, w=1750, h=36)                   -->
+        <!-- ========================================================================= -->
+        <mxCell id="leg_bg" value="" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="988" width="1750" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_lbl_legend" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="45" y="996" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_1" value="■ Enterprise Services" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
+          <mxGeometry x="120" y="996" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_2" value="■ Cognitive Orchestration" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0D9488;" vertex="1" parent="1">
+          <mxGeometry x="270" y="996" width="160" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_3" value="■ iPaaS" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#D97706;" vertex="1" parent="1">
+          <mxGeometry x="440" y="996" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_4" value="--- Connection Type" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="530" y="996" width="140" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_5" value="■ Skills Layer" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="680" y="996" width="110" height="20" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- CROSS-TIER CONNECTORS & INTEGRATION BRIDGES                               -->
+        <!-- ========================================================================= -->
+
+        <!-- 1. Col 1 User Input -> Col 2 Hero Orchestrator -->
+        <mxCell id="edge_user_to_orch" value="User Interactions" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="c1_user_container" target="c2_hero_orch">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="326" y="167" />
+              <mxPoint x="326" y="142" />
+            </Array>
+            <mxPoint x="-2" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Col 1 Notification Pill -> Col 2 Agent Grid -->
+        <mxCell id="edge_notif_to_ag" value="Notification Updates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="c1_pill_notif" target="c2_ag_supply">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="326" y="206" />
+              <mxPoint x="326" y="197" />
+            </Array>
+            <mxPoint x="-2" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Col 1 Admin -> Col 2 Sub Container -->
+        <mxCell id="edge_admin_to_hub" value="Notifications/orders" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=1.5;dashed=1;dashPattern=4 3;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="c1_card_admin" target="c2_card_hub_orch">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="326" y="651" />
+              <mxPoint x="326" y="483" />
+            </Array>
+            <mxPoint x="-2" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Col 2 Hero Orchestrator -> Col 3 APIM -->
+        <mxCell id="edge_orch_to_apim" value="Agent Function Calls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#6D28D9;" edge="1" parent="1" source="c2_hero_orch" target="c3_card_apim">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="692" y="142" />
+              <mxPoint x="692" y="155" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Col 2 2x2 Grid -> Col 3 Process Orchestration -->
+        <mxCell id="edge_grid_to_proc" value="Program operations" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#7C3AED;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#6D28D9;" edge="1" parent="1" source="c2_ag_finance" target="c3_card_proc_hub">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="692" y="197" />
+              <mxPoint x="692" y="319" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 6. Col 2 SAP AIP -> Col 3 P2P Container -->
+        <mxCell id="edge_aip_to_p2p" value="Process Orchestration" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.4;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#B45309;" edge="1" parent="1" source="c2_card_sap_aip" target="c3_card_p2p">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="692" y="587" />
+              <mxPoint x="692" y="600" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Col 3 APIM -> Col 4 SAP Graph -->
+        <mxCell id="edge_apim_to_graph" value="Unified Queries" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#B45309;" edge="1" parent="1" source="c3_card_apim" target="c4_card_graph_sem">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1057" y="155" />
+              <mxPoint x="1057" y="152" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Col 3 Process Hub -> Col 4 Data Mesh -->
+        <mxCell id="edge_proc_to_mesh" value="Event Ingestion" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#B45309;" edge="1" parent="1" source="c3_card_proc_hub" target="c4_card_data_mesh">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1057" y="319" />
+              <mxPoint x="1057" y="304" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. Col 3 P2P -> Col 4 EKG Context -->
+        <mxCell id="edge_p2p_to_ekg" value="Context Grounding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.5;dashed=1;dashPattern=4 3;exitX=1;exitY=0.4;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c3_card_p2p" target="c4_card_ekg2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1057" y="600" />
+              <mxPoint x="1057" y="510" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. Col 4 SAP Graph -> Col 5 S/4HANA -->
+        <mxCell id="edge_graph_to_s4" value="OData / RFC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c4_card_graph_sem" target="c5_card_s4hana">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="152" />
+              <mxPoint x="1420" y="166" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 11. Col 4 Data Relations -> Col 5 SuccessFactors -->
+        <mxCell id="edge_rel_to_sf" value="OData API" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c4_card_graph_rel" target="c5_card_sf">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="228" />
+              <mxPoint x="1420" y="284" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 12. Col 4 EKG -> Col 5 Ariba -->
+        <mxCell id="edge_ekg_to_ariba" value="cXML / Open APIs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c4_card_ekg" target="c5_card_ariba">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="384" />
+              <mxPoint x="1420" y="402" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 13. Col 4 Context & Ontologies -> Col 5 CX -->
+        <mxCell id="edge_ont_to_cx" value="Graph Relations" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c4_card_ekg2" target="c5_card_cx">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="510" />
+              <mxPoint x="1420" y="520" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 14. Col 4 BTP Platform -> Col 5 BTP Svc -->
+        <mxCell id="edge_btp_to_btp" value="BTP Core" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c4_card_btp_resp" target="c5_card_btp_svc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1420" y="657" />
+              <mxPoint x="1420" y="638" />
+            </Array>
+            <mxPoint x="0" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+`;
+
+async function main() {
+  const outDir = path.resolve(process.cwd(), "scratch/sap_google_agents");
+  fs.mkdirSync(outDir, { recursive: true });
+
+  const xmlPath = path.resolve(outDir, "conceptual_sap_agents_google_cloud.drawio.xml");
+  const pngPath = path.resolve(outDir, "conceptual_sap_agents_google_cloud.png");
+
+  fs.writeFileSync(xmlPath, xml.trim(), "utf-8");
+  console.log(`Saved Conceptual XML to ${xmlPath}`);
+
+  // Render PNG with Puppeteer
+  const cfg = {
+    xml: xml.trim(),
+    highlight: "#0000ff",
+    target: "blank",
+    lightbox: false,
+    nav: false,
+    resize: true,
+    toolbar: "zoom",
+    edit: "_blank",
+    border: 20,
+    transparent: false,
+    fit: true,
+    "max-scale": 2.0
+  };
+
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#FFF;overflow:hidden;display:flex;align-items:center;justify-content:center;}.mxgraph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}.mxgraph>svg{width:100%!important;height:auto!important;margin:0 auto;}</style></head><body><div class="mxgraph" id="diagram-container"></div><script src="/viewer-static.min.js"></script><script>const cfg=${JSON.stringify(cfg)};const cont=document.getElementById("diagram-container");cont.setAttribute("data-mxgraph",JSON.stringify(cfg));if(window.GraphViewer&&window.GraphViewer.processElements){window.GraphViewer.processElements();}</script></body></html>`;
+
+  const server = http.createServer((req, res) => {
+    if (req.url === "/viewer-static.min.js") {
+      const p = path.resolve(process.cwd(), "public/viewer-static.min.js");
+      if (fs.existsSync(p)) {
+        res.writeHead(200, { "Content-Type": "application/javascript" });
+        res.end(fs.readFileSync(p));
+        return;
+      }
+    }
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+    res.end(html);
+  });
+
+  await new Promise<void>(resolve => server.listen(3123, resolve));
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-web-security"]
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1840, height: 1080, deviceScaleFactor: 2 });
+  await page.goto("http://localhost:3123", { waitUntil: "networkidle0", timeout: 20000 });
+  await new Promise(r => setTimeout(r, 1500));
+
+  const svgElem = (await page.$(".mxgraph > svg")) || (await page.$("#diagram-container"));
+  if (svgElem) {
+    await svgElem.screenshot({ path: pngPath });
+    console.log(`Rendered PNG to ${pngPath}`);
+  }
+
+  await browser.close();
+  server.close();
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

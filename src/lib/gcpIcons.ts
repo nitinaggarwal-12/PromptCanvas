@@ -255,6 +255,38 @@ export const GCP_OFFICIAL_ICONS: Record<string, GcpIconDefinition> = {
     bgColor: '#F1F5F9',
     svg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 11C17.66 11 19 9.66 19 8C19 6.34 17.66 5 16 5C14.34 5 13 6.34 13 8C13 9.66 14.34 11 16 11ZM8 11C9.66 11 11 9.66 11 8C11 6.34 9.66 5 8 5C6.34 5 5 6.34 5 8C5 9.66 6.34 11 8 11ZM8 13C5.67 13 1 14.17 1 16.5V19H15V16.5C15 14.17 10.33 13 8 13ZM16 13C15.71 13 15.38 13.02 15.03 13.05C16.19 13.89 17 15.02 17 16.5V19H23V16.5C23 14.17 18.33 13 16 13Z" fill="#334155"/></svg>`
   },
+  'google_workspace': {
+    id: 'google_workspace',
+    name: 'Google Workspace & Chat',
+    category: 'operations',
+    primaryColor: '#1A73E8',
+    bgColor: '#EFF6FF',
+    svg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="16" rx="3" stroke="#1A73E8" stroke-width="1.8" fill="#EFF6FF"/><path d="M3 8L12 14L21 8" stroke="#1A73E8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="16" r="2" fill="#34A853"/></svg>`
+  },
+  'teams_slack': {
+    id: 'teams_slack',
+    name: 'Enterprise Collab Channels (Teams / Slack)',
+    category: 'operations',
+    primaryColor: '#6366F1',
+    bgColor: '#EEF2FF',
+    svg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="13" height="13" rx="2" stroke="#6366F1" stroke-width="1.8" fill="#EEF2FF"/><circle cx="17" cy="7" r="3" stroke="#8B5CF6" stroke-width="1.5" fill="#FFFFFF"/><path d="M14 14H21V19C21 19.55 20.55 20 20 20H14V14Z" fill="#8B5CF6"/><path d="M6 9H11M6 12H9" stroke="#6366F1" stroke-width="1.5" stroke-linecap="round"/></svg>`
+  },
+  'mobile_portal': {
+    id: 'mobile_portal',
+    name: 'Mobile & Executive Cockpits',
+    category: 'operations',
+    primaryColor: '#0F172A',
+    bgColor: '#F8FAFC',
+    svg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="2" width="12" height="20" rx="3" stroke="#0F172A" stroke-width="1.8" fill="#FFFFFF"/><circle cx="12" cy="18" r="1" fill="#0F172A"/><path d="M9 5H15" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/></svg>`
+  },
+  'dataplex': {
+    id: 'dataplex',
+    name: 'Google Cloud Dataplex (Universal Catalog & Governance)',
+    category: 'database',
+    primaryColor: '#0D9488',
+    bgColor: '#F0FDFA',
+    svg: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="#0D9488" stroke-width="1.8" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="3" fill="#0D9488"/><circle cx="6" cy="12" r="2" fill="#14B8A6"/><circle cx="18" cy="12" r="2" fill="#14B8A6"/><circle cx="12" cy="6" r="2" fill="#14B8A6"/><circle cx="12" cy="18" r="2" fill="#14B8A6"/></svg>`
+  },
 
   // =========================================================================
   // 6. MANAGEMENT, OPERATIONS & CI/CD
