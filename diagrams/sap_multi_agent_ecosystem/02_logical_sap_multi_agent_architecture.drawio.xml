@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-09-03T12:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="sap_google_agents_diagram" name="SAP Agents on Google Cloud">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1250" pageHeight="700" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Master Title -->
+        <mxCell id="title" value="Holistic architecture for SAP agents on Google Cloud" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;fontSize=28;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="30" y="25" width="850" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== LEFT: END USER ==================== -->
+        <mxCell id="end_user_card" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#F1F3F4;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="250" width="145" height="175" as="geometry" />
+        </mxCell>
+        <!-- User Circular Icon -->
+        <mxCell id="end_user_icon" value="" style="shape=ellipse;fillColor=#3B82F6;strokeColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="85" y="285" width="55" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="end_user_avatar" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=26;fontColor=#FFFFFF;" vertex="1" parent="1">
+          <mxGeometry x="85" y="285" width="55" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="end_user_label" value="End User" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=13;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="45" y="355" width="135" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- ==================== CENTER: GOOGLE CLOUD CONTAINER ==================== -->
+        <mxCell id="google_cloud_box" value="Google Cloud" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8F9FA;strokeColor=#E5E7EB;strokeWidth=1;align=left;verticalAlign=top;spacingLeft=18;spacingTop=12;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=14;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="235" y="90" width="415" height="510" as="geometry" />
+        </mxCell>
+
+        <!-- GE Agent Platform Sub-container -->
+        <mxCell id="ge_platform_box" value="GE Agent Platform" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=2 2;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=6;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="310" y="135" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ge_agents_btn" value="Agents&lt;br&gt;&lt;span style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;(Pro-code - ADK etc.)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=12;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="323" y="148" width="154" height="54" as="geometry" />
+        </mxCell>
+
+        <!-- Gemini Enterprise App Sub-container -->
+        <mxCell id="gemini_app_box" value="Gemini Enterprise App" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=2 2;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=8;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="245" y="250" width="245" height="330" as="geometry" />
+        </mxCell>
+
+        <!-- Agents (No Code) -->
+        <mxCell id="no_code_agents_btn" value="Agents&lt;br&gt;&lt;span style=&quot;font-size: 10px; font-weight: normal;&quot;&gt;(No Code)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=12;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="255" y="340" width="76" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Agentic Connectors Inner Sub-box -->
+        <mxCell id="agentic_conn_box" value="" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=2 2;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="265" width="115" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="agentic_conn_lbl" value="Agentic&lt;br&gt;Connectors" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="515" width="105" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors 3 stacked items -->
+        <mxCell id="btn_byo_mcp" value="Bring your&lt;br&gt;own MCP" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="368" y="275" width="100" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_bq_conn" value="BigQuery&lt;br&gt;Connector" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="368" y="355" width="100" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_s4_conn" value="S/4HANA&lt;br&gt;Connector" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="368" y="422" width="100" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Right side inside Google Cloud: Cortex Framework & BigQuery -->
+        <mxCell id="cortex_hdr" value="Cortex&lt;br&gt;Framework" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#BFDBFE;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#1E3A8A;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="518" y="325" width="118" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="cortex_bq" value="BigQuery" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=12;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="518" y="360" width="118" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ABAP SDK / BQ Toolkit & BQ Connector -->
+        <mxCell id="btn_abap_sdk" value="ABAP SDK/&lt;br&gt;BQ Toolkit&lt;br&gt;&amp;amp;&lt;br&gt;BQ Connector" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="518" y="468" width="118" height="78" as="geometry" />
+        </mxCell>
+
+
+        <!-- ==================== RIGHT SIDE: SAP ECOSYSTEM ==================== -->
+        <!-- SAP Joule Container -->
+        <mxCell id="sap_joule_box" value="SAP Joule" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=top;spacingTop=6;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="770" y="90" width="110" height="98" as="geometry" />
+        </mxCell>
+        <mxCell id="sap_joule_btn" value="SAP Joule&lt;br&gt;Agents" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="781" y="124" width="88" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- SAP BTP Container -->
+        <mxCell id="sap_btp_box" value="SAP BTP" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=top;spacingTop=6;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="770" y="208" width="110" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_sap_api_mgmt" value="SAP API&lt;br&gt;Mgmt." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="781" y="240" width="88" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_sap_mcp_gw" value="SAP MCP&lt;br&gt;Gateway" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="781" y="314" width="88" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- SAP BDC Container -->
+        <mxCell id="sap_bdc_box" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="770" y="415" width="110" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_sap_bdc" value="SAP BDC" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="781" y="432" width="88" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- SAP SaaS Far Right Container -->
+        <mxCell id="sap_saas_box" value="SAP SaaS" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=top;spacingTop=6;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="920" y="90" width="115" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_saas_successfactors" value="SAP&lt;br&gt;Success&lt;br&gt;Factors" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="932" y="122" width="91" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_saas_concur" value="SAP&lt;br&gt;Concur" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="932" y="194" width="91" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_saas_cx" value="SAP&lt;br&gt;Customer&lt;br&gt;Exp." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="932" y="256" width="91" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_saas_biznet" value="SAP&lt;br&gt;Business&lt;br&gt;Networks" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="932" y="326" width="91" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_saas_s4pub" value="S/4HANA&lt;br&gt;Public&lt;br&gt;Cloud" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10.5;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;lineHeight=1.1;" vertex="1" parent="1">
+          <mxGeometry x="932" y="396" width="91" height="58" as="geometry" />
+        </mxCell>
+
+        <!-- SAP RISE / S/4HANA (Bottom Right) -->
+        <mxCell id="sap_rise_box" value="SAP RISE/Any-Cloud/On-Premise" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#9CA3AF;strokeWidth=1;align=center;verticalAlign=bottom;spacingBottom=6;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=11;fontStyle=1;fontColor=#202124;" vertex="1" parent="1">
+          <mxGeometry x="770" y="530" width="265" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="btn_s4_onprem" value="SAP S/4HANA&lt;br&gt;(NW Gateway)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=none;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=12;fontStyle=1;fontColor=#FFFFFF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="793" y="550" width="220" height="42" as="geometry" />
+        </mxCell>
+
+
+        <!-- ==================== CONNECTORS & PILLS ==================== -->
+
+        <!-- End User to Agents (Pro-Code) -->
+        <mxCell id="edge_user_to_pro" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="end_user_card" target="ge_agents_btn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="215" y="337" />
+              <mxPoint x="215" y="175" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- End User <-> Agents (No Code) -->
+        <mxCell id="edge_user_to_nocode" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="end_user_card" target="no_code_agents_btn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="215" y="395" />
+              <mxPoint x="215" y="395" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Agents (No Code) <-> Agentic Connectors -->
+        <mxCell id="edge_nocode_to_conn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="no_code_agents_btn" target="agentic_conn_box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Agents (Pro-Code) -> SAP Joule Agents (A2A) -->
+        <mxCell id="edge_pro_to_joule" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="ge_agents_btn" target="sap_joule_btn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="149" />
+              <mxPoint x="650" y="149" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- A2A Pill Badge -->
+        <mxCell id="pill_a2a" value="A2A" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="696" y="139" width="46" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Agents (Pro-Code) -> SAP API Mgmt (REST) -->
+        <mxCell id="edge_pro_to_apimgmt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="ge_agents_btn" target="btn_sap_api_mgmt">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="175" />
+              <mxPoint x="660" y="270" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- REST Pill Badge (Top) -->
+        <mxCell id="pill_rest_top" value="REST" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="696" y="260" width="46" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Agents (Pro-Code) / BYO MCP -> SAP MCP Gateway (MCP) -->
+        <mxCell id="edge_mcp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="btn_byo_mcp" target="btn_sap_mcp_gw">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="307" />
+              <mxPoint x="660" y="344" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- MCP Pill Badge -->
+        <mxCell id="pill_mcp" value="MCP" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="696" y="334" width="46" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- GE Agents down to Cortex Framework -->
+        <mxCell id="edge_ge_to_cortex" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="ge_agents_btn" target="cortex_hdr">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="577" y="175" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BigQuery Connector to Cortex Framework -->
+        <mxCell id="edge_bqconn_to_cortex" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="btn_bq_conn" target="cortex_bq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="495" y="381" />
+              <mxPoint x="495" y="385" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- S/4HANA Connector down to ABAP SDK -->
+        <mxCell id="edge_s4conn_to_abap" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="btn_s4_conn" target="btn_abap_sdk">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="495" y="448" />
+              <mxPoint x="495" y="507" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ABAP SDK UP to BigQuery -->
+        <mxCell id="edge_abap_to_bq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="btn_abap_sdk" target="cortex_bq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- BigQuery <-> SAP BDC (Zero Copy) -->
+        <mxCell id="edge_bq_to_bdc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="cortex_bq" target="btn_sap_bdc">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="385" />
+              <mxPoint x="670" y="458" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Zero Copy Pill Badge -->
+        <mxCell id="pill_zerocopy" value="Zero Copy" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="684" y="448" width="70" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- ABAP SDK -> SAP S/4HANA (NW Gateway) (REST) -->
+        <mxCell id="edge_abap_to_s4onprem" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=block;endFill=1;endSize=5;" edge="1" parent="1" source="btn_abap_sdk" target="btn_s4_onprem">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="507" />
+              <mxPoint x="500" y="571" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- REST Pill Badge (Bottom) -->
+        <mxCell id="pill_rest_bottom" value="REST" style="rounded=1;arcSize=50;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;fontFamily=Google Sans, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;fontSize=10;fontStyle=1;fontColor=#202124;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="585" y="561" width="46" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Right Side Cross Connectors to SAP SaaS -->
+        <!-- SAP Joule <-> SAP SaaS -->
+        <mxCell id="edge_joule_to_saas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="sap_joule_box" target="sap_saas_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="139" />
+              <mxPoint x="900" y="139" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SAP BTP <-> SAP SaaS -->
+        <mxCell id="edge_btp_to_saas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="sap_btp_box" target="sap_saas_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="299" />
+              <mxPoint x="900" y="299" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SAP BDC <-> SAP SaaS -->
+        <mxCell id="edge_bdc_to_saas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1" source="sap_bdc_box" target="sap_saas_box">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="457" />
+              <mxPoint x="900" y="457" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- SAP SaaS down to SAP S/4HANA (NW Gateway) -->
+        <mxCell id="edge_saas_to_s4" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CBD5E1;strokeWidth=1.5;startArrow=block;startFill=1;endArrow=block;endFill=1;startSize=5;endSize=5;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="902" y="500" as="sourcePoint" />
+            <mxPoint x="902" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
