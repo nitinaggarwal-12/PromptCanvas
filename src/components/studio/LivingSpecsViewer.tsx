@@ -33,6 +33,7 @@ interface LivingSpecsViewerProps {
   currentXml?: string;
   projectName?: string;
   useCaseName?: string;
+  versionName?: string;
 }
 
 export function LivingSpecsViewer({
@@ -43,7 +44,8 @@ export function LivingSpecsViewer({
   onShareDoc,
   currentXml = "",
   projectName = "Google Cloud Enterprise",
-  useCaseName = "Multi-Tier Native Reference Architecture"
+  useCaseName = "Multi-Tier Native Reference Architecture",
+  versionName = "v1.2"
 }: LivingSpecsViewerProps) {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -253,7 +255,7 @@ export function LivingSpecsViewer({
             </div>
 
             <p className="text-[11px] text-slate-400 italic text-center">
-              {activeDoc.embeddedFigure.id}: Authoritative architectural diagram synchronized dynamically with Canvas v1.1.
+              {activeDoc.embeddedFigure.id}: Authoritative architectural diagram synchronized dynamically with Canvas {versionName}.
             </p>
           </div>
         )}

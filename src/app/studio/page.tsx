@@ -970,6 +970,7 @@ function StudioMain() {
             currentXml={xml}
             projectName={ast.metadata.projectTitle}
             useCaseName={ast.metadata.domain}
+            versionName={activeVersionTag}
           />
 
         )}
