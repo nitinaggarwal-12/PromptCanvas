@@ -273,9 +273,25 @@ function StudioMain() {
   // 5. Living Specs derived from AST
   const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast), [ast]);
 
-  // Handle Co-Pilot Prompt Execution
-  const handleExecutePrompt = useCallback((promptText: string) => {
+  // Handle Co-Pilot Prompt Execution with Multi-Persona Intelligence
+  const handleExecutePrompt = useCallback((promptText: string, explicitPersona?: string) => {
     if (!promptText.trim()) return;
+
+    // Detect persona from text or explicit argument
+    let detectedPersona = explicitPersona || 'User';
+    if (!explicitPersona) {
+      if (promptText.includes('[Product Manager]') || promptText.toLowerCase().includes('product manager')) {
+        detectedPersona = 'Product Manager';
+      } else if (promptText.includes('[Lead Architect]') || promptText.toLowerCase().includes('lead architect') || promptText.toLowerCase().includes('spanner') || promptText.toLowerCase().includes('multi-region')) {
+        detectedPersona = 'Lead Cloud Architect';
+      } else if (promptText.includes('[CISO') || promptText.toLowerCase().includes('security') || promptText.toLowerCase().includes('cmek') || promptText.toLowerCase().includes('waf')) {
+        detectedPersona = 'CISO / Security Architect';
+      } else if (promptText.includes('[FinOps') || promptText.toLowerCase().includes('finops') || promptText.toLowerCase().includes('cost') || promptText.toLowerCase().includes('sre')) {
+        detectedPersona = 'FinOps & SRE Lead';
+      }
+    }
+
+    const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '');
 
     const userMsg: StudioChatMessage = {
       id: `msg_${Date.now()}`,
@@ -287,37 +303,127 @@ function StudioMain() {
     setMessages(prev => [...prev, userMsg]);
     setPromptInput('');
 
-    // Simulate AI synthesis & AST update
+    // Intelligent AST & Visual Reconciliation based on Persona
     setTimeout(() => {
-      const newVersionTag = `v1.${versions.length}`;
-      const aiMsg: StudioChatMessage = {
-        id: `msg_${Date.now() + 1}`,
-        sender: 'assistant',
-        text: `Applied architecture refinement: "${promptText.slice(0, 60)}..."`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actionSummary: {
-          versionTag: newVersionTag,
-          canvasDiff: `Updated component topology and connector routing in Draw.io XML.`,
-          specDiff: `Reconciled DOC-01 through DOC-10 with updated parameters.`
+      const nextVersionIndex = versions.length;
+      const newVersionTag = `v1.${nextVersionIndex}`;
+      
+      let canvasDiff = 'Updated component topology and connector routing in Draw.io XML.';
+      let specDiff = 'Reconciled DOC-01 through DOC-10 with updated parameters.';
+
+      setAst(prevAst => {
+        const updated = { ...prevAst };
+        const lower = cleanPrompt.toLowerCase();
+
+        if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('sla')) {
+          updated.metadata = {
+            ...updated.metadata,
+            slaTarget: '99.999%',
+            domain: 'Healthcare & Precision Oncology',
+            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          if (!updated.components.some(c => c.id === 'comp_patient_portal')) {
+            updated.components = [
+              ...updated.components,
+              {
+                id: 'comp_patient_portal',
+                name: 'Emergency Patient Ingress Portal',
+                service: 'Cloud Run',
+                tier: 'compute',
+                region: 'global',
+                role: 'Patient Engagement & Triage Gateway',
+                description: 'Real-time patient intake, emergency triage, and FHIR API adapter with 99.999% SLA.',
+                sla: '99.999%',
+                protocols: ['HTTPS', 'gRPC', 'FHIR R4']
+              }
+            ];
+          }
+          canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
+          specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
+        } else if (detectedPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
+          updated.metadata = {
+            ...updated.metadata,
+            drRegions: ['europe-west1', 'us-east4'],
+            targetRpo: '< 1 Second (Zero Data Loss)',
+            targetRto: '< 15 Seconds (Automated Failover)',
+            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          updated.components = updated.components.map(c => {
+            if (c.service.includes('Spanner') || c.id.includes('spanner')) {
+              return {
+                ...c,
+                role: 'Active-Active Multi-Region nam3 Leader with Witness in europe-west1',
+                description: 'Synchronous Paxos replication across us-central1 and europe-west1 with 99.999% SLA.'
+              };
+            }
+            return c;
+          });
+          canvasDiff = '⚡ Upgraded Cloud Spanner to Active-Active Multi-Region nam3 with Witness in europe-west1.';
+          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).';
+        } else if (detectedPersona === 'CISO / Security Architect' || lower.includes('security') || lower.includes('ciso') || lower.includes('hsm') || lower.includes('cmek') || lower.includes('vpc')) {
+          updated.metadata = {
+            ...updated.metadata,
+            compliance: ['PCI-DSS 4.0', 'HIPAA', 'SOC2 Type II', 'FedRAMP High', 'ISO 27001'],
+            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          if (!updated.components.some(c => c.id === 'comp_hsm_cmek')) {
+            updated.components = [
+              ...updated.components,
+              {
+                id: 'comp_hsm_cmek',
+                name: 'Cloud KMS HSM CMEK Envelope',
+                service: 'Cloud Key Management Service',
+                tier: 'security',
+                region: 'global',
+                role: 'Hardware Security Module Key Hierarchy',
+                description: 'FIPS 140-2 Level 3 hardware security module keys protecting Spanner, BigQuery, and GCS buckets.',
+                sla: '99.999%',
+                protocols: ['Cloud KMS API', 'gRPC mTLS']
+              }
+            ];
+          }
+          canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
+          specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
+        } else if (detectedPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
+          updated.metadata = {
+            ...updated.metadata,
+            latencyBudgetMs: 35,
+            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          canvasDiff = '💰 Configured Cloud Run scale-to-zero off-peak policies & BigQuery BI Engine 50GB cache.';
+          specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
         }
-      };
 
-      setMessages(prev => [...prev, aiMsg]);
-      setActiveVersionTag(newVersionTag);
+        const aiMsg: StudioChatMessage = {
+          id: `msg_${Date.now() + 1}`,
+          sender: 'assistant',
+          text: `[${detectedPersona} Persona Refinement]: Applied updates for "${cleanPrompt.slice(0, 75)}..."`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          actionSummary: {
+            versionTag: newVersionTag,
+            canvasDiff,
+            specDiff
+          }
+        };
 
-      const newSnapshot: StudioVersionSnapshot = {
-        id: `v_${Date.now()}`,
-        versionTag: newVersionTag,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        author: 'AI Assistant',
-        actionSummary: promptText,
-        ast: ast,
-        xml: xml
-      };
+        setMessages(prev => [...prev, aiMsg]);
+        setActiveVersionTag(newVersionTag);
 
-      setVersions(prev => [...prev, newSnapshot]);
+        const newSnapshot: StudioVersionSnapshot = {
+          id: `v_${Date.now()}`,
+          versionTag: newVersionTag,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          author: detectedPersona as any,
+          actionSummary: `${detectedPersona}: ${cleanPrompt}`,
+          ast: updated,
+          xml: xml
+        };
+
+        setVersions(prev => [...prev, newSnapshot]);
+        return updated;
+      });
     }, 600);
-  }, [ast, xml, versions.length]);
+  }, [xml, versions.length]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {
@@ -614,27 +720,44 @@ function StudioMain() {
             <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-semibold">Gemini 2.5 Pro</span>
           </div>
 
-          {/* Starter Chips (FTUX Pillar 1) */}
-          <div className="p-3 border-b border-slate-100 bg-slate-50/50 space-y-1.5 flex-shrink-0">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Instant 1-Click Starter Scenarios:</div>
-            <div className="flex flex-col gap-1.5">
+          {/* Starter Chips & Multi-Persona Simulation */}
+          <div className="p-3 border-b border-slate-100 bg-slate-50/50 space-y-2 flex-shrink-0">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Simulate Stakeholder Personas:</span>
+              <span className="text-[9px] bg-purple-100 text-purple-700 font-bold px-1.5 py-0.5 rounded-full">Multi-Persona</span>
+            </div>
+            <div className="grid grid-cols-2 gap-1.5">
               <button
-                onClick={() => handleStarterChip('Design an ultra-low latency transaction mesh with Spanner nam3, Cloud HSM CMEK, and Gemini 2.5 Flash fraud reasoning.', 'NexusPay Multi-Region Settlement')}
-                className="text-left p-2 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs text-slate-700 hover:text-blue-900 transition shadow-2xs font-medium"
+                onClick={() => handleExecutePrompt('Add real-time patient engagement portal and emergency admission SLA tracking with 99.999% availability.', 'Product Manager')}
+                className="text-left p-1.5 rounded-md bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-[11px] text-slate-700 hover:text-blue-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
+                title="Simulate Product Manager requirements update"
               >
-                ⚡ FinTech Real-Time Payment Mesh
+                <span>👔</span>
+                <span className="truncate">Product Manager</span>
               </button>
               <button
-                onClick={() => handleStarterChip('Design a HIPAA-compliant multi-agent clinical oncology RAG pipeline with Vertex Vector Search and BigQuery.', 'OncoIntelligence Multi-Agent RAG')}
-                className="text-left p-2 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs text-slate-700 hover:text-blue-900 transition shadow-2xs font-medium"
+                onClick={() => handleExecutePrompt('Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.', 'Lead Cloud Architect')}
+                className="text-left p-1.5 rounded-md bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-[11px] text-slate-700 hover:text-indigo-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
+                title="Simulate Lead Architect Multi-Region DR upgrade"
               >
-                🧬 Precision Oncology Multi-Agent RAG
+                <span>🏗️</span>
+                <span className="truncate">Lead Architect</span>
               </button>
               <button
-                onClick={() => handleStarterChip('Design a global omnichannel event mesh with Datastream CDC, Cloud Dataflow streaming ETL, and Cloud Bigtable.', 'OmniStream Retail CDC Lakehouse')}
-                className="text-left p-2 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-xs text-slate-700 hover:text-blue-900 transition shadow-2xs font-medium"
+                onClick={() => handleExecutePrompt('Enforce Cloud KMS HSM CMEK keys, Cloud Armor OWASP rules, and VPC Service Controls perimeter.', 'CISO / Security Architect')}
+                className="text-left p-1.5 rounded-md bg-white hover:bg-purple-50 border border-slate-200 hover:border-purple-300 text-[11px] text-slate-700 hover:text-purple-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
+                title="Simulate CISO Security & Zero-Trust hardening"
               >
-                🛒 Global Retail Event Lakehouse
+                <span>🛡️</span>
+                <span className="truncate">CISO / Security</span>
+              </button>
+              <button
+                onClick={() => handleExecutePrompt('Implement Cloud Run scale-to-zero during off-peak windows and BigQuery BI Engine 50GB memory reservation.', 'FinOps & SRE Lead')}
+                className="text-left p-1.5 rounded-md bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-[11px] text-slate-700 hover:text-emerald-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
+                title="Simulate FinOps & SRE cost & performance optimization"
+              >
+                <span>💰</span>
+                <span className="truncate">FinOps & SRE</span>
               </button>
             </div>
           </div>
