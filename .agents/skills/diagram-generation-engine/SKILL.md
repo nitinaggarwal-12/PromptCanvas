@@ -79,14 +79,18 @@ Every diagram generated across any system MUST strictly follow these core pillar
 
 ## 🛡️ Pillar 3: Shapes, Containers & 2D Collision Safety
 
-1. **Rounded Container Corner Insetting ($\ge 20\text{px}$ Margin)**:
+1. **Zero Surrounding Empty Space & Full Viewport Breadth Law**:
+   - Diagram viewports and parent container wrappers must utilize 100% of available screen width (`w-full max-w-none` or `max-w-8xl` (1440px) / `max-w-[1600px]`) with responsive padding (`p-6 md:p-8`). Never constrain main containers with narrow centered grids (`max-w-4xl`, `max-w-5xl`) that introduce empty white side gutters on desktop monitors.
+   - Internal zone boxes and cards must scale proportionally in height and width to eliminate awkward empty dead voids inside containers and across the screen.
+
+2. **Rounded Container Corner Insetting ($\ge 20\text{px}$ Margin)**:
    - Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
    - Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
 
-2. **2D Bounding Box Collision Auto-Healing**:
+3. **2D Bounding Box Collision Auto-Healing**:
    - Layout engines must perform 2D bounding box intersection checks (with 30px safety padding margin) and push overlapping nodes rightward (for same-tier overlaps) or downward (for vertical overlaps).
 
-3. **Container Padding Standards**:
+4. **Container Padding Standards**:
    - Maintain a minimum of $24\text{px} - 32\text{px}$ top padding in outer containers to provide clearance for container headers and icons.
 
 ---

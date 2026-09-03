@@ -6,6 +6,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # 🎨 Layout & Typography Rules (Desktop Monitors)
 
+* **Zero Surrounding Empty Space Law (Strict Viewport Breadth)**:
+  - When creating new pages, views, document readers, or studio panels, **NEVER** restrict main containers to narrow centered grids (`max-w-4xl`, `max-w-5xl`, `max-w-6xl` with `mx-auto`) that introduce empty white/slate side gutters on desktop screens.
+  - Always enforce full-width utilization (`w-full max-w-none` or spacious `max-w-8xl` / `max-w-[1600px]`) with responsive horizontal padding (`p-6 md:p-8` or `px-10 md:px-12`).
+  - Child elements, cards, and tables must expand edge-to-edge within their parent layout, utilizing the entire monitor screen without awkward dead voids.
 * **Reclaim Empty Margins (Wide Widths)**: By default, design portals and landing pages to use spacious desktop widths (`max-w-8xl` (1440px) or `max-w-[1600px]`) instead of standard narrow grids (`max-w-5xl`, `max-w-7xl`). Utilize adequate padding (`px-12 md:px-16` or `px-10 md:px-12`) to optimize viewing on ultra-wide desktop monitors.
 * **Proportional Object & Typography Scaling (Always)**: When expanding container widths, you must scale up all layout components, typography, and visual assets proportionally to maintain structural balance:
   - **Typography**: Main headers (`text-4xl` -> `text-5xl` or `text-6xl`), text descriptions (`text-xs`/`text-sm` -> `text-sm`/`text-base`), and data counters (`text-xl` -> `text-3xl` or `text-4xl`).

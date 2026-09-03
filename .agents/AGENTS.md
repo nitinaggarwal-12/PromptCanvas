@@ -146,6 +146,7 @@
 # 🏛️ Core Architectural Tenets: Visual Clarity, Technical Accuracy & Logical Flow
 
 1. **Visual Clarity Law**:
+   - **Zero Surrounding Empty Space Law (Strict Viewport Breadth)**: When adding or refactoring new pages, document readers, workspaces, or studio panels, **NEVER** constrain main wrappers with narrow centered grids (`max-w-4xl`, `max-w-5xl`, `max-w-6xl` with `mx-auto`) that introduce empty side gutters on desktop monitors. Always enforce full-width utilization (`w-full max-w-none` or spacious `max-w-8xl` / `max-w-[1600px]`) with proportional horizontal padding (`p-6 md:p-8` or `px-10 md:px-12`). Child cards, tables, and document sections must expand edge-to-edge with zero dead voids.
    - **Viewport Auto-Fit Containment**: Diagram viewports must always enforce `allowFullScaleScroll={false}` and `fit=true` to guarantee 100% visual containment without viewport clipping on ultra-wide or high-DPI displays.
    - **Clean Markdown Parsing**: Never dump raw markdown asterisks (`**`) into JSX text nodes. Always parse markdown into styled typography tags.
    - **Collated Telemetry Disclosure**: Encapsulate real-time Gemini API logs in clean, collapsible accordions (`<details>`).
