@@ -11,6 +11,8 @@
 
 import { GCP_OFFICIAL_ICONS } from "./gcpIcons";
 import { ArchitectureAst } from "./ast/architectureAst";
+import { smartShortenText, optimizeCardBullets } from "./spatial/spatialTextOptimizer";
+import { solveZoneLayout, ZoneGeometry } from "./spatial/zoneLayoutEngine";
 
 function encodeXml(str: string): string {
   return (str || "")
@@ -52,11 +54,17 @@ function createNodeCard(
   const specText = isDark ? "#E2E8F0" : "#334155";
   const dividerColor = isDark ? "#334155" : "#E2E8F0";
 
+  // Dynamic text budgeting based on available card dimensions
+  const optTitle = smartShortenText(title, w - 50, 11, true);
+  const optSubtitle = smartShortenText(subtitle, w - 50, 8, false);
+  const optBullets = optimizeCardBullets(extraDetails, h, w, 8);
+  const optSpec = smartShortenText(spec, w - 100, 7.5, false);
+
   let detailsHtml = "";
-  if (extraDetails && extraDetails.length > 0) {
+  if (optBullets && optBullets.length > 0) {
     detailsHtml =
-      `<div style="display:flex;flex-direction:column;gap:2.5px;margin:3px 0;border-top:1px dashed ${dividerColor};padding-top:3px;">` +
-      extraDetails
+      `<div style="display:flex;flex-direction:column;gap:2px;margin:2.5px 0;border-top:1px dashed ${dividerColor};padding-top:2.5px;">` +
+      optBullets
         .map(
           (d) =>
             `<div style="font-size:8px;color:${detailColor};display:flex;align-items:flex-start;gap:3px;line-height:1.25;"><span style="color:${badgeColor};font-weight:700;line-height:1;">▸</span><span>${encodeXml(d)}</span></div>`
@@ -66,19 +74,19 @@ function createNodeCard(
   }
 
   const label =
-    `<div style="padding:8px 12px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;height:100%;justify-content:space-between;overflow:hidden;">` +
+    `<div style="padding:6px 10px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;box-sizing:border-box;display:flex;flex-direction:column;height:100%;justify-content:space-between;overflow:hidden;">` +
     `<div>` +
     `<div style="display:flex;align-items:center;gap:6px;">` +
     `<div style="flex-shrink:0;">${iconHtml}</div>` +
     `<div style="flex:1;min-width:0;">` +
-    `<div style="font-size:11px;font-weight:800;color:${titleColor};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${encodeXml(title)}</div>` +
-    `<div style="font-size:8px;font-weight:600;color:${subtitleColor};line-height:1.2;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${encodeXml(subtitle)}</div>` +
+    `<div style="font-size:11px;font-weight:800;color:${titleColor};line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${encodeXml(optTitle)}</div>` +
+    `<div style="font-size:8px;font-weight:600;color:${subtitleColor};line-height:1.2;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${encodeXml(optSubtitle)}</div>` +
     `</div>` +
     `</div>` +
     detailsHtml +
     `</div>` +
     `<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;margin-top:2px;">` +
-    `<div style="font-size:7.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:${specText};background:${specBg};padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:${w - 90}px;font-weight:600;">${encodeXml(spec)}</div>` +
+    `<div style="font-size:7.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:${specText};background:${specBg};padding:2px 5px;border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:${w - 90}px;font-weight:600;">${encodeXml(optSpec)}</div>` +
     `<div style="font-size:7.5px;font-weight:800;color:${badgeColor};background:${badgeColor}15;padding:2px 5px;border-radius:3px;border:1px solid ${badgeColor}30;white-space:nowrap;flex-shrink:0;">${encodeXml(badge)}</div>` +
     `</div>` +
     `</div>`;
