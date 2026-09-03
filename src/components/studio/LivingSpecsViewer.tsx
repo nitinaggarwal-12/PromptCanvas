@@ -151,8 +151,8 @@ export function LivingSpecsViewer({
         </div>
       </div>
 
-      {/* Document Content View */}
-      <div className="flex-1 p-8 overflow-y-auto max-w-5xl mx-auto w-full space-y-6">
+      {/* Document Content View - Reclaiming Full Desktop Width */}
+      <div className="flex-1 p-6 md:p-8 overflow-y-auto w-full space-y-6">
         
         {/* Document Executive Header Card */}
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm space-y-4">
