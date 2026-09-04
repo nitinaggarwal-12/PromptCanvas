@@ -4,8 +4,26 @@ This directory contains the production-grade Draw.io XML blueprints for the SAP 
 
 ---
 
-## 🏛️ 1. Conceptual Architecture
+## 🏛️ 1. Pure Conceptual Architecture (Faithful to User Ground-Truth)
+- **File**: `01_pure_conceptual_sap_agents.drawio.xml`
+- **Rendered Image**: `01_pure_conceptual_sap_agents.png`
+- **Generator**: `scripts/generate_pure_conceptual_sap_google_agents.ts`
+- **Scope**:
+  - **Column 1: End User & Channels**: Business Operators, Enterprise Developers, Process Specialists, Modalities (Web, Chat, Workspace, IDE), Conversational Copilot & Workflow Automation.
+  - **Column 2: Google Cloud Platform**:
+    - *GE Agent Platform (Pro-Code)*: ADK agents, LangGraph, Vertex AI Agent Builder.
+    - *Gemini Enterprise App*: No-Code Agents & Agentic Connectors (BYO MCP, BigQuery Connector, S/4HANA Connector).
+    - *Data Foundation*: Cortex Framework, BigQuery Lakehouse, ABAP SDK / BQ Toolkit & BQ Connector (with CDC streaming and upward BigQuery link).
+  - **Column 3: SAP Joule & SAP BTP Platform**: SAP Joule Agents (top), SAP API Mgmt. & SAP MCP Gateway (middle), SAP BDC Datasphere (bottom).
+  - **Column 4: SAP SaaS Suite**: SuccessFactors, Concur, Customer Exp. (CX), Business Networks (Ariba), S/4HANA Public Cloud.
+  - **Column 5: SAP RISE / Any-Cloud / On-Premise**: SAP S/4HANA (NetWeaver Gateway, OData v2/v4, RFC, BAPI).
+  - **End-to-End Conceptual Value & Interaction Flows**: 4-stage business flow with high-contrast protocol pill badges (`A2A`, `MCP`, `REST`, `Zero Copy`).
+
+---
+
+## 🏛️ 1B. Enterprise Canonical Conceptual Architecture (Procure-to-Pay Canonical Blueprint)
 - **File**: `01_conceptual_sap_multi_agent_architecture.drawio.xml`
+- **Rendered Image**: `01_conceptual_sap_multi_agent_architecture.png`
 - **Generator**: `scripts/generate_conceptual_sap_agents.ts`
 - **Scope**:
   - **Column 1: Enterprise Services & Channels**: Omnichannel Client, Channel Interface, Portals & Engagement, Collaboration & Chat, Enterprise Admin.
