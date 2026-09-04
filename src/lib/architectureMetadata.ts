@@ -73,11 +73,11 @@ export const ARCHITECTURE_METADATA_MAP: Record<string, ArchitectureMeta> = {
     id: "conceptual_diagram",
     title: "Conceptual Diagram",
     category: "Executive & Business Strategy",
-    useCase: "ENTERPRISE PLATFORM",
-    businessUseCase: "Automate cross-silo data synthesis, document analysis, and strategic AI workflows to accelerate operational decision-making.",
-    primaryActors: "Executive Leadership, Chief Architects, Strategic Analysts",
-    targetOutcomes: "Accelerated Time-to-Value, 80% Reduction in Manual Research, Real-Time Strategic Insights",
-    desc: "High-level 3-stage business architecture showing ingestion, processing hub, and strategic outcomes."
+    useCase: "ENTERPRISE PLATFORM & VALUE STREAM",
+    businessUseCase: "Operate at the capability and boundary level to highlight intent, business value, and domain relationships across 4 canonical flows: User Journey, Business Process Value Stream, Domain Data Flow, and Enterprise Integration.",
+    primaryActors: "Executive Leadership, Chief Enterprise Architects, Business Strategists",
+    targetOutcomes: "Capability Alignment, Macroscopic Information Visibility, Strategic Ecosystem Integration",
+    desc: "Capability- and boundary-level architecture highlighting intent, business value, and domain relationships across the 4 canonical flows (User Journey, Value Stream, Domain Data, and Enterprise Integration)."
   },
   unified_system_view: {
     id: "unified_system_view",

@@ -248,3 +248,12 @@
 21. **Geometric Waypoint Highway Planning & Zero Text Intersection**:
     - Cross-tier connector lines spanning across columns MUST route through designated open inter-row channels (e.g. gaps between cards) with explicit intermediate waypoints (`<mxPoint x="..." y="...">`).
     - Line paths must maintain a minimum **$12\text{px}$ safety margin** from all card boundaries, container headers, subheaders, and character descenders. Never route lines through the text bounding box of a card or container title.
+
+22. **Conceptual Architecture Abstraction & The 4-Flow Taxonomy Law**:
+    - **Capability & Boundary Level Abstraction**: Conceptual diagrams MUST operate strictly at the capability and boundary level. They strip away infrastructure mechanics (no VPCs, CIDRs, session cookies, web servers, low-level SDK package paths, or code blocks) to highlight intent, business value, and domain relationships.
+    - **Four Canonical Conceptual Flows**: Conceptual value streams and interaction models MUST be structured around the four canonical flows:
+      1. **User Journey Flow (Experience Flow)**: Focuses on high-level persona interaction, primary objectives, and ingress entry points without detailing session cookies or web servers.
+      2. **Business Process Flow (Value Stream)**: Maps business capability coordination, domain events, and milestones (e.g., Order Submission → Payment Authorization → Inventory Allocation).
+      3. **Domain Data Flow**: Shows macroscopic information movement across bounded contexts (e.g., Raw Research Data → Feature Store → Analytical Model → Reporting Dashboard).
+      4. **Enterprise Integration Flow**: Defines coarse-grained boundary handoffs to external third parties, legacy ERPs, or partner ecosystems.
+    - **Strict Abstraction Guardrail**: Technical details (CIDRs, TLS handshakes, SDK method calls) must be strictly reserved for Technical / Infrastructure diagrams and must NEVER pollute Conceptual diagrams.

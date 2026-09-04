@@ -95,8 +95,8 @@ export const BUSINESS_ARCHITECTURE_TYPES: ArchitectureTypeOption[] = [
     id: "conceptual_diagram",
     name: "Conceptual Diagram",
     category: "Executive & Business Strategy",
-    whenToUse: "High-level 3-stage business architecture showing ingestion, processing hub, and strategic outcomes",
-    prompt: "Enterprise Conceptual Platform:\n- Ingestion: Multi-channel data ingestion across core operational silos.\n- Processing Engine: Core Enterprise Synthesis Engine (Powered by Gemini Enterprise) executing data synthesis, document analysis, and strategic AI workflows.\n- Strategic Outcomes: System Efficiency, Fast Time-to-Value, Strategic Planning & Analysis.\n- Priority Alert: Real-Time Operational Strategy Monitoring."
+    whenToUse: "Capability- and boundary-level architecture highlighting intent, business value, and domain relationships across 4 canonical flows (User Journey, Value Stream, Domain Data, and Enterprise Integration)",
+    prompt: "Act as a Principal Enterprise Architect. Design an Executive Conceptual Architecture Diagram. Conceptual diagrams operate strictly at the capability and boundary level, stripping away infrastructure mechanics to highlight intent, business value, and domain relationships.\nStructure the architecture around the 4 Canonical Flows:\n1. User Journey Flow (Experience Flow): High-level persona interaction, primary objectives, and ingress entry points.\n2. Business Process Flow (Value Stream): Business capability coordination, domain events, and milestones (e.g. Order Submission -> Payment Authorization -> Inventory Allocation).\n3. Domain Data Flow: Macroscopic information movement across bounded contexts (e.g. Raw Data -> Feature Store -> Analytical Model -> Reporting Dashboard).\n4. Enterprise Integration Flow: Coarse-grained boundary handoffs to external third parties, legacy ERPs, or partner ecosystems."
   },
   {
     id: "unified_system_view",

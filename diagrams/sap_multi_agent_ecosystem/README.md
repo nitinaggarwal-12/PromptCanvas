@@ -17,7 +17,12 @@ This directory contains the production-grade Draw.io XML blueprints for the SAP 
   - **Column 3: SAP Joule & SAP BTP Platform**: SAP Joule Agents (top), SAP API Mgmt. & SAP MCP Gateway (middle), SAP BDC Datasphere (bottom).
   - **Column 4: SAP SaaS Suite**: SuccessFactors, Concur, Customer Exp. (CX), Business Networks (Ariba), S/4HANA Public Cloud.
   - **Column 5: SAP RISE / Any-Cloud / On-Premise**: SAP S/4HANA (NetWeaver Gateway, OData v2/v4, RFC, BAPI).
-  - **End-to-End Conceptual Value & Interaction Flows**: 4-stage business flow with high-contrast protocol pill badges (`A2A`, `MCP`, `REST`, `Zero Copy`).
+  - **Operating Paradigm**: Operates strictly at the capability and boundary level, stripping away infrastructure mechanics to highlight intent, business value, and domain relationships.
+  - **The 4 Canonical Conceptual Flows**:
+    1. *User Journey Flow (Experience Flow)*: Persona interaction & primary objectives without session cookies or web servers.
+    2. *Business Process Flow (Value Stream)*: Business capability coordination, domain events, and milestones.
+    3. *Domain Data Flow*: Macroscopic information movement across bounded contexts.
+    4. *Enterprise Integration Flow*: Coarse-grained boundary handoffs to external third parties, legacy ERPs, or partner ecosystems.
 
 ---
 
