@@ -59,3 +59,53 @@ module.exports = { compareScreenshots };
 1. **Capture Baseline**: Run Puppeteer suite on `main` branch and save to `scratch/screenshots_baseline/`.
 2. **Capture Current**: Run Puppeteer suite on feature branch and save to `scratch/screenshots_current/`.
 3. **Compare & Report**: Execute `compareScreenshots()`. If `diffPercentage > 0.5%`, output a warning and present the diff file link `[01_diff.png](file:///path/to/scratch/screenshots_diff/01_diff.png)`.
+
+---
+
+## 4. Autonomous Closed-Loop Convergence Loop
+
+Pixel diffing is not an observational afterthought; it is an active validation gate in the autonomous coding loop:
+
+```javascript
+let loop = 0;
+const MAX_LOOPS = 5;
+let converged = false;
+
+while (!converged && loop < MAX_LOOPS) {
+  loop++;
+  console.log(`🔍 [Visual Diff Loop ${loop}] Executing render & pixel diff...`);
+
+  const { diffPercentage, numDiffPixels, diffOutputPath } = compareScreenshots(
+    baselinePath,
+    currentPath,
+    path.join(diffDir, `diff_loop_${loop}.png`)
+  );
+
+  if (diffPercentage <= 0.2) {
+    console.log(`✅ [Visual Diff Loop ${loop}] Converged! Diff: ${diffPercentage}% (within tolerance).`);
+    converged = true;
+    break;
+  }
+
+  console.warn(`⚠️ [Visual Diff Loop ${loop}] Drift detected: ${diffPercentage}% (${numDiffPixels} mismatched px).`);
+  
+  // Autonomously diagnose spatial coordinates or styling shift and patch code
+  await autoHealVisualDiscrepancies(diffOutputPath);
+  
+  // Re-render
+  await renderUpdatedCanvas();
+}
+
+if (!converged) {
+  throw new Error(`❌ Visual regression failed to converge below tolerance after ${MAX_LOOPS} iterations.`);
+}
+```
+
+---
+
+## 5. Zero-Assumption Actual Pixel Verification Mandate
+
+**Strict Rule**: Never declare visual parity based on file sizes or image header metadata. Always validate actual image raster buffers:
+- Validate dimensions match target canvas ($1600 \times 1000$ or $1840 \times 1040$).
+- Validate that the rendered image contains non-white/non-transparent foreground content across all grid columns.
+- Physically compare against ground-truth master image baselines (`images/01.png` to `images/37.png`).

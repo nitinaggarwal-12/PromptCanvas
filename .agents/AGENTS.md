@@ -257,3 +257,25 @@
       3. **Domain Data Flow**: Shows macroscopic information movement across bounded contexts (e.g., Raw Research Data → Feature Store → Analytical Model → Reporting Dashboard).
       4. **Enterprise Integration Flow**: Defines coarse-grained boundary handoffs to external third parties, legacy ERPs, or partner ecosystems.
     - **Strict Abstraction Guardrail**: Technical details (CIDRs, TLS handshakes, SDK method calls) must be strictly reserved for Technical / Infrastructure diagrams and must NEVER pollute Conceptual diagrams.
+
+23. **Autonomous Closed-Loop E2E Verification & Ground-Truth Data Validation Law (Zero-Assumption & Blindspot-Free Mandate)**:
+    - **Repeated Autonomous Loop Execution (Until Zero Defects)**:
+      - E2E testing and quality validation must NEVER be a single-pass check. Test suites and browser automation journeys MUST execute in an automated closed loop:
+        $$\text{Execute Harness} \longrightarrow \text{Detect Exact Failures/Blindspots} \longrightarrow \text{Auto-Patch Code} \longrightarrow \text{Re-verify Harness}$$
+      - The loop MUST run repeatedly until **all issues of any kind are fully eliminated** and 100% of assertions pass with zero failures, zero spatial collisions, and zero visual or functional defects.
+    - **Zero-Assumption Law (Metadata Is Not Reality)**:
+      - **NEVER** assume a feature works, a diagram renders, or an API succeeds based on metadata, proxy signals, or exit codes:
+        - ❌ Do NOT rely on CLI exit code `0`.
+        - ❌ Do NOT rely on HTTP `200 OK` responses.
+        - ❌ Do NOT rely on metadata flags (`certified: true`, `status: "ok"`).
+        - ❌ Do NOT rely on coarse length checks (`svg.length > 0` or `file.size > 0`).
+      - **Mandatory Actual Data Validation**: Actual delivered data must be rigorously validated against criteria and guidelines:
+        - Physically inspect live DOM trees for exact text string literals, child element counts, and expected attributes.
+        - Verify exact mathematical geometry: bounding box coordinates, channel pitch ($\ge 80\text{px}$), label offsets, and zero AABB visual intersections.
+        - Validate actual pixel rendering through pixel-by-pixel visual diffs against ground-truth master templates.
+    - **Exhaustive Blindspot Coverage**:
+      - The test harness must deliberately probe and cover all blindspots:
+        1. *Boundary States*: Empty payloads, max-width string wraps, unescaped XML/HTML entities, and edge-case failure modes.
+        2. *Responsive & Aspect Ratios*: Verification across Mobile (390px), Tablet (834px), Desktop (1440px), and Ultra-Wide (1600px+), plus dynamic aspect ratio morphing (`16:9`, `9:16`, `1:1`, `21:9`).
+        3. *Dynamic State & Theme Shifts*: Full dark/light theme switching, 800ms settled DOM transitions, and post-reload URL state restoration (`/studio3?id=<uuid>`).
+        4. *Embedded Viewport Verification*: Physically assert that child elements inside third-party viewports (`<iframe>`, canvas, SVG) actually re-rendered with mutated attributes.

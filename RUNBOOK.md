@@ -74,6 +74,35 @@ const browser = await puppeteer.launch({
    ```
 4. **Visual Review Delivery**: Present captured screenshots to the user using clickable `file://` Markdown links.
 
+### Rule 4: Iterative Closed-Loop Convergence (Loop Until Zero Defects)
+E2E testing must execute in an automated self-correcting loop until all issues are resolved:
+```typescript
+// Loop repeatedly until 100% of assertions pass with zero failures
+let loop = 0;
+const MAX_LOOPS = 5;
+while (loop < MAX_LOOPS) {
+  loop++;
+  const result = await runE2EHarness(page);
+  if (result.passed && result.defectCount === 0) break;
+  await autoPatchDefects(result.defects);
+  await sleep(1000);
+}
+```
+
+### Rule 5: Zero-Assumption Actual Data Validation (Metadata Is Not Reality)
+- Never assume success from HTTP `200 OK`, CLI exit code `0`, `svg.length > 0`, or metadata flags (`certified: true`).
+- Physically validate actual data payloads:
+  - Exact text string literals and typography nodes in DOM.
+  - Mathematical 2D bounding boxes and zero AABB geometric intersections.
+  - Rendered raster pixel data compared against ground-truth master image baselines.
+
+### Rule 6: 360° Blindspot Coverage
+Every test suite must probe all blindspots:
+1. *Boundary States*: Empty payloads, max-width string wraps, unescaped XML/HTML entities (`&`, `<`, `>`).
+2. *Responsive & Aspect Ratios*: Breakpoint tests at Mobile (390px), Tablet (834px), Desktop (1440px), and Ultra-Wide (1600px+), plus aspect ratio morphing (`16:9`, `9:16`, `1:1`, `21:9`).
+3. *State Transitions & Theme Shifts*: Full dark/light theme switching with 800ms settled transitions.
+4. *Embedded Viewport Mutation*: Physically asserting child element attribute mutation inside iframe/canvas viewports.
+
 ---
 
 ## 4. Local-First Development & Deferred Git Commit Law
