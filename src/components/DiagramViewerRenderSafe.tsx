@@ -119,6 +119,22 @@ export default function DiagramViewerRenderSafe({
     `${diagramType || ''} ${diagramId || ''}`,
   );
 
+  // Secure JSON serialization: Neutralize </script> and <!-- to prevent HTML inline script breakout XSS
+  const safeJsonConfig = JSON.stringify({
+    xml: translatedXml,
+    lightbox: false,
+    nav: false,
+    resize: !allowFullScaleScroll,
+    toolbar: '',
+    edit: '',
+    border: allowFullScaleScroll ? 10 : 20,
+    transparent: true,
+    fit: !allowFullScaleScroll,
+    'max-scale': 4.0,
+  })
+    .replace(/<\/script/gi, '<\\/script')
+    .replace(/<!--/g, '<\\!--');
+
   const iframeHtml = `<!DOCTYPE html>
 <html>
 <head>
@@ -204,18 +220,7 @@ ${origin ? `<base href="${origin}/">` : ''}
     return trimmed;
   }
 
-  const configObj = ${JSON.stringify({
-    xml: translatedXml,
-    lightbox: false,
-    nav: false,
-    resize: !allowFullScaleScroll,
-    toolbar: '',
-    edit: '',
-    border: allowFullScaleScroll ? 10 : 20,
-    transparent: true,
-    fit: !allowFullScaleScroll,
-    'max-scale': 4.0,
-  })};
+  const configObj = ${safeJsonConfig};
   configObj.fit = ${allowFullScaleScroll ? 'false' : 'true'};
   configObj.xml = getCleanGraphXml(configObj.xml);
 
