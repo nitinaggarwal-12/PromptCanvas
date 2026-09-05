@@ -42,6 +42,11 @@ import {
   RotateCcw,
   ChevronDown,
   MessageSquare,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelLeft,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import {
   GcpVersionSnapshot,
@@ -70,6 +75,38 @@ function GcpArchitectureCenterInner() {
   const [a2aError, setA2aError] = useState<string | null>(null);
   const [a2aActiveView, setA2aActiveView] = useState<'timeline' | 'nodes' | 'raw'>('timeline');
   const [copiedDagJson, setCopiedDagJson] = useState<boolean>(false);
+
+  // Left Navigation Menu Collapsible State (synced with UnifiedAppSidebar)
+  const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('promptcanvas_sidebar_open');
+        if (saved !== null) return saved === 'true';
+      } catch {}
+    }
+    return true;
+  });
+
+  useEffect(() => {
+    const handleSidebarChange = (e: any) => {
+      if (e?.detail?.isOpen !== undefined) {
+        setIsLeftNavOpen(e.detail.isOpen);
+      }
+    };
+    window.addEventListener('promptcanvas_sidebar_change', handleSidebarChange);
+    return () => window.removeEventListener('promptcanvas_sidebar_change', handleSidebarChange);
+  }, []);
+
+  const handleToggleLeftNav = () => {
+    const next = !isLeftNavOpen;
+    setIsLeftNavOpen(next);
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('promptcanvas_sidebar_open', String(next));
+      } catch {}
+      window.dispatchEvent(new CustomEvent('promptcanvas_toggle_sidebar', { detail: { isOpen: next } }));
+    }
+  };
 
   // Architecture Co-Pilot & Snapshot Versioning State
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(true);
@@ -273,7 +310,7 @@ function GcpArchitectureCenterInner() {
   return (
     <div className={`flex min-h-screen transition-colors duration-200 ${bgClass} font-sans`}>
       {/* Collapsible Left Navigation Menu */}
-      <UnifiedAppSidebar />
+      <UnifiedAppSidebar isCollapsed={!isLeftNavOpen} onToggle={handleToggleLeftNav} />
 
       {/* Main Content Area: Spacious Ultra-Wide Layout (Zero Surrounding Empty Space) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
@@ -285,6 +322,26 @@ function GcpArchitectureCenterInner() {
         >
           <div className="w-full max-w-none px-6 md:px-10 py-3.5 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
+              {/* Left Navigation Menu Toggle Button */}
+              <button
+                id="gcp-toggle-left-menu-btn"
+                onClick={handleToggleLeftNav}
+                className={`p-2 rounded-xl border text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ${
+                  isLeftNavOpen
+                    ? isDark
+                      ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border-slate-700'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                    : 'bg-blue-600/15 text-blue-500 border-blue-500/30 hover:bg-blue-600/25'
+                }`}
+                title={isLeftNavOpen ? 'Collapse Left Navigation Menu' : 'Expand Left Navigation Menu'}
+                aria-label={isLeftNavOpen ? 'Collapse Left Navigation Menu' : 'Expand Left Navigation Menu'}
+              >
+                {isLeftNavOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
+                <span className="hidden xl:inline text-[11px] font-bold">
+                  {isLeftNavOpen ? 'Collapse Menu' : 'Menu'}
+                </span>
+              </button>
+
               <div className="w-9 h-9 rounded-lg bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
                 <Cloud className="w-5 h-5" />
               </div>
@@ -659,11 +716,14 @@ function GcpArchitectureCenterInner() {
                     <div className="flex items-center gap-2">
                       <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" title="Co-Pilot Active &amp; Ready" />
                       <button
+                        id="gcp-collapse-copilot-btn"
                         onClick={() => setIsCopilotOpen(false)}
-                        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-md"
-                        title="Collapse Co-Pilot"
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                        title="Collapse Architecture Co-Pilot"
+                        aria-label="Collapse Architecture Co-Pilot"
                       >
-                        <X className="w-3.5 h-3.5" />
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        <span className="text-[10.5px]">Collapse</span>
                       </button>
                     </div>
                   </div>
@@ -818,13 +878,40 @@ function GcpArchitectureCenterInner() {
                 </div>
               )}
 
+              {/* COLLAPSED CO-PILOT LEFT RAIL (1-Click Re-expansion) */}
+              {!isCopilotOpen && (
+                <div className="hidden lg:flex flex-col col-span-12 lg:col-span-1 xl:col-span-0.5 2xl:col-span-0.5">
+                  <button
+                    id="gcp-expand-copilot-rail-btn"
+                    onClick={() => setIsCopilotOpen(true)}
+                    className={`w-12 h-[760px] md:h-[860px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
+                      isDark
+                        ? 'bg-[#0F172A] hover:bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
+                        : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:text-blue-600'
+                    }`}
+                    title="Expand Architecture Co-Pilot"
+                    aria-label="Expand Architecture Co-Pilot"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform">
+                      <Bot className="w-4 h-4" />
+                    </div>
+                    <div className="flex items-center justify-center py-2">
+                      <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-slate-400 group-hover:text-blue-500 [writing-mode:vertical-lr] rotate-180 select-none">
+                        Co-Pilot
+                      </span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+                </div>
+              )}
+
               {/* RIGHT: INTERACTIVE DRAW.IO CANVAS VIEWPORT */}
               <div
                 id="diagram-canvas-card"
                 className={`${
                   isCopilotOpen
                     ? 'col-span-12 lg:col-span-8 xl:col-span-8 2xl:col-span-8.5'
-                    : 'col-span-12'
+                    : 'col-span-12 lg:col-span-11 xl:col-span-11.5 2xl:col-span-11.5'
                 } rounded-xl border overflow-hidden transition-all shadow-md ${
                   isDark ? 'bg-[#0F172A] border-slate-800 shadow-xl' : 'bg-white border-slate-200'
                 }`}

@@ -23,6 +23,9 @@ import {
   Layers,
   Activity,
   Cloud,
+  PanelLeftClose,
+  PanelLeftOpen,
+  PanelLeft,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
@@ -54,7 +57,13 @@ const CANVAS_SUB_ITEMS: NavItem[] = [
   { id: 'architecture_library', name: 'Architecture Library', icon: LayoutGrid, href: '/library' },
 ];
 
-function UnifiedAppSidebarInner() {
+export interface UnifiedAppSidebarProps {
+  isCollapsed?: boolean;
+  onToggle?: () => void;
+  className?: string;
+}
+
+function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: UnifiedAppSidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
@@ -83,7 +92,7 @@ function UnifiedAppSidebarInner() {
     return true;
   };
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(() => {
+  const [internalIsOpen, setInternalIsOpen] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem('promptcanvas_sidebar_open');
@@ -92,6 +101,21 @@ function UnifiedAppSidebarInner() {
     }
     return true;
   });
+
+  // Controlled or uncontrolled collapse state
+  const isSidebarOpen = isCollapsed !== undefined ? !isCollapsed : internalIsOpen;
+
+  useEffect(() => {
+    const handleToggleEvent = (e: any) => {
+      if (e?.detail?.isOpen !== undefined) {
+        setInternalIsOpen(e.detail.isOpen);
+      } else {
+        setInternalIsOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('promptcanvas_toggle_sidebar', handleToggleEvent);
+    return () => window.removeEventListener('promptcanvas_toggle_sidebar', handleToggleEvent);
+  }, []);
 
   const isCanvasActive = (pathname === '/workspace' && searchParams.get('tab') !== 'audit' && searchParams.get('tab') !== 'settings') || pathname.startsWith('/history') || pathname.startsWith('/library');
   const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState<boolean>(true);
@@ -102,15 +126,20 @@ function UnifiedAppSidebarInner() {
   const [isAuthOpen, setIsAuthOpen] = useState<boolean>(false);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => {
-      const next = !prev;
-      if (typeof window !== 'undefined') {
-        try {
-          localStorage.setItem('promptcanvas_sidebar_open', String(next));
-        } catch {}
-      }
-      return next;
-    });
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalIsOpen((prev) => {
+        const next = !prev;
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem('promptcanvas_sidebar_open', String(next));
+            window.dispatchEvent(new CustomEvent('promptcanvas_sidebar_change', { detail: { isOpen: next } }));
+          } catch {}
+        }
+        return next;
+      });
+    }
   };
 
   // Auth fetch
@@ -129,42 +158,52 @@ function UnifiedAppSidebarInner() {
     <>
       {/* 1. DESKTOP COLLAPSIBLE SIDEBAR */}
       <aside
+        id="unified-app-sidebar"
         className={`${
           isSidebarOpen ? 'w-64' : 'w-16'
         } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-40 shrink-0 sticky top-0 h-screen select-none ${
           isLight ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#090d16]/95 border-slate-800/80 text-slate-100'
-        }`}
+        } ${className}`}
       >
         {/* Top Branding & Navigation */}
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           {/* Brand Header */}
-          <div className={`h-16 border-b flex items-center justify-between px-4 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
+          <div className={`h-16 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
             {isSidebarOpen ? (
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-400 to-indigo-500 p-0.5 shadow-lg shadow-sky-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <div className={`w-full h-full rounded-[6px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
-                    <Sparkles className="w-4 h-4 text-sky-500" />
+              <>
+                <Link href="/" className="flex items-center gap-2.5 group">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-400 to-indigo-500 p-0.5 shadow-lg shadow-sky-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className={`w-full h-full rounded-[6px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
+                      <Sparkles className="w-4 h-4 text-sky-500" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col">
-                  <span className={`font-extrabold tracking-wider text-xs uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
-                  <span className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider">Enterprise AI</span>
-                </div>
-              </Link>
+                  <div className="flex flex-col">
+                    <span className={`font-extrabold tracking-wider text-xs uppercase ${isLight ? 'text-slate-900' : 'text-white'}`}>Prompt Canvas</span>
+                    <span className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold tracking-wider">Enterprise AI</span>
+                  </div>
+                </Link>
+                <button
+                  id="unified-sidebar-collapse-btn"
+                  onClick={toggleSidebar}
+                  className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors"
+                  title="Collapse Left Navigation Menu"
+                  aria-label="Collapse Left Navigation Menu"
+                >
+                  <PanelLeftClose className="w-4 h-4" />
+                </button>
+              </>
             ) : (
-              <Link href="/" className="mx-auto" title="Prompt Canvas Enterprise AI">
-                <Sparkles className="w-5 h-5 text-sky-500 hover:scale-110 transition-transform" />
-              </Link>
-            )}
-
-            {isSidebarOpen && (
-              <button
-                onClick={toggleSidebar}
-                className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors"
-                title="Collapse Sidebar"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
+              <div className="mx-auto flex flex-col items-center gap-1">
+                <button
+                  id="unified-sidebar-expand-btn"
+                  onClick={toggleSidebar}
+                  className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-500/15 text-slate-400 hover:text-sky-500 dark:hover:text-sky-400 cursor-pointer transition-all border border-slate-200/60 dark:border-slate-700/60 hover:border-sky-500/40 shadow-xs"
+                  title="Expand Left Navigation Menu"
+                  aria-label="Expand Left Navigation Menu"
+                >
+                  <PanelLeftOpen className="w-4 h-4 text-sky-500" />
+                </button>
+              </div>
             )}
           </div>
 
@@ -603,10 +642,10 @@ function UnifiedAppSidebarInner() {
   );
 }
 
-export default function UnifiedAppSidebar() {
+export default function UnifiedAppSidebar(props: UnifiedAppSidebarProps = {}) {
   return (
     <React.Suspense fallback={null}>
-      <UnifiedAppSidebarInner />
+      <UnifiedAppSidebarInner {...props} />
     </React.Suspense>
   );
 }
