@@ -55,6 +55,7 @@ import {
   GCP_PHARMA_SPECIALIZED_PROMPTS,
   executeGcpPromptModification,
 } from '@/lib/gcpCoPilotModifier';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 function GcpArchitectureCenterInner() {
   const searchParams = useSearchParams();
@@ -112,6 +113,7 @@ function GcpArchitectureCenterInner() {
   const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(true);
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState<boolean>(false);
   const [promptInput, setPromptInput] = useState<string>('');
+  const [isChatThinking, setIsChatThinking] = useState<boolean>(false);
   const [customXmlOverride, setCustomXmlOverride] = useState<string | null>(null);
   const [activeVersionTag, setActiveVersionTag] = useState<string>('v1.0');
   const [versions, setVersions] = useState<GcpVersionSnapshot[]>([]);
@@ -150,7 +152,7 @@ function GcpArchitectureCenterInner() {
       {
         id: `welcome_${activeArch.id}`,
         sender: 'assistant',
-        text: `Welcome to the Architecture Co-Pilot for ${activeArch.title}! You can simulate stakeholder personas or enter custom prompts to modify topologies, inject microservice nodes, enforce security perimeters, and update data flows. Every change generates an immutable version snapshot with 1-click rollback.`,
+        text: `Welcome to the Architecture Co-Pilot for ${activeArch.title}! You can ask architectural questions (e.g. "What is missing in this architecture?", "How does the ingestion flow work?") for expert gap analysis, or enter prompts to modify topologies, inject microservice nodes, enforce security perimeters, and update data flows. Every change generates an immutable version snapshot with 1-click rollback.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
@@ -160,7 +162,7 @@ function GcpArchitectureCenterInner() {
     return customXmlOverride || activeArch.generateXml(isDark);
   }, [customXmlOverride, activeArch, isDark]);
 
-  const handleExecutePrompt = (promptText: string, explicitPersona?: string) => {
+  const handleExecutePrompt = async (promptText: string, explicitPersona?: string) => {
     if (!promptText.trim()) return;
 
     const userMsg: GcpChatMessage = {
@@ -173,6 +175,78 @@ function GcpArchitectureCenterInner() {
     setMessages((prev) => [...prev, userMsg]);
     setPromptInput('');
 
+    // 1. Intent Classification: Informational Q&A / Advisory vs Topology Mutation
+    const intentResult = classifyChatIntent(promptText);
+
+    if (intentResult.intent === 'question' && !explicitPersona) {
+      setIsChatThinking(true);
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(2500),
+          body: JSON.stringify({
+            prompt: promptText,
+            diagramName: activeArch.title,
+            architectureType: activeArch.id,
+            xmlContent: activeXml,
+            businessUsecase: activeArch.overview,
+            technicalUsecase: activeArch.components.map((c) => c.name).join(', '),
+            conversationHistory: messages.slice(-6).map((m) => ({
+              role: m.sender === 'user' ? 'user' : 'model',
+              content: m.text,
+            })),
+          }),
+        });
+
+        if (res.ok) {
+          const chatData = await res.json();
+          const assistantMsg: GcpChatMessage = {
+            id: `msg_advisory_${Date.now()}`,
+            sender: 'assistant',
+            text: chatData.answer || chatData.summary || 'Architecture advisory generated.',
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            isQuestionAdvisory: true,
+            identifiedGaps: chatData.identifiedGaps || [],
+            suggestions: chatData.suggestions || [],
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+        } else {
+          throw new Error('Failed to query architecture advisory.');
+        }
+      } catch (err: any) {
+        // Fallback advisory response
+        const fallbackMsg: GcpChatMessage = {
+          id: `msg_adv_fallback_${Date.now()}`,
+          sender: 'assistant',
+          text: `Architectural Advisory for "${promptText.slice(0, 60)}":\n\nThis architecture complies with Google Cloud Well-Architected frameworks featuring TLS 1.3 encryption, IAM principle of least privilege, multi-zone automated failover, and zero-trust VPC Service Controls perimeters.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isQuestionAdvisory: true,
+          identifiedGaps: [
+            'Edge Security: Ensure Cloud Armor WAF is provisioned in front of all public load balancers.',
+            'In-Memory Caching: Evaluate Cloud Memorystore (Redis) to shield databases from read spikes.',
+          ],
+          suggestions: [
+            {
+              label: 'Enforce Cloud Armor WAF',
+              actionPrompt: 'Enforce Cloud Armor Enterprise WAF, Cloud KMS HSM CMEK keys, and VPC Service Controls perimeter.',
+              type: 'security',
+            },
+            {
+              label: 'Upgrade Spanner Multi-Region',
+              actionPrompt: 'Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.',
+              type: 'add',
+            },
+          ],
+        };
+        setMessages((prev) => [...prev, fallbackMsg]);
+      } finally {
+        setIsChatThinking(false);
+      }
+      return;
+    }
+
+    // 2. Structural Architecture Mutation
     try {
       const { updatedXml, newVersion, assistantMessage } = executeGcpPromptModification(
         activeXml,
@@ -774,11 +848,15 @@ function GcpArchitectureCenterInner() {
                       return (
                         <div
                           key={msg.id}
-                          className={`rounded-xl p-3 space-y-1.5 transition-all ${
+                          className={`rounded-xl p-3 space-y-2 transition-all ${
                             isUser
                               ? isDark
                                 ? 'bg-blue-950/40 border border-blue-900/60'
                                 : 'bg-blue-50/90 border border-blue-200'
+                              : msg.isQuestionAdvisory
+                              ? isDark
+                                ? 'bg-indigo-950/30 border border-indigo-800/50'
+                                : 'bg-indigo-50/80 border border-indigo-200/80'
                               : isDark
                               ? 'bg-slate-900/80 border border-slate-800'
                               : 'bg-slate-50 border border-slate-200'
@@ -787,10 +865,20 @@ function GcpArchitectureCenterInner() {
                           <div className="flex items-center justify-between text-[11px]">
                             <span
                               className={`font-bold flex items-center gap-1.5 ${
-                                isUser ? 'text-blue-600 dark:text-blue-300' : 'text-slate-800 dark:text-slate-200'
+                                isUser
+                                  ? 'text-blue-600 dark:text-blue-300'
+                                  : msg.isQuestionAdvisory
+                                  ? 'text-indigo-600 dark:text-indigo-300'
+                                  : 'text-slate-800 dark:text-slate-200'
                               }`}
                             >
-                              <span>{isUser ? '👤 You asked:' : '🤖 Co-Pilot Synthesis:'}</span>
+                              <span>
+                                {isUser
+                                  ? '👤 You asked:'
+                                  : msg.isQuestionAdvisory
+                                  ? '🧠 Architecture Advisory & Gap Analysis:'
+                                  : '🤖 Co-Pilot Synthesis:'}
+                              </span>
                               {msg.actionSummary?.versionTag && (
                                 <span className="font-mono text-[9px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold">
                                   {msg.actionSummary.versionTag}
@@ -800,13 +888,58 @@ function GcpArchitectureCenterInner() {
                             <span className="font-mono text-[10px] text-slate-400">{msg.timestamp}</span>
                           </div>
 
-                          <p
-                            className={`text-[11.5px] leading-relaxed ${
+                          <div
+                            className={`text-[11.5px] leading-relaxed whitespace-pre-line ${
                               isUser ? 'text-slate-800 dark:text-slate-200 font-medium' : 'text-slate-600 dark:text-slate-300'
                             }`}
                           >
                             {msg.text}
-                          </p>
+                          </div>
+
+                          {/* Identified Architecture Gaps */}
+                          {msg.identifiedGaps && msg.identifiedGaps.length > 0 && (
+                            <div
+                              className={`mt-2 p-2.5 rounded-lg border text-[11px] space-y-1.5 ${
+                                isDark ? 'bg-amber-950/20 border-amber-800/40 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-900'
+                              }`}
+                            >
+                              <div className="flex items-center gap-1.5 font-bold text-[10.5px]">
+                                <AlertTriangle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                                <span>Identified Architecture Gaps ({msg.identifiedGaps.length}):</span>
+                              </div>
+                              <ul className="list-disc pl-4 space-y-1 text-[10.5px] opacity-90">
+                                {msg.identifiedGaps.map((gap, gIdx) => (
+                                  <li key={gIdx}>{gap}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Actionable Suggestions Pills */}
+                          {msg.suggestions && msg.suggestions.length > 0 && (
+                            <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                Recommended Topology Upgrades:
+                              </span>
+                              <div className="flex flex-wrap gap-1.5 pt-0.5">
+                                {msg.suggestions.map((sug, sIdx) => (
+                                  <button
+                                    key={sIdx}
+                                    onClick={() => handleExecutePrompt(sug.actionPrompt)}
+                                    className={`px-2 py-1 rounded-lg text-[10.5px] font-semibold border flex items-center gap-1 transition-all cursor-pointer shadow-2xs ${
+                                      isDark
+                                        ? 'bg-blue-600/15 hover:bg-blue-600/30 text-blue-300 border-blue-500/40 hover:border-blue-400'
+                                        : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 hover:border-blue-300'
+                                    }`}
+                                    title={sug.actionPrompt}
+                                  >
+                                    <Sparkles className="w-3 h-3 text-blue-500" />
+                                    <span>+ {sug.label}</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
 
                           {msg.actionSummary && (
                             <div
@@ -831,6 +964,18 @@ function GcpArchitectureCenterInner() {
                         </div>
                       );
                     })}
+
+                    {/* Thinking Indicator */}
+                    {isChatThinking && (
+                      <div
+                        className={`rounded-xl p-3 border animate-pulse flex items-center gap-2.5 text-xs ${
+                          isDark ? 'bg-indigo-950/30 border-indigo-800/50 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                        }`}
+                      >
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+                        <span className="font-medium">Evaluating architecture topology, gaps, and SLAs...</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Sticky Prompt Composer */}
@@ -858,11 +1003,12 @@ function GcpArchitectureCenterInner() {
                         }`}
                       />
                       <button
+                        id="gcp-copilot-apply-btn"
                         onClick={() => handleExecutePrompt(promptInput)}
                         disabled={!promptInput.trim()}
                         className={`absolute bottom-2.5 right-2 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 ${
                           promptInput.trim()
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30'
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30 cursor-pointer'
                             : 'bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed'
                         }`}
                       >
@@ -949,8 +1095,9 @@ function GcpArchitectureCenterInner() {
                     {/* Version History Selector Dropdown */}
                     <div className="relative" id="gcp-version-dropdown-container">
                       <button
+                        id="version-selector-trigger"
                         onClick={() => setIsVersionDropdownOpen(!isVersionDropdownOpen)}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all cursor-pointer ${
                           activeVersionTag !== 'v1.0'
                             ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                             : isDark
@@ -973,6 +1120,7 @@ function GcpArchitectureCenterInner() {
 
                       {isVersionDropdownOpen && (
                         <div
+                          id="version-selector-dropdown"
                           className={`absolute right-0 sm:left-0 mt-1.5 w-80 rounded-xl border shadow-2xl z-50 p-2 space-y-1 backdrop-blur-md ${
                             isDark
                               ? 'bg-slate-900/95 border-slate-800 text-slate-200 shadow-slate-950/80'

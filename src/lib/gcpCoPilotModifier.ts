@@ -19,6 +19,12 @@ export interface GcpVersionSnapshot {
   xml: string;
 }
 
+export interface GcpChatSuggestion {
+  label: string;
+  actionPrompt: string;
+  type?: 'add' | 'modify' | 'security' | 'cost' | 'observability';
+}
+
 export interface GcpChatMessage {
   id: string;
   sender: 'user' | 'assistant';
@@ -30,6 +36,9 @@ export interface GcpChatMessage {
     specDiff: string;
     persona?: string;
   };
+  isQuestionAdvisory?: boolean;
+  identifiedGaps?: string[];
+  suggestions?: GcpChatSuggestion[];
 }
 
 export interface StakeholderPersonaPrompt {
@@ -120,6 +129,81 @@ export const GCP_PHARMA_SPECIALIZED_PROMPTS: StakeholderPersonaPrompt[] = [
   },
 ];
 
+function escapeXmlText(str: string): string {
+  return (str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+/**
+ * Cross-Cloud Vendor Translation mapping to authentic Google Cloud services
+ */
+interface VendorTranslation {
+  detectedEntity: string;
+  gcpEquivalent: string;
+  gcpDescription: string;
+  badge: string;
+  categoryColor: string;
+  targetTierId: string;
+}
+
+function detectVendorTranslation(lowerPrompt: string): VendorTranslation | null {
+  if (lowerPrompt.includes('s3') || lowerPrompt.includes('aws storage') || lowerPrompt.includes('azure blob')) {
+    return {
+      detectedEntity: lowerPrompt.includes('azure') ? 'Azure Blob Storage' : 'AWS S3 Bucket',
+      gcpEquivalent: 'Google Cloud Storage (Dual-Region)',
+      gcpDescription: 'Multi-region bucket with Turbo Replication & CMEK key protection',
+      badge: 'STORAGE ADAPTER: GCS',
+      categoryColor: '#0284C7',
+      targetTierId: 'col_lake_bg',
+    };
+  }
+  if (lowerPrompt.includes('dynamodb') || lowerPrompt.includes('cosmos')) {
+    return {
+      detectedEntity: lowerPrompt.includes('cosmos') ? 'Azure Cosmos DB' : 'AWS DynamoDB',
+      gcpEquivalent: 'Cloud Spanner (Multi-Region)',
+      gcpDescription: '99.999% SLA globally distributed relational & key-value engine with zero maintenance',
+      badge: 'DATABASE ADAPTER: SPANNER',
+      categoryColor: '#4338CA',
+      targetTierId: 'col_lake_bg',
+    };
+  }
+  if (lowerPrompt.includes('lambda') || lowerPrompt.includes('azure function')) {
+    return {
+      detectedEntity: lowerPrompt.includes('azure') ? 'Azure Functions' : 'AWS Lambda',
+      gcpEquivalent: 'Cloud Run (Serverless Microservices)',
+      gcpDescription: 'Scale-to-zero container runtime with concurrency up to 1000 requests/instance',
+      badge: 'COMPUTE ADAPTER: CLOUD RUN',
+      categoryColor: '#2563EB',
+      targetTierId: 'col_agent_bg',
+    };
+  }
+  if (lowerPrompt.includes('sqs') || lowerPrompt.includes('sns') || lowerPrompt.includes('eventbridge')) {
+    return {
+      detectedEntity: 'AWS SQS / EventBridge',
+      gcpEquivalent: 'Cloud Pub/Sub & Eventarc Mesh',
+      gcpDescription: 'High-throughput enterprise event bus with dead-letter topics and schema registry',
+      badge: 'EVENTING ADAPTER: PUB/SUB',
+      categoryColor: '#D97706',
+      targetTierId: 'col_agent_bg',
+    };
+  }
+  if (lowerPrompt.includes('eks') || lowerPrompt.includes('ecs')) {
+    return {
+      detectedEntity: 'AWS EKS / ECS',
+      gcpEquivalent: 'GKE Autopilot Managed Cluster',
+      gcpDescription: 'Fully managed Kubernetes cluster with hardened node OS and automated pod autoscaling',
+      badge: 'CONTAINER ADAPTER: GKE',
+      categoryColor: '#059669',
+      targetTierId: 'col_agent_bg',
+    };
+  }
+  return null;
+}
+
 /**
  * Executes a prompt against an active GCP architecture, mutating the Draw.io XML
  * and producing an immutable version snapshot with action summaries.
@@ -138,6 +222,10 @@ export function executeGcpPromptModification(
 } {
   const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '').trim();
   const lower = cleanPrompt.toLowerCase();
+
+  // Negative Intent & Removal Detection (Prevents Prompt Inversion)
+  const isNegativeRemoval = /\b(remove|delete|drop|strip|without|no\s+|omit|disable|exclude|take\s+away)\b/i.test(cleanPrompt);
+  const isReplacement = /\b(replace|swap|switch\s+from|substitute)\b/i.test(cleanPrompt);
 
   // 1. Detect Persona
   let detectedPersona = explicitPersona || 'User';
@@ -171,26 +259,104 @@ export function executeGcpPromptModification(
   let injectedCellsXml = '';
 
   const cardBg = isDark ? '#1E293B' : '#FFFFFF';
-  const cardBorder = isDark ? '#334155' : '#CBD5E1';
   const textDark = isDark ? '#F8FAFC' : '#0F172A';
   const textMuted = isDark ? '#94A3B8' : '#64748B';
 
+  // Dynamic 2D Coordinate Layout (Bottom Channel Slot Allocation to avoid colliding with headers at y: 10..120)
+  const slotIndex = Math.max(0, currentVersionIndex - 1);
+  const colOffset = slotIndex % 3;
+  const rowOffset = Math.floor(slotIndex / 3);
+  const targetX = 220 + colOffset * 360;
+  const targetY = 660 + rowOffset * 85;
+
+  // Cross-Vendor Translation Check
+  const vendorMatch = detectVendorTranslation(lower);
+
   // 2. Intelligent Draw.io XML Mutation according to prompt intent
-  if (lower.includes('cryo-em') || lower.includes('alphafold')) {
+  if (isNegativeRemoval && (lower.includes('spanner') || lower.includes('armor') || lower.includes('waf') || lower.includes('portal') || lower.includes('tpu'))) {
+    // Handled Negative / Removal gracefully without inverted positive upgrades
+    const targetComp = lower.includes('spanner')
+      ? 'Cloud Spanner'
+      : lower.includes('armor') || lower.includes('waf')
+      ? 'Cloud Armor WAF'
+      : lower.includes('portal')
+      ? 'Patient Intake Portal'
+      : 'Specialized Hardware';
+
+    canvasDiff = `- Decoupled & isolated ${targetComp}; re-routed traffic to core fallback pipelines.`;
+    specDiff = `Reconciled DOC-03 (System Architecture) & DOC-07 (Topology Isolation).`;
+    injectedCellsXml = `
+      <mxCell id="copilot_mod_decouple_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#450A0A' : '#FEF2F2'};strokeColor=#EF4444;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_decouple_badge_${slotIndex}" value="✂️ COMPONENT DECOUPLED: ${escapeXmlText(targetComp.toUpperCase())}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#B91C1C;" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_decouple_title_${slotIndex}" value="${escapeXmlText(targetComp)} Removed / Decoupled" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_decouple_desc_${slotIndex}" value="Traffic isolated and re-directed to primary gateway fallback path" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_decouple_edge_${slotIndex}" value="Decoupled Route" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#B91C1C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_decouple_${slotIndex}" target="col_agent_bg">
+        <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    `;
+  } else if (isReplacement && lower.includes('spanner') && (lower.includes('postgres') || lower.includes('sql') || lower.includes('cloud sql'))) {
+    canvasDiff = `⇄ Replaced Cloud Spanner with Cloud SQL PostgreSQL High-Availability Cluster with cross-zone standby.`;
+    specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Database DDL), and DOC-08 (HA Standby Protocol).`;
+    injectedCellsXml = `
+      <mxCell id="copilot_mod_cloudsql_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F0FDF4'};strokeColor=#10B981;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_cloudsql_badge_${slotIndex}" value="⇄ REPLACED: CLOUD SQL POSTGRESQL HA" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_cloudsql_title_${slotIndex}" value="Cloud SQL Enterprise Plus (PostgreSQL 16)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_cloudsql_desc_${slotIndex}" value="Cross-zone HA replication with automated regional SSD storage scaling" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_cloudsql_edge_${slotIndex}" value="Relational Persistence" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_cloudsql_${slotIndex}" target="col_lake_bg">
+        <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    `;
+  } else if (vendorMatch) {
+    canvasDiff = `☁️ Mapped [${vendorMatch.detectedEntity}] $\\to$ [${vendorMatch.gcpEquivalent}] with enterprise zero-trust controls.`;
+    specDiff = `Reconciled DOC-04 (Component Catalog), DOC-06 (Vendor Translation Map), and DOC-08 (Cloud Architecture).`;
+    injectedCellsXml = `
+      <mxCell id="copilot_mod_vendor_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#EFF6FF'};strokeColor=${vendorMatch.categoryColor};strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_vendor_badge_${slotIndex}" value="${escapeXmlText(vendorMatch.badge)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=${vendorMatch.categoryColor};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_vendor_title_${slotIndex}" value="${escapeXmlText(vendorMatch.gcpEquivalent)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_vendor_desc_${slotIndex}" value="${escapeXmlText(vendorMatch.gcpDescription)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_vendor_edge_${slotIndex}" value="Mapped Endpoint" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${vendorMatch.categoryColor};strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=${vendorMatch.categoryColor};labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_vendor_${slotIndex}" target="${vendorMatch.targetTierId}">
+        <mxGeometry relative="1" as="geometry" />
+      </mxCell>
+    `;
+  } else if (lower.includes('cryo-em') || lower.includes('alphafold')) {
     canvasDiff = `+ Injected Cryo-EM 3D Density Map Reconstruction Engine & AlphaFold 3 Multimer Accelerator on Cloud TPU v5e & NVIDIA A100 Cluster.`;
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-04 (HPC Co-Processor Cluster), and DOC-05 (Cloud TPU Topology).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_cryoem_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E1B4B' : '#EEF2FF'};strokeColor=#6366F1;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="610" y="58" width="310" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_cryoem_badge" value="🧬 CO-PILOT INJECTED: CRYO-EM &amp; ALPHAFOLD 3 HPC" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#4F46E5;" vertex="1" parent="1">
-        <mxGeometry x="615" y="62" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_cryoem_title" value="Cloud TPU v5e (256 Pods) + 8x A100 GPU" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="615" y="78" width="300" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_cryoem_desc" value="Sub-minute AlphaFold 3 multimer synthesis &amp; 3D Cryo-EM map alignment" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="615" y="96" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_cryoem_edge" value="HPC Offload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4F46E5;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#4F46E5;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_cryoem_box" target="col_agent_bg">
         <mxGeometry relative="1" as="geometry" />
@@ -201,16 +367,16 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-04 (Component Catalog), DOC-05 (Vector Embeddings Schema), and DOC-07 (Latency Budgets).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_vector_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#022C22' : '#F0FDF4'};strokeColor=#10B981;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="930" y="58" width="310" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_vector_badge" value="⚡ CO-PILOT INJECTED: SCANN VECTOR SEARCH" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;" vertex="1" parent="1">
-        <mxGeometry x="935" y="62" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_vector_title" value="10M+ Molecular Embeddings Index (ChEMBL 33)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="935" y="78" width="300" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_vector_desc" value="Sub-8ms p99 similarity search across Morgan &amp; Tanimoto fingerprints" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="935" y="96" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_vector_edge" value="SMILES Lookups" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#059669;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_vector_box" target="col_lake_bg">
         <mxGeometry relative="1" as="geometry" />
@@ -221,16 +387,16 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-03 (Wet-Lab Interfaces), DOC-05 (SiLA 2 Robotic Dispatch), and DOC-08 (Telemetry Lineage).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_sila_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#431407' : '#FFF7ED'};strokeColor=#F97316;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="1250" y="58" width="310" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_sila_badge" value="🤖 CO-PILOT INJECTED: SILA 2 ROBOTICS GATEWAY" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#C2410C;" vertex="1" parent="1">
-        <mxGeometry x="1255" y="62" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_sila_title" value="SiLA 2 gRPC Interconnect &amp; Workcell Bus" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="1255" y="78" width="300" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_sila_desc" value="Direct mTLS control for Hamilton Starlet &amp; Echo acoustic liquid handlers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="1255" y="96" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_sila_edge" value="Robotic Dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#F97316;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#C2410C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_sila_box" target="col_gxp_bg">
         <mxGeometry relative="1" as="geometry" />
@@ -241,16 +407,19 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-06 (Regulatory Compliance), DOC-10 (Audit Matrix), and DOC-02 (FDA Electronic Submissions).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_gxp_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#450A0A' : '#FEF2F2'};strokeColor=#EF4444;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="1450" y="58" width="310" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_gxp_badge" value="⚖️ CO-PILOT INJECTED: 21 CFR PART 11 CRYPTO VAULT" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#B91C1C;" vertex="1" parent="1">
-        <mxGeometry x="1455" y="62" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_gxp_title" value="Cloud KMS FIPS 140-2 Level 3 HSM Keyring" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="1455" y="78" width="300" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_gxp_desc" value="Immutable e-signatures, WORM storage lock, &amp; IND dossier packaging" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="1455" y="96" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_gxp_edge" value="Compliance Audit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#B91C1C;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_gxp_box" target="col_gxp_bg">
+        <mxGeometry relative="1" as="geometry" />
       </mxCell>
     `;
   } else if (lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('product manager')) {
@@ -258,16 +427,19 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-01 (Product Vision), DOC-02 (User Journeys), and DOC-04 (Architecture Overview).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_portal_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F0F9FF'};strokeColor=#0284C7;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="240" y="58" width="310" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_portal_badge" value="👔 CO-PILOT INJECTED: PATIENT INGRESS PORTAL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1">
-        <mxGeometry x="245" y="62" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_portal_title" value="Emergency Triage &amp; Intake Gateway (Cloud Run)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="245" y="78" width="300" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_portal_desc" value="FHIR R4 compliant ingestion with 99.999% SLA availability guarantee" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="245" y="96" width="300" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_portal_edge" value="Ingress Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#0369A1;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_portal_box" target="col_ingress_bg">
+        <mxGeometry relative="1" as="geometry" />
       </mxCell>
     `;
   } else if (lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('failover') || lower.includes('lead architect')) {
@@ -275,16 +447,19 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_spanner_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#312E81' : '#EEF2FF'};strokeColor=#4338CA;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="720" y="58" width="320" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_spanner_badge" value="🏗️ CO-PILOT INJECTED: MULTI-REGION NAM3 DR" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#4338CA;" vertex="1" parent="1">
-        <mxGeometry x="725" y="62" width="310" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_spanner_title" value="Cloud Spanner Active-Active nam3 Leader" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="725" y="78" width="310" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_spanner_desc" value="Witness in europe-west1 with RPO &lt; 1s and automated zero-loss failover" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="725" y="96" width="310" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_spanner_edge" value="Dual-Leader Replication" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#4338CA;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#4338CA;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_spanner_box" target="col_lake_bg">
+        <mxGeometry relative="1" as="geometry" />
       </mxCell>
     `;
   } else if (lower.includes('armor') || lower.includes('waf') || lower.includes('security') || lower.includes('ciso') || lower.includes('cmek')) {
@@ -292,34 +467,41 @@ export function executeGcpPromptModification(
     specDiff = `Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance Matrix).`;
     injectedCellsXml = `
       <mxCell id="copilot_mod_security_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#4C1D95' : '#FAF5FF'};strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="540" y="58" width="320" height="74" as="geometry" />
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_security_badge" value="🛡️ CO-PILOT INJECTED: ZERO-TRUST PERIMETER" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#6D28D9;" vertex="1" parent="1">
-        <mxGeometry x="545" y="62" width="310" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_security_title" value="Cloud Armor Enterprise WAF &amp; VPC-SC Perimeter" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="545" y="78" width="310" height="16" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
       <mxCell id="copilot_mod_security_desc" value="Adaptive DDoS layer 7 filtering, OWASP Top 10 rules &amp; FIPS 140-2 Level 3 CMEK" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="545" y="96" width="310" height="14" as="geometry" />
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_security_edge" value="Zero-Trust Shield" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#6D28D9;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_security_box" target="col_ingress_bg">
+        <mxGeometry relative="1" as="geometry" />
       </mxCell>
     `;
   } else {
-    // Custom Arbitrary Prompt fallback
+    // Custom Arbitrary Prompt synthesis with dynamic placement & orthogonal edge connection
+    const safeTitle = escapeXmlText(cleanPrompt.slice(0, 42));
     canvasDiff = `+ Applied architectural synthesis: "${cleanPrompt.slice(0, 80)}" incorporating required components and security controls.`;
     specDiff = `Reconciled system specifications, data dictionary, and infrastructure topology for version ${nextVersionTag}.`;
     injectedCellsXml = `
-      <mxCell id="copilot_mod_custom_box" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F8FAFC'};strokeColor=#3B82F6;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
-        <mxGeometry x="640" y="58" width="340" height="74" as="geometry" />
+      <mxCell id="copilot_mod_custom_box_${slotIndex}" value="" style="rounded=1;arcSize=6;fillColor=${isDark ? '#1E293B' : '#F8FAFC'};strokeColor=#3B82F6;strokeWidth=1.8;dashed=1;dashPattern=4 4;" vertex="1" parent="1">
+        <mxGeometry x="${targetX}" y="${targetY}" width="320" height="74" as="geometry" />
       </mxCell>
-      <mxCell id="copilot_mod_custom_badge" value="🤖 CO-PILOT SYNTHESIS: ${nextVersionTag.toUpperCase()}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
-        <mxGeometry x="645" y="62" width="330" height="14" as="geometry" />
+      <mxCell id="copilot_mod_custom_badge_${slotIndex}" value="🤖 CO-PILOT SYNTHESIS: ${nextVersionTag.toUpperCase()}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 4}" width="310" height="14" as="geometry" />
       </mxCell>
-      <mxCell id="copilot_mod_custom_title" value="${cleanPrompt.slice(0, 45)}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
-        <mxGeometry x="645" y="78" width="330" height="16" as="geometry" />
+      <mxCell id="copilot_mod_custom_title_${slotIndex}" value="${safeTitle}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=${textDark};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 20}" width="310" height="16" as="geometry" />
       </mxCell>
-      <mxCell id="copilot_mod_custom_desc" value="Synthesized &amp; integrated by Google Cloud Architecture Co-Pilot" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
-        <mxGeometry x="645" y="96" width="330" height="14" as="geometry" />
+      <mxCell id="copilot_mod_custom_desc_${slotIndex}" value="Synthesized &amp; connected by Google Cloud Architecture Co-Pilot" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=0;fontColor=${textMuted};" vertex="1" parent="1">
+        <mxGeometry x="${targetX + 5}" y="${targetY + 38}" width="310" height="14" as="geometry" />
+      </mxCell>
+      <mxCell id="copilot_mod_custom_edge_${slotIndex}" value="Synthesized Link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#3B82F6;strokeWidth=1.5;dashed=1;fontSize=8;fontStyle=1;fontColor=#2563EB;labelBackgroundColor=${cardBg};" edge="1" parent="1" source="copilot_mod_custom_box_${slotIndex}" target="col_agent_bg">
+        <mxGeometry relative="1" as="geometry" />
       </mxCell>
     `;
   }
@@ -362,3 +544,4 @@ export function executeGcpPromptModification(
 
   return { updatedXml, newVersion, assistantMessage };
 }
+
