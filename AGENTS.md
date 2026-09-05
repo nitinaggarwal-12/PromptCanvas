@@ -223,6 +223,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
       - **Databases & Cache**: Official BigQuery (`bigquery`), Cloud Spanner (`spanner`), and Cloud Memorystore (`memorystore`).
       - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
       - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
+18. **Mandatory GCP Prompt-to-Architecture Anti-Drift & Semantic Guardrail Gate**:
+    - **Intent Classification Separation**: All user prompts targeting Google Cloud diagrams must pass through `classifyChatIntent`. Informational queries (e.g., questions regarding missing components, data flows, security posture) MUST be routed to Architecture Advisory & Gap Analysis, returning identified gaps and 1-click upgrade pills without mutating the diagram or creating spurious versions.
+    - **Cross-Cloud Vendor Entity Normalization**: When prompts reference third-party cloud primitives (e.g., AWS S3, DynamoDB, Lambda, SQS, EKS, Azure Blob), they MUST automatically normalize to native Google Cloud components (`Cloud Storage`, `Cloud Spanner`, `Cloud Run`, `Pub/Sub`, `GKE Autopilot`) and render using official GCP vector SVGs from `src/lib/gcpIcons.ts`.
+    - **Negative Intent & Decoupling Protection**: When prompts specify removals, replacements, or exclusions (e.g., "remove X", "decouple Y", "without database"), the engine MUST NEVER match positive keywords to add duplicate services. It must decouple, isolate, or annotate nodes with red-dashed boundaries (`fillColor=#FEF2F2;strokeColor=#DC2626;dashed=1;`).
+    - **Collision-Free Lower-Channel Allocation**: All newly synthesized components must be assigned open coordinates in the lower canvas channel ($y \ge 660, x = 220 + \text{slot} \times 360$) and linked to parent tiers via orthogonal directional connectors (`edgeStyle=orthogonalEdgeStyle;edge="1"`).
+    - **XML Sanitization & Immutable Version Snapshotting**: Raw prompt text must be escaped via `escapeXmlText()` before insertion into mxCell attributes to prevent syntax breakage or XSS. Every structural mutation MUST increment the version tree with full 1-click rollback capability.
 
 ---
 
