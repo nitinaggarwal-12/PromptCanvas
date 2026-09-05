@@ -277,8 +277,8 @@ function GcpArchitectureCenterInner() {
 
         {/* Page Body Container */}
         <main className="w-full max-w-none px-6 md:px-10 py-6 space-y-6 flex-1">
-          {/* Architecture Selector Cards Grid (6 Topologies) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+          {/* Architecture Selector Cards Grid (7 Topologies) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-3.5">
             {ALL_GCP_DIALECT_A_ARCHITECTURES.map((arch) => {
               const isSelected = arch.id === activeArch.id;
               return (
@@ -349,6 +349,91 @@ function GcpArchitectureCenterInner() {
               );
             })}
           </div>
+
+          {/* Pharma Drug Discovery 3-Tier Architecture Navigator */}
+          {activeArch.id.startsWith('gcp-pharma') && (
+            <div
+              className={`p-3 rounded-xl border flex flex-wrap items-center justify-between gap-3 transition-all ${
+                isDark
+                  ? 'bg-blue-950/25 border-blue-900/60 shadow-lg shadow-blue-950/30'
+                  : 'bg-gradient-to-r from-blue-50/90 via-indigo-50/60 to-blue-50/90 border-blue-200/80 shadow-sm'
+              }`}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
+                <span className="text-xs font-black uppercase tracking-wider text-blue-700 dark:text-blue-300">
+                  Pharma Drug Discovery Multi-Tier Architecture Suite:
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => handleSelectArchitecture('gcp-pharma-conceptual')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    activeArch.id === 'gcp-pharma-conceptual'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
+                      : isDark
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
+                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span>🧠 1. Conceptual Architecture</span>
+                  <span
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                      activeArch.id === 'gcp-pharma-conceptual'
+                        ? 'bg-blue-700 text-blue-100'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    4-Flow Capability
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => handleSelectArchitecture('gcp-pharma-drug-discovery')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    activeArch.id === 'gcp-pharma-drug-discovery'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
+                      : isDark
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
+                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span>⚡ 2. Logical Architecture</span>
+                  <span
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                      activeArch.id === 'gcp-pharma-drug-discovery'
+                        ? 'bg-blue-700 text-blue-100'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    Multi-Agent Mesh
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => handleSelectArchitecture('gcp-pharma-technical-infrastructure')}
+                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                    activeArch.id === 'gcp-pharma-technical-infrastructure'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
+                      : isDark
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
+                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  <span>🏗️ 3. Technical Infrastructure</span>
+                  <span
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                      activeArch.id === 'gcp-pharma-technical-infrastructure'
+                        ? 'bg-blue-700 text-blue-100'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    VPC &amp; HPC Cluster
+                  </span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Active Topology Hero & Meta Banner */}
           <div

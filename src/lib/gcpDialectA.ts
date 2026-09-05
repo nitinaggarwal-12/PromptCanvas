@@ -1045,10 +1045,10 @@ export const GCP_DEEPSEA_AGENTIC: GcpArchitectureDef = {
  */
 export const GCP_PHARMA_DRUG_DISCOVERY: GcpArchitectureDef = {
   id: 'gcp-pharma-drug-discovery',
-  title: 'Pharma Drug Discovery Agentic AI on Google Cloud',
+  title: 'Pharma Drug Discovery: Logical Architecture',
   subtitle: 'Target-to-Lead Generation: Multi-Agent Mesh, TPU/GPU HPC Simulation & GxP-Compliant Wet-Lab Dispatch',
   category: 'Life Sciences & Healthcare',
-  badge: 'PRODUCTION BLUEPRINT',
+  badge: 'LOGICAL BLUEPRINT',
   officialDocUrl: 'https://cloud.google.com/solutions/life-sciences',
   author: 'Google Cloud Life Sciences & DeepMind Health Architecture CoE',
   overview:
@@ -1585,7 +1585,7 @@ export const GCP_PHARMA_TECHNICAL_INFRASTRUCTURE: GcpArchitectureDef = {
   title: 'Pharma Drug Discovery: Technical Infrastructure Blueprint',
   subtitle: 'Production GCP Deployment: Multi-Zone VPC, Cloud TPU v5e/H100 HPC, VPC-SC Perimeter & SiLA 2 Interconnect',
   category: 'Life Sciences & Healthcare',
-  badge: 'INFRASTRUCTURE SPEC',
+  badge: 'TECHNICAL BLUEPRINT',
   officialDocUrl: 'https://cloud.google.com/solutions/life-sciences',
   author: 'Google Cloud Life Sciences & DeepMind Infrastructure CoE',
   overview:
