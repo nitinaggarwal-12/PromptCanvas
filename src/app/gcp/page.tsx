@@ -131,23 +131,51 @@ function GcpArchitectureCenterInner() {
     return getGcpArchitectureById(selectedArchId) || ALL_GCP_DIALECT_A_ARCHITECTURES[0];
   }, [selectedArchId]);
 
-  // Initialize or reset versions when activeArch or isDark changes
+  // Initialize or hydrate versions when activeArch or isDark changes
   useEffect(() => {
     const baseXml = activeArch.generateXml(isDark);
+    const baselineSnapshot: GcpVersionSnapshot = {
+      id: `v_${activeArch.id}_baseline`,
+      versionTag: 'v1.0',
+      timestamp: 'Baseline',
+      author: 'Canonical Architecture Blueprint',
+      actionSummary: `${activeArch.title} (Production Model)`,
+      canvasDiff: 'Initial Canonical Architecture Model loaded in 16:9 viewport.',
+      specDiff: 'Standard Dialect A specifications, step sequences, and protocols active.',
+      xml: baseXml,
+    };
+
+    let loadedVersions: GcpVersionSnapshot[] = [baselineSnapshot];
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(`promptcanvas_gcp_versions_${activeArch.id}`);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const nonBaseline = parsed.filter((v: any) => v.versionTag !== 'v1.0');
+            loadedVersions = [baselineSnapshot, ...nonBaseline];
+          }
+        }
+      } catch {}
+    }
+
+    setVersions(loadedVersions);
+
+    // Check if URL searchParam 'v' specifies an addressable version
+    const requestedVersionTag = searchParams.get('v');
+    if (requestedVersionTag) {
+      const matched = loadedVersions.find(
+        (v) => v.versionTag.toLowerCase() === requestedVersionTag.toLowerCase()
+      );
+      if (matched) {
+        setActiveVersionTag(matched.versionTag);
+        setCustomXmlOverride(matched.xml);
+        return;
+      }
+    }
+
     setCustomXmlOverride(null);
     setActiveVersionTag('v1.0');
-    setVersions([
-      {
-        id: `v_${activeArch.id}_baseline`,
-        versionTag: 'v1.0',
-        timestamp: 'Baseline',
-        author: 'Canonical Architecture Blueprint',
-        actionSummary: `${activeArch.title} (Production Model)`,
-        canvasDiff: 'Initial Canonical Architecture Model loaded in 16:9 viewport.',
-        specDiff: 'Standard Dialect A specifications, step sequences, and protocols active.',
-        xml: baseXml,
-      },
-    ]);
     setMessages([
       {
         id: `welcome_${activeArch.id}`,
@@ -156,7 +184,7 @@ function GcpArchitectureCenterInner() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
-  }, [activeArch.id, isDark]);
+  }, [activeArch.id, isDark, searchParams]);
 
   const activeXml = useMemo(() => {
     return customXmlOverride || activeArch.generateXml(isDark);
@@ -257,10 +285,25 @@ function GcpArchitectureCenterInner() {
         explicitPersona
       );
 
-      setVersions((prev) => [...prev, newVersion]);
+      setVersions((prev) => {
+        const updated = [...prev, newVersion];
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(`promptcanvas_gcp_versions_${activeArch.id}`, JSON.stringify(updated));
+          } catch {}
+        }
+        return updated;
+      });
       setActiveVersionTag(newVersion.versionTag);
       setCustomXmlOverride(updatedXml);
       setMessages((prev) => [...prev, assistantMessage]);
+
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', activeArch.id);
+        url.searchParams.set('v', newVersion.versionTag);
+        window.history.pushState({}, '', url.toString());
+      }
     } catch (err: any) {
       console.error('[Co-Pilot] Error applying prompt:', err);
       const errorMsg: GcpChatMessage = {
@@ -276,6 +319,12 @@ function GcpArchitectureCenterInner() {
   const handleRestoreVersion = (version: GcpVersionSnapshot) => {
     setActiveVersionTag(version.versionTag);
     setCustomXmlOverride(version.xml);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', activeArch.id);
+      url.searchParams.set('v', version.versionTag);
+      window.history.pushState({}, '', url.toString());
+    }
     const restoreNotice: GcpChatMessage = {
       id: `msg_restore_${Date.now()}`,
       sender: 'assistant',
@@ -290,6 +339,7 @@ function GcpArchitectureCenterInner() {
     if (typeof window !== 'undefined') {
       const url = new URL(window.location.href);
       url.searchParams.set('id', id);
+      url.searchParams.delete('v');
       window.history.pushState({}, '', url.toString());
     }
   };
@@ -302,7 +352,10 @@ function GcpArchitectureCenterInner() {
 
   const handleCopyShareUrl = () => {
     if (typeof window !== 'undefined') {
-      navigator.clipboard.writeText(window.location.href);
+      const url = new URL(window.location.href);
+      url.searchParams.set('id', activeArch.id);
+      url.searchParams.set('v', activeVersionTag);
+      navigator.clipboard.writeText(url.toString());
       setCopiedUrl(true);
       setTimeout(() => setCopiedUrl(false), 2000);
     }
@@ -1214,6 +1267,16 @@ function GcpArchitectureCenterInner() {
                     >
                       {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedXml ? 'Copied' : 'Copy XML'}</span>
+                    </button>
+
+                    <button
+                      id="gcp-share-url-btn"
+                      onClick={handleCopyShareUrl}
+                      className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-blue-500 font-semibold transition-colors"
+                      title="Copy Shareable Snapshot Deep-Link URL"
+                    >
+                      {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
+                      <span>{copiedUrl ? 'Copied' : 'Share'}</span>
                     </button>
 
                     <button

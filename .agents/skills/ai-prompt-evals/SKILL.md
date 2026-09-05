@@ -18,6 +18,7 @@ This skill provides automated evaluation tools to benchmark Gemini model perform
 7. **Product & Icon Resolution**: Ensures vendor products match requested cloud ecosystems (GCP, AWS, Azure, Databricks) with valid SVG icon mapping and zero external HTTP image dependencies.
 8. **Node Connectivity & Zero-Orphan Rate**: Verifies that every service node is connected to at least one valid data path.
 9. **2D Bounding Box Non-Collision**: Verifies that nodes maintain $\ge 30\text{px}$ safety clearance within container tiers.
+10. **URI Addressability & Idempotent Reload Persistence Gate**: Verifies that every synthesized version snapshot produces a deterministic URL query state (`?id=<archId>&v=<versionTag>`), persists in client storage (`localStorage`), and survives `page.reload()` without collapsing back to baseline defaults.
 
 ## 2. Automated Evals Runner (`scratch/eval_ai_prompts.js`)
 

@@ -114,6 +114,37 @@ async function run() {
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05_negative_prompt_decoupling_v1_3.png'), fullPage: false });
     console.log('✅ Screenshot 05: Negative Prompt Decoupling v1.3 captured.');
 
+    // 5b. Mandatory URI Addressability & Idempotent Reload Quality Gate
+    console.log('Testing Mandatory URI Addressability & Idempotent Reload Gate...');
+    const currentUrl = page.url();
+    console.log(`Current URL after mutations: ${currentUrl}`);
+    if (!currentUrl.includes('v=v1.3')) {
+      throw new Error(`Expected URL to contain 'v=v1.3', but got: ${currentUrl}`);
+    }
+
+    // Click Share Snapshot Deep-Link button
+    await page.waitForSelector('#gcp-share-url-btn', { timeout: 3000 });
+    await page.$eval('#gcp-share-url-btn', (el: any) => el.click());
+    await sleep(500);
+
+    // Execute Idempotent Reload
+    console.log('Executing page.reload() to verify state persistence across page refreshes...');
+    await page.reload({ waitUntil: 'networkidle2' });
+    await sleep(2000);
+
+    const reloadedVersion = await page.evaluate(() => {
+      const badge = document.querySelector('#version-selector-trigger');
+      return badge ? badge.textContent : '';
+    });
+    console.log(`Version after page reload: ${reloadedVersion}`);
+    if (!reloadedVersion.includes('v1.3')) {
+      throw new Error(`Idempotent reload failed! Expected version v1.3 after reload, but got: ${reloadedVersion}`);
+    }
+
+    // Screenshot 5b: Reload Persistence
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, '05b_idempotent_reload_persistence_v1_3.png'), fullPage: false });
+    console.log('✅ Screenshot 05b: Idempotent Reload Persistence v1.3 captured.');
+
     // 6. Test Rollback to Baseline v1.0
     console.log('Testing 1-click Rollback to Baseline v1.0...');
     await page.$eval('#version-selector-trigger', (el: any) => el.click());

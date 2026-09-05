@@ -229,6 +229,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
     - **Negative Intent & Decoupling Protection**: When prompts specify removals, replacements, or exclusions (e.g., "remove X", "decouple Y", "without database"), the engine MUST NEVER match positive keywords to add duplicate services. It must decouple, isolate, or annotate nodes with red-dashed boundaries (`fillColor=#FEF2F2;strokeColor=#DC2626;dashed=1;`).
     - **Collision-Free Lower-Channel Allocation**: All newly synthesized components must be assigned open coordinates in the lower canvas channel ($y \ge 660, x = 220 + \text{slot} \times 360$) and linked to parent tiers via orthogonal directional connectors (`edgeStyle=orthogonalEdgeStyle;edge="1"`).
     - **XML Sanitization & Immutable Version Snapshotting**: Raw prompt text must be escaped via `escapeXmlText()` before insertion into mxCell attributes to prevent syntax breakage or XSS. Every structural mutation MUST increment the version tree with full 1-click rollback capability.
+19. **Mandatory URI Addressability, Deep Linking & Idempotent State Quality Gate**:
+    - **Uniform Resource Addressability (Fielding REST Law)**: Every architecture blueprint (`?id=<archId>`), synthesized version snapshot (`?v=<versionTag>`), and diagram variant MUST be uniquely identifiable and addressable via a distinct, stable URI. Users and automated agents must be able to copy, bookmark, or share the URL and land on the exact state.
+    - **Component Deep Linking**: Subsystems and microservice cards MUST expose unique identifier hash fragments (`#<element_id>`) for spotlighting, targeted inspection, and cross-team permalinking.
+    - **State Persistence & Hydration (Anti-Volatile Session Law)**: Version snapshot trees, synthesized Draw.io XML, and user dialogue history MUST be persisted in client storage (`localStorage` / session cache) keyed by architecture ID and version tag. Page reloads (`window.location.reload()`) MUST hydrate the exact snapshot state rather than collapsing back to baseline v1.0.
+    - **Mandatory Idempotent Reload Quality Gate in E2E Suites**: Every automated E2E test suite (Puppeteer) MUST enforce an idempotent reload check:
+      1. Assert `page.url()` contains the active version query parameter (`?v=v1.x`).
+      2. Execute `await page.reload({ waitUntil: 'networkidle2' })`.
+      3. Assert the active version trigger (`#version-selector-trigger`) and canvas DOM elements remain on `v1.x` without resetting to `v1.0`.
+      4. Open a clean secondary incognito page with the shared URL and verify exact visual and state parity.
 
 ---
 

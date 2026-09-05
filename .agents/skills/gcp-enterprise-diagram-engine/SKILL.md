@@ -160,3 +160,5 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f8fafc;}
 - ❌ **No Line Slicing Across Text**: Connector paths must never intersect node text, subtitles, or zone headers.
 - ❌ **No Trailing White Space**: Vertical card stacks must fill zone height with equal padding.
 - ❌ **No Unverified External URLs**: Diagrams must render 100% offline with inline SVG and native fonts.
+- ❌ **No Unaddressable Ephemeral State**: Never store version mutations solely in volatile memory. Every snapshot must be synchronized to the URL query string (`?id=...&v=...`) and persist in client storage across browser refreshes.
+- ❌ **No Missing Reload Verification**: E2E test scripts must assert `page.url()` and execute `page.reload()` to guarantee state persistence.
