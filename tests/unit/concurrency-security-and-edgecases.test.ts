@@ -94,7 +94,7 @@ describe('Blind Spot 3: Corrupt XML Self-Healing & AST Resilience', () => {
     expect(healed.xml).toBeDefined();
     expect(healed.xml).toContain('<root>');
     expect(healed.xml).toContain('</root>');
-    expect(healed.xml).toContain('<mxCell id="0"/>');
+    expect(healed.xml).toMatch(/<mxCell id="0"\s*\/>/);
   });
 
   it('should replace completely empty XML (<root/> only) with a verified 1400x800 blueprint', () => {

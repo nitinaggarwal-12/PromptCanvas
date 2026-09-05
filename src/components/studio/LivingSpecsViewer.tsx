@@ -24,6 +24,8 @@ import {
   Lock
 } from "lucide-react";
 
+import { ARCHITECTURE_DOCUMENT_BINDINGS } from "@/lib/canonical/canonicalTemplates";
+
 interface LivingSpecsViewerProps {
   specs: LivingSpecDocument[];
   activeDocId: string;
@@ -34,6 +36,7 @@ interface LivingSpecsViewerProps {
   projectName?: string;
   useCaseName?: string;
   versionName?: string;
+  onSelectBlueprintById?: (templateId: string) => void;
 }
 
 export function LivingSpecsViewer({
@@ -45,7 +48,8 @@ export function LivingSpecsViewer({
   currentXml = "",
   projectName = "Google Cloud Enterprise",
   useCaseName = "Multi-Tier Native Reference Architecture",
-  versionName = "v1.2"
+  versionName = "v1.2",
+  onSelectBlueprintById
 }: LivingSpecsViewerProps) {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -216,6 +220,57 @@ export function LivingSpecsViewer({
               </div>
             </div>
           </div>
+
+          {/* Bound Certified Architectural Diagram Views */}
+          {(() => {
+            const docBinding = ARCHITECTURE_DOCUMENT_BINDINGS.find(b => b.docId === activeDoc.id);
+            const boundViews = docBinding ? docBinding.requiredDiagramViews : [];
+            if (boundViews.length === 0) return null;
+
+            return (
+              <div className="bg-gradient-to-r from-blue-50/70 to-indigo-50/70 rounded-xl p-3.5 border border-blue-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs shrink-0">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                      <span>Bound Certified Diagram Blueprints</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 font-bold">
+                        {boundViews.length} Required Views
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">
+                      Canonical blueprints bound to this specification via Architecture Contract
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {boundViews.map((view, idx) => {
+                    const tplId = view.split(' ')[0];
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          if (onSelectBlueprintById) onSelectBlueprintById(tplId);
+                          onSwitchToDiagramView();
+                        }}
+                        className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-blue-600 hover:text-white text-blue-700 border border-blue-200/90 shadow-2xs transition flex items-center gap-1.5 cursor-pointer group"
+                        title={`Load Blueprint #${tplId} (${view.substring(3)}) into Canvas`}
+                      >
+                        <span className="font-mono text-[11px] px-1 py-0.2 rounded bg-blue-50 text-blue-700 group-hover:bg-blue-700 group-hover:text-white">
+                          #{tplId}
+                        </span>
+                        <span className="font-sans font-medium">{view.substring(3)}</span>
+                        <ArrowRight className="w-3 h-3 text-blue-400 group-hover:text-white" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* IN-SEQUENCE EMBEDDED DIAGRAM FIGURE (If available) */}

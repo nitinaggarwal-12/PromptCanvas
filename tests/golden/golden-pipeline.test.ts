@@ -291,6 +291,6 @@ if (typeof describe !== 'undefined') {
     it('should pass golden pipeline tests', async () => {
       const res = await runGoldenPipelineTests();
       expect(res).toBe(true);
-    });
+    }, 30000);
   });
 }

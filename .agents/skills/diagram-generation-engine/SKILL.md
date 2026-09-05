@@ -194,4 +194,48 @@ For all Google Cloud Platform (GCP) architectures, diagrams, and components:
    - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
    - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
 
+---
+
+## 🧭 Pillar 9: Client-Side Edge Router Override & Deterministic Waypoint Law
+
+1. **Prohibition of `orthogonalEdgeStyle` with Manual Waypoints**:
+   - When manual intermediate waypoints (`<Array as="points">`) are defined on an edge, **NEVER** use `edgeStyle=orthogonalEdgeStyle;`.
+   - Draw.io's client-side JavaScript engine (`mxGraph` / `viewer-static.min.js`) treats `orthogonalEdgeStyle` as an automatic Manhattan auto-router that will discard explicit waypoints if it detects obstacles, auto-routing straight through child nodes or intermediate containers.
+2. **Mandatory `edgeStyle=none;rounded=1;` for Deterministic Waypoints**:
+   - Always enforce `edgeStyle=none;rounded=1;` whenever intermediate waypoints are specified.
+   - This locks the path to strict point-to-point rectilinear segments with smooth rounded corners and prevents client-side algorithmic path deviation.
+
+---
+
+## 🏷️ Pillar 10: Edge Label AABB Safety Margins & Container Header Collision Prevention
+
+1. **Header Clearance ($\ge 20\text{px}$)**:
+   - All connector edge label pills (`<mxPoint as="offset"/>` or relative labels) MUST maintain a minimum vertical clearance of **$20\text{px}$** from all container headers (e.g., VPC networks, subnets, swimlanes, and edge ingress boxes).
+   - Connector labels must NEVER hover directly over, intersect, or obscure container title text or CIDR annotations.
+2. **Dedicated Corridor Waypoint Routing**:
+   - Cross-container ingress lines (e.g. Ingress → Private VPC) must route through dedicated external corridors (e.g., a $25\text{px}$ open gap between the ingress box and VPC border) so that horizontal segments and label badges float in 100% open white space outside container title bars.
+
+---
+
+## 📏 Pillar 11: Inter-Card Clearance & Badge Channel Pitch Law ($\ge \text{Badge Width} + 20\text{px}$)
+
+1. **Zero-Collision Channel Pitch**:
+   - Sibling node spacing cannot be validated solely by bounding box non-overlap ($A_x + A_w \le B_x$).
+   - If a connector between two adjacent cards carries a label badge, the horizontal or vertical gap between them MUST strictly accommodate the badge:
+     $$\text{Channel Gap} = X_{\text{target}} - (X_{\text{source}} + W_{\text{source}}) \ge \text{Badge Width} + 20\text{px}$$
+2. **Channel Width Minimums**:
+   - Never place a $70\text{px}-100\text{px}$ wide label badge (such as `GPUDirect RDMA 3.2 Tbps` or `TLS 1.3 Handshake`) in a narrow $20\text{px}-25\text{px}$ gap. Expand card gaps to at least $40\text{px}-75\text{px}$ to guarantee collision-free visual margins.
+
+---
+
+## 🧪 Pillar 12: SVG DOM Coordinate & Bounding Box Inspection Mandate
+
+1. **Prohibition of Text-Only DOM Assertions**:
+   - E2E tests (Puppeteer / Playwright) MUST NOT declare a diagram or UI state verified based solely on `innerText.includes(...)` or screenshot generation.
+2. **Physical SVG Inspection**:
+   - Automated test scripts must inspect the rendered SVG DOM elements inside `#diagram-canvas-card iframe`:
+     - Query rendered `<text>` and `<rect>` elements via `page.evaluate()` or `page.$$()`.
+     - Call `getBoundingClientRect()` on edge label text elements and verify zero mathematical intersection with adjacent container headers or node cards.
+     - Assert that line paths (`<path d="...">`) do not penetrate the inner bounding boxes of non-target child components.
+
 

@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { GEMINI_MODEL_ID } from './geminiConfig';
+import { GEMINI_MODEL_ID, getGeminiModelWithFallbacks, getGenConfig } from './geminiConfig';
 import { generateGCPFunctionalFlowchart } from './gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { validateDrawioXml } from './validate/validator';
@@ -73,7 +73,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
 
   try {
     const ai = getAiClient(apiKey);
-    const model = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-2.5-pro';
+    const modelsToTry = getGeminiModelWithFallbacks('vision');
 
     const systemPrompt = `You are Google DeepMind's Premier Architecture Vision Decompiler & Diagram Compiler.
 Your goal is to inspect the provided architecture diagram image with 100% precision, detect all spatial tiers, container zones, microservice cards, decision gates, databases, icons, and connecting flow arrows, and output a complete, valid Draw.io XML document (<mxfile><diagram ...><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>).
@@ -89,31 +89,46 @@ CRITICAL XML & STYLING RULES:
     // Strip header if data URI
     const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z]+;base64,/, '');
 
-    const response = await ai.models.generateContent({
-      model,
-      contents: [
-        {
-          role: 'user',
-          parts: [
+    let candidateText = '';
+    let usedModel = modelsToTry[0];
+
+    for (const model of modelsToTry) {
+      try {
+        usedModel = model;
+        const response = await ai.models.generateContent({
+          model,
+          contents: [
             {
-              inlineData: {
-                mimeType,
-                data: cleanBase64,
-              },
-            },
-            {
-              text: `Decompile this architecture diagram for project "${projectName}" - "${useCaseName}". Recreate all visual containers, service cards, decision diamonds, step sequences (❶..❼), and connection arrows in Draw.io XML.`,
+              role: 'user',
+              parts: [
+                {
+                  inlineData: {
+                    mimeType,
+                    data: cleanBase64,
+                  },
+                },
+                {
+                  text: `Decompile this architecture diagram for project "${projectName}" - "${useCaseName}". Recreate all visual containers, service cards, decision diamonds, step sequences (❶..❼), and connection arrows in Draw.io XML.`,
+                },
+              ],
             },
           ],
-        },
-      ],
-      config: {
-        systemInstruction: systemPrompt,
-        temperature: 0.1,
-      },
-    });
-
-    const candidateText = response?.text || '';
+          config: {
+            systemInstruction: systemPrompt,
+            ...getGenConfig('vision'),
+          },
+        });
+        candidateText = response?.text || '';
+        if (candidateText) break;
+      } catch (callErr: any) {
+        const msg = callErr?.message || String(callErr);
+        if (msg.includes('404') || msg.includes('not found') || msg.includes('unsupported') || msg.includes('PERMISSION_DENIED')) {
+          console.warn(`[Vision Decompiler Fallback] Model ${model} unavailable (${msg}). Retrying with fallback model...`);
+          continue;
+        }
+        throw callErr;
+      }
+    }
     const cleanedXml = sanitizeXmlOutput(candidateText);
 
     if (cleanedXml.includes('<mxfile') && cleanedXml.includes('</mxfile>')) {
@@ -123,7 +138,7 @@ CRITICAL XML & STYLING RULES:
 
       return {
         xml: healedResult.xml,
-        summary: `Successfully decompiled and validated architecture from blueprint image using DeepMind Vision (${model}) with zero architectural defects.`,
+        summary: `Successfully decompiled and validated architecture from blueprint image using DeepMind Vision (${usedModel}) with zero architectural defects.`,
         extractedZones: ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'],
         componentCount: (healedResult.xml.match(/<mxCell/g) || []).length,
         validationReport: {

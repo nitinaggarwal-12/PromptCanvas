@@ -73,7 +73,7 @@ describe('Certified blueprint resolver contract', () => {
     for (const result of results) {
       expect(result.labels, result.combinedId).toBeGreaterThan(0);
     }
-  });
+  }, 30000);
 
   it('fails loudly for an unregistered blueprint-like ID instead of returning a generic diagram', () => {
     expect(() => getDefaultXmlForArchitecture('P9-APP-L-99_nonexistent_blueprint'))

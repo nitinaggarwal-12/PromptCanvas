@@ -211,7 +211,7 @@ ${origin ? `<base href="${origin}/">` : ''}
     resize: !allowFullScaleScroll,
     toolbar: '',
     edit: '',
-    border: allowFullScaleScroll ? 10 : 0,
+    border: allowFullScaleScroll ? 10 : 20,
     transparent: true,
     fit: !allowFullScaleScroll,
     'max-scale': 4.0,

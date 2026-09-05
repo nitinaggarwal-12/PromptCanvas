@@ -44,7 +44,7 @@ export function renderGraphToDrawioXml(graph: ArchitectureGraph, theme: 'light' 
     const tierW = Math.max(tier.width ?? 800, 400);
     const tierH = Math.max(tier.height ?? 160, 100);
 
-    const labelHtml = `<b style="color:${tierTitleColor};font-size:12px;letter-spacing:0.5px;">${escapeXmlAttr(tier.label.toUpperCase())}</b>`;
+    const labelHtml = escapeXmlAttr(`<b style="color:${tierTitleColor};font-size:12px;letter-spacing:0.5px;">${tier.label.toUpperCase()}</b>`);
 
     cellXmls.push(
       `  <mxCell id="${escapeXmlAttr(tier.id)}" value="${labelHtml}" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=16;spacingTop=10;fontStyle=1;fontSize=12;fillColor=${fillColor};strokeColor=${tierBorderColor};strokeWidth=1.5;container=1;collapsible=0;" vertex="1" parent="1">\n` +

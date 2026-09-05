@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -42,6 +42,12 @@ import { BrainGroundingModal } from '@/components/studio/BrainGroundingModal';
 import { AudioBriefingModal } from '@/components/studio/AudioBriefingModal';
 import { LivingSpecsViewer } from '@/components/studio/LivingSpecsViewer';
 import { ProductionIaCViewer } from '@/components/studioprod/ProductionIaCViewer';
+import { BlueprintCatalogModal } from '@/components/studio/BlueprintCatalogModal';
+import {
+  CANONICAL_TEMPLATES,
+  CanonicalTemplate,
+  DOMAIN_PRESETS
+} from '@/lib/canonical/canonicalTemplates';
 import { EVOLUTION_STEPS, EvolutionStep, evolveAst } from '@/lib/evolution/evolutionEngine';
 
 export interface StudioProdSnapshot {
@@ -97,7 +103,7 @@ function StudioProdMain() {
       const xml = generateGcpNativeArchitectureXml({
         projectName: step.projectTitle,
         useCaseName: step.domain
-      });
+      }, currentAst);
       return {
         id: `v_${step.versionTag.replace('.', '_')}`,
         versionTag: step.versionTag,
@@ -132,6 +138,90 @@ function StudioProdMain() {
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [isHealing, setIsHealing] = useState(false);
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
+
+  // Canonical Blueprint Catalog State
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false);
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('00');
+  const [selectedDomain, setSelectedDomain] = useState<string>('biopharma');
+
+  const handleSelectBlueprint = useCallback((blueprint: CanonicalTemplate, domainPresetId: string) => {
+    setSelectedBlueprintId(blueprint.id);
+    setSelectedDomain(domainPresetId);
+
+    const domainPreset = DOMAIN_PRESETS.find(d => d.id === domainPresetId) || DOMAIN_PRESETS[0];
+    const newXml = blueprint.generateXml(domainPresetId, 'dark');
+    setXml(newXml);
+
+    const components: AstComponent[] = (blueprint.keyComponents || []).map((compName, idx) => {
+      let tier: AstComponent['tier'] = 'compute';
+      const lower = compName.toLowerCase();
+      if (lower.includes('armor') || lower.includes('ingress') || lower.includes('gateway') || lower.includes('load balancer') || lower.includes('cdn') || lower.includes('apigee') || lower.includes('dns')) {
+        tier = 'ingress';
+      } else if (lower.includes('spanner') || lower.includes('bigquery') || lower.includes('database') || lower.includes('storage') || lower.includes('lake') || lower.includes('sql') || lower.includes('redis')) {
+        tier = 'data';
+      } else if (lower.includes('iam') || lower.includes('kms') || lower.includes('security') || lower.includes('vault') || lower.includes('dlp') || lower.includes('scc') || lower.includes('shield')) {
+        tier = 'security';
+      } else if (lower.includes('dr') || lower.includes('failover') || lower.includes('backup') || lower.includes('resilience')) {
+        tier = 'dr';
+      } else if (lower.includes('sre') || lower.includes('logging') || lower.includes('monitoring') || lower.includes('telemetry') || lower.includes('trace') || lower.includes('observability')) {
+        tier = 'observability';
+      }
+
+      return {
+        id: `comp_${blueprint.id}_${idx}`,
+        name: compName,
+        service: compName,
+        tier,
+        region: idx % 2 === 0 ? 'us-central1' : 'global',
+        role: `${blueprint.family} Architecture Component`,
+        description: `${compName} participating in ${blueprint.name} (${blueprint.level} Certified Blueprint).`,
+        sla: '99.99%',
+        protocols: ['HTTPS', 'gRPC', 'TLS 1.3']
+      };
+    });
+
+    const newAst: ArchitectureAst = {
+      metadata: {
+        projectTitle: `${domainPreset.prefix} - ${blueprint.name}`,
+        projectId: `bp-${blueprint.id}`,
+        version: `#${blueprint.id}`,
+        domain: domainPreset.name,
+        slaTarget: '99.99%',
+        targetRpo: '< 5 Seconds',
+        targetRto: '< 30 Seconds',
+        primaryRegion: 'us-central1',
+        drRegions: ['europe-west1'],
+        compliance: ['SOC2 Type II', 'ISO 27001', 'PCI-DSS 4.0'],
+        latencyBudgetMs: 45,
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      },
+      components: components.length > 0 ? components : ast.components,
+      connections: []
+    };
+
+    setAst(newAst);
+
+    setMessages(prev => [
+      ...prev,
+      {
+        id: `msg_${Date.now()}`,
+        sender: 'assistant',
+        text: `Loaded Canonical Blueprint #${blueprint.id}: ${blueprint.name} (${blueprint.family} Family, ${blueprint.level} Certified). Synchronized 16 Living Specifications with ${domainPreset.name} industry domain flavor.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        actionSummary: {
+          versionTag: `#${blueprint.id}`,
+          canvasDiff: `Rendered ${blueprint.keyComponents?.length || 12} components across ${blueprint.family} architecture.`,
+          specDiff: `Reconciled DOC-01 through DOC-16 for ${domainPreset.prefix}.`
+        }
+      }
+    ]);
+  }, [ast.components]);
+
+  const handleSelectBlueprintById = useCallback((templateId: string) => {
+    const norm = templateId.padStart(2, '0');
+    const bp = CANONICAL_TEMPLATES.find(t => t.id === norm || t.id === templateId) || CANONICAL_TEMPLATES[0];
+    handleSelectBlueprint(bp, selectedDomain);
+  }, [handleSelectBlueprint, selectedDomain]);
 
   // Prompt Chat
   const [promptInput, setPromptInput] = useState('');
@@ -230,7 +320,7 @@ function StudioProdMain() {
       const evolvedXml = generateGcpNativeArchitectureXml({
         projectName: currentSnapshot.projectTitle,
         useCaseName: currentSnapshot.domain
-      });
+      }, evolvedAst);
 
       setAst(evolvedAst);
       setXml(evolvedXml);
@@ -275,6 +365,20 @@ function StudioProdMain() {
             </Link>
 
             <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+
+            {/* Canonical Blueprint Catalog Selector */}
+            <button
+              onClick={() => setIsCatalogOpen(true)}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-xs font-medium text-blue-400 border border-blue-500/30 transition cursor-pointer"
+              title="Open 52 Canonical Architecture Blueprints Catalog"
+            >
+              <Layers className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden md:inline">Blueprint:</span>
+              <span className="font-mono font-bold text-white max-w-[140px] truncate">
+                #{selectedBlueprintId} {CANONICAL_TEMPLATES.find(t => t.id === selectedBlueprintId)?.name || 'GCP Enterprise Arch'}
+              </span>
+              <ChevronDown className="w-3.5 h-3.5 text-blue-400" />
+            </button>
 
             {/* Version Selector Dropdown */}
             <div className="relative">
@@ -419,6 +523,7 @@ function StudioProdMain() {
                 projectName={currentSnapshot.projectTitle}
                 useCaseName={currentSnapshot.domain}
                 versionName={currentSnapshot.versionTag}
+                onSelectBlueprintById={handleSelectBlueprintById}
               />
             </div>
           )}
@@ -553,6 +658,14 @@ function StudioProdMain() {
           onShareNode={() => {}}
         />
       )}
+      <BlueprintCatalogModal
+        isOpen={isCatalogOpen}
+        onClose={() => setIsCatalogOpen(false)}
+        onSelectBlueprint={handleSelectBlueprint}
+        currentBlueprintId={selectedBlueprintId}
+        currentDomainPresetId={selectedDomain}
+        theme="dark"
+      />
     </div>
   );
 }

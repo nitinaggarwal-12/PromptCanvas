@@ -1,152 +1,233 @@
-# Custom Rules for Antigravity in PromptCanvas
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
 
-## 🧠 Master Diagram Generation & Quality Laws (Permanently Encoded in Brain)
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
 
-### 1. Mandatory `<mxfile><diagram>` Document Envelope
-* Every architecture diagram generated or modified by ANY system (Gemini prompt compiler, canonical generator, master builder, AI customizer, or clean variant) MUST be enclosed in a valid XML document envelope:
-  ```xml
-  <mxfile host="embed.diagrams.net">
-    <diagram id="template_id" name="Diagram Title">
-      <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
-        <root>
-          <mxCell id="0"/>
-          <mxCell id="1" parent="0"/>
-          <!-- Cells go here -->
-        </root>
-      </mxGraphModel>
-    </diagram>
-  </mxfile>
-  ```
-* **Strict Prohibition**: Never return un-enveloped raw `<mxGraphModel>` or loose `<mxCell>` tags, which cause blank canvas rendering in `viewer-static.min.js` and iframe viewports.
+# 🎨 Layout & Typography Rules (Desktop Monitors)
 
----
-
-### 2. Zero External URL & Network Dependencies
-* Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels.
-* Always use native vector Unicode symbols/emojis (`🧬`, `🔬`, `🩺`, `⚖️`, `🛡️`, `🏭`, `📊`, `📁`, `✨`, `🔒`, `🏢`, `☁️`, `🤝`, `🏛️`, `🏆`, `🚀`, `🗄️`, `🌐`, `🎧`, `⚙️`, `🎯`, `📥`, `📑`, `🔄`, `📦`, `🔗`, `🧠`) or embedded inline SVGs to ensure 100% offline and headless rendering reliability.
+* **Zero Surrounding Empty Space Law (Strict Viewport Breadth)**:
+  - When creating new pages, views, document readers, or studio panels, **NEVER** restrict main containers to narrow centered grids (`max-w-4xl`, `max-w-5xl`, `max-w-6xl` with `mx-auto`) that introduce empty white/slate side gutters on desktop screens.
+  - Always enforce full-width utilization (`w-full max-w-none` or spacious `max-w-8xl` / `max-w-[1600px]`) with responsive horizontal padding (`p-6 md:p-8` or `px-10 md:px-12`).
+  - Child elements, cards, and tables must expand edge-to-edge within their parent layout, utilizing the entire monitor screen without awkward dead voids.
+* **Reclaim Empty Margins (Wide Widths)**: By default, design portals and landing pages to use spacious desktop widths (`max-w-8xl` (1440px) or `max-w-[1600px]`) instead of standard narrow grids (`max-w-5xl`, `max-w-7xl`). Utilize adequate padding (`px-12 md:px-16` or `px-10 md:px-12`) to optimize viewing on ultra-wide desktop monitors.
+* **Proportional Object & Typography Scaling (Always)**: When expanding container widths, you must scale up all layout components, typography, and visual assets proportionally to maintain structural balance:
+  - **Typography**: Main headers (`text-4xl` -> `text-5xl` or `text-6xl`), text descriptions (`text-xs`/`text-sm` -> `text-sm`/`text-base`), and data counters (`text-xl` -> `text-3xl` or `text-4xl`).
+  - **Gaps & Padding**: Layout vertical/horizontal padding (`py-10 px-8` -> `py-14 px-12 md:px-16`) and grid spacing (`gap-4` -> `gap-6` or `gap-8`).
+  - **Controls & Buttons**: Buttons padding (`px-4 py-2 text-xs` -> `px-6 py-2.5 text-sm` / `px-8 py-4 text-base`) and input fields.
+  - **Icons & Images**: Vector icons (`w-3.5 h-3.5` -> `w-4 h-4` or `w-5 h-5`) and static media assets (`width={400}` -> `width={500}`).
+* **Sticky Full-Width Navbars**: Sticky headers (`sticky top-0`) must be constructed with a full-width background wrapper (`w-full bg-... backdrop-blur-...`) to ensure the blur/fill bleeding is edge-to-edge, centering the actual menu controls within the page alignment constraint (e.g. `max-w-8xl mx-auto px-6 md:px-12`).
 
 ---
 
-### 3. Collision-Free 2D Geometric Routing & High-Contrast Pill Badges
-* **Channel & Corridor Pitch**: Maintain minimum $140\text{px}$ horizontal column pitch and $80\text{px}$ inter-row channel pitch.
-* **Label Pill Badges**: All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds:
-  `labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`
-* **Zero Slicing**: Connecting lines, arrows, and SVG paths must NEVER slice horizontally, vertically, or diagonally across intermediate table boxes, cards, or diamond vertices.
-* **Single Crisp Directional Connectors**: Avoid overlapping lines or duplicate arrowheads on bidirectional connectors. Use explicit single orthogonal directional connectors.
+# 📁 Project Workspace Artifact & File Storage Protocol
+
+* **Workspace-First Storage**: Always create all project-related scratch scripts, test automation tools, data files, and visual screenshots inside the active project workspace (`scratch/` or subdirectories inside the active workspace root), rather than in system app data or temporary system folders.
+* **Clickable Project File Links**: When presenting screenshot artifacts or generated files to the user, always provide clickable Markdown file links using the `file://` scheme pointing directly to the project workspace path (e.g. `[01_dashboard.png](file:///path/to/workspace/scratch/screenshots/01_dashboard.png)`).
+* **Gitignore Hygiene**: Ensure the workspace `.gitignore` excludes `scratch/` or temporary screenshot directories to avoid cluttering git history while keeping artifacts accessible to the user in their project workspace.
 
 ---
 
-### 4. 16:9 Ultra-Wide Responsive Viewport Geometry
-* **Standard Resolution**: Default canvas dimensions are $1600 \times 960\text{px}$ to $1680 \times 1040\text{px}$ (16:9 aspect ratio).
-* **Proportional Scaling**: Headers (`fontSize=24`), Subheaders (`fontSize=13`), Card Titles (`fontSize=9.5 - 10.5`), Card Descriptions (`fontSize=7.5 - 8.5`), and Badges (`fontSize=8`).
-* **Void Minimization**: Card heights and vertical gaps must be tightly proportioned so that item pills and text fill cards evenly without large empty spaces or awkward clipping.
+# 🎯 Anti-Hallucination, Research-First & Screenshot Quality Protocol
+
+* **Research Before Coding**: When unsure about API signatures, framework updates, or complex features, consult internal documentation (`node_modules/next/dist/docs/`, codebase Knowledge Items) or web search to verify exact patterns before writing code to prevent hallucination.
+* **No Duplicate Screenshots & Clean Purging**: 
+  - Each distinct UI state transition must produce exactly **one** uniquely named screenshot (e.g. `01_settings_default.png`, `02_search_results.png`).
+  - Always programmatically purge the target run subfolder (`rm -rf scratch/screenshots_<task>/`) *before* executing a test suite to eliminate duplicate or stale images.
+* **Dedicated Task Directory**: Always store artifacts in a dedicated new subfolder inside the active workspace project directory (`<project_root>/scratch/screenshots_<task_id>/`).
+* **Direct DOM Verification**: Never rely solely on CLI exit codes; physically inspect the returned HTML or Puppeteer DOM tree for explicit string literals before declaring a feature complete.
 
 ---
 
-### 5. Strict Separation of Domain Flavoring vs. Spatial Geometry
-* Dynamic use case flavoring (`injectUseCaseFlavor`) mutates text titles, card descriptions, and badges while preserving 100% of spatial coordinates (`<mxGeometry x="..." y="...">`).
+# 🛡️ Validation-First & Quality Gate Protocol
+
+* **No Auto-Advancing**: Always pause and present a comprehensive validation step (including screenshot walkthroughs, DOM verification, and code diffs) before moving on to the next implementation phase. Never auto-start writing code for downstream phases without explicit user approval.
+* **Seed Verification**: Always verify database or session pre-seeding so test runners execute cleanly in clean browser sessions.
+* **Visual Gallery Review**: Offer a walkthrough of captured screenshots and code changes during the validation step so the user can visually confirm design integrity before moving forward.
 
 ---
 
-### 6. Canonical Blueprint Immutability & Zero-Mutation Preflight Passthrough
-* **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**: Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
-* **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
+# 📸 Local-First Development, Before/After Visual Review & Deferred Git Commit Law
+
+* **Strict 3-Step Execution Sequence**:
+  1. **Step 1: Local Implementation & Verification**:
+     - Apply code changes strictly on local workspace files.
+     - Verify compilation (`npx tsc --noEmit`) and local runtime (`http://localhost:3000`).
+  2. **Step 2: Mandatory Before & After Screenshots**:
+     - Run headless Puppeteer in the background to capture visual screenshots before (or baseline) and after the changes.
+     - Store artifacts in `<project_root>/scratch/screenshots_<task_id>/`.
+     - Present both `Before` and `After` screenshots to the user using clickable `file://` markdown links.
+  3. **Step 3: Deferred Git Commit & Push**:
+     - Only execute `git commit` and `git push origin main` AFTER successful local validation and screenshot presentation.
+     - Trigger the 1-minute Railway deployment monitoring loop post-push.
 
 ---
 
-### 7. Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops
-* **Step Numbers & Flow Sequence**: All process workflows, data pipelines, lifecycle maps, and integration architectures MUST feature explicit sequential step number badges (❶..❻ / 1..6) showing what happens when, with drop-lines or chained orthogonal edges.
-* **Typed Connectors Palette**:
-  - *Synchronous / Direct API / Data Ingestion*: Solid blue (`#2563EB` / `#1D4ED8`, `strokeWidth=1.5 - 2`).
-  - *Asynchronous / Event Stream / CDC*: Dashed orange/amber (`#EA580C` / `#D97706`, `dashed=1;dashPattern=6 4`).
-  - *AI Copilot / Vertex RAG / Grounding*: Dashed purple (`#7C3AED` / `#9333EA`, `dashed=1;dashPattern=4 4`).
-  - *External Ecosystem / Protocol Exchanges*: Green (`#16A34A` / `#059669`) with high-contrast protocol pill badges (`IDMP`, `FHIR`, `SFTP`, `REST`).
-  - *Governance / Policy Oversight*: Dashed slate/purple (`#64748B`, `dashed=1;dashPattern=2 4`).
-  - *Closed-Loop Feedback Returns*: Dashed teal/green (`#0D9488` / `#16A34A`, `dashed=1;dashPattern=5 5`) looping back to source systems.
+# ☁️ Cloudtop & Installed Browser Mandate for Testing
+
+* **Cloudtop & Installed Chrome Paths for Testing**: Always use Cloudtop (`rw nitinagga.c.googlers.com`) or explicitly set `executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'` in Puppeteer launch configs.
+* **Bypass Unverified Binary Blockers**: Never rely on default unverified `Google Chrome for Testing` downloads, which get blocked by workstation Santa security policies.
 
 ---
 
-### 8. Point-to-Point Connector Straightness & Zero Stepped Jogs
-* When connecting between shapes with different heights, widths, or center coordinates, never use default `exitY=0.5;entryY=0.5;` with `edgeStyle=orthogonalEdgeStyle;` across narrow gaps, which forces ugly $90^\circ$ steps along container borders.
-* Always compute exact matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and enforce `edgeStyle=none;` for direct straight point-to-point connectors.
+# 🧪 E2E Settling Delays & Animation Synchronization
+
+* **Mandatory 800ms Settling Delays**: Always inject a minimum **800ms synchronization delay** (`await sleep(800)`) immediately after clicking tab switches, drawers, or modal controllers to allow React state updates and CSS transitions to settle before screenshot capture.
+* **DOM-Level Clicks**: Prefer direct DOM clicks (`page.$eval(selector, el => el.click())`) over physical mouse coordinate clicks for spotlighted elements to prevent click interception by overlay masks.
+* **Node-Level Sleep for Reloads**: When an action triggers a full page reload (`window.location.reload()`), use Node.js timeouts (`await sleep(2000)`) instead of `page.evaluate()`, which crashes when the execution context is destroyed.
+* **Dynamic UI Control & Embedded Viewport Verification**: Never assume updating a React state variable automatically re-renders embedded third-party viewports (e.g. `<iframe>`, `canvas`, WebGL, Draw.io SVG viewports). When adding interactive dropdowns or state controls, verify that:
+  1. The component is not cached by `React.memo` or static `iframe` DOM element references without a dynamic `key` prop (`key={xml}`).
+  2. A background E2E Puppeteer test script executes DOM interaction clicks (`page.select()` / `page.click()`), waits for settling (`await sleep(800)`), and verifies that child element attributes (e.g., node coordinates, SVG elements) physically mutated in the live browser DOM.
+* **Aspect Ratio & Viewport Container Resizing**: When adding aspect ratio controls (`16:9`, `4:3`, `1:1`, `9:16`, `21:9`, `Custom`), verify that BOTH the node XML coordinates AND the outer iframe wrapper container frame (`containerDimensions`) dynamically morph shape on screen.
+* **2D Bounding Box Visual Collision Auto-Healing**: All diagram XML generators and layout engines MUST perform 2D bounding box intersection checks (with 30px safety padding margin) and push overlapping nodes rightward (for same-tier overlaps) or downward (for vertical overlaps) before rendering.
 
 ---
 
-### 9. Rounded Container Corner Insetting & Margin Safety ($\ge 20\text{px}$)
-* Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
-* Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
+# 🗄️ Dual Database Safeguard Protocol (SQLite vs PostgreSQL)
+
+* **Dual-Engine Type Compatibility**: Ensure SQLite integer booleans (`0` / `1`) cleanly map to PostgreSQL boolean values (`true` / `false`) across API handlers and RLS helpers.
+* **Foreign Key Pragmas**: Always execute `PRAGMA foreign_keys = ON;` in SQLite connections to mirror PostgreSQL constraint enforcement.
+* **Migration Safety**: Always use `ADD COLUMN IF NOT EXISTS` syntax when adding table columns across environments.
 
 ---
 
-### 10. Zero-Void Proportional Card Item Scaling & Brand Header Balance
-* Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
-* Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
+# 🚀 Independent Live Deployment Verification & Railway Monitoring Protocol
+
+* **Santa Workstation Blocker Bypass for Railway CLI**:
+  - Never execute the raw `railway` CLI binary directly on the local macOS workstation to avoid Santa security policy blocks.
+  - Execute `railway` CLI operations via **Cloudtop** (`rw nitinagga.c.googlers.com`) or use Railway REST/GraphQL API & live HTTP endpoint polling.
+* **Mandatory Post-Push Deployment Polling**:
+  - Immediately following any `git push origin main` (or Railway deployment kickoff), initiate an automated background monitoring loop.
+* **1-Minute Cadence Status Updates**:
+  - Check Railway deployment status / build progress / live endpoint health at **1-minute intervals** (`every 1 min`).
+  - Report concise progress to the user at each interval (e.g. `[Min 1] Building container...`, `[Min 2] Next.js compilation...`, `[Min 3] Container healthy & deployed to https://promptcanvas.up.railway.app`).
+* **Independent Live String Verification**:
+  - Never declare a Railway or Vercel deployment "live" based purely on CLI exit codes (`0`) or dashboard green status badges.
+  - Perform an HTTP request (`curl -s <live_url>`) to search the delivered HTML/JS asset for a **unique string literal** present only in the newly added code changes to confirm CDN cache invalidation before reporting completion.
 
 ---
 
-### 11. Sequence Diagram & Flow Enclave (ALT / OPT / LOOP / PAR) Discrete Channel & Shielding Law
-* **Discrete $\ge 26\text{px}$ Channel Pitch**: In alternative (`ALT`), optional (`OPT`), loop (`LOOP`), or parallel (`PAR`) enclaves, never combine multi-line text and connector arrows into a shared HTML block. Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
-* **Opaque Background Shielding**: Floating sub-boxes, ALT containers, or overlay cards that sit on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background lines from bleeding through and cutting across foreground text and icons.
-* **Strict Top Alignment**: Enforce `verticalAlign=top;` on all enclave text cells to lock character baselines against connector arrows.
+# 🧰 Registered Workspace Skill Trigger Index
+
+* **`diagram-generation-engine`**: Triggered when compiling, generating, styling, or repairing Draw.io architecture diagrams, canonical master templates, and high-contrast cloud topologies.
+* **`ui-first-design-system`**: Triggered when designing or refactoring UI components, cards, layouts, micro-interactions, or dark glassmorphic panels.
+* **`visual-regression-testing`**: Triggered when running automated pixel-by-pixel image diffing (`pixelmatch`) to verify CSS & visual layout integrity.
+* **`cross-viewport-auditor`**: Triggered when auditing responsive UI breakpoints across Mobile (390px), Tablet (834px), and Ultra-Wide Desktop (1600px+).
+* **`ai-prompt-evals`**: Triggered when modifying Gemini LLM prompt templates, Draw.io XML graph generators, or prompt-to-architecture compilers.
+* **`security-code-scanner`**: Triggered when conducting SAST static security analysis, SVG XSS audit checks, or dependency CVE scanning.
+* **`performance-and-telemetry`**: Triggered when profiling client Core Web Vitals (LCP, CLS, TTFB) or Railway server container health logs.
+* **`database-schema-guard`**: Triggered when editing database tables, SQL schemas, migrations, or SQLite/Postgres RLS rules.
+* **`load-and-stress-testing`**: Triggered when running concurrent multi-user load tests on API route handlers or rate-limiting middleware.
 
 ---
 
-### 12. Self-Referential Activity Loops (Step ⓳ Style)
-* Self-referential processing steps on lifeline activation bars (e.g. `Write logs`, `Compute Embeddings`, `Cache Lookup`) MUST use orthogonal rounded loops exiting and entering the same activation bar edge with high-contrast label pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;`).
+# 🔁 Harness & Autonomous Loop Engineering Protocol
+
+* **Automated Test Harness Scaffolding**: Every feature modification must run inside an automated test harness (Puppeteer E2E, TypeScript compiler `npx tsc --noEmit`, SAST scanner, or DB schema drift guard) executing asynchronously in the background.
+* **Closed-Loop Self-Correction**: When an error, failing test, or visual regression is detected by the harness:
+  1. Capture diagnostic logs and visual screenshot deltas into `<project_root>/scratch/screenshots_<task_id>/`.
+  2. Analyze the root cause autonomously without asking the user to debug or write fix code.
+  3. Implement targeted code corrections in the codebase.
+  4. Re-run the test harness to independently verify resolution before presenting final validation to the user.
+* **Deterministic Environment Scaffolding**: Never rely on unseeded, mutable browser state. The harness must pre-seed database auth sessions (`dev.db`), warm up dev server routes, and programmatically purge target screenshot directories prior to test execution.
 
 ---
 
-### 13. Semantic Step Badge Palette in Summaries
-* Sequence and workflow summary tables MUST use semantic flow coloring for step number badges (❶..⑳) matching the diagram's architecture tiers:
-  - **User / Frontend**: Blue (`#1D4ED8`)
-  - **Gateway / Network**: Teal (`#0D9488`)
-  - **Orchestration / LLM**: Purple (`#7C3AED`)
-  - **Policy / Guardrails**: Dark Violet (`#6D28D9`)
-  - **Data Services / DB**: Green (`#059669`) / Sky (`#0284C7`)
-  - **Audit / Logging**: Cyan / Sky (`#0284C7`)
-  - **Returns / Responses**: Slate (`#64748B`)
-  - **Error / Policy Block**: Red (`#DC2626`)
+# 🦉 Recursive Multi-Agent Orchestration (`/owl` & `/goal`)
+
+* **Master Orchestration (`owl`)**: For complex, multi-phase coding projects, trigger the `owl` subagent or `/owl` slash command to recursively decompose goals into sub-tasks, spawn specialized child subagents (`define_subagent` + `invoke_subagent`), and evaluate completion recursively.
+* **Goal Execution (`/goal`)**: Use `/goal` for long-running, autonomous missions where the agent loops continuously through testing, self-correction, and verification until 100% complete.
 
 ---
 
-### 14. Exact Technology Matrix Density Match
-* When replicating canonical reference cards (e.g. `TECHNOLOGY STACK`), always match the exact reference icon count and 2-row layout (e.g., 4 on top, 2 centered below) with large vector icons (`20px`) and proportional spacing rather than cramming excessive small icons that leave awkward voids.
+# 📐 Draw.io Edge Routing & Label Offset Protocol
+
+* **Plain Text Edge Labels & Transparent Backgrounds**: Never wrap edge `value` attributes in `<font color="#ffffff">` or `<div>` HTML tags. Always set `labelBackgroundColor=none;` and enforce `fontColor=#38BDF8;fontStyle=1;fontSize=11;` for dark mode or `fontColor=#0F172A` for light mode.
+* **Rhombus Tip Offset Rule**:
+  - Horizontal lines entering a Rhombus shape: `lblX = -50, lblY = -18` (positions text 50px before the left tip in 100% open space).
+  - Horizontal lines exiting a Rhombus shape: `lblX = 50, lblY = -18` (positions text 50px after the right tip in 100% open space).
+* **Vertical Line Side Offsets (`lblX = 28, lblY = -10`)**: Position edge labels 28px to the right of vertical connector lines with `align=left;spacingLeft=8;` so vertical arrow lines never cut through or cross text.
+* **140px Column Pitch & Open Inter-Row Channel Routing**: Maintain a minimum $140\text{px}$ horizontal gap between columns (`gapX = 140px`) and route cross-tier/cross-column lines through open inter-row channel waypoints (`gapY = 80px`). Labels float $16\text{px}$ above horizontal channel segments in open space.
+* **Canvas Dark/Light Theme Synchronization**: Sync container backgrounds, iframe document bodies, and edge text contrast colors across Dark (`#0F172A`) and Light (`#FFFFFF`) themes.
 
 ---
 
-### 15. Mandatory Git Push Protocol
-* Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
+# 🏛️ Canonical Blueprint Immutability & Master Architecture Rules
 
----
-
-### 16. Mandatory Ground-Truth Structural Parity Quality Gate
-* Never declare a canonical blueprint complete based solely on compilation (`tsc`) or clean rendering (`svg.length > 0`).
-* Every template MUST be audited against an explicit feature checklist derived from its reference image in `images/`, verifying:
-  1. Exact element and microservice card count in each tier/zone.
-  2. All sub-diagram enclaves (e.g. Deployment Patterns in CI/CD, Failover Flow, Replication Buses).
-  3. Decision diamonds, branch outcomes (`Yes` / `No`), and closed feedback return loops.
-  4. Complete cross-cutting enablers, security controls, and CIDR/network annotations.
-  5. Side-by-side screenshot review against the ground-truth image before marking complete.
-
----
-
-### 17. Mandatory Official GCP Native Architecture Vector Icons Mandate
-* For all Google Cloud architectures and components, **NEVER** use generic emojis (such as `👑`, `⚡`, `🔑`, `🛡️`, `📊`, `🚀`, `🗄️`, `✨`) as service icons.
-* Always import and use authentic vector SVGs from `src/lib/gcpIcons.ts` (`GCP_OFFICIAL_ICONS` / `renderGcpIconHtml`):
-  - **Gemini / DeepMind Core**: Official 4-point gradient Gemini diamond (`gemini`).
-  - **Vertex AI / Vector Search**: Official Vertex AI (`vertex_ai`) and ScaNN Vector Search (`vertex_vector_search`).
-  - **Document AI / GCS**: Official Document AI (`document_ai`) and Cloud Storage (`cloud_storage`).
-  - **Compute / Orchestration**: Official GKE Autopilot (`gke_autopilot`), Cloud Run (`cloud_run`), and Compute Engine (`compute_engine`).
-  - **Databases & Cache**: Official BigQuery (`bigquery`), Cloud Spanner (`spanner`), and Cloud Memorystore (`memorystore`).
-  - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
-  - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
+1. **Master Ground-Truth Reference (`images/01.png` – `images/37.png`)**:
+   - Every canonical template in `src/lib/canonical/` MUST replicate the visual structure, column pitch, row pitch, color-coded chevrons, role pods, and decision gates of its corresponding master image in `images/` with 100% fidelity.
+2. **Zero-Mutation Preflight Passthrough**:
+   - `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` MUST ALWAYS recognize canonical diagrams (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`, etc.) as structured master diagrams and pass them through with **ZERO coordinate or geometric mutation**.
+3. **16:9 Aspect Ratio Preservation**:
+   - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800 / 1600x960) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
+4. **Mandatory `<mxfile><diagram>` Envelope**:
+   - Every diagram generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure.
+5. **Zero External URL Dependencies**:
+   - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels. Always use native vector Unicode symbols/emojis or inline SVGs.
+6. **High-Contrast Pill Badges for Connectors**:
+   - All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`) to guarantee 100% collision-free legibility.
+7. **Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops**:
+   - **Step Numbers & Flow Sequence**: All process workflows, data pipelines, lifecycle maps, and integration architectures MUST feature explicit sequential step number badges (❶..❻ / 1..6) showing what happens when, with drop-lines or chained orthogonal edges.
+   - **Typed Connectors Palette**:
+     - *Synchronous / Direct API / Data Ingestion*: Solid blue (`#2563EB` / `#1D4ED8`, `strokeWidth=1.5 - 2`).
+     - *Asynchronous / Event Stream / CDC*: Dashed orange/amber (`#EA580C` / `#D97706`, `dashed=1;dashPattern=6 4`).
+     - *AI Copilot / Vertex RAG / Grounding*: Dashed purple (`#7C3AED` / `#9333EA`, `dashed=1;dashPattern=4 4`).
+     - *External Ecosystem / Protocol Exchanges*: Green (`#16A34A` / `#059669`) with high-contrast protocol pill badges (`IDMP`, `FHIR`, `SFTP`, `REST`).
+     - *Governance / Policy Oversight*: Dashed slate/purple (`#64748B`, `dashed=1;dashPattern=2 4`).
+     - *Closed-Loop Feedback Returns*: Dashed teal/green (`#0D9488` / `#16A34A`, `dashed=1;dashPattern=5 5`) looping back to source systems.
+8. **Point-to-Point Connector Straightness & Zero Stepped Jogs**:
+   - When connecting between shapes with different heights, widths, or center coordinates, never use default `exitY=0.5;entryY=0.5;` with `edgeStyle=orthogonalEdgeStyle;` across narrow gaps, which forces ugly $90^\circ$ steps along container borders.
+   - Always compute exact matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$ or $X_{\text{exit}} = X_{\text{entry}}$) and enforce `edgeStyle=none;` for direct straight point-to-point connectors.
+9. **Rounded Container Corner Insetting & Margin Safety ($\ge 20\text{px}$)**:
+   - Any child element or card positioned in the 4 corners of a rounded container (`rounded=1`, border radius $\ge 20\text{px}$) MUST maintain a minimum **$20\text{px} - 24\text{px}$ inset margin** from the container's outer bounds.
+   - Never place rectangular child boxes $< 16\text{px}$ from rounded container corners to prevent sharp border clipping over rounded arcs.
+10. **Zero-Void Proportional Card Item Scaling & Brand Header Balance**:
+    - Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
+    - Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
+11. **Sequence Diagram & Flow Enclave (ALT / OPT / LOOP / PAR) Discrete Channel & Shielding Law**:
+    - **Discrete $\ge 26\text{px}$ Channel Pitch**: In alternative (`ALT`), optional (`OPT`), loop (`LOOP`), or parallel (`PAR`) enclaves, never combine multi-line text and connector arrows into a shared HTML block. Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
+    - **Opaque Background Shielding**: Floating sub-boxes, ALT containers, or overlay cards that sit on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background lines from bleeding through and cutting across foreground text and icons.
+    - **Strict Top Alignment**: Enforce `verticalAlign=top;` on all enclave text cells to lock character baselines against connector arrows.
+12. **Self-Referential Activity Loops (Step ⓳ Style)**:
+    - Self-referential processing steps on lifeline activation bars (e.g. `Write logs`, `Compute Embeddings`, `Cache Lookup`) MUST use orthogonal rounded loops exiting and entering the same activation bar edge with high-contrast label pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2.5;`).
+13. **Semantic Step Badge Palette in Summaries**:
+    - Sequence and workflow summary tables MUST use semantic flow coloring for step number badges (❶..⑳) matching the diagram's architecture tiers:
+      - **User / Frontend**: Blue (`#1D4ED8`)
+      - **Gateway / Network**: Teal (`#0D9488`)
+      - **Orchestration / LLM**: Purple (`#7C3AED`)
+      - **Policy / Guardrails**: Dark Violet (`#6D28D9`)
+      - **Data Services / DB**: Green (`#059669`) / Sky (`#0284C7`)
+      - **Audit / Logging**: Cyan / Sky (`#0284C7`)
+      - **Returns / Responses**: Slate (`#64748B`)
+      - **Error / Policy Block**: Red (`#DC2626`)
+14. **Exact Technology Matrix Density Match**:
+    - When replicating canonical reference cards (e.g. `TECHNOLOGY STACK`), always match the exact reference icon count and 2-row layout (e.g., 4 on top, 2 centered below) with large vector icons (`20px`) and proportional spacing rather than cramming excessive small icons that leave awkward voids.
+15. **Mandatory Git Push Protocol**:
+    - Whenever code changes are committed (`git commit`), immediately execute `git push origin main` without exception so that live production environments remain synchronized.
+16. **Mandatory Ground-Truth Structural Parity Quality Gate**:
+    - Never declare a canonical blueprint complete based solely on compilation (`tsc`) or clean rendering (`svg.length > 0`).
+    - Every template MUST be audited against an explicit feature checklist derived from its reference image in `images/`, verifying:
+      1. Exact element and microservice card count in each tier/zone.
+      2. All sub-diagram enclaves (e.g. Deployment Patterns in CI/CD, Failover Flow, Replication Buses).
+      3. Decision diamonds, branch outcomes (`Yes` / `No`), and closed feedback return loops.
+      4. Complete cross-cutting enablers, security controls, and CIDR/network annotations.
+      5. Side-by-side screenshot review against the ground-truth image before marking complete.
+17. **Mandatory Official GCP Native Architecture Vector Icons Mandate**:
+    - For all Google Cloud architectures and components, **NEVER** use generic emojis (such as `👑`, `⚡`, `🔑`, `🛡️`, `📊`, `🚀`, `🗄️`, `✨`) as service icons.
+    - Always import and use authentic vector SVGs from `src/lib/gcpIcons.ts` (`GCP_OFFICIAL_ICONS` / `renderGcpIconHtml`):
+      - **Gemini / DeepMind Core**: Official 4-point gradient Gemini diamond (`gemini`).
+      - **Vertex AI / Vector Search**: Official Vertex AI (`vertex_ai`) and ScaNN Vector Search (`vertex_vector_search`).
+      - **Document AI / GCS**: Official Document AI (`document_ai`) and Cloud Storage (`cloud_storage`).
+      - **Compute / Orchestration**: Official GKE Autopilot (`gke_autopilot`), Cloud Run (`cloud_run`), and Compute Engine (`compute_engine`).
+      - **Databases & Cache**: Official BigQuery (`bigquery`), Cloud Spanner (`spanner`), and Cloud Memorystore (`memorystore`).
+      - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
+      - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
 
 ---
 
 # 🏛️ Core Architectural Tenets: Visual Clarity, Technical Accuracy & Logical Flow
 
 1. **Visual Clarity Law**:
-   - **Zero Surrounding Empty Space Law (Strict Viewport Breadth)**: When adding or refactoring new pages, document readers, workspaces, or studio panels, **NEVER** constrain main wrappers with narrow centered grids (`max-w-4xl`, `max-w-5xl`, `max-w-6xl` with `mx-auto`) that introduce empty side gutters on desktop monitors. Always enforce full-width utilization (`w-full max-w-none` or spacious `max-w-8xl` / `max-w-[1600px]`) with proportional horizontal padding (`p-6 md:p-8` or `px-10 md:px-12`). Child cards, tables, and document sections must expand edge-to-edge with zero dead voids.
    - **Viewport Auto-Fit Containment**: Diagram viewports must always enforce `allowFullScaleScroll={false}` and `fit=true` to guarantee 100% visual containment without viewport clipping on ultra-wide or high-DPI displays.
    - **Clean Markdown Parsing**: Never dump raw markdown asterisks (`**`) into JSX text nodes. Always parse markdown into styled typography tags.
    - **Collated Telemetry Disclosure**: Encapsulate real-time Gemini API logs in clean, collapsible accordions (`<details>`).
@@ -199,41 +280,13 @@
 
 ---
 
-# 📸 Local-First Development, Before/After Visual Review & Deferred Git Commit Law
+# 🧩 Technical Architecture Diagramming & Vector Icon Embedding Laws
 
-* **Strict 3-Step Execution Sequence**:
-  1. **Step 1: Local Implementation & Verification**:
-     - Apply code changes strictly on local workspace files.
-     - Verify compilation (`npx tsc --noEmit`) and local runtime (`http://localhost:3000`).
-  2. **Step 2: Mandatory Before & After Screenshots**:
-     - Run headless Puppeteer in the background to capture visual screenshots before (or baseline) and after the changes.
-     - Store artifacts in `<project_root>/scratch/screenshots_<task_id>/`.
-     - Present both `Before` and `After` screenshots to the user using clickable `file://` markdown links.
-  3. **Step 3: Deferred Git Commit & Push**:
-     - Only execute `git commit` and `git push origin main` AFTER successful local validation and screenshot presentation.
-     - Trigger the 1-minute Railway deployment monitoring loop post-push.
-
----
-
-# 🚀 Independent Live Deployment Verification & Railway Monitoring Protocol
-
-* **Santa Workstation Blocker Bypass for Railway CLI**:
-  - Never execute the raw `railway` CLI binary directly on the local macOS workstation to avoid Santa security policy blocks.
-  - Execute `railway` CLI operations via **Cloudtop** (`rw nitinagga.c.googlers.com`) or use Railway REST/GraphQL API & live HTTP endpoint polling.
-* **Mandatory Post-Push Deployment Polling**:
-  - Immediately following any `git push origin main` (or Railway deployment kickoff), initiate an automated background monitoring loop.
-* **1-Minute Cadence Status Updates**:
-  - Check Railway deployment status / build progress / live endpoint health at **1-minute intervals** (`every 1 min`).
-  - Report concise progress to the user at each interval (e.g. `[Min 1] Building container...`, `[Min 2] Next.js compilation...`, `[Min 3] Container healthy & deployed to https://promptcanvas.up.railway.app`).
-* **Independent Live String Verification**:
-  - Never declare a Railway or Vercel deployment "live" based purely on CLI exit codes (`0`) or dashboard green status badges.
-  - # 🧩 Technical Architecture Diagramming & Vector Icon Embedding Laws
-
-18. **Production Platform & Tool Vector Icon Embedding Standard**:
+18. **Production Platform & Multi-Vendor Vector Icon Embedding Standard**:
     - For all cloud, multi-agent, enterprise SaaS, and database architectures, every service node MUST feature its official vector SVG icon embedded as an inline RFC 2397 `data:image/svg+xml` data URI (`image=data:image/svg+xml,...;imageWidth=24-26;imageHeight=24-26;imageAlign=left;spacingLeft=38-44;`).
     - Reference [`src/lib/gcpIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/gcpIcons.ts) for Google Cloud and [`src/lib/sapIcons.ts`](file:///Users/nitinagga/Documents/PromptCanvas/src/lib/sapIcons.ts) for SAP Ecosystem (Joule, BTP, APIM, Datasphere, HANA, S/4HANA, SuccessFactors, Concur, Ariba, SAC, Fiori, Cloud Connector).
     - **Zero External HTTP/HTTPS Icon URLs**: Never use unverified external icon CDNs (e.g. `https://api.iconify.design/...`) which break in air-gapped, offline, headless, or security-sandboxed environments.
-    - **Zero Generic Emojis & Zero Plain Boxes**: Never substitute enterprise platforms with toy emojis or render them as plain unbranded boxes.
+    - **Zero Generic Emojis & Zero Plain Boxes**: Never substitute enterprise platforms with toy emojis or render recognized vendor services as plain unbranded boxes.
 
 19. **True Technical Depth & Production Specificity Law**:
     - Architecture diagrams must depict concrete production infrastructure: explicit VPC subnets, CIDR blocks (`10.128.0.0/16`), security perimeters (VPC-SC), private ingress/egress endpoints (PSC, Direct VPC Egress), transport protocols (`JSON-RPC over mTLS`, `gRPC :443`, `Delta Sharing`, `SNC Encryption`), exact container runtimes (Cloud Run, Kyma K8s), and hardware/DB deployment modes (Multi-AZ HSR, High-Availability Clusters).
@@ -279,3 +332,23 @@
         2. *Responsive & Aspect Ratios*: Verification across Mobile (390px), Tablet (834px), Desktop (1440px), and Ultra-Wide (1600px+), plus dynamic aspect ratio morphing (`16:9`, `9:16`, `1:1`, `21:9`).
         3. *Dynamic State & Theme Shifts*: Full dark/light theme switching, 800ms settled DOM transitions, and post-reload URL state restoration (`/studio3?id=<uuid>`).
         4. *Embedded Viewport Verification*: Physically assert that child elements inside third-party viewports (`<iframe>`, canvas, SVG) actually re-rendered with mutated attributes.
+
+24. **Client-Side Edge Router Override & Deterministic Waypoint Law**:
+    - **Prohibition of `orthogonalEdgeStyle` with Manual Waypoints**: When manual intermediate waypoints (`<Array as="points">`) are defined on an edge, **NEVER** use `edgeStyle=orthogonalEdgeStyle;`. Draw.io's client-side JavaScript engine (`mxGraph` / `viewer-static.min.js`) treats `orthogonalEdgeStyle` as a dynamic Manhattan auto-router that will discard explicit waypoints if it detects obstacles, auto-routing straight through child nodes or intermediate containers.
+    - **Mandatory `edgeStyle=none;rounded=1;` for Deterministic Waypoints**: Always enforce `edgeStyle=none;rounded=1;` whenever intermediate waypoints are specified. This locks the path to strict point-to-point rectilinear segments with smooth rounded corners and prevents client-side algorithmic path deviation.
+
+25. **Edge Label AABB Safety Margins & Container Header Collision Prevention**:
+    - **Header Clearance ($\ge 20\text{px}$)**: All connector edge label pills (`<mxPoint as="offset"/>` or relative labels) MUST maintain a minimum vertical clearance of **$20\text{px}$** from all container headers (e.g., VPC networks, subnets, swimlanes, and edge ingress boxes). Connector labels must NEVER hover directly over, intersect, or obscure container title text or CIDR annotations.
+    - **Dedicated Corridor Waypoint Routing**: Cross-container ingress lines (e.g. Ingress → Private VPC) must route through dedicated external corridors (e.g., a $25\text{px}$ open gap between the ingress box and VPC border) so that horizontal segments and label badges float in 100% open white space outside container title bars.
+
+26. **Inter-Card Clearance & Badge Channel Pitch Law ($\ge \text{Badge Width} + 20\text{px}$)**:
+    - **Zero-Collision Channel Pitch**: Sibling node spacing cannot be validated solely by bounding box non-overlap ($A_x + A_w \le B_x$). If a connector between two adjacent cards carries a label badge, the horizontal or vertical gap between them MUST strictly accommodate the badge:
+      $$\text{Channel Gap} = X_{\text{target}} - (X_{\text{source}} + W_{\text{source}}) \ge \text{Badge Width} + 20\text{px}$$
+    - Never place a $70\text{px}-100\text{px}$ wide label badge (such as `GPUDirect RDMA 3.2 Tbps` or `TLS 1.3 Handshake`) in a narrow $20\text{px}-25\text{px}$ gap. Expand card gaps to at least $40\text{px}-75\text{px}$ to guarantee collision-free visual margins.
+
+27. **SVG DOM Coordinate & Bounding Box Inspection Mandate (Beyond Text Presence)**:
+    - **Prohibition of Text-Only DOM Assertions**: E2E tests (Puppeteer / Playwright) MUST NOT declare a diagram or UI state verified based solely on `innerText.includes(...)` or screenshot generation.
+    - **Physical SVG Inspection**: Automated test scripts must inspect the rendered SVG DOM elements inside `#diagram-canvas-card iframe`:
+      1. Query rendered `<text>` and `<rect>` elements via `page.evaluate()` or `page.$$()`.
+      2. Call `getBoundingClientRect()` on edge label text elements and verify zero mathematical intersection with adjacent container headers or node cards.
+      3. Assert that line paths (`<path d="...">`) do not penetrate the inner bounding boxes of non-target child components.

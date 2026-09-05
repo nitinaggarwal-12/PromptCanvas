@@ -21,7 +21,7 @@ export function runValidatorTests(): boolean {
         <mxCell id="n2" value="Node 2" style="rounded=1;" vertex="1" parent="tier_1">
           <mxGeometry x="300" y="50" width="180" height="72" as="geometry"/>
         </mxCell>
-        <mxCell id="e1" value="Flow" style="edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="n1" target="n2">
+        <mxCell id="e1" value="Flow" style="edgeStyle=orthogonalEdgeStyle;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;" edge="1" parent="1" source="n1" target="n2">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
       </root>
@@ -97,14 +97,15 @@ export function runValidatorTests(): boolean {
     console.log(' ✅ OUT_OF_BOUNDS fixture detected');
   }
 
-  // 8. ORPHAN_NODE (warning check)
+  // 8. ORPHAN_NODE (error or warning check)
   const orphanXml = cleanXml.replace(/<mxCell id="e1"[\s\S]*?<\/mxCell>/, '');
   const orphanRes = validateDrawioXml(orphanXml);
-  if (!orphanRes.warnings.some((w) => w.code === 'ORPHAN_NODE')) {
-    console.error(' ❌ ORPHAN_NODE warning fixture not detected');
+  const hasOrphan = orphanRes.errors.some((e) => e.code === 'ORPHAN_NODE') || orphanRes.warnings.some((w) => w.code === 'ORPHAN_NODE');
+  if (!hasOrphan) {
+    console.error(' ❌ ORPHAN_NODE fixture not detected');
     passed = false;
   } else {
-    console.log(' ✅ ORPHAN_NODE warning fixture detected');
+    console.log(' ✅ ORPHAN_NODE fixture detected');
   }
 
   return passed;

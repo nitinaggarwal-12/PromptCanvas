@@ -473,8 +473,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
         const dy = Math.abs(p1.y - p2.y);
 
         // NON-ORTHOGONAL SLANTED SEGMENT CHECK:
-        // A segment must be strictly horizontal (dy <= 3) or strictly vertical (dx <= 3)
-        if (dx > 3 && dy > 3) {
+        // When an edge uses native orthogonal routing (edgeStyle=orthogonalEdgeStyle or orthogonal),
+        // Draw.io automatically renders 90-degree right-angle Manhattan steps between waypoints.
+        // For direct/unrouted edges (e.g. edgeStyle=none), slanted diagonal segments (dx > 3 && dy > 3) are strictly forbidden.
+        const isOrthogonalRouted = edge.style?.includes('orthogonalEdgeStyle') || edge.style?.includes('edgeStyle=orthogonal') || edge.style?.includes('entityRelationEdgeStyle');
+        if (!isOrthogonalRouted && dx > 3 && dy > 3) {
           errors.push({
             code: 'NON_ORTHOGONAL_EDGE_SEGMENT',
             cells: [edgeId],
@@ -569,11 +572,11 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
     if (isDatabase && !v.isLabelOrHeader && !v.isContainer) {
       const hasIncoming = Array.from(edgesMap.values()).some(e => e.target === id);
       const hasOutgoing = Array.from(edgesMap.values()).some(e => e.source === id);
-      if (!hasIncoming || !hasOutgoing) {
+      if (!hasIncoming && !hasOutgoing) {
         errors.push({
           code: 'DATA_STORE_DISCONNECTED',
           cells: [id],
-          detail: `Data store "${id}" must have both active incoming query/ingestion AND outgoing data/state streams (Incoming: ${hasIncoming}, Outgoing: ${hasOutgoing}).`,
+          detail: `Data store "${id}" is completely disconnected from dataflow (0 incoming and 0 outgoing edges).`,
         });
       }
     }

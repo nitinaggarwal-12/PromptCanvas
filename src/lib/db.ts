@@ -159,6 +159,7 @@ let pgPoolInstance: Pool | null = null;
 let sqliteDbInstance: DatabaseSync | null = null;
 const globalForDb = globalThis as unknown as { _tablesInitialized?: boolean };
 let tablesInitialized = false;
+let tablesInitPromise: Promise<void> | null = null;
 
 export function isPostgres(): boolean {
   return !!process.env.DATABASE_URL;
@@ -303,10 +304,25 @@ export async function purgeExpiredGuestSessionsAndDiagrams(): Promise<{ purgedSe
   }
 }
 
-// Ensure database tables exist for active driver
-export async function ensureTablesExist(): Promise<void> {
-  if (tablesInitialized || globalForDb._tablesInitialized) return;
+const RESOLVED_PROMISE = Promise.resolve();
 
+// Ensure database tables exist for active driver with in-flight promise deduplication
+export function ensureTablesExist(): Promise<void> {
+  if (tablesInitialized || globalForDb._tablesInitialized) return RESOLVED_PROMISE;
+  if (!tablesInitPromise) {
+    tablesInitPromise = doEnsureTablesExist()
+      .then(() => {
+        tablesInitPromise = RESOLVED_PROMISE;
+      })
+      .catch((err) => {
+        tablesInitPromise = null;
+        throw err;
+      });
+  }
+  return tablesInitPromise;
+}
+
+async function doEnsureTablesExist(): Promise<void> {
   if (isPostgres()) {
     const pool = getPgPool();
     await pool.query(`
