@@ -41,7 +41,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # 🛡️ Validation-First & Quality Gate Protocol
 
-* **No Auto-Advancing**: Always pause and present a comprehensive validation step (including screenshot walkthroughs, DOM verification, and code diffs) before moving on to the next implementation phase. Never auto-start writing code for downstream phases without explicit user approval.
+* **Autonomous Issue Remediation (Zero Approval Pauses for Fixes)**: To fix an issue, defect, or missing requirement, NEVER ask for user approval. Immediately fix it, evaluate it, and if the same or other issues are found, continue fixing and iterating in an autonomous loop until the goal is 100% achieved.
+* **No Auto-Advancing on New Phases**: Always pause and present a comprehensive validation step before moving on to unrelated downstream phases.
 * **Seed Verification**: Always verify database or session pre-seeding so test runners execute cleanly in clean browser sessions.
 * **Visual Gallery Review**: Offer a walkthrough of captured screenshots and code changes during the validation step so the user can visually confirm design integrity before moving forward.
 

@@ -37,7 +37,19 @@ import {
   Activity,
   RefreshCw,
   AlertTriangle,
+  History,
+  Send,
+  RotateCcw,
+  ChevronDown,
+  MessageSquare,
 } from 'lucide-react';
+import {
+  GcpVersionSnapshot,
+  GcpChatMessage,
+  GCP_STAKEHOLDER_PROMPTS,
+  GCP_PHARMA_SPECIALIZED_PROMPTS,
+  executeGcpPromptModification,
+} from '@/lib/gcpCoPilotModifier';
 
 function GcpArchitectureCenterInner() {
   const searchParams = useSearchParams();
@@ -59,6 +71,15 @@ function GcpArchitectureCenterInner() {
   const [a2aActiveView, setA2aActiveView] = useState<'timeline' | 'nodes' | 'raw'>('timeline');
   const [copiedDagJson, setCopiedDagJson] = useState<boolean>(false);
 
+  // Architecture Co-Pilot & Snapshot Versioning State
+  const [isCopilotOpen, setIsCopilotOpen] = useState<boolean>(true);
+  const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState<boolean>(false);
+  const [promptInput, setPromptInput] = useState<string>('');
+  const [customXmlOverride, setCustomXmlOverride] = useState<string | null>(null);
+  const [activeVersionTag, setActiveVersionTag] = useState<string>('v1.0');
+  const [versions, setVersions] = useState<GcpVersionSnapshot[]>([]);
+  const [messages, setMessages] = useState<GcpChatMessage[]>([]);
+
   // Sync state if URL searchParam changes
   useEffect(() => {
     const id = searchParams.get('id');
@@ -71,9 +92,87 @@ function GcpArchitectureCenterInner() {
     return getGcpArchitectureById(selectedArchId) || ALL_GCP_DIALECT_A_ARCHITECTURES[0];
   }, [selectedArchId]);
 
+  // Initialize or reset versions when activeArch or isDark changes
+  useEffect(() => {
+    const baseXml = activeArch.generateXml(isDark);
+    setCustomXmlOverride(null);
+    setActiveVersionTag('v1.0');
+    setVersions([
+      {
+        id: `v_${activeArch.id}_baseline`,
+        versionTag: 'v1.0',
+        timestamp: 'Baseline',
+        author: 'Canonical Architecture Blueprint',
+        actionSummary: `${activeArch.title} (Production Model)`,
+        canvasDiff: 'Initial Canonical Architecture Model loaded in 16:9 viewport.',
+        specDiff: 'Standard Dialect A specifications, step sequences, and protocols active.',
+        xml: baseXml,
+      },
+    ]);
+    setMessages([
+      {
+        id: `welcome_${activeArch.id}`,
+        sender: 'assistant',
+        text: `Welcome to the Architecture Co-Pilot for ${activeArch.title}! You can simulate stakeholder personas or enter custom prompts to modify topologies, inject microservice nodes, enforce security perimeters, and update data flows. Every change generates an immutable version snapshot with 1-click rollback.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
+  }, [activeArch.id, isDark]);
+
   const activeXml = useMemo(() => {
-    return activeArch.generateXml(isDark);
-  }, [activeArch, isDark]);
+    return customXmlOverride || activeArch.generateXml(isDark);
+  }, [customXmlOverride, activeArch, isDark]);
+
+  const handleExecutePrompt = (promptText: string, explicitPersona?: string) => {
+    if (!promptText.trim()) return;
+
+    const userMsg: GcpChatMessage = {
+      id: `msg_u_${Date.now()}`,
+      sender: 'user',
+      text: promptText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setPromptInput('');
+
+    try {
+      const { updatedXml, newVersion, assistantMessage } = executeGcpPromptModification(
+        activeXml,
+        promptText,
+        versions.length,
+        activeArch.id,
+        isDark,
+        explicitPersona
+      );
+
+      setVersions((prev) => [...prev, newVersion]);
+      setActiveVersionTag(newVersion.versionTag);
+      setCustomXmlOverride(updatedXml);
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (err: any) {
+      console.error('[Co-Pilot] Error applying prompt:', err);
+      const errorMsg: GcpChatMessage = {
+        id: `msg_err_${Date.now()}`,
+        sender: 'assistant',
+        text: `⚠️ Co-Pilot Synthesis Error: ${err.message || 'Failed to modify architecture.'}`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, errorMsg]);
+    }
+  };
+
+  const handleRestoreVersion = (version: GcpVersionSnapshot) => {
+    setActiveVersionTag(version.versionTag);
+    setCustomXmlOverride(version.xml);
+    const restoreNotice: GcpChatMessage = {
+      id: `msg_restore_${Date.now()}`,
+      sender: 'assistant',
+      text: `↺ Restored architecture to snapshot ${version.versionTag} (${version.actionSummary}).`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    setMessages((prev) => [...prev, restoreNotice]);
+  };
 
   const handleSelectArchitecture = (id: string) => {
     setSelectedArchId(id);
@@ -522,59 +621,388 @@ function GcpArchitectureCenterInner() {
             </div>
           </div>
 
-          {/* TAB 1: INTERACTIVE DRAW.IO CANVAS VIEW */}
+          {/* TAB 1: INTERACTIVE DRAW.IO CANVAS VIEW WITH INTEGRATED CO-PILOT */}
           {activeTab === 'canvas' && (
-            <div
-              id="diagram-canvas-card"
-              className={`rounded-xl border overflow-hidden transition-all ${
-                isDark ? 'bg-[#0F172A] border-slate-800 shadow-xl' : 'bg-white border-slate-200 shadow-md'
-              }`}
-            >
-              {/* Canvas Action Bar */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+              {/* LEFT: ARCHITECTURE CO-PILOT CHATBOT PANEL */}
+              {isCopilotOpen && (
+                <div
+                  id="architecture-copilot-panel"
+                  className={`col-span-12 lg:col-span-4 xl:col-span-4 2xl:col-span-3.5 rounded-xl border flex flex-col h-[760px] md:h-[860px] overflow-hidden transition-all shadow-lg ${
+                    isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200'
+                  }`}
+                >
+                  {/* Co-Pilot Header */}
+                  <div
+                    className={`px-4 py-3 border-b flex items-center justify-between ${
+                      isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50/90 border-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-500">
+                        <Bot className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white">
+                            Architecture Co-Pilot
+                          </span>
+                          <span className="text-[9px] font-mono font-bold bg-blue-500/15 text-blue-500 border border-blue-500/25 px-1.5 py-0.2 rounded-full">
+                            Gemini 2.5
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                          Prompt-to-Architecture Synthesis &amp; Versioning
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" title="Co-Pilot Active &amp; Ready" />
+                      <button
+                        onClick={() => setIsCopilotOpen(false)}
+                        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-md"
+                        title="Collapse Co-Pilot"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Stakeholder Simulation & Suggested Prompts */}
+                  <div
+                    className={`p-3 border-b space-y-2 flex-shrink-0 ${
+                      isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-50/60 border-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        {activeArch.id.startsWith('gcp-pharma')
+                          ? 'Pharma Specialized Prompts:'
+                          : 'Simulate Stakeholder Personas:'}
+                      </span>
+                      <span className="text-[9px] font-mono text-purple-600 dark:text-purple-400 font-bold bg-purple-500/10 px-1.5 py-0.5 rounded">
+                        1-Click Synthesize
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {(activeArch.id.startsWith('gcp-pharma')
+                        ? GCP_PHARMA_SPECIALIZED_PROMPTS
+                        : GCP_STAKEHOLDER_PROMPTS
+                      ).map((sp) => (
+                        <button
+                          key={sp.id}
+                          onClick={() => handleExecutePrompt(sp.prompt, sp.persona)}
+                          className={`text-left p-1.5 rounded-lg border text-[11px] transition flex items-center gap-1.5 font-medium shadow-2xs truncate ${
+                            isDark
+                              ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 text-slate-200 hover:text-white'
+                              : 'bg-white hover:bg-blue-50 border-slate-200 hover:border-blue-300 text-slate-700 hover:text-blue-950'
+                          }`}
+                          title={sp.description}
+                        >
+                          <span>{sp.emoji}</span>
+                          <span className="truncate">{sp.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Messages Scroll Stream */}
+                  <div className="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-3 text-xs">
+                    {messages.map((msg) => {
+                      const isUser = msg.sender === 'user';
+                      return (
+                        <div
+                          key={msg.id}
+                          className={`rounded-xl p-3 space-y-1.5 transition-all ${
+                            isUser
+                              ? isDark
+                                ? 'bg-blue-950/40 border border-blue-900/60'
+                                : 'bg-blue-50/90 border border-blue-200'
+                              : isDark
+                              ? 'bg-slate-900/80 border border-slate-800'
+                              : 'bg-slate-50 border border-slate-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span
+                              className={`font-bold flex items-center gap-1.5 ${
+                                isUser ? 'text-blue-600 dark:text-blue-300' : 'text-slate-800 dark:text-slate-200'
+                              }`}
+                            >
+                              <span>{isUser ? '👤 You asked:' : '🤖 Co-Pilot Synthesis:'}</span>
+                              {msg.actionSummary?.versionTag && (
+                                <span className="font-mono text-[9px] bg-blue-600 text-white px-1.5 py-0.2 rounded font-bold">
+                                  {msg.actionSummary.versionTag}
+                                </span>
+                              )}
+                            </span>
+                            <span className="font-mono text-[10px] text-slate-400">{msg.timestamp}</span>
+                          </div>
+
+                          <p
+                            className={`text-[11.5px] leading-relaxed ${
+                              isUser ? 'text-slate-800 dark:text-slate-200 font-medium' : 'text-slate-600 dark:text-slate-300'
+                            }`}
+                          >
+                            {msg.text}
+                          </p>
+
+                          {msg.actionSummary && (
+                            <div
+                              className={`mt-2 p-2.5 rounded-lg border text-[11px] space-y-1.5 ${
+                                isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-white border-slate-200'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-slate-700 dark:text-slate-300">Topology Diff:</span>
+                                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                                  ● Active in Viewport
+                                </span>
+                              </div>
+                              <p className="text-[10.5px] text-emerald-700 dark:text-emerald-300 font-mono leading-relaxed">
+                                {msg.actionSummary.canvasDiff}
+                              </p>
+                              <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                                {msg.actionSummary.specDiff}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Sticky Prompt Composer */}
+                  <div
+                    className={`p-3 border-t space-y-2 flex-shrink-0 ${
+                      isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50/90 border-slate-200'
+                    }`}
+                  >
+                    <div className="relative">
+                      <textarea
+                        value={promptInput}
+                        onChange={(e) => setPromptInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleExecutePrompt(promptInput);
+                          }
+                        }}
+                        rows={2}
+                        placeholder="Ask Co-Pilot to edit diagram, add nodes, or upgrade tiers..."
+                        className={`w-full border rounded-xl px-3 py-2 pr-16 text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none shadow-sm transition-all ${
+                          isDark
+                            ? 'bg-slate-950 border-slate-700 text-white focus:border-blue-500'
+                            : 'bg-white border-slate-300 text-slate-900 focus:border-blue-500'
+                        }`}
+                      />
+                      <button
+                        onClick={() => handleExecutePrompt(promptInput)}
+                        disabled={!promptInput.trim()}
+                        className={`absolute bottom-2.5 right-2 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 ${
+                          promptInput.trim()
+                            ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30'
+                            : 'bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed'
+                        }`}
+                      >
+                        <span>Apply</span>
+                        <Send className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                      <span>Target: <strong className="text-blue-500">Live Architecture Model</strong></span>
+                      <span>Press Enter ↵</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* RIGHT: INTERACTIVE DRAW.IO CANVAS VIEWPORT */}
               <div
-                className={`px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-3 text-xs ${
-                  isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50/90 border-slate-200'
+                id="diagram-canvas-card"
+                className={`${
+                  isCopilotOpen
+                    ? 'col-span-12 lg:col-span-8 xl:col-span-8 2xl:col-span-8.5'
+                    : 'col-span-12'
+                } rounded-xl border overflow-hidden transition-all shadow-md ${
+                  isDark ? 'bg-[#0F172A] border-slate-800 shadow-xl' : 'bg-white border-slate-200'
                 }`}
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-bold text-slate-700 dark:text-slate-200">
-                    Draw.io Canvas Viewport (16:9 Aspect Ratio)
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-mono">
-                    &bull; Zero-Mutation Passthrough &bull; Responsive Auto-Fit
-                  </span>
+                {/* Canvas Action Bar with CoPilot Toggle and Versioning */}
+                <div
+                  className={`px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-3 text-xs ${
+                    isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50/90 border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-bold text-slate-700 dark:text-slate-200">
+                      Draw.io Canvas Viewport (16:9 Aspect Ratio)
+                    </span>
+
+                    {/* CoPilot Show/Hide Toggle */}
+                    <button
+                      onClick={() => setIsCopilotOpen(!isCopilotOpen)}
+                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                        isCopilotOpen
+                          ? 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border-blue-500/30'
+                          : isDark
+                          ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                      }`}
+                      title="Toggle Architecture Co-Pilot Chatbot Panel"
+                    >
+                      <Bot className="w-3 h-3" />
+                      <span>{isCopilotOpen ? 'Co-Pilot Active' : 'Show Co-Pilot'}</span>
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2.5 text-xs">
+                    {/* Version History Selector Dropdown */}
+                    <div className="relative" id="gcp-version-dropdown-container">
+                      <button
+                        onClick={() => setIsVersionDropdownOpen(!isVersionDropdownOpen)}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                          activeVersionTag !== 'v1.0'
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : isDark
+                            ? 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                        }`}
+                        title="Snapshot Version History & Rollback"
+                      >
+                        <History className="w-3.5 h-3.5" />
+                        <span>Version: {activeVersionTag}</span>
+                        <span
+                          className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
+                            activeVersionTag !== 'v1.0' ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700'
+                          }`}
+                        >
+                          {versions.length}
+                        </span>
+                        <ChevronDown className="w-3 h-3 opacity-70" />
+                      </button>
+
+                      {isVersionDropdownOpen && (
+                        <div
+                          className={`absolute right-0 sm:left-0 mt-1.5 w-80 rounded-xl border shadow-2xl z-50 p-2 space-y-1 backdrop-blur-md ${
+                            isDark
+                              ? 'bg-slate-900/95 border-slate-800 text-slate-200 shadow-slate-950/80'
+                              : 'bg-white/95 border-slate-200 text-slate-800 shadow-slate-200/80'
+                          }`}
+                        >
+                          <div className="px-2 py-1.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                            <span>SNAPSHOT VERSION HISTORY</span>
+                            <span>{versions.length} versions</span>
+                          </div>
+                          <div className="max-h-64 overflow-y-auto space-y-1">
+                            {versions.map((v) => {
+                              const isCurrent = v.versionTag === activeVersionTag;
+                              return (
+                                <button
+                                  key={v.id}
+                                  onClick={() => {
+                                    handleRestoreVersion(v);
+                                    setIsVersionDropdownOpen(false);
+                                  }}
+                                  className={`w-full text-left p-2 rounded-lg text-xs transition flex items-start justify-between gap-2 ${
+                                    isCurrent
+                                      ? 'bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold'
+                                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                  }`}
+                                >
+                                  <div className="space-y-0.5 min-w-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="font-mono text-[10px] bg-slate-200 dark:bg-slate-700 px-1 py-0.2 rounded font-bold">
+                                        {v.versionTag}
+                                      </span>
+                                      <span className="text-[11px] truncate font-semibold">{v.author}</span>
+                                    </div>
+                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
+                                      {v.actionSummary}
+                                    </p>
+                                  </div>
+                                  <span className="text-[9.5px] font-mono text-slate-400 whitespace-nowrap">
+                                    {v.timestamp}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {activeVersionTag !== 'v1.0' && (
+                            <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800">
+                              <button
+                                onClick={() => {
+                                  if (versions.length > 0) {
+                                    handleRestoreVersion(versions[0]);
+                                  }
+                                  setIsVersionDropdownOpen(false);
+                                }}
+                                className="w-full text-center py-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center justify-center gap-1"
+                              >
+                                <RotateCcw className="w-3 h-3" />
+                                <span>Restore Baseline Model (v1.0)</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Quick Rollback Button if not v1.0 */}
+                    {activeVersionTag !== 'v1.0' && (
+                      <button
+                        onClick={() => {
+                          if (versions.length > 0) {
+                            handleRestoreVersion(versions[0]);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
+                          isDark
+                            ? 'bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 border-amber-800/60'
+                            : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                        }`}
+                        title="Rollback to Baseline Version 1.0"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span className="hidden md:inline">Revert to v1.0</span>
+                      </button>
+                    )}
+
+                    <span className="text-slate-300 dark:text-slate-700">|</span>
+
+                    <button
+                      onClick={handleCopyXml}
+                      className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-blue-500 font-semibold transition-colors"
+                      title="Copy XML"
+                    >
+                      {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedXml ? 'Copied' : 'Copy XML'}</span>
+                    </button>
+
+                    <button
+                      onClick={handleOpenDiagramsNet}
+                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+                      title="Open in Diagrams.net"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span className="hidden sm:inline">diagrams.net</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs">
-                  <button
-                    onClick={handleCopyXml}
-                    className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-blue-500 font-semibold transition-colors"
-                  >
-                    {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedXml ? 'Copied' : 'Copy Raw XML'}</span>
-                  </button>
-                  <span className="text-slate-300 dark:text-slate-700">|</span>
-                  <button
-                    onClick={handleOpenDiagramsNet}
-                    className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    <span>Open in diagrams.net</span>
-                  </button>
+                {/* RenderSafe Diagram Canvas Container */}
+                <div className="w-full h-[720px] md:h-[820px] relative bg-white dark:bg-[#0B111E]">
+                  <DiagramViewerRenderSafe
+                    key={`${activeArch.id}-${activeVersionTag}-${isDark ? 'dark' : 'light'}`}
+                    xml={activeXml}
+                    diagramId={activeArch.id}
+                    aspectRatioId="16:9"
+                    bgTheme={isDark ? 'dark' : 'light'}
+                    allowFullScaleScroll={false}
+                  />
                 </div>
-              </div>
-
-              {/* RenderSafe Diagram Canvas Container */}
-              <div className="w-full h-[720px] md:h-[840px] relative bg-white dark:bg-[#0B111E]">
-                <DiagramViewerRenderSafe
-                  key={`${activeArch.id}-${isDark ? 'dark' : 'light'}`}
-                  xml={activeXml}
-                  diagramId={activeArch.id}
-                  aspectRatioId="16:9"
-                  bgTheme={isDark ? 'dark' : 'light'}
-                  allowFullScaleScroll={false}
-                />
               </div>
             </div>
           )}
