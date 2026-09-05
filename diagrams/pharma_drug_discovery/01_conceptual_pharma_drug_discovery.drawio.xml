@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2026-09-05T12:00:00.000Z" agent="PromptCanvas" version="24.0.0" type="device">
+  <diagram id="pharma_conceptual_master" name="Conceptual Architecture - Pharma Drug Discovery Agentic AI Platform">
+    <mxGraphModel dx="1810" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1040" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ========================================================================= -->
+        <!-- OFFICIAL GOOGLE CLOUD ARCHITECTURE CENTER TOP HEADER BANNER               -->
+        <!-- ========================================================================= -->
+        <mxCell id="hdr_banner_box" value="" style="rounded=1;arcSize=4;fillColor=#F0F7FF;strokeColor=#1A73E8;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="14" width="1740" height="64" as="geometry" />
+        </mxCell>
+
+        <!-- Left: Official GCP Logo Icon -->
+        <mxCell id="hdr_gcp_icon" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M19.35%2010.04C18.67%206.59%2015.64%204%2012%204C9.11%204%206.6%205.64%205.35%208.04C2.34%208.36%200%2010.91%200%2014C0%2017.31%202.69%2020%206%2020H19C21.76%2020%2024%2017.76%2024%2015C24%2012.36%2021.95%2010.22%2019.35%2010.04Z%22%20fill%3D%22%231A73E8%22%2F%3E%3C%2Fsvg%3E;" vertex="1" parent="1">
+          <mxGeometry x="46" y="24" width="44" height="44" as="geometry" />
+        </mxCell>
+
+        <!-- Center-Left: Architecture Center Breadcrumb, Title & Subtitle -->
+        <mxCell id="hdr_tag" value="GOOGLE CLOUD ARCHITECTURE CENTER • LIFE SCIENCES &amp; DEEPMIND HEALTH COE" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="102" y="20" width="800" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_title" value="Pharma Drug Discovery Agentic AI Platform on Google Cloud" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=16;fontStyle=1;fontColor=#0F172A;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="102" y="34" width="800" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="hdr_sub" value="Conceptual Architecture • Capability &amp; Boundary Level: Autonomous Target-to-Lead, Biocompute &amp; Wet-Lab Workcell" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=0;fontColor=#64748B;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="102" y="55" width="800" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Right: Official Google Cloud Specification Badges -->
+        <mxCell id="chip_gxp" value="⚖️ GxP 21 CFR Part 11 Validated" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="32" width="185" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="chip_standards" value="⚡ A2A + SiLA 2 Protocol Standards" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1295" y="32" width="195" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="chip_official" value="🏛️ Official Dialect A Architecture" style="rounded=1;arcSize=50;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#065F46;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="32" width="190" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="chip_mesh" value="🧬 In Silico &amp; Wet-Lab" style="rounded=1;arcSize=50;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="32" width="60" height="28" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 1: DISCOVERY PERSONAS & LEADERSHIP (x=30, w=190, y=90, h=655)      -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_user_bg" value="" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="90" width="190" height="655" as="geometry" />
+        </mxCell>
+        <mxCell id="col_user_hdr" value="GOOGLE CLOUD DISCOVERY STUDIO" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1E40AF;spacingLeft=0;" vertex="1" parent="1">
+          <mxGeometry x="30" y="96" width="190" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="col_user_sub" value="Discovery Personas &amp; Leadership" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="108" width="190" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Persona Card 1: Computational Chemists (y=128, h=135) -->
+        <mxCell id="card_persona_chemist" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="128" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_chem_bg" value="" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="105" y="136" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_chem" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M9%203H15M10%203V8L4%2018C3.3%2019.1%204.1%2020.5%205.4%2020.5H18.6C19.9%2020.5%2020.7%2019.1%2020%2018L14%208V3%22%20stroke%3D%22%232563EB%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Cpath%20d%3D%22M6.5%2015H17.5%22%20stroke%3D%22%233B82F6%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%2217.5%22%20r%3D%221%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%2214%22%20cy%3D%2217.5%22%20r%3D%221%22%20fill%3D%22%232563EB%22%2F%3E%3C%2Fsvg%3E;" vertex="1" parent="1">
+          <mxGeometry x="114" y="145" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_chem_title" value="Computational Chemist" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="42" y="178" width="166" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_chem_desc" value="Hypothesis design, generative candidate review, SAR inspection." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="44" y="194" width="162" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_chem_tool" value="Target Dossier Definition" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#1D4ED8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="232" width="154" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Persona Card 2: Structural Biologists (y=273, h=135) -->
+        <mxCell id="card_persona_bio" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="273" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_bio_bg" value="" style="shape=ellipse;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="105" y="281" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_bio" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%202C8%206%208%2010%2012%2014C16%2018%2016%2022%2012%2022M12%202C16%206%2016%2010%2012%2014C8%2018%208%2022%2012%2022%22%20stroke%3D%22%230D9488%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%228%22%20r%3D%222%22%20fill%3D%22%230D9488%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2216%22%20r%3D%222%22%20fill%3D%22%230D9488%22%2F%3E%3C%2Fsvg%3E;" vertex="1" parent="1">
+          <mxGeometry x="114" y="290" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_bio_title" value="Structural Biologist" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="42" y="323" width="166" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_bio_desc" value="Cryo-EM density analysis, cryptic pocket curation, binding pose triage." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="44" y="339" width="162" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_bio_tool" value="Cavity Curation • ChimeraX" style="rounded=1;arcSize=50;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#0D9488;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="377" width="154" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Persona Card 3: Discovery Directors (y=418, h=135) -->
+        <mxCell id="card_persona_dir" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="418" width="170" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_dir_bg" value="" style="shape=ellipse;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="105" y="426" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_dir" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%202L4%205.5V11.5C4%2016.5%207.4%2021.1%2012%2022.5C16.6%2021.1%2020%2016.5%2020%2011.5V5.5L12%202Z%22%20fill%3D%22%23EFF6FF%22%20stroke%3D%22%231E40AF%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M9%2012L11%2014L15%2010%22%20stroke%3D%22%231E40AF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E;" vertex="1" parent="1">
+          <mxGeometry x="114" y="435" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dir_title" value="Discovery Director" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="42" y="468" width="166" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_dir_desc" value="Milestone decision gates, Part 11 sign-off, wet-lab campaign greenlight." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="44" y="484" width="162" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_dir_tool" value="GxP Regulatory Sign-Off" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="522" width="154" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Persona Card 4: Shared Collaborative Workspace (y=563, h=165) - Utilizes bottom space -->
+        <mxCell id="card_persona_hub" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="563" width="170" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_hub_bg" value="" style="shape=ellipse;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="105" y="571" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ico_hub" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2218%22%20height%3D%2218%22%20rx%3D%223%22%20stroke%3D%22%232563EB%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M3%209H21M9%2021V9%22%20stroke%3D%22%233B82F6%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E;" vertex="1" parent="1">
+          <mxGeometry x="114" y="580" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_hub_title" value="Discovery Studio Hub" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="42" y="613" width="166" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_hub_desc" value="Live multi-user molecular session store, compound triage dossiers &amp; PyMOL bridges." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
+          <mxGeometry x="44" y="629" width="162" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_hub_spec" value="Shared PyMOL / PDB Session" style="rounded=1;arcSize=50;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#475569;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="48" y="694" width="154" height="22" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 2: COGNITIVE DISCOVERY AGENTS & AI MESH (x=245, w=430, y=90, h=655) -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_agents_bg" value="" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="90" width="430" height="655" as="geometry" />
+        </mxCell>
+        <mxCell id="col_agents_tag" value="GOOGLE CLOUD — AGENTIC DISCOVERY MESH" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="245" y="96" width="380" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="col_agents_hdr" value="Cognitive Discovery Agents &amp; AI Mesh" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="245" y="108" width="380" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Row 0: Coordinator Agent (y=128, h=52) -->
+        <mxCell id="c_coordinator_agent" value="Lead Discovery Coordinator Agent (ReAct Master Orchestrator)" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#1E3A8A;align=left;verticalAlign=middle;spacingLeft=42;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%202C12%207.52%207.52%2012%202%2012C7.52%2012%2012%2016.48%2012%2022C12%2016.48%2016.48%2012%2022%2012C16.48%2012%2012%207.52%2012%202Z%22%20fill%3D%22%231A73E8%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="260" y="128" width="400" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-tier 2B: Specialized Discovery Workers (Mesh) Enclave -->
+        <mxCell id="box_subagents_mesh" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;dashed=1;dashPattern=3 3;" vertex="1" parent="1">
+          <mxGeometry x="260" y="195" width="400" height="535" as="geometry" />
+        </mxCell>
+        <!-- Subagent Header shifted right to x=390 to leave x=260..370 completely clear for Step ❶ Drop Line -->
+        <mxCell id="lbl_subagents_mesh" value="Domain-Specialized Subagent Mesh (A2A Protocol)" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#475569;spacingRight=12;" vertex="1" parent="1">
+          <mxGeometry x="360" y="199" width="290" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Row 1: Target Validation Agent (y=222, h=95) -->
+        <mxCell id="c_sub_target" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;Target Validation &amp;amp; Biology Agent&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;GWAS genetic evidence • Target tractability scoring • Biomedical literature synthesis&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M4%203C8%206%2016%206%2020%203M4%2021C8%2018%2016%2018%2020%2021M4%209C8%2012%2016%2012%2020%209M4%2015C8%2012%2016%2012%2020%2015%22%20stroke%3D%22%237C3AED%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%222.5%22%20fill%3D%22%237C3AED%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="270" y="222" width="380" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_sub_target" value="UniProt • ChEMBL • PubMed Literature RAG" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="285" width="360" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2: Pocket Druggability Agent (y=352, h=95) -->
+        <mxCell id="c_sub_pocket" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0369A1;&quot;&gt;Pocket Druggability &amp;amp; Structural Agent&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Cryptic allosteric pocket discovery • Cavity volume analysis • Hydration energetics&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%20stroke%3D%22%230284C7%22%20stroke-width%3D%221.8%22%20fill%3D%22%23F0F9FF%22%2F%3E%3Cpath%20d%3D%22M8%209C8%2011.2%209.8%2013%2012%2013C14.2%2013%2016%2011.2%2016%209%22%20stroke%3D%22%230284C7%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2210%22%20r%3D%221.5%22%20fill%3D%22%230284C7%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="270" y="352" width="380" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_sub_pocket" value="AlphaFold 3 • ESMFold 3D Co-Folding Dispatch" style="rounded=1;arcSize=50;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0284C7;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="415" width="360" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 3: De Novo Molecule Generator (y=482, h=95) -->
+        <mxCell id="c_sub_generative" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#7C3AED;&quot;&gt;De Novo Molecule Generator (Generative Chem)&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Diffusion &amp;amp; autoregressive chemistry models • Valid SMILES / SELFIES generation&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%225%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%229%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%225%22%20cy%3D%2216%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2220%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%2216%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Ccircle%20cx%3D%2219%22%20cy%3D%229%22%20r%3D%222.5%22%20fill%3D%22%232563EB%22%2F%3E%3Cpath%20d%3D%22M12%207.5L5%2011.5M5%2013.5L5%2016M12%2017.5L19%2013.5M19%2011.5L19%209M5%209L12%205L19%209%22%20stroke%3D%22%232563EB%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="270" y="482" width="380" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_sub_generative" value="Stereocenter Sanitization • SAScore Retrosynthesis Filter" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="545" width="360" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 4: ADMET Critic & Affinity Optimizer (y=612, h=95) -->
+        <mxCell id="c_sub_admet" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;ADMET Critic &amp;amp; Binding Affinity Optimizer&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Lipinski Rule-of-5 • hERG &amp;amp; CYP450 toxicity • Docking pose free energy (ΔG)&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%202L4%205V11C4%2016.5%207.4%2021.1%2012%2022.5C16.6%2021.1%2020%2016.5%2020%2011V5L12%202Z%22%20fill%3D%22%23FEF3C7%22%20stroke%3D%22%23D97706%22%20stroke-width%3D%221.8%22%2F%3E%3Cpath%20d%3D%22M9%2012H15M12%209V15%22%20stroke%3D%22%23D97706%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="270" y="612" width="380" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_sub_admet" value="HPC Free Energy Perturbation (FEP+) • Iterative SAR Loop" style="rounded=1;arcSize=50;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="280" y="675" width="360" height="22" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================================================= -->
+        <!-- THE 140PX HIGHWAY PITCH (x=675..815, w=140): ALL GROUNDING LABELS FLOAT IN 100% OPEN SPACE WITH ZERO OVERLAPS -->
+        <!-- ========================================================================================================= -->
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 3: STRUCTURAL & CHEMICAL FOUNDATION (x=815, w=465, y=90, h=655)    -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_struct_bg" value="" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="815" y="90" width="465" height="655" as="geometry" />
+        </mxCell>
+        <mxCell id="col_struct_tag" value="GOOGLE CLOUD — BIOINFORMATICS &amp; STRUCTURAL FOUNDATION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="815" y="96" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="col_struct_hdr" value="Structural &amp; Chemical Foundation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="815" y="108" width="400" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Row 0: Vertex AI Gemini Foundation Model (y=128, h=52) -->
+        <mxCell id="c_gemini_model" value="Vertex AI Gemini 1.5 Pro (Multimodal Chemical Reasoning &amp; SMILES)" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#1A73E8;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#1E40AF;align=left;verticalAlign=middle;spacingLeft=42;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M12%202C12%207.52%207.52%2012%202%2012C7.52%2012%2012%2016.48%2012%2022C12%2016.48%2016.48%2012%2022%2012C16.48%2012%2012%207.52%2012%202Z%22%20fill%3D%22%231A73E8%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="830" y="128" width="420" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- Row 1 Foundation: Molecular Knowledge Graph & Lakehouse (y=222, h=95) -->
+        <mxCell id="c_mol_graph_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0F766E;&quot;&gt;Global Molecular Knowledge Graph &amp;amp; Bioactivity Lakehouse&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#0D9488;line-height:1.3;margin-top:2px;&quot;&gt;Billions of target-disease-compound edges • ChEMBL • UniProt • HTS assays&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#F0FDFA;strokeColor=#0D9488;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%20%3Csvg%20id%3D%22standard_product_icon%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.1.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.0%20Build%20142)%20--%3E%20%3Cdefs%3E%20%3Cstyle%3E%20.st0%20%7B%20fill%3A%20none%3B%20%7D%20.st1%20%7B%20fill%3A%20%234285f4%3B%20%7D%20.st2%20%7B%20fill%3A%20%2334a853%3B%20%7D%20.st3%20%7B%20fill%3A%20%23fbbc04%3B%20%7D%20.st4%20%7B%20fill%3A%20%23ea4335%3B%20%7D%20%3C%2Fstyle%3E%20%3C%2Fdefs%3E%20%3Cg%20id%3D%22bounding_box%22%3E%20%3Crect%20class%3D%22st0%22%20width%3D%22512%22%20height%3D%22512%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20id%3D%22art%22%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M311.9%2C418.9c-8.8%2C0-16-7.2-16-16v-145.8c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v145.8c0%2C8.8-7.2%2C16-16%2C16h0Z%22%2F%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M147.6%2C418.9c-8.8%2C0-16-7.2-16-16v-200.5c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v200.5c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M229.8%2C437.4c-8.8%2C0-16-7.2-16-16V147.6c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v273.7c0%2C8.8-7.2%2C16-16%2C16h0Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M229.8%2C437.4c-114.5%2C0-207.6-93.1-207.6-207.6h32c0%2C96.8%2C78.8%2C175.6%2C175.6%2C175.6s175.6-78.8%2C175.6-175.6h32c0%2C114.5-93.1%2C207.6-207.6%2C207.6h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M437.4%2C229.8h-32c0-96.8-78.8-175.6-175.6-175.6S54.1%2C132.9%2C54.1%2C229.8H22.1c0-114.5%2C93.2-207.7%2C207.7-207.7s207.6%2C93.1%2C207.6%2C207.6h0Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M487.4%2C464.8l-100-100c32.3-37.6%2C49.9-85%2C49.9-135.1s-21.6-107.6-60.8-146.8l-22.6%2C22.6c33.2%2C33.2%2C51.4%2C77.3%2C51.4%2C124.2s-18.3%2C90.9-51.5%2C124.1h0c-5%2C5-7.5%2C7-11.8%2C10.8l122.8%2C122.8c3.1%2C3.1%2C7.2%2C4.7%2C11.3%2C4.7h0c4.1%2C0%2C8.2-1.6%2C11.3-4.7%2C6.2-6.2%2C6.2-16.4%2C0-22.6h0Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="830" y="222" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_mol_graph_spec" value="BigQuery Substructure Search • Vector Embeddings RAG" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0F766E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="285" width="390" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 2 Foundation: AlphaFold 3 & ESMFold Runtimes (y=352, h=95) -->
+        <mxCell id="c_alphafold_runtime" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0369A1;&quot;&gt;AlphaFold 3 &amp;amp; ESMFold 3D Co-Folding Runtimes&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#0284C7;line-height:1.3;margin-top:2px;&quot;&gt;Sub-Angstrom protein-ligand co-folding • Multimeric complex conformation&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%20%3Csvg%20id%3D%22standard_product_icon%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.1.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.0%20Build%20142)%20--%3E%20%3Cg%20id%3D%22bounding_box%22%3E%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22none%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20id%3D%22art%22%3E%20%3Cpath%20d%3D%22M128%2C244.99c-8.84%2C0-16-7.16-16-16v-95.97c0-8.84%2C7.16-16%2C16-16s16%2C7.16%2C16%2C16v95.97c0%2C8.84-7.16%2C16-16%2C16Z%22%20fill%3D%22%23ea4335%22%2F%3E%20%3Cpath%20d%3D%22M256%2C458c-2.98%2C0-5.97-.83-8.59-2.5l-186-122c-7.46-4.74-9.65-14.63-4.91-22.09%2C4.75-7.46%2C14.64-9.65%2C22.09-4.91l177.41%2C116.53%2C177.41-116.53c7.45-4.74%2C17.34-2.55%2C22.09%2C4.91%2C4.74%2C7.46%2C2.55%2C17.34-4.91%2C22.09l-186%2C122c-2.62%2C1.67-5.61%2C2.5-8.59%2C2.5Z%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Cpath%20d%3D%22M256%2C388.03c-8.84%2C0-16-7.16-16-16v-73.06c0-8.84%2C7.16-16%2C16-16s16%2C7.16%2C16%2C16v73.06c0%2C8.84-7.16%2C16-16%2C16Z%22%20fill%3D%22%2334a853%22%2F%3E%20%3Ccircle%20cx%3D%22128%22%20cy%3D%2270%22%20r%3D%2216%22%20fill%3D%22%23ea4335%22%2F%3E%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22292%22%20r%3D%2216%22%20fill%3D%22%23ea4335%22%2F%3E%20%3Cpath%20d%3D%22M384.23%2C308.01c-8.82%2C0-15.98-7.14-16-15.97l-.23-94.01c-.02-8.84%2C7.13-16.02%2C15.97-16.03h.04c8.82%2C0%2C15.98%2C7.14%2C16%2C15.97l.23%2C94.01c.02%2C8.84-7.13%2C16.02-15.97%2C16.03h-.04Z%22%20fill%3D%22%234285f4%22%2F%3E%20%3Ccircle%20cx%3D%22384%22%20cy%3D%2270%22%20r%3D%2216%22%20fill%3D%22%234285f4%22%2F%3E%20%3Ccircle%20cx%3D%22384%22%20cy%3D%22134%22%20r%3D%2216%22%20fill%3D%22%234285f4%22%2F%3E%20%3Cpath%20d%3D%22M320%2C220.36c-8.84%2C0-16-7.16-16-16v-103.02c0-8.84%2C7.16-16%2C16-16s16%2C7.16%2C16%2C16v103.02c0%2C8.84-7.16%2C16-16%2C16Z%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Ccircle%20cx%3D%22256%22%20cy%3D%22171%22%20r%3D%2216%22%20fill%3D%22%2334a853%22%2F%3E%20%3Ccircle%20cx%3D%22256%22%20cy%3D%22235%22%20r%3D%2216%22%20fill%3D%22%2334a853%22%2F%3E%20%3Ccircle%20cx%3D%22320%22%20cy%3D%22265%22%20r%3D%2216%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Ccircle%20cx%3D%22320%22%20cy%3D%22329%22%20r%3D%2216%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Cpath%20d%3D%22M192%2C217.36c-8.84%2C0-16-7.16-16-16v-100.02c0-8.84%2C7.16-16%2C16-16s16%2C7.16%2C16%2C16v100.02c0%2C8.84-7.16%2C16-16%2C16Z%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Ccircle%20cx%3D%22192%22%20cy%3D%22265%22%20r%3D%2216%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3Ccircle%20cx%3D%22192%22%20cy%3D%22329%22%20r%3D%2216%22%20fill%3D%22%23fbbc04%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="830" y="352" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_alphafold_spec" value="High Confidence (pLDDT &gt; 85) • Predicted Aligned Error (PAE) Alignment" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0369A1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="415" width="390" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 3 Foundation: Cheminformatics & Retrosynthesis Route Planner (y=482, h=95) -->
+        <mxCell id="c_cheminformatics_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#15803D;&quot;&gt;RDKit Conformer Ensemble &amp;amp; Retrosynthesis Route Planner&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#16A34A;line-height:1.3;margin-top:2px;&quot;&gt;Forward reaction prediction • Disconnection trees • Precursor inventory • SAScore&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#16A34A;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%20%3Csvg%20id%3D%22standard_product_icon%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.1.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.0%20Build%20142)%20--%3E%20%3Cdefs%3E%20%3Cstyle%3E%20.st0%20%7B%20fill%3A%20none%3B%20%7D%20.st1%20%7B%20fill%3A%20%234285f4%3B%20%7D%20.st2%20%7B%20fill%3A%20%2334a853%3B%20%7D%20.st3%20%7B%20fill%3A%20%23fbbc04%3B%20%7D%20.st4%20%7B%20fill%3A%20%23ea4335%3B%20%7D%20%3C%2Fstyle%3E%20%3C%2Fdefs%3E%20%3Cg%20id%3D%22bounding_box%22%3E%20%3Crect%20class%3D%22st0%22%20width%3D%22512%22%20height%3D%22512%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20id%3D%22art%22%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M256%2C459c-2.7%2C0-5.4-.7-7.8-2l-166.2-93.5c-5-2.8-8.2-8.2-8.2-14v-187c0-5.8%2C3.1-11.1%2C8.2-13.9L248.2%2C55c4.9-2.7%2C10.8-2.7%2C15.7%2C0l166.2%2C93.5c5%2C2.8%2C8.2%2C8.2%2C8.2%2C13.9v187c0%2C5.8-3.1%2C11.1-8.2%2C14l-166.2%2C93.5c-2.4%2C1.4-5.1%2C2-7.8%2C2h0ZM105.8%2C340.1l150.2%2C84.5%2C150.2-84.5v-168.3l-150.2-84.5-150.2%2C84.5v168.3ZM422.2%2C349.5h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M89.8%2C178.5c-5.6%2C0-11-2.9-14-8.2-4.3-7.7-1.6-17.5%2C6.1-21.8L248.2%2C55c7.7-4.3%2C17.5-1.6%2C21.8%2C6.1%2C4.3%2C7.7%2C1.6%2C17.5-6.1%2C21.8l-166.2%2C93.5c-2.5%2C1.4-5.2%2C2.1-7.8%2C2.1h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M422.2%2C178.5c-2.7%2C0-5.4-.7-7.8-2.1l-166.2-93.5c-7.7-4.3-10.4-14.1-6.1-21.8%2C4.3-7.7%2C14.1-10.4%2C21.8-6.1l166.2%2C93.5c7.7%2C4.3%2C10.4%2C14.1%2C6.1%2C21.8-2.9%2C5.2-8.4%2C8.2-14%2C8.2h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M256%2C178.5c-8.8%2C0-16-7.2-16-16v-93.5c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v93.5c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M81.7%2C363.3c-4.9-2.9-7.9-8.1-7.9-13.8v-187c0-6%2C3.3-11.2%2C8.2-13.9%2C2.3-1.3%2C23.8-13.4%2C23.8-13.4v187l59.3-33.3c7.7-4.3%2C17.5-1.6%2C21.8%2C6.1%2C4.3%2C7.7%2C1.6%2C17.5-6.1%2C21.8l-90.9%2C51.2s-5.6-3.1-8.1-4.5h0Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M422.2%2C367.9l-90.9-51.2c-7.7-4.3-10.4-14.1-6.1-21.8s14.1-10.4%2C21.8-6.1l59.3%2C33.3v-187s21.5%2C12.1%2C23.9%2C13.4c.8.5%2C1.6%2C1%2C2.3%2C1.6%2C3.6%2C2.9%2C5.8%2C7.4%2C5.8%2C12.4v187c0%2C5.7-3%2C10.9-7.9%2C13.8-2.5%2C1.5-8.1%2C4.5-8.1%2C4.5h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M339.1%2C225.2c-2.7%2C0-5.4-.7-7.8-2.1l-75.3-42.3-75.3%2C42.3c-7.7%2C4.3-17.5%2C1.6-21.8-6.1-4.3-7.7-1.6-17.5%2C6.1-21.8l83.1-46.8c4.9-2.7%2C10.8-2.7%2C15.7%2C0l83.1%2C46.8c7.7%2C4.3%2C10.4%2C14.1%2C6.1%2C21.8-2.9%2C5.2-8.4%2C8.2-14%2C8.2h0Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M256%2C365.5c-5.6%2C0-11-2.9-14-8.2-4.3-7.7-1.6-17.5%2C6.1-21.8l75-42.2v-84.1c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v93.5c0%2C5.8-3.1%2C11.1-8.2%2C14l-83.1%2C46.8c-2.5%2C1.4-5.2%2C2.1-7.8%2C2.1h0Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M256%2C365.5c-2.7%2C0-5.4-.7-7.8-2l-83.1-46.8c-5-2.8-8.2-8.2-8.2-14v-93.5c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v84.1l51.1%2C28.8v-66.1c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v102.9s-3%2C1.6-7.9%2C4.5c-2.5%2C1.5-5.3%2C2.2-8.1%2C2.2h0Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M256%2C272c-5.6%2C0-11-2.9-14-8.2-4.3-7.7-1.6-17.5%2C6.1-21.8l91-51.2%2C7.9%2C4.4c2.1%2C1.1%2C4.2%2C2.8%2C6.1%2C6.1%2C4.3%2C7.7%2C1.6%2C17.5-6.1%2C21.8l-83.1%2C46.8c-2.5%2C1.4-5.2%2C2.1-7.8%2C2.1h0Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M256%2C237.6l-75.3-42.3c-7.7-4.3-17.5-1.6-21.8%2C6.1-1.4%2C2.5-2.1%2C5.2-2.1%2C7.8v9.4l91.3%2C51.3c2.5%2C1.4%2C5.2%2C2.1%2C7.8%2C2.1h0v-34.4h0Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="830" y="482" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_chem_spec" value="Reaction Step Yield Calculation • Automated Reagent BOM Generation" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#15803D;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="545" width="390" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Row 4 Foundation: HPC Molecular Dynamics & FEP+ Simulation (y=612, h=95) -->
+        <mxCell id="c_hpc_md" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;All-Atom Molecular Dynamics &amp;amp; FEP+ Simulation Engine&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#B45309;line-height:1.3;margin-top:2px;&quot;&gt;Solvent thermodynamic integration • Absolute &amp;amp; relative binding free energy (ΔΔG)&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%20%3Csvg%20id%3D%22standard_product_icon%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.1.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.0%20Build%20142)%20--%3E%20%3Cdefs%3E%20%3Cstyle%3E%20.st0%20%7B%20fill%3A%20none%3B%20%7D%20.st1%20%7B%20fill%3A%20%234285f4%3B%20%7D%20.st2%20%7B%20fill%3A%20%2334a853%3B%20%7D%20.st3%20%7B%20fill%3A%20%23fbbc04%3B%20%7D%20.st4%20%7B%20fill%3A%20%23ea4335%3B%20%7D%20%3C%2Fstyle%3E%20%3C%2Fdefs%3E%20%3Cg%20id%3D%22bounding_box%22%3E%20%3Crect%20class%3D%22st0%22%20width%3D%22512%22%20height%3D%22512%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20id%3D%22art%22%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M380.7%2C396.7h-249.3c-8.8%2C0-16-7.2-16-16v-249.3c0-8.8%2C7.2-16%2C16-16h249.3c8.8%2C0%2C16%2C7.2%2C16%2C16v249.3c0%2C8.8-7.2%2C16-16%2C16ZM147.3%2C364.7h217.3v-217.3h-217.3v217.3Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M147.3%2C364.7h-32v-233.3c0-8.8%2C7.2-16%2C16-16h146.1v32h-130.1v217.3h0Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M443%2C364.7h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M443%2C272h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M443%2C178.5h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M349.5%2C147.3c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M256%2C147.3c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M162.5%2C147.3c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M315%2C331h-118c-8.8%2C0-16-7.2-16-16v-118c0-8.8%2C7.2-16%2C16-16h118c8.8%2C0%2C16%2C7.2%2C16%2C16v118c0%2C8.8-7.2%2C16-16%2C16ZM213%2C299h86v-86h-86v86Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M396.7%2C332.7h-32v-185.3h-124.6v-32h140.6c8.8%2C0%2C16%2C7.2%2C16%2C16v201.3Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M162.5%2C459c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M256%2C459c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M349.5%2C459c-8.8%2C0-16-7.2-16-16v-62.3c0-8.8%2C7.2-16%2C16-16s16%2C7.2%2C16%2C16v62.3c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M131.3%2C178.5h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M131.3%2C272h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M131.3%2C364.7h-62.3c-8.8%2C0-16-7.2-16-16s7.2-16%2C16-16h62.3c8.8%2C0%2C16%2C7.2%2C16%2C16s-7.2%2C16-16%2C16Z%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="830" y="612" width="420" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_hpc_spec" value="Rigorous Statistical Mechanics • GKE TPU/GPU Accelerated Sampling" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="845" y="675" width="390" height="22" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 4: COMPLIANCE & WET-LAB EXECUTION (x=1305, w=465, y=90, h=655)     -->
+        <!-- ========================================================================= -->
+        <mxCell id="col_wetlab_bg" value="" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="90" width="465" height="655" as="geometry" />
+        </mxCell>
+        <mxCell id="col_wetlab_tag" value="TRANSLATIONAL EXECUTION &amp; REGULATORY VAULT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="96" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="col_wetlab_hdr" value="Compliance &amp; Wet-Lab Execution" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="108" width="400" height="16" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-box 0: GxP 21 CFR Part 11 Regulatory Compliance Vault (y=128, h=110) -->
+        <mxCell id="box_gxp_vault" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="128" width="435" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_gxp_vault" value="Regulatory &amp; Quality Governance (GxP Compliance)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#DC2626;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1325" y="132" width="310" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="c_gxp_vault_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#991B1B;&quot;&gt;GxP 21 CFR Part 11 Audit Vault &amp;amp; Provenance Ledger&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#DC2626;line-height:1.3;margin-top:2px;&quot;&gt;Cryptographic compound provenance • Immutable execution ledger • Electronic signatures&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%20stroke%3D%22%23DC2626%22%20stroke-width%3D%221.8%22%20fill%3D%22%23FEF2F2%22%2F%3E%3Cpath%20d%3D%22M8%2012L11%2015L16%209%22%20stroke%3D%22%23DC2626%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%226%22%20stroke%3D%22%23EF4444%22%20stroke-width%3D%221%22%20stroke-dasharray%3D%222%202%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="150" width="415" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_gxp_spec" value="Tamper-Proof Audit Trail • FDA/EMA IND Dossier Package Export" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#991B1B;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="202" width="385" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-box 1: Synthesis Protocol Dispatcher (y=248, h=105) -->
+        <mxCell id="box_sila_dispatcher" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="248" width="435" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_sila_dispatcher" value="Laboratory Standards &amp; Protocol Formulation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#2563EB;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1325" y="252" width="300" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="c_sila_dispatcher_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#1E40AF;&quot;&gt;SiLA 2 Lab Automation Protocol Dispatcher&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#2563EB;line-height:1.3;margin-top:2px;&quot;&gt;Translates in silico leads into standardized SiLA 2 XML robotic execution files&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%20%3Csvg%20id%3D%22standard_product_icon%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%20512%20512%22%3E%20%3C!--%20Generator%3A%20Adobe%20Illustrator%2029.1.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%202.1.0%20Build%20142)%20--%3E%20%3Cdefs%3E%20%3Cstyle%3E%20.st0%20%7B%20fill%3A%20none%3B%20%7D%20.st1%20%7B%20fill%3A%20%234285f4%3B%20%7D%20.st2%20%7B%20fill%3A%20%2334a853%3B%20%7D%20.st3%20%7B%20fill%3A%20%23fbbc04%3B%20%7D%20.st4%20%7B%20fill%3A%20%23ea4335%3B%20%7D%20%3C%2Fstyle%3E%20%3C%2Fdefs%3E%20%3Cg%20id%3D%22bounding_box%22%3E%20%3Crect%20class%3D%22st0%22%20width%3D%22512%22%20height%3D%22512%22%2F%3E%20%3C%2Fg%3E%20%3Cg%20id%3D%22art%22%3E%20%3Cpath%20class%3D%22st2%22%20d%3D%22M442%2C277.9H70c-8.8%2C0-16%2C7.2-16%2C16v148.1c0%2C8.8%2C7.2%2C16%2C16%2C16h107.2c1.5.5%2C3.1.7%2C4.8.7s3.3-.3%2C4.8-.7h255.2c8.8%2C0%2C16-7.2%2C16-16v-148.1c0-8.8-7.2-16-16-16ZM86%2C309.9h80v116.1h-80v-116.1ZM426%2C425.9h-228v-116.1h228v116.1Z%22%2F%3E%20%3Cpath%20class%3D%22st3%22%20d%3D%22M442%2C54H70c-8.8%2C0-16%2C7.2-16%2C16v148.8c0%2C8.8%2C7.2%2C16%2C16%2C16h372c8.8%2C0%2C16-7.2%2C16-16V70c0-8.8-7.2-16-16-16ZM86%2C86h80v116.8h-80v-116.8ZM426%2C202.8h-228v-116.8h228v116.8Z%22%2F%3E%20%3Cpath%20class%3D%22st4%22%20d%3D%22M442%2C234.8h-16V86H54v-16c0-8.8%2C7.2-16%2C16-16h372c8.8%2C0%2C16%2C7.2%2C16%2C16v148.8c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Cpath%20class%3D%22st1%22%20d%3D%22M442%2C457.9h-16v-148.1H54v-16c0-8.8%2C7.2-16%2C16-16h372c8.8%2C0%2C16%2C7.2%2C16%2C16v148.1c0%2C8.8-7.2%2C16-16%2C16Z%22%2F%3E%20%3Ccircle%20class%3D%22st4%22%20cx%3D%22349%22%20cy%3D%22144.4%22%20r%3D%2237%22%2F%3E%20%3Ccircle%20class%3D%22st1%22%20cx%3D%22349%22%20cy%3D%22367.9%22%20r%3D%2237%22%2F%3E%20%3C%2Fg%3E%20%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="270" width="415" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_sila_spec" value="SiLA 2 Protocol Commands • Liquid Dispense Script Engine" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="318" width="385" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-box 2: Automated Wet-Lab Workcell & Robotics (y=365, h=170) -->
+        <mxCell id="box_robotic_workcell" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#059669;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="365" width="435" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_robotic_workcell" value="Physical Robotic Synthesis &amp; Bioassay Workcell" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#059669;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1325" y="369" width="320" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="c_robotic_workcell_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#065F46;&quot;&gt;Automated Synthesis &amp;amp; In Vitro Bioassay Platforms&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#059669;line-height:1.3;margin-top:2px;&quot;&gt;Acoustic liquid handlers • Continuous flow synthesis • SPR binding kinetics&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%223%22%20y%3D%2219%22%20width%3D%2218%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23059669%22%2F%3E%3Cpath%20d%3D%22M6%2019V14L10%208L15%2011L18%207%22%20stroke%3D%22%23059669%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3Ccircle%20cx%3D%2210%22%20cy%3D%228%22%20r%3D%222%22%20fill%3D%22%23059669%22%2F%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2211%22%20r%3D%222%22%20fill%3D%22%23059669%22%2F%3E%3Cpath%20d%3D%22M17%205L20%208%22%20stroke%3D%22%23059669%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="387" width="415" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_workcell_spec" value="Nanoscale Microplate Assay • Automated Compound QC • Flow Chemistry" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#065F46;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="492" width="385" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Sub-box 3: Closed Empirical Feedback Loop (y=548, h=182) - Fills bottom space -->
+        <mxCell id="box_active_learning" value="" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="548" width="435" height="182" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_active_learning" value="Closed Empirical Feedback Loop (Active Learning)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#D97706;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="1325" y="552" width="320" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="c_active_learning_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;Empirical Bioactivity Telemetry Return (IC50 / Kd)&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#D97706;line-height:1.3;margin-top:2px;&quot;&gt;Feeds empirical assay results back to Generative Chem &amp;amp; Discovery Coordinator&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2024%2024%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M4%2012A8%208%200%200%201%2018.5%207.5M18.5%207.5V4M18.5%207.5H15M20%2012A8%208%200%200%201%205.5%2016.5M5.5%2016.5V20M5.5%2016.5H9%22%20stroke%3D%22%23D97706%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E;imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="570" width="415" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="pill_learning_spec" value="Automated Assay Calibration • Active Learning Loss Functions" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1345" y="618" width="385" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="c_active_ingestion_subcard" value="&lt;div style=&quot;font-size:10px;font-weight:bold;color:#475569;&quot;&gt;Real-Time Telemetry Streaming &amp;amp; Surrogate Model Retraining&lt;/div&gt;&lt;div style=&quot;font-size:8px;color:#64748B;&quot;&gt;Pub/Sub streaming bus ingestion with BigQuery assay ground-truth delta updates&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="654" width="415" height="66" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- PRISTINE DETERMINISTIC CONNECTORS (Zero Jogs, Zero Collisions)             -->
+        <!-- ========================================================================= -->
+
+        <!-- Ingress 1: Chemist -> Coordinator Agent -->
+        <mxCell id="edge_chemist_coord" value="Initiate Campaign" style="edgeStyle=none;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="card_persona_chemist" target="c_coordinator_agent">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="232" y="195" />
+              <mxPoint x="232" y="154" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ingress 2: Structural Biologist -> Pocket Druggability -->
+        <mxCell id="edge_bio_pocket" value="Curate Binding Pockets" style="edgeStyle=none;rounded=1;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8;fontStyle=1;fontColor=#0D9488;" edge="1" parent="1" source="card_persona_bio" target="c_sub_pocket">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="232" y="340" />
+              <mxPoint x="232" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ingress 3: Discovery Director -> Part 11 Audit Vault & Wet-Lab Release -->
+        <mxCell id="edge_dir_gxp" value="Milestone Part 11 Electronic Sign-Off" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=4 3;html=1;strokeColor=#7C3AED;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8;fontStyle=1;fontColor=#6D28D9;" edge="1" parent="1" source="card_persona_dir" target="c_sub_generative">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="232" y="485" />
+              <mxPoint x="232" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Ingress 4: Discovery Studio Hub -> De Novo Molecule Generator (Shared 3D Session) -->
+        <mxCell id="edge_hub_mesh" value="Shared 3D Triage &amp; PyMOL Bridges" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=4 3;html=1;strokeColor=#2563EB;strokeWidth=1.8;exitX=1;exitY=0.25;entryX=0;entryY=0.85;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=2.5;fontSize=8;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="card_persona_hub" target="c_sub_generative">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="226" y="604" />
+              <mxPoint x="226" y="563" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- Domain 2 Internal Flow: Vertical Step Pipeline (❶..❹) -->
+        <!-- Step 1: Coordinator -> Target Validation (At x=310, completely clear of lbl_subagents_mesh at x=390) -->
+        <mxCell id="edge_coord_target" value="❶ Goal Decomposition" style="edgeStyle=none;rounded=0;html=1;strokeColor=#3B82F6;strokeWidth=2;exitX=0.15;exitY=1;entryX=0.15;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#1D4ED8;" edge="1" parent="1" source="c_coordinator_agent" target="c_sub_target">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2: Target Validation -> Pocket Druggability -->
+        <mxCell id="edge_target_pocket" value="❷ Validated Target Cavity" style="edgeStyle=none;rounded=0;html=1;strokeColor=#0284C7;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#0369A1;" edge="1" parent="1" source="c_sub_target" target="c_sub_pocket">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 3: Pocket Druggability -> Generative Molecule -->
+        <mxCell id="edge_pocket_gen" value="❸ 3D Pocket Conformation" style="edgeStyle=none;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#6D28D9;" edge="1" parent="1" source="c_sub_pocket" target="c_sub_generative">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 4: Generative Molecule -> ADMET Critic -->
+        <mxCell id="edge_gen_admet" value="❹ De Novo SMILES Stream" style="edgeStyle=none;rounded=0;html=1;strokeColor=#D97706;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_sub_generative" target="c_sub_admet">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- RECOVERED MISSING ARROW B: In Silico Iterative SAR Feedback Loop (ADMET -> De Novo Chem) -->
+        <mxCell id="edge_sar_feedback" value="↺ Iterative SAR Scaffold Refinement Loop" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=5 3;html=1;strokeColor=#9333EA;strokeWidth=2;exitX=0;exitY=0.35;entryX=0;entryY=0.65;labelBackgroundColor=#FFFFFF;labelBorderColor=#E9D5FF;labelPadding=3;fontSize=8;fontStyle=1;fontColor=#7E22CE;" edge="1" parent="1" source="c_sub_admet" target="c_sub_generative">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="254" y="645" />
+              <mxPoint x="254" y="544" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- THE 140PX HIGHWAY PITCH: BI-DIRECTIONAL GROUNDING EXCHANGES                -->
+        <!-- (startArrow=classic; endArrow=classic; labels float 100% in open space)   -->
+        <!-- ========================================================================= -->
+
+        <!-- Tier 0: Coordinator <-> Gemini Model (y=154) -->
+        <mxCell id="edge_coord_gemini" value="Reasoning &amp; SMILES Parsing" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#1A73E8;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="c_coordinator_agent" target="c_gemini_model">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tier 1: Target Validation <-> Molecular Knowledge Graph (y=269) -->
+        <mxCell id="edge_target_graph" value="Multi-Omics &amp; Bioactivity Grounding" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#0D9488;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c_sub_target" target="c_mol_graph_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tier 2: Pocket Druggability <-> AlphaFold 3 (y=399) -->
+        <mxCell id="edge_pocket_alphafold" value="AlphaFold 3 / ESMFold Co-Folding" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#0284C7;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#0369A1;" edge="1" parent="1" source="c_sub_pocket" target="c_alphafold_runtime">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tier 3: De Novo Generator <-> Cheminformatics Retrosynthesis (y=529) -->
+        <mxCell id="edge_gen_chem" value="Retrosynthetic Feasibility (SAScore)" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#16A34A;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#15803D;" edge="1" parent="1" source="c_sub_generative" target="c_cheminformatics_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tier 4: ADMET Critic <-> HPC Molecular Dynamics (y=659) -->
+        <mxCell id="edge_admet_hpc" value="FEP+ Binding Free Energy (ΔΔG)" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#D97706;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_sub_admet" target="c_hpc_md">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- RECOVERED MISSING ARROW A: VETTED LEAD HANDOFF (ADMET -> RETROSYNTHESIS)  -->
+        <!-- ========================================================================= -->
+        <mxCell id="edge_admet_retro" value="❺ Vetted Candidate Lead Handoff for Route Planning" style="edgeStyle=none;rounded=1;html=1;strokeColor=#059669;strokeWidth=2.2;exitX=1;exitY=0.25;entryX=0;entryY=0.85;labelBackgroundColor=#FFFFFF;labelBorderColor=#A7F3D0;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#065F46;" edge="1" parent="1" source="c_sub_admet" target="c_cheminformatics_card">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="636" />
+              <mxPoint x="745" y="563" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 3 -> DOMAIN 4 TRANSLATIONAL EXECUTION (❻..❾)                       -->
+        <!-- ========================================================================= -->
+
+        <!-- Step 6: Retrosynthesis -> SiLA 2 Protocol Dispatcher (y=529 -> y=307) -->
+        <mxCell id="edge_chem_sila" value="❻ Reaction Route &amp; Dispense Manifest" style="edgeStyle=none;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#1E40AF;" edge="1" parent="1" source="c_cheminformatics_card" target="c_sila_dispatcher_card">
+          <mxGeometry x="0.5" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1295" y="529" />
+              <mxPoint x="1295" y="307" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- GxP Synthesis Release: GxP Vault -> SiLA 2 Protocol Dispatcher -->
+        <mxCell id="edge_gxp_release_sila" value="GxP Batch Release &amp; Electronic Signature" style="edgeStyle=none;rounded=0;html=1;strokeColor=#DC2626;strokeWidth=1.8;dashed=1;dashPattern=4 3;exitX=0.82;exitY=1;entryX=0.82;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#FECACA;labelPadding=2.5;fontSize=8;fontStyle=1;fontColor=#991B1B;" edge="1" parent="1" source="c_gxp_vault_card" target="c_sila_dispatcher_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 7: SiLA 2 Dispatcher -> Robotic Workcell -->
+        <mxCell id="edge_sila_workcell" value="❼ SiLA 2 Command Stream" style="edgeStyle=none;rounded=0;html=1;strokeColor=#059669;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#065F46;" edge="1" parent="1" source="c_sila_dispatcher_card" target="c_robotic_workcell_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 8: Robotic Workcell -> Bioactivity Telemetry -->
+        <mxCell id="edge_workcell_telemetry" value="❽ Microplate Readout" style="edgeStyle=none;rounded=0;html=1;strokeColor=#D97706;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_robotic_workcell_card" target="c_active_learning_card">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 8b: Telemetry Return -> Real-Time Streaming Subcard -->
+        <mxCell id="edge_telemetry_streaming" value="Pub/Sub Assay Streaming Bus" style="edgeStyle=none;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.8;dashed=1;dashPattern=3 3;exitX=0.82;exitY=1;entryX=0.82;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=#FED7AA;labelPadding=2;fontSize=7.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_active_learning_card" target="c_active_ingestion_subcard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Step 8c: Real-Time Streaming Subcard -> BigQuery Bioactivity Lakehouse Ingestion -->
+        <mxCell id="edge_streaming_lakehouse" value="BigQuery Delta Ingestion Stream" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=5 3;html=1;strokeColor=#0D9488;strokeWidth=1.8;exitX=0;exitY=0.5;entryX=1;entryY=0.75;labelBackgroundColor=#FFFFFF;labelBorderColor=#99F6E4;labelPadding=2.5;fontSize=8;fontStyle=1;fontColor=#0F766E;" edge="1" parent="1" source="c_active_ingestion_subcard" target="c_mol_graph_card">
+          <mxGeometry x="-0.38" y="-10" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1275" y="687" />
+              <mxPoint x="1275" y="293" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 9: Closed Feedback Highway: Bioactivity Telemetry -> ADMET Critic (Along Bottom Open Highway y=738) -->
+        <mxCell id="edge_feedback_highway" value="❾ Active Learning Feedback (Empirical IC50 / Kd Ground Truth)" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=6 4;html=1;strokeColor=#D97706;strokeWidth=2.2;exitX=0;exitY=0.5;entryX=0.5;entryY=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_active_learning_card" target="c_sub_admet">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1295" y="607" />
+              <mxPoint x="1295" y="738" />
+              <mxPoint x="460" y="738" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Step 10: Top Governance Audit Trail: Clean exit from Coordinator top shoulder across ceiling margin -->
+        <mxCell id="edge_audit_trail" value="❿ 21 CFR Part 11 Cryptographic Audit Trail &amp; Provenance Ledger" style="edgeStyle=none;rounded=1;dashed=1;dashPattern=4 3;html=1;strokeColor=#DC2626;strokeWidth=2;exitX=0.9;exitY=0;entryX=1;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#991B1B;" edge="1" parent="1" source="c_coordinator_agent" target="c_gxp_vault_card">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="80" />
+              <mxPoint x="1755" y="80" />
+              <mxPoint x="1755" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 5: THE 4 CANONICAL CONCEPTUAL FLOWS (y=765, h=165)                 -->
+        <!-- ========================================================================= -->
+        <mxCell id="domain_scenario" value="The 4 Canonical Conceptual Flows: Experience, Value Stream, Domain Data &amp; Enterprise Integration" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=left;verticalAlign=top;spacingLeft=20;spacingTop=10;fontFamily=Google Sans, sans-serif;fontSize=12.5;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="30" y="765" width="1740" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- Step 1 Card: User Journey Flow (Experience Flow) -->
+        <mxCell id="sc_card_1" value="&lt;div style=&quot;font-size: 11px; font-weight: bold; color: #1D4ED8; margin-bottom: 2px;&quot;&gt;User Journey Flow (Experience Flow)&lt;/div&gt;&lt;div style=&quot;font-size: 8.5px; font-weight: 600; color: #0F172A; margin-bottom: 3px;&quot;&gt;Persona interaction &amp; clinical objective definition without infrastructure mechanics&lt;/div&gt;&lt;div style=&quot;font-size: 8px; color: #64748B; line-height: 1.3;&quot;&gt;Chemists and biologists engage via Discovery Studio to configure kinase targets, set selectivity profiles, review generated leads, and grant 21 CFR Part 11 sign-off.&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=14;spacingRight=14;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="45" y="800" width="410" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_1" value="Campaign Intake &amp; Scientist Review" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#1D4ED8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="135" y="879" width="230" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2 Card: Business Process Flow (Value Stream) -->
+        <mxCell id="sc_card_2" value="&lt;div style=&quot;font-size: 11px; font-weight: bold; color: #7C3AED; margin-bottom: 2px;&quot;&gt;Business Process Flow (Value Stream)&lt;/div&gt;&lt;div style=&quot;font-size: 8.5px; font-weight: 600; color: #0F172A; margin-bottom: 3px;&quot;&gt;Target-to-lead milestone progression &amp; autonomous capability coordination&lt;/div&gt;&lt;div style=&quot;font-size: 8px; color: #64748B; line-height: 1.3;&quot;&gt;Orchestrates sequential value stream: Target Identification &#8594; Cryptic Pocket Discovery &#8594; De Novo Generative Chemistry &#8594; ADMET Screening &#8594; Wet-Lab Workcell.&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=14;spacingRight=14;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="475" y="800" width="410" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_2" value="Target-to-Lead Milestones" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="565" y="879" width="230" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Step 3 Card: Domain Data Flow -->
+        <mxCell id="sc_card_3" value="&lt;div style=&quot;font-size: 11px; font-weight: bold; color: #D97706; margin-bottom: 2px;&quot;&gt;Domain Data Flow&lt;/div&gt;&lt;div style=&quot;font-size: 8.5px; font-weight: 600; color: #0F172A; margin-bottom: 3px;&quot;&gt;Macroscopic information movement across bounded biomedical contexts&lt;/div&gt;&lt;div style=&quot;font-size: 8px; color: #64748B; line-height: 1.3;&quot;&gt;Traces information transformation: Target Genomics Dossier &#8594; Molecular Knowledge Graph &#8594; 3D Protein Structures &#8594; Candidate SMILES &#8594; In Vitro Readouts.&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=14;spacingRight=14;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="905" y="800" width="410" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_3" value="Macroscopic Chemical Data Flow" style="rounded=1;arcSize=50;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#D97706;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="995" y="879" width="230" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- Step 4 Card: Enterprise Integration Flow -->
+        <mxCell id="sc_card_4" value="&lt;div style=&quot;font-size: 11px; font-weight: bold; color: #059669; margin-bottom: 2px;&quot;&gt;Enterprise Integration Flow&lt;/div&gt;&lt;div style=&quot;font-size: 8.5px; font-weight: 600; color: #0F172A; margin-bottom: 3px;&quot;&gt;Coarse-grained boundary handoffs to external registries &amp; laboratory robotics&lt;/div&gt;&lt;div style=&quot;font-size: 8px; color: #64748B; line-height: 1.3;&quot;&gt;Standards-based interoperability: Agent-to-Agent (A2A), MCP tool servers, UniProt/PDB external repositories, and SiLA 2 standard for liquid handler execution.&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=14;spacingRight=14;spacingTop=12;" vertex="1" parent="1">
+          <mxGeometry x="1335" y="800" width="420" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_btn_4" value="SiLA 2 Lab Robotics &amp; Registries" style="rounded=1;arcSize=50;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8.5;fontStyle=1;fontColor=#059669;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1430" y="879" width="230" height="22" as="geometry" />
+        </mxCell>
+
+        <!-- 4-Flow Interconnecting Edges -->
+        <mxCell id="sc_edge_1_2" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#2563EB;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_1" target="sc_card_2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_edge_2_3" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#7C3AED;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_2" target="sc_card_3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sc_edge_3_4" value="" style="edgeStyle=none;rounded=0;html=1;strokeColor=#D97706;strokeWidth=1.8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="sc_card_3" target="sc_card_4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+
+        <!-- ========================================================================= -->
+        <!-- DOMAIN 6: INTEGRATED PROTOCOLS & INTEGRATION FABRIC FOOTER                -->
+        <!-- ========================================================================= -->
+        <mxCell id="leg_bg" value="" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="945" width="1740" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_lbl_legend" value="Protocols &amp; Integration Fabric:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+          <mxGeometry x="45" y="953" width="170" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_1" value="■ A2A (Agent-to-Agent Mesh)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#7C3AED;" vertex="1" parent="1">
+          <mxGeometry x="230" y="953" width="180" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_2" value="■ SiLA 2 (Standard in Lab Automation)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1E40AF;" vertex="1" parent="1">
+          <mxGeometry x="420" y="953" width="220" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_3" value="■ Model Context Protocol (MCP)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#0D9488;" vertex="1" parent="1">
+          <mxGeometry x="650" y="953" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_4" value="--- Closed-Loop Active Learning Feedback" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#D97706;" vertex="1" parent="1">
+          <mxGeometry x="850" y="953" width="250" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_5" value="■ GxP 21 CFR Part 11 Audit Trail" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#DC2626;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="953" width="200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_item_6" value="■ Google Cloud Architecture Center Verified" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="953" width="250" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

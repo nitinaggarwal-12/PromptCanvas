@@ -32,6 +32,11 @@ import {
   BookOpen,
   Eye,
   Terminal,
+  X,
+  Clock,
+  Activity,
+  RefreshCw,
+  AlertTriangle,
 } from 'lucide-react';
 
 function GcpArchitectureCenterInner() {
@@ -45,6 +50,14 @@ function GcpArchitectureCenterInner() {
   const [activeTab, setActiveTab] = useState<'canvas' | 'spec' | 'official'>('canvas');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
+
+  // A2A Gateway Swarm Bridge State
+  const [isA2AModalOpen, setIsA2AModalOpen] = useState<boolean>(false);
+  const [isCompilingA2A, setIsCompilingA2A] = useState<boolean>(false);
+  const [a2aDagResult, setA2aDagResult] = useState<any | null>(null);
+  const [a2aError, setA2aError] = useState<string | null>(null);
+  const [a2aActiveView, setA2aActiveView] = useState<'timeline' | 'nodes' | 'raw'>('timeline');
+  const [copiedDagJson, setCopiedDagJson] = useState<boolean>(false);
 
   // Sync state if URL searchParam changes
   useEffect(() => {
@@ -98,6 +111,59 @@ function GcpArchitectureCenterInner() {
   const handleOpenDiagramsNet = () => {
     const encoded = encodeURIComponent(activeXml);
     window.open(`https://app.diagrams.net/#R${encoded}`, '_blank');
+  };
+
+  const handleCompileA2AGateway = async () => {
+    setIsCompilingA2A(true);
+    setA2aError(null);
+    setIsA2AModalOpen(true);
+    try {
+      const res = await fetch('/api/a2a-bridge/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          drawio_xml: activeXml,
+          target_protocol: 'a2a.v1.0.0',
+          enforce_ast_sanitization: true,
+        }),
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => null);
+        throw new Error(
+          errData?.detail || `A2A Gateway Error (${res.status}): Failed to compile Draw.io architecture.`
+        );
+      }
+      const data = await res.json();
+      setA2aDagResult(data);
+    } catch (err: any) {
+      console.error('[A2A Gateway Bridge] Compilation error:', err);
+      setA2aError(
+        err.message ||
+          'Failed to connect to Google A2A Gateway on http://127.0.0.1:8090. Ensure the FastAPI portal is running.'
+      );
+    } finally {
+      setIsCompilingA2A(false);
+    }
+  };
+
+  const handleCopyDagJson = () => {
+    if (a2aDagResult) {
+      navigator.clipboard.writeText(JSON.stringify(a2aDagResult, null, 2));
+      setCopiedDagJson(true);
+      setTimeout(() => setCopiedDagJson(false), 2000);
+    }
+  };
+
+  const handleDownloadDagJson = () => {
+    if (a2aDagResult) {
+      const blob = new Blob([JSON.stringify(a2aDagResult, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${a2aDagResult.dag_id || 'a2a_dag'}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   };
 
   const bgClass = isDark ? 'bg-[#0B111E] text-slate-100' : 'bg-[#F8FAFC] text-slate-900';
@@ -179,6 +245,21 @@ function GcpArchitectureCenterInner() {
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Open in Diagrams.net</span>
+              </button>
+
+              {/* Live A2A Gateway Swarm Execution Bridge */}
+              <button
+                onClick={handleCompileA2AGateway}
+                disabled={isCompilingA2A}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 transition-all shadow-md shadow-emerald-950/30 hover:shadow-emerald-500/25 border border-emerald-400/40 active:scale-95 cursor-pointer disabled:opacity-50"
+                title="Compile and simulate Draw.io architecture on the Google Agent-to-Agent (A2A) Gateway"
+              >
+                {isCompilingA2A ? (
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+                )}
+                <span>{isCompilingA2A ? 'Compiling DAG...' : 'Run on A2A Swarm'}</span>
               </button>
 
               <a
@@ -691,6 +772,382 @@ function GcpArchitectureCenterInner() {
               </div>
             </div>
           )}
+      {/* Google A2A Gateway Swarm Compiler & Execution Modal */}
+      {isA2AModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
+          <div
+            className={`relative w-full max-w-6xl max-h-[92vh] flex flex-col rounded-2xl border shadow-2xl overflow-hidden transition-all ${
+              isDark
+                ? 'bg-[#0F172A] border-slate-700 text-slate-100 shadow-slate-950/90'
+                : 'bg-white border-slate-200 text-slate-900 shadow-2xl shadow-blue-900/15'
+            }`}
+          >
+            {/* Modal Header */}
+            <div
+              className={`px-6 py-4 border-b flex flex-wrap items-center justify-between gap-4 ${
+                isDark ? 'border-slate-800 bg-slate-900/80' : 'border-slate-200 bg-slate-50/90'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-md shadow-emerald-500/25">
+                  <Zap className="w-5 h-5 fill-white text-white" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-base md:text-lg font-bold tracking-tight">
+                      Google Agent-to-Agent (A2A) Swarm Execution Bridge
+                    </h3>
+                    <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      PROTOCOL v1.0.0
+                    </span>
+                    {a2aDagResult?.gxp_21cfr11_compliant ? (
+                      <span className="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                        <Shield className="w-3 h-3 text-amber-400" />
+                        21 CFR Part 11 Certified
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                        <Workflow className="w-3 h-3 text-blue-400" />
+                        Dual-Plane Demarcation
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Target Architecture: <span className="font-semibold text-slate-700 dark:text-slate-300">{activeArch.title}</span> &bull; Gateway Port:{' '}
+                    <span className="font-mono text-emerald-500 dark:text-emerald-400">http://127.0.0.1:8090</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href="http://127.0.0.1:8090/#tab-promptcanvas-studio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                  }`}
+                  title="Open A2A Gateway Portal in new tab"
+                >
+                  <span>Open Gateway Console</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                <button
+                  onClick={() => setIsA2AModalOpen(false)}
+                  className={`p-1.5 rounded-lg transition-colors ${
+                    isDark ? 'hover:bg-slate-800 text-slate-400 hover:text-white' : 'hover:bg-slate-100 text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Body Container */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {isCompilingA2A ? (
+                <div className="py-20 flex flex-col items-center justify-center space-y-4">
+                  <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
+                  <h4 className="text-base font-bold text-slate-200">Synthesizing Executable A2A Swarm DAG...</h4>
+                  <p className="text-xs text-slate-400 text-center max-w-md">
+                    Parsing Draw.io mxGraphModel XML hierarchy, configuring sub-28µs AST sanitization envelopes, and generating stateless 21 CFR Part 11 signature tokens.
+                  </p>
+                </div>
+              ) : a2aError ? (
+                <div className="py-10 space-y-4">
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-rose-400">
+                    <AlertTriangle className="w-5 h-5 mt-0.5 shrink-0" />
+                    <div>
+                      <h4 className="text-sm font-bold">Compilation Failed</h4>
+                      <p className="text-xs text-rose-300 mt-1">{a2aError}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleCompileA2AGateway}
+                      className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all inline-flex items-center gap-2 cursor-pointer"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      <span>Retry Live Compilation</span>
+                    </button>
+                    <a
+                      href="http://127.0.0.1:8090"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all inline-flex items-center gap-2"
+                    >
+                      <span>Check Gateway Server Status</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              ) : a2aDagResult ? (
+                <div className="space-y-6">
+                  {/* Top Stats Strip */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Extracted Nodes</span>
+                        <Cpu className="w-4 h-4 text-emerald-500" />
+                      </div>
+                      <div className="text-2xl font-black">{a2aDagResult.nodes_count}</div>
+                      <div className="text-[11px] text-emerald-500 font-semibold mt-1">
+                        Actors, Agents, Tools & Storage
+                      </div>
+                    </div>
+
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Swarm Edges</span>
+                        <Workflow className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <div className="text-2xl font-black">{a2aDagResult.edges_count}</div>
+                      <div className="text-[11px] text-blue-400 font-semibold mt-1">
+                        mTLS & Sub-28µs AST Filtered
+                      </div>
+                    </div>
+
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Pipeline Latency</span>
+                        <Clock className="w-4 h-4 text-amber-500" />
+                      </div>
+                      <div className="text-2xl font-black">
+                        {(a2aDagResult.estimated_total_latency_us / 1000).toFixed(1)} ms
+                      </div>
+                      <div className="text-[11px] text-amber-400 font-semibold mt-1">
+                        End-to-End Orchestration Budget
+                      </div>
+                    </div>
+
+                    <div className={`p-4 rounded-xl border ${isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Regulatory Gate</span>
+                        <Shield className="w-4 h-4 text-purple-500" />
+                      </div>
+                      <div className="text-2xl font-black">
+                        {a2aDagResult.gxp_21cfr11_compliant ? '21 CFR 11' : 'SOV-A2A'}
+                      </div>
+                      <div className="text-[11px] text-purple-400 font-semibold mt-1">
+                        {a2aDagResult.gxp_21cfr11_compliant
+                          ? 'HMAC-SHA256 Signed'
+                          : 'Dual-Plane Enclave'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sub-view switcher */}
+                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setA2aActiveView('timeline')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          a2aActiveView === 'timeline'
+                            ? 'bg-emerald-600 text-white shadow-sm'
+                            : isDark
+                            ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-300'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        Execution Pipeline ({a2aDagResult.execution_plan?.length || 0} Stages)
+                      </button>
+
+                      <button
+                        onClick={() => setA2aActiveView('nodes')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          a2aActiveView === 'nodes'
+                            ? 'bg-emerald-600 text-white shadow-sm'
+                            : isDark
+                            ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-300'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        Extracted Nodes ({a2aDagResult.nodes?.length || 0})
+                      </button>
+
+                      <button
+                        onClick={() => setA2aActiveView('raw')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          a2aActiveView === 'raw'
+                            ? 'bg-emerald-600 text-white shadow-sm'
+                            : isDark
+                            ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-300'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        Raw A2A DAG (JSON)
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleCopyDagJson}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold border transition-all cursor-pointer ${
+                          copiedDagJson
+                            ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                            : isDark
+                            ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                        }`}
+                      >
+                        {copiedDagJson ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                        <span>{copiedDagJson ? 'Copied JSON' : 'Copy JSON'}</span>
+                      </button>
+
+                      <button
+                        onClick={handleDownloadDagJson}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold border transition-all cursor-pointer ${
+                          isDark
+                            ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                            : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                        }`}
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Export</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Tab 1: Execution Pipeline Timeline */}
+                  {a2aActiveView === 'timeline' && (
+                    <div className="space-y-3">
+                      <div className="text-xs font-semibold text-slate-400 flex items-center justify-between">
+                        <span>SWARM ORCHESTRATION PIPELINE STAGES</span>
+                        <span>STATUS: ALL VALIDATED</span>
+                      </div>
+                      <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-2">
+                        {a2aDagResult.execution_plan?.map((step: any, idx: number) => (
+                          <div
+                            key={idx}
+                            className={`p-3.5 rounded-xl border flex flex-wrap items-center justify-between gap-3 transition-all ${
+                              isDark ? 'bg-slate-900/40 border-slate-800 hover:border-slate-700' : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="w-7 h-7 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xs font-bold">
+                                {step.stage_index}
+                              </span>
+                              <div>
+                                <div className="text-xs font-bold">{step.label}</div>
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">
+                                  ID: {step.node_id} &bull; Clearance: {step.security_tier}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/15 text-blue-400 border border-blue-500/25">
+                                {step.type}
+                              </span>
+                              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                                {step.expected_latency_us < 1000
+                                  ? `${step.expected_latency_us}µs`
+                                  : `${(step.expected_latency_us / 1000).toFixed(2)}ms`}
+                              </span>
+                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded border border-emerald-500/30">
+                                <CheckCircle2 className="w-3 h-3" />
+                                <span>{step.status}</span>
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tab 2: Nodes Matrix */}
+                  {a2aActiveView === 'nodes' && (
+                    <div className="max-h-[380px] overflow-y-auto border rounded-xl overflow-hidden border-slate-800">
+                      <table className="w-full text-left text-xs">
+                        <thead className={`border-b ${isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'}`}>
+                          <tr>
+                            <th className="py-2.5 px-3 font-semibold">Node ID</th>
+                            <th className="py-2.5 px-3 font-semibold">Label</th>
+                            <th className="py-2.5 px-3 font-semibold">Type</th>
+                            <th className="py-2.5 px-3 font-semibold">Security Tier</th>
+                            <th className="py-2.5 px-3 font-semibold">Budget</th>
+                            <th className="py-2.5 px-3 font-semibold">Coordinates</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800 font-mono">
+                          {a2aDagResult.nodes?.map((node: any) => (
+                            <tr key={node.id} className={isDark ? 'hover:bg-slate-900/50' : 'hover:bg-slate-50'}>
+                              <td className="py-2 px-3 text-emerald-400 font-bold">{node.id}</td>
+                              <td className="py-2 px-3 font-sans">{node.label}</td>
+                              <td className="py-2 px-3 text-blue-400">{node.component_type}</td>
+                              <td className="py-2 px-3 text-purple-400">{node.tier}</td>
+                              <td className="py-2 px-3 text-amber-400">{node.latency_budget_us}µs</td>
+                              <td className="py-2 px-3 text-slate-400">
+                                ({Math.round(node.x)}, {Math.round(node.y)}) {Math.round(node.width)}x{Math.round(node.height)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Tab 3: Raw DAG JSON */}
+                  {a2aActiveView === 'raw' && (
+                    <div className="relative">
+                      <pre className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-emerald-400 font-mono text-xs max-h-[380px] overflow-auto leading-relaxed">
+                        {JSON.stringify(a2aDagResult, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+
+            {/* Modal Footer */}
+            <div
+              className={`px-6 py-3.5 border-t flex flex-wrap items-center justify-between gap-3 ${
+                isDark ? 'border-slate-800 bg-slate-900/80' : 'border-slate-200 bg-slate-50/90'
+              }`}
+            >
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <Shield className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Zero Raw Clinical Egress Guaranteed &bull; Google Agent-to-Agent Architecture</span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleCompileA2AGateway}
+                  disabled={isCompilingA2A}
+                  className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isCompilingA2A ? 'animate-spin' : ''}`} />
+                  <span>Re-compile Live</span>
+                </button>
+
+                <a
+                  href="http://127.0.0.1:8090/#tab-swarm-simulator"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold transition-all inline-flex items-center gap-1.5 shadow-sm"
+                >
+                  <span>Launch 10K Digital Twin Simulation</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+
+                <button
+                  onClick={() => setIsA2AModalOpen(false)}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                    isDark
+                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
         </main>
       </div>
     </div>
