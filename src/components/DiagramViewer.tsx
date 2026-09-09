@@ -509,7 +509,7 @@ export default function DiagramViewer({
           srcDoc={iframeHtml}
           className="w-full h-full border-0 bg-transparent"
           title="Draw.io Diagram Viewer with Business Use Case Panel"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          sandbox="allow-scripts allow-popups allow-forms"
         />
       </div>
     </DiagramErrorBoundary>

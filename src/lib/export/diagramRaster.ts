@@ -3,7 +3,7 @@ export interface RasterOptions {
   transparent?: boolean;
 }
 
-const EMBED_URL = 'https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&configure=0';
+const EMBED_URL = 'https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&configure=0&stealth=1';
 const EMBED_ORIGIN = 'https://embed.diagrams.net';
 const TIMEOUT_MS = 20000;
 

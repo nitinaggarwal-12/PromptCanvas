@@ -1118,7 +1118,7 @@ function Studio1Content() {
 
   // Open in Draw.io New Tab
   const handleOpenDrawioNewTab = useCallback(() => {
-    const url = 'https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json';
+    const url = 'https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsaved&proto=json&stealth=1';
     const child = window.open(url, '_blank');
     if (child) {
       drawioChildWindowRef.current = child;
@@ -2403,7 +2403,7 @@ function Studio1Content() {
               {/* Viewport Canvas Frame with Zoom Scaling & Auto-Fit */}
               <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80 overflow-auto relative">
                 <div
-                  className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative transition-transform duration-150 origin-top-center"
+                  className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative transition-transform duration-150 origin-top-center flex flex-col"
                   style={{
                     transform: `scale(${zoomLevel})`,
                     transformOrigin: 'top center',
@@ -2687,7 +2687,7 @@ function Studio1Content() {
             <div className="flex-1 w-full h-full bg-slate-100 dark:bg-slate-950 relative">
               <iframe
                 ref={inlineDrawioIframeRef}
-                src="https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsavedChanges&proto=json"
+                src="https://embed.diagrams.net/?embed=1&ui=min&spin=1&modified=unsavedChanges&proto=json&stealth=1"
                 className="w-full h-full border-0"
                 title="Inline Draw.io Editor"
                 allow="clipboard-read; clipboard-write"

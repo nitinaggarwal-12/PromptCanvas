@@ -101,7 +101,7 @@ export default function DiagramViewerRenderSafe({
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
     height: '100%',
-    minHeight: allowFullScaleScroll ? '760px' : '360px',
+    minHeight: allowFullScaleScroll ? '760px' : '680px',
     width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
@@ -359,14 +359,15 @@ ${origin ? `<base href="${origin}/">` : ''}
     <DiagramErrorBoundary fallbackXml={sanitizedXml}>
       <div
         style={responsiveFrameStyle}
-        className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto`}
+        className={`${containerDimensions} relative rounded-xl overflow-hidden ${containerBgClass} transition-all duration-300 mx-auto flex flex-col flex-1`}
       >
         <iframe
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
-          className="w-full h-full min-h-0 border-0 bg-transparent"
+          className="w-full h-full flex-1 border-0 bg-transparent"
+          style={{ minHeight: allowFullScaleScroll ? '760px' : '680px' }}
           title="PromptCanvas Draw.io Diagram Viewer"
-          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          sandbox="allow-scripts allow-popups allow-forms"
         />
       </div>
     </DiagramErrorBoundary>

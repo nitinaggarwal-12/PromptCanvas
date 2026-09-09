@@ -1574,7 +1574,7 @@ function WorkspaceContent() {
     }
     
     const child = window.open(
-      'https://embed.diagrams.net/?embed=1&proto=json&ui=dark&pv=0',
+      'https://embed.diagrams.net/?embed=1&proto=json&ui=dark&pv=0&stealth=1',
       '_blank'
     );
     
@@ -7500,7 +7500,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                 <div className={`w-full h-full relative z-10 flex flex-col animate-fade-in ${canvasTheme === 'light' ? 'bg-[#F8FAFC]' : 'bg-bg-dark'}`}>
                   <iframe
                     ref={iframeRef}
-                    src={`https://embed.diagrams.net/?embed=1&ui=${canvasTheme === 'light' ? 'kennedy&dark=0' : 'dark&dark=1'}&spin=1&proto=json&pv=0`}
+                    src={`https://embed.diagrams.net/?embed=1&ui=${canvasTheme === 'light' ? 'kennedy&dark=0' : 'dark&dark=1'}&spin=1&proto=json&pv=0&stealth=1`}
                     className="w-full h-full border-0 bg-transparent"
                     title="In-Place Draw.io Editor"
                   />
