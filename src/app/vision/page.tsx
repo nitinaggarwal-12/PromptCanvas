@@ -29,6 +29,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 interface SampleBlueprint {
   id: string;
@@ -244,9 +245,12 @@ function VisionPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B111E] text-slate-100 flex flex-col antialiased selection:bg-teal-500/30">
-      
-      {/* Toast Notification */}
+    <div className="min-h-screen bg-[#0B111E] text-slate-100 flex flex-row antialiased selection:bg-teal-500/30">
+      {/* 0. Collapsible Unified Navigation Sidebar */}
+      <UnifiedAppSidebar />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed top-6 right-6 z-50 bg-slate-900/95 border border-teal-500/50 text-white px-5 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-200">
           <Sparkles className="w-4 h-4 text-teal-400 shrink-0" />
@@ -585,6 +589,7 @@ function VisionPageContent() {
         </section>
 
       </main>
+      </div>
     </div>
   );
 }

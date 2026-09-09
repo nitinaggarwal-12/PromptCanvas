@@ -57,6 +57,7 @@ import { ObjectShareModal } from '@/components/studio/ObjectShareModal';
 import { SaveToLibraryModal } from '@/components/studio/SaveToLibraryModal';
 import { NewProjectModal, NewProjectConfig } from '@/components/studio/NewProjectModal';
 import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -991,10 +992,14 @@ function StudioMain() {
   };
 
   return (
-    <div className="h-screen max-h-screen w-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
-      
-      {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
-      <header className="w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
+    <div className="h-screen max-h-screen w-screen bg-[#F8FAFC] text-slate-900 flex flex-row antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
+      {/* 0. Collapsible Unified Navigation Sidebar */}
+      <UnifiedAppSidebar />
+
+      {/* Main Studio Viewport Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
+        <header className="w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
         
         {/* Left: Brand, Project Title, Mode Badge, Blueprint & Version */}
         <div className="flex items-center gap-2.5 shrink-0">
@@ -1816,6 +1821,7 @@ function StudioMain() {
         )}
 
       </main>
+      </div>
 
       {/* 3. MODALS & SLIDEOUT DRAWERS */}
       <ComponentInspectorDrawer

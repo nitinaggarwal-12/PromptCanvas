@@ -56,6 +56,7 @@ import {
   type Studio1DecisionLedger,
   type Studio1GenerationContext,
 } from '@/lib/studio1ArchitectureCore';
+import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 
 interface PastProject {
   id: string;
@@ -1618,8 +1619,12 @@ function Studio1Content() {
   );
 
   return (
-    <div className={`min-h-screen ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'}`}>
-      {/* Toast Notification */}
+    <div className={`min-h-screen flex flex-row ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'}`}>
+      {/* 0. Collapsible Unified Navigation Sidebar */}
+      <UnifiedAppSidebar />
+
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Toast Notification */}
       {toastNotification && (
         <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 font-semibold text-xs rounded-xl shadow-2xl border border-teal-500/40 backdrop-blur-md animate-in fade-in slide-in-from-top-4">
           <Sparkles className="w-4 h-4 text-teal-400 dark:text-teal-600 animate-pulse" />
@@ -2945,6 +2950,7 @@ function Studio1Content() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

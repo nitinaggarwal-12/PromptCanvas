@@ -85,7 +85,7 @@ function GcpArchitectureCenterInner() {
         if (saved !== null) return saved === 'true';
       } catch {}
     }
-    return true;
+    return false;
   });
 
   useEffect(() => {

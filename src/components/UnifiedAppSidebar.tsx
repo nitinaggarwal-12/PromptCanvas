@@ -100,7 +100,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
         if (saved !== null) return saved === 'true';
       } catch {}
     }
-    return true;
+    return false; // Collapsed by default across all pages
   });
 
   // Controlled or uncontrolled collapse state
@@ -219,9 +219,11 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
               const isActive = isItemActive(item.href);
 
               return (
-                <Link key={item.id} href={item.href} className="block">
+                <Link key={item.id} href={item.href} className="block" title={!isSidebarOpen ? item.name : undefined}>
                   <div
-                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`w-full flex items-center ${
+                      isSidebarOpen ? 'justify-between' : 'justify-center'
+                    } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive
                         ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                         : isLight
@@ -229,7 +231,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                         : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                     }`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
                       <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                       {isSidebarOpen && <span className="truncate">{item.name}</span>}
                     </div>
@@ -258,7 +260,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
             <div className="space-y-1">
               <div
                 onClick={() => setIsCanvasGroupOpen(!isCanvasGroupOpen)}
-                className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`w-full flex items-center ${
+                  isSidebarOpen ? 'justify-between' : 'justify-center'
+                } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   isCanvasActive
                     ? isLight
                       ? 'bg-sky-50 border border-sky-200 text-sky-900'
@@ -267,9 +271,9 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                     ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
                     : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                 }`}
-                title="Design Canvas Workspace & History"
+                title={!isSidebarOpen ? "Design Canvas Workspace & Library" : "Design Canvas Workspace & History"}
               >
-                <div className="flex items-center gap-3 min-w-0">
+                <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
                   <Network className={`w-4 h-4 shrink-0 ${isCanvasActive ? 'text-sky-500' : 'text-slate-400'}`} />
                   {isSidebarOpen && <span className="truncate font-black">Canvas</span>}
                 </div>
@@ -322,9 +326,11 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
             {/* SETTINGS */}
             <div className="pt-2">
-              <Link href="/workspace?tab=settings" className="block">
+              <Link href="/workspace?tab=settings" className="block" title={!isSidebarOpen ? "Settings & AI Tier" : undefined}>
                 <div
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center ${
+                    isSidebarOpen ? 'justify-between' : 'justify-center'
+                  } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     pathname.includes('tab=settings')
                       ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                       : isLight
@@ -332,7 +338,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
                     <Settings className={`w-4 h-4 shrink-0 ${pathname.includes('tab=settings') ? 'text-white' : 'text-slate-400'}`} />
                     {isSidebarOpen && <span className="truncate">Settings &amp; AI Tier</span>}
                   </div>
@@ -342,18 +348,19 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
             {/* TEST STATUS (ALWAYS AT BOTTOM) */}
             <div className="pt-1">
-              <Link href="/test-status" className="block">
+              <Link href="/test-status" className="block" title={!isSidebarOpen ? "Test Status (100%)" : "Enterprise Test Status & 9-Pillars Results"}>
                 <div
-                  className={`w-full flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center ${
+                    isSidebarOpen ? 'justify-between' : 'justify-center'
+                  } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     pathname === '/test-status'
                       ? 'bg-emerald-600 text-white font-extrabold shadow-sm'
                       : isLight
                       ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                   }`}
-                  title="Enterprise Test Status & 9-Pillars Results"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
                     <Activity className={`w-4 h-4 shrink-0 ${pathname === '/test-status' ? 'text-white' : 'text-emerald-500'}`} />
                     {isSidebarOpen && <span className="truncate">Test Status</span>}
                   </div>
@@ -389,7 +396,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
             )}
           </div>
 
-          {isSidebarOpen && (
+          {isSidebarOpen ? (
             user ? (
               <button
                 onClick={() => setIsProfileModalOpen(true)}
@@ -416,6 +423,24 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
               >
                 <User className="w-3.5 h-3.5" />
                 <span>Sign In / Profile</span>
+              </button>
+            )
+          ) : (
+            user ? (
+              <button
+                onClick={() => setIsProfileModalOpen(true)}
+                className="w-10 h-10 mx-auto rounded-full bg-sky-500/20 text-sky-600 dark:text-sky-400 font-bold flex items-center justify-center text-xs shrink-0 hover:bg-sky-500/30 transition cursor-pointer"
+                title={user.name || user.email}
+              >
+                {(user.name || user.email)[0].toUpperCase()}
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="w-10 h-10 mx-auto rounded-xl bg-slate-200/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-sky-500 flex items-center justify-center transition cursor-pointer"
+                title="Sign In / Profile"
+              >
+                <User className="w-4 h-4" />
               </button>
             )
           )}

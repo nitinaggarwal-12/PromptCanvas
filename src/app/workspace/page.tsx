@@ -964,7 +964,15 @@ function WorkspaceContent() {
   };
   
   // UI Panels
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('promptcanvas_sidebar_open');
+        if (saved !== null) return saved === 'true';
+      } catch {}
+    }
+    return false;
+  });
   const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
