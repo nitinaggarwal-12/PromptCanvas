@@ -441,120 +441,79 @@ function GcpArchitectureCenterInner() {
 
       {/* Main Content Area: Spacious Ultra-Wide Layout (Zero Surrounding Empty Space) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-        {/* Sticky Full-Width Header Bar */}
-        <header
-          className={`sticky top-0 z-30 w-full border-b backdrop-blur-md transition-colors ${
-            isDark ? 'bg-[#0F172A]/90 border-slate-800' : 'bg-white/90 border-slate-200'
-          }`}
-        >
-          <div className="w-full max-w-none px-6 md:px-10 py-3.5 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              {/* Left Navigation Menu Toggle Button */}
-              <button
-                id="gcp-toggle-left-menu-btn"
-                onClick={handleToggleLeftNav}
-                className={`p-2 rounded-xl border text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ${
-                  isLeftNavOpen
-                    ? isDark
-                      ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white border-slate-700'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-                    : 'bg-blue-600/15 text-blue-500 border-blue-500/30 hover:bg-blue-600/25'
-                }`}
-                title={isLeftNavOpen ? 'Collapse Left Navigation Menu' : 'Expand Left Navigation Menu'}
-                aria-label={isLeftNavOpen ? 'Collapse Left Navigation Menu' : 'Expand Left Navigation Menu'}
-              >
-                {isLeftNavOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
-                <span className="hidden xl:inline text-[11px] font-bold">
-                  {isLeftNavOpen ? 'Collapse Menu' : 'Menu'}
-                </span>
-              </button>
-
-              <div className="w-9 h-9 rounded-lg bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-500">
-                <Cloud className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base md:text-lg font-bold tracking-tight">
-                    Google Cloud Architecture Center
-                  </h1>
-                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/25">
-                    DIALECT A STANDARDS
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Official Solution Architecture Topologies &bull; Agent2Agent (A2A) &bull; Model Context Protocol (MCP)
-                </p>
-              </div>
+        {/* Consolidated High-Contrast Header Bar (56px) matching Studio 1 & 2 */}
+        <header className="sticky top-0 z-30 w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-8 flex items-center justify-between shadow-md">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+              <Cloud className="w-4 h-4" />
             </div>
-
-            {/* Quick Action Controllers */}
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleCopyXml}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                  copiedXml
-                    ? 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30'
-                    : isDark
-                    ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-200 border-slate-700'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-                }`}
-                title="Copy Draw.io XML to Clipboard"
-              >
-                {copiedXml ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{copiedXml ? 'Copied XML' : 'Copy XML'}</span>
-              </button>
-
-              <button
-                onClick={handleDownloadXml}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                  isDark
-                    ? 'bg-slate-800/80 hover:bg-slate-800 text-slate-200 border-slate-700'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-                }`}
-                title="Download .drawio.xml file"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Export XML</span>
-              </button>
-
-              <button
-                onClick={handleOpenDiagramsNet}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                  isDark
-                    ? 'bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border-blue-800/60'
-                    : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200'
-                }`}
-                title="Open in Diagrams.net online editor"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Open in Diagrams.net</span>
-              </button>
-
-              {/* Live A2A Gateway Swarm Execution Bridge */}
-              <button
-                onClick={handleCompileA2AGateway}
-                disabled={isCompilingA2A}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 transition-all shadow-md shadow-emerald-950/30 hover:shadow-emerald-500/25 border border-emerald-400/40 active:scale-95 cursor-pointer disabled:opacity-50"
-                title="Compile and simulate Draw.io architecture on the Google Agent-to-Agent (A2A) Gateway"
-              >
-                {isCompilingA2A ? (
-                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-                )}
-                <span>{isCompilingA2A ? 'Compiling DAG...' : 'Run on A2A Swarm'}</span>
-              </button>
-
-              <a
-                href={activeArch.officialDocUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-sm"
-              >
-                <span>Docs Page</span>
-                <ExternalLink className="w-3 h-3" />
-              </a>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <h1 className="text-sm font-bold tracking-tight text-white truncate">
+                Google Cloud Architecture Center
+              </h1>
+              <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 shrink-0">
+                DIALECT A STANDARDS
+              </span>
             </div>
+          </div>
+
+          {/* Quick Action Controllers */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleCopyXml}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                copiedXml
+                  ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+              }`}
+              title="Copy Draw.io XML to Clipboard"
+            >
+              {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              <span>{copiedXml ? 'Copied XML' : 'Copy XML'}</span>
+            </button>
+
+            <button
+              onClick={handleDownloadXml}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
+              title="Download .drawio.xml file"
+            >
+              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <span className="hidden sm:inline">Export XML</span>
+            </button>
+
+            <button
+              onClick={handleOpenDiagramsNet}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border border-blue-800/60 transition-all"
+              title="Open in Diagrams.net online editor"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden sm:inline">Open in Diagrams.net</span>
+            </button>
+
+            {/* Live A2A Gateway Swarm Execution Bridge */}
+            <button
+              onClick={handleCompileA2AGateway}
+              disabled={isCompilingA2A}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 transition-all shadow-md shadow-emerald-950/30 hover:shadow-emerald-500/25 border border-emerald-400/40 active:scale-95 cursor-pointer disabled:opacity-50"
+              title="Compile and simulate Draw.io architecture on the Google Agent-to-Agent (A2A) Gateway"
+            >
+              {isCompilingA2A ? (
+                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
+              )}
+              <span>{isCompilingA2A ? 'Compiling DAG...' : 'Run on A2A Swarm'}</span>
+            </button>
+
+            <a
+              href={activeArch.officialDocUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-sm"
+            >
+              <span>Docs Page</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </div>
         </header>
 
@@ -812,7 +771,7 @@ function GcpArchitectureCenterInner() {
               {isCopilotOpen && (
                 <div
                   id="architecture-copilot-panel"
-                  className={`col-span-12 lg:col-span-4 xl:col-span-4 2xl:col-span-3.5 rounded-xl border flex flex-col h-[760px] md:h-[860px] overflow-hidden transition-all shadow-lg ${
+                  className={`col-span-12 lg:col-span-4 xl:col-span-4 2xl:col-span-3.5 rounded-xl border flex flex-col h-[820px] md:h-[920px] overflow-hidden transition-all shadow-lg ${
                     isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200'
                   }`}
                 >
@@ -832,7 +791,7 @@ function GcpArchitectureCenterInner() {
                             Architecture Co-Pilot
                           </span>
                           <span className="text-[9px] font-mono font-bold bg-blue-500/15 text-blue-500 border border-blue-500/25 px-1.5 py-0.2 rounded-full">
-                            Gemini 2.5
+                            Gemini 3.1 Pro / Omni
                           </span>
                         </div>
                         <p className="text-[10px] text-slate-500 dark:text-slate-400">
@@ -1083,7 +1042,7 @@ function GcpArchitectureCenterInner() {
                   <button
                     id="gcp-expand-copilot-rail-btn"
                     onClick={() => setIsCopilotOpen(true)}
-                    className={`w-12 h-[760px] md:h-[860px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
+                    className={`w-12 h-[820px] md:h-[920px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
                       isDark
                         ? 'bg-[#0F172A] hover:bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
                         : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:text-blue-600'
@@ -1291,7 +1250,7 @@ function GcpArchitectureCenterInner() {
                 </div>
 
                 {/* RenderSafe Diagram Canvas Container */}
-                <div className="w-full h-[720px] md:h-[820px] relative bg-white dark:bg-[#0B111E]">
+                <div className="w-full h-[760px] md:h-[860px] relative bg-white dark:bg-[#0B111E]">
                   <DiagramViewerRenderSafe
                     key={`${activeArch.id}-${activeVersionTag}-${isDark ? 'dark' : 'light'}`}
                     xml={activeXml}

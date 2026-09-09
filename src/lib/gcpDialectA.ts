@@ -126,9 +126,10 @@ function renderCleanEdge(edge: EdgeDef, isDark = false): string {
     : 'edgeStyle=none;');
 
   const valAttr = labelHtml ? `value="${encodeXml(labelHtml)}"` : `value=""`;
+  const labelBgStyle = edge.label ? `labelBackgroundColor=${pillBg};labelBorderColor=${pillBorder};` : 'labelBackgroundColor=none;';
 
   return (
-    `<mxCell id="${edge.id}" ${valAttr} style="${edgeStyle}html=1;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};strokeColor=${color};strokeWidth=1.75;${dashStyle}verticalAlign=middle;labelBackgroundColor=none;" edge="1" parent="1" source="${edge.source}" target="${edge.target}">` +
+    `<mxCell id="${edge.id}" ${valAttr} style="${edgeStyle}html=1;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};strokeColor=${color};strokeWidth=1.75;${dashStyle}verticalAlign=middle;${labelBgStyle}" edge="1" parent="1" source="${edge.source}" target="${edge.target}">` +
     `<mxGeometry relative="1" as="geometry">${geomInner}</mxGeometry>` +
     `</mxCell>`
   );
@@ -217,11 +218,11 @@ export const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
 
         <!-- 1. TOP ACTORS (Outside Google Cloud Box with generous top margin) -->
         <mxCell id="actor_users" value="${encodeXml(`<div style="padding:6px 12px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;gap:10px;height:100%;"><div style="font-size:22px;">👥</div><div><div style="font-size:12px;font-weight:800;color:${textColor};">Application users</div><div style="font-size:8px;color:${subtextColor};">Chat UI / SDK Client</div></div></div>`)}" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=${cardFill};strokeColor=${cardStroke};strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
-          <mxGeometry x="120" y="60" width="180" height="55" as="geometry"/>
+          <mxGeometry x="120" y="35" width="180" height="55" as="geometry"/>
         </mxCell>
 
         <mxCell id="actor_devs" value="${encodeXml(`<div style="padding:6px 12px;font-family:'Google Sans',sans-serif;display:flex;align-items:center;gap:10px;height:100%;"><div style="font-size:22px;">💻</div><div><div style="font-size:12px;font-weight:800;color:${textColor};">AI developers</div><div style="font-size:8px;color:#1A73E8;font-weight:700;">ADK Authors</div></div></div>`)}" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=${cardFill};strokeColor=${cardStroke};strokeWidth=1.5;shadow=0;" vertex="1" parent="1">
-          <mxGeometry x="710" y="60" width="160" height="55" as="geometry"/>
+          <mxGeometry x="710" y="35" width="160" height="55" as="geometry"/>
         </mxCell>
 
         <!-- 2. GOOGLE CLOUD OUTER CONTAINER -->
@@ -230,7 +231,7 @@ export const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
         </mxCell>
 
         <!-- Google Cloud Header Ribbon -->
-        <mxCell id="gcp_header_ribbon" value="${encodeXml(`<div style="display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:100%;font-family:'Google Sans',Roboto,sans-serif;color:#FFFFFF;"><div style="display:flex;align-items:center;gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#FFFFFF"/></svg><span style="font-size:16px;font-weight:700;">Google Cloud</span><span style="font-size:11px;font-weight:400;opacity:0.9;margin-left:8px;">| Solution Architecture: Multi-Agent AI System</span></div><div style="font-size:10px;font-weight:700;background:rgba(255,255,255,0.25);padding:3px 10px;border-radius:12px;">Architecture Center Official</div></div>`)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;align=left;" vertex="1" parent="1">
+        <mxCell id="gcp_header_ribbon" value="${encodeXml(`<div style="display:flex;align-items:center;justify-content:space-between;padding:0 20px;padding-left:270px;height:100%;font-family:'Google Sans',Roboto,sans-serif;color:#FFFFFF;"><div style="display:flex;align-items:center;gap:10px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#FFFFFF"/></svg><span style="font-size:16px;font-weight:700;">Google Cloud</span><span style="font-size:11px;font-weight:400;opacity:0.9;margin-left:8px;">| Solution Architecture: Multi-Agent AI System</span></div><div style="font-size:10px;font-weight:700;background:rgba(255,255,255,0.25);padding:3px 10px;border-radius:12px;">Architecture Center Official</div></div>`)}" style="rounded=1;arcSize=8;whiteSpace=wrap;html=1;fillColor=#1A73E8;strokeColor=none;align=left;" vertex="1" parent="1">
           <mxGeometry x="60" y="140" width="1480" height="42" as="geometry"/>
         </mxCell>
 
@@ -393,9 +394,9 @@ export const GCP_MULTIAGENT_CORE: GcpArchitectureDef = {
         </mxCell>
 
         <!-- 8. CONNECTORS (100% COLLISION-FREE & OFFSET-CALCULATED) -->
-        ${renderCleanEdge({ id: 'e1', source: 'actor_users', target: 'frontend_svc', step: '1', label: 'Prompt', labelOffsetX: 35, color: '#0F5132', exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0 }, isDark)}
+        ${renderCleanEdge({ id: 'e1', source: 'actor_users', target: 'frontend_svc', step: '1', label: 'Prompt', labelOffsetX: -28, color: '#0F5132', exitX: 0.35, exitY: 1, entryX: 0.35, entryY: 0 }, isDark)}
         ${renderCleanEdge({ id: 'e2', source: 'frontend_svc', target: 'coordinator_agent', step: '2', color: '#0F5132', exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0 }, isDark)}
-        ${renderCleanEdge({ id: 'e_hitl', source: 'frontend_svc', target: 'actor_users', label: 'Human-in-the-loop interaction', labelOffsetY: -12, color: '#475569', exitX: 1, exitY: 0.5, entryX: 0.85, entryY: 1, waypoints: [{ x: 380, y: 245 }, { x: 380, y: 125 }, { x: 273, y: 125 }] }, isDark)}
+        ${renderCleanEdge({ id: 'e_hitl', source: 'frontend_svc', target: 'actor_users', label: 'Human-in-the-loop interaction', labelOffsetX: 55, color: '#475569', dashed: true, exitX: 0.75, exitY: 0, entryX: 0.75, entryY: 1 }, isDark)}
         ${renderCleanEdge({ id: 'e_devs', source: 'actor_devs', target: 'node_adk', color: '#1E293B', exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0 }, isDark)}
 
         ${renderCleanEdge({ id: 'e3_split', source: 'coordinator_agent', target: 'subagent_task_a', step: '3', label: 'Subagent invocation', labelOffsetX: 55, color: '#0F5132', exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, waypoints: [{ x: 210, y: 425 }, { x: 200, y: 425 }] }, isDark)}
