@@ -634,9 +634,14 @@ function Studio1Content() {
   }, [diagrams, activeDiagramId]);
   const activeDiagramDigest = useMemo(() => studio1ContentDigest(activeDiagram?.xml || ''), [activeDiagram?.xml]);
 
-  // Auto-scroll chat feed
+  // Auto-scroll chat feed (confine strictly to chat container)
   useEffect(() => {
-    chatMessagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatMessagesEndRef.current?.parentElement) {
+      chatMessagesEndRef.current.parentElement.scrollTo({
+        top: chatMessagesEndRef.current.parentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [chatMessages.length, isSynthesizing]);
 
   // Close dropdowns on outside click
@@ -1619,130 +1624,164 @@ function Studio1Content() {
   );
 
   return (
-    <div className={`min-h-screen flex flex-row ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'}`}>
+    <div className={`h-screen max-h-screen w-screen flex flex-row overflow-hidden ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'}`}>
       {/* 0. Collapsible Unified Navigation Sidebar */}
       <UnifiedAppSidebar />
 
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Toast Notification */}
-      {toastNotification && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 font-semibold text-xs rounded-xl shadow-2xl border border-teal-500/40 backdrop-blur-md animate-in fade-in slide-in-from-top-4">
-          <Sparkles className="w-4 h-4 text-teal-400 dark:text-teal-600 animate-pulse" />
-          <span>{toastNotification}</span>
-        </div>
-      )}
-
-      {/* Main Studio Viewport */}
-      <div className="max-w-[1920px] w-full mx-auto p-3 md:p-5 space-y-3">
-        {/* Top Header Bar */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-3 border-b border-slate-200 dark:border-slate-800">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-500 mb-1">
-              <Link href="/" className="hover:text-teal-500 transition-colors">
-                PromptCanvas
-              </Link>
-              <span>&rsaquo;</span>
-              <span className="font-bold text-teal-600 dark:text-teal-400">Launch Studio 1</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
-                <Layers className="w-5 h-5" />
-              </div>
-              <div>
-                <h1 className="text-xl md:text-2xl font-black tracking-tight">
-                  AI Architecture &amp; Specification Studio 1
-                </h1>
-                <p className="text-xs text-slate-500">
-                  Experimental Hybrid Engine • Semantic Graph • Pattern Contracts • Certified Layout
-                </p>
-              </div>
-            </div>
+        {toastNotification && (
+          <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 font-semibold text-xs rounded-xl shadow-2xl border border-teal-500/40 backdrop-blur-md animate-in fade-in slide-in-from-top-4">
+            <Sparkles className="w-4 h-4 text-teal-400 dark:text-teal-600 animate-pulse" />
+            <span>{toastNotification}</span>
           </div>
+        )}
 
-          {/* Right Action Tools: Undo, Redo, Version Tag */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleUndo}
-              disabled={currentHistoryIndex >= versionHistory.length - 1}
-              className={`p-2 rounded-xl border flex items-center gap-1 text-xs font-bold transition-all ${
-                currentHistoryIndex >= versionHistory.length - 1
-                  ? 'opacity-40 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-teal-500 text-slate-700 dark:text-slate-200 shadow-xs'
-              }`}
-              title="Undo last change"
+        {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
+        <header className="w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
+          {/* Left: Project Title, Mode Badge, Version Snapshot, Undo/Redo */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            {/* Small screen home link only */}
+            <Link 
+              href="/" 
+              className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-tr from-teal-500 to-emerald-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-teal-500/20 hover:scale-105 transition shrink-0"
+              title="Return to PromptCanvas Home"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </button>
+              PC
+            </Link>
 
-            <button
-              type="button"
-              onClick={handleRedo}
-              disabled={currentHistoryIndex <= 0}
-              className={`p-2 rounded-xl border flex items-center gap-1 text-xs font-bold transition-all ${
-                currentHistoryIndex <= 0
-                  ? 'opacity-40 cursor-not-allowed border-slate-200 dark:border-slate-800 text-slate-400'
-                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-teal-500 text-slate-700 dark:text-slate-200 shadow-xs'
-              }`}
-              title="Redo change"
-            >
-              <RotateCw className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-sm text-white tracking-tight leading-none truncate max-w-[140px] sm:max-w-[200px] lg:max-w-[280px]" title={projectTitle}>
+                {projectTitle || 'AI Architecture Draft'}
+              </h1>
+
+              {/* Mode Badge: Studio 1 Lab */}
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-teal-300 bg-teal-950/80 border border-teal-500/40 px-2 py-0.5 rounded-full font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                <span>Studio 1 (Hybrid Lab)</span>
+              </span>
+            </div>
+
+            <div className="h-4 w-px bg-slate-800 hidden md:block shrink-0" />
 
             {/* Version Snapshot Pill */}
             <button
               type="button"
               onClick={() => setShowHistoryModal(true)}
-              className={`px-3 py-1.5 rounded-xl border font-mono font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer shadow-xs ${
-                pendingVerification?.isPending
-                  ? 'border-amber-500/50 bg-amber-500/15 text-amber-800 dark:text-amber-300 animate-pulse'
-                  : 'border-teal-500/30 bg-teal-500/10 text-teal-700 dark:text-teal-300 hover:bg-teal-500/20'
-              }`}
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-slate-200 transition font-mono font-bold cursor-pointer shrink-0"
+              title="View Version History Snapshots"
             >
-              <Clock className={`w-3.5 h-3.5 ${pendingVerification?.isPending ? 'text-amber-500' : 'text-teal-500'}`} />
+              <Clock className={`w-3.5 h-3.5 ${pendingVerification?.isPending ? 'text-amber-400 animate-pulse' : 'text-teal-400'}`} />
               <span>
                 {pendingVerification?.isPending
                   ? `${pendingVerification.microVersionTag} (Draft)`
                   : versionHistory[currentHistoryIndex]?.versionTag || 'v1.0'}
               </span>
-              <span className="text-[10px] opacity-70">
+              <span className="text-[10px] text-slate-400 hidden xl:inline">
                 ({currentHistoryIndex + 1}/{versionHistory.length})
               </span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
+            {/* Undo / Redo */}
+            <div className="hidden sm:flex items-center gap-1 border-l border-slate-800 pl-2">
+              <button
+                type="button"
+                onClick={handleUndo}
+                disabled={currentHistoryIndex >= versionHistory.length - 1}
+                className={`p-1.5 rounded-lg border flex items-center justify-center transition-all ${
+                  currentHistoryIndex >= versionHistory.length - 1
+                    ? 'opacity-30 cursor-not-allowed border-slate-800 text-slate-500'
+                    : 'bg-slate-800 border-slate-700 hover:border-teal-500 text-slate-300 hover:text-white cursor-pointer shadow-xs'
+                }`}
+                title="Undo last change"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleRedo}
+                disabled={currentHistoryIndex <= 0}
+                className={`p-1.5 rounded-lg border flex items-center justify-center transition-all ${
+                  currentHistoryIndex <= 0
+                    ? 'opacity-30 cursor-not-allowed border-slate-800 text-slate-500'
+                    : 'bg-slate-800 border-slate-700 hover:border-teal-500 text-slate-300 hover:text-white cursor-pointer shadow-xs'
+                }`}
+                title="Redo change"
+              >
+                <RotateCw className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* + New Project */}
             <button
               type="button"
               onClick={handleNewProject}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-teal-600 hover:bg-teal-700 text-white border border-teal-500 shadow-sm transition"
+              className="flex items-center gap-1.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md shadow-teal-500/25 transition cursor-pointer shrink-0"
               title="Start a new Studio 1 architecture"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>New Project</span>
+              <span>+ New</span>
+            </button>
+
+            {/* Clone */}
+            <button
+              type="button"
+              onClick={handleCloneReference}
+              className="hidden sm:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer shrink-0"
+              title="Create an editable copy of the current architecture"
+            >
+              <CopyPlus className="w-3.5 h-3.5 text-purple-400" />
+              <span>Clone</span>
+            </button>
+          </div>
+
+          {/* Right: Studio 1 Library, Draw.io New Tab, Copy XML */}
+          <div className="flex items-center gap-2 md:gap-2.5 shrink-0">
+            <Link
+              href="/history?studio=studio1"
+              className="hidden lg:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-xs"
+              title="Open the Studio 1-only project library"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-purple-400" />
+              <span>History Library</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={handleOpenDrawioNewTab}
+              disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+              title="Open in draw.io in new browser tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+              <span>Open in draw.io</span>
             </button>
 
             <button
               type="button"
-              onClick={handleCloneReference}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-purple-500 shadow-xs transition cursor-pointer"
-              title="Create an editable copy of the current architecture"
+              onClick={() => {
+                if (activeDiagram?.xml) {
+                  navigator.clipboard.writeText(activeDiagram.xml);
+                  setCopiedXml(true);
+                  showToast('📋 Draw.io XML copied to clipboard!');
+                  setTimeout(() => setCopiedXml(false), 2000);
+                }
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-sm shadow-teal-500/20 transition cursor-pointer"
+              title="Copy Draw.io XML to clipboard"
             >
-              <CopyPlus className="w-3.5 h-3.5 text-purple-500" />
-              <span>Clone</span>
+              {copiedXml ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              <span>{copiedXml ? 'Copied!' : 'Copy XML'}</span>
             </button>
-
-            <Link
-              href="/history?studio=studio1"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black bg-purple-50 hover:bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:hover:bg-purple-900 dark:text-purple-300 border border-purple-300 dark:border-purple-500/50 shadow-xs transition"
-              title="Open the Studio 1-only project library"
-            >
-              <FolderOpen className="w-3.5 h-3.5 text-purple-500" />
-              <span>Studio 1 Library</span>
-            </Link>
           </div>
-        </div>
+        </header>
 
-        {/* 2-Column Split Workspace: 25% Left Chat, 75% Right Diagram */}
-        <div className="flex flex-col lg:flex-row gap-4 items-start w-full">
+        {/* Main Studio Viewport (Scrollable below header) */}
+        <div className="flex-1 overflow-y-auto min-h-0 w-full p-3 md:p-5 space-y-3">
+          {/* 2-Column Split Workspace: 25% Left Chat, 75% Right Diagram */}
+          <div className="flex flex-col lg:flex-row gap-4 items-start w-full">
           {/* Left Column: Scope & Conversational Requirements (25% Width) */}
           <div className="w-full lg:w-[25%] lg:min-w-[320px] flex-shrink-0 space-y-4">
             <div className={`p-4 md:p-5 rounded-2xl border shadow-sm space-y-4 ${

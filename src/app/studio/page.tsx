@@ -1004,9 +1004,10 @@ function StudioMain() {
         {/* Left: Brand, Project Title, Mode Badge, Blueprint & Version */}
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="flex items-center gap-2 shrink-0">
+            {/* Small screen home link only (desktop has UnifiedAppSidebar) */}
             <Link 
               href="/" 
-              className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-500/20 hover:scale-105 transition shrink-0"
+              className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-500/20 hover:scale-105 transition shrink-0"
               title="Return to PromptCanvas Home"
             >
               PC

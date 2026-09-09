@@ -169,7 +169,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
         {/* Top Branding & Navigation */}
         <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
           {/* Brand Header */}
-          <div className={`h-16 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
+          <div className={`h-14 border-b flex items-center justify-between px-3.5 shrink-0 ${isLight ? 'border-slate-200' : 'border-slate-800/60'}`}>
             {isSidebarOpen ? (
               <>
                 <Link href="/" className="flex items-center gap-2.5 group">
