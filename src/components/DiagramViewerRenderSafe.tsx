@@ -101,7 +101,7 @@ export default function DiagramViewerRenderSafe({
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
     height: '100%',
-    minHeight: allowFullScaleScroll ? '760px' : '450px',
+    minHeight: allowFullScaleScroll ? '760px' : '360px',
     width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
@@ -124,10 +124,11 @@ export default function DiagramViewerRenderSafe({
     xml: translatedXml,
     lightbox: false,
     nav: false,
-    resize: !allowFullScaleScroll,
-    toolbar: '',
+    resize: false,
+    toolbar: null,
+    'toolbar-position': 'none',
     edit: '',
-    border: allowFullScaleScroll ? 10 : 20,
+    border: allowFullScaleScroll ? 15 : 30,
     transparent: true,
     fit: !allowFullScaleScroll,
     'max-scale': 4.0,
@@ -153,12 +154,16 @@ ${origin ? `<base href="${origin}/">` : ''}
   .canvas-container {
     ${allowFullScaleScroll
       ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`
-      : `position: absolute; inset: 0; padding: 4px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
+      : `position: absolute; inset: 0; padding: 8px 12px 20px 12px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
   }
   .mxgraph {
     ${allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block !important; margin: 0 auto; background: transparent;`
-      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent;`}
+      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent; margin: 0 auto !important;`}
+  }
+  #diagram-container {
+    margin-top: 0 !important;
+    overflow: visible !important;
   }
 
   /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping or distortion */
@@ -166,7 +171,7 @@ ${origin ? `<base href="${origin}/">` : ''}
   .mxgraph > div > svg {
     ${allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; margin: auto !important; display: block !important;`
-      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: auto !important; display: block !important; object-fit: contain !important;`}
+      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
   }
   .mxgraph > div {
     ${allowFullScaleScroll
@@ -187,7 +192,7 @@ ${origin ? `<base href="${origin}/">` : ''}
 </head>
 <body>
 <div class="canvas-container">
-  <div class="mxgraph" id="diagram-container"></div>
+  <div class="mxgraph" id="diagram-container" style="width: 100%; height: 100%;"></div>
 </div>
 <script>
   if (typeof window.btoa === 'function') {
@@ -222,6 +227,7 @@ ${origin ? `<base href="${origin}/">` : ''}
 
   const configObj = ${safeJsonConfig};
   configObj.fit = ${allowFullScaleScroll ? 'false' : 'true'};
+  configObj.resize = false;
   configObj.xml = getCleanGraphXml(configObj.xml);
 
   const root = document.getElementById('diagram-container');
@@ -269,6 +275,11 @@ ${origin ? `<base href="${origin}/">` : ''}
     if (canvasContainer) {
       canvasContainer.scrollTop = 0;
       canvasContainer.scrollLeft = 0;
+    }
+    if (root) {
+      root.style.setProperty('margin-top', '0px', 'important');
+      root.style.setProperty('overflow', 'visible', 'important');
+      root.style.setProperty('margin', '0 auto', 'important');
     }
     suppressOversizedBlackOverlay();
   }
@@ -337,7 +348,7 @@ ${origin ? `<base href="${origin}/">` : ''}
         <iframe
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
-          className="w-full h-full min-h-[760px] border-0 bg-transparent"
+          className="w-full h-full min-h-0 border-0 bg-transparent"
           title="PromptCanvas Draw.io Diagram Viewer"
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />

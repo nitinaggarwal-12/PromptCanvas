@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -28,7 +28,15 @@ import {
   Share2,
   Users,
   Plus,
-  Bookmark
+  Bookmark,
+  MoreHorizontal,
+  Eye,
+  HelpCircle,
+  Tag,
+  Lightbulb,
+  Play,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
@@ -47,12 +55,14 @@ import {
 } from '@/lib/canonical/canonicalTemplates';
 import { ObjectShareModal } from '@/components/studio/ObjectShareModal';
 import { SaveToLibraryModal } from '@/components/studio/SaveToLibraryModal';
+import { NewProjectModal, NewProjectConfig } from '@/components/studio/NewProjectModal';
+import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
 
 export interface StudioVersionSnapshot {
   id: string;
   versionTag: string;
   timestamp: string;
-  author: 'User' | 'AI Assistant';
+  author: string;
   actionSummary: string;
   ast: ArchitectureAst;
   xml: string;
@@ -70,6 +80,104 @@ export interface StudioChatMessage {
   };
 }
 
+// Version Arithmetic Helpers
+function getNextMicroVersion(currentVersion: string): string {
+  const match = currentVersion.match(/^v?(\d+)\.(\d+)$/);
+  if (match) {
+    const major = parseInt(match[1], 10);
+    const minor = parseInt(match[2], 10);
+    return `v${major}.${minor + 1}`;
+  }
+  return `${currentVersion}.1`;
+}
+
+function getNextMajorVersion(currentVersion: string): string {
+  const match = currentVersion.match(/^v?(\d+)\.(\d+)$/);
+  if (match) {
+    const major = parseInt(match[1], 10);
+    return `v${major + 1}.0`;
+  }
+  return 'v2.0';
+}
+
+// Concierge Architectural Knowledge Engine
+function getConciergeResponse(query: string): string {
+  const lower = query.toLowerCase();
+
+  if (lower.includes('what can this tool do') || lower.includes('what can you do') || lower.includes('capabilities') || lower.includes('features')) {
+    return `**PromptCanvas Studio** is an AI-powered Enterprise Cloud Architecture Suite:
+
+1. **Dual-Sync Living Architecture**: Compiles high-contrast, certified Draw.io diagrams that stay 100% bidirectionally synchronized with 16 comprehensive Living Specifications (PRD, HLD, STRIDE Threat Model, Spanner DDL, BCDR Plan, and FinOps runbooks).
+2. **Multi-Persona AI Co-Pilot**: Simulate inputs from Product Managers, Lead Architects, CISOs, and FinOps engineers to refine both visual topology and technical specs simultaneously.
+3. **52 Canonical Certified Blueprints**: Pre-engineered Google Cloud reference topologies covering event streaming, multi-region lakehouses, Vertex AI RAG hubs, and Zero-Trust perimeters.
+4. **Draw.io Native Interop**: Fully compatible with diagrams.net. Download standard \`.drawio\` XML, export high-res diagrams, or open directly in the web editor.
+5. **Auditory Briefings**: Generate 2-minute executive audio briefings summarizing architecture tradeoffs and SLAs.
+
+To build your own project, click **"+ New Canvas"** in the top navigation!`;
+  }
+
+  if (lower.includes('how to use') || lower.includes('how do i create') || lower.includes('how does it work') || lower.includes('get started') || lower.includes('new diagram') || lower.includes('version')) {
+    return `Here is how to get started with PromptCanvas Studio:
+
+1. **Start a Project**: Click the **"+ New Canvas"** button at the top. Describe your application use case, choose an industry domain, and select a starter blueprint (or Blank Canvas).
+2. **Dedicated Sandbox**: You'll receive a dedicated Canvas with a unique Session ID, initialized at baseline **v1.0**.
+3. **Iterate with AI Co-Pilot**: Tell ArcAssist what you want to add or modify (e.g. *"Add Cloud Armor WAF and BigQuery streaming buffer"*). The diagram updates and micro-versions automatically increment (**v1.0 → v1.1 → v1.2**).
+4. **Save Major Milestones**: When your team completes an architecture review, click **"Tag Major Release"** to promote your changes to **v2.0** with custom release notes.
+5. **Inspect & Export**: Click on any node to view Terraform HCL, SLA targets, and latency budgets, or export full Living Specs and Draw.io bundles.`;
+  }
+
+  if (lower.includes('zero trust') || lower.includes('security') || lower.includes('cmek') || lower.includes('ciso') || lower.includes('armor') || lower.includes('vpc')) {
+    return `**Google Cloud Zero-Trust & Security Architecture Patterns**:
+
+- **Perimeter Defense**: Google Cloud Armor provides Layer 7 WAF inspection, DDoS mitigation, and OWASP Top 10 rule enforcement at the global edge.
+- **Identity-Aware Proxy (IAP)**: Replaces traditional VPNs with context-aware access control based on user identity and device health.
+- **Envelope Encryption with Cloud KMS HSM**: Customer-Managed Encryption Keys (CMEK) backed by FIPS 140-2 Level 3 Hardware Security Modules guard Cloud Spanner databases, BigQuery datasets, and Cloud Storage buckets.
+- **VPC Service Controls (VPC-SC)**: Creates cryptographic boundaries preventing data exfiltration between Google Cloud services and untrusted networks.
+- **STRIDE Threat Modeling**: Synchronized automatically in **DOC-06** of the Living Specifications.`;
+  }
+
+  if (lower.includes('multi-region') || lower.includes('dr') || lower.includes('spanner') || lower.includes('rpo') || lower.includes('rto') || lower.includes('sla') || lower.includes('failover')) {
+    return `**High Availability & Multi-Region DR Architecture**:
+
+- **Cloud Spanner Multi-Region (\`nam3\`)**: Uses synchronous Paxos consensus with dual read-write leaders across primary regions (e.g. \`us-central1\`, \`us-east4\`) and a witness replica in \`europe-west1\`.
+- **Target RPO < 1 Second**: Synchronous multi-region Paxos guarantees zero data loss across regional network partitions.
+- **Target RTO < 15 Seconds**: Automated leader election and health checking without manual human intervention.
+- **Active-Active Routing**: Global Cloud Load Balancing (GCLB) routes traffic to the nearest healthy region with sub-30ms failover.
+- **Live Governance**: All DR parameters and SLA commitments (99.999%) are continuously audited in **DOC-08 (Disaster Recovery & BCDR Plan)**.`;
+  }
+
+  if (lower.includes('living spec') || lower.includes('specs') || lower.includes('prd') || lower.includes('hld') || lower.includes('document')) {
+    return `**Living Specifications Engine**:
+
+Unlike static documentation that quickly becomes obsolete, PromptCanvas Studio generates **16 synchronized Living Specifications** directly from the Architecture AST (Abstract Syntax Tree):
+
+- **DOC-01 to DOC-04**: Product Requirements (PRD), Stakeholder Personas, System Architecture (HLD), and API Protocols.
+- **DOC-05 to DOC-07**: Infrastructure & Database DDL, STRIDE Threat Model, and SRE/Observability Runbooks.
+- **DOC-08 to DOC-10**: Disaster Recovery (BCDR), FinOps Cost Optimization, and Compliance/Audit Matrices.
+- **DOC-11 to DOC-16**: Data Governance, Integration Protocols, Deployment Topologies, and Performance Budgets.
+
+Whenever the diagram is modified by the AI Co-Pilot, all 16 documents update in real-time. Switch to the **"Living Specs"** tab above to read them!`;
+  }
+
+  if (lower.includes('draw.io') || lower.includes('save') || lower.includes('export') || lower.includes('download')) {
+    return `**Draw.io & Export Guidance**:
+
+- **Open in diagrams.net**: Click **"Open in draw.io"** to open this topology in the diagrams.net web editor. Note that external edits in diagrams.net are a client-side scratchpad and won't sync back to PromptCanvas unless saved as a new project.
+- **Download XML**: Export the raw \`.drawio\` XML file to version-control in Git or import into enterprise repositories.
+- **Save to Library**: Click **"Save to Library"** to promote your canvas into a permanent company blueprint visible in your organization's Architecture Library.
+- **Living Spec Markdown Bundle**: Download all 16 specification documents as a clean Markdown bundle for distribution.`;
+  }
+
+  return `I can help you explore this Google Cloud reference architecture or get started with your own design:
+
+- **What can this tool do?**: Ask about PromptCanvas Studio features and living specifications.
+- **How to use**: Learn how to launch a new canvas and collaborate with AI.
+- **Security & Zero-Trust**: Learn how Cloud Armor, CMEK, and VPC-SC are structured.
+- **Multi-Region DR**: Understand Cloud Spanner Paxos consensus and 99.999% SLA topologies.
+
+To start designing your own architecture, click **"+ New Canvas"** above!`;
+}
+
 export default function StudioPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500 font-mono text-xs">Loading Architecture Studio...</div>}>
@@ -81,18 +189,29 @@ export default function StudioPage() {
 function StudioMain() {
   const searchParams = useSearchParams();
 
-  // 1. Session UUID & Core Architecture State (AST & Living Specs)
-  const [sessionId, setSessionId] = useState<string>('ses_live_session');
+  // 1. Session Mode: Showcase Mode (Default) vs Active Canvas Editor Mode
+  const [isEditorMode, setIsEditorMode] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const urlId = new URLSearchParams(window.location.search).get('id');
+    return Boolean(urlId && urlId !== 'reference_showcase');
+  });
+
+  const [sessionId, setSessionId] = useState<string>(() => {
+    if (typeof window === 'undefined') return 'reference_showcase';
+    return new URLSearchParams(window.location.search).get('id') || 'reference_showcase';
+  });
+
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     const urlId = new URLSearchParams(window.location.search).get('id');
-    if (urlId) {
+    if (urlId && urlId !== 'reference_showcase') {
       setSessionId(urlId);
+      setIsEditorMode(true);
     } else {
-      const generated = 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-      setSessionId(generated);
+      setSessionId('reference_showcase');
+      setIsEditorMode(false);
     }
   }, []);
 
@@ -108,29 +227,23 @@ function StudioMain() {
   const [isHealing, setIsHealing] = useState(false);
   const [isExportDropdownOpen, setIsExportDropdownOpen] = useState(false);
   const [isVersionDropdownOpen, setIsVersionDropdownOpen] = useState(false);
+  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
+  const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
+  const [isMajorVersionModalOpen, setIsMajorVersionModalOpen] = useState(false);
 
   // 3. Version History Snapshots
   const [versions, setVersions] = useState<StudioVersionSnapshot[]>([
     {
-      id: 'v_1_0',
+      id: 'v_ref_1_0',
       versionTag: 'v1.0',
-      timestamp: '10:14 AM',
+      timestamp: '10:00 AM',
       author: 'AI Assistant',
-      actionSummary: 'Initial 6-Zone Synthesis with Cloud Spanner & Vertex AI',
-      ast: createDefaultFintechAst(),
-      xml: generateGcpNativeArchitectureXml()
-    },
-    {
-      id: 'v_1_1',
-      versionTag: 'v1.1',
-      timestamp: '10:18 AM',
-      author: 'User',
-      actionSummary: 'Added europe-west1 Multi-Region DR & 99.999% SLA Sync',
+      actionSummary: 'Google Cloud Enterprise Reference Blueprint (Certified)',
       ast: createDefaultFintechAst(),
       xml: generateGcpNativeArchitectureXml()
     }
   ]);
-  const [activeVersionTag, setActiveVersionTag] = useState('v1.1');
+  const [activeVersionTag, setActiveVersionTag] = useState('v1.0');
 
   // Canonical Blueprint Catalog State
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
@@ -147,6 +260,102 @@ function StudioMain() {
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isSavedInLibrary, setIsSavedInLibrary] = useState(() => sessionId.startsWith('proj_'));
 
+  // Concierge Messages Stream (Showcase Mode)
+  const [conciergeMessages, setConciergeMessages] = useState<StudioChatMessage[]>([
+    {
+      id: 'concierge_welcome',
+      sender: 'assistant',
+      text: "Welcome to PromptCanvas Studio! I'm your Architecture Concierge.\n\nHere you can explore this certified Google Cloud Reference Architecture in read-only mode. You can inspect components, view synchronized Living Specs (HLD, STRIDE threat models, Spanner DDL), or open the diagram in draw.io to test changes.\n\nAsk me anything about this architecture, cloud best practices, or click \"+ New Canvas\" above to build your own custom topology with AI Co-Pilot!",
+      timestamp: 'Just now'
+    }
+  ]);
+  const [conciergeInput, setConciergeInput] = useState('');
+
+  // Co-Pilot Messages Stream (Editor Mode)
+  const [messages, setMessages] = useState<StudioChatMessage[]>([
+    {
+      id: 'msg_init',
+      sender: 'assistant',
+      text: 'Baseline version v1.0 initialized. Your diagram is ready for customization. Tell me your project requirements or click any suggestion chip below to start evolving your architecture.',
+      timestamp: '10:00 AM',
+      actionSummary: {
+        versionTag: 'v1.0',
+        canvasDiff: 'Synthesized baseline Google Cloud enterprise nodes across 6 architectural tiers.',
+        specDiff: 'Generated 16 living specification documents (DOC-01 through DOC-16).'
+      }
+    }
+  ]);
+  const [promptInput, setPromptInput] = useState('');
+
+  // Auto-scroll refs for message streams (scoped to chat container, avoids scrolling parent window)
+  const conciergeScrollRef = useRef<HTMLDivElement>(null);
+  const editorScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (conciergeScrollRef.current) {
+      conciergeScrollRef.current.scrollTop = conciergeScrollRef.current.scrollHeight;
+    }
+  }, [conciergeMessages]);
+
+  useEffect(() => {
+    if (editorScrollRef.current) {
+      editorScrollRef.current.scrollTop = editorScrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Canvas Viewport Zoom Controls
+  const [zoomLevel, setZoomLevel] = useState<number>(1.0);
+  const handleZoomIn = useCallback(() => {
+    setZoomLevel(prev => Math.min(2.5, +(prev + 0.15).toFixed(2)));
+  }, []);
+  const handleZoomOut = useCallback(() => {
+    setZoomLevel(prev => Math.max(0.5, +(prev - 0.15).toFixed(2)));
+  }, []);
+  const handleResetZoom = useCallback(() => {
+    setZoomLevel(1.0);
+  }, []);
+
+  // Keyboard Zoom Shortcuts (Ctrl/Cmd + '+', '-', '0')
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in input or textarea
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) return;
+      if ((e.ctrlKey || e.metaKey) && (e.key === '=' || e.key === '+')) {
+        e.preventDefault();
+        handleZoomIn();
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === '-' || e.key === '_')) {
+        e.preventDefault();
+        handleZoomOut();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+        e.preventDefault();
+        handleResetZoom();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleZoomIn, handleZoomOut, handleResetZoom]);
+
+  // Handle Concierge Question Submit
+  const handleConciergeSubmit = (queryText: string) => {
+    if (!queryText.trim()) return;
+    const userMsg: StudioChatMessage = {
+      id: `c_user_${Date.now()}`,
+      sender: 'user',
+      text: queryText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    const responseText = getConciergeResponse(queryText);
+    const aiMsg: StudioChatMessage = {
+      id: `c_ai_${Date.now() + 1}`,
+      sender: 'assistant',
+      text: responseText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setConciergeMessages(prev => [...prev, userMsg, aiMsg]);
+    setConciergeInput('');
+  };
+
+  // Canonical Blueprint Selection Handler
   const handleSelectBlueprint = useCallback((blueprint: CanonicalTemplate, domainPresetId: string) => {
     setSelectedBlueprintId(blueprint.id);
     setSelectedDomain(domainPresetId);
@@ -203,38 +412,47 @@ function StudioMain() {
     };
 
     setAst(newAst);
-    setActiveVersionTag(`#${blueprint.id}`);
 
-    // Add to version history
-    setVersions(prev => [
-      {
-        id: `bp_${blueprint.id}_${Date.now()}`,
-        versionTag: `#${blueprint.id}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        author: 'AI Assistant',
-        actionSummary: `Loaded Canonical Blueprint #${blueprint.id}: ${blueprint.name}`,
-        ast: newAst,
-        xml: newXml
-      },
-      ...prev
-    ]);
-
-    // Add assistant chat message
-    setMessages(prev => [
-      ...prev,
-      {
-        id: `msg_${Date.now()}`,
-        sender: 'assistant',
-        text: `Loaded Canonical Blueprint #${blueprint.id}: ${blueprint.name} (${blueprint.family} Family, ${blueprint.level} Certified). Synchronized 16 Living Specifications with ${domainPreset.name} industry domain flavor.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actionSummary: {
+    if (isEditorMode) {
+      setActiveVersionTag(`#${blueprint.id}`);
+      setVersions(prev => [
+        {
+          id: `bp_${blueprint.id}_${Date.now()}`,
           versionTag: `#${blueprint.id}`,
-          canvasDiff: `Rendered ${blueprint.keyComponents?.length || 12} components across ${blueprint.family} architecture.`,
-          specDiff: `Reconciled DOC-01 through DOC-16 for ${domainPreset.prefix}.`
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          author: 'AI Assistant',
+          actionSummary: `Loaded Canonical Blueprint #${blueprint.id}: ${blueprint.name}`,
+          ast: newAst,
+          xml: newXml
+        },
+        ...prev
+      ]);
+      setMessages(prev => [
+        ...prev,
+        {
+          id: `msg_${Date.now()}`,
+          sender: 'assistant',
+          text: `Loaded Canonical Blueprint #${blueprint.id}: ${blueprint.name} (${blueprint.family} Family, ${blueprint.level} Certified). Synchronized 16 Living Specifications with ${domainPreset.name} industry domain flavor.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          actionSummary: {
+            versionTag: `#${blueprint.id}`,
+            canvasDiff: `Rendered ${blueprint.keyComponents?.length || 12} components across ${blueprint.family} architecture.`,
+            specDiff: `Reconciled DOC-01 through DOC-16 for ${domainPreset.prefix}.`
+          }
         }
-      }
-    ]);
-  }, [ast.components]);
+      ]);
+    } else {
+      setConciergeMessages(prev => [
+        ...prev,
+        {
+          id: `c_bp_${Date.now()}`,
+          sender: 'assistant',
+          text: `Switched reference showcase to **Canonical Blueprint #${blueprint.id}: ${blueprint.name}** (${blueprint.family} Family). Synchronized 16 Living Specifications. To edit or customize this topology, click **"+ New Canvas"** or **"Fork & Edit"** above.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+    }
+  }, [ast.components, isEditorMode]);
 
   const handleSelectBlueprintById = useCallback((templateId: string) => {
     const norm = templateId.padStart(2, '0');
@@ -249,46 +467,6 @@ function StudioMain() {
     setIsShareModalOpen(true);
   }, []);
 
-  // 4. Conversational Turn Stream
-  const [messages, setMessages] = useState<StudioChatMessage[]>([
-    {
-      id: 'msg_1',
-      sender: 'user',
-      text: 'Design an ultra-low latency transaction mesh with Cloud Spanner nam3, Cloud HSM CMEK, and Gemini 2.5 Flash fraud reasoning.',
-      timestamp: '10:14 AM'
-    },
-    {
-      id: 'msg_2',
-      sender: 'assistant',
-      text: 'Compiled 6-Zone GCP Native Reference Architecture and generated 10 synchronized Living Specifications (PRD, HLD, STRIDE Threat Model, Spanner DDL, and BCDR Plan).',
-      timestamp: '10:14 AM',
-      actionSummary: {
-        versionTag: 'v1.0',
-        canvasDiff: 'Synthesized 18 Google Cloud nodes across 6 architectural tiers.',
-        specDiff: 'Generated 10 living specification documents (DOC-01 through DOC-10).'
-      }
-    },
-    {
-      id: 'msg_3',
-      sender: 'user',
-      text: 'Add a secondary DR failover region in europe-west1, and update our SLA in the HLD and BCDR specs to 99.999%.',
-      timestamp: '10:18 AM'
-    },
-    {
-      id: 'msg_4',
-      sender: 'assistant',
-      text: 'Executed bidirectional synchronization pass across visual topology and living specifications.',
-      timestamp: '10:18 AM',
-      actionSummary: {
-        versionTag: 'v1.1',
-        canvasDiff: 'Added europe-west1 Cloud Spanner DR witness replica node & replication bus.',
-        specDiff: 'Updated Chapter 5 in DOC-03 (HLD) & DOC-09 (BCDR Plan) to 99.999% SLA.'
-      }
-    }
-  ]);
-
-  const [promptInput, setPromptInput] = useState('');
-
   // Hydrate State from URL Deep-Link parameters and localStorage on initial mount
   useEffect(() => {
     if (!searchParams) return;
@@ -298,9 +476,9 @@ function StudioMain() {
     const nodeParam = searchParams.get('node');
     const vParam = searchParams.get('v');
 
-    if (urlId) {
+    if (urlId && urlId !== 'reference_showcase') {
       setSessionId(urlId);
-      // Restore from localStorage if available
+      setIsEditorMode(true);
       try {
         const saved = localStorage.getItem(`promptcanvas_studio_${urlId}`);
         if (saved) {
@@ -341,9 +519,19 @@ function StudioMain() {
     }
   }, [searchParams]);
 
-  // Continuously synchronize browser URL & LocalStorage with active session hierarchy
+  // Synchronize browser URL & LocalStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
+
+    if (!isEditorMode) {
+      const params = new URLSearchParams();
+      if (activeView !== 'diagram') params.set('view', activeView);
+      if (activeView === 'specs' && activeDocId) params.set('doc', activeDocId);
+      const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
+      window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+      return;
+    }
+
     const params = new URLSearchParams();
     params.set('id', sessionId);
     if (ast.metadata.projectTitle) params.set('project', ast.metadata.projectTitle);
@@ -357,7 +545,6 @@ function StudioMain() {
     const newUrl = `${window.location.pathname}?${params.toString()}`;
     window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
 
-    // Auto-save session state
     try {
       localStorage.setItem(`promptcanvas_studio_${sessionId}`, JSON.stringify({
         id: sessionId,
@@ -374,16 +561,19 @@ function StudioMain() {
     } catch {
       // storage safeguard
     }
-  }, [sessionId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
+  }, [isEditorMode, sessionId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
 
-  // 5. Living Specs derived from AST
+  // Living Specs derived from AST
   const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast), [ast]);
 
-  // Handle Co-Pilot Prompt Execution with Multi-Persona Intelligence
+  // Handle Co-Pilot Prompt Execution with Dynamic Micro-Versioning (v1.0 -> v1.1 -> v1.2)
   const handleExecutePrompt = useCallback((promptText: string, explicitPersona?: string) => {
     if (!promptText.trim()) return;
 
-    // Detect persona from text or explicit argument
+    if (!isEditorMode) {
+      setIsEditorMode(true);
+    }
+
     let detectedPersona = explicitPersona || 'User';
     if (!explicitPersona) {
       if (promptText.includes('[Product Manager]') || promptText.toLowerCase().includes('product manager')) {
@@ -409,10 +599,9 @@ function StudioMain() {
     setMessages(prev => [...prev, userMsg]);
     setPromptInput('');
 
-    // Intelligent AST & Visual Reconciliation based on Persona
+    // Micro-Version Bump: v1.0 -> v1.1, v1.1 -> v1.2, or v2.0 -> v2.1
     setTimeout(() => {
-      const nextVersionIndex = versions.length;
-      const newVersionTag = `v1.${nextVersionIndex}`;
+      const newVersionTag = getNextMicroVersion(activeVersionTag);
       
       let canvasDiff = 'Updated component topology and connector routing in Draw.io XML.';
       let specDiff = 'Reconciled DOC-01 through DOC-10 with updated parameters.';
@@ -422,7 +611,6 @@ function StudioMain() {
         const lower = cleanPrompt.toLowerCase();
 
         if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
-          // Multi-Zone 4-Component Expansion
           const newComps: AstComponent[] = [
             {
               id: 'comp_cdn',
@@ -447,37 +635,38 @@ function StudioMain() {
               protocols: ['gRPC mTLS', 'Cloud KMS API']
             },
             {
-              id: 'comp_kafka_mirror',
-              name: 'Managed Kafka Mirror',
-              service: 'Apache Kafka on GKE',
-              tier: 'compute',
+              id: 'comp_event_bus',
+              name: 'Kafka Event Mesh Buffer',
+              service: 'Pub/Sub',
+              tier: 'data',
               region: 'us-central1',
-              role: 'Hybrid Event Replicator & CDC Mirror',
-              description: 'Strimzi Kafka broker mirroring on-premise transactional CDC streams into Pub/Sub.',
-              sla: '99.95%',
-              protocols: ['Kafka Protocol', 'TLS']
+              role: 'Asynchronous Financial Event Distribution Engine',
+              description: 'Partitioned event stream handling 250,000 tx/sec burst throughput.',
+              sla: '99.999%',
+              protocols: ['Kafka Protocol', 'Pub/Sub gRPC']
             },
             {
               id: 'comp_doc_ai',
-              name: 'Document AI OCR Hub',
+              name: 'Document AI OCR Extractor',
               service: 'Document AI',
               tier: 'compute',
               region: 'us-central1',
-              role: 'Multi-lingual Form & Layout Parser',
-              description: 'Optical character recognition, form entity extraction, and clinical table parser.',
+              role: 'Multimodal Identity & Document Parsing',
+              description: 'Automated KYC extraction pipeline converting image payloads to structured JSON.',
               sla: '99.9%',
               protocols: ['HTTPS REST', 'gRPC']
             }
           ];
 
-          updated.components = [...updated.components.filter(c => !newComps.some(nc => nc.id === c.id)), ...newComps];
-          canvasDiff = '+ Added 4 Enterprise Nodes: Cloud CDN (Zone 1), Token Vault (Zone 2 Pod Grid), Managed Kafka Mirror (Zone 3), and Document AI OCR Hub (Zone 4).';
-          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (Component Catalog), and DOC-05 (Infrastructure & DDL).';
-        } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('portal') || lower.includes('admission') || lower.includes('sla')) {
+          updated.components = [...updated.components, ...newComps];
+          canvasDiff = '+ Added Cloud CDN, Payment Token Vault, Kafka Event Mesh, and Document AI OCR Extractor (4 new nodes).';
+          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (API Protocols), and DOC-06 (Security Model).';
+        } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('engagement') || lower.includes('admission')) {
           updated.metadata = {
             ...updated.metadata,
+            domain: 'Healthcare & Life Sciences',
+            projectTitle: 'Emergency Patient Ingress & Care Mesh',
             slaTarget: '99.999%',
-            domain: 'Healthcare & Precision Oncology',
             lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           };
           if (!updated.components.some(c => c.id === 'comp_patient_portal')) {
@@ -487,12 +676,12 @@ function StudioMain() {
                 id: 'comp_patient_portal',
                 name: 'Emergency Patient Ingress Portal',
                 service: 'Cloud Run',
-                tier: 'compute',
-                region: 'global',
-                role: 'Patient Engagement & Triage Gateway',
-                description: 'Real-time patient intake, emergency triage, and FHIR API adapter with 99.999% SLA.',
+                tier: 'ingress',
+                region: 'us-central1',
+                role: 'High-Priority Emergency Admission Gateway',
+                description: 'Fast-track triage ingress with zero cold-starts and 99.999% SLA.',
                 sla: '99.999%',
-                protocols: ['HTTPS', 'gRPC', 'FHIR R4']
+                protocols: ['HTTPS', 'FHIR API', 'TLS 1.3']
               }
             ];
           }
@@ -577,7 +766,7 @@ function StudioMain() {
           id: `v_${Date.now()}`,
           versionTag: newVersionTag,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          author: detectedPersona as any,
+          author: detectedPersona,
           actionSummary: `${detectedPersona}: ${cleanPrompt}`,
           ast: updated,
           xml: updatedXml
@@ -587,10 +776,15 @@ function StudioMain() {
         return updated;
       });
     }, 600);
-  }, [versions.length]);
+  }, [activeVersionTag, isEditorMode]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {
+    if (!isEditorMode) {
+      const newId = 'ses_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
+      setSessionId(newId);
+      setIsEditorMode(true);
+    }
     setAst(prev => ({
       ...prev,
       metadata: {
@@ -620,7 +814,8 @@ function StudioMain() {
 
   // Export 10-Spec Markdown Bundle
   const handleExportMarkdownBundle = () => {
-    const fullText = livingSpecs.map(doc => `=== ${doc.id}: ${doc.title} ===\n\n${doc.markdownContent}`).join('\n\n' + '='.repeat(80) + '\n\n');
+    const separator = '\n\n' + '='.repeat(80) + '\n\n';
+    const fullText = livingSpecs.map(doc => `=== ${doc.id}: ${doc.title} ===\n\n${doc.markdownContent}`).join(separator);
     const blob = new Blob([fullText], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -630,139 +825,318 @@ function StudioMain() {
     URL.revokeObjectURL(url);
   };
 
-  // Start New Studio Architecture Session with Fresh UUID
-  const handleNewSession = () => {
-    const newId = 'ses_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+  // Create Brand New Architecture Canvas (+ New button handler)
+  const handleCreateNewProject = (config: NewProjectConfig) => {
+    const newId = 'ses_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
     setSessionId(newId);
-    setAst(createDefaultFintechAst());
-    setXml(generateGcpNativeArchitectureXml());
-    setActiveVersionTag('v1.0');
-    setMessages([
-      {
-        id: `msg_${Date.now()}`,
-        sender: 'assistant',
-        text: 'Started a new Google Cloud Enterprise Architecture session. Tell me your project requirements or select a starter scenario below.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    setIsEditorMode(true);
+    setIsNewProjectModalOpen(false);
+
+    let newAst = createDefaultFintechAst();
+    newAst.metadata = {
+      ...newAst.metadata,
+      projectTitle: config.title,
+      domain: config.domain,
+      projectId: `proj-${config.domain.slice(0, 3)}-${Date.now().toString(36)}`,
+      version: 'v1.0',
+      lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+
+    let newXml = generateGcpNativeArchitectureXml({ projectTitle: config.title, domain: config.domain }, newAst);
+
+    if (config.blueprintId !== 'blank' && config.blueprintId !== '00') {
+      const bp = CANONICAL_TEMPLATES.find(t => t.id === config.blueprintId);
+      if (bp) {
+        setSelectedBlueprintId(bp.id);
+        newXml = bp.generateXml(config.domain, 'light');
       }
-    ]);
+    } else if (config.blueprintId === '00') {
+      setSelectedBlueprintId('00');
+    }
+
+    setAst(newAst);
+    setXml(newXml);
+    setActiveVersionTag('v1.0');
+
+    const baselineSnapshot: StudioVersionSnapshot = {
+      id: `v_init_${Date.now()}`,
+      versionTag: 'v1.0',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      author: 'User',
+      actionSummary: `Baseline: ${config.title}`,
+      ast: newAst,
+      xml: newXml
+    };
+    setVersions([baselineSnapshot]);
+
+    const initMsg: StudioChatMessage = {
+      id: `msg_init_${Date.now()}`,
+      sender: 'assistant',
+      text: `🚀 Created new project canvas: **${config.title}** (${config.domain.toUpperCase()}).\n\nBaseline version **v1.0** is initialized. Your diagram is ready for customization.${config.description ? `\n\n*Target Use Case:* ${config.description}` : ''}\n\nType your architecture requirements or click any suggestion below to start refining.`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages([initMsg]);
+    setActiveView('diagram');
+  };
+
+  // Fork Current Reference Blueprint into an Active Session
+  const handleForkBlueprint = () => {
+    const newId = 'ses_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
+    setSessionId(newId);
+    setIsEditorMode(true);
+
+    const forkedTitle = `Custom ${ast.metadata.projectTitle}`;
+    const forkedAst: ArchitectureAst = {
+      ...ast,
+      metadata: {
+        ...ast.metadata,
+        projectTitle: forkedTitle,
+        version: 'v1.0',
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    };
+
+    setAst(forkedAst);
+    setActiveVersionTag('v1.0');
+
+    const baselineSnapshot: StudioVersionSnapshot = {
+      id: `v_fork_${Date.now()}`,
+      versionTag: 'v1.0',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      author: 'User',
+      actionSummary: `Forked Reference: ${forkedTitle}`,
+      ast: forkedAst,
+      xml
+    };
+    setVersions([baselineSnapshot]);
+
+    const forkMsg: StudioChatMessage = {
+      id: `msg_fork_${Date.now()}`,
+      sender: 'assistant',
+      text: `Forked blueprint into a new personal canvas session: **${forkedTitle}**.\n\nBaseline version **v1.0** established. You can now use ArcAssist Co-Pilot to customize components, security, and DR topologies.`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages([forkMsg]);
+    setActiveView('diagram');
+  };
+
+  // Major Version Promotion Handler (v1.x -> v2.0)
+  const handleConfirmMajorVersion = (releaseName: string, releaseNotes: string) => {
+    const nextMajor = getNextMajorVersion(activeVersionTag);
+    setActiveVersionTag(nextMajor);
+    setIsMajorVersionModalOpen(false);
+
+    const updatedAst: ArchitectureAst = {
+      ...ast,
+      metadata: {
+        ...ast.metadata,
+        version: nextMajor,
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    };
+    setAst(updatedAst);
+
+    const milestoneSnapshot: StudioVersionSnapshot = {
+      id: `v_major_${Date.now()}`,
+      versionTag: nextMajor,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      author: 'User',
+      actionSummary: `Major Milestone ${nextMajor}: ${releaseName}`,
+      ast: updatedAst,
+      xml
+    };
+    setVersions(prev => [...prev, milestoneSnapshot]);
+
+    const milestoneMsg: StudioChatMessage = {
+      id: `msg_major_${Date.now()}`,
+      sender: 'assistant',
+      text: `🎉 **Major Release Tagged: ${nextMajor} — ${releaseName}**\n\n${releaseNotes ? `*Milestone Notes:* ${releaseNotes}\n\n` : ''}This architecture milestone has been locked and snapshotted. Subsequent edits will increment as micro-versions (${nextMajor.replace('.0', '.1')}, etc.).`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      actionSummary: {
+        versionTag: nextMajor,
+        canvasDiff: `Tagged major release milestone ${nextMajor}.`,
+        specDiff: `Reconciled release notes across all 16 Living Specifications.`
+      }
+    };
+    setMessages(prev => [...prev, milestoneMsg]);
   };
 
   return (
     <div className="h-screen max-h-screen w-screen bg-[#F8FAFC] text-slate-900 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
       
-      {/* 1. SINGLE SLIM HEADER (48px) */}
-      <header className="w-full h-12 flex-shrink-0 bg-white border-b border-slate-200 px-6 py-2 flex items-center justify-between z-40 shadow-sm">
+      {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
+      <header className="w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
         
-        {/* Left: Brand & Title with Version Dropdown */}
-        <div className="flex items-center gap-3.5">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-500/20 hover:opacity-90 transition">
+        {/* Left: Brand, Project Title, Mode Badge, Blueprint & Version */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
+            <Link 
+              href="/" 
+              className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-500/20 hover:scale-105 transition shrink-0"
+              title="Return to PromptCanvas Home"
+            >
               PC
             </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-bold text-sm text-slate-900 tracking-tight leading-none">{ast.metadata.projectTitle}</h1>
-                {isSavedInLibrary ? (
-                  <Link 
-                    href="/library" 
-                    className="hidden xl:flex items-center gap-1 text-[9.5px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-1.5 py-0.2 rounded-full font-semibold transition"
-                    title="View saved blueprint in Architecture Library"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>Saved in Library ↗</span>
-                  </Link>
-                ) : (
-                  <span className="hidden xl:flex items-center gap-1 text-[9.5px] text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.2 rounded-full font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span>Sandbox (Unsaved)</span>
-                  </span>
-                )}
-              </div>
-              <p className="text-[10px] text-slate-400 font-mono mt-0.5">Google Cloud Enterprise Reference Architecture • 6-Zone Certified</p>
+            <div className="flex items-center gap-2">
+              <h1 className="font-bold text-sm text-white tracking-tight leading-none truncate max-w-[130px] sm:max-w-[180px] lg:max-w-[230px]">
+                {ast.metadata.projectTitle}
+              </h1>
+
+              {/* Mode Badge: Showcase vs Active Editor */}
+              {!isEditorMode ? (
+                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-sky-300 bg-sky-950/80 border border-sky-500/40 px-2 py-0.5 rounded-full font-bold">
+                  <Eye className="w-3 h-3 text-sky-400" />
+                  <span>Showcase (Read-Only)</span>
+                </span>
+              ) : isSavedInLibrary ? (
+                <Link 
+                  href="/library" 
+                  className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900/80 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold transition"
+                  title="View saved blueprint in Architecture Library"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>Saved</span>
+                </Link>
+              ) : (
+                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-full font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Active Canvas</span>
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Unique Session ID Badge */}
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(sessionId);
-            }}
-            className="hidden md:flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2 py-1 rounded-md text-[10.5px] font-mono text-slate-600 transition"
-            title="Click to copy Persistent Unique Session ID"
-          >
-            <span className="text-slate-400 font-sans">Session:</span>
-            <span className="font-bold text-blue-600" suppressHydrationWarning>{isClient ? sessionId : 'ses_...'}</span>
-          </button>
-
-          {/* New Session Button */}
-          <button
-            onClick={handleNewSession}
-            className="hidden md:flex items-center gap-1 bg-white hover:bg-slate-50 border border-slate-200 px-2 py-1 rounded-md text-[11px] font-medium text-slate-700 transition shadow-2xs"
-            title="Create a new architecture canvas session"
-          >
-            <Plus className="w-3 h-3 text-slate-500" />
-            <span>New</span>
-          </button>
+          <div className="h-4 w-px bg-slate-800 hidden md:block shrink-0" />
 
           {/* Canonical Blueprint Catalog Selector */}
           <button
             onClick={() => setIsCatalogOpen(true)}
-            className="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1 rounded-md text-[11px] font-bold text-blue-700 transition shadow-2xs cursor-pointer"
+            className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-100 transition shadow-xs cursor-pointer shrink-0"
             title="Open 52 Canonical Architecture Blueprints Catalog"
           >
-            <Layers className="w-3.5 h-3.5 text-blue-600" />
-            <span className="hidden lg:inline">Blueprint:</span>
-            <span className="font-mono font-black text-blue-800 max-w-[140px] xl:max-w-[200px] truncate">
-              #{selectedBlueprintId} {CANONICAL_TEMPLATES.find(t => t.id === selectedBlueprintId)?.name || 'GCP Enterprise Arch'}
+            <Layers className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <span className="font-mono font-bold text-white">#{selectedBlueprintId}</span>
+            <span className="hidden xl:inline text-slate-300 truncate max-w-[100px]">
+              {CANONICAL_TEMPLATES.find(t => t.id === selectedBlueprintId)?.name || 'GCP Arch'}
             </span>
-            <ChevronDown className="w-3 h-3 text-blue-500 shrink-0" />
+            <ChevronDown className="w-3 h-3 text-slate-400 shrink-0" />
           </button>
 
           {/* Version Snapshot Dropdown */}
-          <div className="relative">
+          <div className="relative shrink-0">
             <button 
               onClick={() => setIsVersionDropdownOpen(!isVersionDropdownOpen)}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 px-2.5 py-1 rounded-md text-[11px] text-slate-700 transition font-medium"
+              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs text-slate-200 transition font-mono font-bold cursor-pointer"
+              title={isEditorMode ? "View Version History Snapshots" : "Showcase Version (Read-Only)"}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <span className="font-mono font-bold text-slate-900">{activeVersionTag}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span>{activeVersionTag}{!isEditorMode ? ' (Ref)' : ''}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {isVersionDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1.5 w-64 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-50 text-xs space-y-1 animate-in fade-in duration-100">
-                <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">Version History Snapshots</div>
-                {versions.map(v => (
-                  <button
-                    key={v.id}
-                    onClick={() => {
-                      setActiveVersionTag(v.versionTag);
-                      if (v.ast) setAst(v.ast);
-                      if (v.xml) setXml(v.xml);
-                      setIsVersionDropdownOpen(false);
-                    }}
-                    className={`w-full text-left p-2 rounded-lg transition flex items-start gap-2 ${
-                      v.versionTag === activeVersionTag ? 'bg-blue-50 text-blue-900 font-semibold' : 'hover:bg-slate-50 text-slate-700'
-                    }`}
-                  >
-                    <span className="font-mono font-bold text-[10px] bg-slate-200 px-1 py-0.2 rounded mt-0.5">{v.versionTag}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="truncate text-[11px]">{v.actionSummary}</div>
-                      <div className="text-[9px] text-slate-400 font-mono">{v.timestamp} • {v.author}</div>
+              <div className="absolute top-full left-0 mt-1.5 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-50 text-xs space-y-1.5 animate-in fade-in duration-100">
+                {isEditorMode ? (
+                  <>
+                    <div className="flex items-center justify-between px-2 py-1">
+                      <span className="text-[10px] uppercase font-mono text-slate-400 font-bold">Version History</span>
+                      <button
+                        onClick={() => {
+                          setIsMajorVersionModalOpen(true);
+                          setIsVersionDropdownOpen(false);
+                        }}
+                        className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 bg-emerald-950/60 border border-emerald-500/40 px-2 py-0.5 rounded-md hover:bg-emerald-900/60 transition cursor-pointer"
+                      >
+                        <Tag className="w-3 h-3" />
+                        <span>Tag Major {getNextMajorVersion(activeVersionTag)}</span>
+                      </button>
                     </div>
-                  </button>
-                ))}
+
+                    <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+                      {versions.map(v => (
+                        <button
+                          key={v.id}
+                          onClick={() => {
+                            setActiveVersionTag(v.versionTag);
+                            if (v.ast) setAst(v.ast);
+                            if (v.xml) setXml(v.xml);
+                            setIsVersionDropdownOpen(false);
+                          }}
+                          className={`w-full text-left p-2 rounded-lg transition flex items-start gap-2 ${
+                            v.versionTag === activeVersionTag ? 'bg-blue-600/20 text-blue-300 font-semibold border border-blue-500/30' : 'hover:bg-slate-800 text-slate-300'
+                          }`}
+                        >
+                          <span className="font-mono font-bold text-[10px] bg-slate-800 text-slate-200 border border-slate-700 px-1 py-0.2 rounded mt-0.5">{v.versionTag}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="truncate text-[11px] text-white font-medium">{v.actionSummary}</div>
+                            <div className="text-[9px] text-slate-400 font-mono">{v.timestamp} • {v.author}</div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="p-3 text-slate-300 space-y-2">
+                    <div className="text-xs font-bold text-white">Reference Blueprint (Read-Only)</div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      You are viewing the certified ground-truth reference architecture. Version snapshots and AI modifications activate inside a dedicated Canvas.
+                    </p>
+                    <div className="pt-2 border-t border-slate-800 flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setIsVersionDropdownOpen(false);
+                          setIsNewProjectModalOpen(true);
+                        }}
+                        className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-1.5 rounded-lg text-center text-xs transition cursor-pointer"
+                      >
+                        + New Canvas
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsVersionDropdownOpen(false);
+                          handleForkBlueprint();
+                        }}
+                        className="bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-1.5 px-2.5 rounded-lg text-xs transition cursor-pointer"
+                      >
+                        Fork &amp; Edit
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
+
+          {/* + New Canvas Button (Prominent Header CTA) */}
+          <button
+            onClick={() => setIsNewProjectModalOpen(true)}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md shadow-blue-500/25 hover:scale-[1.02] transition shrink-0 cursor-pointer"
+            title="Create brand new architecture canvas with unique ID & AI Co-Pilot"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ New</span>
+          </button>
+
+          {/* Fork & Edit Button (Shown in Showcase Mode) */}
+          {!isEditorMode && (
+            <button
+              onClick={handleForkBlueprint}
+              className="hidden lg:flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition shrink-0 cursor-pointer"
+              title="Clone this reference blueprint into an active editing session"
+            >
+              <Copy className="w-3 h-3 text-blue-400" />
+              <span>Fork &amp; Edit</span>
+            </button>
+          )}
+
         </div>
 
-        {/* Center: 2-Way View Switcher */}
-        <div className="flex items-center bg-slate-100 border border-slate-200/80 rounded-lg p-0.5 shadow-inner">
+        {/* Center: 2-Way View Switcher (Zero-Wrap) */}
+        <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 shadow-inner shrink-0 mx-2">
           <button
             onClick={() => setActiveView('diagram')}
-            className={`px-4 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 ${
-              activeView === 'diagram' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeView === 'diagram' ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/30' : 'text-slate-300 hover:text-white font-medium'
             }`}
           >
             <span>📐</span> <span>Architecture Diagram</span>
@@ -770,86 +1144,177 @@ function StudioMain() {
           
           <button
             onClick={() => setActiveView('specs')}
-            className={`px-4 py-1.5 rounded-md text-xs font-semibold transition flex items-center gap-1.5 ${
-              activeView === 'specs' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ${
+              activeView === 'specs' ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/30' : 'text-slate-300 hover:text-white font-medium'
             }`}
           >
-            <span>📑</span> <span>Living Specs ({livingSpecs.length} Docs)</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span>📑</span> <span>Living Specs ({livingSpecs.length})</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
           </button>
         </div>
 
-        {/* Right: Audio Briefing, Brain Grounding & Export */}
-        <div className="flex items-center gap-2.5">
+        {/* Right: Consolidated High-Contrast Actions & Tools */}
+        <div className="flex items-center gap-2 shrink-0">
           
-          {/* Save to Library Action Button */}
+          {/* Secondary Tools: Inline on 2xl+ screens */}
+          <div className="hidden 2xl:flex items-center gap-2">
+            {isEditorMode && (
+              <button
+                onClick={() => setIsMajorVersionModalOpen(true)}
+                className="flex items-center gap-1.5 text-xs font-semibold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900/80 border border-emerald-500/40 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
+                title="Tag and lock a major milestone release"
+              >
+                <Tag className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Save Major {getNextMajorVersion(activeVersionTag)}</span>
+              </button>
+            )}
+
+            <button
+              onClick={() => handleOpenShare('project', 'proj_root', ast.metadata.projectTitle)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
+              title="Share & Collaborate"
+            >
+              <Share2 className="w-3.5 h-3.5 text-blue-400" />
+              <span>Share</span>
+            </button>
+
+            <button
+              onClick={() => setIsAudioModalOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
+              title="Generate Audio Briefing"
+            >
+              <Volume2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Audio</span>
+            </button>
+
+            <button
+              onClick={() => setIsBrainModalOpen(true)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
+              title="Ground Architecture Brain"
+            >
+              <Cpu className="w-3.5 h-3.5 text-purple-400" />
+              <span>Brain ▾</span>
+            </button>
+
+            <div className="flex items-center gap-1.5 text-[11px] text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-1 rounded-md font-mono font-bold whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>In-Sync</span>
+            </div>
+          </div>
+
+          {/* Consolidated Tools Dropdown for < 2xl screens */}
+          <div className="relative 2xl:hidden">
+            <button
+              onClick={() => setIsToolsDropdownOpen(!isToolsDropdownOpen)}
+              className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition cursor-pointer"
+              title="More Actions & Tools"
+            >
+              <MoreHorizontal className="w-4 h-4 text-slate-300" />
+              <span className="hidden md:inline">Tools</span>
+              <ChevronDown className="w-3 h-3 text-slate-400" />
+            </button>
+
+            {isToolsDropdownOpen && (
+              <div className="absolute right-0 top-full mt-1.5 w-60 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-50 text-xs space-y-1 animate-in fade-in duration-100">
+                <div className="text-[10px] uppercase font-mono text-slate-400 font-bold px-2 py-1">Collaborate & Tools</div>
+                
+                {isEditorMode && (
+                  <button
+                    onClick={() => {
+                      setIsMajorVersionModalOpen(true);
+                      setIsToolsDropdownOpen(false);
+                    }}
+                    className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-800 text-emerald-300 font-medium flex items-center gap-2.5 transition cursor-pointer"
+                  >
+                    <Tag className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Tag Major {getNextMajorVersion(activeVersionTag)}</span>
+                  </button>
+                )}
+
+                <button
+                  onClick={() => {
+                    handleOpenShare('project', 'proj_root', ast.metadata.projectTitle);
+                    setIsToolsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2.5 transition cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4 text-blue-400 shrink-0" />
+                  <span>Share & Collaborate</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setIsAudioModalOpen(true);
+                    setIsToolsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2.5 transition cursor-pointer"
+                >
+                  <Volume2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Audio Briefing (2-Min)</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setIsBrainModalOpen(true);
+                    setIsToolsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2.5 transition cursor-pointer"
+                >
+                  <Cpu className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span>Ground Brain Context</span>
+                </button>
+
+                <div className="border-t border-slate-800 my-1"></div>
+                
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(sessionId);
+                    setIsToolsDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-2.5 py-2 rounded-lg hover:bg-slate-800 text-slate-300 font-mono text-[11px] flex items-center justify-between transition cursor-pointer"
+                  title="Click to copy Session ID"
+                >
+                  <span className="text-slate-400 font-sans">Session:</span>
+                  <span className="text-blue-400 font-bold truncate max-w-[120px]">{sessionId}</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Primary: Save to Library */}
           <button
             onClick={() => setIsSaveModalOpen(true)}
-            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-xs ${
+            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition shadow-sm whitespace-nowrap cursor-pointer ${
               isSavedInLibrary
-                ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-500/20'
+                ? 'bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/40'
+                : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-500/20'
             }`}
             title="Save this architecture sandbox state as a permanent blueprint in your Library"
           >
             <Bookmark className="w-3.5 h-3.5" />
-            <span>{isSavedInLibrary ? 'Saved Blueprint ▾' : 'Save to Library'}</span>
+            <span>{isSavedInLibrary ? 'Saved' : 'Save to Library'}</span>
           </button>
 
-          {/* Share & Collaborate Granular Object Button */}
-          <button
-            onClick={() => handleOpenShare('project', 'proj_root', ast.metadata.projectTitle)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-lg transition shadow-2xs"
-            title="Share & Collaborate at Object Hierarchy Level"
-          >
-            <Share2 className="w-3.5 h-3.5 text-blue-600" />
-            <span>Share & Collaborate</span>
-          </button>
-
-          {/* Audio Overview Pill */}
-          <button
-            onClick={() => setIsAudioModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1.5 rounded-lg transition"
-          >
-            <Volume2 className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Audio Briefing (2-Min)</span>
-          </button>
-
-          {/* Brain Grounding Controller */}
-          <button
-            onClick={() => setIsBrainModalOpen(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-2.5 py-1.5 rounded-lg transition"
-          >
-            <Cpu className="w-3.5 h-3.5 text-purple-600" />
-            <span>Ground Brain ▾</span>
-          </button>
-
-          {/* Sync Badge */}
-          <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1.5 rounded-md font-mono font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>100% In-Sync</span>
-          </div>
-
-          {/* Single Unified Export Dropdown */}
+          {/* Primary: Export Bundle Dropdown */}
           <div className="relative">
             <button
               onClick={() => setIsExportDropdownOpen(!isExportDropdownOpen)}
-              className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5"
+              className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm shadow-blue-500/20 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
-              <span>Export Bundle</span>
-              <ChevronDown className="w-3 h-3" />
+              <span>Export</span>
+              <ChevronDown className="w-3 h-3 text-white/80" />
             </button>
 
             {isExportDropdownOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-56 bg-white border border-slate-200 rounded-xl shadow-xl p-2 z-50 text-xs space-y-1 animate-in fade-in duration-100">
+              <div className="absolute right-0 top-full mt-1.5 w-60 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 z-50 text-xs space-y-1 animate-in fade-in duration-100">
                 <button
                   onClick={() => {
                     handleOpenDiagramsNet();
                     setIsExportDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-800 font-medium flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 transition cursor-pointer"
                 >
-                  <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
+                  <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
                   <span>Open in diagrams.net</span>
                 </button>
                 <button
@@ -863,9 +1328,9 @@ function StudioMain() {
                     URL.revokeObjectURL(url);
                     setIsExportDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-800 font-medium flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 transition cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5 text-slate-500" />
+                  <Download className="w-3.5 h-3.5 text-slate-400" />
                   <span>Download Draw.io XML</span>
                 </button>
                 <button
@@ -873,9 +1338,9 @@ function StudioMain() {
                     handleExportMarkdownBundle();
                     setIsExportDropdownOpen(false);
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 text-slate-800 font-medium flex items-center gap-2"
+                  className="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-800 text-slate-200 font-medium flex items-center gap-2 transition cursor-pointer"
                 >
-                  <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                  <FileText className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Download 16-Spec Bundle</span>
                 </button>
               </div>
@@ -888,139 +1353,282 @@ function StudioMain() {
       {/* 2. MAIN WORKSPACE */}
       <main className="flex-1 min-h-0 w-full flex overflow-hidden">
         
-        {/* LEFT: INTERACTIVE ARCHITECTURE ARCASSIST (340px) */}
-        <section className="w-[340px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full min-h-0 overflow-hidden shadow-sm z-10">
+        {/* LEFT PANEL: CONCIERGE (SHOWCASE) OR CO-PILOT (EDITOR) */}
+        {!isEditorMode ? (
           
-          {/* Header */}
-          <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50/70 flex-shrink-0">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
-              <Bot className="w-4 h-4 text-purple-600" />
-              <span>ArcAssist</span>
+          // SHOWCASE MODE: ARCASSIST CONCIERGE (Read-Only Guide & Cloud Q&A)
+          <section className="w-[350px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full min-h-0 overflow-hidden shadow-sm z-10">
+            
+            {/* Header */}
+            <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 flex-shrink-0">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                <Bot className="w-4 h-4 text-purple-600" />
+                <span>ArcAssist Concierge</span>
+              </div>
+              <span className="text-[10px] text-blue-800 bg-blue-100 border border-blue-200 px-2 py-0.5 rounded font-mono font-bold">
+                Platform Guide
+              </span>
             </div>
-            <span className="text-[10px] text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-mono font-semibold">Gemini 2.5 Pro</span>
-          </div>
 
-          {/* Starter Chips & Multi-Persona Simulation */}
-          <div className="p-3 border-b border-slate-100 bg-slate-50/50 space-y-2 flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Simulate Stakeholder Personas:</span>
-              <span className="text-[9px] bg-purple-100 text-purple-700 font-bold px-1.5 py-0.5 rounded-full">Multi-Persona</span>
-            </div>
-            <div className="grid grid-cols-2 gap-1.5">
-              <button
-                onClick={() => handleExecutePrompt('Add real-time patient engagement portal and emergency admission SLA tracking with 99.999% availability.', 'Product Manager')}
-                className="text-left p-1.5 rounded-md bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-[11px] text-slate-700 hover:text-blue-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
-                title="Simulate Product Manager requirements update"
-              >
-                <span>👔</span>
-                <span className="truncate">Product Manager</span>
-              </button>
-              <button
-                onClick={() => handleExecutePrompt('Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.', 'Lead Cloud Architect')}
-                className="text-left p-1.5 rounded-md bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-[11px] text-slate-700 hover:text-indigo-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
-                title="Simulate Lead Architect Multi-Region DR upgrade"
-              >
-                <span>🏗️</span>
-                <span className="truncate">Lead Architect</span>
-              </button>
-              <button
-                onClick={() => handleExecutePrompt('Enforce Cloud KMS HSM CMEK keys, Cloud Armor OWASP rules, and VPC Service Controls perimeter.', 'CISO / Security Architect')}
-                className="text-left p-1.5 rounded-md bg-white hover:bg-purple-50 border border-slate-200 hover:border-purple-300 text-[11px] text-slate-700 hover:text-purple-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
-                title="Simulate CISO Security & Zero-Trust hardening"
-              >
-                <span>🛡️</span>
-                <span className="truncate">CISO / Security</span>
-              </button>
-              <button
-                onClick={() => handleExecutePrompt('Implement Cloud Run scale-to-zero during off-peak windows and BigQuery BI Engine 50GB memory reservation.', 'FinOps & SRE Lead')}
-                className="text-left p-1.5 rounded-md bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-[11px] text-slate-700 hover:text-emerald-900 transition flex items-center gap-1.5 font-medium shadow-2xs"
-                title="Simulate FinOps & SRE cost & performance optimization"
-              >
-                <span>💰</span>
-                <span className="truncate">FinOps & SRE</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Messages Scroll Stream */}
-          <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-3.5 text-xs">
-            {messages.map(msg => {
-              const isUser = msg.sender === 'user';
-              return (
-                <div 
-                  key={msg.id}
-                  className={`rounded-xl p-3 space-y-1.5 ${
-                    isUser ? 'bg-blue-50/80 border border-blue-200' : 'bg-slate-50 border border-slate-200'
-                  }`}
+            {/* Showcase Call to Action Card */}
+            <div className="p-3 border-b border-slate-200 bg-gradient-to-br from-blue-50 to-indigo-50/70 flex-shrink-0 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-blue-600" />
+                  Ready to Build?
+                </span>
+                <span className="text-[9px] bg-blue-200/70 text-blue-900 font-bold px-1.5 py-0.5 rounded-full">
+                  Interactive AI
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-700 leading-snug">
+                This diagram is a read-only showcase. Create your own canvas or fork this blueprint to edit with AI Co-Pilot.
+              </p>
+              <div className="flex items-center gap-2 pt-0.5">
+                <button
+                  onClick={() => setIsNewProjectModalOpen(true)}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-2.5 rounded-lg shadow-sm transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <div className="flex items-center justify-between text-[11px]">
-                    <span className={`font-bold ${isUser ? 'text-blue-900' : 'text-slate-700'}`}>
-                      {isUser ? '👤 You asked:' : '🤖 ArcAssist Synthesis:'}
-                    </span>
-                    <span className="font-mono text-[10px] text-slate-400">{msg.timestamp}</span>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>+ New Canvas</span>
+                </button>
+                <button
+                  onClick={handleForkBlueprint}
+                  className="bg-white hover:bg-slate-100 border border-slate-300 text-slate-800 text-xs font-semibold py-1.5 px-2.5 rounded-lg transition flex items-center justify-center gap-1 cursor-pointer"
+                  title="Fork this blueprint into your own sandbox"
+                >
+                  <Copy className="w-3 h-3 text-slate-600" />
+                  <span>Fork</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Quick Architecture Q&A Chips */}
+            <div className="p-2.5 border-b border-slate-200 bg-slate-50/60 flex-shrink-0 space-y-1.5">
+              <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider block">
+                Ask Concierge:
+              </span>
+              <div className="grid grid-cols-1 gap-1">
+                {[
+                  { text: 'What can this tool do?', icon: '💡' },
+                  { text: 'How do I create and version a diagram?', icon: '🚀' },
+                  { text: 'Explain Zero-Trust & CMEK security', icon: '🛡️' },
+                  { text: 'What are GCP Multi-Region DR patterns?', icon: '🌐' },
+                  { text: 'How do Living Specs stay synchronized?', icon: '📑' }
+                ].map((q, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleConciergeSubmit(q.text)}
+                    className="w-full text-left p-1.5 rounded-md bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-[11px] text-slate-800 hover:text-blue-900 transition flex items-center gap-1.5 font-medium shadow-2xs cursor-pointer"
+                  >
+                    <span>{q.icon}</span>
+                    <span className="truncate">{q.text}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Concierge Message Stream */}
+            <div ref={conciergeScrollRef} className="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-3 text-xs">
+              {conciergeMessages.map(msg => {
+                const isUser = msg.sender === 'user';
+                return (
+                  <div
+                    key={msg.id}
+                    className={`rounded-xl p-3 space-y-1.5 ${
+                      isUser ? 'bg-blue-50/90 border border-blue-300' : 'bg-white border border-slate-200 shadow-xs'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className={`font-bold ${isUser ? 'text-blue-900' : 'text-slate-900'}`}>
+                        {isUser ? '👤 You asked:' : '🤖 Concierge Guide:'}
+                      </span>
+                      <span className="font-mono text-[10px] text-slate-500 font-semibold">{msg.timestamp}</span>
+                    </div>
+                    <div className={`text-[11.5px] leading-relaxed whitespace-pre-line ${isUser ? 'text-slate-900 font-semibold' : 'text-slate-800'}`}>
+                      {msg.text}
+                    </div>
                   </div>
-                  
-                  <p className={`text-[11.5px] leading-relaxed ${isUser ? 'text-slate-800 font-medium' : 'text-slate-600'}`}>
-                    {msg.text}
-                  </p>
-
-                  {msg.actionSummary && (
-                    <HierarchicalSyncCard
-                      versionTag={msg.actionSummary.versionTag}
-                      canvasDiff={msg.actionSummary.canvasDiff}
-                      specDiff={msg.actionSummary.specDiff}
-                      projectTitle={ast.metadata.projectTitle}
-                      domain={ast.metadata.domain}
-                      livingSpecs={livingSpecs}
-                      components={ast.components}
-                      onSelectDoc={(docId) => {
-                        setActiveView('specs');
-                        setActiveDocId(docId);
-                      }}
-                      onSelectNode={(comp) => {
-                        setActiveView('diagram');
-                        setSelectedComponent(comp);
-                      }}
-                      onSwitchToDiagram={() => setActiveView('diagram')}
-                      onShareObject={(type, id, title) => handleOpenShare(type, id, title)}
-                    />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Sticky Prompt Composer */}
-          <div className="p-3 border-t border-slate-200 bg-slate-50/60 space-y-2 flex-shrink-0">
-            <div className="relative">
-              <textarea
-                value={promptInput}
-                onChange={e => setPromptInput(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleExecutePrompt(promptInput);
-                  }
-                }}
-                rows={2}
-                placeholder="Ask ArcAssist to edit diagram or update specs..."
-                className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-sm"
-              />
-              <button
-                onClick={() => handleExecutePrompt(promptInput)}
-                className="absolute bottom-2.5 right-2 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1"
-              >
-                <span>Apply</span>
-                <Send className="w-2.5 h-2.5" />
-              </button>
+                );
+              })}
             </div>
-            <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
-              <span>Target: <strong className="text-blue-600">Both (In-Sync)</strong></span>
-              <span>Press Enter ↵</span>
-            </div>
-          </div>
 
-        </section>
+            {/* Concierge Sticky Composer */}
+            <div className="p-3 border-t border-slate-200 bg-slate-50/60 space-y-2 flex-shrink-0">
+              <div className="relative">
+                <textarea
+                  value={conciergeInput}
+                  onChange={e => setConciergeInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleConciergeSubmit(conciergeInput);
+                    }
+                  }}
+                  rows={2}
+                  placeholder="Ask about capabilities, how to use, or cloud patterns..."
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-sm"
+                />
+                <button
+                  onClick={() => handleConciergeSubmit(conciergeInput)}
+                  className="absolute bottom-2.5 right-2 px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Ask</span>
+                  <Send className="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium">
+                <span>Mode: <strong className="text-purple-700 font-bold">Platform Guide</strong></span>
+                <span>Diagram is Read-Only</span>
+              </div>
+            </div>
+
+          </section>
+
+        ) : (
+
+          // EDITOR MODE: ARCASSIST CO-PILOT (Interactive AI Evolution & Micro-Versioning)
+          <section className="w-[350px] flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full min-h-0 overflow-hidden shadow-sm z-10">
+            
+            {/* Header */}
+            <div className="px-4 py-2.5 border-b border-slate-200 flex items-center justify-between bg-slate-50 flex-shrink-0">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                <Bot className="w-4 h-4 text-purple-600" />
+                <span>ArcAssist Co-Pilot</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] text-emerald-900 bg-emerald-100 border border-emerald-300 px-1.5 py-0.5 rounded font-mono font-bold">
+                  Gemini 3.1 Pro • DeepMind
+                </span>
+                <span className="font-mono text-[10px] text-slate-500 font-bold">
+                  {activeVersionTag}
+                </span>
+              </div>
+            </div>
+
+            {/* Stakeholder Personas Simulator */}
+            <div className="p-3 border-b border-slate-200 bg-slate-50 space-y-2 flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">Simulate Stakeholders:</span>
+                <span className="text-[9px] bg-purple-100 text-purple-900 font-bold px-1.5 py-0.5 rounded-full border border-purple-200">Micro-Version Diff</span>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                <button
+                  onClick={() => handleExecutePrompt('Add real-time patient engagement portal and emergency admission SLA tracking with 99.999% availability.', 'Product Manager')}
+                  className="text-left p-1.5 rounded-md bg-white hover:bg-blue-50 border border-slate-300 hover:border-blue-400 text-[11px] text-slate-900 hover:text-blue-900 transition flex items-center gap-1.5 font-semibold shadow-2xs cursor-pointer"
+                  title="Simulate Product Manager requirements update"
+                >
+                  <span>👔</span>
+                  <span className="truncate">Product Manager</span>
+                </button>
+                <button
+                  onClick={() => handleExecutePrompt('Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.', 'Lead Cloud Architect')}
+                  className="text-left p-1.5 rounded-md bg-white hover:bg-indigo-50 border border-slate-300 hover:border-indigo-400 text-[11px] text-slate-900 hover:text-indigo-900 transition flex items-center gap-1.5 font-semibold shadow-2xs cursor-pointer"
+                  title="Simulate Lead Architect Multi-Region DR upgrade"
+                >
+                  <span>🏗️</span>
+                  <span className="truncate">Lead Architect</span>
+                </button>
+                <button
+                  onClick={() => handleExecutePrompt('Enforce Cloud KMS HSM CMEK keys, Cloud Armor OWASP rules, and VPC Service Controls perimeter.', 'CISO / Security Architect')}
+                  className="text-left p-1.5 rounded-md bg-white hover:bg-purple-50 border border-slate-300 hover:border-purple-400 text-[11px] text-slate-900 hover:text-purple-900 transition flex items-center gap-1.5 font-semibold shadow-2xs cursor-pointer"
+                  title="Simulate CISO Security & Zero-Trust hardening"
+                >
+                  <span>🛡️</span>
+                  <span className="truncate">CISO / Security</span>
+                </button>
+                <button
+                  onClick={() => handleExecutePrompt('Implement Cloud Run scale-to-zero during off-peak windows and BigQuery BI Engine 50GB memory reservation.', 'FinOps & SRE Lead')}
+                  className="text-left p-1.5 rounded-md bg-white hover:bg-emerald-50 border border-slate-300 hover:border-emerald-400 text-[11px] text-slate-900 hover:text-emerald-900 transition flex items-center gap-1.5 font-semibold shadow-2xs cursor-pointer"
+                  title="Simulate FinOps & SRE cost & performance optimization"
+                >
+                  <span>💰</span>
+                  <span className="truncate">FinOps & SRE</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Messages Scroll Stream */}
+            <div ref={editorScrollRef} className="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-3.5 text-xs">
+              {messages.map(msg => {
+                const isUser = msg.sender === 'user';
+                return (
+                  <div 
+                    key={msg.id}
+                    className={`rounded-xl p-3 space-y-1.5 ${
+                      isUser ? 'bg-blue-50/90 border border-blue-300' : 'bg-white border border-slate-200 shadow-xs'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className={`font-bold ${isUser ? 'text-blue-900' : 'text-slate-900'}`}>
+                        {isUser ? '👤 You asked:' : '🤖 ArcAssist Synthesis:'}
+                      </span>
+                      <span className="font-mono text-[10px] text-slate-500 font-semibold">{msg.timestamp}</span>
+                    </div>
+                    
+                    <p className={`text-[11.5px] leading-relaxed ${isUser ? 'text-slate-900 font-semibold' : 'text-slate-800'}`}>
+                      {msg.text}
+                    </p>
+
+                    {msg.actionSummary && (
+                      <HierarchicalSyncCard
+                        versionTag={msg.actionSummary.versionTag}
+                        canvasDiff={msg.actionSummary.canvasDiff}
+                        specDiff={msg.actionSummary.specDiff}
+                        projectTitle={ast.metadata.projectTitle}
+                        domain={ast.metadata.domain}
+                        livingSpecs={livingSpecs}
+                        components={ast.components}
+                        onSelectDoc={(docId) => {
+                          setActiveView('specs');
+                          setActiveDocId(docId);
+                        }}
+                        onSelectNode={(comp) => {
+                          setActiveView('diagram');
+                          setSelectedComponent(comp);
+                        }}
+                        onSwitchToDiagram={() => setActiveView('diagram')}
+                        onShareObject={(type, id, title) => handleOpenShare(type, id, title)}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Sticky Co-Pilot Composer */}
+            <div className="p-3 border-t border-slate-200 bg-slate-50/60 space-y-2 flex-shrink-0">
+              <div className="relative">
+                <textarea
+                  value={promptInput}
+                  onChange={e => setPromptInput(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleExecutePrompt(promptInput);
+                    }
+                  }}
+                  rows={2}
+                  placeholder="Ask ArcAssist to edit diagram or update specs..."
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none shadow-sm"
+                />
+                <button
+                  onClick={() => handleExecutePrompt(promptInput)}
+                  className="absolute bottom-2.5 right-2 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 cursor-pointer"
+                >
+                  <span>Apply</span>
+                  <Send className="w-2.5 h-2.5" />
+                </button>
+              </div>
+              <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+                <span>Target: <strong className="text-blue-600">Both (In-Sync)</strong></span>
+                <span>Bumps micro-version ↵</span>
+              </div>
+            </div>
+
+          </section>
+
+        )}
 
         {/* RIGHT: TOGGLED VIEW (Diagram Canvas OR Living Specs) */}
         {activeView === 'diagram' ? (
@@ -1029,44 +1637,117 @@ function StudioMain() {
           <section className="flex-1 min-h-0 h-full bg-[#F1F5F9] flex flex-col relative overflow-hidden">
             
             {/* Inset Canvas Toolbar */}
-            <div className="px-6 py-2 border-b border-slate-200 bg-white/90 flex items-center justify-between text-xs flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1 bg-slate-100 border border-slate-200 px-2 py-1 rounded-md text-slate-700 font-medium">
-                  <button onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')} className="px-1.5 hover:text-blue-600 font-bold">+ Add Node</button>
-                  <span className="text-slate-300">|</span>
-                  <button className="px-1.5 hover:text-blue-600">Connect</button>
-                  <span className="text-slate-300">|</span>
-                  <button className="px-1.5 hover:text-blue-600">Group</button>
+            <div className="px-6 py-2 border-b border-slate-200 bg-white flex items-center justify-between text-xs flex-shrink-0">
+              
+              {!isEditorMode ? (
+                // Showcase View Toolbar Notice
+                <div className="flex items-center gap-2.5">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-md">
+                    <Eye className="w-3.5 h-3.5 text-sky-600" />
+                    <span>Reference Topology (Read-Only Showcase)</span>
+                  </span>
+                  <span className="text-slate-600 text-[11px] hidden xl:inline">
+                    Explore Google Cloud reference patterns. Click any node to inspect SLAs &amp; Terraform HCL.
+                  </span>
                 </div>
-                <span className="text-slate-400 text-[11px]">Click on any node below to inspect Terraform HCL, SLAs & Security Posture</span>
-              </div>
+              ) : (
+                // Editor View Toolbar Controls
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-2 py-1 rounded-md text-slate-800 font-medium">
+                    <button onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')} className="px-1.5 hover:text-blue-600 font-bold cursor-pointer">+ Add Node</button>
+                    <span className="text-slate-400">|</span>
+                    <button onClick={() => handleExecutePrompt('Connect Cloud Armor to Global Load Balancer with TLS 1.3.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer">Connect</button>
+                    <span className="text-slate-400">|</span>
+                    <button onClick={() => handleExecutePrompt('Group ingress nodes into a DMZ zone.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer">Group</button>
+                  </div>
+                  <span className="text-slate-700 font-medium text-[11px]">Click on any node below to inspect Terraform HCL, SLAs & Security Posture</span>
+                </div>
+              )}
 
-              <div className="flex items-center gap-3 text-slate-600">
-                <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-md text-[11px]">
-                  <span className="text-slate-500 font-medium">Zoom:</span>
-                  <span className="font-mono font-bold text-slate-900">100%</span>
-                  <button className="ml-1 text-blue-600 hover:underline font-semibold">Fit (16:9)</button>
+              <div className="flex items-center gap-3 text-slate-700">
+                <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-1.5 py-1 rounded-md text-[11px] shadow-2xs">
+                  <button 
+                    onClick={handleZoomOut}
+                    disabled={zoomLevel <= 0.5}
+                    className="p-1 rounded hover:bg-white text-slate-700 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent transition cursor-pointer"
+                    title="Zoom Out (Ctrl -)"
+                    aria-label="Zoom Out"
+                  >
+                    <ZoomOut className="w-3.5 h-3.5" />
+                  </button>
+                  
+                  <span className="font-mono font-black text-slate-900 px-1 min-w-[38px] text-center select-none">
+                    {Math.round(zoomLevel * 100)}%
+                  </span>
+                  
+                  <button 
+                    onClick={handleZoomIn}
+                    disabled={zoomLevel >= 2.5}
+                    className="p-1 rounded hover:bg-white text-slate-700 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent transition cursor-pointer"
+                    title="Zoom In (Ctrl +)"
+                    aria-label="Zoom In"
+                  >
+                    <ZoomIn className="w-3.5 h-3.5" />
+                  </button>
+                  
+                  <span className="text-slate-300 mx-0.5">|</span>
+                  
+                  <button 
+                    onClick={handleResetZoom}
+                    className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${
+                      zoomLevel === 1.0 
+                        ? 'text-blue-600 hover:text-blue-700 hover:underline' 
+                        : 'text-blue-600 hover:bg-blue-50'
+                    }`}
+                    title="Reset to 100% Fit (Ctrl 0)"
+                  >
+                    Fit (16:9)
+                  </button>
                 </div>
                 
                 <button 
                   onClick={handleOpenDiagramsNet}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-semibold transition shadow-sm flex items-center gap-1"
+                  className="px-3 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+                  title="Open this diagram in diagrams.net to test or play around"
                 >
                   <ExternalLink className="w-3 h-3 text-blue-600" />
-                  <span>Full Draw.io Editor</span>
+                  <span>Open in draw.io</span>
                 </button>
+
+                {!isEditorMode && (
+                  <button
+                    onClick={() => setIsNewProjectModalOpen(true)}
+                    className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>+ New Canvas</span>
+                  </button>
+                )}
               </div>
             </div>
 
             {/* Canvas Viewport */}
-            <div className="flex-1 min-h-0 p-6 flex items-center justify-center overflow-auto">
+            <div 
+              onWheel={(e) => {
+                if (e.ctrlKey || e.metaKey) {
+                  e.preventDefault();
+                  if (e.deltaY < 0) handleZoomIn();
+                  else handleZoomOut();
+                }
+              }}
+              className="flex-1 min-h-0 p-4 md:p-6 flex items-center justify-center overflow-auto bg-slate-50/50"
+            >
               <div 
+                style={{
+                  transform: `scale(${zoomLevel})`,
+                  transformOrigin: zoomLevel > 1 ? 'top center' : 'center center',
+                  transition: 'transform 0.15s ease-out'
+                }}
                 onClick={() => {
-                  // Default sample click inspector for Cloud Spanner
                   const spanner = ast.components.find(c => c.service === 'Cloud Spanner') || ast.components[0];
                   setSelectedComponent(spanner);
                 }}
-                className="w-full max-w-[1440px] h-[720px] bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer"
+                className="w-full max-w-[1440px] h-full max-h-[820px] min-h-[360px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
               >
                 <DiagramViewerRenderSafe 
                   xml={xml} 
@@ -1163,6 +1844,20 @@ function StudioMain() {
         currentBlueprintId={selectedBlueprintId}
         currentDomainPresetId={selectedDomain}
         theme="light"
+      />
+
+      <NewProjectModal
+        isOpen={isNewProjectModalOpen}
+        onClose={() => setIsNewProjectModalOpen(false)}
+        onCreateProject={handleCreateNewProject}
+      />
+
+      <MajorVersionModal
+        isOpen={isMajorVersionModalOpen}
+        onClose={() => setIsMajorVersionModalOpen(false)}
+        currentVersion={activeVersionTag}
+        nextMajorVersion={getNextMajorVersion(activeVersionTag)}
+        onConfirmMajorVersion={handleConfirmMajorVersion}
       />
 
     </div>
