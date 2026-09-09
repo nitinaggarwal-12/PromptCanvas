@@ -111,6 +111,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # 🧰 Registered Workspace Skill Trigger Index
 
 * **`diagram-generation-engine`**: Triggered when compiling, generating, styling, or repairing Draw.io architecture diagrams, canonical master templates, and high-contrast cloud topologies.
+* **`diagram-decompilation-and-geometry`**: Triggered when decompiling raster architecture diagrams (PNG/WebP/PDF), enforcing literal verbatim text parity, or routing sharp geometric connectors (zero slants, zero doglegs, 90° corners, closed feedback loops).
 * **`ui-first-design-system`**: Triggered when designing or refactoring UI components, cards, layouts, micro-interactions, or dark glassmorphic panels.
 * **`visual-regression-testing`**: Triggered when running automated pixel-by-pixel image diffing (`pixelmatch`) to verify CSS & visual layout integrity.
 * **`cross-viewport-auditor`**: Triggered when auditing responsive UI breakpoints across Mobile (390px), Tablet (834px), and Ultra-Wide Desktop (1600px+).
@@ -368,3 +369,26 @@ This version has breaking changes — APIs, conventions, and file structure may 
       1. Query rendered `<text>` and `<rect>` elements via `page.evaluate()` or `page.$$()`.
       2. Call `getBoundingClientRect()` on edge label text elements and verify zero mathematical intersection with adjacent container headers or node cards.
       3. Assert that line paths (`<path d="...">`) do not penetrate the inner bounding boxes of non-target child components.
+
+28. **Strict Verbatim Decompilation Law (Zero-Sanitization Mandate)**:
+    - When extracting, decompiling, or reconstructing workflows from raster images (PNG, WebP, SVG, PDF):
+      1. **Zero Text Sanitization**: NEVER alter, rephrase, grammar-correct, or sanitize text, spelling idiosyncrasies, OCR tokens (e.g. `Meefow`, `scain`), duplicate tokens (`Review Review`, `request request`), or stuttered phrasing (`...for Gantry coordination for Gantry decisions`). Replicate the source 100% verbatim.
+      2. **Literal Entity Escaping in Draw.io HTML Labels**: If source text contains `<` or `>` (e.g. `<IMAGE's meetings into a integrated plan`), always double-escape as `&amp;lt;` and `&amp;gt;` (and `&amp;apos;` for `'`). Single escaping `&lt;` causes browser DOM parsers to treat it as an unclosed HTML tag, hiding all subsequent label text.
+      3. **Container Fidelity**: Plain text labels without card outlines must be rendered with `fillColor=none;strokeColor=none;`. Distinct node silhouettes (e.g. oval capsules `rounded=1;arcSize=50;`) must be faithfully preserved.
+
+29. **Sharp Geometric Connectors & Zero-Slant / Zero-Dogleg Law**:
+    - All connectors between diagram blocks MUST use **sharp geometric lines**:
+      1. **Zero Diagonal Slants**: Connectors between tiers or adjacent cards must never travel at arbitrary diagonal angles. Sibling elements connecting horizontally MUST have matching center coordinates ($Y_{\text{source}} = Y_{\text{target}}$); vertical drops must have matching center coordinates ($X_{\text{source}} = X_{\text{target}}$).
+      2. **Zero Stepped Doglegs**: Eliminate awkward 2px–15px jogs across narrow gaps. Compute exact matching entry/exit coordinates and enforce `edgeStyle=none;rounded=0;`.
+      3. **Crisp $90^\circ$ Orthogonal Turns**: For multi-segment routes, forks, brackets, and closed return feedback loops, enforce exact $90^\circ$ rectilinear angles (`rounded=0`).
+      4. **Multi-Way Junction Topologies**: Faithfully replicate T-junction buses where an ingress connector enters a trunk line that branches both upward and downward with explicit directional arrowheads ($\uparrow$, $\downarrow$).
+      5. **Closed Return Feedback Loops**: Closed-loop governance or collaboration returns must exit cleanly, traverse along open boundary corridors, turn $90^\circ$, and enter the source block with an explicit directional arrowhead.
+
+30. **Middle Space Reclamation & Inline Swimlane Component Architecture Law**:
+    - **Zero Detached Ghost Rows**: Bottom summary tables, collaboration cadence matrices, or cross-cutting legends that visually belong inside a specific swimlane row MUST NEVER be extruded into detached, floating bottom rows separated by dead vertical voids.
+    - **Flanked Horizontal Inline Layout**: Position summary tables inline within the designated swimlane band, horizontally flanked by preceding process steps on the left (e.g. `Step 13: TAR escalation and engage`) and terminal capsules on the right (e.g. `No further action`).
+    - **Proportional Pitch Compaction**: Reclaim middle vertical whitespace by strictly budgeting swimlane row pitch (e.g. $88\text{px}-95\text{px}$ per standard row) instead of bloated $110\text{px}-130\text{px}$ paddings.
+    - **Overlying Container Flushness**: Size overlying container enclosures (e.g., Decision Point containers or multi-step enclaves) so their bottom boundary rests flush ($\le 20\text{px}$ clearance) directly above the inline table header, eliminating awkward middle gaps.
+    - **Collinear Coordinate Symmetry**: Maintain identical horizontal bounds ($X_{\text{start}}$, $X_{\text{end}}$, and width) between the overlying decision box and the underlying cadence table to preserve clean vertical alignment.
+
+

@@ -45,6 +45,7 @@ const CANONICAL_NAV_ITEMS: NavItem[] = [
   { id: 'gcp', name: 'GCP Architecture Center', icon: Cloud, href: '/gcp', badge: 'OFFICIAL', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
   { id: 'studio1', name: 'Launch Studio 1', icon: Compass, href: '/studio1', badge: 'LAB' },
   { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
+  { id: 'vision', name: 'Vision AI Decompiler', icon: Sparkles, href: '/vision', badge: 'VISION', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
   { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
   { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
   { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },

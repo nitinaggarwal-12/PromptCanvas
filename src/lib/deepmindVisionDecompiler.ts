@@ -80,11 +80,14 @@ Your goal is to inspect the provided architecture diagram image with 100% precis
 
 CRITICAL XML & STYLING RULES:
 1. Standard 16:9 widescreen canvas dimensions: pageWidth="1600" pageHeight="1000".
-2. Bounding Box & Pitch: Maintain 140px horizontal pitch and 80px vertical inter-row channels.
-3. High-Contrast Labels: All connector labels must have 'labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;'.
-4. Typed Connectors: Solid blue (#2563EB) for API/ingress, dashed orange (#D97706) for async, dashed green (#15803D) for feedback loops, dashed purple (#7C3AED) for AI reasoning.
-5. No External HTTP Image URLs: Use clean HTML styling or SVG shapes.
-6. Output ONLY the raw valid XML document enclosed in <mxfile>...</mxfile>. Do not include conversational markdown commentary.`;
+2. Strict Verbatim Fidelity Law: NEVER sanitize, auto-correct, rephrase, or alter text, typos, OCR artifacts, or tokens found in the image. Preserve all literal labels, table cells, and phrasing 100% exactly as shown in the source.
+3. Exact Connector Geometry & Arrow Directions: Faithfully replicate all junction points (e.g. T-junction mergers, orthogonal multi-point buses, forks), explicit arrowhead directions (up, down, left, right, bidirectional), and feedback return loops without altering routing logic.
+4. Bounding Box & Pitch: Maintain 140px horizontal pitch and 80px vertical inter-row channels.
+5. High-Contrast Labels: All connector labels must have 'labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;fontSize=8;fontStyle=1;'.
+6. Typed Connectors: Solid blue (#2563EB) for API/ingress, dashed orange (#D97706) for async, dashed green (#15803D) for feedback loops, dashed purple (#7C3AED) for AI reasoning.
+7. No External HTTP Image URLs: Use clean HTML styling or SVG shapes.
+8. Middle Space Reclamation & Inline Layout: Never detach bottom summary tables or cadence matrices into isolated ghost rows separated by dead vertical voids. Position them inline within their designated swimlane, horizontally flanked by neighboring step cards and terminals, with overlying container boxes flush directly above.
+9. Output ONLY the raw valid XML document enclosed in <mxfile>...</mxfile>. Do not include conversational markdown commentary.`;
 
     // Strip header if data URI
     const cleanBase64 = imageBase64.replace(/^data:image\/[a-zA-Z]+;base64,/, '');

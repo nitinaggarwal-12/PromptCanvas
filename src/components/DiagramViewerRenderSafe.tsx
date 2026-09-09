@@ -202,6 +202,22 @@ ${origin ? `<base href="${origin}/">` : ''}
       catch (e) { return _btoa(unescape(encodeURIComponent(str))); }
     };
   }
+  if (typeof window.atob === 'function') {
+    const _origAtob = window.atob.bind(window);
+    window.atob = function(b64) {
+      try {
+        return _origAtob(b64);
+      } catch (e) {
+        try {
+          return decodeURIComponent(Array.prototype.map.call(_origAtob(b64), function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+        } catch (e2) {
+          return b64 || '';
+        }
+      }
+    };
+  }
 
   const canvasContainer = document.querySelector('.canvas-container');
   const aggressiveOverlayGuard = ${aggressiveOverlayGuard ? 'true' : 'false'};

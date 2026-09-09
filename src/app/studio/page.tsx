@@ -844,7 +844,10 @@ function StudioMain() {
 
     let newXml = generateGcpNativeArchitectureXml({ projectTitle: config.title, domain: config.domain }, newAst);
 
-    if (config.blueprintId !== 'blank' && config.blueprintId !== '00') {
+    if (config.customXml) {
+      newXml = config.customXml;
+      setSelectedBlueprintId('custom');
+    } else if (config.blueprintId !== 'blank' && config.blueprintId !== '00') {
       const bp = CANONICAL_TEMPLATES.find(t => t.id === config.blueprintId);
       if (bp) {
         setSelectedBlueprintId(bp.id);
@@ -872,12 +875,38 @@ function StudioMain() {
     const initMsg: StudioChatMessage = {
       id: `msg_init_${Date.now()}`,
       sender: 'assistant',
-      text: `🚀 Created new project canvas: **${config.title}** (${config.domain.toUpperCase()}).\n\nBaseline version **v1.0** is initialized. Your diagram is ready for customization.${config.description ? `\n\n*Target Use Case:* ${config.description}` : ''}\n\nType your architecture requirements or click any suggestion below to start refining.`,
+      text: config.customXml
+        ? `🚀 Loaded decompiled architecture canvas: **${config.title}** via DeepMind Vision!\n\nBaseline version **v1.0** is initialized. Your diagram is ready for prompt-based enhancements, node inspections, or versioning.`
+        : `🚀 Created new project canvas: **${config.title}** (${config.domain.toUpperCase()}).\n\nBaseline version **v1.0** is initialized. Your diagram is ready for customization.${config.description ? `\n\n*Target Use Case:* ${config.description}` : ''}\n\nType your architecture requirements or click any suggestion below to start refining.`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages([initMsg]);
     setActiveView('diagram');
   };
+
+  // Auto-import diagram if navigated from Vision AI Studio (/vision)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const rawImport = sessionStorage.getItem('promptcanvas_imported_diagram');
+      if (rawImport) {
+        try {
+          const imported = JSON.parse(rawImport);
+          sessionStorage.removeItem('promptcanvas_imported_diagram');
+          if (imported.xml) {
+            handleCreateNewProject({
+              title: imported.title || 'Decompiled Architecture',
+              domain: imported.domain || 'fintech',
+              description: 'Imported from Vision AI Studio',
+              blueprintId: 'custom',
+              customXml: imported.xml
+            });
+          }
+        } catch (e) {
+          console.error('Failed to import diagram from vision:', e);
+        }
+      }
+    }
+  }, []);
 
   // Fork Current Reference Blueprint into an Active Session
   const handleForkBlueprint = () => {
@@ -1713,6 +1742,15 @@ function StudioMain() {
                   <ExternalLink className="w-3 h-3 text-blue-600" />
                   <span>Open in draw.io</span>
                 </button>
+
+                <Link
+                  href="/vision"
+                  className="px-3 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  title="Convert PNG Architecture Diagram into Draw.io XML using DeepMind Gemini Vision"
+                >
+                  <Sparkles className="w-3 h-3 text-teal-600" />
+                  <span>Vision AI (PNG to Diagram)</span>
+                </Link>
 
                 {!isEditorMode && (
                   <button

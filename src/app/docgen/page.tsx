@@ -60,7 +60,8 @@ import {
   ShieldCheck,
   Settings,
   User,
-  Compass
+  Compass,
+  GitCompare,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
@@ -96,6 +97,8 @@ import DocGenFloatingCopilot from '@/components/DocGenFloatingCopilot';
 import SlideDeckPresenterModal from '@/components/SlideDeckPresenterModal';
 import TerraformIaCModal from '@/components/TerraformIaCModal';
 import EnterpriseSyncModal from '@/components/EnterpriseSyncModal';
+import InsertDiagramModal from '@/components/docgen/InsertDiagramModal';
+import ReconcileDocumentModal from '@/components/docgen/ReconcileDocumentModal';
 import CollaborativeTeamPresence from '@/components/CollaborativeTeamPresence';
 import DocGenHistoryModal, { HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -665,6 +668,47 @@ function DocGenContent() {
   const [isEnterpriseSyncOpen, setIsEnterpriseSyncOpen] = useState<boolean>(false);
   const [isDocHistoryModalOpen, setIsDocHistoryModalOpen] = useState<boolean>(false);
 
+  // Multi-Canvas Inserter & Reconciler Modal States
+  const [isInsertDiagramModalOpen, setIsInsertDiagramModalOpen] = useState<boolean>(false);
+  const [isReconcileModalOpen, setIsReconcileModalOpen] = useState<boolean>(false);
+  const [reconciliationNotice, setReconciliationNotice] = useState<string | null>(null);
+  const [targetSlotIdxForInsert, setTargetSlotIdxForInsert] = useState<number | null>(null);
+  const [customInsertedXml, setCustomInsertedXml] = useState<string | null>(null);
+
+  const handleInsertDiagramFromModal = (diagram: {
+    title: string;
+    type: 'blueprint' | 'flowchart' | 'vision';
+    xml: string;
+    templateId?: string;
+    summary?: string;
+  }) => {
+    if (diagram.templateId && diagram.type === 'blueprint') {
+      setSelectedDiagramTemplateId(diagram.templateId);
+    }
+    setCustomInsertedXml(diagram.xml);
+    if (targetSlotIdxForInsert !== null) {
+      setDiagramSlotsList((prev) =>
+        prev.map((s, idx) =>
+          idx === targetSlotIdxForInsert
+            ? { ...s, title: diagram.title, templateId: diagram.templateId || s.templateId }
+            : s
+        )
+      );
+    }
+    setReconciliationNotice(
+      `New ${diagram.type} diagram added: "${diagram.title}". Reconcile document to update specifications.`
+    );
+  };
+
+  const handleApplyReconciliation = (updatedSectionsSummary: string[]) => {
+    setReconciliationNotice(null);
+    setGeneratedDocContent((prev) => {
+      const timestamp = new Date().toLocaleTimeString();
+      const banner = `\n\n> [!NOTE]\n> **Reconciled from Architecture Visuals (${timestamp})**\n> Synchronized: ${updatedSectionsSummary.join(', ')} with active Draw.io vector models.\n\n`;
+      return banner + (prev || '');
+    });
+  };
+
   const handleSelectHistoricalProject = (proj: HistoricalProjectItem) => {
     setProjectId(proj.id);
     setSelectedArchetypeId(proj.archetypeId as ArchetypeId);
@@ -802,6 +846,7 @@ function DocGenContent() {
 
   // Live Studio Real-Time 16:9 Vector Diagram Preview XML
   const liveStudioDiagramXml = useMemo(() => {
+    if (customInsertedXml) return customInsertedXml;
     const targetId = currentPreviewTemplateId;
     const tpl = CANONICAL_TEMPLATES.find((t) => t.id === targetId) || CANONICAL_TEMPLATES[0];
     try {
@@ -815,7 +860,7 @@ function DocGenContent() {
     } catch {
       return tpl.generateXml(selectedDomain, isLight ? 'light' : 'dark');
     }
-  }, [currentPreviewTemplateId, selectedDomain, isLight, projectTitle, projectName, useCaseName, projectScopePrompt]);
+  }, [customInsertedXml, currentPreviewTemplateId, selectedDomain, isLight, projectTitle, projectName, useCaseName, projectScopePrompt]);
 
   const handleOpenPreview = (meta: DocArchetypeMeta) => {
     setPreviewModalDoc(meta);
@@ -2797,6 +2842,18 @@ function DocGenContent() {
                                 </option>
                               ))}
                             </select>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setTargetSlotIdxForInsert(sIdx);
+                                setIsInsertDiagramModalOpen(true);
+                              }}
+                              className="px-2.5 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold text-[10px] flex items-center gap-1 shrink-0 border border-teal-500/20 cursor-pointer"
+                              title="Choose from 3 modalities: Blueprint, Flowchart, or Vision Image"
+                            >
+                              <Sparkles className="w-3 h-3" />
+                              <span>3 Canvases</span>
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -3539,6 +3596,26 @@ function DocGenContent() {
                       <span>Slide Deck (16:9)</span>
                     </button>
 
+                    {/* Add Architecture Visual Trigger (3 Modalities) */}
+                    <button
+                      onClick={() => setIsInsertDiagramModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/10 hover:from-sky-500/20 hover:to-indigo-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Insert visual using 1. Blueprint Templates, 2. Flowcharts & Swimlanes, or 3. Vision AI Decompiler"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-sky-500" />
+                      <span>+ Add Architecture Visual</span>
+                    </button>
+
+                    {/* Sync Document with Diagrams Trigger */}
+                    <button
+                      onClick={() => setIsReconcileModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 hover:from-emerald-500/20 hover:to-teal-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                      title="Reconcile and update document narrative as per embedded diagrams"
+                    >
+                      <GitCompare className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Sync Document with Diagrams</span>
+                    </button>
+
                     {/* Terraform IaC Generator Trigger */}
                     <button
                       onClick={() => setIsTerraformOpen(true)}
@@ -3635,6 +3712,28 @@ function DocGenContent() {
 
                 {/* REAL-TIME COLLABORATIVE PRESENCE BAR */}
                 <CollaborativeTeamPresence projectId={projectId} isLight={isLight} />
+
+                {/* Visual Reconciliation Notice Banner */}
+                {reconciliationNotice && (
+                  <div className="mb-4 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/10 border border-emerald-500/30 flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-3 text-xs text-emerald-800 dark:text-emerald-300">
+                      <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="font-black block">Visual Evolution Detected</span>
+                        <span className="text-slate-600 dark:text-slate-400 text-[11px]">{reconciliationNotice}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setIsReconcileModalOpen(true)}
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition shrink-0"
+                    >
+                      <GitCompare className="w-3.5 h-3.5" />
+                      <span>Reconcile Document</span>
+                    </button>
+                  </div>
+                )}
 
                 {/* Rendered Document Body */}
                 <div className="pt-2">
@@ -3971,6 +4070,30 @@ function DocGenContent() {
         docArchetype={selectedArchetypeId}
         docMarkdown={generatedDocContent || ''}
         isLight={isLight}
+      />
+
+      {/* Multi-Canvas Architecture Diagram Inserter Modal (3 Modalities) */}
+      <InsertDiagramModal
+        isOpen={isInsertDiagramModalOpen}
+        onClose={() => {
+          setIsInsertDiagramModalOpen(false);
+          setTargetSlotIdxForInsert(null);
+        }}
+        onInsertDiagram={handleInsertDiagramFromModal}
+        isLight={isLight}
+        selectedDomain={selectedDomain}
+        targetChapterTitle={targetSlotIdxForInsert !== null ? `Slot #${targetSlotIdxForInsert + 1}` : undefined}
+      />
+
+      {/* Semantic Document Reconciliation & Diff Modal */}
+      <ReconcileDocumentModal
+        isOpen={isReconcileModalOpen}
+        onClose={() => setIsReconcileModalOpen(false)}
+        onApplyReconciliation={handleApplyReconciliation}
+        isLight={isLight}
+        activeDiagramXml={liveStudioDiagramXml}
+        projectTitle={projectTitle}
+        docArchetype={selectedArchetypeId}
       />
 
       {/* Historical Projects & Document Specifications Modal */}
