@@ -9,6 +9,7 @@ import {
   formatRelativeTime,
   DiffSummary,
 } from '@/lib/versioning/docVersionEngine';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 interface DocGenFloatingCopilotProps {
   projectId: string;
@@ -133,6 +134,45 @@ export default function DocGenFloatingCopilot({
       timestamp: new Date().toISOString(),
     };
     onAddChatMessage(userMsg);
+
+    const intentResult = classifyChatIntent(text);
+
+    if (intentResult.intent === 'greeting') {
+      const assistantMsg: ChatMessage = {
+        id: `msg_${Date.now()}_assistant`,
+        sender: 'assistant',
+        text: `👋 Hello! I'm your Architecture Specification Co-Pilot for "${projectTitle}". I can help you review, expand, or rewrite specification chapters, add compliance matrices, or customize any of the 4 visual diagram slots.\n\nClick any of the suggested actions below or type a custom command!`,
+        timestamp: new Date().toISOString(),
+        suggestedNextSteps: activeNextSteps,
+      };
+      onAddChatMessage(assistantMsg);
+      return;
+    }
+
+    if (intentResult.intent === 'identity') {
+      const assistantMsg: ChatMessage = {
+        id: `msg_${Date.now()}_assistant`,
+        sender: 'assistant',
+        text: `🤖 I am PromptCanvas Architecture Specification Co-Pilot. I assist Principal Architects and Engineering Leads in authoring production specifications (PRD, SDS, HLD, FDD), conducting STRIDE threat analyses, and generating synchronized Draw.io architectural diagrams.`,
+        timestamp: new Date().toISOString(),
+        suggestedNextSteps: activeNextSteps,
+      };
+      onAddChatMessage(assistantMsg);
+      return;
+    }
+
+    if (intentResult.intent === 'conversational') {
+      const assistantMsg: ChatMessage = {
+        id: `msg_${Date.now()}_assistant`,
+        sender: 'assistant',
+        text: `You're very welcome! Let me know whenever you'd like to refine this document or modify diagram slots.`,
+        timestamp: new Date().toISOString(),
+        suggestedNextSteps: activeNextSteps,
+      };
+      onAddChatMessage(assistantMsg);
+      return;
+    }
+
     setIsGenerating(true);
 
     try {

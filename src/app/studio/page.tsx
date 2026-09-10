@@ -58,6 +58,7 @@ import { SaveToLibraryModal } from '@/components/studio/SaveToLibraryModal';
 import { NewProjectModal, NewProjectConfig } from '@/components/studio/NewProjectModal';
 import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -103,6 +104,27 @@ function getNextMajorVersion(currentVersion: string): string {
 
 // Concierge Architectural Knowledge Engine
 function getConciergeResponse(query: string): string {
+  const intentResult = classifyChatIntent(query);
+  if (intentResult.intent === 'greeting') {
+    return `👋 Hello! Welcome to PromptCanvas Studio. I'm your Architecture Concierge.
+
+Here you can explore this certified Google Cloud Reference Architecture in read-only mode, inspect components, and view synchronized Living Specs (HLD, STRIDE threat models, Spanner DDL).
+
+Feel free to ask me about:
+• Cloud security patterns & Zero-Trust
+• Multi-region HA & Cloud Spanner DR
+• Living Specifications (DOC-01 to DOC-16)
+• Or click "+ New Canvas" above to build your own custom topology with AI Co-Pilot!`;
+  }
+
+  if (intentResult.intent === 'identity') {
+    return `🤖 I am the PromptCanvas Architecture Concierge. I guide you through Google Cloud reference topologies, explain architectural patterns and living specifications, and help you transition to Editor Mode to design and mutate architectures with AI Co-Pilot.`;
+  }
+
+  if (intentResult.intent === 'conversational') {
+    return `You're very welcome! Let me know if you have any questions about this architecture or click "+ New Canvas" to start your own design.`;
+  }
+
   const lower = query.toLowerCase();
 
   if (lower.includes('what can this tool do') || lower.includes('what can you do') || lower.includes('capabilities') || lower.includes('features')) {
@@ -599,6 +621,30 @@ function StudioMain() {
 
     setMessages(prev => [...prev, userMsg]);
     setPromptInput('');
+
+    const intentResult = classifyChatIntent(cleanPrompt);
+
+    if (intentResult.intent !== 'mutation') {
+      let replyText = '';
+      if (intentResult.intent === 'greeting') {
+        replyText = `👋 Hello! I'm ArcAssist, your Studio Enterprise Architecture Co-Pilot. I can help evolve your architecture diagram, reconcile DOC-01 through DOC-10 living specifications, and synthesize Google Cloud topologies across all 6 tiers.\n\nTry asking me to:\n• "Add Redis cache layer between API and database"\n• "Enforce Multi-Region HA with Spanner and Cloud Armor"\n• "Add Cloud CDN and Kafka Event Mesh"`;
+      } else if (intentResult.intent === 'identity') {
+        replyText = `🤖 I am ArcAssist, the AI Co-Pilot in PromptCanvas Studio. I specialize in bidirectional synchronization between visual Draw.io diagrams and living engineering specifications (PRDs, ADRs, Threat Models, DDL). I support 4 architectural personas: Product Manager, Lead Cloud Architect, CISO / Security Architect, and FinOps & SRE Lead.`;
+      } else if (intentResult.intent === 'conversational') {
+        replyText = `You're welcome! Let me know when you'd like to evolve this architecture or run an audit.`;
+      } else {
+        replyText = `I can answer architectural questions about ${ast.metadata.projectTitle || 'this cloud topology'}. To mutate the diagram or bump versions, provide an architectural instruction like "Add Cloud Run service", "Configure multi-region failover", or "Enforce CMEK encryption".`;
+      }
+
+      const aiMsg: StudioChatMessage = {
+        id: `msg_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: replyText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, aiMsg]);
+      return;
+    }
 
     // Micro-Version Bump: v1.0 -> v1.1, v1.1 -> v1.2, or v2.0 -> v2.1
     setTimeout(() => {

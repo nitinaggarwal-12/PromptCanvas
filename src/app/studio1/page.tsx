@@ -57,6 +57,7 @@ import {
   type Studio1GenerationContext,
 } from '@/lib/studio1ArchitectureCore';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 interface PastProject {
   id: string;
@@ -1224,6 +1225,41 @@ function Studio1Content() {
       const rawPrompt = (customPrompt || projectScopePrompt).trim();
       const basePrompt = rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || 'Enterprise Google Cloud Native Architecture';
       const promptToUse = basePrompt.trim();
+
+      // Guard against non-mutation intents (greetings, identity, conversational)
+      if (rawPrompt) {
+        const intentResult = classifyChatIntent(rawPrompt);
+        if (intentResult.intent !== 'mutation') {
+          const userMsg: StudioChatMessage = {
+            id: `usr_${Date.now()}`,
+            sender: 'user',
+            text: rawPrompt,
+            timestamp: 'Just now'
+          };
+          setChatMessages((prev) => [...prev, userMsg]);
+          setProjectScopePrompt('');
+
+          let replyText = '';
+          if (intentResult.intent === 'greeting') {
+            replyText = `👋 Hello! I'm ArcAssist in Studio 1. I can help synthesize, validate, and evolve Google Cloud architecture graphs, run live audits, and refactor topologies.\n\nTry asking me to:\n• "Add Cloud Armor WAF and Cloud CDN to ingress"\n• "Inject Redis Memorystore cache tier"\n• "Refactor database to Cloud Spanner Multi-Region nam3"`;
+          } else if (intentResult.intent === 'identity') {
+            replyText = `🤖 I am ArcAssist, the AI Architecture Engine in Studio 1. I validate and auto-correct enterprise Google Cloud architectures, maintain semantic graphs, and generate collision-free Draw.io XML.`;
+          } else if (intentResult.intent === 'conversational') {
+            replyText = `You're welcome! Let me know when you would like to evolve or validate this architecture.`;
+          } else {
+            replyText = `I can answer questions regarding this architecture. When you want to modify the diagram or generate new components, enter an architectural instruction (e.g. 'Add Redis cache layer', 'Connect Pub/Sub to Cloud Run').`;
+          }
+
+          const aiMsg: StudioChatMessage = {
+            id: `ast_${Date.now() + 1}`,
+            sender: 'assistant',
+            text: replyText,
+            timestamp: 'Just now'
+          };
+          setChatMessages((prev) => [...prev, aiMsg]);
+          return;
+        }
+      }
 
       if (activeDiagram.reconciliationRequired) {
         setChatMessages((previous) => [...previous, {

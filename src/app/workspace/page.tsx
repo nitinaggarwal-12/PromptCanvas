@@ -2208,7 +2208,7 @@ function WorkspaceContent() {
   // Gemini Enterprise AI Architecture Advisory & Refinement Handler
   async function handleSendPrompt(e: React.FormEvent) {
     e.preventDefault();
-    if (!promptInput.trim() || !activeDiagram) return;
+    if (!promptInput.trim()) return;
     if (tourStep === 3) {
       setTourStep(4);
     }
@@ -2229,9 +2229,53 @@ function WorkspaceContent() {
       // 🧠 1. Classify User Intent: Architecture Question/Advisory vs Topology Mutation
       const intentResult = classifyChatIntent(userPrompt);
 
+      if (intentResult.intent === 'greeting') {
+        const aiMessage: ChatMessage = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: `👋 Hello! I'm Gemini Architecture Co-Pilot in PromptCanvas Workspace. How can I assist you with your Google Cloud topology, security posture, or living specifications today?\n\nYou can ask me architectural questions (e.g. "Explain the DR failover model") or command diagram mutations (e.g. "Add Redis cache layer", "Enforce VPC Service Controls").`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
+      if (intentResult.intent === 'identity') {
+        const aiMessage: ChatMessage = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: `🤖 I am Gemini Architecture Co-Pilot, an intelligent cloud architecture assistant built into PromptCanvas. I help you design, audit, optimize, and synthesize enterprise-grade Google Cloud topologies with Draw.io integration, 16 living specifications, and cost estimation.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
+      if (intentResult.intent === 'conversational') {
+        const aiMessage: ChatMessage = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: `You're very welcome! Let me know if you'd like to inspect components, run a security audit, or add new cloud services to this diagram.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
+      if (!activeDiagram) {
+        const aiMessage: ChatMessage = {
+          id: Math.random().toString(),
+          sender: 'ai',
+          text: `👋 Welcome to PromptCanvas Workspace! To edit or mutate a topology, please select or create an architecture diagram from the gallery or blueprints above.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setChatMessages(prev => [...prev, aiMessage]);
+        return;
+      }
+
       if (intentResult.intent !== 'mutation') {
         setIsChatThinking(true);
-        // 🏛️ Informational / Advisory Q&A / Greeting: Answer truthfully in writing without modifying the diagram XML
+        // 🏛️ Informational / Advisory Q&A: Answer truthfully in writing without modifying the diagram XML
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },

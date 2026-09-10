@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, useCallback, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -49,6 +49,7 @@ import {
   DOMAIN_PRESETS
 } from '@/lib/canonical/canonicalTemplates';
 import { EVOLUTION_STEPS, EvolutionStep, evolveAst } from '@/lib/evolution/evolutionEngine';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 export interface StudioProdSnapshot {
   id: string;
@@ -240,6 +241,12 @@ function StudioProdMain() {
     }
   ]);
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   // Sync to URL parameters on mount
   useEffect(() => {
     setIsClient(true);
@@ -295,6 +302,31 @@ function StudioProdMain() {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages(prev => [...prev, newMsg]);
+
+    const intentResult = classifyChatIntent(userPrompt);
+
+    if (intentResult.intent !== 'mutation') {
+      let replyText = '';
+      if (intentResult.intent === 'greeting') {
+        replyText = `👋 Hello! I'm your Enterprise Production Architecture Assistant for [${currentSnapshot.projectTitle}]. All 16 Living Specifications, Terraform IaC, and Spanner TrueTime DDL are synchronized.\n\nTry asking me to:\n• "Add Redis Memorystore cluster between API and database"\n• "Enforce Multi-Region nam3 DR with Spanner and Cloud Armor"\n• "Add Cloud CDN caching and Kafka event bus"`;
+      } else if (intentResult.intent === 'identity') {
+        replyText = `🤖 I am StudioProd Architecture Co-Pilot. I compile production-grade, 6-tier Google Cloud native architectures with automated living specifications (DOC-01 to DOC-16), Spanner TrueTime DDL, and zero spatial collisions.`;
+      } else if (intentResult.intent === 'conversational') {
+        replyText = `You're very welcome! Send an architectural prompt when you're ready to evolve this topology or bump versions.`;
+      } else {
+        replyText = `I can provide guidance on ${currentSnapshot.projectTitle} and Google Cloud best practices. To evolve this topology and bump versions, enter an architectural instruction like "Add Cloud Run service", "Configure multi-region failover", or "Enforce CMEK encryption".`;
+      }
+
+      const assistantMsg: StudioProdChatMessage = {
+        id: `msg_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: replyText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, assistantMsg]);
+      setIsGenerating(false);
+      return;
+    }
 
     setTimeout(() => {
       const nextVersionTag = `v${(parseFloat(currentSnapshot.versionTag.replace('v', '')) + 0.1).toFixed(1)}`;
@@ -609,6 +641,7 @@ function StudioProdMain() {
                 )}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Prompt Input Box */}

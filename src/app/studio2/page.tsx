@@ -49,6 +49,7 @@ import { generateGcpFunctionalFlowchartXml } from '@/lib/gcpFunctionalFlowchart'
 import { generateGCPInfrastructureTopology } from '@/lib/gcpInfrastructureTopology';
 import { sanitizeDrawioXmlAttributes, injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { compileArchitectureFromPrompt } from '@/lib/dynamicArchitectureCompiler';
+import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 interface PastProject {
   id: string;
@@ -1076,6 +1077,41 @@ function Studio2Content() {
       const rawPrompt = (customPrompt || projectScopePrompt).trim();
       const basePrompt = rawPrompt || (projectName && useCaseName ? `${projectName} ${useCaseName}` : '') || 'Enterprise Google Cloud Native Architecture';
       const promptToUse = basePrompt.trim();
+
+      // Guard against non-mutation intents (greetings, identity, conversational)
+      if (rawPrompt) {
+        const intentResult = classifyChatIntent(rawPrompt);
+        if (intentResult.intent !== 'mutation') {
+          const userMsg: StudioChatMessage = {
+            id: `usr_${Date.now()}`,
+            sender: 'user',
+            text: rawPrompt,
+            timestamp: 'Just now'
+          };
+          setChatMessages((prev) => [...prev, userMsg]);
+          setProjectScopePrompt('');
+
+          let replyText = '';
+          if (intentResult.intent === 'greeting') {
+            replyText = `👋 Hello! I'm your Architecture Engine in Studio 2. I can help synthesize, validate, and auto-correct enterprise Google Cloud architectures, generate 10-tier topologies, and reconcile live changes.\n\nTry asking me to:\n• "Add Cloud Armor WAF and Cloud CDN to ingress"\n• "Inject Redis Memorystore cache tier"\n• "Refactor database to Cloud Spanner Multi-Region nam3"`;
+          } else if (intentResult.intent === 'identity') {
+            replyText = `🤖 I am Studio 2 Architecture Engine, powered by Gemini 3.1 Pro. I validate cloud architectures, enforce zero spatial collisions, and generate production-grade Draw.io XML topologies.`;
+          } else if (intentResult.intent === 'conversational') {
+            replyText = `You're welcome! Let me know when you would like to synthesize or modify this architecture.`;
+          } else {
+            replyText = `I can answer questions regarding this architecture. When you want to modify the diagram or generate new components, enter an architectural instruction (e.g. 'Add Redis cache layer', 'Connect Pub/Sub to Cloud Run').`;
+          }
+
+          const aiMsg: StudioChatMessage = {
+            id: `ast_${Date.now() + 1}`,
+            sender: 'assistant',
+            text: replyText,
+            timestamp: 'Just now'
+          };
+          setChatMessages((prev) => [...prev, aiMsg]);
+          return;
+        }
+      }
 
       // Intelligently infer logical Project Name & Use Case Name if blank
       const inferred = inferLogicalProjectAndUseCase(promptToUse, projectName, useCaseName);
