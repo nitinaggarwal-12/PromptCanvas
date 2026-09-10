@@ -906,7 +906,10 @@ function WorkspaceContent() {
     return () => window.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
-  const { theme: canvasTheme, setTheme: setCanvasTheme } = useTheme();
+  const { theme: appTheme, setTheme: setAppTheme } = useTheme();
+  // Workspace canvas, tabs, and cards are locked to light theme matching Studio (Image 2)
+  const [canvasTheme] = useState<'light' | 'dark'>('light');
+  const setCanvasTheme = setAppTheme;
   const [viewMode, setViewMode] = useState<'canvas' | 'outline' | 'business' | 'technical'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -6199,16 +6202,12 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
       {/* Desktop Sidebar Navigation (Hidden on < 1024px) */}
       <aside 
         onMouseEnter={() => setIsSidebarOpen(true)}
-        className={`hidden lg:flex flex-col transition-all duration-300 z-20 shrink-0 border-r ${
-          canvasTheme === 'light' ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#070A13] border-slate-800 text-slate-200'
-        } ${
+        className={`hidden lg:flex flex-col transition-all duration-300 z-20 shrink-0 border-r bg-[#070A13] border-slate-800 text-slate-200 ${
           isSidebarOpen ? (currentTab === 'editor' && activeDiagram ? 'w-[340px]' : 'w-64') : 'w-16'
         }`}
       >
         {/* Sidebar Header */}
-        <div className={`h-16 flex items-center justify-between px-4 border-b shrink-0 ${
-          canvasTheme === 'light' ? 'border-slate-200 bg-white' : 'border-slate-800 bg-[#070A13]'
-        }`}>
+        <div className="h-16 flex items-center justify-between px-4 border-b shrink-0 border-slate-800 bg-[#070A13]">
           {isSidebarOpen ? (
             <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
               <Sparkles className="w-5 h-5 text-teal-accent" />
@@ -6932,20 +6931,14 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           )}
           <>
             {/* Top Navbar */}
-            <header className={`h-14 border-b flex items-center justify-between px-3 md:px-6 backdrop-blur-md gap-3 relative shrink-0 transition-colors ${tourStep !== null ? 'z-[60]' : 'z-30'} ${
-              canvasTheme === 'light' ? 'bg-white/95 border-slate-200 text-slate-900 shadow-sm' : 'bg-[#070A13]/95 border-slate-800 text-white'
-            }`}>
+            <header className={`h-14 border-b flex items-center justify-between px-3 md:px-6 backdrop-blur-md gap-3 relative shrink-0 transition-colors bg-[#0B111E] border-slate-800 text-white shadow-md ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
               {/* Group 1: Left - Navigation Identity, Category & Version */}
               <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
                 {/* Mobile/Tablet Hamburger Menu Toggle */}
                 <button
                   type="button"
                   onClick={() => setIsMobileMenuOpen(true)}
-                  className={`lg:hidden p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer ${
-                    canvasTheme === 'light'
-                      ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-teal-700'
-                      : 'bg-slate-900/80 hover:bg-slate-800 border-panel-border text-slate-300 hover:text-teal-400'
-                  }`}
+                  className="lg:hidden p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-teal-400"
                   title="Open Navigation Menu"
                 >
                   <Menu className="w-4 h-4" />
@@ -6955,11 +6948,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   <button 
                     onClick={() => setIsSidebarOpen(true)}
                     title="Expand Navigation Sidebar"
-                    className={`hidden lg:flex p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer ${
-                      canvasTheme === 'light'
-                        ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 hover:text-teal-700'
-                        : 'bg-slate-900/80 hover:bg-slate-800 border-panel-border text-slate-300 hover:text-teal-accent'
-                    }`}
+                    className="hidden lg:flex p-1.5 rounded-lg border shrink-0 transition-all cursor-pointer bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-teal-400"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>

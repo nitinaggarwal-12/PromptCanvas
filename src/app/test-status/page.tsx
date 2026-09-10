@@ -119,7 +119,8 @@ const INITIAL_TEST_RESULTS: TestCaseResult[] = [
 
 function TestStatusContent() {
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (clean cards, light badges) while top header is dark
+  const isLight = true;
 
   const [activePillar, setActivePillar] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -163,23 +164,21 @@ function TestStatusContent() {
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 overflow-y-auto flex flex-col">
         {/* Sticky Top Header */}
-        <header className={`sticky top-0 z-30 border-b backdrop-blur-md px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors ${
-          isLight ? 'bg-white/90 border-slate-200 shadow-xs' : 'bg-[#070B16]/90 border-slate-800/80 shadow-md'
-        }`}>
+        <header className="dark sticky top-0 z-30 border-b backdrop-blur-md px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors bg-[#0B111E] border-slate-800 text-white shadow-md">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shadow-md flex items-center justify-center">
-              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#090D18]'}`}>
-                <ShieldCheck className="w-5 h-5 text-emerald-500" />
+              <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
               </div>
             </div>
             <div>
-              <h1 className={`font-black text-sm md:text-base tracking-tight flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
                 <span>Enterprise Quality &amp; Test Status Portal</span>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                   ALL 9 PILLARS VERIFIED
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <p className="text-[11px] text-slate-400 font-medium">
                 Live automated test execution results, assertion metrics, timestamps &amp; compliance status
               </p>
             </div>

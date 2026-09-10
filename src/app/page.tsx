@@ -35,7 +35,8 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 export default function LandingPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Main content is strictly light theme as specified (matching Studio in Image 2)
+  const isLight = true;
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -113,10 +114,8 @@ export default function LandingPage() {
       {/* Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
 
-      {/* Header/Navigation */}
-      <header className={`sticky top-0 w-full z-50 border-b backdrop-blur-md shrink-0 transition-colors ${
-        isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-panel-border/30 bg-[#070a13]/80 text-white'
-      }`}>
+      {/* Header/Navigation - Strictly Dark Header */}
+      <header className="dark sticky top-0 w-full z-50 border-b border-slate-800 bg-[#0B111E] text-white shrink-0 shadow-md">
         <div className="w-full max-w-8xl mx-auto h-16 sm:h-20 px-3 sm:px-6 md:px-12 flex items-center justify-between gap-2 sm:gap-3">
           <Link 
             href="/" 
@@ -130,69 +129,53 @@ export default function LandingPage() {
             }}
           >
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-teal-400 to-indigo-500 p-0.5 shadow-lg shadow-teal-500/20 flex items-center justify-center shrink-0">
-              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#070a13]'}`}>
+              <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#070a13]">
                 <Network className="w-4 h-4 sm:w-5 sm:h-5 text-teal-accent" />
               </div>
             </div>
             <div className="shrink-0 flex items-center gap-1">
-              <span className={`font-extrabold text-sm sm:text-lg tracking-wider bg-clip-text ${
-                isLight ? 'text-slate-900 bg-gradient-to-r from-slate-950 to-slate-700' : 'text-white bg-gradient-to-r from-white to-slate-300'
-              }`}>
+              <span className="font-extrabold text-sm sm:text-lg tracking-wider bg-clip-text text-white bg-gradient-to-r from-white to-slate-300">
                 PROMPT
               </span>
-              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-500 hidden min-[380px]:inline">
+              <span className="font-light text-sm sm:text-lg tracking-wider text-teal-400 hidden min-[380px]:inline">
                 CANVAS
               </span>
             </div>
           </Link>
 
-          <nav className={`hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 ${
-            isLight ? 'text-slate-600' : 'text-slate-300'
-          }`}>
-            <Link href="/studio" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-teal-600' : 'hover:bg-slate-800/80 hover:text-white text-teal-400'
-            }`} title="Conversational AI Architecture & Specification Studio">
+          <nav className="hidden lg:flex items-center gap-3 xl:gap-4 text-xs font-bold shrink-0 text-slate-300">
+            <Link href="/studio" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-teal-400" title="Conversational AI Architecture & Specification Studio">
               <Layers className="w-3.5 h-3.5 text-teal-500" />
               <span>Launch Studio</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-600 dark:text-teal-300 font-mono font-black">PRO</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-teal-500/20 text-teal-300 font-mono font-black">PRO</span>
             </Link>
 
-            <Link href="/canonical" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-sky-600' : 'hover:bg-slate-800/80 hover:text-white text-sky-400'
-            }`} title="50 High-Contrast Architecture Blueprints">
+            <Link href="/canonical" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-sky-400" title="50 High-Contrast Architecture Blueprints">
               <Sparkles className="w-3.5 h-3.5 text-sky-400" />
               <span>Canonical Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-600 dark:text-sky-300 font-mono font-bold">50</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 text-sky-300 font-mono font-bold">50</span>
             </Link>
 
-            <Link href="/docgen" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-indigo-600' : 'hover:bg-slate-800/80 hover:text-white text-indigo-400'
-            }`} title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
+            <Link href="/docgen" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-indigo-400" title="17 Enterprise Specification Blueprints (BRD, PRD, SDD, TDD)">
               <FileText className="w-3.5 h-3.5 text-indigo-400" />
               <span>DocGen Hub</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 font-mono font-bold">17</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 font-mono font-bold">17</span>
             </Link>
 
-            <Link href="/guide" className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-teal-50 text-teal-700 hover:text-teal-900' : 'hover:bg-teal-500/10 text-teal-400 hover:text-teal-300'
-            }`} title="Interactive Animated Playbooks & GIFs">
+            <Link href="/guide" className="px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 hover:bg-teal-500/10 text-teal-400 hover:text-teal-300" title="Interactive Animated Playbooks & GIFs">
               <Sparkles className="w-3.5 h-3.5 text-teal-400" />
               <span>Playbooks &amp; GIFs</span>
             </Link>
 
-            <Link href="/dashboard" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900' : 'hover:bg-slate-800/80 hover:text-white'
-            }`} title="Operations Telemetry & Workspace Management">
+            <Link href="/dashboard" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white" title="Operations Telemetry & Workspace Management">
               <BarChart3 className="w-3.5 h-3.5 text-indigo-400" />
               <span>Operations Dashboard</span>
             </Link>
 
-            <Link href="/test-status" className={`px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 ${
-              isLight ? 'hover:bg-slate-100 hover:text-slate-900 text-emerald-600' : 'hover:bg-slate-800/80 hover:text-white text-emerald-400'
-            }`} title="Enterprise Quality & Test Status (2,359 Tests Passed)">
+            <Link href="/test-status" className="px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 hover:bg-slate-800/80 hover:text-white text-emerald-400" title="Enterprise Quality & Test Status (2,359 Tests Passed)">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
               <span>Test Status</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-mono font-bold">100%</span>
+              <span className="px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-400 font-mono font-bold">100%</span>
             </Link>
           </nav>
 
@@ -204,13 +187,9 @@ export default function LandingPage() {
                 <button
                   id="header-user-profile-btn"
                   onClick={() => setIsProfileOpen(true)}
-                  className={`hidden sm:flex px-2.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all ${
-                    isLight
-                      ? 'bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200'
-                      : 'bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200'
-                  }`}
+                  className="hidden sm:flex px-2.5 py-1.5 rounded-lg border text-xs font-semibold items-center gap-2 transition-all bg-slate-900 border-slate-800 hover:border-teal-500/40 text-slate-200"
                 >
-                  <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-600 dark:text-teal-400 font-bold flex items-center justify-center text-[10px]">
+                  <div className="w-5 h-5 rounded-full bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-[10px]">
                     {(user.name || user.email)[0].toUpperCase()}
                   </div>
                   <span className="hidden xl:inline max-w-[100px] truncate text-xs">{user.name || user.email}</span>
@@ -232,9 +211,7 @@ export default function LandingPage() {
                     setAuthMode('signin');
                     setIsAuthOpen(true);
                   }}
-                  className={`hidden sm:flex px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer ${
-                    isLight ? 'text-slate-700 hover:text-slate-900' : 'text-slate-300 hover:text-white'
-                  }`}
+                  className="hidden sm:flex px-3 py-1.5 text-xs font-bold transition-colors cursor-pointer text-slate-300 hover:text-white"
                 >
                   Sign In
                 </button>
@@ -253,9 +230,7 @@ export default function LandingPage() {
             <button
               type="button"
               onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
-              className={`lg:hidden p-2 rounded-lg border cursor-pointer ${
-                isLight ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400'
-              }`}
+              className="lg:hidden p-2 rounded-lg border cursor-pointer bg-slate-900 border-slate-800 text-slate-300 hover:text-teal-400"
               title="Toggle Menu"
             >
               {isMobileNavOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

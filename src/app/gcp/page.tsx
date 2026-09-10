@@ -63,7 +63,8 @@ function GcpArchitectureCenterInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  // Main content is strictly light theme as specified (matching Studio in Image 2)
+  const isDark = false;
 
   // Crisp whiteboard canvas default (industry standard: Figma, Miro, Google Cloud Architecture Center)
   const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>('light');
@@ -446,16 +447,14 @@ function GcpArchitectureCenterInner() {
 
       {/* Main Content Area: Spacious Ultra-Wide Layout (Zero Surrounding Empty Space) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-        {/* Consolidated High-Contrast Header Bar (56px) matching Studio 1 & 2 */}
-        <header className={`sticky top-0 z-30 w-full h-14 flex-shrink-0 border-b px-4 md:px-8 flex items-center justify-between shadow-xs transition-colors ${
-          isDark ? 'bg-[#0B111E] border-slate-800' : 'bg-white border-slate-200'
-        }`}>
+        {/* Consolidated High-Contrast Header Bar (56px) matching Studio in Image 2 */}
+        <header className="dark sticky top-0 z-30 w-full h-14 flex-shrink-0 border-b px-4 md:px-8 flex items-center justify-between shadow-xs transition-colors bg-[#0B111E] border-slate-800">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 shrink-0">
               <Cloud className="w-4 h-4" />
             </div>
             <div className="flex items-center gap-2.5 min-w-0">
-              <h1 className={`text-sm font-black tracking-tight truncate ${isDark ? 'text-white' : 'text-slate-950'}`}>
+              <h1 className="text-sm font-black tracking-tight truncate text-white">
                 Google Cloud Architecture Center
               </h1>
               <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/30 shrink-0">
@@ -470,40 +469,30 @@ function GcpArchitectureCenterInner() {
               onClick={handleCopyXml}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                 copiedXml
-                  ? 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30'
-                  : isDark
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300'
+                  ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
               }`}
               title="Copy Draw.io XML to Clipboard"
             >
-              {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className={`w-3.5 h-3.5 ${isDark ? 'text-slate-400' : 'text-slate-700'}`} />}
+              {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
               <span>{copiedXml ? 'Copied XML' : 'Copy XML'}</span>
             </button>
 
             <button
               onClick={handleDownloadXml}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                isDark
-                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300'
-              }`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700 cursor-pointer"
               title="Download .drawio.xml file"
             >
-              <Download className={`w-3.5 h-3.5 ${isDark ? 'text-slate-400' : 'text-slate-700'}`} />
+              <Download className="w-3.5 h-3.5 text-slate-400" />
               <span className="hidden sm:inline">Export XML</span>
             </button>
 
             <button
               onClick={handleOpenDiagramsNet}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                isDark
-                  ? 'bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border-blue-800/60'
-                  : 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-300'
-              }`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border-blue-800/60 cursor-pointer"
               title="Open in Diagrams.net online editor"
             >
-              <ExternalLink className={`w-3.5 h-3.5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
               <span className="hidden sm:inline">Open in Diagrams.net</span>
             </button>
 

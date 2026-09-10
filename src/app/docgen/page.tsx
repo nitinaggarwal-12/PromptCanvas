@@ -510,7 +510,8 @@ function DocGenContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content is locked to light theme (white cards, clean documents) while top header is dark
+  const isLight = true;
 
   // Navigation and active tabs (Defaults to 'catalog' so all 17 Document Archetypes load immediately)
   const tabParam = searchParams.get('tab');
@@ -1958,16 +1959,14 @@ function DocGenContent() {
       {/* MAIN CONTENT WRAPPER */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* TOP STICKY NAVBAR */}
-        <header className={`sticky top-0 w-full z-30 border-b backdrop-blur-md transition-colors no-print ${
-          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
-        }`}>
+        <header className="dark sticky top-0 w-full z-30 border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md no-print">
           <div className="max-w-[1600px] mx-auto h-16 md:h-18 px-4 md:px-8 flex items-center justify-between gap-4">
             {/* Left Title & Sidebar Toggle */}
             <div className="flex items-center gap-3">
               {!isSidebarOpen && (
                 <button
                   onClick={() => setIsSidebarOpen(true)}
-                  className="hidden lg:flex p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                  className="hidden lg:flex p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
                   title="Expand Left Navigation Menu"
                 >
                   <Menu className="w-4 h-4" />
@@ -1975,28 +1974,28 @@ function DocGenContent() {
               )}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                className="lg:hidden p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
                 title="Toggle Menu"
               >
                 <Menu className="w-4 h-4" />
               </button>
 
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors" title="Home">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-400">/</span>
+                <span className="text-slate-600">/</span>
                 <button
                   type="button"
                   onClick={() => setActiveTab('catalog')}
                   className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
                     activeTab === 'catalog'
-                      ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/30'
-                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                   title="17 Document Archetypes Catalog"
                 >
-                  <FileText className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                  <FileText className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                   <span>17 Document Archetypes</span>
                 </button>
 
@@ -2005,12 +2004,12 @@ function DocGenContent() {
                   onClick={() => setActiveTab('studio')}
                   className={`font-bold flex items-center gap-1.5 truncate cursor-pointer transition-all px-2.5 py-1 rounded-lg ${
                     activeTab === 'studio'
-                      ? 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30'
-                      : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                      ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/40'
+                      : 'text-slate-400 hover:text-white'
                   }`}
                   title="Interactive Document Studio"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                   <span>Studio</span>
                 </button>
               </div>
@@ -2019,16 +2018,16 @@ function DocGenContent() {
             {/* Right: Controls & Canonical Blueprints Quick Links */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-                <span className="text-slate-500 dark:text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
+                <Sliders className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <span className="text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                  className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
                       {d.name}
                     </option>
                   ))}
@@ -2048,12 +2047,12 @@ function DocGenContent() {
               {/* Canonical Blueprints Link */}
               <Link
                 href="/canonical"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs shrink-0"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all shadow-xs shrink-0"
                 title="Canonical Blueprints Master Catalog"
               >
-                <Zap className="w-3.5 h-3.5 text-sky-500" />
+                <Zap className="w-3.5 h-3.5 text-sky-400" />
                 <span className="hidden sm:inline">Canonical Blueprints</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold">{CANONICAL_TEMPLATES.length}</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-300">{CANONICAL_TEMPLATES.length}</span>
               </Link>
 
               {/* Standardized Theme Toggle */}

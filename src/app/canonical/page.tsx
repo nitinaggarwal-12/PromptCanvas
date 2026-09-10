@@ -57,8 +57,9 @@ function CanonicalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  const themeMode: 'light' | 'dark' = isDark ? 'dark' : 'light';
+  // Content is locked to light theme (whiteboard, white cards, light slate) while top header is dark
+  const isDark = false;
+  const themeMode: 'light' | 'dark' = 'light';
 
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
   const [selectedLevel, setSelectedLevel] = useState<string>('All');
@@ -249,22 +250,20 @@ function CanonicalContent() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* STICKY FULL-WIDTH TOP NAVIGATION */}
-        <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
-          isDark ? 'bg-[#0B111E]/90 border-slate-800/80' : 'bg-white/90 border-slate-200/80'
-        }`}>
+        <header className="dark sticky top-0 z-40 w-full backdrop-blur-md border-b bg-[#0B111E] border-slate-800 text-white shadow-md">
           <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 min-w-0">
             {/* Left: Breadcrumbs & Catalog Context */}
             <div className="flex items-center gap-2.5 min-w-0 shrink truncate">
               <div className="flex items-center gap-1.5 text-xs font-semibold truncate">
-                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0" title="Home">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors shrink-0" title="Home">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-400 shrink-0">/</span>
-                <span className="font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5 truncate">
-                  <Sparkles className="w-3.5 h-3.5 text-sky-500 shrink-0" />
+                <span className="text-slate-600 shrink-0">/</span>
+                <span className="font-bold text-sky-400 flex items-center gap-1.5 truncate">
+                  <Sparkles className="w-3.5 h-3.5 text-sky-400 shrink-0" />
                   <span className="truncate">Canonical Blueprints Hub</span>
                 </span>
-                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
                   {CANONICAL_TEMPLATES.length} Grammars
                 </span>
               </div>
@@ -273,16 +272,16 @@ function CanonicalContent() {
             {/* Right: Controls & Hub Quick Links */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-sky-500 shrink-0" />
-                <span className="text-slate-500 dark:text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
+                <Sliders className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <span className="text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                  className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
                       {d.name}
                     </option>
                   ))}
@@ -301,12 +300,12 @@ function CanonicalContent() {
 
               <Link
                 href="/docgen"
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-600/10 to-indigo-600/10 hover:from-sky-600/20 hover:to-indigo-600/20 text-sky-600 dark:text-sky-400 border border-sky-500/30 transition-all shadow-xs shrink-0"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all shadow-xs shrink-0"
                 title="DocGen Studio & Master Specifications"
               >
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className="w-3.5 h-3.5 text-sky-400" />
                 <span className="hidden sm:inline">DocGen Hub</span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold">17</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-sky-500/20 font-mono font-bold text-sky-300">17</span>
               </Link>
 
               {/* Standardized Theme Toggle */}

@@ -245,7 +245,7 @@ function VisionPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B111E] text-slate-100 flex flex-row antialiased selection:bg-teal-500/30">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-row antialiased selection:bg-teal-500/30">
       {/* 0. Collapsible Unified Navigation Sidebar */}
       <UnifiedAppSidebar />
 
@@ -258,8 +258,8 @@ function VisionPageContent() {
         </div>
       )}
 
-      {/* Top Header Navbar */}
-      <header className="sticky top-0 z-40 w-full bg-[#0B111E]/95 backdrop-blur-md border-b border-slate-800">
+      {/* Top Header Navbar - Dark Theme */}
+      <header className="dark sticky top-0 z-40 w-full bg-[#0B111E] border-b border-slate-800">
         <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link 
@@ -333,15 +333,15 @@ function VisionPageContent() {
       <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 md:px-12 py-6 flex flex-col gap-6">
         
         {/* Sample Blueprint Selector Bar */}
-        <section className="bg-slate-900/70 border border-slate-800/80 rounded-2xl p-4 flex flex-col gap-3 shadow-xl backdrop-blur-sm">
+        <section className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-teal-400" />
-              <h2 className="text-xs font-bold text-white uppercase tracking-wider">Quick Sample Blueprints</h2>
-              <span className="text-[11px] text-slate-400 hidden sm:inline">Click any real Google Cloud architecture PNG to decompile instantly:</span>
+              <ImageIcon className="w-4 h-4 text-teal-600" />
+              <h2 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Quick Sample Blueprints</h2>
+              <span className="text-[11px] text-slate-500 hidden sm:inline">Click any real Google Cloud architecture PNG to decompile instantly:</span>
             </div>
             
-            <div className="text-[11px] text-teal-400/90 font-mono font-medium">
+            <div className="text-[11px] text-teal-600 font-mono font-bold">
               4 Certified Test Topologies
             </div>
           </div>
@@ -355,16 +355,18 @@ function VisionPageContent() {
                   onClick={() => handleSelectSample(sample)}
                   className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col gap-2 relative group overflow-hidden ${
                     isSelected
-                      ? 'border-teal-500/80 bg-teal-950/20 shadow-lg ring-1 ring-teal-500/50'
-                      : 'border-slate-800 bg-slate-950/40 hover:border-slate-700 hover:bg-slate-800/40'
+                      ? 'border-teal-500 bg-teal-50 shadow-sm ring-1 ring-teal-500/50'
+                      : 'border-slate-200 bg-slate-50/70 hover:border-slate-300 hover:bg-white'
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold ${
+                      isSelected ? 'bg-teal-100 text-teal-800' : 'bg-slate-200 text-slate-700'
+                    }`}>
                       {sample.category}
                     </span>
                     {isSelected && (
-                      <span className="flex items-center gap-1 text-[10px] text-teal-400 font-bold">
+                      <span className="flex items-center gap-1 text-[10px] text-teal-600 font-bold">
                         <CheckCircle2 className="w-3 h-3" />
                         Active
                       </span>
@@ -372,10 +374,10 @@ function VisionPageContent() {
                   </div>
 
                   <div>
-                    <h3 className="text-xs font-bold text-white group-hover:text-teal-300 transition">
+                    <h3 className={`text-xs font-bold transition ${isSelected ? 'text-teal-950' : 'text-slate-900 group-hover:text-teal-600'}`}>
                       {sample.title}
                     </h3>
-                    <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">
                       {sample.desc}
                     </p>
                   </div>
@@ -386,46 +388,46 @@ function VisionPageContent() {
         </section>
 
         {/* Telemetry & Extraction Status Banner */}
-        <section className="bg-slate-900/90 border border-slate-800 rounded-xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-lg">
+        <section className="bg-white border border-slate-200 rounded-xl px-5 py-3.5 flex flex-wrap items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400">
+            <div className="w-9 h-9 rounded-lg bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600">
               {isDecompiling ? (
-                <Loader2 className="w-5 h-5 animate-spin text-teal-400" />
+                <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
               ) : (
-                <ShieldCheck className="w-5 h-5 text-teal-400" />
+                <ShieldCheck className="w-5 h-5 text-teal-600" />
               )}
             </div>
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-white">Active Blueprint:</span>
-                <span className="text-xs font-semibold text-teal-300">{selectedImageName}</span>
+                <span className="text-xs font-bold text-slate-900">Active Blueprint:</span>
+                <span className="text-xs font-bold text-teal-700">{selectedImageName}</span>
                 {isDecompiling && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold">
                     Decompiling Spatial AST...
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <p className="text-[11px] text-slate-500 mt-0.5">
                 {summaryText || (isDecompiling ? 'Gemini Vision is scanning tiers, shapes, and arrow connectors...' : 'Ready for inspection.')}
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs font-mono">
-            <div className="flex items-center gap-1.5 bg-slate-950/60 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <span className="text-slate-400 font-sans">Components:</span>
-              <span className="font-bold text-white">{componentCount || '—'}</span>
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <span className="text-slate-500 font-sans">Components:</span>
+              <span className="font-bold text-slate-900">{componentCount || '—'}</span>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-950/60 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <span className="text-slate-400 font-sans">AST Quality:</span>
-              <span className="font-bold text-emerald-400">100% Zero-Defect</span>
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <span className="text-slate-500 font-sans">AST Quality:</span>
+              <span className="font-bold text-emerald-600">100% Zero-Defect</span>
             </div>
 
-            <div className="flex items-center gap-1.5 bg-slate-950/60 border border-slate-800 px-3 py-1.5 rounded-lg">
-              <span className="text-slate-400 font-sans">Format:</span>
-              <span className="font-bold text-sky-400">Draw.io XML (16:9)</span>
+            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+              <span className="text-slate-500 font-sans">Format:</span>
+              <span className="font-bold text-sky-600">Draw.io XML (16:9)</span>
             </div>
           </div>
         </section>
@@ -434,14 +436,14 @@ function VisionPageContent() {
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 min-h-[640px]">
           
           {/* Left Pane: Original PNG Image */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-xl relative overflow-hidden">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-xs relative overflow-hidden">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <ImageIcon className="w-4 h-4 text-teal-400" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <ImageIcon className="w-4 h-4 text-teal-600" />
+                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                   Original Image Source
                 </span>
-                <span className="text-[11px] text-slate-400 font-mono">
+                <span className="text-[11px] text-slate-500 font-mono">
                   {isCustomUpload ? '(User Upload)' : '(Ground-Truth Blueprint)'}
                 </span>
               </div>
@@ -449,7 +451,7 @@ function VisionPageContent() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
                   title="Upload another image"
                 >
                   <Upload className="w-3 h-3" />
@@ -459,17 +461,17 @@ function VisionPageContent() {
             </div>
 
             {/* Image Viewport Container */}
-            <div className="flex-1 bg-slate-950/80 rounded-xl border border-slate-800/80 p-4 flex items-center justify-center overflow-auto min-h-[480px]">
+            <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 p-4 flex items-center justify-center overflow-auto min-h-[480px]">
               {selectedImageSrc ? (
                 <div className="relative max-w-full max-h-full flex items-center justify-center">
                   <img
                     src={selectedImageSrc}
                     alt={selectedImageName}
-                    className="max-w-full max-h-[560px] object-contain rounded-lg border border-slate-800/60 shadow-lg"
+                    className="max-w-full max-h-[560px] object-contain rounded-lg border border-slate-200 shadow-sm"
                   />
                 </div>
               ) : (
-                <div className="text-center text-slate-500 py-12">
+                <div className="text-center text-slate-400 py-12">
                   <ImageIcon className="w-12 h-12 mx-auto mb-2 opacity-30" />
                   <p className="text-xs">No image selected</p>
                 </div>
@@ -477,21 +479,21 @@ function VisionPageContent() {
             </div>
 
             {/* Left Footer Info */}
-            <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1">
+            <div className="text-[11px] text-slate-500 flex items-center justify-between pt-1">
               <span>Input: PNG / WebP / SVG Image format</span>
-              <span className="font-mono text-slate-400">Original Resolution Preserved</span>
+              <span className="font-mono text-slate-500">Original Resolution Preserved</span>
             </div>
           </div>
 
           {/* Right Pane: Interactive Decompiled Draw.io Diagram */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 flex flex-col gap-3 shadow-xl relative overflow-hidden">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col gap-3 shadow-xs relative overflow-hidden">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider">
                   Decompiled Draw.io Vector Diagram
                 </span>
-                <span className="text-[11px] px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-mono font-semibold border border-blue-500/30">
+                <span className="text-[11px] px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-mono font-bold border border-blue-200">
                   LIVE AST
                 </span>
               </div>
@@ -501,37 +503,37 @@ function VisionPageContent() {
                 <button
                   onClick={handleCopyXml}
                   disabled={!decompiledXml || isDecompiling}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 hover:text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 disabled:opacity-40 text-slate-700 text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
                   title="Copy XML"
                 >
-                  {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-slate-600" />}
                   <span>{copied ? 'Copied' : 'XML'}</span>
                 </button>
 
                 <button
                   onClick={handleDownloadXml}
                   disabled={!decompiledXml || isDecompiling}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 hover:text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 disabled:opacity-40 text-slate-700 text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
                   title="Download .drawio file"
                 >
-                  <Download className="w-3 h-3" />
+                  <Download className="w-3 h-3 text-slate-600" />
                   <span>Download</span>
                 </button>
 
                 <button
                   onClick={handleOpenDrawio}
                   disabled={!decompiledXml || isDecompiling}
-                  className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 disabled:opacity-40 text-slate-300 hover:text-white text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 disabled:opacity-40 text-blue-700 text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
                   title="Open in diagrams.net full web editor"
                 >
-                  <ExternalLink className="w-3 h-3 text-blue-400" />
+                  <ExternalLink className="w-3 h-3 text-blue-600" />
                   <span>draw.io</span>
                 </button>
               </div>
             </div>
 
             {/* Diagram Viewport Container */}
-            <div className="flex-1 bg-white rounded-xl border border-slate-300 shadow-xl overflow-hidden min-h-[480px] relative flex items-center justify-center">
+            <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden min-h-[480px] relative flex items-center justify-center">
               {isDecompiling ? (
                 <div className="absolute inset-0 bg-slate-900/90 z-20 flex flex-col items-center justify-center gap-3 p-6 text-center">
                   <Loader2 className="w-8 h-8 animate-spin text-teal-400" />
@@ -561,16 +563,16 @@ function VisionPageContent() {
 
             {/* Right Footer Action */}
             <div className="flex items-center justify-between pt-1">
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
                 <span>Detected Zones:</span>
                 <div className="flex items-center gap-1">
                   {extractedZones.slice(0, 3).map((z, idx) => (
-                    <span key={idx} className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] font-mono">
+                    <span key={idx} className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 text-[10px] font-mono font-bold">
                       {z}
                     </span>
                   ))}
                   {extractedZones.length > 3 && (
-                    <span className="text-[10px] text-slate-400">+{extractedZones.length - 3}</span>
+                    <span className="text-[10px] text-slate-500 font-bold">+{extractedZones.length - 3}</span>
                   )}
                 </div>
               </div>

@@ -46,8 +46,9 @@ export default function CanonicalTemplateDetailPage() {
   const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
   const templateId = String(rawId || '01').padStart(2, '0');
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
-  const themeMode: 'light' | 'dark' = isDark ? 'dark' : 'light';
+  // Content locked to light theme while top header is dark
+  const isDark = false;
+  const themeMode: 'light' | 'dark' = 'light';
 
   const [selectedDomain, setSelectedDomain] = useState<string>(domainParam || 'biopharma');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
@@ -143,21 +144,19 @@ export default function CanonicalTemplateDetailPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* TOP NAVIGATION BAR */}
         {!isFullScreen && (
-          <header className={`sticky top-0 z-40 w-full backdrop-blur-md border-b transition-colors ${
-            isDark ? 'bg-[#0B111E]/95 border-slate-800/80' : 'bg-white/95 border-slate-200/80'
-          }`}>
+          <header className="dark sticky top-0 z-40 w-full backdrop-blur-md border-b bg-[#0B111E] border-slate-800 text-white shadow-md">
           <div className="max-w-[1680px] mx-auto px-3 md:px-6 h-16 flex items-center justify-between gap-3 min-w-0">
             {/* Left: Back to Catalog & Template Title */}
             <div className="flex items-center gap-2.5 min-w-0 shrink">
               <Link
                 href="/canonical"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xs font-bold shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold shrink-0"
               >
-                <ArrowLeft className="w-4 h-4 text-sky-500" />
+                <ArrowLeft className="w-4 h-4 text-sky-400" />
                 <span className="hidden sm:inline">All Templates</span>
               </Link>
 
-              <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 shrink-0" />
+              <div className="h-6 w-px bg-slate-800 shrink-0" />
 
               <div className="flex items-center gap-2 min-w-0 truncate">
                 <span className="w-7 h-7 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shadow-sm shrink-0">
@@ -165,16 +164,16 @@ export default function CanonicalTemplateDetailPage() {
                 </span>
                 <div className="min-w-0 truncate">
                   <div className="flex items-center gap-1.5 truncate">
-                    <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate">
+                    <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate text-white">
                       {activeTemplate.name}
                     </h1>
-                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
                       {activeTemplate.level === 'L1' ? 'L1 Conceptual' :
                        activeTemplate.level === 'L2' ? 'L2 Logical' :
                        activeTemplate.level === 'L3' ? 'L3 Physical / Technical' :
                        activeTemplate.level}
                     </span>
-                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                    <span className="hidden xl:inline-flex text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
                       Master
                     </span>
                   </div>
@@ -183,14 +182,14 @@ export default function CanonicalTemplateDetailPage() {
             </div>
 
             {/* Center: Prev / Next Navigation Arrows */}
-            <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0">
+            <div className="flex items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-700 shrink-0">
               <button
                 disabled={!prevTemplate}
                 onClick={() => prevTemplate && router.push(`/canonical/${prevTemplate.id}`)}
                 className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                   prevTemplate
-                    ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
-                    : 'opacity-30 cursor-not-allowed text-slate-400'
+                    ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                    : 'opacity-30 cursor-not-allowed text-slate-500'
                 }`}
                 title={prevTemplate ? `Previous: ${prevTemplate.id} - ${prevTemplate.name}` : 'No previous template'}
               >
@@ -198,7 +197,7 @@ export default function CanonicalTemplateDetailPage() {
                 <span className="hidden md:inline">Prev</span>
               </button>
 
-              <span className="text-[11px] font-mono font-bold px-1.5 text-slate-500">
+              <span className="text-[11px] font-mono font-bold px-1.5 text-slate-400">
                 {currentIndex + 1} / {CANONICAL_TEMPLATES.length}
               </span>
 
@@ -207,8 +206,8 @@ export default function CanonicalTemplateDetailPage() {
                 onClick={() => nextTemplate && router.push(`/canonical/${nextTemplate.id}`)}
                 className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold transition-all ${
                   nextTemplate
-                    ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer'
-                    : 'opacity-30 cursor-not-allowed text-slate-400'
+                    ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer'
+                    : 'opacity-30 cursor-not-allowed text-slate-500'
                 }`}
                 title={nextTemplate ? `Next: ${nextTemplate.id} - ${nextTemplate.name}` : 'No next template'}
               >
@@ -220,15 +219,15 @@ export default function CanonicalTemplateDetailPage() {
             {/* Right: Actions, Domain Selector & Theme */}
             <div className="flex items-center gap-2 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-sky-500" />
+              <div className="hidden lg:flex items-center gap-1.5 px-2 py-1 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
+                <Sliders className="w-3.5 h-3.5 text-sky-400" />
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-sky-600 dark:text-sky-400 outline-none cursor-pointer text-xs max-w-[180px] truncate"
+                  className="bg-transparent font-semibold text-sky-400 outline-none cursor-pointer text-xs max-w-[180px] truncate"
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
                       {d.name}
                     </option>
                   ))}
@@ -246,8 +245,6 @@ export default function CanonicalTemplateDetailPage() {
                 <span className="sm:hidden">Studio</span>
               </Link>
 
-
-
               {/* Generate Docs Button */}
               <button
                 onClick={() => setIsComposeOpen(true)}
@@ -259,41 +256,41 @@ export default function CanonicalTemplateDetailPage() {
               </button>
 
               {/* Secondary Actions Cluster */}
-              <div className="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold">
+              <div className="flex items-center p-0.5 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold">
                 {/* Share URL */}
                 <button
                   onClick={handleCopyShareUrl}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-200"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
                   title="Copy Direct Shareable Link"
                 >
-                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5 text-sky-500" />}
+                  {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-sky-400" />}
                   <span className="hidden xl:inline">{copiedUrl ? 'Copied' : 'Share'}</span>
                 </button>
 
                 {/* Copy XML */}
                 <button
                   onClick={handleCopyXml}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-200"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
                   title="Copy Raw Draw.io XML"
                 >
-                  {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                  {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
                   <span className="hidden xl:inline">{copiedXml ? 'Copied' : 'XML'}</span>
                 </button>
 
                 {/* Download */}
                 <button
                   onClick={handleDownloadXml}
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-200"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-200"
                   title="Download .drawio file"
                 >
-                  <Download className="w-3.5 h-3.5 text-slate-500" />
+                  <Download className="w-3.5 h-3.5 text-slate-400" />
                   <span className="hidden xl:inline">Download</span>
                 </button>
 
                 {/* Fullscreen Toggle */}
                 <button
                   onClick={() => setIsFullScreen(!isFullScreen)}
-                  className="p-1 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-600 dark:text-slate-300"
+                  className="p-1 rounded-lg hover:bg-slate-800 transition-colors text-slate-300"
                   title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
                 >
                   {isFullScreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}

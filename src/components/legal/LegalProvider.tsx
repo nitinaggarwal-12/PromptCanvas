@@ -97,51 +97,70 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
     >
       {children}
 
-      {/* 1. Floating Cookie Consent Banner */}
+      {/* 1. Sleek, Compact Cookie Consent Toast (Bottom-Right, Zero Screen Obstruction) */}
       {showBanner && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-8 md:right-8 z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
-          <div className="w-full max-w-6xl mx-auto bg-slate-900/95 border border-slate-700/80 rounded-2xl p-5 md:p-6 shadow-2xl backdrop-blur-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-slate-200">
-            <div className="flex items-start gap-3.5 max-w-3xl">
-              <div className="p-2.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 shrink-0 mt-0.5">
-                <Cookie className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-                  Enterprise Privacy & Cookie Preferences
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    GDPR & CCPA Compliant
-                  </span>
+        <aside 
+          aria-label="Cookie consent banner"
+          className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-50 animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-sm sm:max-w-[420px] w-[calc(100vw-24px)]"
+        >
+          <div className="bg-[#0B111E]/95 border border-slate-700/80 rounded-2xl p-3 sm:p-3.5 shadow-2xl backdrop-blur-xl text-slate-200 space-y-2.5">
+            {/* Header Row: Icon, Title, Badge, Dismiss Button */}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 shrink-0">
+                  <Cookie className="w-3.5 h-3.5" />
+                </div>
+                <h4 className="text-xs font-semibold text-white truncate">
+                  Privacy &amp; Cookie Preferences
                 </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  We use cookies and telemetry tokens to optimize Draw.io architecture canvas rendering, persist Living Specifications, and ensure secure Vertex AI token sessions. No confidential prompt data is stored or shared with external ad networks.
-                </p>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
+                  GDPR
+                </span>
               </div>
+              <button
+                type="button"
+                onClick={handleRejectNonEssential}
+                className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition shrink-0 cursor-pointer"
+                title="Dismiss"
+                aria-label="Dismiss cookie preferences"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto shrink-0 justify-end">
+            {/* Concise Explanatory Text */}
+            <p className="text-[11px] text-slate-400 leading-snug">
+              We use telemetry tokens to optimize Draw.io rendering and secure Vertex AI sessions. No prompt data is shared with external ad networks.
+            </p>
+
+            {/* Compact Action Buttons */}
+            <div className="flex items-center justify-end gap-1.5 pt-0.5">
               <button
+                type="button"
                 onClick={() => setActiveModal('cookies')}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition flex items-center gap-1.5"
+                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700/80 transition flex items-center gap-1 cursor-pointer"
               >
-                <Sliders className="w-3.5 h-3.5 text-slate-400" />
-                Customize
+                <Sliders className="w-3 h-3 text-slate-400" />
+                <span>Customize</span>
               </button>
               <button
+                type="button"
                 onClick={handleRejectNonEssential}
-                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium border border-slate-700 transition"
+                className="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-[11px] font-medium border border-slate-700/80 transition cursor-pointer"
               >
                 Essential Only
               </button>
               <button
+                type="button"
                 onClick={handleAcceptAll}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-500/20 transition flex items-center gap-1.5"
+                className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold shadow-md shadow-blue-500/20 transition flex items-center gap-1 cursor-pointer"
               >
-                <Check className="w-3.5 h-3.5" />
-                Accept All
+                <Check className="w-3 h-3" />
+                <span>Accept All</span>
               </button>
             </div>
           </div>
-        </div>
+        </aside>
       )}
 
       {/* 2. Interactive Legal Modals */}

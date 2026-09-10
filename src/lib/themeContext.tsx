@@ -13,9 +13,9 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: 'light',
-  isLight: true,
-  isDark: false,
+  theme: 'dark',
+  isLight: false,
+  isDark: true,
   setTheme: () => {},
   toggleTheme: () => {},
 });
@@ -23,15 +23,12 @@ const ThemeContext = createContext<ThemeContextType>({
 function applyThemeToDocument(newTheme: ThemeMode) {
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
-    if (newTheme === 'dark') {
-      root.classList.add('dark');
-      root.classList.remove('light');
-      root.setAttribute('data-theme', 'dark');
-    } else {
-      root.classList.add('light');
-      root.classList.remove('dark');
-      root.setAttribute('data-theme', 'light');
-    }
+    root.setAttribute('data-theme', newTheme);
+    // The design specification mandates:
+    // Only the left menu and topmost header are dark. All pages and tabs are light theme (matching Image 2).
+    // We avoid applying global `.dark` to <html> so child content cards retain crisp light styling.
+    root.classList.remove('dark');
+    root.classList.add('light');
   }
 }
 
@@ -45,7 +42,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
       } catch {}
     }
-    return 'light';
+    return 'dark';
   });
 
   useEffect(() => {

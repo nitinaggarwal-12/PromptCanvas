@@ -184,7 +184,8 @@ function AuditHubContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (white cards, clean audits) while top header is dark
+  const isLight = true;
 
   // Navigation & Scope Selection (Defaults to 'artifacts' for user generated diagrams!)
   const [scopeTab, setScopeTab] = useState<'artifacts' | 'custom' | 'canonical'>('artifacts');
@@ -445,21 +446,19 @@ function AuditHubContent() {
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* TOP AUDIT COMMAND & NAVIGATION HEADER */}
-          <header className={`h-16 border-b px-6 md:px-12 flex items-center justify-between sticky top-0 z-30 backdrop-blur-xl shrink-0 ${
-            isLight ? 'bg-white/90 border-slate-200 shadow-xs' : 'bg-[#080d1a]/90 border-slate-800/80 shadow-lg'
-          }`}>
+          <header className="dark h-16 border-b px-6 md:px-12 flex items-center justify-between sticky top-0 z-30 backdrop-blur-xl shrink-0 bg-[#0B111E] border-slate-800 text-white shadow-md">
             {/* Left: Breadcrumbs & Hub Badge */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-400">/</span>
-                <span className="font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1.5 truncate">
-                  <ShieldCheck className="w-4 h-4 text-teal-500 shrink-0" />
+                <span className="text-slate-600">/</span>
+                <span className="font-bold text-teal-400 flex items-center gap-1.5 truncate">
+                  <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
                   <span>Security &amp; Architecture Audit Hub</span>
                 </span>
-                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
                   {artifacts.length} Generated Artifact{artifacts.length === 1 ? '' : 's'}
                 </span>
               </div>
@@ -468,16 +467,16 @@ function AuditHubContent() {
             {/* Right: Actions & Theme Toggle */}
             <div className="flex items-center gap-2.5 shrink-0">
               {/* Domain Preset Selector */}
-              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800">
-                <Sliders className="w-3.5 h-3.5 text-teal-500 shrink-0" />
-                <span className="text-slate-500 dark:text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
+              <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-medium bg-slate-900 border-slate-700 text-slate-200">
+                <Sliders className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+                <span className="text-slate-400 hidden xl:inline text-[11px]">Domain:</span>
                 <select
                   value={selectedDomain}
                   onChange={(e) => setSelectedDomain(e.target.value)}
-                  className="bg-transparent font-semibold text-teal-600 dark:text-teal-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
+                  className="bg-transparent font-semibold text-teal-400 outline-none cursor-pointer text-xs max-w-[170px] truncate"
                 >
                   {DOMAIN_PRESETS.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                    <option key={d.id} value={d.id} className="bg-slate-900 text-slate-100">
                       {d.name}
                     </option>
                   ))}
@@ -498,9 +497,9 @@ function AuditHubContent() {
               {/* Open in Studio */}
               <Link
                 href={`/studio?diagram=${activeArtifact?.id || ''}`}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
               >
-                <ExternalLink className="w-3.5 h-3.5 text-sky-500" />
+                <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
                 <span className="hidden md:inline">Open in Studio</span>
               </Link>
 

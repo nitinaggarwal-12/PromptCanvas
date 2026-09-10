@@ -68,7 +68,8 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Left navigation menu is strictly dark theme as specified in design system
+  const isLight = false;
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
@@ -160,7 +161,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
       {/* 1. DESKTOP COLLAPSIBLE SIDEBAR */}
       <aside
         id="unified-app-sidebar"
-        className={`${
+        className={`dark ${
           isSidebarOpen ? 'w-64' : 'w-16'
         } hidden lg:flex border-r transition-all duration-300 flex-col justify-between z-40 shrink-0 sticky top-0 h-screen select-none ${
           isLight ? 'bg-white border-slate-200 text-slate-800 shadow-sm' : 'bg-[#090d16]/95 border-slate-800/80 text-slate-100'

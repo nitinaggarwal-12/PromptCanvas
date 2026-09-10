@@ -92,7 +92,8 @@ function ArchitectureLibraryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (white cards, clean grids) while top header is dark
+  const isLight = true;
 
   // Navigation State
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
@@ -492,25 +493,23 @@ function ArchitectureLibraryContent() {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
         
         {/* Top Navbar */}
-        <header className={`h-14 border-b flex items-center justify-between px-4 md:px-8 backdrop-blur-md gap-3 shrink-0 z-30 transition-colors ${
-          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#090D16]/90 text-white'
-        }`}>
+        <header className="dark h-14 border-b flex items-center justify-between px-4 md:px-8 backdrop-blur-md gap-3 shrink-0 z-30 bg-[#0B111E] border-slate-800 text-white shadow-md">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(true)}
-              className="lg:hidden p-1.5 rounded-lg border text-slate-700 dark:text-slate-300 cursor-pointer"
+              className="lg:hidden p-1.5 rounded-lg border border-slate-700 bg-slate-800 text-slate-300 cursor-pointer"
             >
               <Menu className="w-4 h-4" />
             </button>
 
-            <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-              <Link href="/" className={`font-extrabold flex items-center gap-1.5 ${isLight ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'}`}>
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
+              <Link href="/" className="font-extrabold flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors">
                 <span>PromptCanvas</span>
               </Link>
-              <span className="text-slate-400">/</span>
-              <span className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1.5">
+              <span className="text-slate-600">/</span>
+              <span className="text-teal-400 font-bold flex items-center gap-1.5">
                 <LayoutGrid className="w-3.5 h-3.5" />
                 <span>Architecture Library</span>
               </span>
@@ -529,9 +528,7 @@ function ArchitectureLibraryContent() {
               className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
                 isSelectMode
                   ? 'bg-teal-600 text-white border-teal-500 shadow-sm'
-                  : isLight
-                  ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700'
-                  : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
+                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
               }`}
               title="Toggle multi-select mode for batch deletion"
             >
@@ -543,9 +540,7 @@ function ArchitectureLibraryContent() {
             <button
               onClick={fetchAllCanvases}
               disabled={isLoading}
-              className={`p-2 rounded-xl border transition cursor-pointer ${
-                isLight ? 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700' : 'bg-slate-900 hover:bg-slate-800 border-slate-800 text-slate-300'
-              }`}
+              className="p-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition cursor-pointer"
               title="Refresh Architecture Library"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-teal-400' : ''}`} />

@@ -395,7 +395,8 @@ const STUDIO1_NEW_PROJECT = {
 function Studio1Content() {
   const searchParams = useSearchParams();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Main content is strictly light theme as specified (matching Studio in Image 2)
+  const isLight = true;
 
   // 1. Project & Use Case Scope Inputs & Searchable Dropdowns
   const [workspaceMode, setWorkspaceMode] = useState<Studio1WorkspaceMode>('reference');
@@ -1624,7 +1625,7 @@ function Studio1Content() {
   );
 
   return (
-    <div className={`h-screen max-h-screen w-screen flex flex-row overflow-hidden ${isLight ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100'}`}>
+    <div className="h-screen max-h-screen w-screen flex flex-row overflow-hidden bg-[#F8FAFC] text-slate-900">
       {/* 0. Collapsible Unified Navigation Sidebar */}
       <UnifiedAppSidebar />
 
@@ -1638,7 +1639,7 @@ function Studio1Content() {
         )}
 
         {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
-        <header className="w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
+        <header className="dark w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
           {/* Left: Project Title, Mode Badge, Version Snapshot, Undo/Redo */}
           <div className="flex items-center gap-2.5 shrink-0">
             {/* Small screen home link only */}

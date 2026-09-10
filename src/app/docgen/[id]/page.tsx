@@ -337,7 +337,8 @@ function DocDetailPageContent() {
   const docId = (rawId || 'sdd').toLowerCase() as ArchetypeId;
 
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (clean documents, white cards) while top header is dark
+  const isLight = true;
 
   const initialDomain = searchParams?.get('domain') || 'retail';
   const initialTitle = searchParams?.get('title') ? decodeURIComponent(searchParams.get('title')!) : '';
@@ -671,22 +672,20 @@ function DocDetailPageContent() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* HEADER */}
-        <header className={`sticky top-0 w-full z-40 border-b backdrop-blur-md transition-colors ${
-          isLight ? 'border-slate-200 bg-white/95 text-slate-900 shadow-sm' : 'border-slate-800/80 bg-[#070A13]/90 text-white'
-        }`}>
+        <header className="dark sticky top-0 w-full z-40 border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md">
         <div className="max-w-[1600px] mx-auto h-16 px-4 md:px-8 flex items-center justify-between gap-4">
           {/* Left: Breadcrumbs */}
           <div className="flex items-center gap-3 min-w-0">
             <Link
               href="/docgen"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xs font-bold shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors text-xs font-bold shrink-0"
               title="Return to Document Standards Catalog"
             >
-              <ArrowLeft className="w-4 h-4 text-sky-500" />
+              <ArrowLeft className="w-4 h-4 text-sky-400" />
               <span className="hidden sm:inline">All Archetypes</span>
             </Link>
 
-            <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 shrink-0" />
+            <div className="h-6 w-px bg-slate-800 shrink-0" />
 
             <div className="flex items-center gap-2.5 min-w-0">
               <span className="w-8 h-8 rounded-lg bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
@@ -694,14 +693,14 @@ function DocDetailPageContent() {
               </span>
               <div className="truncate">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate">
-                    {docMeta.name} <span className="text-sky-600 dark:text-sky-400 font-extrabold">({docMeta.shortName})</span>
+                  <h1 className="text-sm md:text-base font-extrabold tracking-tight truncate text-white">
+                    {docMeta.name} <span className="text-sky-400 font-extrabold">({docMeta.shortName})</span>
                   </h1>
-                  <span className="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 shrink-0">
+                  <span className="hidden md:inline-flex text-[10px] font-bold px-2 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
                     Master Baseline
                   </span>
                 </div>
-                <p className="hidden md:block text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                <p className="hidden md:block text-[11px] text-slate-400 truncate">
                   {docMeta.primaryPurpose}
                 </p>
               </div>
@@ -709,19 +708,19 @@ function DocDetailPageContent() {
           </div>
 
           {/* Navigation Prev / Next */}
-          <div className="flex items-center gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold">
+          <div className="flex items-center gap-2 bg-slate-900 p-1 rounded-xl border border-slate-700 text-xs font-bold">
             <button
               disabled={!prevDoc}
               onClick={() => prevDoc && router.push(`/docgen/${prevDoc.id}`)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-                prevDoc ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-400'
+                prevDoc ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-500'
               }`}
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               <span className="hidden md:inline">Prev {prevDoc ? `(${prevDoc.shortName})` : ''}</span>
             </button>
 
-            <span className="text-[11px] font-mono font-bold px-2 text-slate-500">
+            <span className="text-[11px] font-mono font-bold px-2 text-slate-400">
               {currentIndex + 1} / {DOC_ARCHETYPES_META.length}
             </span>
 
@@ -729,7 +728,7 @@ function DocDetailPageContent() {
               disabled={!nextDoc}
               onClick={() => nextDoc && router.push(`/docgen/${nextDoc.id}`)}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all ${
-                nextDoc ? 'hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-400'
+                nextDoc ? 'hover:bg-slate-800 text-slate-200 shadow-sm cursor-pointer' : 'opacity-30 cursor-not-allowed text-slate-500'
               }`}
             >
               <span className="hidden md:inline">Next {nextDoc ? `(${nextDoc.shortName})` : ''}</span>
@@ -741,10 +740,10 @@ function DocDetailPageContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleCopyShareUrl}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
               title="Copy direct shareable URL"
             >
-              {shareCopied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5 text-sky-500" />}
+              {shareCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-sky-400" />}
               <span className="hidden md:inline">{shareCopied ? 'Copied Link!' : 'Share'}</span>
             </button>
 

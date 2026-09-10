@@ -138,7 +138,8 @@ export const FAMILY_CARDS_META = [
 function DashboardContent() {
   const router = useRouter();
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (white cards, clean metrics) while top header is dark
+  const isLight = true;
 
   // Navigation Tabs
   const [activeTab, setActiveTab] = useState<'overview' | 'blueprints' | 'documents' | 'prompts'>('overview');
@@ -320,23 +321,21 @@ function DashboardContent() {
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 overflow-y-auto flex flex-col">
         {/* Sticky Top Header */}
-        <header className={`sticky top-0 z-30 border-b backdrop-blur-xl px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors shrink-0 ${
-          isLight ? 'bg-white/90 border-slate-200 shadow-xs' : 'bg-[#070B16]/90 border-slate-800/80 shadow-md'
-        }`}>
+        <header className="dark sticky top-0 z-30 border-b backdrop-blur-xl px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors shrink-0 bg-[#0B111E] border-slate-800 text-white shadow-md">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 via-teal-500 to-indigo-500 p-0.5 shadow-md flex items-center justify-center">
-              <div className={`w-full h-full rounded-[10px] flex items-center justify-center ${isLight ? 'bg-white' : 'bg-[#090D18]'}`}>
-                <BarChart3 className="w-4 h-4 text-teal-500" />
+              <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
+                <BarChart3 className="w-4 h-4 text-teal-400" />
               </div>
             </div>
             <div>
-              <h1 className={`font-black text-sm md:text-base tracking-tight flex items-center gap-2 ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
                 <span>Operations &amp; Canonical Projects Dashboard</span>
-                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-400 border border-teal-500/20">
+                <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
                   REAL-TIME TELEMETRY
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <p className="text-[11px] text-slate-400 font-medium">
                 Canonical KPIs &bull; 50 Certified Blueprints &bull; 17 Doc Archetypes &bull; Zero-Collision AST Guard
               </p>
             </div>

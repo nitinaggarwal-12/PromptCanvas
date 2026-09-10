@@ -622,7 +622,8 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
 
 export default function GuidePage() {
   const { theme } = useTheme();
-  const isLight = theme === 'light';
+  // Content locked to light theme (clean cards, light viewports) while top header is dark
+  const isLight = true;
 
   const [activePersona, setActivePersona] = useState<PersonaKey>('quickstart');
   const [currentFrameIndex, setCurrentFrameIndex] = useState<number>(0);
@@ -755,22 +756,20 @@ export default function GuidePage() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* ==================== STICKY CONSOLIDATED TOP NAVBAR ==================== */}
-        <header className={`sticky top-0 z-30 w-full border-b backdrop-blur-md transition-colors ${
-          isLight ? 'bg-white/95 border-slate-200 shadow-xs' : 'bg-[#0F172A]/95 border-slate-800 shadow-md shadow-black/20'
-        }`}>
+        <header className="dark sticky top-0 z-30 w-full border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md">
           <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
             {/* Left: Breadcrumbs */}
             <div className="flex items-center gap-3 min-w-0">
-              <div className={`flex items-center gap-2 text-xs font-semibold ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                <Link href="/" className={`font-extrabold transition-colors ${isLight ? 'text-slate-900 hover:text-teal-600' : 'text-white hover:text-teal-300'}`} title="Home">
+              <div className="flex items-center gap-2 text-xs font-semibold">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
                   PromptCanvas
                 </Link>
-                <span className="text-slate-400">/</span>
-                <span className="text-teal-600 dark:text-teal-400 font-bold flex items-center gap-1.5 truncate">
+                <span className="text-slate-600">/</span>
+                <span className="text-teal-400 font-bold flex items-center gap-1.5 truncate">
                   <Sparkles className="w-3.5 h-3.5 shrink-0" />
                   <span>User Guide &amp; Playbooks</span>
                 </span>
-                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-600 dark:text-teal-300 border border-teal-500/20 shrink-0">
+                <span className="hidden sm:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 shrink-0">
                   Interactive GIFs
                 </span>
               </div>
