@@ -13,6 +13,10 @@ export interface CustomizationResult {
   changedComponents?: string[];
   businessUsecase: string;
   technicalUsecase: string;
+  isFallback?: boolean;
+  modelUsed?: string | null;
+  attribution?: string;
+  fallbackReason?: string;
 }
 
 function getAiClient(customKey?: string): GoogleGenAI {
@@ -107,7 +111,29 @@ export async function customizeDiagramTemplateWithGemini(
       xml: templateXml,
       reasoning: `Loaded pristine reference architecture blueprint for ${architectureType}.`,
       businessUsecase: `Canonical enterprise architecture model for ${architectureType}.`,
-      technicalUsecase: `Calibrated widescreen 1400x800 zero-collision 2D layout.`
+      technicalUsecase: `Calibrated widescreen 1400x800 zero-collision 2D layout.`,
+      isFallback: false,
+      modelUsed: null,
+      attribution: 'Canonical Architecture Blueprint (Pristine Reference)'
+    };
+  }
+
+  const apiKey = userApiKey || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.log('[Gemini Customizer] No GEMINI_API_KEY present; applying deterministic template flavor injection.');
+    const fallbackFlavored = injectUseCaseFlavor(templateXml, userPrompt);
+    return {
+      xml: fallbackFlavored,
+      reasoning: `Configured via deterministic template rules for "${userPrompt.slice(0, 50)}" (No GEMINI_API_KEY configured).`,
+      summary: `Template flavor applied for "${userPrompt.slice(0, 50)}"`,
+      targetTier: 'Global Multi-Tier Architecture',
+      changedComponents: ['Edge Security', 'Compute Subnets', 'Data Layer'],
+      businessUsecase: `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`,
+      technicalUsecase: `High-availability 1400x800 architecture deployed on Google Cloud.`,
+      isFallback: true,
+      modelUsed: null,
+      attribution: 'Deterministic Template Customizer (injectUseCaseFlavor)',
+      fallbackReason: 'No GEMINI_API_KEY provided in environment or user profile.'
     };
   }
 
@@ -310,19 +336,26 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
       targetTier,
       changedComponents: changedComponents.length > 0 ? changedComponents : ['Edge Security & Ingress', 'Compute Workloads', 'Data Storage Layer'],
       businessUsecase,
-      technicalUsecase
+      technicalUsecase,
+      isFallback: false,
+      modelUsed: modelName,
+      attribution: `Google Gemini API (${modelName})`
     };
   } catch (err: any) {
     console.error('[Gemini Customizer] Error during structured AI customization, falling back to flavor injection:', err);
     const fallbackFlavored = injectUseCaseFlavor(templateXml, userPrompt);
     return {
       xml: fallbackFlavored,
-      reasoning: `Configured from verified reference blueprint for "${userPrompt.slice(0, 50)}".`,
+      reasoning: `Configured via deterministic template rules for "${userPrompt.slice(0, 50)}" (Gemini API fallback).`,
       summary: `Synthesized architecture updates for "${userPrompt.slice(0, 50)}"`,
       targetTier: 'Global Multi-Tier Architecture',
       changedComponents: ['Edge Security', 'Compute Subnets', 'Data Layer'],
       businessUsecase: `Enterprise cloud architecture tailored for ${userPrompt.slice(0, 50)}.`,
-      technicalUsecase: `High-availability 1400x800 architecture deployed on Google Cloud.`
+      technicalUsecase: `High-availability 1400x800 architecture deployed on Google Cloud.`,
+      isFallback: true,
+      modelUsed: null,
+      attribution: 'Deterministic Template Customizer (injectUseCaseFlavor)',
+      fallbackReason: err instanceof Error ? err.message : 'Gemini customization error'
     };
   }
 }

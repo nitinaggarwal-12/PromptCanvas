@@ -25,7 +25,6 @@ export async function GET() {
 // POST /api/diagrams - Create a new diagram attached to authenticated user
 export async function POST(request: Request) {
   try {
-    const user = await getAuthenticatedUser();
     const body = await request.json();
     const name = body.name;
     const xml = body.xml;
@@ -47,6 +46,24 @@ export async function POST(request: Request) {
 
     const effectiveArchType = architectureType || 'unified_system_view';
     const effectiveXml = xml !== undefined ? xml : (getDefaultXmlForArchitecture(effectiveArchType, businessUsecase || prompt || name, prompt || name) || undefined);
+
+    let user = await getAuthenticatedUser();
+    if (!user || !user.id) {
+      try {
+        const { v4: uuidv4 } = await import('uuid');
+        const { createUser, createSession } = await import('@/lib/db');
+        const { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS } = await import('@/lib/auth');
+        const guestEmail = `guest_${uuidv4().slice(0, 8)}@promptcanvas.guest`;
+        const { hash, salt } = hashPassword('guest-session-secret');
+        const guestUser = await createUser(guestEmail, hash, salt, 'Guest Explorer');
+        const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * SESSION_MAX_AGE_DAYS);
+        const session = await createSession(guestUser.id, expiresAt);
+        await setSessionCookie(session.id);
+        user = guestUser;
+      } catch (authErr) {
+        console.warn('Failed to auto-provision guest session on diagram create:', authErr);
+      }
+    }
 
     const { diagram, version } = await createDiagram(
       name,
@@ -72,11 +89,17 @@ export async function POST(request: Request) {
   }
 }
 
-// DELETE /api/diagrams - Clear/purge previous legacy diagrams and start fresh
+// DELETE /api/diagrams - Clear/purge authenticated user's diagram history
 export async function DELETE() {
   try {
     const user = await getAuthenticatedUser();
-    await clearAllDiagrams(user?.id);
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Authentication required to clear diagrams.' },
+        { status: 401 }
+      );
+    }
+    await clearAllDiagrams(user.id);
     return NextResponse.json({ success: true, message: 'All diagram history cleared successfully' });
   } catch (error) {
     console.error('Failed to clear diagrams:', error);

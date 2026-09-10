@@ -34,7 +34,7 @@ export function useWorkspaceState() {
   const [activeDiagram, setActiveDiagram] = useState<Diagram | null>(null);
   const [activeVersion, setActiveVersion] = useState<DiagramVersion | null>(null);
   const [previewVersion, setPreviewVersion] = useState<DiagramVersion | null>(null);
-  const [bgTheme, setBgTheme] = useState<'dark' | 'light'>('dark');
+  const [bgTheme, setBgTheme] = useState<'dark' | 'light'>('light');
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<string>('16:9');
   const [customRatioW, setCustomRatioW] = useState<number>(16);
   const [customRatioH, setCustomRatioH] = useState<number>(10);

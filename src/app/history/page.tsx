@@ -1218,7 +1218,7 @@ function ArchitectureLibraryContent() {
                   <DiagramViewer
                     xml={activeVersion.xml_content}
                     aspectRatioId="16:9"
-                    bgTheme="dark"
+                    bgTheme="light"
                   />
                 </div>
               ) : (

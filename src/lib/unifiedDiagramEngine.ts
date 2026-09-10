@@ -33,6 +33,10 @@ export interface UnifiedDiagramResponse {
   reasoning: string;
   businessUsecase: string;
   technicalUsecase: string;
+  isFallback?: boolean;
+  modelUsed?: string | null;
+  attribution?: string;
+  fallbackReason?: string;
 }
 
 /**
@@ -159,9 +163,13 @@ export async function executeUnifiedDiagramPipeline(
       const healed = preflightVerifyAndHealXmlAcrossAll6Audits(safeXml, effectiveArchType);
       customResult = {
         xml: healed,
-        reasoning: `Preserved and refined ${effectiveArchType} architecture for "${prompt}".`,
+        reasoning: `Preserved and refined ${effectiveArchType} architecture for "${prompt}" (Deterministic fallback).`,
         businessUsecase: `Consolidated enterprise architecture model for ${effectiveArchType}.`,
-        technicalUsecase: `Zero-collision 2D layout with domain entity alignment.`
+        technicalUsecase: `Zero-collision 2D layout with domain entity alignment.`,
+        isFallback: true,
+        modelUsed: null,
+        attribution: 'Deterministic Blueprint Customizer (Heuristic/AST)',
+        fallbackReason: err instanceof Error ? err.message : 'Gemini customizer error'
       };
     }
   }
@@ -221,6 +229,10 @@ export async function executeUnifiedDiagramPipeline(
     architectureType: effectiveArchType,
     reasoning: customResult.reasoning,
     businessUsecase: customResult.businessUsecase,
-    technicalUsecase: customResult.technicalUsecase
+    technicalUsecase: customResult.technicalUsecase,
+    isFallback: customResult.isFallback ?? false,
+    modelUsed: customResult.modelUsed ?? null,
+    attribution: customResult.attribution ?? 'Google Gemini API',
+    fallbackReason: customResult.fallbackReason
   };
 }

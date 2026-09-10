@@ -98,156 +98,156 @@ export function generateConceptualPharmaXml(isDark: boolean = false): string {
 
 
         <!-- ========================================================================= -->
-        <!-- DOMAIN 1: DISCOVERY PERSONAS & LEADERSHIP (x=30, w=190, y=90, h=655)      -->
+        <!-- DOMAIN 1: DISCOVERY PERSONAS & LEADERSHIP (x=20, w=205, y=82, h=695)      -->
         <!-- ========================================================================= -->
-        <mxCell id="col_user_bg" value="" style="rounded=1;arcSize=4;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="30" y="90" width="190" height="655" as="geometry" />
+        <mxCell id="col_user_bg" value="" style="rounded=1;absoluteArcSize=1;arcSize=10;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="82" width="205" height="695" as="geometry" />
         </mxCell>
         <mxCell id="col_user_hdr" value="GOOGLE CLOUD DISCOVERY STUDIO" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1E40AF;spacingLeft=0;" vertex="1" parent="1">
-          <mxGeometry x="30" y="96" width="190" height="14" as="geometry" />
+          <mxGeometry x="20" y="88" width="205" height="14" as="geometry" />
         </mxCell>
         <mxCell id="col_user_sub" value="Discovery Personas &amp; Leadership" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=12;fontStyle=1;fontColor=${titleColor};" vertex="1" parent="1">
-          <mxGeometry x="30" y="108" width="190" height="16" as="geometry" />
+          <mxGeometry x="20" y="102" width="205" height="16" as="geometry" />
         </mxCell>
 
         <!-- Persona Card 1: Computational Chemists (y=128, h=135) -->
         <mxCell id="card_persona_chemist" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#93C5FD;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="128" width="170" height="135" as="geometry" />
+          <mxGeometry x="44" y="128" width="157" height="135" as="geometry" />
         </mxCell>
         <mxCell id="ico_chem_bg" value="" style="shape=ellipse;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="105" y="136" width="40" height="40" as="geometry" />
+          <mxGeometry x="102" y="136" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ico_chem" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=${iconChemist};" vertex="1" parent="1">
-          <mxGeometry x="114" y="145" width="22" height="22" as="geometry" />
+          <mxGeometry x="111" y="145" width="22" height="22" as="geometry" />
         </mxCell>
         <mxCell id="lbl_chem_title" value="Computational Chemist" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="42" y="178" width="166" height="16" as="geometry" />
+          <mxGeometry x="44" y="178" width="157" height="16" as="geometry" />
         </mxCell>
         <mxCell id="lbl_chem_desc" value="Hypothesis design, generative candidate review, SAR inspection." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="44" y="194" width="162" height="30" as="geometry" />
+          <mxGeometry x="44" y="194" width="157" height="30" as="geometry" />
         </mxCell>
         <mxCell id="pill_chem_tool" value="Target Dossier Definition" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#1D4ED8;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="48" y="232" width="154" height="22" as="geometry" />
+          <mxGeometry x="48" y="232" width="149" height="22" as="geometry" />
         </mxCell>
 
         <!-- Persona Card 2: Structural Biologists (y=273, h=135) -->
         <mxCell id="card_persona_bio" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#99F6E4;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="273" width="170" height="135" as="geometry" />
+          <mxGeometry x="44" y="273" width="157" height="135" as="geometry" />
         </mxCell>
         <mxCell id="ico_bio_bg" value="" style="shape=ellipse;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="105" y="281" width="40" height="40" as="geometry" />
+          <mxGeometry x="102" y="281" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ico_bio" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=${iconBiologist};" vertex="1" parent="1">
-          <mxGeometry x="114" y="290" width="22" height="22" as="geometry" />
+          <mxGeometry x="111" y="290" width="22" height="22" as="geometry" />
         </mxCell>
         <mxCell id="lbl_bio_title" value="Structural Biologist" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="42" y="323" width="166" height="16" as="geometry" />
+          <mxGeometry x="44" y="323" width="157" height="16" as="geometry" />
         </mxCell>
         <mxCell id="lbl_bio_desc" value="Cryo-EM density analysis, cryptic pocket curation, binding pose triage." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="44" y="339" width="162" height="30" as="geometry" />
+          <mxGeometry x="44" y="339" width="157" height="30" as="geometry" />
         </mxCell>
         <mxCell id="pill_bio_tool" value="Cavity Curation • ChimeraX" style="rounded=1;arcSize=50;fillColor=#F0FDFA;strokeColor=#99F6E4;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#0D9488;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="48" y="377" width="154" height="22" as="geometry" />
+          <mxGeometry x="48" y="377" width="149" height="22" as="geometry" />
         </mxCell>
 
         <!-- Persona Card 3: Discovery Directors (y=418, h=135) -->
         <mxCell id="card_persona_dir" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#DDD6FE;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="418" width="170" height="135" as="geometry" />
+          <mxGeometry x="44" y="418" width="157" height="135" as="geometry" />
         </mxCell>
         <mxCell id="ico_dir_bg" value="" style="shape=ellipse;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="105" y="426" width="40" height="40" as="geometry" />
+          <mxGeometry x="102" y="426" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ico_dir" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=${iconDirector};" vertex="1" parent="1">
-          <mxGeometry x="114" y="435" width="22" height="22" as="geometry" />
+          <mxGeometry x="111" y="435" width="22" height="22" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dir_title" value="Discovery Director" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="42" y="468" width="166" height="16" as="geometry" />
+          <mxGeometry x="44" y="468" width="157" height="16" as="geometry" />
         </mxCell>
         <mxCell id="lbl_dir_desc" value="Milestone decision gates, Part 11 sign-off, wet-lab campaign greenlight." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="44" y="484" width="162" height="30" as="geometry" />
+          <mxGeometry x="44" y="484" width="157" height="30" as="geometry" />
         </mxCell>
         <mxCell id="pill_dir_tool" value="GxP Regulatory Sign-Off" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="48" y="522" width="154" height="22" as="geometry" />
+          <mxGeometry x="48" y="522" width="149" height="22" as="geometry" />
         </mxCell>
 
-        <!-- Persona Card 4: Shared Collaborative Workspace (y=563, h=165) - Utilizes bottom space -->
+        <!-- Persona Card 4: Shared Collaborative Workspace (y=563, h=160) - Utilizes bottom space -->
         <mxCell id="card_persona_hub" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1.2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="563" width="170" height="165" as="geometry" />
+          <mxGeometry x="44" y="563" width="157" height="160" as="geometry" />
         </mxCell>
         <mxCell id="ico_hub_bg" value="" style="shape=ellipse;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="105" y="571" width="40" height="40" as="geometry" />
+          <mxGeometry x="102" y="571" width="40" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ico_hub" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;imageAspect=0;aspect=fixed;image=${iconStudioHub};" vertex="1" parent="1">
-          <mxGeometry x="114" y="580" width="22" height="22" as="geometry" />
+          <mxGeometry x="111" y="580" width="22" height="22" as="geometry" />
         </mxCell>
         <mxCell id="lbl_hub_title" value="Discovery Studio Hub" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="42" y="613" width="166" height="16" as="geometry" />
+          <mxGeometry x="44" y="613" width="157" height="16" as="geometry" />
         </mxCell>
         <mxCell id="lbl_hub_desc" value="Live multi-user molecular session store, compound triage dossiers &amp; PyMOL bridges." style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=0;fontColor=#64748B;" vertex="1" parent="1">
-          <mxGeometry x="44" y="629" width="162" height="40" as="geometry" />
+          <mxGeometry x="44" y="629" width="157" height="40" as="geometry" />
         </mxCell>
         <mxCell id="pill_hub_spec" value="Shared PyMOL / PDB Session" style="rounded=1;arcSize=50;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=7.5;fontStyle=1;fontColor=#475569;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="48" y="694" width="154" height="22" as="geometry" />
+          <mxGeometry x="48" y="690" width="149" height="22" as="geometry" />
         </mxCell>
 
 
         <!-- ========================================================================= -->
-        <!-- DOMAIN 2: COGNITIVE DISCOVERY AGENTS & AI MESH (x=245, w=430, y=90, h=655) -->
+        <!-- DOMAIN 2: COGNITIVE DISCOVERY AGENTS & AI MESH (x=245, w=430, y=82, h=695) -->
         <!-- ========================================================================= -->
-        <mxCell id="col_agents_bg" value="" style="rounded=1;arcSize=4;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="245" y="90" width="430" height="655" as="geometry" />
+        <mxCell id="col_agents_bg" value="" style="rounded=1;absoluteArcSize=1;arcSize=10;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="82" width="430" height="695" as="geometry" />
         </mxCell>
         <mxCell id="col_agents_tag" value="GOOGLE CLOUD — AGENTIC DISCOVERY MESH" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="245" y="96" width="380" height="14" as="geometry" />
+          <mxGeometry x="245" y="88" width="380" height="14" as="geometry" />
         </mxCell>
         <mxCell id="col_agents_hdr" value="Cognitive Discovery Agents &amp; AI Mesh" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="245" y="108" width="380" height="16" as="geometry" />
+          <mxGeometry x="245" y="102" width="380" height="16" as="geometry" />
         </mxCell>
 
         <!-- Row 0: Coordinator Agent (y=128, h=52) -->
         <mxCell id="c_coordinator_agent" value="Lead Discovery Coordinator Agent (ReAct Master Orchestrator)" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#1E3A8A;align=left;verticalAlign=middle;spacingLeft=42;image=${iconGemini};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="260" y="128" width="400" height="52" as="geometry" />
+          <mxGeometry x="266" y="128" width="388" height="52" as="geometry" />
         </mxCell>
 
         <!-- Sub-tier 2B: Specialized Discovery Workers (Mesh) Enclave -->
         <mxCell id="box_subagents_mesh" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1;dashed=1;dashPattern=3 3;" vertex="1" parent="1">
-          <mxGeometry x="260" y="195" width="400" height="535" as="geometry" />
+          <mxGeometry x="266" y="195" width="388" height="528" as="geometry" />
         </mxCell>
-        <!-- Subagent Header shifted right to x=390 to leave x=260..370 completely clear for Step ❶ Drop Line -->
+        <!-- Subagent Header shifted right to leave x=266..370 completely clear for Step ❶ Drop Line -->
         <mxCell id="lbl_subagents_mesh" value="Domain-Specialized Subagent Mesh (A2A Protocol)" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#475569;spacingRight=12;" vertex="1" parent="1">
-          <mxGeometry x="360" y="199" width="290" height="16" as="geometry" />
+          <mxGeometry x="360" y="199" width="282" height="16" as="geometry" />
         </mxCell>
 
         <!-- Row 1: Target Validation Agent (y=222, h=95) -->
         <mxCell id="c_sub_target" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#1E3A8A;&quot;&gt;Target Validation &amp;amp; Biology Agent&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;GWAS genetic evidence • Target tractability scoring • Biomedical literature synthesis&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=${iconDnaHelix};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="270" y="222" width="380" height="95" as="geometry" />
+          <mxGeometry x="276" y="222" width="368" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_sub_target" value="UniProt • ChEMBL • PubMed Literature RAG" style="rounded=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="285" width="360" height="22" as="geometry" />
+          <mxGeometry x="286" y="285" width="348" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 2: Pocket Druggability Agent (y=352, h=95) -->
         <mxCell id="c_sub_pocket" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0369A1;&quot;&gt;Pocket Druggability &amp;amp; Structural Agent&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Cryptic allosteric pocket discovery • Cavity volume analysis • Hydration energetics&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=${iconProteinPocket};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="270" y="352" width="380" height="95" as="geometry" />
+          <mxGeometry x="276" y="352" width="368" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_sub_pocket" value="AlphaFold 3 • ESMFold 3D Co-Folding Dispatch" style="rounded=1;arcSize=50;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0284C7;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="415" width="360" height="22" as="geometry" />
+          <mxGeometry x="286" y="415" width="348" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 3: De Novo Molecule Generator (y=482, h=95) -->
         <mxCell id="c_sub_generative" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#7C3AED;&quot;&gt;De Novo Molecule Generator (Generative Chem)&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Diffusion &amp;amp; autoregressive chemistry models • Valid SMILES / SELFIES generation&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=${iconMoleculeChem};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="270" y="482" width="380" height="95" as="geometry" />
+          <mxGeometry x="276" y="482" width="368" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_sub_generative" value="Stereocenter Sanitization • SAScore Retrosynthesis Filter" style="rounded=1;arcSize=50;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="545" width="360" height="22" as="geometry" />
+          <mxGeometry x="286" y="545" width="348" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 4: ADMET Critic & Affinity Optimizer (y=612, h=95) -->
         <mxCell id="c_sub_admet" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;ADMET Critic &amp;amp; Binding Affinity Optimizer&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#64748B;line-height:1.3;&quot;&gt;Lipinski Rule-of-5 • hERG &amp;amp; CYP450 toxicity • Docking pose free energy (ΔG)&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=42;spacingTop=8;image=${iconAdmetShield};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="270" y="612" width="380" height="95" as="geometry" />
+          <mxGeometry x="276" y="612" width="368" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_sub_admet" value="HPC Free Energy Perturbation (FEP+) • Iterative SAR Loop" style="rounded=1;arcSize=50;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="280" y="675" width="360" height="22" as="geometry" />
+          <mxGeometry x="286" y="675" width="348" height="22" as="geometry" />
         </mxCell>
 
 
@@ -257,126 +257,126 @@ export function generateConceptualPharmaXml(isDark: boolean = false): string {
 
 
         <!-- ========================================================================= -->
-        <!-- DOMAIN 3: STRUCTURAL & CHEMICAL FOUNDATION (x=815, w=465, y=90, h=655)    -->
+        <!-- DOMAIN 3: STRUCTURAL & CHEMICAL FOUNDATION (x=815, w=465, y=82, h=695)    -->
         <!-- ========================================================================= -->
-        <mxCell id="col_struct_bg" value="" style="rounded=1;arcSize=4;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="815" y="90" width="465" height="655" as="geometry" />
+        <mxCell id="col_struct_bg" value="" style="rounded=1;absoluteArcSize=1;arcSize=10;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="815" y="82" width="465" height="695" as="geometry" />
         </mxCell>
         <mxCell id="col_struct_tag" value="GOOGLE CLOUD — BIOINFORMATICS &amp; STRUCTURAL FOUNDATION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="815" y="96" width="400" height="14" as="geometry" />
+          <mxGeometry x="815" y="88" width="400" height="14" as="geometry" />
         </mxCell>
         <mxCell id="col_struct_hdr" value="Structural &amp; Chemical Foundation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="815" y="108" width="400" height="16" as="geometry" />
+          <mxGeometry x="815" y="102" width="400" height="16" as="geometry" />
         </mxCell>
 
         <!-- Row 0: Vertex AI Gemini Foundation Model (y=128, h=52) -->
         <mxCell id="c_gemini_model" value="Vertex AI Gemini 1.5 Pro (Multimodal Chemical Reasoning &amp; SMILES)" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#1A73E8;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;fontSize=11;fontStyle=1;fontColor=#1E40AF;align=left;verticalAlign=middle;spacingLeft=42;image=${iconGemini};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="830" y="128" width="420" height="52" as="geometry" />
+          <mxGeometry x="836" y="128" width="423" height="52" as="geometry" />
         </mxCell>
 
         <!-- Row 1 Foundation: Molecular Knowledge Graph & Lakehouse (y=222, h=95) -->
         <mxCell id="c_mol_graph_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0F766E;&quot;&gt;Global Molecular Knowledge Graph &amp;amp; Bioactivity Lakehouse&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#0D9488;line-height:1.3;margin-top:2px;&quot;&gt;Billions of target-disease-compound edges • ChEMBL • UniProt • HTS assays&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#F0FDFA;strokeColor=#0D9488;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconBigQuery};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="830" y="222" width="420" height="95" as="geometry" />
+          <mxGeometry x="836" y="222" width="423" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_mol_graph_spec" value="BigQuery Substructure Search • Vector Embeddings RAG" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#99F6E4;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0F766E;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="285" width="390" height="22" as="geometry" />
+          <mxGeometry x="848" y="285" width="399" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 2 Foundation: AlphaFold 3 & ESMFold Runtimes (y=352, h=95) -->
         <mxCell id="c_alphafold_runtime" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#0369A1;&quot;&gt;AlphaFold 3 &amp;amp; ESMFold 3D Co-Folding Runtimes&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#0284C7;line-height:1.3;margin-top:2px;&quot;&gt;Sub-Angstrom protein-ligand co-folding • Multimeric complex conformation&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconVertexAi};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="830" y="352" width="420" height="95" as="geometry" />
+          <mxGeometry x="836" y="352" width="423" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_alphafold_spec" value="High Confidence (pLDDT &gt; 85) • Predicted Aligned Error (PAE) Alignment" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#BAE6FD;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#0369A1;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="415" width="390" height="22" as="geometry" />
+          <mxGeometry x="848" y="415" width="399" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 3 Foundation: Cheminformatics & Retrosynthesis Route Planner (y=482, h=95) -->
         <mxCell id="c_cheminformatics_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#15803D;&quot;&gt;RDKit Conformer Ensemble &amp;amp; Retrosynthesis Route Planner&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#16A34A;line-height:1.3;margin-top:2px;&quot;&gt;Forward reaction prediction • Disconnection trees • Precursor inventory • SAScore&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#16A34A;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconGke};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="830" y="482" width="420" height="95" as="geometry" />
+          <mxGeometry x="836" y="482" width="423" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_chem_spec" value="Reaction Step Yield Calculation • Automated Reagent BOM Generation" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#15803D;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="545" width="390" height="22" as="geometry" />
+          <mxGeometry x="848" y="545" width="399" height="22" as="geometry" />
         </mxCell>
 
         <!-- Row 4 Foundation: HPC Molecular Dynamics & FEP+ Simulation (y=612, h=95) -->
         <mxCell id="c_hpc_md" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;All-Atom Molecular Dynamics &amp;amp; FEP+ Simulation Engine&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#B45309;line-height:1.3;margin-top:2px;&quot;&gt;Solvent thermodynamic integration • Absolute &amp;amp; relative binding free energy (ΔΔG)&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconCompute};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="830" y="612" width="420" height="95" as="geometry" />
+          <mxGeometry x="836" y="612" width="423" height="95" as="geometry" />
         </mxCell>
         <mxCell id="pill_hpc_spec" value="Rigorous Statistical Mechanics • GKE TPU/GPU Accelerated Sampling" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="845" y="675" width="390" height="22" as="geometry" />
+          <mxGeometry x="848" y="675" width="399" height="22" as="geometry" />
         </mxCell>
 
 
         <!-- ========================================================================= -->
-        <!-- DOMAIN 4: COMPLIANCE & WET-LAB EXECUTION (x=1305, w=465, y=90, h=655)     -->
+        <!-- DOMAIN 4: COMPLIANCE & WET-LAB EXECUTION (x=1305, w=465, y=82, h=695)     -->
         <!-- ========================================================================= -->
-        <mxCell id="col_wetlab_bg" value="" style="rounded=1;arcSize=4;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
-          <mxGeometry x="1305" y="90" width="465" height="655" as="geometry" />
+        <mxCell id="col_wetlab_bg" value="" style="rounded=1;absoluteArcSize=1;arcSize=10;fillColor=${domainFill};strokeColor=${borderStroke};strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="82" width="465" height="695" as="geometry" />
         </mxCell>
         <mxCell id="col_wetlab_tag" value="TRANSLATIONAL EXECUTION &amp; REGULATORY VAULT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9;fontStyle=1;fontColor=#1A73E8;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="1305" y="96" width="400" height="14" as="geometry" />
+          <mxGeometry x="1305" y="88" width="400" height="14" as="geometry" />
         </mxCell>
         <mxCell id="col_wetlab_hdr" value="Compliance &amp; Wet-Lab Execution" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=13;fontStyle=1;fontColor=#1E3A8A;spacingLeft=14;" vertex="1" parent="1">
-          <mxGeometry x="1305" y="108" width="400" height="16" as="geometry" />
+          <mxGeometry x="1305" y="102" width="400" height="16" as="geometry" />
         </mxCell>
 
         <!-- Sub-box 0: GxP 21 CFR Part 11 Regulatory Compliance Vault (y=128, h=110) -->
         <mxCell id="box_gxp_vault" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#DC2626;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
-          <mxGeometry x="1320" y="128" width="435" height="110" as="geometry" />
+          <mxGeometry x="1326" y="128" width="423" height="110" as="geometry" />
         </mxCell>
         <mxCell id="lbl_gxp_vault" value="Regulatory &amp; Quality Governance (GxP Compliance)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#DC2626;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1325" y="132" width="310" height="16" as="geometry" />
+          <mxGeometry x="1331" y="132" width="300" height="16" as="geometry" />
         </mxCell>
         <mxCell id="c_gxp_vault_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#991B1B;&quot;&gt;GxP 21 CFR Part 11 Audit Vault &amp;amp; Provenance Ledger&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#DC2626;line-height:1.3;margin-top:2px;&quot;&gt;Cryptographic compound provenance • Immutable execution ledger • Electronic signatures&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconGxpSeal};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="1330" y="150" width="415" height="80" as="geometry" />
+          <mxGeometry x="1336" y="150" width="403" height="80" as="geometry" />
         </mxCell>
         <mxCell id="pill_gxp_spec" value="Tamper-Proof Audit Trail • FDA/EMA IND Dossier Package Export" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#991B1B;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="202" width="385" height="20" as="geometry" />
+          <mxGeometry x="1348" y="202" width="379" height="20" as="geometry" />
         </mxCell>
 
         <!-- Sub-box 1: Synthesis Protocol Dispatcher (y=248, h=105) -->
         <mxCell id="box_sila_dispatcher" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#2563EB;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
-          <mxGeometry x="1320" y="248" width="435" height="105" as="geometry" />
+          <mxGeometry x="1326" y="248" width="423" height="105" as="geometry" />
         </mxCell>
         <mxCell id="lbl_sila_dispatcher" value="Laboratory Standards &amp; Protocol Formulation" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#2563EB;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1325" y="252" width="300" height="16" as="geometry" />
+          <mxGeometry x="1331" y="252" width="290" height="16" as="geometry" />
         </mxCell>
         <mxCell id="c_sila_dispatcher_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#1E40AF;&quot;&gt;SiLA 2 Lab Automation Protocol Dispatcher&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#2563EB;line-height:1.3;margin-top:2px;&quot;&gt;Translates in silico leads into standardized SiLA 2 XML robotic execution files&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconStorage};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="1330" y="270" width="415" height="75" as="geometry" />
+          <mxGeometry x="1336" y="270" width="403" height="75" as="geometry" />
         </mxCell>
         <mxCell id="pill_sila_spec" value="SiLA 2 Protocol Commands • Liquid Dispense Script Engine" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#1E40AF;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="318" width="385" height="20" as="geometry" />
+          <mxGeometry x="1348" y="318" width="379" height="20" as="geometry" />
         </mxCell>
 
         <!-- Sub-box 2: Automated Wet-Lab Workcell & Robotics (y=365, h=170) -->
         <mxCell id="box_robotic_workcell" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#059669;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
-          <mxGeometry x="1320" y="365" width="435" height="170" as="geometry" />
+          <mxGeometry x="1326" y="365" width="423" height="170" as="geometry" />
         </mxCell>
         <mxCell id="lbl_robotic_workcell" value="Physical Robotic Synthesis &amp; Bioassay Workcell" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#059669;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1325" y="369" width="320" height="16" as="geometry" />
+          <mxGeometry x="1331" y="369" width="310" height="16" as="geometry" />
         </mxCell>
         <mxCell id="c_robotic_workcell_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#065F46;&quot;&gt;Automated Synthesis &amp;amp; In Vitro Bioassay Platforms&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#059669;line-height:1.3;margin-top:2px;&quot;&gt;Acoustic liquid handlers • Continuous flow synthesis • SPR binding kinetics&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconRoboticArm};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="1330" y="387" width="415" height="135" as="geometry" />
+          <mxGeometry x="1336" y="387" width="403" height="135" as="geometry" />
         </mxCell>
         <mxCell id="pill_workcell_spec" value="Nanoscale Microplate Assay • Automated Compound QC • Flow Chemistry" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#A7F3D0;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#065F46;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="492" width="385" height="22" as="geometry" />
+          <mxGeometry x="1348" y="492" width="379" height="22" as="geometry" />
         </mxCell>
 
-        <!-- Sub-box 3: Closed Empirical Feedback Loop (y=548, h=182) - Fills bottom space -->
+        <!-- Sub-box 3: Closed Empirical Feedback Loop (y=548, h=175) - Fills bottom space -->
         <mxCell id="box_active_learning" value="" style="rounded=1;arcSize=6;fillColor=${cardFill};strokeColor=#D97706;strokeWidth=1;dashed=1;dashPattern=4 3;" vertex="1" parent="1">
-          <mxGeometry x="1320" y="548" width="435" height="182" as="geometry" />
+          <mxGeometry x="1326" y="548" width="423" height="175" as="geometry" />
         </mxCell>
         <mxCell id="lbl_active_learning" value="Closed Empirical Feedback Loop (Active Learning)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Google Sans, sans-serif;fontSize=9.5;fontStyle=1;fontColor=#D97706;spacingLeft=10;" vertex="1" parent="1">
-          <mxGeometry x="1325" y="552" width="320" height="16" as="geometry" />
+          <mxGeometry x="1331" y="552" width="310" height="16" as="geometry" />
         </mxCell>
         <mxCell id="c_active_learning_card" value="&lt;div style=&quot;font-size:11.5px;font-weight:bold;color:#92400E;&quot;&gt;Empirical Bioactivity Telemetry Return (IC50 / Kd)&lt;/div&gt;&lt;div style=&quot;font-size:8.5px;color:#D97706;line-height:1.3;margin-top:2px;&quot;&gt;Feeds empirical assay results back to Generative Chem &amp;amp; Discovery Coordinator&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=top;spacingLeft=44;spacingTop=8;image=${iconFeedbackLoop};imageWidth=22;imageHeight=22;imageAlign=left;imageVerticalAlign=top;imageSpacing=8;" vertex="1" parent="1">
-          <mxGeometry x="1330" y="570" width="415" height="75" as="geometry" />
+          <mxGeometry x="1336" y="570" width="403" height="75" as="geometry" />
         </mxCell>
         <mxCell id="pill_learning_spec" value="Automated Assay Calibration • Active Learning Loss Functions" style="rounded=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#FDE68A;strokeWidth=1;fontFamily=Google Sans, sans-serif;fontSize=8;fontStyle=1;fontColor=#92400E;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="1345" y="618" width="385" height="20" as="geometry" />
+          <mxGeometry x="1348" y="618" width="379" height="20" as="geometry" />
         </mxCell>
         <mxCell id="c_active_ingestion_subcard" value="&lt;div style=&quot;font-size:10px;font-weight:bold;color:#475569;&quot;&gt;Real-Time Telemetry Streaming &amp;amp; Surrogate Model Retraining&lt;/div&gt;&lt;div style=&quot;font-size:8px;color:#64748B;&quot;&gt;Pub/Sub streaming bus ingestion with BigQuery assay ground-truth delta updates&lt;/div&gt;" style="rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;html=1;whiteSpace=wrap;fontFamily=Google Sans, sans-serif;align=left;verticalAlign=middle;spacingLeft=12;" vertex="1" parent="1">
-          <mxGeometry x="1330" y="654" width="415" height="66" as="geometry" />
+          <mxGeometry x="1336" y="652" width="403" height="65" as="geometry" />
         </mxCell>
 
 
@@ -479,12 +479,16 @@ export function generateConceptualPharmaXml(isDark: boolean = false): string {
 
         <!-- Tier 3: De Novo Generator <-> Cheminformatics Retrosynthesis (y=529) -->
         <mxCell id="edge_gen_chem" value="Retrosynthetic Feasibility (SAScore)" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#16A34A;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#15803D;" edge="1" parent="1" source="c_sub_generative" target="c_cheminformatics_card">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-14" as="offset"/>
+          </mxGeometry>
         </mxCell>
 
         <!-- Tier 4: ADMET Critic <-> HPC Molecular Dynamics (y=659) -->
         <mxCell id="edge_admet_hpc" value="FEP+ Binding Free Energy (ΔΔG)" style="edgeStyle=none;rounded=0;html=1;startArrow=classic;endArrow=classic;strokeColor=#D97706;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;labelPadding=3;fontSize=8.5;fontStyle=1;fontColor=#92400E;" edge="1" parent="1" source="c_sub_admet" target="c_hpc_md">
-          <mxGeometry relative="1" as="geometry" />
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-14" as="offset"/>
+          </mxGeometry>
         </mxCell>
 
 

@@ -40,6 +40,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com data: https://*",
               "img-src 'self' data: blob: https:",
               "frame-src 'self' blob: data: https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net https://*",
+              "frame-ancestors 'self' https://embed.diagrams.net https://app.diagrams.net",
               "child-src 'self' blob: data:",
               "worker-src 'self' blob: data:",
               "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com https://*"

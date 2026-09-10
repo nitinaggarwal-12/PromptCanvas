@@ -103,7 +103,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   // -------------------------------------------------------------------------
   cell("t7_frame", "", 16, 68, 1140, 86, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t7_badge", "7", 24, 74, 22, 22, "rounded=1;arcSize=6;fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t7_lbl", `<b style="font-size:7.5px;color:#7C3AED;">ENGAGEMENT &amp; IMPACT<br/>LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Engage • Disclose • Act<br/>Influence • Improve</span>`, 50, 74, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t7_lbl", `<b style="font-size:8.5px;color:#7C3AED;">ENGAGEMENT &amp; IMPACT<br/>LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Engage • Disclose • Act<br/>Influence • Improve</span>`, 50, 74, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t7Cards = [
     { title: "Stakeholder Engagement", items: [["Investor Portal", "Customer Portal"], ["Community Engagement", "Employee Engagement"]] },
@@ -115,13 +115,13 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   t7Cards.forEach((cItem, i) => {
     const cx = 166 + i * 248;
     cell(`t7_c_${i}`, "", cx, 74, 240, 56, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-    cell(`t7_ch_${i}`, `<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b>`, cx + 4, 76, 232, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`t7_ch_${i}`, `<b style="font-size:8px;color:#0F172A;">${cItem.title}</b>`, cx + 4, 76, 232, 12, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
     cItem.items.forEach((row, rIdx) => {
       const colW = (240 - 16) / row.length;
       row.forEach((it, cIdx) => {
         const ix = cx + 8 + cIdx * colW;
         const iy = 90 + rIdx * 17;
-        cell(`t7_ci_${i}_${rIdx}_${cIdx}`, `<div style="font-size:6.5px;background:#FAF5FF;color:#6B21A8;padding:1px 2px;border-radius:3px;border:1px solid #E9D5FF;font-weight:700;text-align:center;">${it}</div>`, ix, iy, colW - 4, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+        cell(`t7_ci_${i}_${rIdx}_${cIdx}`, `<div style="font-size:7.5px;background:#FAF5FF;color:#6B21A8;padding:1px 2px;border-radius:3px;border:1px solid #E9D5FF;font-weight:700;text-align:center;">${it}</div>`, ix, iy, colW - 4, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
       });
     });
   });
@@ -129,14 +129,14 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   // Tier 7 Sub-strip
   cell("t7_strip", "", 166, 134, 984, 16, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
   const t7Pills = "Multi-tenant Experience • White-label &amp; Branding • APIs &amp; Embeddables • Alerts &amp; Subscriptions • Mobile &amp; Offline Access";
-  cell("t7_strip_txt", `<div style="font-size:7px;font-weight:700;color:#6B21A8;text-align:center;">${t7Pills}</div>`, 166, 134, 984, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t7_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#6B21A8;text-align:center;">${t7Pills}</div>`, 166, 134, 984, 16, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 6: ANALYTICS & INTELLIGENCE LAYER (y: 156, h: 96)
   // -------------------------------------------------------------------------
   cell("t6_frame", "", 16, 156, 1140, 96, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t6_badge", "6", 24, 162, 22, 22, "rounded=1;arcSize=6;fillColor=#1D4ED8;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t6_lbl", `<b style="font-size:7.5px;color:#1D4ED8;">ANALYTICS &amp; INTELLIGENCE<br/>LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Analyze • Model • Predict<br/>Optimize • Recommend</span>`, 50, 162, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t6_lbl", `<b style="font-size:8.5px;color:#1D4ED8;">ANALYTICS &amp; INTELLIGENCE<br/>LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Analyze • Model • Predict<br/>Optimize • Recommend</span>`, 50, 162, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t6Cards = [
     { title: "ESG Analytics", desc: "Trend Analysis • Benchmarking<br/>Gap Analysis • Scenario Analysis", icon: "chart" },
@@ -150,20 +150,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t6_c_${i}`, "", cx, 162, 240, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(cItem.icon as keyof typeof SVG, "#1D4ED8", 12);
     cell(`t6_ch_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b></div>`, cx + 4, 164, 232, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t6_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 180, 228, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t6_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 180, 228, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // Tier 6 Sub-strip
   cell("t6_strip", "", 166, 226, 984, 18, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;");
   const t6Pills = "Vertex AI • BigQuery ML • AI Notebooks • Feature Store • Model Registry • MLOps";
-  cell("t6_strip_txt", `<div style="font-size:7px;font-weight:700;color:#1E40AF;text-align:center;">${t6Pills}</div>`, 166, 226, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t6_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#1E40AF;text-align:center;">${t6Pills}</div>`, 166, 226, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 5: DATA INTEGRATION & PROCESSING LAYER (y: 254, h: 96)
   // -------------------------------------------------------------------------
   cell("t5_frame", "", 16, 254, 1140, 96, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t5_badge", "5", 24, 260, 22, 22, "rounded=1;arcSize=6;fillColor=#0284C7;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t5_lbl", `<b style="font-size:7.5px;color:#0284C7;">DATA INTEGRATION &amp;<br/>PROCESSING LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Ingest • Validate • Enrich<br/>Calculate • Aggregate</span>`, 50, 260, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t5_lbl", `<b style="font-size:8.5px;color:#0284C7;">DATA INTEGRATION &amp;<br/>PROCESSING LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Ingest • Validate • Enrich<br/>Calculate • Aggregate</span>`, 50, 260, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t5Cards = [
     { title: "Data Ingestion", desc: "Batch • Streaming<br/>API Ingestion • File Upload", icon: "repeat" },
@@ -178,20 +178,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t5_c_${i}`, "", cx, 260, 190, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(cItem.icon as keyof typeof SVG, "#0284C7", 12);
     cell(`t5_ch_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b></div>`, cx + 4, 262, 182, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t5_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 278, 178, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t5_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 278, 178, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // Tier 5 Sub-strip
   cell("t5_strip", "", 166, 324, 984, 18, "rounded=1;arcSize=6;fillColor=#E0F2FE;strokeColor=#BAE6FD;strokeWidth=1;");
   const t5Pills = "Pub/Sub • Dataflow • Dataproc • Cloud Functions • Dataplex • Dataform • Data Quality • Workflows";
-  cell("t5_strip_txt", `<div style="font-size:7px;font-weight:700;color:#0369A1;text-align:center;">${t5Pills}</div>`, 166, 324, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t5_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#0369A1;text-align:center;">${t5Pills}</div>`, 166, 324, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 4: ESG DATA MODEL & GOVERNANCE LAYER (y: 352, h: 96)
   // -------------------------------------------------------------------------
   cell("t4_frame", "", 16, 352, 1140, 96, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t4_badge", "4", 24, 358, 22, 22, "rounded=1;arcSize=6;fillColor=#059669;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t4_lbl", `<b style="font-size:7.5px;color:#059669;">ESG DATA MODEL &amp;<br/>GOVERNANCE LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Standardize • Govern • Secure<br/>Lineage • Quality</span>`, 50, 358, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t4_lbl", `<b style="font-size:8.5px;color:#059669;">ESG DATA MODEL &amp;<br/>GOVERNANCE LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Standardize • Govern • Secure<br/>Lineage • Quality</span>`, 50, 358, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t4Cards = [
     { title: "ESG Data Model", desc: "Environment • Social<br/>Governance • Economic", icon: "database" },
@@ -206,20 +206,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t4_c_${i}`, "", cx, 358, 190, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(cItem.icon as keyof typeof SVG, "#059669", 12);
     cell(`t4_ch_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b></div>`, cx + 4, 360, 182, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t4_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 376, 178, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t4_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 376, 178, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // Tier 4 Sub-strip
   cell("t4_strip", "", 166, 422, 984, 18, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;");
   const t4Pills = "Data Governance Council • Policy Automation • Data Contracts • Access Control (Row/Column) • Data Lineage";
-  cell("t4_strip_txt", `<div style="font-size:7px;font-weight:700;color:#166534;text-align:center;">${t4Pills}</div>`, 166, 422, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t4_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#166534;text-align:center;">${t4Pills}</div>`, 166, 422, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 3: SUSTAINABILITY DOMAIN LAYER (y: 450, h: 96)
   // -------------------------------------------------------------------------
   cell("t3_frame", "", 16, 450, 1140, 96, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t3_badge", "3", 24, 456, 22, 22, "rounded=1;arcSize=6;fillColor=#0F766E;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t3_lbl", `<b style="font-size:7.5px;color:#0F766E;">SUSTAINABILITY DOMAIN<br/>LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Capture • Measure • Monitor<br/>Assess • Target</span>`, 50, 456, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t3_lbl", `<b style="font-size:8.5px;color:#0F766E;">SUSTAINABILITY DOMAIN<br/>LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Capture • Measure • Monitor<br/>Assess • Target</span>`, 50, 456, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t3Cards = [
     { title: "Environmental", desc: "GHG Emissions (Scope 1/2/3)<br/>Energy • Water • Waste • Biodiversity", icon: "leaf" },
@@ -233,20 +233,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t3_c_${i}`, "", cx, 456, 240, 60, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(cItem.icon as keyof typeof SVG, "#0F766E", 12);
     cell(`t3_ch_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b></div>`, cx + 4, 458, 232, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t3_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 474, 228, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t3_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 474, 228, 38, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // Tier 3 Sub-strip
   cell("t3_strip", "", 166, 520, 984, 18, "rounded=1;arcSize=6;fillColor=#CCFBF1;strokeColor=#99F6E4;strokeWidth=1;");
   const t3Pills = "KPIs &amp; Metrics Library • Targets &amp; Goals • Materiality Assessment • Double Materiality • Initiatives Management";
-  cell("t3_strip_txt", `<div style="font-size:7px;font-weight:700;color:#115E59;text-align:center;">${t3Pills}</div>`, 166, 520, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t3_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#115E59;text-align:center;">${t3Pills}</div>`, 166, 520, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 2: DATA SOURCES & CONNECTIVITY LAYER (y: 548, h: 84)
   // -------------------------------------------------------------------------
   cell("t2_frame", "", 16, 548, 1140, 84, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t2_badge", "2", 24, 554, 22, 22, "rounded=1;arcSize=6;fillColor=#D97706;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t2_lbl", `<b style="font-size:7.5px;color:#D97706;">DATA SOURCES &amp;<br/>CONNECTIVITY LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Connect • Collect • Stream<br/>Integrate • Sync</span>`, 50, 554, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t2_lbl", `<b style="font-size:8.5px;color:#D97706;">DATA SOURCES &amp;<br/>CONNECTIVITY LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Connect • Collect • Stream<br/>Integrate • Sync</span>`, 50, 554, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t2Cards = [
     { title: "Enterprise Systems", desc: "ERP • Finance • HR<br/>EHS • PLM", icon: "database" },
@@ -261,20 +261,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t2_c_${i}`, "", cx, 554, 190, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(cItem.icon as keyof typeof SVG, "#D97706", 12);
     cell(`t2_ch_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<b style="font-size:7.5px;color:#0F172A;">${cItem.title}</b></div>`, cx + 4, 556, 182, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t2_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 572, 178, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t2_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cItem.desc}</div>`, cx + 6, 572, 178, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // Tier 2 Sub-strip
   cell("t2_strip", "", 166, 608, 984, 18, "rounded=1;arcSize=6;fillColor=#FEF3C7;strokeColor=#FDE68A;strokeWidth=1;");
   const t2Pills = "Connectors (SAP, Oracle, Salesforce, Workday, ServiceNow, etc.) • APIs • SFTP/FTPS • IoT Gateways • Manual Upload • EDI";
-  cell("t2_strip_txt", `<div style="font-size:7px;font-weight:700;color:#92400E;text-align:center;">${t2Pills}</div>`, 166, 608, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t2_strip_txt", `<div style="font-size:7.5px;font-weight:700;color:#92400E;text-align:center;">${t2Pills}</div>`, 166, 608, 984, 18, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 1: INFRASTRUCTURE LAYER (y: 634, h: 64)
   // -------------------------------------------------------------------------
   cell("t1_frame", "", 16, 634, 1140, 64, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t1_badge", "1", 24, 640, 22, 22, "rounded=1;arcSize=6;fillColor=#EA580C;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t1_lbl", `<b style="font-size:7.5px;color:#EA580C;">INFRASTRUCTURE LAYER</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Compute • Storage • Network<br/>Secure • Scalable</span>`, 50, 640, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t1_lbl", `<b style="font-size:8.5px;color:#EA580C;">INFRASTRUCTURE LAYER</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Compute • Storage • Network<br/>Secure • Scalable</span>`, 50, 640, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t1Categories = [
     { title: "Compute", desc: "GKE • Cloud Run • Compute Engine • Functions", icon: "cpu" },
@@ -289,7 +289,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     cell(`t1_c_${i}`, "", cx, 640, 190, 52, "rounded=1;arcSize=4;fillColor=#FFF7ED;strokeColor=#FFEDD5;strokeWidth=1;");
     const ic = svgIcon(cat.icon as keyof typeof SVG, "#EA580C", 11);
     cell(`t1_ch_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<b style="font-size:7.5px;color:#9A3412;">${cat.title}</b></div>`, cx + 4, 642, 182, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-    cell(`t1_cb_${i}`, `<div style="font-size:6.5px;color:#475569;line-height:1.2;padding-top:2px;">${cat.desc}</div>`, cx + 6, 658, 178, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+    cell(`t1_cb_${i}`, `<div style="font-size:7.5px;color:#475569;line-height:1.2;padding-top:2px;">${cat.desc}</div>`, cx + 6, 658, 178, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
   });
 
   // -------------------------------------------------------------------------
@@ -297,7 +297,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   // -------------------------------------------------------------------------
   cell("t0_frame", "", 16, 700, 1140, 64, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t0_badge", "0", 24, 706, 22, 22, "rounded=1;arcSize=6;fillColor=#DC2626;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t0_lbl", `<b style="font-size:7.5px;color:#DC2626;">GOOGLE CLOUD FOUNDATION</b><br/><span style="font-size:6.5px;color:#64748B;line-height:1.1;">Secure • Reliable • Sustainable<br/>Global • Compliant</span>`, 50, 706, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t0_lbl", `<b style="font-size:8.5px;color:#DC2626;">GOOGLE CLOUD FOUNDATION</b><br/><span style="font-size:7.5px;color:#64748B;line-height:1.15;">Secure • Reliable • Sustainable<br/>Global • Compliant</span>`, 50, 706, 110, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const t0Infra = [
     { title: "Global<br/>Infrastructure", icon: "globe" },
@@ -314,7 +314,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ix = 166 + i * 122;
     cell(`t0_i_${i}`, "", ix, 706, 118, 52, "rounded=1;arcSize=4;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;");
     const ic = svgIcon(inf.icon as keyof typeof SVG, "#DC2626", 11);
-    cell(`t0_it_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#991B1B;text-align:center;line-height:1.1;">${inf.title}</div></div>`, ix, 706, 118, 52, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`t0_it_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#991B1B;text-align:center;line-height:1.15;">${inf.title}</div></div>`, ix, 706, 118, 52, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
 
   // =========================================================================
@@ -326,7 +326,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   // -------------------------------------------------------------------------
   cell("t8_frame", "", 1166, 68, 354, 220, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t8_badge", "8", 1174, 74, 22, 22, "rounded=1;arcSize=6;fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t8_lbl", `<b style="font-size:8.5px;color:#7C3AED;">GOVERNANCE, RISK &amp; COMPLIANCE</b><br/><span style="font-size:7px;color:#64748B;">Governed • Transparent • Accountable</span>`, 1202, 74, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("t8_lbl", `<b style="font-size:8.5px;color:#7C3AED;">GOVERNANCE, RISK &amp; COMPLIANCE</b><br/><span style="font-size:7.5px;color:#64748B;">Governed • Transparent • Accountable</span>`, 1202, 74, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const t8Items = [
     { title: "ESG Policy<br/>Management", icon: "shield" },
@@ -345,20 +345,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ry = 100 + Math.floor(i / 3) * 40;
     cell(`t8_item_${i}`, "", rx, ry, 106, 36, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
     const ic = svgIcon(it.icon as keyof typeof SVG, "#7C3AED", 11);
-    cell(`t8_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#6B21A8;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`t8_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#6B21A8;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 32, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // GRC Dashboard Pod
   cell("t8_dash", "", 1174, 238, 338, 38, "rounded=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#D8B4FE;strokeWidth=1;");
   const grcIc = svgIcon("chart", "#7C3AED", 14);
-  cell("t8_dash_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${grcIc}<b style="font-size:8px;color:#581C87;">GRC Dashboard</b></div>`, 1174, 238, 338, 38, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t8_dash_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${grcIc}<b style="font-size:8.5px;color:#581C87;">GRC Dashboard</b></div>`, 1174, 238, 338, 38, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 9: OBSERVABILITY & ASSURANCE (y: 294, h: 226)
   // -------------------------------------------------------------------------
   cell("t9_frame", "", 1166, 294, 354, 226, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t9_badge", "9", 1174, 300, 22, 22, "rounded=1;arcSize=6;fillColor=#059669;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t9_lbl", `<b style="font-size:8.5px;color:#059669;">OBSERVABILITY &amp; ASSURANCE</b><br/><span style="font-size:7px;color:#64748B;">Observe • Detect • Assure</span>`, 1202, 300, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("t9_lbl", `<b style="font-size:8.5px;color:#059669;">OBSERVABILITY &amp; ASSURANCE</b><br/><span style="font-size:7.5px;color:#64748B;">Observe • Detect • Assure</span>`, 1202, 300, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const t9Items = [
     { title: "Data Quality<br/>Monitoring", icon: "database" },
@@ -377,20 +377,20 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ry = 328 + Math.floor(i / 3) * 42;
     cell(`t9_item_${i}`, "", rx, ry, 106, 38, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;");
     const ic = svgIcon(it.icon as keyof typeof SVG, "#059669", 11);
-    cell(`t9_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#065F46;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`t9_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#065F46;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // Observability Dashboard Pod
   cell("t9_dash", "", 1174, 468, 338, 42, "rounded=1;arcSize=4;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;");
   const obsIc = svgIcon("chart", "#059669", 14);
-  cell("t9_dash_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${obsIc}<b style="font-size:8px;color:#14532D;">Observability Dashboard</b></div>`, 1174, 468, 338, 42, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t9_dash_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${obsIc}<b style="font-size:8.5px;color:#14532D;">Observability Dashboard</b></div>`, 1174, 468, 338, 42, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 10: PLATFORM OPERATIONS (y: 526, h: 154)
   // -------------------------------------------------------------------------
   cell("t10_frame", "", 1166, 526, 354, 154, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t10_badge", "10", 1174, 532, 22, 22, "rounded=1;arcSize=6;fillColor=#EA580C;fontColor=#FFFFFF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t10_lbl", `<b style="font-size:8.5px;color:#EA580C;">PLATFORM OPERATIONS</b><br/><span style="font-size:7px;color:#64748B;">Operate • Optimize • Evolve</span>`, 1202, 532, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("t10_lbl", `<b style="font-size:8.5px;color:#EA580C;">PLATFORM OPERATIONS</b><br/><span style="font-size:7.5px;color:#64748B;">Operate • Optimize • Evolve</span>`, 1202, 532, 308, 22, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const t10Items = [
     { title: "Release &amp; Change<br/>Management", icon: "zap" },
@@ -406,19 +406,19 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ry = 558 + Math.floor(i / 3) * 38;
     cell(`t10_item_${i}`, "", rx, ry, 106, 34, "rounded=1;arcSize=4;fillColor=#FFF7ED;strokeColor=#FFEDD5;strokeWidth=1;");
     const ic = svgIcon(it.icon as keyof typeof SVG, "#EA580C", 11);
-    cell(`t10_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#9A3412;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`t10_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#9A3412;line-height:1.15;">${it.title}</div></div>`, rx + 3, ry + 2, 100, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // Continuous Improvement Pod
   cell("t10_ci", "", 1174, 638, 338, 32, "rounded=1;arcSize=4;fillColor=#FFEDD5;strokeColor=#FDBA74;strokeWidth=1;");
   const ciIc = svgIcon("repeat", "#EA580C", 13);
-  cell("t10_ci_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${ciIc}<b style="font-size:7.5px;color:#7C2D12;">Continuous Improvement &amp; Feedback Loop</b></div>`, 1174, 638, 338, 32, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t10_ci_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${ciIc}<b style="font-size:8px;color:#7C2D12;">Continuous Improvement &amp; Feedback Loop</b></div>`, 1174, 638, 338, 32, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // BUSINESS OUTCOMES (y: 686, h: 78)
   // -------------------------------------------------------------------------
   cell("outcomes_frame", "", 1166, 686, 354, 78, "rounded=1;arcSize=3;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
-  cell("outcomes_hdr", `<b style="font-size:8px;color:#0F766E;">BUSINESS OUTCOMES</b>`, 1176, 690, 200, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("outcomes_hdr", `<b style="font-size:8.5px;color:#0F766E;">BUSINESS OUTCOMES</b>`, 1176, 690, 200, 14, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const outcomeList = [
     "Accurate, trusted &amp; auditable ESG data",
@@ -428,7 +428,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     "Reduced emissions &amp; environmental impact",
     "Stronger stakeholder trust &amp; brand value"
   ];
-  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:6.5px;color:#334155;line-height:1.1;"><span style="color:#0F766E;">✓</span> ${o}</div>`).join("");
+  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7.5px;color:#334155;line-height:1.15;"><span style="color:#0F766E;">✓</span> ${o}</div>`).join("");
   cell("outcomes_txt", outcomesHtml, 1176, 704, 250, 58, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const targetSvg = `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
@@ -440,19 +440,19 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
 
   // Box 1: DATA FLOW LEGEND (x: 16, w: 230)
   cell("ft_legend_box", "", 16, 770, 230, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("ft_legend_hdr", `<b style="font-size:8px;color:#1E293B;">DATA FLOW LEGEND</b>`, 24, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("ft_legend_hdr", `<b style="font-size:8.5px;color:#1E293B;">DATA FLOW LEGEND</b>`, 24, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const legendHtml = `
     <div style="padding-top:4px;display:flex;flex-direction:column;gap:5px;">
-      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#2563EB;font-weight:bold;">╌╌▶</span> <span style="font-size:6.5px;color:#334155;">Data Flow (Batch)</span></div>
-      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#059669;font-weight:bold;">╌╌▶</span> <span style="font-size:6.5px;color:#334155;">Data Flow (Real-time)</span></div>
-      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#7C3AED;font-weight:bold;">━━▶</span> <span style="font-size:6.5px;color:#334155;">External Data / Exchange</span></div>
-      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#EA580C;font-weight:bold;">━━▶</span> <span style="font-size:6.5px;color:#334155;">Insights / Actions</span></div>
+      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#2563EB;font-weight:bold;">╌╌▶</span> <span style="font-size:7.5px;color:#334155;">Data Flow (Batch)</span></div>
+      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#059669;font-weight:bold;">╌╌▶</span> <span style="font-size:7.5px;color:#334155;">Data Flow (Real-time)</span></div>
+      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#7C3AED;font-weight:bold;">━━▶</span> <span style="font-size:7.5px;color:#334155;">External Data / Exchange</span></div>
+      <div style="display:flex;align-items:center;gap:6px;"><span style="color:#EA580C;font-weight:bold;">━━▶</span> <span style="font-size:7.5px;color:#334155;">Insights / Actions</span></div>
     </div>`;
   cell("ft_legend_txt", legendHtml, 24, 790, 214, 76, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Box 2: ESG DOMAINS (x: 254, w: 230)
   cell("ft_domains_box", "", 254, 770, 230, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("ft_domains_hdr", `<b style="font-size:8px;color:#1E293B;">ESG DOMAINS</b>`, 262, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("ft_domains_hdr", `<b style="font-size:8.5px;color:#1E293B;">ESG DOMAINS</b>`, 262, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const esgDomains = [
     { title: "Environmental", icon: "leaf", color: "#059669" },
     { title: "Social", icon: "users", color: "#EA580C" },
@@ -462,19 +462,19 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ex = 262 + i * 72;
     cell(`ft_ed_${i}`, "", ex, 794, 68, 68, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(ed.icon as keyof typeof SVG, ed.color, 14);
-    cell(`ft_ed_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#0F172A;text-align:center;line-height:1.1;">${ed.title}</div></div>`, ex, 794, 68, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`ft_ed_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:center;line-height:1.15;">${ed.title}</div></div>`, ex, 794, 68, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
 
   // Box 3: FRAMEWORKS & STANDARDS (x: 492, w: 290)
   cell("ft_standards_box", "", 492, 770, 290, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("ft_standards_hdr", `<b style="font-size:8px;color:#1E293B;">FRAMEWORKS &amp; STANDARDS</b>`, 500, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("ft_standards_hdr", `<b style="font-size:8.5px;color:#1E293B;">FRAMEWORKS &amp; STANDARDS</b>`, 500, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const stds = ["GRI", "SASB", "TCFD", "CDP", "ISSB", "EU Taxonomy"];
-  const stdsHtml = stds.map(s => `<span style="font-size:7.5px;font-weight:bold;color:#0F172A;background:#F1F5F9;padding:4px 8px;border-radius:4px;border:1px solid #CBD5E1;">${s}</span>`).join(" ");
+  const stdsHtml = stds.map(s => `<span style="font-size:8px;font-weight:bold;color:#0F172A;background:#F1F5F9;padding:4px 8px;border-radius:4px;border:1px solid #CBD5E1;">${s}</span>`).join(" ");
   cell("ft_standards_txt", `<div style="padding-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">${stdsHtml}</div>`, 500, 794, 274, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // Box 4: DEPLOYMENT PATTERNS (x: 790, w: 240)
   cell("ft_deploy_box", "", 790, 770, 240, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("ft_deploy_hdr", `<b style="font-size:8px;color:#1E293B;">DEPLOYMENT PATTERNS</b>`, 798, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("ft_deploy_hdr", `<b style="font-size:8.5px;color:#1E293B;">DEPLOYMENT PATTERNS</b>`, 798, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const deployPatterns = [
     { title: "Multi-Cloud", icon: "cloud" },
     { title: "Hybrid", icon: "network" },
@@ -484,12 +484,12 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const dx = 798 + i * 74;
     cell(`ft_dp_${i}`, "", dx, 794, 70, 68, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;");
     const ic = svgIcon(dp.icon as keyof typeof SVG, "#0284C7", 13);
-    cell(`ft_dp_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#0F172A;text-align:center;line-height:1.1;">${dp.title}</div></div>`, dx, 794, 70, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`ft_dp_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:center;line-height:1.15;">${dp.title}</div></div>`, dx, 794, 70, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
 
   // Box 5: SUSTAINABILITY BY DESIGN (x: 1038, w: 482)
   cell("ft_sust_box", "", 1038, 770, 482, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
-  cell("ft_sust_hdr", `<b style="font-size:8px;color:#1E293B;">SUSTAINABILITY BY DESIGN</b>`, 1046, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("ft_sust_hdr", `<b style="font-size:8.5px;color:#1E293B;">SUSTAINABILITY BY DESIGN</b>`, 1046, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const sustDesign = [
     { title: "Energy<br/>Efficient", icon: "zap" },
     { title: "Carbon<br/>Aware", icon: "leaf" },
@@ -500,7 +500,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const sx = 1046 + i * 116;
     cell(`ft_sd_${i}`, "", sx, 794, 110, 68, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;");
     const ic = svgIcon(sd.icon as keyof typeof SVG, "#059669", 14);
-    cell(`ft_sd_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#065F46;text-align:center;line-height:1.1;">${sd.title}</div></div>`, sx, 794, 110, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+    cell(`ft_sd_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#065F46;text-align:center;line-height:1.15;">${sd.title}</div></div>`, sx, 794, 110, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
 
   return `<mxfile host="embed.diagrams.net">

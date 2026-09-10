@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-bg-dark: #070a13;
   --color-panel-dark: rgba(13, 20, 38, 0.7);

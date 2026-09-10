@@ -9,6 +9,10 @@ export interface DecompileResult {
   summary: string;
   extractedZones: string[];
   componentCount: number;
+  isFallback: boolean;
+  modelUsed: string | null;
+  attribution: string;
+  fallbackReason?: string;
   validationReport?: {
     valid: boolean;
     errorCount: number;
@@ -65,9 +69,13 @@ export async function decompileArchitectureImageWithDeepMind(params: {
     });
     return {
       xml,
-      summary: `Decompiled ${projectName} (${useCaseName}) with DeepMind Ground-Truth Master Engine.`,
-      extractedZones: ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services (Vertex AI & DeepMind)'],
+      summary: `Deterministic baseline architecture template generated for ${projectName} (No GEMINI_API_KEY configured for vision decompilation).`,
+      extractedZones: ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services'],
       componentCount: 28,
+      isFallback: true,
+      modelUsed: null,
+      attribution: 'Static TypeScript Template (gcpFunctionalFlowchart)',
+      fallbackReason: 'GEMINI_API_KEY is not configured in the environment or request payload.',
     };
   }
 
@@ -141,9 +149,12 @@ CRITICAL XML & STYLING RULES:
 
       return {
         xml: healedResult.xml,
-        summary: `Successfully decompiled and validated architecture from blueprint image using DeepMind Vision (${usedModel}) with zero architectural defects.`,
+        summary: `Successfully decompiled and validated architecture from blueprint image using Gemini Vision (${usedModel}) with zero architectural defects.`,
         extractedZones: ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'],
         componentCount: (healedResult.xml.match(/<mxCell/g) || []).length,
+        isFallback: false,
+        modelUsed: usedModel,
+        attribution: `Google Gemini API (${usedModel})`,
         validationReport: {
           valid: validation.valid,
           errorCount: validation.errors.length,
@@ -166,9 +177,13 @@ CRITICAL XML & STYLING RULES:
 
   return {
     xml: fallbackHealed.xml,
-    summary: `Extracted and synthesized architecture for ${projectName} with DeepMind master blueprint rules and verified zero-defect validation.`,
-    extractedZones: ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services (Vertex AI & DeepMind)'],
+    summary: `Vision decompilation model failed or returned unparseable XML. Falling back to deterministic baseline architecture for ${projectName}.`,
+    extractedZones: ['Ingress & Security', 'Load Balancing & Compute', 'Application & Data', 'Agentic AI Services'],
     componentCount: (fallbackHealed.xml.match(/<mxCell/g) || []).length,
+    isFallback: true,
+    modelUsed: null,
+    attribution: 'Static TypeScript Template (gcpFunctionalFlowchart)',
+    fallbackReason: 'Vision decompilation call failed or produced invalid XML.',
     validationReport: {
       valid: fallbackValidation.valid,
       errorCount: fallbackValidation.errors.length,

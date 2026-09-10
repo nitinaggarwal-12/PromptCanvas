@@ -48,6 +48,28 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ---
 
+# 👁️ Universal Omni Forensic Audit, Autonomous Remediation & Zero-Bypass Protocol (Mandatory)
+
+* **Mandatory Omni Blocking Gate (Every Single Object)**:
+  - Every single diagram (Draw.io XML/SVG/canvas), document (PRD, SDS, architecture guide, markdown specification), or new software object MUST undergo a rigorous, multimodal forensic audit by **Omni** before being presented, certified, or committed.
+  - Never declare an artifact complete, production-ready, or "certified" based solely on compilation passes (`tsc`), status codes (`200`), or execution heuristics without a physical, multimodal inspection.
+* **Autonomous "Find & Fix" Remediation Loop**:
+  - When an Omni audit detects defects—including label collisions, line crossings, covered/clipped headers, border-slicing edge text, asymmetrical jogs, or typographical voids—the system MUST immediately and autonomously diagnose the root cause and execute targeted code/content fixes.
+  - The system must re-run the Omni audit iteratively until all identified defects are 100% resolved. Never ask the user for permission to fix detected defects; fix them immediately.
+* **Zero Compromise & Zero Regression Law**:
+  - Quality standards are non-negotiable. No defect may be dismissed as "minor" or bypassed for speed.
+  - Every remediation MUST include regression checks against existing components, layout coordinates, and visual baselines to ensure fixes do not introduce new defects elsewhere.
+* **Strict Ban on Omission Excuses ("No 'Oh I forgot' / 'No one did it'")**:
+  - The excuses *"Oh I forgot"*, *"no one did it"*, or *"it was assumed verified"* are strictly prohibited.
+  - Every claim of completion or quality MUST be backed by demonstrable, physical audit artifacts:
+    1. Visual before/after screenshot comparisons stored in `scratch/screenshots_<task_id>/`.
+    2. Explicit checklist verification of all elements, labels, headers, and routing paths.
+    3. Direct DOM/canvas inspection logs verifying zero overlaps.
+* **Clickable Audit Artifact Links**:
+  - All audit reports, screenshot walkthroughs, and comparison canvases must be presented to the user with clickable `file://` markdown links immediately upon completion of the remediation loop.
+
+---
+
 # 📸 Local-First Development, Before/After Visual Review & Deferred Git Commit Law
 
 * **Strict 3-Step Execution Sequence**:

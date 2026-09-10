@@ -47,6 +47,8 @@ import {
   PanelLeft,
   ChevronLeft,
   ChevronRight,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import {
   GcpVersionSnapshot,
@@ -62,6 +64,9 @@ function GcpArchitectureCenterInner() {
   const router = useRouter();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+
+  // Crisp whiteboard canvas default (industry standard: Figma, Miro, Google Cloud Architecture Center)
+  const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>('light');
 
   const initialId = searchParams.get('id') || 'gcp-multiagent-core';
   const [selectedArchId, setSelectedArchId] = useState<string>(initialId);
@@ -131,9 +136,9 @@ function GcpArchitectureCenterInner() {
     return getGcpArchitectureById(selectedArchId) || ALL_GCP_DIALECT_A_ARCHITECTURES[0];
   }, [selectedArchId]);
 
-  // Initialize or hydrate versions when activeArch or isDark changes
+  // Initialize or hydrate versions when activeArch or canvasTheme changes
   useEffect(() => {
-    const baseXml = activeArch.generateXml(isDark);
+    const baseXml = activeArch.generateXml(canvasTheme === 'dark');
     const baselineSnapshot: GcpVersionSnapshot = {
       id: `v_${activeArch.id}_baseline`,
       versionTag: 'v1.0',
@@ -184,11 +189,11 @@ function GcpArchitectureCenterInner() {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ]);
-  }, [activeArch.id, isDark, searchParams]);
+  }, [activeArch.id, canvasTheme, searchParams]);
 
   const activeXml = useMemo(() => {
-    return customXmlOverride || activeArch.generateXml(isDark);
-  }, [customXmlOverride, activeArch, isDark]);
+    return customXmlOverride || activeArch.generateXml(canvasTheme === 'dark');
+  }, [customXmlOverride, activeArch, canvasTheme]);
 
   const handleExecutePrompt = async (promptText: string, explicitPersona?: string) => {
     if (!promptText.trim()) return;
@@ -442,16 +447,18 @@ function GcpArchitectureCenterInner() {
       {/* Main Content Area: Spacious Ultra-Wide Layout (Zero Surrounding Empty Space) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* Consolidated High-Contrast Header Bar (56px) matching Studio 1 & 2 */}
-        <header className="sticky top-0 z-30 w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-8 flex items-center justify-between shadow-md">
+        <header className={`sticky top-0 z-30 w-full h-14 flex-shrink-0 border-b px-4 md:px-8 flex items-center justify-between shadow-xs transition-colors ${
+          isDark ? 'bg-[#0B111E] border-slate-800' : 'bg-white border-slate-200'
+        }`}>
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 shrink-0">
               <Cloud className="w-4 h-4" />
             </div>
             <div className="flex items-center gap-2.5 min-w-0">
-              <h1 className="text-sm font-bold tracking-tight text-white truncate">
+              <h1 className={`text-sm font-black tracking-tight truncate ${isDark ? 'text-white' : 'text-slate-950'}`}>
                 Google Cloud Architecture Center
               </h1>
-              <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 shrink-0">
+              <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/30 shrink-0">
                 DIALECT A STANDARDS
               </span>
             </div>
@@ -461,32 +468,42 @@ function GcpArchitectureCenterInner() {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleCopyXml}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                 copiedXml
-                  ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                  ? 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30'
+                  : isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300'
               }`}
               title="Copy Draw.io XML to Clipboard"
             >
-              {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className={`w-3.5 h-3.5 ${isDark ? 'text-slate-400' : 'text-slate-700'}`} />}
               <span>{copiedXml ? 'Copied XML' : 'Copy XML'}</span>
             </button>
 
             <button
               onClick={handleDownloadXml}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border-slate-300'
+              }`}
               title="Download .drawio.xml file"
             >
-              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <Download className={`w-3.5 h-3.5 ${isDark ? 'text-slate-400' : 'text-slate-700'}`} />
               <span className="hidden sm:inline">Export XML</span>
             </button>
 
             <button
               onClick={handleOpenDiagramsNet}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border border-blue-800/60 transition-all"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                isDark
+                  ? 'bg-blue-950/40 hover:bg-blue-900/50 text-blue-300 border-blue-800/60'
+                  : 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-300'
+              }`}
               title="Open in Diagrams.net online editor"
             >
-              <ExternalLink className="w-3.5 h-3.5 text-blue-400" />
+              <ExternalLink className={`w-3.5 h-3.5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
               <span className="hidden sm:inline">Open in Diagrams.net</span>
             </button>
 
@@ -548,39 +565,49 @@ function GcpArchitectureCenterInner() {
                             ? 'bg-blue-500 text-white border-blue-600'
                             : isDark
                             ? 'bg-slate-800 text-slate-300 border-slate-700'
-                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                            : 'bg-slate-200 text-slate-900 border-slate-300 font-black'
                         }`}
                       >
                         {arch.badge}
                       </span>
-                      <span className="text-[11px] text-slate-400 font-mono">
+                      <span className={`text-[11px] font-mono font-bold ${
+                        isDark ? 'text-slate-400' : 'text-slate-700'
+                      }`}>
                         {arch.components.length} components
                       </span>
                     </div>
 
                     <h3
-                      className={`text-sm font-bold tracking-tight line-clamp-1 mb-1 ${
+                      className={`text-sm font-black tracking-tight line-clamp-1 mb-1 ${
                         isSelected
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-slate-800 dark:text-slate-100'
+                          ? isDark ? 'text-blue-400' : 'text-blue-600'
+                          : isDark ? 'text-slate-100' : 'text-slate-950'
                       }`}
                     >
                       {arch.title}
                     </h3>
-                    <p className="text-[11.5px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className={`text-[11.5px] line-clamp-2 leading-relaxed ${
+                      isDark ? 'text-slate-400' : 'text-slate-700 font-medium'
+                    }`}>
                       {arch.subtitle}
                     </p>
                   </div>
 
-                  <div className="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between text-xs">
-                    <span className="text-[10px] text-slate-400 font-medium truncate max-w-[170px]">
+                  <div className={`mt-3 pt-2.5 border-t flex items-center justify-between text-xs ${
+                    isDark ? 'border-slate-800' : 'border-slate-200'
+                  }`}>
+                    <span className={`text-[10px] font-bold truncate max-w-[170px] ${
+                      isDark ? 'text-slate-400' : 'text-slate-700'
+                    }`}>
                       {arch.category}
                     </span>
                     <span
-                      className={`text-[11px] font-semibold flex items-center gap-1 ${
+                      className={`text-[11px] font-bold flex items-center gap-1 ${
                         isSelected
                           ? 'text-blue-500 font-bold'
-                          : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                          : isDark
+                          ? 'text-slate-400 group-hover:text-slate-200'
+                          : 'text-slate-800 font-bold group-hover:text-slate-950'
                       }`}
                     >
                       {isSelected ? 'Active' : 'Select'}
@@ -603,7 +630,9 @@ function GcpArchitectureCenterInner() {
             >
               <div className="flex items-center gap-2.5">
                 <span className="flex h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
-                <span className="text-xs font-black uppercase tracking-wider text-blue-700 dark:text-blue-300">
+                <span className={`text-xs font-black uppercase tracking-wider ${
+                  isDark ? 'text-blue-300' : 'text-blue-800 font-black'
+                }`}>
                   Pharma Drug Discovery Multi-Tier Architecture Suite:
                 </span>
               </div>
@@ -614,16 +643,18 @@ function GcpArchitectureCenterInner() {
                     activeArch.id === 'gcp-pharma-conceptual'
                       ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
                       : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
-                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
+                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
                   }`}
                 >
                   <span>🧠 1. Conceptual Architecture</span>
                   <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
                       activeArch.id === 'gcp-pharma-conceptual'
                         ? 'bg-blue-700 text-blue-100'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-300'
+                        : 'bg-slate-200 text-slate-900 border border-slate-300'
                     }`}
                   >
                     4-Flow Capability
@@ -636,16 +667,18 @@ function GcpArchitectureCenterInner() {
                     activeArch.id === 'gcp-pharma-drug-discovery'
                       ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
                       : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
-                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
+                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
                   }`}
                 >
                   <span>⚡ 2. Logical Architecture</span>
                   <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
                       activeArch.id === 'gcp-pharma-drug-discovery'
                         ? 'bg-blue-700 text-blue-100'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-300'
+                        : 'bg-slate-200 text-slate-900 border border-slate-300'
                     }`}
                   >
                     Multi-Agent Mesh
@@ -658,16 +691,18 @@ function GcpArchitectureCenterInner() {
                     activeArch.id === 'gcp-pharma-technical-infrastructure'
                       ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
                       : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border-slate-700'
-                      : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
+                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
                   }`}
                 >
                   <span>🏗️ 3. Technical Infrastructure</span>
                   <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono ${
+                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
                       activeArch.id === 'gcp-pharma-technical-infrastructure'
                         ? 'bg-blue-700 text-blue-100'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-300'
+                        : 'bg-slate-200 text-slate-900 border border-slate-300'
                     }`}
                   >
                     VPC &amp; HPC Cluster
@@ -679,6 +714,7 @@ function GcpArchitectureCenterInner() {
 
           {/* Active Topology Hero & Meta Banner */}
           <div
+            id="active-topology-hero"
             className={`p-5 rounded-xl border transition-all ${
               isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
             }`}
@@ -686,18 +722,24 @@ function GcpArchitectureCenterInner() {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
+                  <span className={`text-xs font-black uppercase tracking-wide ${
+                    isDark ? 'text-blue-400' : 'text-blue-700'
+                  }`}>
                     {activeArch.category}
                   </span>
-                  <span className="text-slate-400">&bull;</span>
-                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                  <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>&bull;</span>
+                  <span className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-800'}`}>
                     Source: {activeArch.author}
                   </span>
                 </div>
-                <h2 className="text-xl md:text-2xl font-black tracking-tight text-slate-900 dark:text-white">
+                <h2 className={`text-xl md:text-2xl font-black tracking-tight ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`}>
                   {activeArch.title}
                 </h2>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 max-w-4xl leading-relaxed">
+                <p className={`text-sm mt-1.5 max-w-4xl leading-relaxed ${
+                  isDark ? 'text-slate-200 font-normal' : 'text-slate-900 font-medium'
+                }`}>
                   {activeArch.overview}
                 </p>
               </div>
@@ -705,7 +747,7 @@ function GcpArchitectureCenterInner() {
               {/* View Switcher Tabs */}
               <div
                 className={`flex items-center p-1 rounded-lg border self-start lg:self-center ${
-                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-300'
                 }`}
               >
                 <button
@@ -713,7 +755,9 @@ function GcpArchitectureCenterInner() {
                   className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'canvas'
                       ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      : isDark
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-800 hover:text-slate-950 font-bold'
                   }`}
                 >
                   <Eye className="w-3.5 h-3.5" />
@@ -724,7 +768,9 @@ function GcpArchitectureCenterInner() {
                   className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'spec'
                       ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      : isDark
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-800 hover:text-slate-950 font-bold'
                   }`}
                 >
                   <FileText className="w-3.5 h-3.5" />
@@ -735,7 +781,9 @@ function GcpArchitectureCenterInner() {
                   className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'official'
                       ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      : isDark
+                      ? 'text-slate-300 hover:text-white'
+                      : 'text-slate-800 hover:text-slate-950 font-bold'
                   }`}
                 >
                   <BookOpen className="w-3.5 h-3.5" />
@@ -745,17 +793,19 @@ function GcpArchitectureCenterInner() {
             </div>
 
             {/* Design Patterns Pill Badges */}
-            <div className="mt-4 pt-3.5 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
+            <div className={`mt-4 pt-3.5 border-t flex flex-wrap items-center gap-2 ${
+              isDark ? 'border-slate-800' : 'border-slate-200'
+            }`}>
+              <span className={`text-xs font-black ${isDark ? 'text-slate-400' : 'text-slate-950'}`}>
                 Pattern Matrix:
               </span>
               {activeArch.designPatterns.map((pattern, idx) => (
                 <span
                   key={idx}
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-md border ${
+                  className={`text-[11px] font-bold px-2.5 py-1 rounded-md border ${
                     isDark
-                      ? 'bg-slate-800/80 text-slate-300 border-slate-700'
-                      : 'bg-slate-100 text-slate-700 border-slate-200'
+                      ? 'bg-slate-800/80 text-slate-200 border-slate-700'
+                      : 'bg-white text-slate-950 font-bold border-slate-300 shadow-xs'
                   }`}
                 >
                   {pattern}
@@ -787,14 +837,14 @@ function GcpArchitectureCenterInner() {
                       </div>
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold text-slate-900 dark:text-white">
+                          <span className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                             Architecture Co-Pilot
                           </span>
                           <span className="text-[9px] font-mono font-bold bg-blue-500/15 text-blue-500 border border-blue-500/25 px-1.5 py-0.2 rounded-full">
                             Gemini 3.1 Pro / Omni
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                        <p className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-700 font-semibold'}`}>
                           Prompt-to-Architecture Synthesis &amp; Versioning
                         </p>
                       </div>
@@ -804,7 +854,11 @@ function GcpArchitectureCenterInner() {
                       <button
                         id="gcp-collapse-copilot-btn"
                         onClick={() => setIsCopilotOpen(false)}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg transition text-xs font-bold cursor-pointer border ${
+                          isDark
+                            ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800 border-transparent hover:border-slate-700'
+                            : 'text-slate-700 hover:text-slate-950 hover:bg-slate-200 border-slate-300'
+                        }`}
                         title="Collapse Architecture Co-Pilot"
                         aria-label="Collapse Architecture Co-Pilot"
                       >
@@ -817,16 +871,18 @@ function GcpArchitectureCenterInner() {
                   {/* Stakeholder Simulation & Suggested Prompts */}
                   <div
                     className={`p-3 border-b space-y-2 flex-shrink-0 ${
-                      isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-50/60 border-slate-100'
+                      isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-slate-50/60 border-slate-200'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-slate-300' : 'text-slate-950'}`}>
                         {activeArch.id.startsWith('gcp-pharma')
                           ? 'Pharma Specialized Prompts:'
                           : 'Simulate Stakeholder Personas:'}
                       </span>
-                      <span className="text-[9px] font-mono text-purple-600 dark:text-purple-400 font-bold bg-purple-500/10 px-1.5 py-0.5 rounded">
+                      <span className={`text-[9px] font-mono font-bold bg-purple-500/10 px-1.5 py-0.5 rounded ${
+                        isDark ? 'text-purple-300' : 'text-purple-700'
+                      }`}>
                         1-Click Synthesize
                       </span>
                     </div>
@@ -839,10 +895,10 @@ function GcpArchitectureCenterInner() {
                         <button
                           key={sp.id}
                           onClick={() => handleExecutePrompt(sp.prompt, sp.persona)}
-                          className={`text-left p-1.5 rounded-lg border text-[11px] transition flex items-center gap-1.5 font-medium shadow-2xs truncate ${
+                          className={`text-left p-1.5 rounded-lg border text-[11px] transition flex items-center gap-1.5 font-bold shadow-2xs truncate ${
                             isDark
-                              ? 'bg-slate-800/80 hover:bg-slate-700/80 border-slate-700 text-slate-200 hover:text-white'
-                              : 'bg-white hover:bg-blue-50 border-slate-200 hover:border-blue-300 text-slate-700 hover:text-blue-950'
+                              ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-100 hover:text-white'
+                              : 'bg-white hover:bg-blue-50 border-slate-300 hover:border-blue-400 text-slate-900 hover:text-blue-950'
                           }`}
                           title={sp.description}
                         >
@@ -863,25 +919,25 @@ function GcpArchitectureCenterInner() {
                           className={`rounded-xl p-3 space-y-2 transition-all ${
                             isUser
                               ? isDark
-                                ? 'bg-blue-950/40 border border-blue-900/60'
-                                : 'bg-blue-50/90 border border-blue-200'
+                                ? 'bg-blue-950/60 border border-blue-800/70 text-blue-100'
+                                : 'bg-blue-50/90 border border-blue-200 text-blue-950'
                               : msg.isQuestionAdvisory
                               ? isDark
-                                ? 'bg-indigo-950/30 border border-indigo-800/50'
-                                : 'bg-indigo-50/80 border border-indigo-200/80'
+                                ? 'bg-indigo-950/50 border border-indigo-700/60 text-indigo-100'
+                                : 'bg-indigo-50/80 border border-indigo-200/80 text-indigo-950'
                               : isDark
-                              ? 'bg-slate-900/80 border border-slate-800'
-                              : 'bg-slate-50 border border-slate-200'
+                              ? 'bg-slate-800/95 border border-slate-700 text-slate-100 shadow-md'
+                              : 'bg-slate-50 border border-slate-200 text-slate-900 shadow-sm'
                           }`}
                         >
                           <div className="flex items-center justify-between text-[11px]">
                             <span
                               className={`font-bold flex items-center gap-1.5 ${
                                 isUser
-                                  ? 'text-blue-600 dark:text-blue-300'
+                                  ? isDark ? 'text-blue-300' : 'text-blue-600'
                                   : msg.isQuestionAdvisory
-                                  ? 'text-indigo-600 dark:text-indigo-300'
-                                  : 'text-slate-800 dark:text-slate-200'
+                                  ? isDark ? 'text-indigo-300' : 'text-indigo-600'
+                                  : isDark ? 'text-white' : 'text-slate-950 font-black'
                               }`}
                             >
                               <span>
@@ -897,12 +953,14 @@ function GcpArchitectureCenterInner() {
                                 </span>
                               )}
                             </span>
-                            <span className="font-mono text-[10px] text-slate-400">{msg.timestamp}</span>
+                            <span className={`font-mono text-[10px] font-semibold ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>{msg.timestamp}</span>
                           </div>
 
                           <div
                             className={`text-[11.5px] leading-relaxed whitespace-pre-line ${
-                              isUser ? 'text-slate-800 dark:text-slate-200 font-medium' : 'text-slate-600 dark:text-slate-300'
+                              isUser
+                                ? isDark ? 'text-slate-100 font-medium' : 'text-slate-950 font-bold'
+                                : isDark ? 'text-slate-100 font-normal' : 'text-slate-950 font-medium'
                             }`}
                           >
                             {msg.text}
@@ -912,7 +970,7 @@ function GcpArchitectureCenterInner() {
                           {msg.identifiedGaps && msg.identifiedGaps.length > 0 && (
                             <div
                               className={`mt-2 p-2.5 rounded-lg border text-[11px] space-y-1.5 ${
-                                isDark ? 'bg-amber-950/20 border-amber-800/40 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-900'
+                                isDark ? 'bg-amber-950/40 border-amber-800/60 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-950 font-medium'
                               }`}
                             >
                               <div className="flex items-center gap-1.5 font-bold text-[10.5px]">
@@ -929,8 +987,8 @@ function GcpArchitectureCenterInner() {
 
                           {/* Actionable Suggestions Pills */}
                           {msg.suggestions && msg.suggestions.length > 0 && (
-                            <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            <div className={`mt-2.5 pt-2 border-t space-y-1.5 ${isDark ? 'border-slate-700' : 'border-slate-200'}`}>
+                              <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-950'}`}>
                                 Recommended Topology Upgrades:
                               </span>
                               <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -938,14 +996,14 @@ function GcpArchitectureCenterInner() {
                                   <button
                                     key={sIdx}
                                     onClick={() => handleExecutePrompt(sug.actionPrompt)}
-                                    className={`px-2 py-1 rounded-lg text-[10.5px] font-semibold border flex items-center gap-1 transition-all cursor-pointer shadow-2xs ${
+                                    className={`px-2 py-1 rounded-lg text-[10.5px] font-bold border flex items-center gap-1 transition-all cursor-pointer shadow-2xs ${
                                       isDark
-                                        ? 'bg-blue-600/15 hover:bg-blue-600/30 text-blue-300 border-blue-500/40 hover:border-blue-400'
-                                        : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200 hover:border-blue-300'
+                                        ? 'bg-blue-600/25 hover:bg-blue-600/40 text-blue-200 border-blue-500/50 hover:border-blue-400'
+                                        : 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-300'
                                     }`}
                                     title={sug.actionPrompt}
                                   >
-                                    <Sparkles className="w-3 h-3 text-blue-500" />
+                                    <Sparkles className="w-3 h-3 text-blue-600" />
                                     <span>+ {sug.label}</span>
                                   </button>
                                 ))}
@@ -956,19 +1014,19 @@ function GcpArchitectureCenterInner() {
                           {msg.actionSummary && (
                             <div
                               className={`mt-2 p-2.5 rounded-lg border text-[11px] space-y-1.5 ${
-                                isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-white border-slate-200'
+                                isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-slate-300 text-slate-900'
                               }`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="font-bold text-slate-700 dark:text-slate-300">Topology Diff:</span>
-                                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+                                <span className={`font-bold ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>Topology Diff:</span>
+                                <span className="text-[10px] font-mono text-emerald-500 font-bold">
                                   ● Active in Viewport
                                 </span>
                               </div>
-                              <p className="text-[10.5px] text-emerald-700 dark:text-emerald-300 font-mono leading-relaxed">
+                              <p className={`text-[10.5px] font-mono leading-relaxed font-bold ${isDark ? 'text-emerald-300' : 'text-emerald-700'}`}>
                                 {msg.actionSummary.canvasDiff}
                               </p>
-                              <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                              <p className={`text-[10px] font-medium ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
                                 {msg.actionSummary.specDiff}
                               </p>
                             </div>
@@ -1008,10 +1066,10 @@ function GcpArchitectureCenterInner() {
                         }}
                         rows={2}
                         placeholder="Ask Co-Pilot to edit diagram, add nodes, or upgrade tiers..."
-                        className={`w-full border rounded-xl px-3 py-2 pr-16 text-xs placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none shadow-sm transition-all ${
+                        className={`w-full border rounded-xl px-3 py-2 pr-16 text-xs placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none shadow-sm transition-all ${
                           isDark
                             ? 'bg-slate-950 border-slate-700 text-white focus:border-blue-500'
-                            : 'bg-white border-slate-300 text-slate-900 focus:border-blue-500'
+                            : 'bg-white border-slate-300 text-slate-950 focus:border-blue-500 font-medium'
                         }`}
                       />
                       <button
@@ -1021,15 +1079,17 @@ function GcpArchitectureCenterInner() {
                         className={`absolute bottom-2.5 right-2 px-2.5 py-1 rounded-lg text-[10px] font-bold shadow transition flex items-center gap-1 ${
                           promptInput.trim()
                             ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/30 cursor-pointer'
-                            : 'bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed'
+                            : isDark
+                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                            : 'bg-slate-200 text-slate-500 cursor-not-allowed'
                         }`}
                       >
                         <span>Apply</span>
                         <Send className="w-2.5 h-2.5" />
                       </button>
                     </div>
-                    <div className="flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                      <span>Target: <strong className="text-blue-500">Live Architecture Model</strong></span>
+                    <div className={`flex items-center justify-between text-[10px] font-semibold ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
+                      <span>Target: <strong className="text-blue-500 font-bold">Live Architecture Model</strong></span>
                       <span>Press Enter ↵</span>
                     </div>
                   </div>
@@ -1045,7 +1105,7 @@ function GcpArchitectureCenterInner() {
                     className={`w-12 h-[820px] md:h-[920px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
                       isDark
                         ? 'bg-[#0F172A] hover:bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
-                        : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 hover:text-blue-600'
+                        : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800 hover:text-blue-600 font-bold'
                     }`}
                     title="Expand Architecture Co-Pilot"
                     aria-label="Expand Architecture Co-Pilot"
@@ -1054,11 +1114,11 @@ function GcpArchitectureCenterInner() {
                       <Bot className="w-4 h-4" />
                     </div>
                     <div className="flex items-center justify-center py-2">
-                      <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-slate-400 group-hover:text-blue-500 [writing-mode:vertical-lr] rotate-180 select-none">
+                      <span className={`text-[10px] font-black uppercase tracking-[0.25em] [writing-mode:vertical-lr] rotate-180 select-none ${isDark ? 'text-slate-400 group-hover:text-blue-500' : 'text-slate-700 group-hover:text-blue-600'}`}>
                         Co-Pilot
                       </span>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className={`w-4 h-4 group-hover:translate-x-0.5 transition-transform ${isDark ? 'text-slate-400 group-hover:text-blue-500' : 'text-slate-700 group-hover:text-blue-600'}`} />
                   </button>
                 </div>
               )}
@@ -1082,7 +1142,7 @@ function GcpArchitectureCenterInner() {
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="font-bold text-slate-700 dark:text-slate-200">
+                    <span className={`font-extrabold ${isDark ? 'text-slate-200' : 'text-slate-950'}`}>
                       Draw.io Canvas Viewport (16:9 Aspect Ratio)
                     </span>
 
@@ -1091,10 +1151,12 @@ function GcpArchitectureCenterInner() {
                       onClick={() => setIsCopilotOpen(!isCopilotOpen)}
                       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
                         isCopilotOpen
-                          ? 'bg-blue-500/15 text-blue-600 dark:text-blue-300 border-blue-500/30'
+                          ? isDark
+                            ? 'bg-blue-500/20 text-blue-300 border-blue-500/40'
+                            : 'bg-blue-500/15 text-blue-700 border-blue-500/30'
                           : isDark
                           ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
-                          : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
+                          : 'bg-slate-200 text-slate-900 border-slate-300 hover:bg-slate-300 font-bold'
                       }`}
                       title="Toggle Architecture Co-Pilot Chatbot Panel"
                     >
@@ -1114,7 +1176,7 @@ function GcpArchitectureCenterInner() {
                             ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                             : isDark
                             ? 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
-                            : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                            : 'bg-white text-slate-900 border-slate-300 hover:bg-slate-100 font-bold'
                         }`}
                         title="Snapshot Version History & Rollback"
                       >
@@ -1122,7 +1184,11 @@ function GcpArchitectureCenterInner() {
                         <span>Version: {activeVersionTag}</span>
                         <span
                           className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
-                            activeVersionTag !== 'v1.0' ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700'
+                            activeVersionTag !== 'v1.0'
+                              ? 'bg-blue-700 text-white'
+                              : isDark
+                              ? 'bg-slate-700 text-slate-300'
+                              : 'bg-slate-200 text-slate-900 font-bold'
                           }`}
                         >
                           {versions.length}
@@ -1136,10 +1202,12 @@ function GcpArchitectureCenterInner() {
                           className={`absolute right-0 sm:left-0 mt-1.5 w-80 rounded-xl border shadow-2xl z-50 p-2 space-y-1 backdrop-blur-md ${
                             isDark
                               ? 'bg-slate-900/95 border-slate-800 text-slate-200 shadow-slate-950/80'
-                              : 'bg-white/95 border-slate-200 text-slate-800 shadow-slate-200/80'
+                              : 'bg-white border-slate-300 text-slate-950 shadow-slate-300/80'
                           }`}
                         >
-                          <div className="px-2 py-1.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-500">
+                          <div className={`px-2 py-1.5 border-b flex items-center justify-between text-[11px] font-bold ${
+                            isDark ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-950 font-black'
+                          }`}>
                             <span>SNAPSHOT VERSION HISTORY</span>
                             <span>{versions.length} versions</span>
                           </div>
@@ -1155,22 +1223,28 @@ function GcpArchitectureCenterInner() {
                                   }}
                                   className={`w-full text-left p-2 rounded-lg text-xs transition flex items-start justify-between gap-2 ${
                                     isCurrent
-                                      ? 'bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold'
-                                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                      ? isDark
+                                        ? 'bg-blue-500/20 text-blue-300 font-bold'
+                                        : 'bg-blue-50 text-blue-800 font-bold'
+                                      : isDark
+                                      ? 'hover:bg-slate-800 text-slate-200'
+                                      : 'hover:bg-slate-100 text-slate-900 font-medium'
                                   }`}
                                 >
                                   <div className="space-y-0.5 min-w-0">
                                     <div className="flex items-center gap-1.5">
-                                      <span className="font-mono text-[10px] bg-slate-200 dark:bg-slate-700 px-1 py-0.2 rounded font-bold">
+                                      <span className={`font-mono text-[10px] px-1 py-0.2 rounded font-bold ${
+                                        isDark ? 'bg-slate-700 text-slate-200' : 'bg-slate-200 text-slate-900 font-bold'
+                                      }`}>
                                         {v.versionTag}
                                       </span>
                                       <span className="text-[11px] truncate font-semibold">{v.author}</span>
                                     </div>
-                                    <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
+                                    <p className={`text-[10px] truncate ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
                                       {v.actionSummary}
                                     </p>
                                   </div>
-                                  <span className="text-[9.5px] font-mono text-slate-400 whitespace-nowrap">
+                                  <span className={`text-[9.5px] font-mono whitespace-nowrap ${isDark ? 'text-slate-400' : 'text-slate-600 font-semibold'}`}>
                                     {v.timestamp}
                                   </span>
                                 </button>
@@ -1178,15 +1252,17 @@ function GcpArchitectureCenterInner() {
                             })}
                           </div>
                           {activeVersionTag !== 'v1.0' && (
-                            <div className="pt-1.5 border-t border-slate-200 dark:border-slate-800">
+                            <div className={`pt-1.5 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
                               <button
                                 onClick={() => {
                                   if (versions.length > 0) {
                                     handleRestoreVersion(versions[0]);
                                   }
                                   setIsVersionDropdownOpen(false);
-                                }}
-                                className="w-full text-center py-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center justify-center gap-1"
+                                  }}
+                                className={`w-full text-center py-1 text-[11px] font-bold hover:underline flex items-center justify-center gap-1 ${
+                                  isDark ? 'text-amber-400' : 'text-amber-700'
+                                }`}
                               >
                                 <RotateCcw className="w-3 h-3" />
                                 <span>Restore Baseline Model (v1.0)</span>
@@ -1208,7 +1284,7 @@ function GcpArchitectureCenterInner() {
                         className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all ${
                           isDark
                             ? 'bg-amber-950/40 hover:bg-amber-900/50 text-amber-300 border-amber-800/60'
-                            : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300 font-bold'
                         }`}
                         title="Rollback to Baseline Version 1.0"
                       >
@@ -1217,11 +1293,39 @@ function GcpArchitectureCenterInner() {
                       </button>
                     )}
 
-                    <span className="text-slate-300 dark:text-slate-700">|</span>
+                    <span className={isDark ? 'text-slate-700' : 'text-slate-300'}>|</span>
+
+                    <button
+                      onClick={() => setCanvasTheme((prev) => (prev === 'light' ? 'dark' : 'light'))}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border transition-all ${
+                        canvasTheme === 'light'
+                          ? isDark
+                            ? 'bg-amber-950/40 text-amber-300 border-amber-800/50 hover:bg-amber-900/50'
+                            : 'bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 font-bold'
+                          : isDark
+                          ? 'bg-slate-800 text-slate-200 border-slate-700 hover:bg-slate-700'
+                          : 'bg-slate-100 text-slate-900 border-slate-300 hover:bg-slate-200 font-bold'
+                      }`}
+                      title={`Switch to ${canvasTheme === 'light' ? 'Dark Canvas' : 'Light Canvas (Whiteboard)'}`}
+                    >
+                      {canvasTheme === 'light' ? (
+                        <>
+                          <Sun className="w-3.5 h-3.5 text-amber-500" />
+                          <span>Canvas: Light</span>
+                        </>
+                      ) : (
+                        <>
+                          <Moon className="w-3.5 h-3.5 text-blue-400" />
+                          <span>Canvas: Dark</span>
+                        </>
+                      )}
+                    </button>
 
                     <button
                       onClick={handleCopyXml}
-                      className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-blue-500 font-semibold transition-colors"
+                      className={`inline-flex items-center gap-1 font-bold transition-colors ${
+                        isDark ? 'text-slate-300 hover:text-blue-400' : 'text-slate-800 hover:text-blue-600 font-bold'
+                      }`}
                       title="Copy XML"
                     >
                       {copiedXml ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -1231,7 +1335,9 @@ function GcpArchitectureCenterInner() {
                     <button
                       id="gcp-share-url-btn"
                       onClick={handleCopyShareUrl}
-                      className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-blue-500 font-semibold transition-colors"
+                      className={`inline-flex items-center gap-1 font-bold transition-colors ${
+                        isDark ? 'text-slate-300 hover:text-blue-400' : 'text-slate-800 hover:text-blue-600 font-bold'
+                      }`}
                       title="Copy Shareable Snapshot Deep-Link URL"
                     >
                       {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -1240,7 +1346,9 @@ function GcpArchitectureCenterInner() {
 
                     <button
                       onClick={handleOpenDiagramsNet}
-                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+                      className={`inline-flex items-center gap-1 hover:underline font-semibold ${
+                        isDark ? 'text-blue-400' : 'text-blue-600'
+                      }`}
                       title="Open in Diagrams.net"
                     >
                       <ExternalLink className="w-3 h-3" />
@@ -1250,13 +1358,13 @@ function GcpArchitectureCenterInner() {
                 </div>
 
                 {/* RenderSafe Diagram Canvas Container */}
-                <div className="w-full h-[760px] md:h-[860px] relative bg-white dark:bg-[#0B111E]">
+                <div className={`w-full h-[760px] md:h-[860px] relative ${canvasTheme === 'dark' ? 'bg-[#0B111E]' : 'bg-white'}`}>
                   <DiagramViewerRenderSafe
-                    key={`${activeArch.id}-${activeVersionTag}-${isDark ? 'dark' : 'light'}`}
+                    key={`${activeArch.id}-${activeVersionTag}-${canvasTheme}`}
                     xml={activeXml}
                     diagramId={activeArch.id}
                     aspectRatioId="16:9"
-                    bgTheme={isDark ? 'dark' : 'light'}
+                    bgTheme={canvasTheme}
                     allowFullScaleScroll={false}
                   />
                 </div>
@@ -1276,11 +1384,11 @@ function GcpArchitectureCenterInner() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Workflow className="w-5 h-5 text-blue-500" />
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                    <h3 className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>
                       Sequential Execution &amp; Interaction Flow
                     </h3>
                   </div>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className={`text-xs font-mono font-bold ${isDark ? 'text-slate-400' : 'text-slate-700'}`}>
                     {activeArch.flowSteps.length} discrete pipeline stages
                   </span>
                 </div>
@@ -1298,18 +1406,18 @@ function GcpArchitectureCenterInner() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                          <h4 className={`text-xs font-black truncate ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
                             {step.title}
                           </h4>
-                          <span className="text-[9.5px] font-mono font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                          <span className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 border border-blue-500/20">
                             {step.protocol}
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">{step.from}</span> &rarr;{' '}
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">{step.to}</span>
+                        <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-700 font-medium'}`}>
+                          <span className={`font-bold ${isDark ? 'text-slate-200' : 'text-slate-950'}`}>{step.from}</span> &rarr;{' '}
+                          <span className={`font-bold ${isDark ? 'text-slate-200' : 'text-slate-950'}`}>{step.to}</span>
                         </div>
-                        <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                        <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-900 font-medium'}`}>
                           {step.desc}
                         </p>
                       </div>
@@ -1326,7 +1434,7 @@ function GcpArchitectureCenterInner() {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Cpu className="w-5 h-5 text-indigo-500" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>
                     Architecture Component Directory
                   </h3>
                 </div>
@@ -1335,8 +1443,8 @@ function GcpArchitectureCenterInner() {
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr
-                        className={`border-b font-bold uppercase tracking-wider ${
-                          isDark ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-500'
+                        className={`border-b font-black uppercase tracking-wider ${
+                          isDark ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-950'
                         }`}
                       >
                         <th className="py-2.5 px-3">Component</th>
@@ -1345,7 +1453,7 @@ function GcpArchitectureCenterInner() {
                         <th className="py-2.5 px-3">Technical Responsibility</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60">
+                    <tbody className={`divide-y ${isDark ? 'divide-slate-800/60' : 'divide-slate-200'}`}>
                       {activeArch.components.map((comp, idx) => (
                         <tr
                           key={idx}
@@ -1353,21 +1461,23 @@ function GcpArchitectureCenterInner() {
                             isDark ? 'hover:bg-slate-900/50' : 'hover:bg-slate-50'
                           }`}
                         >
-                          <td className="py-3 px-3 font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">
+                          <td className={`py-3 px-3 font-black whitespace-nowrap ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
                             <div className="flex items-center gap-2">
                               <span className="w-2 h-2 rounded-full bg-blue-500" />
                               <span>{comp.name}</span>
                             </div>
                           </td>
                           <td className="py-3 px-3">
-                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                              isDark ? 'bg-slate-800 text-slate-200' : 'bg-slate-200 text-slate-900 border border-slate-300'
+                            }`}>
                               {comp.category}
                             </span>
                           </td>
-                          <td className="py-3 px-3 font-mono text-[11px] text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                          <td className={`py-3 px-3 font-mono text-[11px] whitespace-nowrap font-bold ${isDark ? 'text-blue-400' : 'text-blue-700'}`}>
                             {comp.spec}
                           </td>
-                          <td className="py-3 px-3 text-slate-600 dark:text-slate-300 leading-relaxed">
+                          <td className={`py-3 px-3 leading-relaxed font-medium ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
                             {comp.role}
                           </td>
                         </tr>
@@ -1385,7 +1495,7 @@ function GcpArchitectureCenterInner() {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Database className="w-5 h-5 text-emerald-500" />
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>
                     Products &amp; Tools Used
                   </h3>
                 </div>
@@ -1394,8 +1504,8 @@ function GcpArchitectureCenterInner() {
                   {activeArch.productsUsed.map((prod, idx) => (
                     <div
                       key={idx}
-                      className={`p-3 rounded-lg border text-xs font-semibold flex items-center gap-2.5 ${
-                        isDark ? 'bg-slate-900 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
+                      className={`p-3 rounded-lg border text-xs font-bold flex items-center gap-2.5 ${
+                        isDark ? 'bg-slate-900 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-950'
                       }`}
                     >
                       <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
@@ -1415,20 +1525,22 @@ function GcpArchitectureCenterInner() {
                   isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
                 }`}
               >
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b ${
+                  isDark ? 'border-slate-800' : 'border-slate-200'
+                }`}>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold uppercase tracking-wide text-blue-500">
+                      <span className="text-xs font-black uppercase tracking-wide text-blue-600">
                         Official Ground-Truth Source
                       </span>
-                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                         VERIFIED 2025/2026
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
+                    <h3 className={`text-lg font-black mt-1 ${isDark ? 'text-white' : 'text-slate-950'}`}>
                       {activeArch.title}
                     </h3>
-                    <p className="text-xs font-mono text-slate-500 mt-0.5">
+                    <p className={`text-xs font-mono font-bold mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-800'}`}>
                       {activeArch.officialDocUrl}
                     </p>
                   </div>
@@ -1451,8 +1563,8 @@ function GcpArchitectureCenterInner() {
                       isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
                     }`}
                   >
-                    <span className="text-[10px] font-bold uppercase text-slate-400">Author &amp; Solution Engineer</span>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">
+                    <span className={`text-[10px] font-black uppercase ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Author &amp; Solution Engineer</span>
+                    <p className={`text-xs font-black mt-1 ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
                       {activeArch.author}
                     </p>
                   </div>
@@ -1461,8 +1573,8 @@ function GcpArchitectureCenterInner() {
                       isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
                     }`}
                   >
-                    <span className="text-[10px] font-bold uppercase text-slate-400">Solution Architecture Pattern</span>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">
+                    <span className={`text-[10px] font-black uppercase ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Solution Architecture Pattern</span>
+                    <p className={`text-xs font-black mt-1 ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
                       Dialect A (Official Solution Blueprint)
                     </p>
                   </div>
@@ -1471,8 +1583,8 @@ function GcpArchitectureCenterInner() {
                       isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
                     }`}
                   >
-                    <span className="text-[10px] font-bold uppercase text-slate-400">Interoperability Standards</span>
-                    <p className="text-xs font-bold text-slate-800 dark:text-slate-100 mt-1">
+                    <span className={`text-[10px] font-black uppercase ${isDark ? 'text-slate-400' : 'text-slate-900'}`}>Interoperability Standards</span>
+                    <p className={`text-xs font-black mt-1 ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>
                       A2A Protocol &bull; Model Context Protocol (MCP)
                     </p>
                   </div>
@@ -1480,57 +1592,57 @@ function GcpArchitectureCenterInner() {
 
                 {/* Comparison Details */}
                 <div className="mt-6">
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2">
+                  <h4 className={`text-sm font-black mb-2 ${isDark ? 'text-white' : 'text-slate-950'}`}>
                     Visual Grammar Conformance Matrix (Dialect A vs Dialect B)
                   </h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
                       <thead>
-                        <tr className="border-b border-slate-200 dark:border-slate-800 font-bold text-slate-400">
+                        <tr className={`border-b font-black ${isDark ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-950'}`}>
                           <th className="py-2 px-3">Design Attribute</th>
-                          <th className="py-2 px-3 text-blue-500">Dialect A (Official Solution Architecture)</th>
-                          <th className="py-2 px-3 text-slate-400">Dialect B (Widescreen Reference Blueprint)</th>
+                          <th className="py-2 px-3 text-blue-600 font-black">Dialect A (Official Solution Architecture)</th>
+                          <th className={`py-2 px-3 ${isDark ? 'text-slate-400' : 'text-slate-800 font-black'}`}>Dialect B (Widescreen Reference Blueprint)</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-200 dark:divide-slate-800/60 text-slate-600 dark:text-slate-300">
+                      <tbody className={`divide-y ${isDark ? 'divide-slate-800/60 text-slate-200' : 'divide-slate-200 text-slate-900 font-medium'}`}>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Outer Boundary</td>
-                          <td className="py-2.5 px-3 font-medium text-blue-600 dark:text-blue-400">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Outer Boundary</td>
+                          <td className={`py-2.5 px-3 font-bold ${isDark ? 'text-blue-400' : 'text-blue-700'}`}>
                             Rounded Google Cloud box with solid #1A73E8 blue header ribbon
                           </td>
                           <td className="py-2.5 px-3">Multi-tier wide boundary with dark headers</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Agent Enclave</td>
-                          <td className="py-2.5 px-3 font-medium text-emerald-600 dark:text-emerald-400">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Agent Enclave</td>
+                          <td className={`py-2.5 px-3 font-bold ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
                             Soft green #E6F4EA container (#12B76A border) with Coordinator &amp; subagent enclaves
                           </td>
                           <td className="py-2.5 px-3">General application tier cards</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Execution Patterns</td>
-                          <td className="py-2.5 px-3 font-medium">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Execution Patterns</td>
+                          <td className="py-2.5 px-3 font-bold">
                             Explicit Sequential and Iterative Refinement dashed sub-boxes with A2A protocol
                           </td>
                           <td className="py-2.5 px-3">Orthogonal pipelines across columns</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Model Tier</td>
-                          <td className="py-2.5 px-3 font-medium">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Model Tier</td>
+                          <td className="py-2.5 px-3 font-bold">
                             Right-column Model Armor guardrail + Gemini Platform + Runtime selection
                           </td>
                           <td className="py-2.5 px-3">Intelligence Hub column</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Tool Ingestion</td>
-                          <td className="py-2.5 px-3 font-medium">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Tool Ingestion</td>
+                          <td className="py-2.5 px-3 font-bold">
                             Bottom MCP tier: Custom MCP (Cloud Run) + Managed BigQuery MCP
                           </td>
                           <td className="py-2.5 px-3">Direct database connections</td>
                         </tr>
                         <tr>
-                          <td className="py-2.5 px-3 font-bold">Step Badges</td>
-                          <td className="py-2.5 px-3 font-medium text-blue-600 dark:text-blue-400">
+                          <td className={`py-2.5 px-3 font-black ${isDark ? 'text-slate-100' : 'text-slate-950'}`}>Step Badges</td>
+                          <td className={`py-2.5 px-3 font-bold ${isDark ? 'text-blue-400' : 'text-blue-700'}`}>
                             Numbered solid blue circles (❶..❿) positioned along connector midpoints
                           </td>
                           <td className="py-2.5 px-3">Step number badges on card headers</td>

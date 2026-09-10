@@ -929,13 +929,19 @@ export async function getUserDiagramAccess(
 
   if (!diagram) return null;
 
-  // Unowned public seed templates default to Editor so users can create versions
-  if (!diagram.user_id) return 'Editor';
+  // Unowned public seed templates default to Viewer if unauthenticated, Editor if authenticated
+  if (!diagram.user_id) {
+    return userId ? 'Editor' : 'Viewer';
+  }
 
-  // Guest created diagrams are public and editable by all
-  if (diagram.user_id.startsWith('guest-')) return 'Editor';
+  // Guest created diagrams: if caller is the creating guest session, Owner; if authenticated, Editor; if anonymous visitor, Viewer
+  if (diagram.user_id.startsWith('guest-')) {
+    if (userId && diagram.user_id === userId) return 'Owner';
+    if (!userId) return 'Viewer';
+    return 'Editor';
+  }
 
-  // Public diagrams (is_private is FALSE, 0, or null) default to Editor/Viewer so all users can access without regenerating
+  // Public diagrams (is_private is FALSE, 0, or null):
   if (!diagram.is_private) {
     if (!userId) return 'Viewer';
     return diagram.user_id === userId ? 'Owner' : 'Editor';
@@ -1367,75 +1373,109 @@ export async function getLatestDiagramVersion(diagramId: string, architectureTyp
   }
 }
 
-// Helper: Delete a diagram (cascades to versions, scoped to user)
-export async function deleteDiagram(id: string, userId?: string): Promise<void> {
+// Helper: Delete a diagram (cascades to versions, strictly scoped to creator, owner collaborator, or super-admin)
+export async function deleteDiagram(id: string, userId?: string, isSuperAdmin = false): Promise<void> {
   await ensureTablesExist();
+  if (!id) return;
+  if (!userId && !isSuperAdmin) {
+    throw new Error('Unauthorized: User ID or Super-Admin privileges are required to delete a diagram.');
+  }
+
   if (isPostgres()) {
     const pool = getPgPool();
-    if (userId) {
-      await pool.query("DELETE FROM diagrams WHERE id = $1 AND (user_id = $2 OR user_id IS NULL OR user_id LIKE 'guest-%')", [id, userId]);
+    if (isSuperAdmin) {
+      await pool.query('DELETE FROM diagrams WHERE id = $1', [id]);
     } else {
-      await pool.query("DELETE FROM diagrams WHERE id = $1", [id]);
+      await pool.query(
+        `DELETE FROM diagrams 
+         WHERE id = $1 
+           AND (
+             user_id = $2 
+             OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = $2 AND access_level = 'Owner')
+           )`,
+        [id, userId]
+      );
     }
   } else {
     const db = getSqliteDb();
-    if (userId) {
-      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ? AND (user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%')");
-      stmt.run(id, userId);
-    } else {
-      const stmt = db.prepare("DELETE FROM diagrams WHERE id = ?");
+    if (isSuperAdmin) {
+      const stmt = db.prepare('DELETE FROM diagrams WHERE id = ?');
       stmt.run(id);
+    } else {
+      const stmt = db.prepare(
+        `DELETE FROM diagrams 
+         WHERE id = ? 
+           AND (
+             user_id = ? 
+             OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = ? AND access_level = 'Owner')
+           )`
+      );
+      stmt.run(id, userId!, userId!);
     }
   }
 }
 
-// Helper: Batch Delete multiple diagrams
-export async function batchDeleteDiagrams(ids: string[], userId?: string): Promise<number> {
+// Helper: Batch Delete multiple diagrams (strictly scoped to creator, owner collaborator, or super-admin)
+export async function batchDeleteDiagrams(ids: string[], userId?: string, isSuperAdmin = false): Promise<number> {
   if (!ids || ids.length === 0) return 0;
+  if (!userId && !isSuperAdmin) {
+    throw new Error('Unauthorized: User ID or Super-Admin privileges are required to batch delete diagrams.');
+  }
   await ensureTablesExist();
+
   if (isPostgres()) {
     const pool = getPgPool();
-    if (userId) {
-      const res = await pool.query("DELETE FROM diagrams WHERE id = ANY($1::text[]) AND (user_id = $2 OR user_id IS NULL OR user_id LIKE 'guest-%')", [ids, userId]);
+    if (isSuperAdmin) {
+      const res = await pool.query('DELETE FROM diagrams WHERE id = ANY($1::text[])', [ids]);
       return res.rowCount || 0;
     } else {
-      const res = await pool.query("DELETE FROM diagrams WHERE id = ANY($1::text[])", [ids]);
+      const res = await pool.query(
+        `DELETE FROM diagrams 
+         WHERE id = ANY($1::text[]) 
+           AND (
+             user_id = $2 
+             OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = $2 AND access_level = 'Owner')
+           )`,
+        [ids, userId]
+      );
       return res.rowCount || 0;
     }
   } else {
     const db = getSqliteDb();
     const placeholders = ids.map(() => '?').join(',');
-    if (userId) {
-      const stmt = db.prepare(`DELETE FROM diagrams WHERE id IN (${placeholders}) AND (user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%')`);
-      const info = stmt.run(...ids, userId);
-      return Number(info.changes || 0);
-    } else {
+    if (isSuperAdmin) {
       const stmt = db.prepare(`DELETE FROM diagrams WHERE id IN (${placeholders})`);
       const info = stmt.run(...ids);
+      return Number(info.changes || 0);
+    } else {
+      const stmt = db.prepare(
+        `DELETE FROM diagrams 
+         WHERE id IN (${placeholders}) 
+           AND (
+             user_id = ? 
+             OR id IN (SELECT diagram_id FROM diagram_collaborators WHERE user_id = ? AND access_level = 'Owner')
+           )`
+      );
+      const info = stmt.run(...ids, userId!, userId!);
       return Number(info.changes || 0);
     }
   }
 }
 
-// Helper: Clear all diagrams (purge previous legacy canvases)
+// Helper: Clear all diagrams for a specific user (never wipes entire database or cross-tenant records)
 export async function clearAllDiagrams(userId?: string): Promise<void> {
   await ensureTablesExist();
+  if (!userId) {
+    throw new Error('Unauthorized: Valid user ID is required to clear diagram history.');
+  }
+
   if (isPostgres()) {
     const pool = getPgPool();
-    if (userId) {
-      await pool.query("DELETE FROM diagrams WHERE user_id = $1 OR user_id IS NULL OR user_id LIKE 'guest-%'", [userId]);
-    } else {
-      await pool.query("DELETE FROM diagrams");
-    }
+    await pool.query('DELETE FROM diagrams WHERE user_id = $1', [userId]);
   } else {
     const db = getSqliteDb();
-    if (userId) {
-      const stmt = db.prepare("DELETE FROM diagrams WHERE user_id = ? OR user_id IS NULL OR user_id LIKE 'guest-%'");
-      stmt.run(userId);
-    } else {
-      const stmt = db.prepare("DELETE FROM diagrams");
-      stmt.run();
-    }
+    const stmt = db.prepare('DELETE FROM diagrams WHERE user_id = ?');
+    stmt.run(userId);
   }
 }
 

@@ -642,7 +642,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
       t.name.toLowerCase() === rawId.toLowerCase()
   );
   if (canonicalMatch) {
-    let xml = canonicalMatch.generateXml('general', 'dark');
+    let xml = canonicalMatch.generateXml('general', 'light');
     const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== canonicalMatch.name);
     if (hasCustomUserPrompt) {
       const cleanUseCase = (useCaseContext && !/^\d+\.\s/.test(useCaseContext)) ? useCaseContext : undefined;

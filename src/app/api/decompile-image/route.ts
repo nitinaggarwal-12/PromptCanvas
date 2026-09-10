@@ -27,6 +27,10 @@ export async function POST(req: NextRequest) {
       summary: result.summary,
       extractedZones: result.extractedZones,
       componentCount: result.componentCount,
+      isFallback: result.isFallback,
+      modelUsed: result.modelUsed,
+      attribution: result.attribution,
+      fallbackReason: result.fallbackReason,
     });
   } catch (error: any) {
     console.error('API Error in /api/decompile-image:', error);

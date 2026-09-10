@@ -153,13 +153,13 @@ ${origin ? `<base href="${origin}/">` : ''}
   }
   .canvas-container {
     ${allowFullScaleScroll
-      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`
-      : `position: absolute; inset: 0; padding: 8px 12px 20px 12px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
+      ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
+      : `position: absolute; inset: 0; padding: 12px 16px 20px 16px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`}
   }
   .mxgraph {
     ${allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block !important; margin: 0 auto; background: transparent;`
-      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent; margin: 0 auto !important;`}
+      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: flex-start; justify-content: center; background: transparent; margin: 0 auto !important;`}
   }
   #diagram-container {
     margin-top: 0 !important;
@@ -171,14 +171,36 @@ ${origin ? `<base href="${origin}/">` : ''}
   .mxgraph > div > svg {
     ${allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; margin: auto !important; display: block !important;`
-      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
+      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
   }
   .mxgraph > div {
     ${allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block;`
-      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;`}
+      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: flex-start; justify-content: center;`}
   }
   .geEditor { background-color: transparent !important; }
+
+  /* High-contrast dark canvas text overrides: prevent invisible black text on dark canvas */
+  ${bgTheme === 'dark' ? `
+  .mxgraph foreignObject > div[style*="rgb(0, 0, 0)"] {
+    color: #F8FAFC !important;
+  }
+  .mxgraph foreignObject div[style*="background: #ffffff"],
+  .mxgraph foreignObject div[style*="background:#ffffff"],
+  .mxgraph foreignObject div[style*="background: rgb(255, 255, 255)"],
+  .mxgraph foreignObject div[style*="background: white"],
+  .mxgraph foreignObject div[style*="background-color: #ffffff"],
+  .mxgraph foreignObject div[style*="background-color:#ffffff"],
+  .mxgraph foreignObject div[style*="background-color: rgb(255, 255, 255)"],
+  .mxgraph foreignObject div[style*="background-color: white"] {
+    color: #0F172A !important;
+  }
+  .mxgraph text[fill="#000000"],
+  .mxgraph text[fill="rgb(0,0,0)"],
+  .mxgraph text[fill="black"] {
+    fill: #F8FAFC !important;
+  }
+  ` : ''}
 
   /* Smooth customized scrollbars */
   ::-webkit-scrollbar { width: 8px; height: 8px; }

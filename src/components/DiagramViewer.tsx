@@ -249,7 +249,7 @@ export default function DiagramViewer({
           bottom: 0;
           left: 0;
           right: 0;
-          padding: 4px;
+          padding: 12px 16px 20px 16px;
           box-sizing: border-box;
           overflow: auto;
           overscroll-behavior: contain;
@@ -259,7 +259,7 @@ export default function DiagramViewer({
           width: 100%;
           min-height: 100%;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           justify-content: center;
         }
         .mxgraph > svg, .mxgraph > div {
@@ -271,6 +271,27 @@ export default function DiagramViewer({
         .geEditor {
           background-color: transparent !important;
         }
+        ${bgTheme === 'dark' ? `
+        /* High-contrast dark canvas text overrides: prevent invisible black text on dark canvas */
+        .mxgraph foreignObject > div[style*="rgb(0, 0, 0)"] {
+          color: #F8FAFC !important;
+        }
+        .mxgraph foreignObject div[style*="background: #ffffff"],
+        .mxgraph foreignObject div[style*="background:#ffffff"],
+        .mxgraph foreignObject div[style*="background: rgb(255, 255, 255)"],
+        .mxgraph foreignObject div[style*="background: white"],
+        .mxgraph foreignObject div[style*="background-color: #ffffff"],
+        .mxgraph foreignObject div[style*="background-color:#ffffff"],
+        .mxgraph foreignObject div[style*="background-color: rgb(255, 255, 255)"],
+        .mxgraph foreignObject div[style*="background-color: white"] {
+          color: #0F172A !important;
+        }
+        .mxgraph text[fill="#000000"],
+        .mxgraph text[fill="rgb(0,0,0)"],
+        .mxgraph text[fill="black"] {
+          fill: #F8FAFC !important;
+        }
+        ` : ''}
         @media (max-width: 1280px), (pointer: coarse) {
           .canvas-container {
             padding: 8px 24px 18px 8px;
