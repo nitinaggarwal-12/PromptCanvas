@@ -74,6 +74,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
     1. Visual before/after screenshot comparisons stored in `scratch/screenshots_<task_id>/`.
     2. Explicit checklist verification of all elements, labels, headers, and routing paths.
     3. Direct DOM/canvas inspection logs verifying zero overlaps.
+* **Mandatory Dynamic Conversational & Intent Fuzzing Gate**:
+  - Every single prompt input bar, chat assistant composer, or AI copilot across all 14 routes (`/studio`, `/studioprod`, `/studio1`, `/studio2`, `/workspace`, `/gcp`, `DocGenFloatingCopilot`) MUST undergo dynamic interactive fuzzing using automated headless Puppeteer test scripts before certification.
+  - Fuzzing suite MUST test 4 standard non-mutation cases:
+    1. Casual greetings (`"Hi"`, `"Hello"`, `"Good morning"`)
+    2. Identity & capability queries (`"who are you"`, `"what can you do"`, `"help"`)
+    3. Courtesies & acknowledgments (`"thanks"`, `"ok"`, `"got it"`)
+    4. Short ambiguous phrases ($\le 2$ words, e.g. `"fast"`, `"scale"`, `"blue"`)
+  - The test suite MUST explicitly assert:
+    - Zero canvas / diagram mutations occurred.
+    - Zero version bump (e.g. `v1.0` remains strictly `v1.0`).
+    - Zero fake diff cards or AST modification notifications.
+    - Zero uncaught exceptions or error toasts.
+    - Friendly, structured conversational response is rendered in chat history.
+* **Mandatory Repository-Wide Blast Radius Sweep Protocol**:
+  - Whenever an issue, defect, or missing requirement is discovered in any single component or route (e.g. a prompt input behaving inappropriately on `"Hi"`), the agent MUST NEVER stop at fixing only that isolated instance.
+  - The agent MUST immediately execute an autonomous blast radius sweep across the entire repository (using ripgrep/AST inspection) to identify all sibling implementations sharing the same pattern (e.g. all `handleSendPrompt`, `onSubmit`, `executePrompt` handlers).
+  - All matching instances must be updated, verified, and certified in the same PR/commit before declaring the task resolved.
 * **Clickable Audit Artifact Links**:
   - All audit reports, screenshot walkthroughs, and comparison canvases must be presented to the user with clickable `file://` markdown links immediately upon completion of the remediation loop.
 
@@ -255,12 +272,13 @@ This version has breaking changes — APIs, conventions, and file structure may 
       - **Databases & Cache**: Official BigQuery (`bigquery`), Cloud Spanner (`spanner`), and Cloud Memorystore (`memorystore`).
       - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
       - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
-18. **Mandatory GCP Prompt-to-Architecture Anti-Drift & Semantic Guardrail Gate**:
-    - **5-Way Multi-Intent Classification & Conversational Non-Mutation Law**: All user prompts targeting Google Cloud diagrams, Vision AI decompilers, and Studio Workspaces MUST pass through `classifyChatIntent` to classify into 5 distinct categories:
-      1. `greeting` (Casual greetings: "hi", "hello", "hey", "good morning"): Responds immediately with a friendly greeting, active diagram context, and 1-click suggested actions without mutating the diagram, creating snapshot tags, or generating topology diffs.
-      2. `identity` (Identity & capabilities: "who are you", "who r u", "what can you do", "help"): Clearly articulates the 4 core capabilities (flow explanation, gap analysis, deterministic canvas mutation, multi-persona reviews) without reciting generic Well-Architected gaps.
-      3. `conversational` (Courtesy & acknowledgments: "thanks", "thank you", "cool", "ok", "got it"): Acknowledges politely without canvas changes.
-      4. `question` (Advisory & Q&A analysis: "what missing in this architecture", "explain data flow", "is this secure?"): Evaluates against Google Cloud Well-Architected Framework and returns advisory guidance and 1-click upgrade pills without mutating the diagram.
+18. **Mandatory Universal App-Wide Prompt & Chatbot Conversational Guardrail Gate**:
+    - **App-Wide Scope (All 14 Routes & Copilot Dialogs)**: This guardrail strictly applies across all copilot prompt inputs, AI composers, and chat sidebars across the entire application: `/studio`, `/studioprod`, `/studio1`, `/studio2`, `/workspace`, `/gcp`, and floating copilots (`DocGenFloatingCopilot`). Under NO circumstances may ANY prompt composer mutate state, increment version tags, or call generative synthesis APIs on casual or conversational inputs.
+    - **5-Way Multi-Intent Classification & Conversational Non-Mutation Law**: All user prompts MUST pass through `classifyChatIntent` (`@/lib/router/chatIntentClassifier`) to classify into 5 distinct categories before executing any mutation logic:
+      1. `greeting` (Casual greetings: "hi", "hello", "hey", "good morning"): Responds immediately with a friendly greeting, active context, and suggested actions without mutating diagrams/documents, creating snapshot tags, or generating topology diffs.
+      2. `identity` (Identity & capabilities: "who are you", "who r u", "what can you do", "help"): Clearly articulates core capabilities without reciting generic Well-Architected gaps or triggering mutations.
+      3. `conversational` (Courtesy & acknowledgments: "thanks", "thank you", "cool", "ok", "got it"): Acknowledges politely without canvas or document changes.
+      4. `question` (Advisory & Q&A analysis: "what missing in this architecture", "explain data flow", "is this secure?"): Evaluates against architectural standards and returns advisory guidance and 1-click upgrade pills without mutating the diagram.
       5. `mutation` (Architectural refactoring: "add Cloud Armor", "replace BigQuery with Spanner", "connect Pub/Sub to Cloud Run"): Synthesizes updates, executes collision-free channel allocation, and increments the version snapshot tree.
     - **Short Phrase Non-Mutation Safeguard**: Any user prompt containing $\le 2$ words that lacks explicit imperative mutation action verbs (`add`, `remove`, `delete`, `replace`, `swap`, `scale`, `connect`, `wire`) MUST be classified as non-mutation (`greeting` or `conversational`). Under no circumstances may an ambiguous short phrase generate a diagram mutation or increment a version snapshot tag.
     - **Cross-Cloud Vendor Entity Normalization**: When prompts reference third-party cloud primitives (e.g., AWS S3, DynamoDB, Lambda, SQS, EKS, Azure Blob), they MUST automatically normalize to native Google Cloud components (`Cloud Storage`, `Cloud Spanner`, `Cloud Run`, `Pub/Sub`, `GKE Autopilot`) and render using official GCP vector SVGs from `src/lib/gcpIcons.ts`.
