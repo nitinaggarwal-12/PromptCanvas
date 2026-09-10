@@ -1,32 +1,139 @@
+export type ChatIntentType = 'greeting' | 'identity' | 'conversational' | 'question' | 'mutation';
+
 export interface ChatIntentResult {
   isQuestion: boolean;
-  intent: 'question' | 'mutation';
+  intent: ChatIntentType;
   confidence: number;
   reason: string;
 }
 
 /**
  * 🧠 Classifies a user chat/prompt message into either:
+ * - 'greeting' (Casual user greeting: "hi", "hello", "hey there", "good morning")
+ * - 'identity' (Identity & capability queries: "who are you", "who r u", "what can you do", "help")
+ * - 'conversational' (Courtesy & acknowledgments: "thanks", "thank you", "cool", "got it")
  * - 'question' (Advisory & Q&A analysis: "what missing in this architecture", "explain data flow", "is this secure?")
  * - 'mutation' (Diagram structure refactoring: "add Cloud Armor", "replace BigQuery with Spanner", "connect Pub/Sub to Cloud Run")
  */
 export function classifyChatIntent(prompt: string): ChatIntentResult {
   if (!prompt || typeof prompt !== 'string') {
     return {
-      isQuestion: false,
-      intent: 'mutation',
+      isQuestion: true,
+      intent: 'conversational',
       confidence: 1.0,
-      reason: 'Empty prompt defaults to mutation'
+      reason: 'Empty prompt'
     };
   }
 
   const clean = prompt.trim();
   const lower = clean.toLowerCase();
+  const stripped = lower.replace(/[!?.,;:"']/g, '').trim();
+  const words = stripped.split(/\s+/).filter(Boolean);
 
-  // 1. Direct Question Mark Check
+  // 1. Casual Greetings Check
+  const greetings = [
+    'hi',
+    'hello',
+    'hey',
+    'howdy',
+    'hola',
+    'sup',
+    'yo',
+    'greetings',
+    'hi there',
+    'hello there',
+    'hey there',
+    'good morning',
+    'good afternoon',
+    'good evening',
+    'good day',
+    'hiya',
+    'heyy',
+    'heyyy'
+  ];
+
+  if (
+    greetings.includes(stripped) ||
+    (words.length <= 3 && (words[0] === 'hi' || words[0] === 'hello' || words[0] === 'hey'))
+  ) {
+    return {
+      isQuestion: true,
+      intent: 'greeting',
+      confidence: 0.99,
+      reason: 'User greeting'
+    };
+  }
+
+  // 2. Identity & Capabilities Inquiry
+  const identityPhrases = [
+    'who are you',
+    'who r you',
+    'who r u',
+    'who are u',
+    'what are you',
+    'what is this',
+    'what can you do',
+    'what do you do',
+    'what are your capabilities',
+    'how do i use this',
+    'how does this tool work',
+    'what is your name',
+    'introduce yourself',
+    'help',
+    'help me',
+    'who made you'
+  ];
+
+  if (
+    identityPhrases.some(p => stripped === p || stripped.startsWith(p)) ||
+    (stripped.startsWith('who') && (stripped.includes('you') || stripped.includes(' u')))
+  ) {
+    return {
+      isQuestion: true,
+      intent: 'identity',
+      confidence: 0.98,
+      reason: 'Identity or capability inquiry'
+    };
+  }
+
+  // 3. Courtesy & Acknowledgment
+  const conversationalPhrases = [
+    'thanks',
+    'thank you',
+    'thx',
+    'thank u',
+    'appreciate it',
+    'many thanks',
+    'ok',
+    'okay',
+    'cool',
+    'great',
+    'awesome',
+    'nice',
+    'good',
+    'perfect',
+    'got it',
+    'sounds good',
+    'understood',
+    'bye',
+    'goodbye',
+    'see ya',
+    'cya'
+  ];
+
+  if (conversationalPhrases.includes(stripped)) {
+    return {
+      isQuestion: true,
+      intent: 'conversational',
+      confidence: 0.98,
+      reason: 'Courtesy or acknowledgment'
+    };
+  }
+
+  // 4. Direct Question Mark Check
   const hasQuestionMark = clean.endsWith('?');
 
-  // 2. Strong Question / Inquiry Phrases
+  // 5. Strong Question / Inquiry Phrases
   const questionPhrases = [
     'what missing',
     'what is missing',
@@ -90,7 +197,28 @@ export function classifyChatIntent(prompt: string): ChatIntentResult {
     }
   }
 
-  // 3. Question Starter Words / Prefixes
+  // 6. Polite Imperative Mutations: "Can you add/create/remove/replace X?"
+  const politeMutation = (
+    lower.startsWith('can you add') ||
+    lower.startsWith('can you create') ||
+    lower.startsWith('can you remove') ||
+    lower.startsWith('can you replace') ||
+    lower.startsWith('please add') ||
+    lower.startsWith('please create') ||
+    lower.startsWith('please remove') ||
+    lower.startsWith('please replace')
+  );
+
+  if (politeMutation) {
+    return {
+      isQuestion: false,
+      intent: 'mutation',
+      confidence: 0.9,
+      reason: 'Polite imperative mutation request'
+    };
+  }
+
+  // 7. Question Starter Words / Prefixes
   const questionStarters = [
     'what',
     'why',
@@ -122,7 +250,16 @@ export function classifyChatIntent(prompt: string): ChatIntentResult {
     lower.startsWith(starter + ' ') || lower === starter
   );
 
-  // 4. Imperative Action Starters (Strong Mutation Indicators)
+  if (firstWordMatch || hasQuestionMark) {
+    return {
+      isQuestion: true,
+      intent: 'question',
+      confidence: 0.9,
+      reason: hasQuestionMark ? 'Ends with question mark' : 'Begins with question starter word'
+    };
+  }
+
+  // 8. Imperative Action Starters (Strong Mutation Indicators)
   const mutationStarters = [
     'add ',
     'insert ',
@@ -151,8 +288,7 @@ export function classifyChatIntent(prompt: string): ChatIntentResult {
 
   const startsWithMutation = mutationStarters.some(starter => lower.startsWith(starter));
 
-  // If starts with strong mutation verb without question mark, it is a mutation
-  if (startsWithMutation && !hasQuestionMark) {
+  if (startsWithMutation) {
     return {
       isQuestion: false,
       intent: 'mutation',
@@ -161,47 +297,29 @@ export function classifyChatIntent(prompt: string): ChatIntentResult {
     };
   }
 
-  // If has question starter or question mark
-  if (firstWordMatch || hasQuestionMark) {
-    // Check if user is saying "Can you add/create/remove/replace X?"
-    if (
-      lower.startsWith('can you add') ||
-      lower.startsWith('can you create') ||
-      lower.startsWith('can you remove') ||
-      lower.startsWith('can you replace') ||
-      lower.startsWith('please add') ||
-      lower.startsWith('please create') ||
-      lower.startsWith('please remove') ||
-      lower.startsWith('please replace')
-    ) {
-      return {
-        isQuestion: false,
-        intent: 'mutation',
-        confidence: 0.85,
-        reason: 'Polite imperative mutation request'
-      };
-    }
-
-    return {
-      isQuestion: true,
-      intent: 'question',
-      confidence: 0.9,
-      reason: hasQuestionMark ? 'Ends with question mark' : 'Begins with question starter word'
-    };
-  }
-
-  // 5. Default check for analysis keywords
+  // 9. Analysis keywords check
   const analysisKeywords = ['analysis', 'recommendation', 'opinion', 'assessment', 'audit', 'critique', 'feedback', 'gap'];
   if (analysisKeywords.some(kw => lower.includes(kw))) {
     return {
       isQuestion: true,
       intent: 'question',
-      confidence: 0.75,
+      confidence: 0.8,
       reason: 'Contains architectural assessment keyword'
     };
   }
 
-  // Default to mutation for general text edits / additions
+  // 10. Safeguard: Short non-mutation inputs (<= 2 words) without mutation verbs
+  const mutationKeywords = ['add', 'remove', 'delete', 'connect', 'wire', 'replace', 'swap', 'scale', 'split', 'merge'];
+  if (words.length <= 2 && !words.some(w => mutationKeywords.includes(w))) {
+    return {
+      isQuestion: true,
+      intent: 'conversational',
+      confidence: 0.75,
+      reason: 'Short ambiguous input without mutation verbs'
+    };
+  }
+
+  // Default to mutation for longer descriptive refactoring prompts
   return {
     isQuestion: false,
     intent: 'mutation',

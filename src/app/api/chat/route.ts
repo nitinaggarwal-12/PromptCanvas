@@ -83,7 +83,47 @@ function generateDeterministicAdvisory(
     });
   }
 
-  const cleanPrompt = prompt.toLowerCase();
+  const cleanPrompt = prompt.toLowerCase().replace(/[!?.,;:"']/g, '').trim();
+  const words = cleanPrompt.split(/\s+/).filter(Boolean);
+
+  const greetings = ['hi', 'hello', 'hey', 'howdy', 'hola', 'sup', 'yo', 'greetings', 'hi there', 'hello there', 'hey there', 'good morning', 'good afternoon', 'good evening'];
+  const identityPhrases = ['who are you', 'who r you', 'who r u', 'who are u', 'what are you', 'what is this', 'what can you do', 'what do you do', 'what is your name', 'help', 'introduce yourself'];
+  const courtesyPhrases = ['thanks', 'thank you', 'thx', 'thank u', 'appreciate it', 'many thanks', 'ok', 'okay', 'cool', 'great', 'awesome', 'nice', 'good', 'perfect', 'got it', 'sounds good', 'bye', 'goodbye'];
+
+  if (greetings.includes(cleanPrompt) || (words.length <= 2 && (words[0] === 'hi' || words[0] === 'hello' || words[0] === 'hey'))) {
+    return {
+      answer: `👋 **Hello! I'm your Architecture Co-Pilot.**\n\nI can help you review, optimize, and refactor **${diagramName || 'your system architecture'}**.\n\n**You can ask me to:**\n- 🔍 **Explain data flow**: *"How do clients communicate with the core microservices?"*\n- 🛡️ **Audit gaps & security**: *"What security controls or perimeters are missing?"*\n- ⚡ **Modify the architecture**: *"Add Cloud Armor WAF"*, *"Add Memorystore Redis cache"*, or *"Upgrade Spanner to multi-region"*\n\nHow can I help you with your architecture today?`,
+      summary: `Welcome to Architecture Co-Pilot for ${diagramName || 'Enterprise Cloud'}. Ready for analysis or topology mutations.`,
+      suggestions: [
+        { label: 'Review Security Gaps', actionPrompt: 'What security controls or perimeters are missing in this architecture?', type: 'security' },
+        { label: 'Explain Data Flow', actionPrompt: 'Explain the end-to-end data flow across this architecture topology.', type: 'modify' },
+        { label: 'Add Memorystore Cache', actionPrompt: 'Add Cloud Memorystore Redis cache to reduce database query load.', type: 'add' }
+      ],
+      identifiedGaps: []
+    };
+  }
+
+  if (identityPhrases.some(p => cleanPrompt === p || cleanPrompt.startsWith(p)) || (cleanPrompt.startsWith('who') && (cleanPrompt.includes('you') || cleanPrompt.includes(' u')))) {
+    return {
+      answer: `🏛️ **I am the Architecture Co-Pilot**, an AI-powered cloud systems specialist built into PromptCanvas.\n\n**My core capabilities include:**\n1. **Flow & Topology Analysis**: Breaking down components, communication patterns, and network perimeters.\n2. **Well-Architected Gap Analysis**: Evaluating your diagrams against Google Cloud Well-Architected Framework and CIS Foundations.\n3. **Living Spec Synchronization**: Keeping Living Specifications (HLD, STRIDE, DDL) in sync with Draw.io diagram models.\n4. **Interactive Topology Mutation**: Refactoring services, load balancers, event queues, and datastores directly on your canvas.\n\nTry asking: *"What are the reliability risks in this design?"* or *"Add Cloud Armor Enterprise in front of the load balancer"*.`,
+      summary: `Architecture Co-Pilot identity and capability overview.`,
+      suggestions: [
+        { label: 'Audit Topology', actionPrompt: 'Perform a comprehensive Well-Architected audit of this design.', type: 'security' },
+        { label: 'Add Cloud Armor WAF', actionPrompt: 'Add Cloud Armor WAF for DDoS protection and OWASP Top 10 mitigation.', type: 'security' }
+      ],
+      identifiedGaps: []
+    };
+  }
+
+  if (courtesyPhrases.includes(cleanPrompt)) {
+    return {
+      answer: `You're very welcome! Feel free to ask more questions about this architecture, request topology changes, or simulate stakeholder reviews whenever you're ready.`,
+      summary: `Acknowledgment processed. Co-Pilot standing by.`,
+      suggestions: [],
+      identifiedGaps: []
+    };
+  }
+
   let answer = '';
 
   if (cleanPrompt.includes('missing') || cleanPrompt.includes('gap') || cleanPrompt.includes('review') || cleanPrompt.includes('audit')) {

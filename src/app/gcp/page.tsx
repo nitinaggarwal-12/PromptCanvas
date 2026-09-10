@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
@@ -124,6 +124,11 @@ function GcpArchitectureCenterInner() {
   const [activeVersionTag, setActiveVersionTag] = useState<string>('v1.0');
   const [versions, setVersions] = useState<GcpVersionSnapshot[]>([]);
   const [messages, setMessages] = useState<GcpChatMessage[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isChatThinking]);
 
   // Sync state if URL searchParam changes
   useEffect(() => {
@@ -209,16 +214,85 @@ function GcpArchitectureCenterInner() {
     setMessages((prev) => [...prev, userMsg]);
     setPromptInput('');
 
-    // 1. Intent Classification: Informational Q&A / Advisory vs Topology Mutation
+    // 0. Intent Classification: Greeting / Identity / Advisory Q&A vs Mutation
     const intentResult = classifyChatIntent(promptText);
 
+    // 1. Casual Greetings Check
+    if (intentResult.intent === 'greeting' && !explicitPersona) {
+      const greetingMsg: GcpChatMessage = {
+        id: `msg_greet_${Date.now()}`,
+        sender: 'assistant',
+        text: `👋 **Hello! I'm your Google Cloud Architecture Co-Pilot.**\n\nI can help you review, explain, and evolve this **${activeArch.title}** diagram.\n\n**Here are a few things you can ask me:**\n• 🔍 **Explain data flow**: *"How do external clients connect to the application core?"*\n• 🛡️ **Analyze gaps**: *"What security or reliability controls are missing?"*\n• ⚡ **Mutate topology**: *"Add Cloud Armor WAF"* or *"Upgrade Spanner to multi-region nam3"*\n• 👥 **Simulate personas**: Click any persona badge above (Product Manager, Lead Architect, CISO, FinOps).\n\nWhat would you like to explore or update?`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isQuestionAdvisory: true,
+        suggestions: [
+          {
+            label: 'Review Security Gaps',
+            actionPrompt: 'What security controls or perimeters are missing in this architecture?',
+            type: 'security',
+          },
+          {
+            label: 'Add Cloud Armor WAF',
+            actionPrompt: 'Add Google Cloud Armor Enterprise WAF in front of the public load balancer.',
+            type: 'security',
+          },
+          {
+            label: 'Explain Data Flow',
+            actionPrompt: 'Explain the end-to-end data flow from ingress through application core to datastores.',
+            type: 'modify',
+          },
+        ],
+      };
+      setMessages((prev) => [...prev, greetingMsg]);
+      return;
+    }
+
+    // 2. Identity & Capabilities Inquiry Check
+    if (intentResult.intent === 'identity' && !explicitPersona) {
+      const identityMsg: GcpChatMessage = {
+        id: `msg_identity_${Date.now()}`,
+        sender: 'assistant',
+        text: `🏛️ **I am the Google Cloud Architecture Co-Pilot**, an AI-powered cloud systems specialist for PromptCanvas.\n\n**Here is what I can do for you:**\n1. **Flow & Service Explanation**: Trace how requests move across ingress, microservices, Kafka/PubSub queues, and databases.\n2. **Architecture Gap Analysis**: Audit your diagrams against Google Cloud Well-Architected Framework and CIS GCP Foundations.\n3. **Deterministic Canvas Mutation**: Add, swap, or re-wire cloud components with automatic collision-free layout.\n4. **Multi-Persona Stakeholder Reviews**: Synthesize reviews from CISO, FinOps, Lead Architect, and Product perspectives.\n\nTry asking: *"What are the security vulnerabilities in this design?"* or *"Add Cloud Memorystore Redis cache"*!`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isQuestionAdvisory: true,
+        suggestions: [
+          {
+            label: 'Audit Security Gaps',
+            actionPrompt: 'What security controls or perimeters are missing in this architecture?',
+            type: 'security',
+          },
+          {
+            label: 'Add Memorystore Redis',
+            actionPrompt: 'Add Cloud Memorystore Redis cache cluster to reduce database query load.',
+            type: 'add',
+          },
+        ],
+      };
+      setMessages((prev) => [...prev, identityMsg]);
+      return;
+    }
+
+    // 3. Courtesy & Acknowledgment Check
+    if (intentResult.intent === 'conversational' && !explicitPersona) {
+      const convMsg: GcpChatMessage = {
+        id: `msg_conv_${Date.now()}`,
+        sender: 'assistant',
+        text: `You're very welcome! Feel free to ask questions about this architecture, request topology refactoring, or click any persona button above to simulate a stakeholder review.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isQuestionAdvisory: true,
+      };
+      setMessages((prev) => [...prev, convMsg]);
+      return;
+    }
+
+    // 4. Informational Q&A / Architecture Advisory
     if (intentResult.intent === 'question' && !explicitPersona) {
       setIsChatThinking(true);
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(2500),
+          signal: AbortSignal.timeout(8000),
           body: JSON.stringify({
             prompt: promptText,
             diagramName: activeArch.title,
@@ -253,7 +327,7 @@ function GcpArchitectureCenterInner() {
         const fallbackMsg: GcpChatMessage = {
           id: `msg_adv_fallback_${Date.now()}`,
           sender: 'assistant',
-          text: `Architectural Advisory for "${promptText.slice(0, 60)}":\n\nThis architecture complies with Google Cloud Well-Architected frameworks featuring TLS 1.3 encryption, IAM principle of least privilege, multi-zone automated failover, and zero-trust VPC Service Controls perimeters.`,
+          text: `### 🏛️ Architecture Guidance: ${activeArch.title}\n\nThis architecture complies with Google Cloud Well-Architected frameworks featuring TLS 1.3 encryption, IAM principle of least privilege, multi-zone automated failover, and zero-trust VPC Service Controls perimeters.\n\n**Regarding your inquiry ("${promptText.slice(0, 60)}"):**\n• Ingress channels terminate at regional Application Load Balancers with managed SSL certificates.\n• Microservices communicate inside isolated VPC subnets with Cloud IAM workload identity.\n• Distributed storage leverages automated multi-region replication and Customer-Managed Encryption Keys (CMEK).`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           isQuestionAdvisory: true,
           identifiedGaps: [
@@ -1035,6 +1109,7 @@ function GcpArchitectureCenterInner() {
                         <span className="font-medium">Evaluating architecture topology, gaps, and SLAs...</span>
                       </div>
                     )}
+                    <div ref={messagesEndRef} />
                   </div>
 
                   {/* Sticky Prompt Composer */}

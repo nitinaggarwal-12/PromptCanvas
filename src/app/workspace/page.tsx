@@ -2229,9 +2229,9 @@ function WorkspaceContent() {
       // 🧠 1. Classify User Intent: Architecture Question/Advisory vs Topology Mutation
       const intentResult = classifyChatIntent(userPrompt);
 
-      if (intentResult.intent === 'question') {
+      if (intentResult.intent !== 'mutation') {
         setIsChatThinking(true);
-        // 🏛️ Informational / Advisory Q&A: Answer truthfully in writing without modifying the diagram XML
+        // 🏛️ Informational / Advisory Q&A / Greeting: Answer truthfully in writing without modifying the diagram XML
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...(userApiKey ? { 'x-gemini-api-key': userApiKey } : {}) },
