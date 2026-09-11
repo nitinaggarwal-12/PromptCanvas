@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 function getDomainContextualChips(
   projectTitle: string,
@@ -208,9 +209,14 @@ Respond with the JSON object now:`;
     }
   } catch (err: any) {
     console.error('[DocGen Copilot API] Error:', err);
+    // Surface the upstream status (503 overload / 429 rate limit) rather than a
+    // blanket 500, so clients and proxies can distinguish transient from fatal.
     return NextResponse.json(
-      { error: err.message || 'Failed to process copilot request' },
-      { status: 500 }
+      {
+        error: toUserFacingMessage(err, 'Copilot request'),
+        retryable: parseUpstreamError(err).isRetryable,
+      },
+      { status: toResponseStatus(err) }
     );
   }
 }

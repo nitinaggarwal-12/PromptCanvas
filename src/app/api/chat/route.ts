@@ -3,6 +3,7 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { parseXmlNodesAndEdges } from '@/lib/graph/xmlNodesParser';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 export interface ChatSuggestion {
   label: string;
@@ -325,9 +326,14 @@ Return JSON adhering strictly to:
     });
   } catch (error: any) {
     console.error('[API/Chat] Error executing architecture advisory:', error);
+    // Surface the upstream status (503 overload / 429 rate limit) rather than a
+    // blanket 500, so clients and proxies can distinguish transient from fatal.
     return NextResponse.json(
-      { error: error?.message || 'Failed to process architecture advisory request' },
-      { status: 500 }
+      {
+        error: toUserFacingMessage(error, 'Architecture advisory'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   }
 }

@@ -4,6 +4,7 @@ import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngin
 import { injectUseCaseFlavor } from './diagramCleaner';
 import { GEMINI_MODEL_ID } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
+import { toUserFacingMessage } from './ai/modelErrors';
 
 export interface CustomizationResult {
   xml: string;
@@ -355,7 +356,9 @@ ${JSON.stringify(nodesToCustomize.map(n => ({
       isFallback: true,
       modelUsed: null,
       attribution: 'Deterministic Template Customizer (injectUseCaseFlavor)',
-      fallbackReason: err instanceof Error ? err.message : 'Gemini customization error'
+      // `err.message` from @google/genai is a raw JSON envelope and this field
+      // is rendered in the UI, so it must be sanitized before it escapes.
+      fallbackReason: toUserFacingMessage(err, 'Gemini customization')
     };
   }
 }

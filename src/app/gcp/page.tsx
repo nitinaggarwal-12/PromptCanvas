@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { useTheme } from '@/lib/themeContext';
+import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
 import {
   ALL_GCP_DIALECT_A_ARCHITECTURES,
   getGcpArchitectureById,
@@ -84,15 +85,11 @@ function GcpArchitectureCenterInner() {
   const [copiedDagJson, setCopiedDagJson] = useState<boolean>(false);
 
   // Left Navigation Menu Collapsible State (synced with UnifiedAppSidebar)
-  const [isLeftNavOpen, setIsLeftNavOpen] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('promptcanvas_sidebar_open');
-        if (saved !== null) return saved === 'true';
-      } catch {}
-    }
-    return false;
-  });
+  // Hydration-safe: collapsed during SSR + hydration, synced pre-paint on the client.
+  const [isLeftNavOpen, setIsLeftNavOpen] = usePersistentBoolean(
+    'promptcanvas_sidebar_open',
+    false
+  );
 
   useEffect(() => {
     const handleSidebarChange = (e: any) => {

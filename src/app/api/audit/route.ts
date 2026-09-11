@@ -7,6 +7,7 @@ import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
 import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { cookies } from 'next/headers';
 
 export interface AuditGap {
@@ -610,10 +611,14 @@ Respond strictly in JSON matching the schema provided:
     });
   } catch (error: unknown) {
     console.error('Audit failed:', error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    // `error.message` from @google/genai is a raw JSON envelope; never echo it.
     return NextResponse.json(
-      { error: 'Audit Failed', details: errorMessage },
-      { status: 500 }
+      {
+        error: 'Audit Failed',
+        details: toUserFacingMessage(error, 'Audit'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   } finally {
     if (lockAcquired) {

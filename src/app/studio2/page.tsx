@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } fr
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useTheme } from '@/lib/themeContext';
+import { useHydratedState, useIsomorphicLayoutEffect } from '@/lib/hooks/useHydrationSafeState';
 import {
   Layers,
   Sparkles,
@@ -61,6 +62,9 @@ interface PastProject {
   suggestedPrompt: string;
   xml?: string;
 }
+
+/** Deterministic baseline timestamp rendered during SSR + the hydration pass. */
+const BASELINE_SNAPSHOT_TIME_PLACEHOLDER = '--:--:--';
 
 const DEFAULT_PAST_PROJECTS: PastProject[] = [
   {
@@ -335,17 +339,17 @@ function Studio2Content() {
   const [projectScopePrompt, setProjectScopePrompt] = useState<string>('');
 
   // Past Projects & Use Cases State (Pre-seeded with Rich GCP Architectures + LocalStorage)
-  const [pastProjects, setPastProjects] = useState<PastProject[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('promptcanvas_studio2_past_projects');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.error('Failed to load past projects from localStorage', e);
+  // Hydration-safe: seeded defaults render on the server and during hydration; the
+  // persisted list is applied in a pre-paint layout effect.
+  const [pastProjects, setPastProjects] = useHydratedState<PastProject[]>(DEFAULT_PAST_PROJECTS, () => {
+    try {
+      const saved = localStorage.getItem('promptcanvas_studio2_past_projects');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
+    } catch (e) {
+      console.error('Failed to load past projects from localStorage', e);
     }
     return DEFAULT_PAST_PROJECTS;
   });
@@ -501,8 +505,10 @@ function Studio2Content() {
       projectTitle: 'Google Cloud Agentic AI Harness — End-to-End Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    // Deterministic during SSR + hydration. `toLocaleTimeString()` depends on the
+    // clock AND the locale/timezone, so it must not run in a state initializer.
+    // The real local time is stamped in the layout effect directly below.
+    const timeStr = BASELINE_SNAPSHOT_TIME_PLACEHOLDER;
     const initDiagrams: StudioDiagramTab[] = [
       {
         id: 'diag_1',
@@ -537,6 +543,23 @@ function Studio2Content() {
       }
     ];
   });
+
+  // Swap the deterministic hydration placeholder for the viewer's actual local time.
+  useIsomorphicLayoutEffect(() => {
+    const timeStr = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    setVersionHistory((prev) =>
+      prev.map((snap) =>
+        snap.timestamp === BASELINE_SNAPSHOT_TIME_PLACEHOLDER
+          ? { ...snap, timestamp: timeStr }
+          : snap
+      )
+    );
+  }, []);
+
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(0);
 
   // Chat message history

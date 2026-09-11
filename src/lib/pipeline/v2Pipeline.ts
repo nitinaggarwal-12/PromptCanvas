@@ -6,6 +6,7 @@ import { validateDrawioXml, ValidationResult } from '../validate/validator';
 import { ArchitectureGraph } from '../graph/schema';
 import { REPAIR_XML_SYSTEM_PROMPT, buildRepairXmlPrompt } from '../../prompts/repairXml';
 import { GEMINI_MODEL_ID, getGenConfig } from '../geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 export interface V2PipelineTelemetry {
   modelId: string;
@@ -58,7 +59,7 @@ export async function runV2Pipeline(
       );
 
       try {
-        const response = await ai.models.generateContent({
+        const response = await generateContentWithRetry(ai, {
           model: modelId,
           contents: repairPrompt,
           config: {
@@ -137,7 +138,7 @@ export async function runV2EditPipeline(
       );
 
       try {
-        const response = await ai.models.generateContent({
+        const response = await generateContentWithRetry(ai, {
           model: modelId,
           contents: repairPrompt,
           config: {

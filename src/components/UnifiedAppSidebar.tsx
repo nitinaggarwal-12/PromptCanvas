@@ -28,6 +28,7 @@ import {
   PanelLeft,
 } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
+import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { UserProfileModal } from '@/components/UserProfileModal';
 import { AuthModal } from '@/components/AuthModal';
@@ -94,15 +95,12 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
     return true;
   };
 
-  const [internalIsOpen, setInternalIsOpen] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('promptcanvas_sidebar_open');
-        if (saved !== null) return saved === 'true';
-      } catch {}
-    }
-    return false; // Collapsed by default across all pages
-  });
+  // Hydration-safe: renders the collapsed default during SSR + hydration, then
+  // syncs the persisted value in a pre-paint layout effect (no mismatch, no flash).
+  const [internalIsOpen, setInternalIsOpen] = usePersistentBoolean(
+    'promptcanvas_sidebar_open',
+    false // Collapsed by default across all pages
+  );
 
   // Controlled or uncontrolled collapse state
   const isSidebarOpen = isCollapsed !== undefined ? !isCollapsed : internalIsOpen;
@@ -130,18 +128,16 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const toggleSidebar = () => {
     if (onToggle) {
       onToggle();
-    } else {
-      setInternalIsOpen((prev) => {
-        const next = !prev;
-        if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('promptcanvas_sidebar_open', String(next));
-            window.dispatchEvent(new CustomEvent('promptcanvas_sidebar_change', { detail: { isOpen: next } }));
-          } catch {}
-        }
-        return next;
-      });
+      return;
     }
+    // `setInternalIsOpen` persists to localStorage internally (usePersistentBoolean).
+    const next = !internalIsOpen;
+    setInternalIsOpen(next);
+    try {
+      window.dispatchEvent(
+        new CustomEvent('promptcanvas_sidebar_change', { detail: { isOpen: next } })
+      );
+    } catch {}
   };
 
   // Auth fetch

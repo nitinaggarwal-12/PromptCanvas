@@ -8,6 +8,7 @@ import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
@@ -139,10 +140,14 @@ ${remediationInstructions}
     });
   } catch (error: unknown) {
     console.error('Audit remediation failed:', error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    // `error.message` from @google/genai is a raw JSON envelope; never echo it.
     return NextResponse.json(
-      { error: 'Remediation Failed', details: errorMessage },
-      { status: 500 }
+      {
+        error: 'Remediation Failed',
+        details: toUserFacingMessage(error, 'Remediation'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   } finally {
     if (lockAcquired) {

@@ -2,6 +2,7 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { z } from 'zod';
 import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 export const CLASSIFIER_TIMEOUT_MS = 2500;
 export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || 'gemini-3.7-flash';
@@ -32,7 +33,7 @@ async function executeSingleAttempt(prompt: string): Promise<IntentClassificatio
   const timeoutId = setTimeout(() => controller.abort(), CLASSIFIER_TIMEOUT_MS);
 
   try {
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: CLASSIFIER_MODEL_ID,
       contents: systemPrompt,
       config: {

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef, Suspense } fr
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useTheme } from '@/lib/themeContext';
+import { useHydratedState, useIsomorphicLayoutEffect } from '@/lib/hooks/useHydrationSafeState';
 import {
   Layers,
   Sparkles,
@@ -69,6 +70,9 @@ interface PastProject {
   suggestedPrompt: string;
   xml?: string;
 }
+
+/** Deterministic baseline timestamp rendered during SSR + the hydration pass. */
+const BASELINE_SNAPSHOT_TIME_PLACEHOLDER = '--:--:--';
 
 const DEFAULT_PAST_PROJECTS: PastProject[] = [
   {
@@ -416,17 +420,17 @@ function Studio1Content() {
   const [candidateSelection, setCandidateSelection] = useState<Studio1CandidateSelectionState | null>(null);
 
   // Past Projects & Use Cases State (Pre-seeded with Rich GCP Architectures + LocalStorage)
-  const [pastProjects, setPastProjects] = useState<PastProject[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('promptcanvas_studio1_past_projects');
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch (e) {
-        console.error('Failed to load past projects from localStorage', e);
+  // Hydration-safe: seeded defaults render on the server and during hydration; the
+  // persisted list is applied in a pre-paint layout effect.
+  const [pastProjects, setPastProjects] = useHydratedState<PastProject[]>(DEFAULT_PAST_PROJECTS, () => {
+    try {
+      const saved = localStorage.getItem('promptcanvas_studio1_past_projects');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       }
+    } catch (e) {
+      console.error('Failed to load past projects from localStorage', e);
     }
     return DEFAULT_PAST_PROJECTS;
   });
@@ -582,8 +586,10 @@ function Studio1Content() {
       projectTitle: 'Google Cloud Agentic AI Harness — End-to-End Reference Architecture',
       theme: isLight ? 'light' : 'dark'
     });
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    // Deterministic during SSR + hydration. `toLocaleTimeString()` depends on the
+    // clock AND the locale/timezone, so it must not run in a state initializer.
+    // The real local time is stamped in the layout effect directly below.
+    const timeStr = BASELINE_SNAPSHOT_TIME_PLACEHOLDER;
     const initDiagrams: StudioDiagramTab[] = [
       {
         id: 'diag_1',
@@ -618,6 +624,23 @@ function Studio1Content() {
       }
     ];
   });
+
+  // Swap the deterministic hydration placeholder for the viewer's actual local time.
+  useIsomorphicLayoutEffect(() => {
+    const timeStr = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    setVersionHistory((prev) =>
+      prev.map((snap) =>
+        snap.timestamp === BASELINE_SNAPSHOT_TIME_PLACEHOLDER
+          ? { ...snap, timestamp: timeStr }
+          : snap
+      )
+    );
+  }, []);
+
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState<number>(0);
 
   // Chat message history
@@ -1351,7 +1374,15 @@ function Studio1Content() {
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok || !data.success) {
-          throw new Error(data.error || `Studio 1 generation failed with HTTP ${res.status}. No static fallback was rendered.`);
+          // 503/429 are transient capacity issues on the model provider side.
+          // Give the user an actionable message rather than an HTTP code.
+          const transient = res.status === 503 || res.status === 429 || data.retryable === true;
+          const fallback = transient
+            ? 'The architecture model is temporarily overloaded. Your canvas was not changed — please retry in a few seconds.'
+            : `Studio 1 generation failed with HTTP ${res.status}. No static fallback was rendered.`;
+          const synthesisError: any = new Error(data.error || fallback);
+          synthesisError.retryable = transient;
+          throw synthesisError;
         }
 
         if (data.candidateSet && Array.isArray(data.candidateSet.candidates)) {
@@ -1488,13 +1519,38 @@ function Studio1Content() {
       } catch (err: any) {
         console.error('[Studio1] Hybrid synthesis error:', err);
         setProjectScopePrompt(promptToUse);
+
+        // Defence in depth: never render a raw provider JSON envelope such as
+        // {"error":{"code":503,...}} into chat or a toast, even if some future
+        // code path forwards one.
+        const rawMessage: string = typeof err?.message === 'string' ? err.message : '';
+        const safeMessage = rawMessage.trim().startsWith('{')
+          ? 'The architecture model returned an unexpected error.'
+          : (rawMessage || 'Unknown error');
+
+        // The sanitized server copy already explains retryability and that the
+        // canvas is untouched. Only add a hint when it is genuinely missing,
+        // otherwise the user reads the same two sentences twice.
+        const mentionsRetry = /retry|try again/i.test(safeMessage);
+        const mentionsCanvas = /canvas/i.test(safeMessage);
+        let retryHint = '';
+        if (err?.retryable) {
+          if (!mentionsRetry) {
+            retryHint = '\n\nThis is a temporary capacity issue on the model provider, not a problem with your prompt. Retrying usually succeeds.';
+          }
+        } else if (!mentionsCanvas) {
+          retryHint = '\n\nYour canvas was not changed. You can revise the request or try again.';
+        }
+
         setChatMessages((previous) => [...previous, {
           id: `ast_${Date.now()}`,
           sender: 'assistant',
-          text: `I could not produce a safe architecture result: ${err?.message || 'Unknown error'}\n\nYour canvas was not changed. You can revise the request or try again.`,
+          text: `I could not produce a safe architecture result: ${safeMessage}${retryHint}`,
           timestamp: 'Just now'
         }]);
-        showToast(`❌ Synthesis error: ${err?.message || 'Unknown error'}`);
+        showToast(err?.retryable
+          ? '⏳ Model temporarily overloaded — please retry'
+          : `❌ Synthesis error: ${safeMessage.slice(0, 90)}`);
       } finally {
         setIsSynthesizing(false);
         setIsAiThinking(false);

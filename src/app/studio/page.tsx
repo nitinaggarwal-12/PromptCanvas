@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useHydratedState } from '@/lib/hooks/useHydrationSafeState';
 import {
   Layers,
   Bot,
@@ -213,14 +214,14 @@ function StudioMain() {
   const searchParams = useSearchParams();
 
   // 1. Session Mode: Showcase Mode (Default) vs Active Canvas Editor Mode
-  const [isEditorMode, setIsEditorMode] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
+  // Hydration-safe: the server has no URL search params, so both trees start in
+  // showcase mode. The mount effect below promotes to editor mode when `?id=` is set.
+  const [isEditorMode, setIsEditorMode] = useHydratedState<boolean>(false, () => {
     const urlId = new URLSearchParams(window.location.search).get('id');
     return Boolean(urlId && urlId !== 'reference_showcase');
   });
 
-  const [sessionId, setSessionId] = useState<string>(() => {
-    if (typeof window === 'undefined') return 'reference_showcase';
+  const [sessionId, setSessionId] = useHydratedState<string>('reference_showcase', () => {
     return new URLSearchParams(window.location.search).get('id') || 'reference_showcase';
   });
 

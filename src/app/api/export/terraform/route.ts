@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 const TERRAFORM_GCP_SYSTEM_PROMPT = `
 You are an expert Principal Google Cloud Infrastructure Engineer and HashiCorp Terraform Specialist.
@@ -99,10 +100,14 @@ export async function POST(request: Request) {
     });
   } catch (error: unknown) {
     console.error('Terraform export failed:', error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    // `error.message` from @google/genai is a raw JSON envelope; never echo it.
     return NextResponse.json(
-      { error: 'Terraform Export Failed', details: errorMessage },
-      { status: 500 }
+      {
+        error: 'Terraform Export Failed',
+        details: toUserFacingMessage(error, 'Terraform export'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   } finally {
     releaseGeminiLock(lockKey);

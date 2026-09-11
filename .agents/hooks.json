@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "name": "omni_guard",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Google Omni 1.1 Universal Multi-Project Quality, Model Selection & Multi-Agent Orchestration Engine",
   "global_governance": {
     "sme_director": "Google Omni 1.1 (End-to-End Subject Matter Expert Director & Chief Orchestrator)",
@@ -55,6 +55,8 @@
         "card_anatomy": "2-column flexbox with left icon rail (display:flex; gap:8px)",
         "min_icon_density": 0.25,
         "min_connector_density": 0.15,
+        "aspect_ratio_range": [1.25, 2.20],
+        "mandatory_widescreen_16_9": true,
         "bus_routing_required": true,
         "ban_global_dark": true,
         "ban_external_http_icons": true,
@@ -198,7 +200,8 @@
     "Stop": {
       "enabled": true,
       "script": "scripts/stop_quality_gate.mjs",
-      "timeout": 180
+      "timeout": 120,
+      "_timeout_rationale": "Layered stall defence (Blindspot 14). Per-child execSync timeouts (10s git / 15s default / 30s local gate) are the primary guard and work even while the event loop is blocked. The script's 90s soft-deadline watchdog is secondary. This 120s host timeout is the last resort only, replacing the old 180s value that let a locked child hang the agent for a full 3 minutes. Ordering must hold: child timeouts < 90s soft deadline < 120s host timeout."
     }
   }
 }

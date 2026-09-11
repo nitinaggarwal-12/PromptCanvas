@@ -6,6 +6,7 @@ import {
 import { GENERATE_GRAPH_SYSTEM_PROMPT } from '../../prompts/generateGraph';
 import { EDIT_GRAPH_SYSTEM_PROMPT, buildEditGraphPrompt } from '../../prompts/editGraph';
 import { GEMINI_MODEL_ID } from '../geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 
 export async function generateLogicalGraph(
   userPrompt: string,
@@ -21,7 +22,7 @@ export async function generateLogicalGraph(
   while (attempts < 2) {
     attempts++;
     try {
-      const response = await ai.models.generateContent({
+      const response = await generateContentWithRetry(ai, {
         model: modelId,
         contents: currentContents,
         config: {
@@ -133,7 +134,7 @@ export async function editLogicalGraph(
   while (attempts < 2) {
     attempts++;
     try {
-      const response = await ai.models.generateContent({
+      const response = await generateContentWithRetry(ai, {
         model: modelId,
         contents: currentContents,
         config: {

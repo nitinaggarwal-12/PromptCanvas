@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { normalizeStudio1Graph, renderStudio1GraphXml, Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
 import {
   applyStudio1Patch,
@@ -21,16 +23,14 @@ import {
 // Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
 const ENFORCE_STUDIO1_GATES = false;
 const MODEL_DEADLINE_MS = Math.max(15_000, Math.min(60_000, Number(process.env.STUDIO1_MODEL_DEADLINE_MS || 45_000)));
+// Total wall-clock ceiling for all retry attempts of a single model call.
+// Sits above the per-attempt deadline so one transient 503 can be retried
+// without letting retries stack into an unbounded request.
+const MODEL_RETRY_BUDGET_MS = Math.max(MODEL_DEADLINE_MS + 20_000, Number(process.env.STUDIO1_MODEL_RETRY_BUDGET_MS || 100_000));
 
-function withDeadline<T>(operation: Promise<T>, milliseconds: number): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`Architecture model exceeded the ${Math.round(milliseconds / 1000)} second response budget.`)), milliseconds);
-    operation.then(
-      value => { clearTimeout(timer); resolve(value); },
-      error => { clearTimeout(timer); reject(error); },
-    );
-  });
-}
+// NOTE: the former local `withDeadline()` helper was removed — its only caller now
+// goes through generateContentWithRetry(), which enforces the same per-attempt
+// deadline via `perAttemptTimeoutMs` while also adding transient-error backoff.
 
 function isGcpStreamingRequest(prompt: string, context: Studio1GenerationContext): boolean {
   return (context.platform === 'gcp' || context.platform === 'auto')
@@ -243,7 +243,7 @@ export async function POST(request: Request) {
     const model = getGeminiModel('pro');
     const ai = new GoogleGenAI({ apiKey });
     if (initialPromptAssessment?.disposition === 'discuss') {
-      const discussion = await ai.models.generateContent({
+      const discussion = await generateContentWithRetry(ai, {
         model,
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
         config: {
@@ -252,7 +252,7 @@ export async function POST(request: Request) {
           responseMimeType: 'application/json',
           temperature: 0.1,
         },
-      });
+      }, { label: 'Studio 1 discussion', perAttemptTimeoutMs: MODEL_DEADLINE_MS, totalBudgetMs: MODEL_RETRY_BUDGET_MS });
       const discussed = extractJson(discussion.text || '') as Record<string, unknown>;
       return NextResponse.json({
         success: true,
@@ -303,7 +303,7 @@ export async function POST(request: Request) {
     let raw: Record<string, unknown>;
     let usedDeterministicStreamingFallback = false;
     try {
-      const response = await withDeadline(ai.models.generateContent({ model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } }), MODEL_DEADLINE_MS);
+      const response = await generateContentWithRetry(ai, { model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } }, { label: 'Studio 1 synthesis', perAttemptTimeoutMs: MODEL_DEADLINE_MS, totalBudgetMs: MODEL_RETRY_BUDGET_MS });
       raw = extractJson(response.text || '') as Record<string, unknown>;
     } catch (modelError) {
       if (isRefinement || !isGcpStreamingRequest(prompt, context)) throw modelError;
@@ -334,7 +334,7 @@ export async function POST(request: Request) {
         if (ENFORCE_STUDIO1_GATES && (!before || !after || JSON.stringify(before) !== JSON.stringify(after))) return NextResponse.json({ success: false, error: `Locked component ${lockedId} was changed by the refactor.` }, { status: 422 });
       }
       const refactorCriticModel = getGeminiModel('critic');
-      const refactorCriticResponse = await ai.models.generateContent({ model: refactorCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nMODE:\n${context.action}\nLOCKS:\n${JSON.stringify(ledger.lockedNodeIds)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nTARGET:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(refactorDiff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Review the target architecture for requirement coverage, technical feasibility, preserved locks, security, reliability, operability, migration risk, and unjustified change. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
+      const refactorCriticResponse = await generateContentWithRetry(ai, { model: refactorCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nMODE:\n${context.action}\nLOCKS:\n${JSON.stringify(ledger.lockedNodeIds)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nTARGET:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(refactorDiff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Review the target architecture for requirement coverage, technical feasibility, preserved locks, security, reliability, operability, migration risk, and unjustified change. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const refactorCritic = extractJson(refactorCriticResponse.text || '') as Record<string, unknown>;
       if (ENFORCE_STUDIO1_GATES && (refactorCritic.approved !== true || Number(refactorCritic.score) < 85 || (Array.isArray(refactorCritic.invalidServices) && refactorCritic.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the refactor candidate.', semanticCritic: refactorCritic, refactorDiff }, { status: 422 });
       const nextLedger = ledgerForGraph(semanticGraph);
@@ -353,7 +353,7 @@ export async function POST(request: Request) {
       if (changeValidation.risk === 'high' && !body.confirmHighImpact) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: `${assistantMessage || plan.summary} This affects ${changeValidation.diff.blastRadiusPercent}% of the current graph.`, options: [{ id: 'confirm_high_impact', label: 'Apply high-impact change' }, { id: 'guided_refactor', label: 'Use guided refactor', recommended: true }, { id: 'cancel', label: 'Cancel' }] }, changeValidation, context: resolvedContext, generationSource: 'gemini-change-planner', model, baseVersionId });
 
       const criticModel = getGeminiModel('critic');
-      const criticResponse = await ai.models.generateContent({ model: criticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nPLAN:\n${JSON.stringify(plan)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nAFTER:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(changeValidation.diff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently verify that the requested incremental change occurred, unrelated architecture was preserved, connections are technically coherent, and no locked constraint was violated. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
+      const criticResponse = await generateContentWithRetry(ai, { model: criticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nPLAN:\n${JSON.stringify(plan)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nAFTER:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(changeValidation.diff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently verify that the requested incremental change occurred, unrelated architecture was preserved, connections are technically coherent, and no locked constraint was violated. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const criticRaw = extractJson(criticResponse.text || '') as Record<string, unknown>;
       if (ENFORCE_STUDIO1_GATES && (criticRaw.approved !== true || Number(criticRaw.score) < 85 || (Array.isArray(criticRaw.invalidServices) && criticRaw.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the incremental candidate.', semanticCritic: criticRaw, changeValidation }, { status: 422 });
       const nextLedger = ledgerForGraph(semanticGraph);
@@ -465,6 +465,16 @@ export async function POST(request: Request) {
     });
   } catch (error: any) {
     console.error('[studio1/generate] Studio 1 transaction failed:', error);
-    return NextResponse.json({ success: false, error: error?.message || 'Studio 1 request failed.', generationSource: 'none' }, { status: 500 });
+    // The @google/genai SDK sets `error.message` to a JSON envelope such as
+    // {"error":{"code":503,...}}. Surfacing that verbatim dumps raw JSON into
+    // the UI and hides whether the user should retry or fix their input.
+    const info = parseUpstreamError(error);
+    return NextResponse.json({
+      success: false,
+      error: toUserFacingMessage(error, 'Architecture synthesis'),
+      retryable: info.isRetryable,
+      upstreamStatus: info.httpStatus || undefined,
+      generationSource: 'none',
+    }, { status: toResponseStatus(error) });
   }
 }

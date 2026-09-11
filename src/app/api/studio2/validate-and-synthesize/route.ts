@@ -7,6 +7,8 @@ import { customizeDiagramTemplateWithGemini } from '@/lib/geminiDiagramCustomize
 import { validateAndHealDrawioXml } from '@/lib/xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
 import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 function getAiClient(customKey?: string): GoogleGenAI {
   const apiKey = customKey || process.env.GEMINI_API_KEY || '';
@@ -157,7 +159,7 @@ Respond in JSON format:
 `;
 
         const genConfig = getGenConfig('audit');
-        const response = await ai.models.generateContent({
+        const response = await generateContentWithRetry(ai, {
           model: modelName,
           contents: [{ role: 'user', parts: [{ text: auditPrompt }] }],
           config: {
@@ -191,9 +193,15 @@ Respond in JSON format:
     });
   } catch (error: any) {
     console.error('[validate-and-synthesize] Error:', error);
+    // Surface the upstream status (503 overload / 429 rate limit) rather than a
+    // blanket 500, so clients and proxies can distinguish transient from fatal.
     return NextResponse.json(
-      { success: false, error: error?.message || 'Failed to validate and synthesize architecture' },
-      { status: 500 }
+      {
+        success: false,
+        error: toUserFacingMessage(error, 'Architecture validation'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useHydratedState } from '@/lib/hooks/useHydrationSafeState';
 
 export type ThemeMode = 'light' | 'dark';
 
@@ -33,15 +34,15 @@ function applyThemeToDocument(newTheme: ThemeMode) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const savedTheme = localStorage.getItem('promptcanvas_theme') as ThemeMode;
-        if (savedTheme === 'light' || savedTheme === 'dark') {
-          return savedTheme;
-        }
-      } catch {}
-    }
+  // Hydration-safe: 'dark' is rendered on the server and during hydration, then the
+  // persisted preference is applied in a pre-paint layout effect.
+  const [theme, setThemeState] = useHydratedState<ThemeMode>('dark', () => {
+    try {
+      const savedTheme = localStorage.getItem('promptcanvas_theme') as ThemeMode;
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+    } catch {}
     return 'dark';
   });
 

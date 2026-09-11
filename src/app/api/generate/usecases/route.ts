@@ -5,6 +5,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
@@ -168,9 +169,14 @@ ${version.xml_content}
 
   } catch (error) {
     console.error('Failed to generate in-place metadata:', error);
+    // `error.message` from @google/genai is a raw JSON envelope; never echo it.
     return NextResponse.json(
-      { error: 'Internal Server Error', details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+      {
+        error: 'Internal Server Error',
+        details: toUserFacingMessage(error, 'Use case generation'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
     );
   } finally {
     releaseGeminiLock(lockKey);

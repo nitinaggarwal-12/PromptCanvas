@@ -135,10 +135,20 @@ import { ProjectPromptDossierModal } from '@/components/workspace/ProjectPromptD
 import { BlueprintCatalogModal } from '@/components/workspace/BlueprintCatalogModal';
 import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStartedSlate';
 import { useTheme } from '@/lib/themeContext';
+import { useHydratedState, usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
+
+/**
+ * Deterministic names rendered during SSR and the hydration pass.
+ * `generateUnique*Name()` uses `Math.random()`, which would produce a different
+ * suffix on the server than on the client and break hydration. These stable
+ * placeholders are swapped for real generated names immediately after mount.
+ */
+export const PLACEHOLDER_PROJECT_NAME = 'Google Cloud Project';
+export const PLACEHOLDER_DIAGRAM_NAME = 'Unified Cloud Architecture';
 
 export function generateUniqueProjectName(): string {
   const code = Math.floor(100 + Math.random() * 900);
@@ -342,14 +352,14 @@ function WorkspaceContent() {
   const [autosaveStatus, setAutosaveStatus] = useState<'saved' | 'saving'>('saved');
   const [activeFlagshipTool, setActiveFlagshipTool] = useState<ActiveFlagshipTool>('none');
   const [activeWorkflowStep, setActiveWorkflowStep] = useState<1 | 2 | 3 | 4>(1);
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const langParam = urlParams.get('lang') as SupportedLanguage;
-      if (langParam) return langParam;
+  const [currentLanguage, setCurrentLanguage] = useHydratedState<SupportedLanguage>('en', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const langParam = urlParams.get('lang') as SupportedLanguage;
+    if (langParam) return langParam;
+    try {
       const stored = localStorage.getItem('promptcanvas_lang') as SupportedLanguage;
       if (stored) return stored;
-    }
+    } catch {}
     return 'en';
   });
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState<boolean>(false);
@@ -910,14 +920,12 @@ function WorkspaceContent() {
   // Workspace canvas, tabs, and cards are locked to light theme matching Studio (Image 2)
   const [canvasTheme] = useState<'light' | 'dark'>('light');
   const setCanvasTheme = setAppTheme;
-  const [viewMode, setViewMode] = useState<'canvas' | 'outline' | 'business' | 'technical'>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const viewParam = params.get('view');
-      if (viewParam === 'outline') return 'outline';
-      if (viewParam === 'business') return 'business';
-      if (viewParam === 'technical') return 'technical';
-    }
+  const [viewMode, setViewMode] = useHydratedState<'canvas' | 'outline' | 'business' | 'technical'>('canvas', () => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get('view');
+    if (viewParam === 'outline') return 'outline';
+    if (viewParam === 'business') return 'business';
+    if (viewParam === 'technical') return 'technical';
     return 'canvas';
   });
   const [outlineEdits, setOutlineEdits] = useState<Record<string, string>>({});
@@ -945,12 +953,10 @@ function WorkspaceContent() {
   }, [filteredSidebarDiagrams]);
   
   // Tour States
-  const [tourStep, setTourStep] = useState<number | null>(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('tour') === 'true') {
-        return 1;
-      }
+  const [tourStep, setTourStep] = useHydratedState<number | null>(null, () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tour') === 'true') {
+      return 1;
     }
     return null;
   });
@@ -967,51 +973,42 @@ function WorkspaceContent() {
   };
   
   // UI Panels
-  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('promptcanvas_sidebar_open');
-        if (saved !== null) return saved === 'true';
-      } catch {}
-    }
-    return false;
-  });
+  const [isSidebarOpen, setIsSidebarOpen] = usePersistentBoolean('promptcanvas_sidebar_open', false);
   const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('modal') === 'create';
-    }
-    return false;
+  const [isCreateModalOpen, setIsCreateModalOpen] = useHydratedState<boolean>(false, () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('modal') === 'create';
   });
   const [createModalTab, setCreateModalTab] = useState<'simple' | 'advanced'>('simple');
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-  const [isInlineEditorOpen, setIsInlineEditorOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('edit') === 'true';
-    }
-    return false;
+  const [isInlineEditorOpen, setIsInlineEditorOpen] = useHydratedState<boolean>(false, () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('edit') === 'true';
   });
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
   const [inspectVersion, setInspectVersion] = useState<DiagramVersion | null>(null);
-  const [isInspectModalOpen, setIsInspectModalOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('modal') === 'inspect';
-    }
-    return false;
+  const [isInspectModalOpen, setIsInspectModalOpen] = useHydratedState<boolean>(false, () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('modal') === 'inspect';
   });
   
   // Form Inputs
-  const [newProjectName, setNewProjectName] = useState<string>(() => generateUniqueProjectName());
-  const [newDiagramName, setNewDiagramName] = useState<string>(() => generateUniqueDiagramName());
+  // `Math.random()` based names must not run during SSR/hydration: the server and
+  // client would generate different suffixes. Resolved once, post-mount.
+  const [newProjectName, setNewProjectName] = useHydratedState<string>(
+    PLACEHOLDER_PROJECT_NAME,
+    () => generateUniqueProjectName()
+  );
+  const [newDiagramName, setNewDiagramName] = useHydratedState<string>(
+    PLACEHOLDER_DIAGRAM_NAME,
+    () => generateUniqueDiagramName()
+  );
   const [newDiagramPrompt, setNewDiagramPrompt] = useState<string>(DEFAULT_UNIFIED_PROMPT);
   const [selectedTemplate, setSelectedTemplate] = useState('0');
   const [selectedArchType, setSelectedArchType] = useState('unified_system_view');
@@ -1102,12 +1099,10 @@ function WorkspaceContent() {
   const [isCanvasToolbarVersionDropdownOpen, setIsCanvasToolbarVersionDropdownOpen] = useState(false);
   const [isSettingsHoverOpen, setIsSettingsHoverOpen] = useState(false);
   const [isViewStyleDropdownOpen, setIsViewStyleDropdownOpen] = useState(false);
-  const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        return sessionStorage.getItem('promptcanvas_dismiss_guest_disclaimer') === 'true';
-      } catch (e) {}
-    }
+  const [isGuestDisclaimerDismissed, setIsGuestDisclaimerDismissed] = useHydratedState<boolean>(false, () => {
+    try {
+      return sessionStorage.getItem('promptcanvas_dismiss_guest_disclaimer') === 'true';
+    } catch {}
     return false;
   });
 

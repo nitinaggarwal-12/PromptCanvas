@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { getAllSavedMediaAssets, saveMediaAssetRecord } from '@/lib/db';
+import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 export async function GET(req: NextRequest) {
   try {
@@ -100,7 +102,7 @@ Requested Modification / Evolution:
 Apply the requested changes while keeping all interactive mechanics fully functional.`
       : `Create a complete, fully-functional, interactive ${category} application for: "${prompt}"`;
 
-    const response = await ai.models.generateContent({
+    const response = await generateContentWithRetry(ai, {
       model: GEMINI_MODEL_ID,
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
       config: {
@@ -140,6 +142,14 @@ Apply the requested changes while keeping all interactive mechanics fully functi
     });
   } catch (error: any) {
     console.error('Media generation error:', error);
-    return NextResponse.json({ error: error.message || 'Failed to generate multimodal content' }, { status: 500 });
+    // Surface the upstream status (503 overload / 429 rate limit) rather than a
+    // blanket 500, so clients and proxies can distinguish transient from fatal.
+    return NextResponse.json(
+      {
+        error: toUserFacingMessage(error, 'Multimodal generation'),
+        retryable: parseUpstreamError(error).isRetryable,
+      },
+      { status: toResponseStatus(error) }
+    );
   }
 }
