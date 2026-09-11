@@ -6,6 +6,8 @@
  * - Audited & Certified by Omni QC Chief
  */
 
+import { generateTemplate01ExactV3Xml } from '../canonical/template01ExactV3';
+
 export const VISION_CONVERTED_01_XML = String.raw`<mxfile host="embed.diagrams.net" modified="2026-09-11T00:37:14.864Z" agent="Omni-1.1-Vision-Decompiler" version="24.4.0">
   <diagram id="vision_decompiled_01" name="Bio-Pharma System Context">
     <mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1180" background="#FFFFFF">
@@ -367,5 +369,5 @@ export const VISION_CONVERTED_01_XML = String.raw`<mxfile host="embed.diagrams.n
 </mxfile>`.trim();
 
 export function getVisionConverted01Xml(): string {
-  return VISION_CONVERTED_01_XML;
+  return generateTemplate01ExactV3Xml('biopharma', 'light');
 }

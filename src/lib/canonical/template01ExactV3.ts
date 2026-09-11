@@ -89,9 +89,10 @@ export function generateTemplate01ExactV3Xml(
   };
 
   // ==================== 1. TOP HEADER BANNER ====================
+  cell("hdr_num", "<b style='font-size:16px;color:#ffffff;'>01</b>", 16, 14, 38, 38, "rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontStyle=1;align=center;");
   const titleHtml = `<div style="font-size:24px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">01 — System Context | NOVACURA Bio-Pharma Platform</div>` +
     `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">Core Architecture Family | Bio-Pharma Product</div>`;
-  cell("hdr_title", titleHtml, 16, 12, 1000, 44, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("hdr_title", titleHtml, 64, 12, 1000, 44, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   // ==================== 2. TOP GOVERNANCE & OVERSIGHT POD (x=480..1100, y=55..160) ====================
   cell("gov_box", "", 480, 58, 620, 102, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;");
