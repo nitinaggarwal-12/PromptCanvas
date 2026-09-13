@@ -17,7 +17,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
   - **Controls & Buttons**: Buttons padding (`px-4 py-2 text-xs` -> `px-6 py-2.5 text-sm` / `px-8 py-4 text-base`) and input fields.
   - **Icons & Images**: Vector icons (`w-3.5 h-3.5` -> `w-4 h-4` or `w-5 h-5`) and static media assets (`width={400}` -> `width={500}`).
 * **Dark Shell + Light Workspace Default Law**:
-  - PromptCanvas defaults to a sleek Dark Shell with high-contrast, clean Light Content Workspaces across all 14 routes.
+  - PromptCanvas defaults to a sleek Dark Shell with high-contrast, clean Light Content Workspaces across all 16 top-level routes.
   - **Shell Scoping**: Left navigation sidebar is dark-scoped (`#090D16`/`#0B111E`), and top application header is dark-scoped (`#0B111E`/`#0F172A`).
   - **Content Scoping**: Inner workspaces, cards, canvas viewports, tabs, and tables are strictly light-scoped (`bg-[#F8FAFC] text-slate-900`, white cards `bg-white border-slate-200`).
   - **Strict Ban on Global `.dark` on `<html>`**: NEVER apply `.dark` to the `document.documentElement` (`<html>` or `<body>`) globally. Global `.dark` activates Tailwind `dark:text-white` across light-mode inner content, making headings and typography invisible against light cards. All dark styles must be strictly component-scoped (`<aside className="dark ...">`, `<header className="dark ...">`).
@@ -75,7 +75,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
     2. Explicit checklist verification of all elements, labels, headers, and routing paths.
     3. Direct DOM/canvas inspection logs verifying zero overlaps.
 * **Mandatory Dynamic Conversational & Intent Fuzzing Gate**:
-  - Every single prompt input bar, chat assistant composer, or AI copilot across all 14 routes (`/studio`, `/studioprod`, `/studio1`, `/studio2`, `/workspace`, `/gcp`, `DocGenFloatingCopilot`) MUST undergo dynamic interactive fuzzing using automated headless Puppeteer test scripts before certification.
+  - Every single prompt input bar, chat assistant composer, or AI copilot across all 6 prompt surfaces (`/workspace`, `/studio`, `/studio1`, `/gcp`, `/docgen`, `/vision`) plus the floating copilot component `DocGenFloatingCopilot` MUST undergo dynamic interactive fuzzing using automated headless Puppeteer test scripts before certification.
   - Fuzzing suite MUST test 4 standard non-mutation cases:
     1. Casual greetings (`"Hi"`, `"Hello"`, `"Good morning"`)
     2. Identity & capability queries (`"who are you"`, `"what can you do"`, `"help"`)
@@ -212,8 +212,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
    - Canonical and master templates are engineered for `16:9` (1440x800 / 1485x800 / 1600x960) aspect ratio. Never squash them into `21:9` viewports in modals or embeds.
 4. **Mandatory `<mxfile><diagram>` Envelope**:
    - Every diagram generator MUST emit a complete `<mxfile host="embed.diagrams.net"><diagram id="..." name="..."><mxGraphModel ...>...</mxGraphModel></diagram></mxfile>` document structure.
-5. **Zero External URL Dependencies**:
-   - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels. Always use native vector Unicode symbols/emojis or inline SVGs.
+5. **Zero External URL Dependencies & Strict Ban on Raw Emojis**:
+   - Never use `https://api.iconify.design/...` or unverified external HTTP image URLs inside HTML labels.
+   - **Strict Ban on Raw Unicode Emojis**: Never use generic Unicode emojis (e.g. `🤖`, `☁️`, `🔒`, `📊`, `⚡`, `🛡️`, `📱`, `💻`, `⚙️`) inside architecture cards. Emojis render inconsistently and degrade enterprise architecture diagrams. Always use authentic inline vector SVGs or native mxGraph shape stencils (`shape=mxgraph.gcp2.*`).
 6. **High-Contrast Pill Badges for Connectors**:
    - All connector labels that traverse or touch container boundaries MUST have solid white or high-contrast pill backgrounds (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`) to guarantee 100% collision-free legibility.
 7. **Mandatory Typed Connectors, Step Sequences & Closed Feedback Loops**:
@@ -234,6 +235,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 10. **Zero-Void Proportional Card Item Scaling & Brand Header Balance**:
     - Vertical item padding (`itemPadding: 6px 8px` for 4 items, `4px 8px` for 5 items, `2.5px 6px` for 6 items) and item margins must be dynamically adjusted so cards fill their parent container height evenly with zero awkward empty white voids.
     - Master architecture templates must include the top-right brand block (`🧬 NOVACURA | Transforming Therapies. Improving Lives.`) to maintain balanced margins against left titles.
+10b. **Container Boundary Dynamic Shrink-Wrapping & Floor Packing Law**:
+    - Container heights must NEVER be copied or hardcoded to match adjacent taller tiers. Every container height must dynamically wrap its lowest child:
+      $$H_{\text{container}} = \max_{i}(Y_{\text{child\_i}} + H_{\text{child\_i}}) - Y_{\text{container}} + \text{Padding}_{\text{bottom}}$$
+      where $\text{Padding}_{\text{bottom}} \le 20\text{px}-24\text{px}$. Any unutilized bottom vertical void $> 36\text{px}$ is strictly prohibited and blocked by the Omni Quality Gate.
+    - When architecture columns have asymmetric heights, the open space beneath shorter columns MUST be utilized for subordinate blocks (such as the Architecture Protocol Legend or Agentic Loop notes) rather than pushing them into an artificial bottom footer row.
 11. **Sequence Diagram & Flow Enclave (ALT / OPT / LOOP / PAR) Discrete Channel & Shielding Law**:
     - **Discrete $\ge 26\text{px}$ Channel Pitch**: In alternative (`ALT`), optional (`OPT`), loop (`LOOP`), or parallel (`PAR`) enclaves, never combine multi-line text and connector arrows into a shared HTML block. Every step inside an enclave MUST use discrete mxCells with exact mathematical vertical offsets ($\ge 26\text{px}$ channel between text top and connector line) so connector lines NEVER slice through text letters or descenders.
     - **Opaque Background Shielding**: Floating sub-boxes, ALT containers, or overlay cards that sit on top of background lifelines or grid tracks MUST enforce a solid opaque background (`fillColor=#FFFFFF;` or dark mode equivalent `#0B111E`) to prevent background lines from bleeding through and cutting across foreground text and icons.
@@ -273,7 +279,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
       - **Security & Zero Trust**: Official Cloud Armor (`cloud_armor`), Identity-Aware Proxy (`iap`), Sensitive Data Protection / DLP (`cloud_dlp`), VPC Service Controls (`vpc_sc`), and Security Command Center (`scc`).
       - **Operations & CI/CD**: Official Cloud Logging (`cloud_logging`), Cloud Monitoring (`cloud_monitoring`), and Google Cloud Deploy (`cloud_deploy`).
 18. **Mandatory Universal App-Wide Prompt & Chatbot Conversational Guardrail Gate**:
-    - **App-Wide Scope (All 14 Routes & Copilot Dialogs)**: This guardrail strictly applies across all copilot prompt inputs, AI composers, and chat sidebars across the entire application: `/studio`, `/studioprod`, `/studio1`, `/studio2`, `/workspace`, `/gcp`, and floating copilots (`DocGenFloatingCopilot`). Under NO circumstances may ANY prompt composer mutate state, increment version tags, or call generative synthesis APIs on casual or conversational inputs.
+    - **App-Wide Scope (All 6 Prompt Surfaces & Copilot Dialogs)**: This guardrail strictly applies across all copilot prompt inputs, AI composers, and chat sidebars across the entire application: `/workspace`, `/studio`, `/studio1`, `/gcp`, `/docgen`, `/vision`, and floating copilots (`DocGenFloatingCopilot`). Under NO circumstances may ANY prompt composer mutate state, increment version tags, or call generative synthesis APIs on casual or conversational inputs.
     - **5-Way Multi-Intent Classification & Conversational Non-Mutation Law**: All user prompts MUST pass through `classifyChatIntent` (`@/lib/router/chatIntentClassifier`) to classify into 5 distinct categories before executing any mutation logic:
       1. `greeting` (Casual greetings: "hi", "hello", "hey", "good morning"): Responds immediately with a friendly greeting, active context, and suggested actions without mutating diagrams/documents, creating snapshot tags, or generating topology diffs.
       2. `identity` (Identity & capabilities: "who are you", "who r u", "what can you do", "help"): Clearly articulates core capabilities without reciting generic Well-Architected gaps or triggering mutations.
@@ -446,4 +452,36 @@ This version has breaking changes — APIs, conventions, and file structure may 
     - **Overlying Container Flushness**: Size overlying container enclosures (e.g., Decision Point containers or multi-step enclaves) so their bottom boundary rests flush ($\le 20\text{px}$ clearance) directly above the inline table header, eliminating awkward middle gaps.
     - **Collinear Coordinate Symmetry**: Maintain identical horizontal bounds ($X_{\text{start}}$, $X_{\text{end}}$, and width) between the overlying decision box and the underlying cadence table to preserve clean vertical alignment.
 
+31. **🏛️ Omni 1.1 + Flash + Veo Multimodal Decompilation Protocol**:
+    - **100% Fresh Generative Decompilation Mandate (Strict Ban on Static Blueprint Substitution)**:
+      - Every single image uploaded or requested for decompilation MUST be synthesized fresh from scratch directly from the visual raster using multimodal AI (Flash Vision Extraction + Pro AST Graph Construction + Omni QC Chief).
+      - NEVER substitute, swap, or bind static master XML templates or canned files from disk. Zero template substitution is strictly enforced across all decompilation routes.
+    - **Two-Pass Custom Generation Mandate**:
+      - For novel diagrams lacking master signatures, the pipeline must strictly decouple Node Synthesis (Pass 1) from Connector & Flow Synthesis (Pass 2) to eliminate dropped flow lines.
+    - **Omni 1.1 Minimum Connector Density & Disconnected Graph Gate**:
+      - Enforce $\text{edgeCount} \ge \max(3, \lfloor \text{nodeCount} \times 0.15 \rfloor)$.
+      - Any generative output with 0 edges or missing connectivity is strictly blocked from certification and must be auto-healed with directional inter-tier drop-lines.
+    - **Truthful Certification Standard**:
+      - The badge `Omni 1.1 Certified (100% Parity)` may only be applied when `audit.verdict === 'PASS'`, `edgeCount > 0`, and zero `CRITICAL` or `HIGH` gaps remain.
+    - **Veo Temporal Motion & Step Animation Protocol**:
+      - Certified diagrams must expose sequential step badges (❶..❺) for DeepMind Veo 2 dynamic motion animation and executive video walkthrough generation.
+    - **LocalStorage Quota Protection**:
+      - Ban storing raw high-resolution base64 data URIs ($> 50\text{KB}$) in `localStorage`. Always store compressed thumbnails or IndexedDB references to prevent `QuotaExceededError`.
 
+32. **Universal Vision Decompilation & Zero-Wireframe Law (Neuro-Symbolic Master Plan v2)**:
+    - **100% Fresh Generative Decompilation**: Every decompilation from image pixels must extract spatial topology via Gemini Flash and deterministically synthesize Draw.io XML graph AST via GeometrySolver with 0 blueprint substitution.
+    - **Zero-Wireframe Mandate**: Every card, chevron, KPI metric, milestone, and platform logo MUST feature explicit container geometry (`rounded=1`, background fill color, border stroke color, high-contrast typography, and inline vector stencil). Bare wireframes, unstyled boxes, or floating text labels are strictly prohibited.
+    - **Sub-20s Execution Latency Budget**: Total pipeline execution time (Intake -> Flash OCR -> Deterministic AST Synthesis -> Omni QC Chief Audit) MUST remain under 20 seconds.
+    - **100% Certified Parity (0 Gaps)**: OmniQcChief audits 8 dimensions (shapes, icons, connectors, enclaves, legends, chevrons, branding, container bounds) and mandates zero unutilized voids ($\le 36\text{px}$ bottom margin) and complete bullet/title parsing.
+33. **Universal Master Blueprint Cache Invariant & De-Duplication Protocol**:
+    - **Zero Hardcoded ID Checks**: Cache reading and writing (`getSavedVisionBlueprint` and `saveVisionBlueprint`) must NEVER use hardcoded ID conditions (e.g. `id === '01'`, `id === '35'`). All cache operations must execute dynamic invariant validation against the blueprint's registered master definition:
+      1. *Structural Validity*: Valid `<mxfile>` envelope with root layers.
+      2. *Connectivity Invariant*: Master blueprints with connectors cannot be cached with 0 edges.
+      3. *Vocabulary & Semantic Invariant*: Cached XML must match the blueprint's declared title and zone vocabulary ($\ge 25\%$ term match).
+    - **Universal Storage Salt (`v3`)**: Storage prefixes must be versioned (`promptcanvas_vision_cache_v3_`). Any architectural schema upgrade increments this salt, cleanly flushing stale or broken drafts across all user browsers simultaneously.
+
+34. **Unified Master Blueprint Registry Law & Zero Hallucinated Banners**:
+    - `CANONICAL_TEMPLATES` in `src/lib/canonical/canonicalTemplates.ts` is the single source of truth for all master blueprints across the application.
+    - `TopologyPlanner.ts` (`matchMasterBlueprint`) and `visionBlueprintStore.ts` (`PRECOMPILED_SAMPLE_BLUEPRINTS`) must dynamically derive their catalogs from `CANONICAL_TEMPLATES` to ensure zero drift, 100% signature recognition, and zero fallback to generic matrices.
+    - **Zero Disconnected Graphs**: Every canonical template must emit explicit directional orthogonal connectors ($\ge 5$ edges minimum for $\ge 10$ vertices). Storing boxes without connectors is strictly prohibited.
+    - **Zero Hallucinated Banners**: Never invent arbitrary "OBJECTIVE" or summary cards that are absent from master ground-truth images.

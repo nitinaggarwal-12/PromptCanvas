@@ -7,12 +7,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, "..");
 
+// Prompt surfaces that MUST enforce 5-way intent classification.
+//
+// /studioprod and /studio2 were removed: those routes were deleted, so the
+// gate was hard-failing on files that can never exist again.
+//
+// NOT YET LISTED -- known coverage gap, tracked separately:
+//   src/app/docgen/page.tsx  and  src/app/vision/page.tsx
+// Both accept free-text input but reference neither `classifyChatIntent` nor
+// a 'greeting' intent. Adding them here before they are guarded would only
+// wedge the pre-commit hook, so they are called out rather than smuggled in.
 const targetFiles = [
   "src/app/gcp/page.tsx",
   "src/app/studio/page.tsx",
-  "src/app/studioprod/page.tsx",
   "src/app/studio1/page.tsx",
-  "src/app/studio2/page.tsx",
   "src/app/workspace/page.tsx",
   "src/components/DocGenFloatingCopilot.tsx"
 ];
