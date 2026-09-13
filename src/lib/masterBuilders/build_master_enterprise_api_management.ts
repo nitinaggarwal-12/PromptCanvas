@@ -61,7 +61,7 @@ const edge = (
   return `<mxCell id="${id}" value="${esc(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${cfg.stroke};strokeWidth=${cfg.width};dashed=${cfg.dashed};dashPattern=${cfg.pattern};endArrow=${cfg.arrow};endFill=${cfg.arrow === 'block' ? 1 : 0};fontColor=#0F172A;fontSize=10;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=${exitX};exitY=${exitY};exitDx=0;exitDy=0;entryX=${entryX};entryY=${entryY};entryDx=0;entryDy=0;" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}</mxGeometry></mxCell>`;
 };
 
-function buildOldMasterEnterpriseApiManagementXmlInternal(): string {
+export function buildMasterApigeeEnterpriseApiManagementXml(): string {
   const cells: string[] = [
     '<mxCell id="0"/>',
     '<mxCell id="1" parent="0"/>',
@@ -155,3 +155,4 @@ function buildOldMasterEnterpriseApiManagementXmlInternal(): string {
 }
 
 export const MASTER_ENTERPRISE_API_MANAGEMENT_XML = buildMasterEnterpriseApiManagementXml();
+export const MASTER_APIGEE_ENTERPRISE_API_MANAGEMENT_XML = buildMasterApigeeEnterpriseApiManagementXml();
