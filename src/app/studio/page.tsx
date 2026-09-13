@@ -60,6 +60,7 @@ import { NewProjectModal, NewProjectConfig } from '@/components/studio/NewProjec
 import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
+import { AppHeader } from '@/components/AppHeader';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -1046,11 +1047,13 @@ function StudioMain() {
       {/* Main Studio Viewport Area */}
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* 1. CONSOLIDATED HIGH-CONTRAST HEADER (56px) */}
-        <header className="dark w-full h-14 flex-shrink-0 bg-[#0B111E] border-b border-slate-800 px-4 md:px-6 flex items-center justify-between z-40 shadow-md">
+        <AppHeader>
         
-        {/* Left: Brand, Project Title, Mode Badge, Blueprint & Version */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <div className="flex items-center gap-2 shrink-0">
+        {/* Left: Brand, Project Title, Mode Badge, Blueprint & Version.
+            min-w-0 (not shrink-0) so this cluster yields space to the
+            right-hand controls instead of pushing them off-screen. */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
             {/* Small screen home link only (desktop has UnifiedAppSidebar) */}
             <Link 
               href="/" 
@@ -1059,14 +1062,24 @@ function StudioMain() {
             >
               PC
             </Link>
-            <div className="flex items-center gap-2">
-              <h1 className="font-bold text-sm text-white tracking-tight leading-none truncate max-w-[130px] sm:max-w-[180px] lg:max-w-[230px]">
+            <div className="flex items-center gap-2 min-w-0">
+              {/* No min-width floor here: a floor makes these children overflow
+                  the parent's allocated box and paint over the blueprint
+                  selector next to it. Budget is freed by hiding the badge
+                  below instead. */}
+              <h1
+                className="font-bold text-sm text-white tracking-tight leading-none truncate max-w-[130px] sm:max-w-[180px] lg:max-w-[230px]"
+                title={ast.metadata.projectTitle}
+              >
                 {ast.metadata.projectTitle}
               </h1>
 
-              {/* Mode Badge: Showcase vs Active Editor */}
+              {/* Mode Badge: Showcase vs Active Editor.
+                  ~150px of low-priority chrome. Hidden until there is real
+                  room, so the project title keeps a legible width instead of
+                  truncating to a few characters. */}
               {!isEditorMode ? (
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-sky-300 bg-sky-950/80 border border-sky-500/40 px-2 py-0.5 rounded-full font-bold">
+                <span className="hidden min-[1800px]:inline-flex shrink-0 items-center gap-1 text-[10px] text-sky-300 bg-sky-950/80 border border-sky-500/40 px-2 py-0.5 rounded-full font-bold">
                   <Eye className="w-3 h-3 text-sky-400" />
                   <span>Showcase (Read-Only)</span>
                 </span>
@@ -1278,7 +1291,10 @@ function StudioMain() {
               <span>Brain ▾</span>
             </button>
 
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-1 rounded-md font-mono font-bold whitespace-nowrap">
+            {/* Passive status pill (no interaction) — hidden below 1800px so
+                its ~80px returns to the project title rather than pushing the
+                interactive controls off-screen. */}
+            <div className="hidden min-[1800px]:flex items-center gap-1.5 text-[11px] text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-1 rounded-md font-mono font-bold whitespace-nowrap">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span>In-Sync</span>
             </div>
@@ -1430,7 +1446,7 @@ function StudioMain() {
           </div>
 
         </div>
-      </header>
+      </AppHeader>
 
       {/* 2. MAIN WORKSPACE */}
       <main className="flex-1 min-h-0 w-full flex overflow-hidden">

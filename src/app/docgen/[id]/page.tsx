@@ -33,6 +33,7 @@ import { MASTER_DOCUMENTS, getDomainMasterDocument } from '@/lib/compose/masterD
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import BlueprintChangeReportModal from '@/components/BlueprintChangeReportModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { AppHeader } from '@/components/AppHeader';
 
 interface InlineDiagramFigureProps {
   templateId: string;
@@ -672,8 +673,8 @@ function DocDetailPageContent() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* HEADER */}
-        <header className="dark sticky top-0 w-full z-40 border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md">
-        <div className="max-w-[1600px] mx-auto h-16 px-4 md:px-8 flex items-center justify-between gap-4">
+        <AppHeader>
+ <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Breadcrumbs */}
           <div className="flex items-center gap-3 min-w-0">
             <Link
@@ -774,7 +775,7 @@ function DocDetailPageContent() {
             <ThemeToggleBtn id="docgen-detail-theme-toggle-btn" />
           </div>
         </div>
-      </header>
+      </AppHeader>
 
       {/* MAIN DOCUMENT VIEWPORT */}
       <main className="max-w-5xl mx-auto px-6 md:px-12 py-8 space-y-6">

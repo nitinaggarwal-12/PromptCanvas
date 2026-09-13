@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { AppHeader } from '@/components/AppHeader';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { useTheme } from '@/lib/themeContext';
 import { usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
@@ -50,6 +51,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
+  ArrowUpDown,
+  Info,
 } from 'lucide-react';
 import {
   GcpVersionSnapshot,
@@ -75,6 +78,7 @@ function GcpArchitectureCenterInner() {
   const [activeTab, setActiveTab] = useState<'canvas' | 'spec' | 'official'>('canvas');
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
+  const [isDetailsExpanded, setIsDetailsExpanded] = useState<boolean>(false);
 
   // A2A Gateway Swarm Bridge State
   const [isA2AModalOpen, setIsA2AModalOpen] = useState<boolean>(false);
@@ -122,9 +126,12 @@ function GcpArchitectureCenterInner() {
   const [versions, setVersions] = useState<GcpVersionSnapshot[]>([]);
   const [messages, setMessages] = useState<GcpChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages, isChatThinking]);
 
   // Sync state if URL searchParam changes
@@ -518,24 +525,15 @@ function GcpArchitectureCenterInner() {
 
       {/* Main Content Area: Spacious Ultra-Wide Layout (Zero Surrounding Empty Space) */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
-        {/* Consolidated High-Contrast Header Bar (56px) matching Studio in Image 2 */}
-        <header className="dark sticky top-0 z-30 w-full h-14 flex-shrink-0 border-b px-4 md:px-8 flex items-center justify-between shadow-xs transition-colors bg-[#0B111E] border-slate-800">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-500 shrink-0">
-              <Cloud className="w-4 h-4" />
-            </div>
-            <div className="flex items-center gap-2.5 min-w-0">
-              <h1 className="text-sm font-black tracking-tight truncate text-white">
-                Google Cloud Architecture Center
-              </h1>
-              <span className="hidden sm:inline-block text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 border border-blue-500/30 shrink-0">
-                DIALECT A STANDARDS
-              </span>
-            </div>
-          </div>
+        {/* Consolidated application header — geometry owned by AppHeader */}
+        <AppHeader
+          icon={Cloud}
+          tone="blue"
+          title="Google Cloud Architecture Center"
+          badge="DIALECT A STANDARDS"
+          actions={
+            <>
 
-          {/* Quick Action Controllers */}
-          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleCopyXml}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
@@ -591,297 +589,228 @@ function GcpArchitectureCenterInner() {
               <span>Docs Page</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-          </div>
-        </header>
+            </>
+          }
+        />
 
-        {/* Page Body Container */}
-        <main className="w-full max-w-none px-6 md:px-10 py-6 space-y-6 flex-1">
-          {/* Architecture Selector Cards Grid (7 Topologies) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-3.5">
-            {ALL_GCP_DIALECT_A_ARCHITECTURES.map((arch) => {
-              const isSelected = arch.id === activeArch.id;
-              return (
-                <button
-                  key={arch.id}
-                  onClick={() => handleSelectArchitecture(arch.id)}
-                  className={`p-4 rounded-xl text-left border transition-all flex flex-col justify-between h-full relative overflow-hidden group ${
-                    isSelected
-                      ? isDark
-                        ? 'bg-blue-950/30 border-blue-500 shadow-lg shadow-blue-950/50 ring-1 ring-blue-500'
-                        : 'bg-blue-50/70 border-blue-500 shadow-md shadow-blue-100 ring-1 ring-blue-500'
-                      : cardClass
-                  }`}
-                >
-                  {/* Top indicator ribbon */}
-                  {isSelected && (
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
-                  )}
-
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span
-                        className={`text-[9.5px] font-extrabold uppercase px-2 py-0.5 rounded-full border ${
-                          isSelected
-                            ? 'bg-blue-500 text-white border-blue-600'
-                            : isDark
-                            ? 'bg-slate-800 text-slate-300 border-slate-700'
-                            : 'bg-slate-200 text-slate-900 border-slate-300 font-black'
-                        }`}
-                      >
-                        {arch.badge}
-                      </span>
-                      <span className={`text-[11px] font-mono font-bold ${
-                        isDark ? 'text-slate-400' : 'text-slate-700'
-                      }`}>
-                        {arch.components.length} components
-                      </span>
-                    </div>
-
-                    <h3
-                      className={`text-sm font-black tracking-tight line-clamp-1 mb-1 ${
-                        isSelected
-                          ? isDark ? 'text-blue-400' : 'text-blue-600'
-                          : isDark ? 'text-slate-100' : 'text-slate-950'
-                      }`}
-                    >
-                      {arch.title}
-                    </h3>
-                    <p className={`text-[11.5px] line-clamp-2 leading-relaxed ${
-                      isDark ? 'text-slate-400' : 'text-slate-700 font-medium'
-                    }`}>
-                      {arch.subtitle}
-                    </p>
-                  </div>
-
-                  <div className={`mt-3 pt-2.5 border-t flex items-center justify-between text-xs ${
-                    isDark ? 'border-slate-800' : 'border-slate-200'
-                  }`}>
-                    <span className={`text-[10px] font-bold truncate max-w-[170px] ${
-                      isDark ? 'text-slate-400' : 'text-slate-700'
-                    }`}>
-                      {arch.category}
-                    </span>
-                    <span
-                      className={`text-[11px] font-bold flex items-center gap-1 ${
-                        isSelected
-                          ? 'text-blue-500 font-bold'
-                          : isDark
-                          ? 'text-slate-400 group-hover:text-slate-200'
-                          : 'text-slate-800 font-bold group-hover:text-slate-950'
-                      }`}
-                    >
-                      {isSelected ? 'Active' : 'Select'}
-                      <ArrowRight className="w-3 h-3" />
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Pharma Drug Discovery 3-Tier Architecture Navigator */}
-          {activeArch.id.startsWith('gcp-pharma') && (
-            <div
-              className={`p-3 rounded-xl border flex flex-wrap items-center justify-between gap-3 transition-all ${
-                isDark
-                  ? 'bg-blue-950/25 border-blue-900/60 shadow-lg shadow-blue-950/30'
-                  : 'bg-gradient-to-r from-blue-50/90 via-indigo-50/60 to-blue-50/90 border-blue-200/80 shadow-sm'
-              }`}
-            >
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-2.5 w-2.5 rounded-full bg-blue-500 animate-pulse" />
-                <span className={`text-xs font-black uppercase tracking-wider ${
-                  isDark ? 'text-blue-300' : 'text-blue-800 font-black'
-                }`}>
-                  Pharma Drug Discovery Multi-Tier Architecture Suite:
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  onClick={() => handleSelectArchitecture('gcp-pharma-conceptual')}
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    activeArch.id === 'gcp-pharma-conceptual'
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
-                      : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
-                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
-                  }`}
-                >
-                  <span>🧠 1. Conceptual Architecture</span>
-                  <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
-                      activeArch.id === 'gcp-pharma-conceptual'
-                        ? 'bg-blue-700 text-blue-100'
-                        : isDark
-                        ? 'bg-slate-800 text-slate-300'
-                        : 'bg-slate-200 text-slate-900 border border-slate-300'
-                    }`}
-                  >
-                    4-Flow Capability
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => handleSelectArchitecture('gcp-pharma-drug-discovery')}
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    activeArch.id === 'gcp-pharma-drug-discovery'
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
-                      : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
-                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
-                  }`}
-                >
-                  <span>⚡ 2. Logical Architecture</span>
-                  <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
-                      activeArch.id === 'gcp-pharma-drug-discovery'
-                        ? 'bg-blue-700 text-blue-100'
-                        : isDark
-                        ? 'bg-slate-800 text-slate-300'
-                        : 'bg-slate-200 text-slate-900 border border-slate-300'
-                    }`}
-                  >
-                    Multi-Agent Mesh
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => handleSelectArchitecture('gcp-pharma-technical-infrastructure')}
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
-                    activeArch.id === 'gcp-pharma-technical-infrastructure'
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/30'
-                      : isDark
-                      ? 'bg-slate-900/80 hover:bg-slate-800 text-slate-200 border-slate-700'
-                      : 'bg-white hover:bg-slate-100 text-slate-900 font-bold border-slate-300'
-                  }`}
-                >
-                  <span>🏗️ 3. Technical Infrastructure</span>
-                  <span
-                    className={`text-[9.5px] px-1.5 py-0.5 rounded font-mono font-bold ${
-                      activeArch.id === 'gcp-pharma-technical-infrastructure'
-                        ? 'bg-blue-700 text-blue-100'
-                        : isDark
-                        ? 'bg-slate-800 text-slate-300'
-                        : 'bg-slate-200 text-slate-900 border border-slate-300'
-                    }`}
-                  >
-                    VPC &amp; HPC Cluster
-                  </span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Active Topology Hero & Meta Banner */}
+        {/* Page Body Container - Edge-to-Edge Desktop Utilization (Zero Surrounding Empty Space) */}
+        <main className="w-full max-w-none px-2 sm:px-3 md:px-3.5 py-2 space-y-2.5 flex-1">
+          {/* CONSOLIDATED ARCHITECTURE CONTROL BAR (Above-The-Fold Optimization) */}
           <div
-            id="active-topology-hero"
-            className={`p-5 rounded-xl border transition-all ${
-              isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            id="consolidated-architecture-bar"
+            className={`px-3 py-2 rounded-xl border transition-all ${
+              isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200 shadow-2xs'
             }`}
           >
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-              <div>
-                <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span className={`text-xs font-black uppercase tracking-wide ${
-                    isDark ? 'text-blue-400' : 'text-blue-700'
-                  }`}>
-                    {activeArch.category}
-                  </span>
-                  <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>&bull;</span>
-                  <span className={`text-xs font-semibold ${isDark ? 'text-slate-400' : 'text-slate-800'}`}>
-                    Source: {activeArch.author}
-                  </span>
-                </div>
-                <h2 className={`text-xl md:text-2xl font-black tracking-tight ${
-                  isDark ? 'text-white' : 'text-slate-950'
+            {/* Row 1: Horizontal Architecture Selector Chips & View Switcher Tabs */}
+            <div className="flex items-center justify-between gap-2.5">
+              {/* Architecture Selector Chips Strip */}
+              <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 no-scrollbar flex-1 min-w-0">
+                <span className={`text-[10px] font-black uppercase tracking-wider px-1 flex-shrink-0 ${
+                  isDark ? 'text-slate-400' : 'text-slate-700'
                 }`}>
-                  {activeArch.title}
-                </h2>
-                <p className={`text-sm mt-1.5 max-w-4xl leading-relaxed ${
-                  isDark ? 'text-slate-200 font-normal' : 'text-slate-900 font-medium'
-                }`}>
-                  {activeArch.overview}
-                </p>
+                  Topologies:
+                </span>
+                {ALL_GCP_DIALECT_A_ARCHITECTURES.map((arch) => {
+                  const isSelected = arch.id === activeArch.id;
+                  let chipLabel = arch.title;
+                  if (arch.id === 'gcp-multiagent-core') chipLabel = 'Multi-Agent AI';
+                  else if (arch.id === 'gcp-multimodal-classify') chipLabel = 'Multimodal Classify';
+                  else if (arch.id === 'gcp-multitenant-agentic') chipLabel = 'Multi-Tenant Core';
+                  else if (arch.id === 'gcp-deepsea-agentic') chipLabel = 'Deep-Sea Agentic';
+                  else if (arch.id === 'gcp-pharma-conceptual') chipLabel = 'Pharma Conceptual';
+                  else if (arch.id === 'gcp-pharma-drug-discovery') chipLabel = 'Pharma Logical';
+                  else if (arch.id === 'gcp-pharma-technical-infrastructure') chipLabel = 'Pharma Technical';
+
+                  return (
+                    <button
+                      key={arch.id}
+                      onClick={() => handleSelectArchitecture(arch.id)}
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
+                        isSelected
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                          : isDark
+                          ? 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 border-slate-700'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                      }`}
+                      title={`${arch.title} (${arch.components.length} components)`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white animate-pulse' : 'bg-blue-500'}`} />
+                      <span>{chipLabel}</span>
+                      <span
+                        className={`text-[9.5px] font-mono px-1 py-0.2 rounded font-bold ${
+                          isSelected
+                            ? 'bg-blue-700 text-white'
+                            : isDark
+                            ? 'bg-slate-700 text-slate-300'
+                            : 'bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {arch.components.length}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* View Switcher Tabs */}
+              {/* View Switcher Tabs (Canvas | Spec | Docs) */}
               <div
-                className={`flex items-center p-1 rounded-lg border self-start lg:self-center ${
-                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-300'
+                className={`flex items-center p-0.5 rounded-lg border flex-shrink-0 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
                 }`}
               >
                 <button
                   onClick={() => setActiveTab('canvas')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'canvas'
-                      ? 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : isDark
                       ? 'text-slate-300 hover:text-white'
-                      : 'text-slate-800 hover:text-slate-950 font-bold'
+                      : 'text-slate-700 hover:text-slate-950 font-bold'
                   }`}
                 >
-                  <Eye className="w-3.5 h-3.5" />
-                  <span>Interactive Canvas</span>
+                  <Eye className="w-3 h-3" />
+                  <span>Canvas</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('spec')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'spec'
-                      ? 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : isDark
                       ? 'text-slate-300 hover:text-white'
-                      : 'text-slate-800 hover:text-slate-950 font-bold'
+                      : 'text-slate-700 hover:text-slate-950 font-bold'
                   }`}
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>Living Spec &amp; Data Flow</span>
+                  <FileText className="w-3 h-3" />
+                  <span>Living Spec</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('official')}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-bold transition-all ${
                     activeTab === 'official'
-                      ? 'bg-blue-600 text-white shadow-sm'
+                      ? 'bg-blue-600 text-white shadow-xs'
                       : isDark
                       ? 'text-slate-300 hover:text-white'
-                      : 'text-slate-800 hover:text-slate-950 font-bold'
+                      : 'text-slate-700 hover:text-slate-950 font-bold'
                   }`}
                 >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span>Public Docs Reference</span>
+                  <BookOpen className="w-3 h-3" />
+                  <span>Docs</span>
                 </button>
               </div>
             </div>
 
-            {/* Design Patterns Pill Badges */}
-            <div className={`mt-4 pt-3.5 border-t flex flex-wrap items-center gap-2 ${
-              isDark ? 'border-slate-800' : 'border-slate-200'
+            {/* Row 2: Active Architecture Summary & Details Toggle */}
+            <div className={`mt-1.5 pt-1.5 border-t flex items-center justify-between gap-2 ${
+              isDark ? 'border-slate-800' : 'border-slate-100'
             }`}>
-              <span className={`text-xs font-black ${isDark ? 'text-slate-400' : 'text-slate-950'}`}>
-                Pattern Matrix:
-              </span>
-              {activeArch.designPatterns.map((pattern, idx) => (
-                <span
-                  key={idx}
-                  className={`text-[11px] font-bold px-2.5 py-1 rounded-md border ${
-                    isDark
-                      ? 'bg-slate-800/80 text-slate-200 border-slate-700'
-                      : 'bg-white text-slate-950 font-bold border-slate-300 shadow-xs'
-                  }`}
-                >
-                  {pattern}
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border shrink-0 ${
+                  isDark ? 'bg-blue-950/60 text-blue-300 border-blue-800/80' : 'bg-blue-50 text-blue-700 border-blue-200 font-black'
+                }`}>
+                  {activeArch.category}
                 </span>
-              ))}
+                <h2 className={`text-sm md:text-base font-black tracking-tight truncate ${
+                  isDark ? 'text-white' : 'text-slate-950'
+                }`}>
+                  {activeArch.title}
+                </h2>
+                <span className={`text-[11px] hidden xl:inline truncate ${isDark ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>
+                  &bull; {activeArch.subtitle}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {/* Pharma Tier Navigation Pills (if pharma topology active) */}
+                {activeArch.id.startsWith('gcp-pharma') && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleSelectArchitecture('gcp-pharma-conceptual')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                        activeArch.id === 'gcp-pharma-conceptual'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-white text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      1. Conceptual
+                    </button>
+                    <button
+                      onClick={() => handleSelectArchitecture('gcp-pharma-drug-discovery')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                        activeArch.id === 'gcp-pharma-drug-discovery'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-white text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      2. Logical
+                    </button>
+                    <button
+                      onClick={() => handleSelectArchitecture('gcp-pharma-technical-infrastructure')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all ${
+                        activeArch.id === 'gcp-pharma-technical-infrastructure'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : isDark ? 'bg-slate-800 text-slate-300 border-slate-700' : 'bg-white text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      3. Technical
+                    </button>
+                  </div>
+                )}
+
+                <button
+                  onClick={() => setIsDetailsExpanded(!isDetailsExpanded)}
+                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border transition-all cursor-pointer ${
+                    isDetailsExpanded
+                      ? isDark
+                        ? 'bg-blue-600/20 text-blue-300 border-blue-500/50'
+                        : 'bg-blue-50 text-blue-700 border-blue-300'
+                      : isDark
+                      ? 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                  title="Toggle overview description and design patterns"
+                >
+                  <Info className="w-3 h-3 text-blue-500" />
+                  <span>{isDetailsExpanded ? 'Hide Info' : 'Info & Patterns'}</span>
+                  <ChevronDown className={`w-3 h-3 transition-transform ${isDetailsExpanded ? 'rotate-180' : ''}`} />
+                </button>
+              </div>
             </div>
+
+            {/* Collapsible Details: Overview & Pattern Matrix */}
+            {isDetailsExpanded && (
+              <div className={`mt-2 pt-2 border-t space-y-2 ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700 font-medium'}`}>
+                  {activeArch.overview}
+                </p>
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className={`text-[10px] font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Patterns:
+                  </span>
+                  {activeArch.designPatterns.map((pattern, idx) => (
+                    <span
+                      key={idx}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                        isDark ? 'bg-slate-800 text-slate-200 border-slate-700' : 'bg-slate-50 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      {pattern}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* TAB 1: INTERACTIVE DRAW.IO CANVAS VIEW WITH INTEGRATED CO-PILOT */}
           {activeTab === 'canvas' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-3.5 items-stretch w-full">
               {/* LEFT: ARCHITECTURE CO-PILOT CHATBOT PANEL */}
               {isCopilotOpen && (
                 <div
                   id="architecture-copilot-panel"
-                  className={`col-span-12 lg:col-span-4 xl:col-span-4 2xl:col-span-3.5 rounded-xl border flex flex-col h-[820px] md:h-[920px] overflow-hidden transition-all shadow-lg ${
+                  className={`col-span-12 lg:col-span-4 xl:col-span-4 2xl:col-span-3.5 rounded-xl border flex flex-col h-[calc(100vh-180px)] min-h-[480px] max-h-[820px] overflow-hidden transition-all shadow-lg ${
                     isDark ? 'bg-[#0F172A] border-slate-800' : 'bg-white border-slate-200'
                   }`}
                 >
@@ -911,6 +840,15 @@ function GcpArchitectureCenterInner() {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" title="Co-Pilot Active &amp; Ready" />
+                      <span
+                        className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                          isDark ? 'bg-slate-800/80 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-700 border-slate-300'
+                        }`}
+                        title="Independent Chat Scroll (Up &amp; Down)"
+                      >
+                        <ArrowUpDown className="w-3 h-3 text-blue-500" />
+                        <span>Chat Scroll</span>
+                      </span>
                       <button
                         id="gcp-collapse-copilot-btn"
                         onClick={() => setIsCopilotOpen(false)}
@@ -970,7 +908,7 @@ function GcpArchitectureCenterInner() {
                   </div>
 
                   {/* Messages Scroll Stream */}
-                  <div className="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-3 text-xs">
+                  <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto p-3.5 space-y-3 text-xs overscroll-contain">
                     {messages.map((msg) => {
                       const isUser = msg.sender === 'user';
                       return (
@@ -1163,7 +1101,7 @@ function GcpArchitectureCenterInner() {
                   <button
                     id="gcp-expand-copilot-rail-btn"
                     onClick={() => setIsCopilotOpen(true)}
-                    className={`w-12 h-[820px] md:h-[920px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
+                    className={`w-12 h-[calc(100vh-180px)] min-h-[480px] max-h-[820px] rounded-xl border flex flex-col items-center justify-between py-6 transition-all shadow-md group cursor-pointer ${
                       isDark
                         ? 'bg-[#0F172A] hover:bg-slate-900 border-slate-800 text-slate-300 hover:text-white'
                         : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800 hover:text-blue-600 font-bold'
@@ -1191,13 +1129,13 @@ function GcpArchitectureCenterInner() {
                   isCopilotOpen
                     ? 'col-span-12 lg:col-span-8 xl:col-span-8 2xl:col-span-8.5'
                     : 'col-span-12 lg:col-span-11 xl:col-span-11.5 2xl:col-span-11.5'
-                } rounded-xl border overflow-hidden transition-all shadow-md ${
+                } rounded-xl border flex flex-col h-[calc(100vh-180px)] min-h-[480px] max-h-[820px] overflow-hidden transition-all shadow-md ${
                   isDark ? 'bg-[#0F172A] border-slate-800 shadow-xl' : 'bg-white border-slate-200'
                 }`}
               >
                 {/* Canvas Action Bar with CoPilot Toggle and Versioning */}
                 <div
-                  className={`px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-3 text-xs ${
+                  className={`px-4 py-2.5 border-b flex flex-wrap items-center justify-between gap-3 text-xs flex-shrink-0 ${
                     isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50/90 border-slate-200'
                   }`}
                 >
@@ -1224,6 +1162,16 @@ function GcpArchitectureCenterInner() {
                       <Bot className="w-3 h-3" />
                       <span>{isCopilotOpen ? 'Co-Pilot Active' : 'Show Co-Pilot'}</span>
                     </button>
+
+                    <span
+                      className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded border ${
+                        isDark ? 'bg-slate-800/80 text-slate-300 border-slate-700' : 'bg-slate-100 text-slate-700 border-slate-300'
+                      }`}
+                      title="Independent Canvas Scroll (Up &amp; Down)"
+                    >
+                      <ArrowUpDown className="w-3 h-3 text-emerald-500" />
+                      <span>Canvas Scroll</span>
+                    </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2.5 text-xs">
@@ -1419,7 +1367,7 @@ function GcpArchitectureCenterInner() {
                 </div>
 
                 {/* RenderSafe Diagram Canvas Container */}
-                <div className={`w-full h-[760px] md:h-[860px] relative ${canvasTheme === 'dark' ? 'bg-[#0B111E]' : 'bg-white'}`}>
+                <div className={`w-full flex-1 min-h-0 relative overflow-hidden ${canvasTheme === 'dark' ? 'bg-[#0B111E]' : 'bg-white'}`}>
                   <DiagramViewerRenderSafe
                     key={`${activeArch.id}-${activeVersionTag}-${canvasTheme}`}
                     xml={activeXml}
@@ -1427,6 +1375,7 @@ function GcpArchitectureCenterInner() {
                     aspectRatioId="16:9"
                     bgTheme={canvasTheme}
                     allowFullScaleScroll={false}
+                    fitToWidth={true}
                   />
                 </div>
               </div>

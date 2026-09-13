@@ -137,6 +137,7 @@ import { WelcomeGetStartedSlate } from '@/components/workspace/WelcomeGetStarted
 import { useTheme } from '@/lib/themeContext';
 import { useHydratedState, usePersistentBoolean } from '@/lib/hooks/useHydrationSafeState';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
+import { AppHeader } from '@/components/AppHeader';
 
 export const DEFAULT_UNIFIED_PROMPT =
   "Design a production-grade multi-tier enterprise architecture on Google Cloud (GCP) featuring: Global HTTPS Load Balancer with Cloud Armor WAF and Cloud CDN, GKE Autopilot cluster running containerized microservices across multi-AZ private subnets, Cloud SQL (PostgreSQL 16) with read-replicas and Private Service Connect, Redis MemoryStore cache tier, Pub/Sub event streaming bus with Dead-Letter Queue (DLQ), and Vertex AI Gemini Enterprise integration for real-time analytics and observability.";
@@ -3834,7 +3835,7 @@ function WorkspaceContent() {
   };
 
   function renderAuditCenterView() {
-    // 50 Canonical Blueprints + Custom Diagrams
+    // 52 Canonical Blueprints + Custom Diagrams
     const auditAssets = [
       ...CANONICAL_TEMPLATES.map(t => ({
         id: t.id,
@@ -6290,17 +6291,17 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
         {/* 3. CLEAN PRIMARY NAVIGATION LINKS */}
         <div className="p-3 space-y-1 flex-1 overflow-y-auto">
           <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
-            {isSidebarOpen ? 'Canonical Suite' : '•••'}
+            {isSidebarOpen ? 'Navigate' : '•••'}
           </div>
 
           {[
-            { id: 'studio1', name: 'Launch Studio 1', icon: Sparkles, href: '/studio1', badge: 'LAB' },
-            { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
-            { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
-            { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
-            { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },
-            { id: 'audit', name: 'Security Audit', icon: ShieldCheck },
-            { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+            { id: 'studio1', name: 'Prompt Lab', icon: Sparkles, href: '/studio1', badge: 'LAB' },
+            { id: 'studio', name: 'Architecture Studio', icon: Layers, href: '/studio', badge: 'PRO' },
+            { id: 'canonical', name: 'Blueprint Catalog', icon: LayoutGrid, href: '/canonical', badge: '52' },
+            { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen?tab=catalog', badge: '17' },
+            { id: 'dashboard', name: 'Operations', icon: BarChart3, href: '/dashboard' },
+            { id: 'audit', name: 'Audit & Compliance', icon: ShieldCheck },
+            { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
           ].map((item) => {
             const Icon = item.icon;
             const isActive = currentTab === item.id;
@@ -6424,7 +6425,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </div>
                 </button>
 
-                <Link href="/history" className="block">
+                <Link href="/library" className="block">
                   <div className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     canvasTheme === 'light'
                       ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -6432,7 +6433,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   }`}>
                     <div className="flex items-center gap-2.5 min-w-0">
                       <History className="w-3.5 h-3.5 shrink-0 text-slate-400" />
-                      <span className="truncate">Canvas History</span>
+                      <span className="truncate">Architecture Library</span>
                     </div>
                   </div>
                 </Link>
@@ -6767,13 +6768,13 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
               <div className="p-3 space-y-1">
                 {[
                   { id: 'editor', name: t.designCanvas, icon: Network },
-                  { id: 'canonical', name: 'Canonical Blueprints Hub', icon: Sparkles, href: '/canonical', badge: '50' },
-                  { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
+                  { id: 'canonical', name: 'Blueprint Catalog', icon: LayoutGrid, href: '/canonical', badge: '52' },
+                  { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
                   { id: 'templates', name: t.templatesGallery, icon: LayoutGrid },
-                  { id: 'history', name: 'Historical Canvases', icon: History, href: '/history' },
+                  { id: 'history', name: 'My Architectures', icon: History, href: '/library' },
                   { id: 'dashboard', name: t.operationsDashboard, icon: BarChart3, href: '/dashboard' },
                   { id: 'audit', name: t.securityAudit, icon: ShieldCheck },
-                  { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+                  { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
                   { id: 'walkthrough', name: t.interactiveTour, icon: Compass },
                   { id: 'settings', name: t.settingsTier, icon: Settings }
                 ].map((item) => {
@@ -6970,7 +6971,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
           )}
           <>
             {/* Top Navbar */}
-            <header className={`h-14 border-b flex items-center justify-between px-3 md:px-6 backdrop-blur-md gap-3 relative shrink-0 transition-colors bg-[#0B111E] border-slate-800 text-white shadow-md ${tourStep !== null ? 'z-[60]' : 'z-30'}`}>
+            <AppHeader zIndexClass={tourStep !== null ? 'z-[60]' : 'z-40'}>
               {/* Group 1: Left - Navigation Identity, Category & Version */}
               <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
                 {/* Mobile/Tablet Hamburger Menu Toggle */}
@@ -7196,7 +7197,7 @@ function transformXmlToExecutiveObsidianHud(xml: string): string {
                   </>
                 )}
               </div>
-            </header>
+            </AppHeader>
 
         {/* Workspace Body: Immersive Diagram Canvas with Gemini Enterprise Bottom Dock */}
         <div className="flex-1 flex min-h-0 relative">

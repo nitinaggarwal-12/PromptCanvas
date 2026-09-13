@@ -58,6 +58,7 @@ import {
 } from '@/lib/canonical/canonicalTemplates';
 import { DOC_ARCHETYPES_META, DocArchetypeMeta, BlueprintSlot } from '@/lib/compose/archetypes';
 import { loadAllHistoricalProjects, HistoricalProjectItem } from '@/components/DocGenHistoryModal';
+import { AppHeader } from '@/components/AppHeader';
 
 // Family Metadata with dedicated icons and styling accents
 export const FAMILY_CARDS_META = [
@@ -321,7 +322,7 @@ function DashboardContent() {
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 overflow-y-auto flex flex-col">
         {/* Sticky Top Header */}
-        <header className="dark sticky top-0 z-30 border-b backdrop-blur-xl px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors shrink-0 bg-[#0B111E] border-slate-800 text-white shadow-md">
+        <AppHeader>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 via-teal-500 to-indigo-500 p-0.5 shadow-md flex items-center justify-center">
               <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
@@ -347,176 +348,167 @@ function DashboardContent() {
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Launch Studio</span>
+              <span>Open in Studio</span>
             </Link>
             <ThemeToggleBtn />
           </div>
-        </header>
+        </AppHeader>
 
-        {/* Dashboard Workspace Container */}
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 py-6 space-y-6">
+        {/* Dashboard Workspace Container - Edge-to-Edge Desktop Utilization */}
+        <div className="w-full max-w-none px-4 md:px-8 py-3 space-y-3">
           
           {/* ========================================================================= */}
-          {/* 1. EXECUTIVE HEALTH & COMMAND COCKPIT BANNER */}
+          {/* 1. CONSOLIDATED EXECUTIVE POSTURE & LAUNCHPAD BAR (Compact 56px) */}
           {/* ========================================================================= */}
-          <div className={`p-6 rounded-3xl border shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-6 ${
+          <div className={`p-3 sm:p-4 rounded-2xl border shadow-xs flex flex-wrap items-center justify-between gap-3 ${
             isLight
-              ? 'bg-gradient-to-r from-white via-slate-50/80 to-teal-50/30 border-slate-200 shadow-slate-200/50'
-              : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-2xl'
+              ? 'bg-gradient-to-r from-white via-slate-50/80 to-teal-50/30 border-slate-200 shadow-slate-200/30'
+              : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-xl'
           }`}>
-            {/* Left: Overall Health Rating & Telemetry */}
-            <div className="flex items-start sm:items-center gap-5">
-              <div className="w-20 h-20 rounded-2xl flex flex-col items-center justify-center border font-black bg-gradient-to-br from-teal-500/10 to-emerald-500/20 border-teal-500/30 shrink-0">
-                <span className="text-2xl font-black text-teal-500">{stats.healthScore}%</span>
-                <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-500">Grade A+</span>
+            {/* Left: Health & Posture Title */}
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-11 h-11 rounded-xl flex flex-col items-center justify-center border font-black bg-gradient-to-br from-teal-500/10 to-emerald-500/20 border-teal-500/30 shrink-0">
+                <span className="text-base font-black text-teal-500 leading-none">{stats.healthScore}%</span>
+                <span className="text-[8px] uppercase font-bold tracking-wider text-emerald-500 leading-none mt-0.5">A+</span>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-0.5 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                    Enterprise Architectural Operations &amp; Posture
+                  <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
+                    Enterprise Operations &amp; Posture
                   </h2>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
+                  <span className="text-[9.5px] font-bold px-2 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                     <CheckCheck className="w-3 h-3" /> Certified Ready
                   </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-                  Continuous AST compilation monitor, 100% collision-free geometric validation, and live compliance mapping across CIS GCP Foundations &amp; NIST SP 800-53.
-                </p>
-                <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-1 font-mono">
-                  <span className="flex items-center gap-1 text-teal-600 dark:text-teal-400 font-bold">
-                    <Zap className="w-3 h-3" /> 1.1s Gemini 3.7 Flash
+                  <span className="hidden lg:inline-flex items-center gap-1 text-[10px] text-teal-600 dark:text-teal-400 font-mono font-bold">
+                    <Zap className="w-3 h-3" /> 1.1s Gemini 3.7
                   </span>
-                  <span>&bull;</span>
-                  <span>0.0% Overlap Collision</span>
-                  <span>&bull;</span>
-                  <span>16:9 Presentation Standard</span>
                 </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-xl truncate">
+                  Continuous AST compilation monitor, 100% collision-free geometric validation, and CIS GCP mapping.
+                </p>
               </div>
             </div>
 
-            {/* Right: Quick Action Hub Launchpad */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full xl:w-auto shrink-0">
+            {/* Right: Quick Action Hub Launchpad (Compact Chips) */}
+            <div className="flex flex-wrap items-center gap-1.5 shrink-0">
               <Link
                 href="/studio"
-                className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 group ${
-                  isLight ? 'bg-white hover:bg-teal-50/50 border-slate-200' : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
+                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
+                  isLight ? 'bg-white hover:bg-teal-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-teal-950/30 border-slate-800'
                 }`}
               >
-                <span className="text-base group-hover:scale-110 transition-transform">✨</span>
-                <span className="text-[11px] font-bold text-slate-900 dark:text-white">Studio</span>
-                <span className="text-[9px] text-slate-400">Prompt-to-Arch</span>
+                <span className="text-xs">✨</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-white">Studio</span>
               </Link>
 
               <Link
                 href="/canonical"
-                className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 group ${
-                  isLight ? 'bg-white hover:bg-sky-50/50 border-slate-200' : 'bg-slate-900/60 hover:bg-sky-950/30 border-slate-800'
+                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
+                  isLight ? 'bg-white hover:bg-sky-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-sky-950/30 border-slate-800'
                 }`}
               >
-                <span className="text-base group-hover:scale-110 transition-transform">🏛️</span>
-                <span className="text-[11px] font-bold text-slate-900 dark:text-white">Blueprints</span>
-                <span className="text-[9px] text-slate-400">50 Master Schemas</span>
+                <span className="text-xs">🏛️</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-white">Blueprints</span>
+                <span className="text-[10px] text-slate-400 font-mono">(50)</span>
               </Link>
 
               <Link
                 href="/docgen"
-                className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 group ${
-                  isLight ? 'bg-white hover:bg-indigo-50/50 border-slate-200' : 'bg-slate-900/60 hover:bg-indigo-950/30 border-slate-800'
+                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
+                  isLight ? 'bg-white hover:bg-indigo-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-indigo-950/30 border-slate-800'
                 }`}
               >
-                <span className="text-base group-hover:scale-110 transition-transform">📄</span>
-                <span className="text-[11px] font-bold text-slate-900 dark:text-white">DocGen</span>
-                <span className="text-[9px] text-slate-400">17 Archetypes</span>
+                <span className="text-xs">📄</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-white">DocGen</span>
+                <span className="text-[10px] text-slate-400 font-mono">(17)</span>
               </Link>
 
               <Link
                 href="/audit"
-                className={`p-3 rounded-2xl border text-center transition-all flex flex-col items-center justify-center gap-1 group ${
-                  isLight ? 'bg-white hover:bg-rose-50/50 border-slate-200' : 'bg-slate-900/60 hover:bg-rose-950/30 border-slate-800'
+                className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 group ${
+                  isLight ? 'bg-white hover:bg-rose-50/50 border-slate-200 shadow-2xs' : 'bg-slate-900/60 hover:bg-rose-950/30 border-slate-800'
                 }`}
               >
-                <span className="text-base group-hover:scale-110 transition-transform">🛡️</span>
-                <span className="text-[11px] font-bold text-slate-900 dark:text-white">Security Audit</span>
-                <span className="text-[9px] text-slate-400">6-Tier Verification</span>
+                <span className="text-xs">🛡️</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-white">Audit</span>
               </Link>
             </div>
           </div>
 
           {/* ========================================================================= */}
-          {/* 2. TOP KPI METRICS STRIP */}
+          {/* 2. TOP KPI METRICS STRIP (Compact Cards) */}
           {/* ========================================================================= */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
             {/* KPI 1 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Blueprints</span>
-                <Sparkles className="w-4 h-4 text-sky-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Blueprints</span>
+                <Sparkles className="w-3.5 h-3.5 text-sky-500" />
               </div>
-              <div className="text-2xl font-black text-sky-500">{stats.totalBlueprints}</div>
-              <p className="text-[10px] text-slate-400">100% Certified 16:9 XML</p>
+              <div className="text-xl font-black text-sky-500 mt-0.5">{stats.totalBlueprints}</div>
+              <p className="text-[9px] text-slate-400">100% Certified 16:9</p>
             </div>
 
             {/* KPI 2 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Doc Archetypes</span>
-                <FileText className="w-4 h-4 text-emerald-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Archetypes</span>
+                <FileText className="w-3.5 h-3.5 text-emerald-500" />
               </div>
-              <div className="text-2xl font-black text-emerald-500">{stats.totalArchetypes}</div>
-              <p className="text-[10px] text-slate-400">BRD, PRD, SDD, STRIDE</p>
+              <div className="text-xl font-black text-emerald-500 mt-0.5">{stats.totalArchetypes}</div>
+              <p className="text-[9px] text-slate-400">BRD, PRD, SDD, TDD</p>
             </div>
 
             {/* KPI 3 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">User Projects</span>
-                <Boxes className="w-4 h-4 text-indigo-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Projects</span>
+                <Boxes className="w-3.5 h-3.5 text-indigo-500" />
               </div>
-              <div className="text-2xl font-black text-indigo-500">{stats.totalDocs + (userArtifacts.length || 0)}</div>
-              <p className="text-[10px] text-slate-400">Tracked Specifications</p>
+              <div className="text-xl font-black text-indigo-500 mt-0.5">{stats.totalDocs + (userArtifacts.length || 0)}</div>
+              <p className="text-[9px] text-slate-400">Tracked Specs</p>
             </div>
 
             {/* KPI 4 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Snapshots</span>
-                <GitBranch className="w-4 h-4 text-teal-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Snapshots</span>
+                <GitBranch className="w-3.5 h-3.5 text-teal-500" />
               </div>
-              <div className="text-2xl font-black text-teal-500">{stats.totalVersions}</div>
-              <p className="text-[10px] text-slate-400">Version History Points</p>
+              <div className="text-xl font-black text-teal-500 mt-0.5">{stats.totalVersions}</div>
+              <p className="text-[9px] text-slate-400">Version History</p>
             </div>
 
             {/* KPI 5 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Collision Rate</span>
-                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">Collision</span>
+                <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />
               </div>
-              <div className="text-2xl font-black text-emerald-500">{stats.astCollisionRate}</div>
-              <p className="text-[10px] text-slate-400">Zero Overlaps Verified</p>
+              <div className="text-xl font-black text-emerald-500 mt-0.5">{stats.astCollisionRate}</div>
+              <p className="text-[9px] text-slate-400">Zero Overlaps</p>
             </div>
 
             {/* KPI 6 */}
-            <div className={`p-4 rounded-2xl border space-y-1 transition-all ${
-              isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'
+            <div className={`px-3 py-2 rounded-xl border transition-all ${
+              isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-sm'
             }`}>
               <div className="flex items-center justify-between text-slate-400">
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider">AST Latency</span>
-                <Zap className="w-4 h-4 text-amber-500" />
+                <span className="text-[9.5px] font-mono font-bold uppercase tracking-wider">AST Speed</span>
+                <Zap className="w-3.5 h-3.5 text-amber-500" />
               </div>
-              <div className="text-2xl font-black text-amber-500">{stats.avgLatency}</div>
-              <p className="text-[10px] text-slate-400">Gemini 3.7 Flash</p>
+              <div className="text-xl font-black text-amber-500 mt-0.5">{stats.avgLatency}</div>
             </div>
           </div>
 
@@ -552,7 +544,7 @@ function DashboardContent() {
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>50 Canonical Blueprints</span>
+                <span>52 Blueprints</span>
               </button>
 
               <button

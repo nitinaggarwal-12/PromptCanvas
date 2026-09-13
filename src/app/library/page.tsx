@@ -57,6 +57,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { AppHeader } from '@/components/AppHeader';
 
 interface DiagramVersionItem {
   id: string;
@@ -86,7 +87,7 @@ interface CanvasDiagramItem {
   is_starred?: boolean;
 }
 
-type StudioTabKey = 'all' | 'studio' | 'studio1' | 'studio2' | 'studio3' | 'canonical';
+type StudioTabKey = 'all' | 'studio' | 'studio1' | 'canonical' | 'vision';
 
 function ArchitectureLibraryContent() {
   const router = useRouter();
@@ -162,7 +163,7 @@ function ArchitectureLibraryContent() {
   // Initialize active studio from URL query
   useEffect(() => {
     const studioParam = searchParams.get('studio');
-    if (studioParam === 'studio' || studioParam === 'studio1' || studioParam === 'studio2' || studioParam === 'studio3' || studioParam === 'canonical') {
+    if (studioParam === 'studio' || studioParam === 'studio1' || studioParam === 'canonical' || studioParam === 'vision') {
       setActiveStudioTab(studioParam as StudioTabKey);
     }
   }, [searchParams]);
@@ -380,12 +381,10 @@ function ArchitectureLibraryContent() {
       return 'canonical';
     }
     const raw = (d.created_studio || '').toLowerCase();
+    if (raw === 'vision' || d.id.startsWith('vision_') || (d.architecture_type && d.architecture_type.includes('vision'))) {
+      return 'vision';
+    }
     if (raw === 'studio' || raw === 'studio_pro' || raw === 'launch_studio') return 'studio';
-    if (raw === 'studio2') return 'studio2';
-    if (raw === 'studio3') return 'studio3';
-    if (d.architecture_type && d.architecture_type.includes('studio3')) return 'studio3';
-    if (d.name && d.name.toLowerCase().includes('studio 2')) return 'studio2';
-    if (d.name && d.name.toLowerCase().includes('studio 3')) return 'studio3';
     return 'studio1';
   };
 
@@ -395,13 +394,14 @@ function ArchitectureLibraryContent() {
       all: diagrams.length,
       studio: 0,
       studio1: 0,
-      studio2: 0,
-      studio3: 0,
-      canonical: 0
+      canonical: 0,
+      vision: 0
     };
     diagrams.forEach(d => {
       const cat = getStudioCategory(d);
-      counts[cat] = (counts[cat] || 0) + 1;
+      if (cat in counts) {
+        counts[cat as keyof typeof counts] = (counts[cat as keyof typeof counts] || 0) + 1;
+      }
     });
     return counts;
   }, [diagrams]);
@@ -493,7 +493,7 @@ function ArchitectureLibraryContent() {
       <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden relative">
         
         {/* Top Navbar */}
-        <header className="dark h-14 border-b flex items-center justify-between px-4 md:px-8 backdrop-blur-md gap-3 shrink-0 z-30 bg-[#0B111E] border-slate-800 text-white shadow-md">
+        <AppHeader>
           {/* Breadcrumbs */}
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <button
@@ -554,10 +554,10 @@ function ArchitectureLibraryContent() {
               title="Launch Multi-Diagram AI Studio"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Launch Studio</span>
+              <span>Open in Studio</span>
             </Link>
           </div>
-        </header>
+        </AppHeader>
 
         {/* Floating Toast Notification */}
         {toastMessage && (
@@ -569,43 +569,44 @@ function ArchitectureLibraryContent() {
 
         {/* Main Scrollable Content */}
         <main className="flex-1 w-full overflow-y-auto relative z-10 custom-scrollbar pb-24">
-          <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-8 space-y-5">
+          <div className="w-full max-w-none px-4 sm:px-6 lg:px-8 pt-3 pb-6 space-y-3">
             
-            {/* Title Block & KPI Strip */}
-            <div className={`flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-4 border-b ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
-              <div className="space-y-1 flex-1 min-w-0">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-600 dark:text-teal-400 text-[10px] font-bold uppercase tracking-wider">
-                  <LayoutGrid className="w-3 h-3" />
-                  <span>Architecture Library &amp; Repositories</span>
+            {/* Title Block & KPI Strip (Consolidated Compact) */}
+            <div className={`flex flex-wrap items-center justify-between gap-3 pb-3 border-b ${isLight ? 'border-slate-200' : 'border-slate-800/80'}`}>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-teal-500/10 border border-teal-500/25 flex items-center justify-center text-teal-600 dark:text-teal-400 shrink-0">
+                  <LayoutGrid className="w-4 h-4" />
                 </div>
-                <h1 className={`text-2xl sm:text-3xl font-black tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                  Enterprise Architecture <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Library</span>
-                </h1>
-                <p className={`text-xs sm:text-sm leading-normal ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  Browse, filter, preview, and batch-manage architectures across all studios with zero confusion and instant vector rendering.
-                </p>
+                <div>
+                  <h1 className={`text-base sm:text-lg font-black tracking-tight leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                    Enterprise Architecture <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Library</span>
+                  </h1>
+                  <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                    Browse, filter, and batch-manage architectures across all studios with instant vector rendering.
+                  </p>
+                </div>
               </div>
 
-              {/* KPI Strip */}
-              <div className="flex items-center gap-4 p-2 px-4 rounded-2xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
-                <div className="text-center px-1.5">
-                  <div className="text-lg font-black text-teal-600 dark:text-teal-400">{diagrams.length}</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Total Canvases</div>
+              {/* KPI Strip (Compact Inline Chips) */}
+              <div className="flex items-center gap-3 px-3 py-1.5 rounded-xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-2xs shrink-0 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-teal-600 dark:text-teal-400">{diagrams.length}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Total</span>
                 </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-lg font-black text-indigo-600 dark:text-indigo-400">{studioCounts.studio}</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Studio Pro</div>
+                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{studioCounts.studio}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Pro</span>
                 </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-lg font-black text-emerald-600 dark:text-emerald-400">{studioCounts.studio1}</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Studio 1 Lab</div>
+                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{studioCounts.studio1}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Studio 1</span>
                 </div>
-                <div className="h-6 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                <div className="text-center px-1.5">
-                  <div className="text-lg font-black text-amber-600 dark:text-amber-400">{studioCounts.canonical}</div>
-                  <div className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-amber-600 dark:text-amber-400">{studioCounts.canonical}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Blueprints</span>
                 </div>
               </div>
             </div>
@@ -618,9 +619,8 @@ function ArchitectureLibraryContent() {
                 { id: 'all', label: '🌐 All Architecture', count: studioCounts.all, color: 'teal' },
                 { id: 'studio', label: '💎 Studio (Pro Multi-Diagram)', count: studioCounts.studio, color: 'indigo' },
                 { id: 'studio1', label: '🧪 Studio 1 (Lab & Single)', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'studio2', label: '🤖 Studio 2 (Multi-Agent)', count: studioCounts.studio2, color: 'purple' },
-                { id: 'studio3', label: '📐 Studio 3 (First-Principles)', count: studioCounts.studio3, color: 'amber' },
-                { id: 'canonical', label: '📚 52 Canonical Blueprints', count: studioCounts.canonical, color: 'sky' }
+                { id: 'canonical', label: '📚 52 Canonical Blueprints', count: studioCounts.canonical, color: 'sky' },
+                { id: 'vision', label: '👁️ Vision Decompiler', count: studioCounts.vision, color: 'teal' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
@@ -832,26 +832,20 @@ function ArchitectureLibraryContent() {
                         actionLabel: 'Open in Studio 1',
                         route: `/studio1?diagram=${diagram.id}`
                       },
-                      studio2: {
-                        label: 'Studio 2 (Agents)',
-                        style: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
-                        btnStyle: 'bg-purple-600 hover:bg-purple-500 text-white',
-                        actionLabel: 'Open in Studio 2',
-                        route: `/studio2?diagram=${diagram.id}`
-                      },
-                      studio3: {
-                        label: 'Studio 3 (Graph)',
-                        style: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
-                        btnStyle: 'bg-amber-600 hover:bg-amber-500 text-white',
-                        actionLabel: 'Open in Studio 3',
-                        route: `/workspace?diagram=${diagram.id}&tab=editor`
-                      },
+
                       canonical: {
                         label: 'Canonical Blueprint',
                         style: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30',
                         btnStyle: 'bg-sky-600 hover:bg-sky-500 text-white',
                         actionLabel: 'Open Blueprint',
                         route: `/canonical`
+                      },
+                      vision: {
+                        label: 'Vision Decompiler',
+                        style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
+                        btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
+                        actionLabel: 'Open in Vision AI',
+                        route: `/vision?id=${diagram.id}`
                       }
                     };
 

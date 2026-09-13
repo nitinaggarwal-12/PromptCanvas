@@ -18,6 +18,7 @@ import type { User } from '@/lib/db';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
+import { AppHeader } from '@/components/AppHeader';
 
 export default function SuperAdminDashboard() {
   const [users, setUsers] = useState<User[]>([]);
@@ -103,8 +104,8 @@ export default function SuperAdminDashboard() {
         )}
 
         {/* Top Header */}
-        <header className="sticky top-0 z-30 w-full border-b backdrop-blur-md shrink-0 bg-[#0B111E] border-slate-800 text-white shadow-md">
-          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+        <AppHeader>
+ <div className="w-full max-w-none flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 text-xs font-semibold">
                 <Link href="/" className="text-slate-400 hover:text-white transition-colors" title="Home">
@@ -138,10 +139,10 @@ export default function SuperAdminDashboard() {
               </div>
             </div>
           </div>
-        </header>
+        </AppHeader>
 
       {/* Body Content */}
-      <main className="flex-1 w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-10 space-y-6 sm:space-y-8">
+      <main className="flex-1 w-full max-w-none px-4 sm:px-6 md:px-8 py-4 space-y-4">
         {error ? (
           <div className={`p-8 border rounded-2xl text-center max-w-md mx-auto space-y-3 ${
             isLight ? 'bg-rose-50 border-rose-200' : 'bg-rose-950/40 border-rose-500/40'

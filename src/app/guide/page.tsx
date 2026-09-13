@@ -45,6 +45,7 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
+import { AppHeader } from '@/components/AppHeader';
 
 type PersonaKey = 'quickstart' | 'architect' | 'data_ai' | 'consultant' | 'secops';
 
@@ -94,12 +95,12 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         frameIndex: 0,
         templateId: '01',
         imagePath: '/workflows/frames/quickstart/frame_01.png',
-        actionLabel: '1. Launch Studio & Orientation: Canonical Suite (Left), Canvas (Center) & Hub (Top)',
+        actionLabel: '1. Architecture Studio & Orientation: Canonical Suite (Left), Canvas (Center) & Hub (Top)',
         narrationText: 'Welcome to PromptCanvas. The interface is powered by the Canonical Architecture Suite: the Left Unified Sidebar, Top Header Controls, and the High-DPI 16:9 Canvas.',
         stepNumber: 1,
-        title: 'Launch Studio & Canonical Orientation',
-        whereToClick: 'Launch Studio / Canonical Hub',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 50 Canonical Blueprints and 17 DocGen Specification Archetypes directly from the sidebar.',
+        title: 'Architecture Studio Orientation',
+        whereToClick: 'Architecture Studio / Blueprint Catalog',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 52 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'
@@ -114,7 +115,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         narrationText: 'Step two: Select your architecture domain flavor or enter plain English requirements into the Studio prompt engine.',
         stepNumber: 2,
         title: 'Prompt Entry & Architecture Selection',
-        whereToClick: 'Launch Studio -> "ACTIVE USE CASE PROMPT" text area',
+        whereToClick: 'Architecture Studio -> "ACTIVE USE CASE PROMPT" text area',
         description: 'Type plain English requirements or select from 50 canonical master blueprints (e.g. Microservices, Event Buses, and Zero-Trust Mesh).',
         promptRecipe: 'Design an Enterprise Cloud Platform on Google Cloud featuring Cloud Armor WAF, GKE Autopilot microservices with private VPC peering, Cloud SQL high availability, and Pub/Sub event ingestion.',
         validationChecklist: [
@@ -257,10 +258,10 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         templateId: '17',
         imagePath: '/workflows/frames/architect/frame_01.png',
         actionLabel: '1. Greenfield Shared VPC, 100G Interconnect & CIDRs (Blueprint #17)',
-        narrationText: 'Enter your greenfield Landing Zone requirements into Launch Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
+        narrationText: 'Enter your greenfield Landing Zone requirements into Architecture Studio: 100G Dedicated Interconnect, Cloud Router BGP, GKE Autopilot subnets, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Inputting Landing Zone Requirements',
-        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #17',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #17',
         description: 'Provide enterprise networking constraints: 100G Dedicated Interconnect, Cloud Router BGP ASN 65001, GKE Autopilot pod CIDR (10.20.0.0/16), and PSC consumer endpoints.',
         promptRecipe: 'Design a Google Cloud Landing Zone and Shared VPC Network Fabric with 100G Dedicated Interconnect, Cloud Router BGP, PSC Hub 10.100.0.0/24, GKE Autopilot, and VPC-SC perimeter.',
         validationChecklist: ['Prompt contains CIDRs and SLA parameters'],
@@ -355,7 +356,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         narrationText: 'Enter data and AI platform requirements: AlloyDB pgvector with text-embedding-004, BigQuery Lakehouse Star Schema, and Looker BI.',
         stepNumber: 1,
         title: 'Inputting Data & AI Requirements',
-        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #29',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #29',
         description: 'Define real-time streaming, Vertex AI Search, AlloyDB pgvector, and BigQuery Lakehouse.',
         promptRecipe: 'Build an Omnichannel Retail AI Platform with AlloyDB pgvector, BigQuery Lakehouse Star Schema, and Looker BI.',
         validationChecklist: ['Data flows and model parameters defined'],
@@ -450,7 +451,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         narrationText: 'Provide your legacy infrastructure inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         stepNumber: 1,
         title: 'Prompting Discovery & Assessment',
-        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #05',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #05',
         description: 'Provide legacy inventory: Mainframe, Oracle 11g RAC, SAP ECC, and spaghetti ETL scripts.',
         promptRecipe: 'Assess on-prem legacy silos, spaghetti integration matrix, StratoZone Discovery Appliance, and 4 migration waves.',
         validationChecklist: ['Legacy monoliths and discovery tools defined'],
@@ -544,7 +545,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         narrationText: 'Enter zero-trust regulatory constraints: PCI-DSS 4.0, SOC2 Type II, Cloud KMS HSM CMEK, and VPC Service Controls.',
         stepNumber: 1,
         title: 'Prompting Zero-Trust Security Requirements',
-        whereToClick: 'Launch Studio -> Prompt Box / Blueprint #23',
+        whereToClick: 'Architecture Studio -> Prompt Box / Blueprint #23',
         description: 'Specify regulatory standards: PCI-DSS 4.0, SOC2 Type II, and VPC Service Controls.',
         promptRecipe: 'Enforce PCI-DSS 4.0 and SOC2 Type II: Cloud KMS HSM CMEK, VPC Service Controls, and Cloud Armor WAF.',
         validationChecklist: ['Compliance guardrails and policy IDs defined'],
@@ -756,8 +757,8 @@ export default function GuidePage() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* ==================== STICKY CONSOLIDATED TOP NAVBAR ==================== */}
-        <header className="dark sticky top-0 z-30 w-full border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md">
-          <div className="max-w-[1600px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-4">
+        <AppHeader>
+ <div className="w-full max-w-none flex items-center justify-between gap-4">
             {/* Left: Breadcrumbs */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
@@ -788,10 +789,10 @@ export default function GuidePage() {
               </Link>
             </div>
           </div>
-        </header>
+        </AppHeader>
 
       {/* ==================== COMPACT HERO & PERSONA SWITCHER ==================== */}
-      <section className="pt-5 pb-3 px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full mx-auto space-y-3">
+      <section className="pt-4 pb-3 px-4 sm:px-6 lg:px-8 w-full max-w-none space-y-3">
         
         {/* Compact Title Row */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-2 border-b border-slate-700/30">
@@ -845,7 +846,7 @@ export default function GuidePage() {
       </section>
 
       {/* ==================== INTERACTIVE WORKFLOW VIDEO PLAYER & CANVAS CONTROLS ==================== */}
-      <section className="pb-12 px-4 sm:px-6 lg:px-8 max-w-[1600px] w-full mx-auto">
+      <section className="pb-10 px-4 sm:px-6 lg:px-8 w-full max-w-none">
         <div className={`rounded-2xl border p-5 md:p-6 transition-all ${
           isMaximized 
             ? 'fixed inset-4 z-[99999] overflow-y-auto bg-slate-950/98 border-teal-500/60 shadow-2xl backdrop-blur-2xl p-6 md:p-8'
@@ -1165,7 +1166,7 @@ export default function GuidePage() {
                     <Link
                       href={`/canonical/${activeFrame.templateId || '01'}`}
                       className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-extrabold text-[10px] transition-all flex items-center gap-1 shadow-sm shrink-0 cursor-pointer"
-                      title="Open full interactive blueprint in Canonical Blueprints Hub"
+                      title="Open full interactive blueprint in the Blueprint Catalog"
                     >
                       <span>Open Canonical Blueprint</span>
                       <ExternalLink className="w-3 h-3" />
@@ -1224,10 +1225,10 @@ export default function GuidePage() {
       </section>
 
       {/* ==================== PERSONA WORKFLOW GIF DOWNLOAD & WATCH GALLERY ==================== */}
-      <section className={`py-12 px-6 md:px-12 border-t ${
+      <section className={`py-10 px-4 sm:px-6 lg:px-8 border-t ${
         isLight ? 'bg-slate-100/60 border-slate-200' : 'bg-slate-900/40 border-slate-800'
       }`}>
-        <div className="max-w-[1600px] mx-auto space-y-8">
+        <div className="w-full max-w-none space-y-6">
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -1484,9 +1485,9 @@ export default function GuidePage() {
       </section>
 
       {/* ==================== COMPACT HOTSPOT MAP & PRO-TIPS ==================== */}
-      <section className="py-12 px-6 md:px-12 max-w-[1600px] mx-auto space-y-6">
+      <section className="py-8 px-4 sm:px-6 lg:px-8 w-full max-w-none space-y-5">
         
-        <div className="text-center max-w-2xl mx-auto space-y-1">
+        <div className="text-center w-full max-w-none space-y-1">
           <h2 className="text-2xl font-black">Workspace Interface Map &amp; Shortcuts</h2>
           <p className={`text-xs ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             Numbered guide to the 6 primary controls in PromptCanvas.

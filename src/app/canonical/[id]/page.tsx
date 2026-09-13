@@ -34,6 +34,7 @@ import { ComposeModal } from '@/components/workspace/ComposeModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { useTheme } from '@/lib/themeContext';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import { AppHeader } from '@/components/AppHeader';
 
 export default function CanonicalTemplateDetailPage() {
   const params = useParams();
@@ -144,8 +145,8 @@ export default function CanonicalTemplateDetailPage() {
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* TOP NAVIGATION BAR */}
         {!isFullScreen && (
-          <header className="dark sticky top-0 z-40 w-full backdrop-blur-md border-b bg-[#0B111E] border-slate-800 text-white shadow-md">
-          <div className="max-w-[1680px] mx-auto px-3 md:px-6 h-16 flex items-center justify-between gap-3 min-w-0">
+          <AppHeader>
+ <div className="w-full max-w-[1680px] mx-auto flex items-center justify-between gap-3 min-w-0">
             {/* Left: Back to Catalog & Template Title */}
             <div className="flex items-center gap-2.5 min-w-0 shrink">
               <Link
@@ -234,14 +235,14 @@ export default function CanonicalTemplateDetailPage() {
                 </select>
               </div>
 
-              {/* Launch Studio Button */}
+              {/* Open in Architecture Studio */}
               <Link
                 href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02] shrink-0"
                 title="Launch in Multi-Blueprint Studio & DocGen"
               >
                 <Sparkles className="w-3.5 h-3.5 fill-current" />
-                <span className="hidden sm:inline">Launch Studio</span>
+                <span className="hidden sm:inline">Open in Studio</span>
                 <span className="sm:hidden">Studio</span>
               </Link>
 
@@ -301,7 +302,7 @@ export default function CanonicalTemplateDetailPage() {
               <ThemeToggleBtn id="canonical-detail-theme-toggle-btn" />
             </div>
           </div>
-        </header>
+        </AppHeader>
       )}
 
       {/* FULL PAGE DIAGRAM VIEWPORT */}

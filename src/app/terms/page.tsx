@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Scale, ShieldAlert, FileCheck, HelpCircle, Network } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
+import { LegalPageHeader } from '@/components/LegalPageHeader';
 
 export default function TermsOfServicePage() {
   const { isLight } = useTheme();
@@ -11,29 +12,11 @@ export default function TermsOfServicePage() {
   return (
     <div className={`min-h-screen font-sans ${isLight ? 'bg-slate-50 text-slate-800' : 'bg-slate-950 text-slate-200'}`}>
       {/* Header */}
-      <header className={`sticky top-0 z-40 border-b backdrop-blur-md ${
-        isLight ? 'bg-white/80 border-slate-200' : 'bg-slate-900/80 border-slate-800'
-      }`}>
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 font-bold tracking-wider text-sm hover:opacity-80 transition-opacity">
-            <Network className="w-5 h-5 text-teal-500" />
-            <span className={isLight ? 'text-slate-900' : 'text-white'}>PROMPT CANVAS</span>
-          </Link>
-          <Link
-            href="/"
-            className={`inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg transition-colors ${
-              isLight ? 'bg-slate-100 hover:bg-slate-200 text-slate-700' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-            }`}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Canvas
-          </Link>
-        </div>
-      </header>
+      <LegalPageHeader />
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
-        <div className={`p-8 md:p-12 rounded-2xl border shadow-sm ${
+      <main className="w-full max-w-7xl mx-auto px-6 md:px-12 py-8">
+        <div className={`p-8 md:p-10 rounded-2xl border shadow-sm ${
           isLight ? 'bg-white border-slate-200' : 'bg-slate-900/60 border-slate-800'
         }`}>
           <div className="flex items-center gap-3 mb-6">

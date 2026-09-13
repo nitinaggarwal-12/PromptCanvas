@@ -30,6 +30,7 @@ import {
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
+import { AppHeader } from '@/components/AppHeader';
 
 interface TestCaseResult {
   id: string;
@@ -164,44 +165,44 @@ function TestStatusContent() {
       {/* Main Content Area */}
       <main className="flex-1 min-w-0 overflow-y-auto flex flex-col">
         {/* Sticky Top Header */}
-        <header className="dark sticky top-0 z-30 border-b backdrop-blur-md px-6 md:px-12 py-3.5 flex items-center justify-between transition-colors bg-[#0B111E] border-slate-800 text-white shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shadow-md flex items-center justify-center">
+        <AppHeader>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 p-0.5 shadow-md flex items-center justify-center">
               <div className="w-full h-full rounded-[10px] flex items-center justify-center bg-[#090D18]">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
               </div>
             </div>
             <div>
-              <h1 className="font-black text-sm md:text-base tracking-tight flex items-center gap-2 text-white">
+              <h1 className="font-black text-xs sm:text-sm tracking-tight flex items-center gap-2 text-white">
                 <span>Enterprise Quality &amp; Test Status Portal</span>
                 <span className="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                   ALL 9 PILLARS VERIFIED
                 </span>
               </h1>
-              <p className="text-[11px] text-slate-400 font-medium">
+              <p className="text-[10px] text-slate-400 font-medium">
                 Live automated test execution results, assertion metrics, timestamps &amp; compliance status
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={handleRunAllTests}
               disabled={isRunning}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs transition shadow-sm cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRunning ? 'animate-spin' : ''}`} />
               <span>{isRunning ? 'Executing Test Suites...' : 'Re-Run All Suites'}</span>
             </button>
             <ThemeToggleBtn />
           </div>
-        </header>
+        </AppHeader>
 
         {/* Dashboard Content */}
-        <div className="w-full max-w-8xl mx-auto px-6 md:px-12 py-8 space-y-8">
+        <div className="w-full max-w-none px-4 sm:px-6 md:px-8 py-4 space-y-4">
           {/* TOP KPI STRIP */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className={`p-4 rounded-3xl border space-y-1 ${isLight ? 'bg-white border-slate-200 shadow-xs' : 'bg-[#090D18] border-slate-800 shadow-md'}`}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className={`p-3 rounded-2xl border space-y-0.5 ${isLight ? 'bg-white border-slate-200 shadow-2xs' : 'bg-[#090D18] border-slate-800 shadow-md'}`}>
               <div className="flex items-center justify-between text-slate-400">
                 <span className="text-[10.5px] font-mono font-bold uppercase">Total Assertions</span>
                 <Layers className="w-4 h-4 text-sky-500" />

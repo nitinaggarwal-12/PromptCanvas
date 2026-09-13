@@ -52,6 +52,7 @@ import { AuthModal } from '@/components/AuthModal';
 import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { useTheme } from '@/lib/themeContext';
+import { AppHeader } from '@/components/AppHeader';
 
 function CanonicalContent() {
   const router = useRouter();
@@ -250,8 +251,8 @@ function CanonicalContent() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* STICKY FULL-WIDTH TOP NAVIGATION */}
-        <header className="dark sticky top-0 z-40 w-full backdrop-blur-md border-b bg-[#0B111E] border-slate-800 text-white shadow-md">
-          <div className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 min-w-0">
+        <AppHeader>
+ <div className="w-full max-w-none flex items-center justify-between gap-3 min-w-0">
             {/* Left: Breadcrumbs & Catalog Context */}
             <div className="flex items-center gap-2.5 min-w-0 shrink truncate">
               <div className="flex items-center gap-1.5 text-xs font-semibold truncate">
@@ -261,7 +262,7 @@ function CanonicalContent() {
                 <span className="text-slate-600 shrink-0">/</span>
                 <span className="font-bold text-sky-400 flex items-center gap-1.5 truncate">
                   <Sparkles className="w-3.5 h-3.5 text-sky-400 shrink-0" />
-                  <span className="truncate">Canonical Blueprints Hub</span>
+                  <span className="truncate">Blueprint Catalog</span>
                 </span>
                 <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 shrink-0">
                   {CANONICAL_TEMPLATES.length} Grammars
@@ -288,14 +289,14 @@ function CanonicalContent() {
                 </select>
               </div>
 
-              {/* Quick Links & Launch Studio */}
+              {/* Quick Links & Studio CTA */}
               <Link
                 href="/studio"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
-                title="Launch Studio"
+                title="Open in Architecture Studio"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Launch Studio</span>
+                <span>Open in Studio</span>
               </Link>
 
               <Link
@@ -312,10 +313,10 @@ function CanonicalContent() {
               <ThemeToggleBtn id="canonical-theme-toggle-btn" />
             </div>
           </div>
-        </header>
+        </AppHeader>
 
       {/* COMPACT HERO SECTION */}
-      <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+      <main className="w-full max-w-none px-4 sm:px-6 lg:px-8 pt-3 pb-8">
         <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 pb-3.5 border-b border-slate-200 dark:border-slate-800 min-w-0">
           <div className="flex-1 min-w-0 space-y-1">
             <div className="flex items-center gap-2">
@@ -444,14 +445,14 @@ function CanonicalContent() {
         </div>
 
         {/* 50 TEMPLATES GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 min-[1600px]:grid-cols-3 gap-5 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 pt-2">
           {filteredTemplates.map((template) => {
             const isHighlighted = ['01', '02', '03', '04'].includes(template.id);
 
             return (
               <div
                 key={template.id}
-                className={`group relative rounded-2xl border p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${cardClass} ${
+                className={`group relative rounded-2xl border p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-xl ${cardClass} ${
                   isHighlighted ? 'ring-2 ring-sky-500/30' : ''
                 }`}
               >
@@ -658,14 +659,14 @@ function CanonicalContent() {
 
               {/* Right: Action Buttons */}
               <div className="flex items-center gap-1.5 md:gap-2">
-                {/* Launch Studio Button */}
+                {/* Open in Architecture Studio */}
                 <Link
                   href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-teal-500 hover:bg-teal-400 text-slate-950 shadow-sm shadow-teal-500/20 transition-all hover:scale-[1.02]"
                   title="Launch in Multi-Blueprint Studio & DocGen"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span className="hidden sm:inline">Launch Studio</span>
+                  <span className="hidden sm:inline">Open in Studio</span>
                   <span className="sm:hidden">Studio</span>
                 </Link>
 

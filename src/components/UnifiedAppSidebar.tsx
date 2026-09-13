@@ -42,22 +42,74 @@ interface NavItem {
   badgeColor?: string;
 }
 
-const CANONICAL_NAV_ITEMS: NavItem[] = [
-  { id: 'gcp', name: 'GCP Architecture Center', icon: Cloud, href: '/gcp', badge: 'OFFICIAL', badgeColor: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-  { id: 'studio1', name: 'Launch Studio 1', icon: Compass, href: '/studio1', badge: 'LAB' },
-  { id: 'studio', name: 'Launch Studio', icon: Layers, href: '/studio', badge: 'PRO' },
-  { id: 'vision', name: 'Vision AI Decompiler', icon: Sparkles, href: '/vision', badge: 'VISION', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
-  { id: 'canonical', name: 'Canonical Blueprints', icon: Sparkles, href: '/canonical', badge: '50' },
-  { id: 'docgen', name: 'DocGen & Specifications', icon: FileText, href: '/docgen', badge: '17' },
-  { id: 'dashboard', name: 'Canonical Dashboard', icon: BarChart3, href: '/dashboard' },
-  { id: 'audit', name: 'Security Audit', icon: ShieldCheck, href: '/audit' },
-  { id: 'guide', name: 'User Guide & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+interface NavGroup {
+  id: string;
+  label: string;
+  items: NavItem[];
+}
+
+/**
+ * Left navigation.
+ *
+ * Names describe what you do on the page, not internal vocabulary. Previously
+ * this list leaked engineering terms ("Canonical", "DocGen", "Decompiler") and
+ * distinguished the two studios by a numeric suffix — "Launch Studio 1" was in
+ * fact the experimental lab, so the number implied the opposite of the truth.
+ *
+ * Grouping exists because eleven flat entries are past the point where scanning
+ * works. It also removes the old "Canvas > Design Canvas" parent/child stutter:
+ * Design Canvas is now a peer under CREATE.
+ *
+ * NOTE ON BADGE COUNTS: '52' and '17' are literals rather than
+ * CANONICAL_TEMPLATES.length / DOC_ARCHETYPES_META.length on purpose — this
+ * component renders on every route, and importing those modules would pull
+ * ~130KB of template and archetype source into every client bundle for the sake
+ * of two numbers. scripts/verify_nav_badge_counts.mjs fails the pre-commit gate
+ * if they ever drift from the real arrays.
+ */
+const NAV_GROUPS: NavGroup[] = [
+  {
+    id: 'create',
+    label: 'Create',
+    items: [
+      { id: 'design_canvas', name: 'Design Canvas', icon: Network, href: '/workspace' },
+      { id: 'studio', name: 'Architecture Studio', icon: Layers, href: '/studio', badge: 'PRO' },
+      { id: 'studio1', name: 'Prompt Lab', icon: Compass, href: '/studio1', badge: 'LAB' },
+      { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
+      { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
+    ],
+  },
+  {
+    id: 'reference',
+    label: 'Reference',
+    items: [
+      { id: 'canonical', name: 'Blueprint Catalog', icon: LayoutGrid, href: '/canonical', badge: '52' },
+      // No badge here by design: measured at 256px rail width, 'Google Cloud
+      // Patterns' + an 'OFFICIAL' pill forces the label to ellipsise. The badge
+      // was the redundant half — 'Google' already signals the official source.
+      { id: 'gcp', name: 'Google Cloud Patterns', icon: Cloud, href: '/gcp' },
+      { id: 'library', name: 'My Architectures', icon: History, href: '/library' },
+    ],
+  },
+  {
+    id: 'operate',
+    label: 'Operate',
+    items: [
+      { id: 'dashboard', name: 'Operations', icon: BarChart3, href: '/dashboard' },
+      { id: 'audit', name: 'Audit & Compliance', icon: ShieldCheck, href: '/audit' },
+    ],
+  },
+  {
+    id: 'learn',
+    label: 'Learn',
+    items: [
+      { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+    ],
+  },
 ];
 
-const CANVAS_SUB_ITEMS: NavItem[] = [
-  { id: 'design_canvas', name: 'Design Canvas', icon: Network, href: '/workspace' },
-  { id: 'architecture_library', name: 'Architecture Library', icon: LayoutGrid, href: '/library' },
-];
+/** Flat view, for active-state resolution. */
+const ALL_NAV_ITEMS: NavItem[] = NAV_GROUPS.flatMap((g) => g.items);
 
 export interface UnifiedAppSidebarProps {
   isCollapsed?: boolean;
@@ -75,8 +127,17 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
     if (targetPath !== pathname) return false;
+
+    // /workspace hosts Settings and Audit as query tabs. Those are reached from
+    // their own entries, so Design Canvas must not stay lit on them. This
+    // preserves the behaviour of the old isCanvasActive check.
+    if (targetPath === '/workspace' && !targetQuery) {
+      const tab = searchParams.get('tab');
+      if (tab === 'settings' || tab === 'audit') return false;
+    }
+
     if (!targetQuery) {
-      const hasSpecificMatch = CANONICAL_NAV_ITEMS.some((other) => {
+      const hasSpecificMatch = ALL_NAV_ITEMS.some((other) => {
         if (other.href === href) return false;
         const [oPath, oQuery] = other.href.split('?');
         if (oPath !== pathname || !oQuery) return false;
@@ -117,8 +178,10 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
     return () => window.removeEventListener('promptcanvas_toggle_sidebar', handleToggleEvent);
   }, []);
 
-  const isCanvasActive = (pathname === '/workspace' && searchParams.get('tab') !== 'audit' && searchParams.get('tab') !== 'settings') || pathname.startsWith('/history') || pathname.startsWith('/library');
-  const [isCanvasGroupOpen, setIsCanvasGroupOpen] = useState<boolean>(true);
+  // (isCanvasActive / isCanvasGroupOpen removed: the Canvas expandable group was
+  // dissolved when Design Canvas and My Architectures became peers in the
+  // CREATE and REFERENCE groups. Its /workspace tab-exclusion rule now lives in
+  // isItemActive above.)
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
@@ -205,121 +268,80 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
             )}
           </div>
 
-          {/* Canonical Suite Navigation */}
+          {/* Grouped Navigation */}
           <div className="p-3 space-y-1">
-            <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
-              {isSidebarOpen ? 'Canonical Suite' : '•••'}
-            </div>
+            {NAV_GROUPS.map((group, groupIndex) => (
+              <div key={group.id}>
+                {groupIndex > 0 && (
+                  <div className="border-t border-slate-200 dark:border-slate-800/80 my-2" />
+                )}
 
-            {CANONICAL_NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              const isActive = isItemActive(item.href);
-
-              return (
-                <Link key={item.id} href={item.href} className="block" title={!isSidebarOpen ? item.name : undefined}>
-                  <div
-                    className={`w-full flex items-center ${
-                      isSidebarOpen ? 'justify-between' : 'justify-center'
-                    } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      isActive
-                        ? 'bg-sky-600 text-white font-extrabold shadow-sm'
-                        : isLight
-                        ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                    }`}
-                  >
-                    <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
-                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                      {isSidebarOpen && <span className="truncate">{item.name}</span>}
-                    </div>
-                    {isSidebarOpen && item.badge && (
-                      <span
-                        className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                          isActive
-                            ? 'bg-white/20 text-white'
-                            : 'bg-sky-500/20 text-sky-500 border border-sky-500/30'
-                        }`}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              );
-            })}
-
-            {/* DIVIDER: CANVAS SUITE */}
-            <div className="pt-3 pb-1">
-              <div className="border-t border-slate-200 dark:border-slate-800/80 my-1" />
-            </div>
-
-            {/* DEDICATED CANVAS EXPANDABLE BUTTON / GROUP */}
-            <div className="space-y-1">
-              <div
-                onClick={() => setIsCanvasGroupOpen(!isCanvasGroupOpen)}
-                className={`w-full flex items-center ${
-                  isSidebarOpen ? 'justify-between' : 'justify-center'
-                } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  isCanvasActive
-                    ? isLight
-                      ? 'bg-sky-50 border border-sky-200 text-sky-900'
-                      : 'bg-sky-950/40 border border-sky-800/60 text-sky-300'
-                    : isLight
-                    ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                }`}
-                title={!isSidebarOpen ? "Design Canvas Workspace & Library" : "Design Canvas Workspace & History"}
-              >
-                <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
-                  <Network className={`w-4 h-4 shrink-0 ${isCanvasActive ? 'text-sky-500' : 'text-slate-400'}`} />
-                  {isSidebarOpen && <span className="truncate font-black">Canvas</span>}
-                </div>
+                {/* Collapsed rail has no room for a label; the rule above is
+                    enough to keep the groups legible. */}
                 {isSidebarOpen && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/20">
-                      EDIT
-                    </span>
-                    <ChevronRight
-                      className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                        isCanvasGroupOpen ? 'rotate-90' : ''
-                      }`}
-                    />
+                  <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
+                    {group.label}
                   </div>
                 )}
-              </div>
 
-              {/* Sub-Items belonging exclusively to Canvas */}
-              {isSidebarOpen && isCanvasGroupOpen && (
-                <div className="pl-4 space-y-1 pt-0.5 border-l-2 border-slate-200 dark:border-slate-800 ml-4 animate-in fade-in slide-in-from-top-1 duration-150">
-                  {CANVAS_SUB_ITEMS.map((sub) => {
-                    const SubIcon = sub.icon;
-                    const isSubActive =
-                      sub.href === '/workspace'
-                        ? pathname === '/workspace' && !pathname.includes('tab=')
-                        : pathname.startsWith(sub.href);
+                <div className="space-y-1">
+                  {group.items.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = isItemActive(item.href);
 
                     return (
-                      <Link key={sub.id} href={sub.href} className="block">
+                      <Link
+                        key={item.id}
+                        href={item.href}
+                        className="block"
+                        title={!isSidebarOpen ? item.name : undefined}
+                      >
                         <div
-                          className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                            isSubActive
-                              ? 'bg-sky-600 text-white font-black shadow-xs'
+                          className={`w-full flex items-center ${
+                            isSidebarOpen ? 'justify-between' : 'justify-center'
+                          } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                            isActive
+                              ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                               : isLight
                               ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                              : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
                           }`}
                         >
-                          <div className="flex items-center gap-2.5 min-w-0">
-                            <SubIcon className={`w-3.5 h-3.5 shrink-0 ${isSubActive ? 'text-white' : 'text-slate-400'}`} />
-                            <span className="truncate">{sub.name}</span>
+                          <div
+                            className={`flex items-center ${
+                              isSidebarOpen
+                                ? 'gap-3 min-w-0 flex-1'
+                                : 'justify-center shrink-0'
+                            }`}
+                          >
+                            <Icon
+                              className={`w-4 h-4 shrink-0 ${
+                                isActive ? 'text-white' : 'text-slate-400'
+                              }`}
+                            />
+                            {isSidebarOpen && <span className="truncate">{item.name}</span>}
                           </div>
+                          {isSidebarOpen && item.badge && (
+                            <span
+                              className={`shrink-0 ml-2 text-[9px] font-mono font-bold px-1.5 py-0.2 rounded border ${
+                                isActive
+                                  ? 'bg-white/20 text-white border-white/20'
+                                  : item.badgeColor ??
+                                    'bg-sky-500/20 text-sky-500 border-sky-500/30'
+                              }`}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
                         </div>
                       </Link>
                     );
                   })}
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
+
+            <div className="border-t border-slate-200 dark:border-slate-800/80 my-2" />
 
             {/* SETTINGS */}
             <div className="pt-2">
@@ -380,8 +402,13 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
         {/* Bottom Sidebar: Theme & Profile */}
         <div className={`p-3 border-t space-y-2 ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800/60 bg-slate-950/40'}`}>
-          <div className="flex items-center justify-between">
-            <ThemeToggleBtn />
+          {/*
+            Collapsed rail is 64px wide (40px inside p-3). A labelled toggle
+            (71px) beside the chevron (28px) overflowed it by 19px and 47px
+            respectively, painting over page content. Stack them when collapsed.
+          */}
+          <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'flex-col gap-2'}`}>
+            <ThemeToggleBtn iconOnly={!isSidebarOpen} />
             {!isSidebarOpen && (
               <button
                 onClick={toggleSidebar}
@@ -479,84 +506,52 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
               </div>
 
               <div className="py-4 space-y-1.5 overflow-y-auto max-h-[70vh]">
-                <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
-                  Canonical Suite
-                </div>
+                {NAV_GROUPS.map((group, groupIndex) => (
+                  <div key={group.id}>
+                    {groupIndex > 0 && (
+                      <div className="border-t border-slate-200 dark:border-slate-800 my-2" />
+                    )}
+                    <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
+                      {group.label}
+                    </div>
 
-                {CANONICAL_NAV_ITEMS.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = isItemActive(item.href);
+                    <div className="space-y-1">
+                      {group.items.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = isItemActive(item.href);
 
-                  return (
-                    <Link
-                      key={item.id}
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="block"
-                    >
-                      <div
-                        className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold ${
-                          isActive
-                            ? 'bg-sky-600 text-white font-extrabold shadow-sm'
-                            : isLight
-                            ? 'text-slate-700 hover:bg-slate-100'
-                            : 'text-slate-300 hover:bg-slate-800'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className="w-4 h-4" />
-                          <span>{item.name}</span>
-                        </div>
-                        {item.badge && (
-                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">
-                            {item.badge}
-                          </span>
-                        )}
-                      </div>
-                    </Link>
-                  );
-                })}
-
-                {/* Mobile Canvas Section */}
-                <div className="pt-2">
-                  <div className="border-t border-slate-200 dark:border-slate-800 my-2" />
-                  <div className="px-2 py-1 text-[9.5px] font-mono font-bold tracking-wider uppercase text-slate-400">
-                    Canvas Suite
-                  </div>
-                  <div className="space-y-1 pl-1">
-                    {CANVAS_SUB_ITEMS.map((sub) => {
-                      const SubIcon = sub.icon;
-                      const isSubActive =
-                        sub.href === '/workspace'
-                          ? pathname === '/workspace' && !pathname.includes('tab=')
-                          : pathname.startsWith(sub.href);
-
-                      return (
-                        <Link
-                          key={sub.id}
-                          href={sub.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="block"
-                        >
-                          <div
-                            className={`flex items-center justify-between p-2 rounded-xl text-xs font-semibold ${
-                              isSubActive
-                                ? 'bg-sky-600 text-white font-bold'
-                                : isLight
-                                ? 'text-slate-600 hover:bg-slate-100'
-                                : 'text-slate-400 hover:bg-slate-800/60'
-                            }`}
+                        return (
+                          <Link
+                            key={item.id}
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block"
                           >
-                            <div className="flex items-center gap-2.5">
-                              <SubIcon className="w-3.5 h-3.5" />
-                              <span>{sub.name}</span>
+                            <div
+                              className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold ${
+                                isActive
+                                  ? 'bg-sky-600 text-white font-extrabold shadow-sm'
+                                  : isLight
+                                  ? 'text-slate-700 hover:bg-slate-100'
+                                  : 'text-slate-300 hover:bg-slate-800'
+                              }`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <Icon className="w-4 h-4" />
+                                <span>{item.name}</span>
+                              </div>
+                              {item.badge && (
+                                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-400">
+                                  {item.badge}
+                                </span>
+                              )}
                             </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                ))}
 
                 {/* Settings */}
                 <div className="pt-2">

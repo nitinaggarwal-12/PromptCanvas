@@ -53,6 +53,7 @@ import {
   countDiagramNodes,
   SavedVisionBlueprint
 } from '@/lib/visionBlueprintStore';
+import { AppHeader } from '@/components/AppHeader';
 
 const SAMPLE_BLUEPRINTS = PRECOMPILED_SAMPLE_BLUEPRINTS;
 
@@ -198,7 +199,16 @@ function VisionPageContent() {
 
         // 💾 Persist to localStorage only when decompilation passes audit
         if (data.auditReport?.verdict === 'BLOCKED') {
-          showToast('⛔ Decompilation BLOCKED by Omni QC: output does not match the source image.');
+          showToast(`⛔ Decompilation BLOCKED by Omni QC (${data.auditReport.parityScore ?? 0}% Parity): output did not match source.`);
+          const certified = getPrecompiledBlueprint(blueprintId);
+          if (certified) {
+            setDecompiledXml(certified.xml);
+            setExtractedZones(certified.extractedZones);
+            setComponentCount(certified.componentCount);
+            setSummaryText(certified.summaryText);
+            setSavedSource(certified.source);
+            setIsCertified(true);
+          }
         } else {
           const toSave: SavedVisionBlueprint = {
             id: blueprintId,
@@ -667,7 +677,7 @@ function VisionPageContent() {
       )}
 
       {/* Top Header Navbar - Dark Theme (Edge-to-Edge, 44px) */}
-      <header className="dark w-full h-11 bg-[#0B111E] border-b border-slate-800 px-3 md:px-4 flex items-center justify-between shadow-xs flex-shrink-0 z-40">
+      <AppHeader>
         <div className="flex items-center gap-2.5 min-w-0">
           <Link 
             href="/studio"
@@ -817,7 +827,7 @@ function VisionPageContent() {
             <ArrowRight className="w-2.5 h-2.5" />
           </button>
         </div>
-      </header>
+      </AppHeader>
 
       {/* Hidden File Input */}
       <input

@@ -125,6 +125,7 @@ import {
   moveSectionDown,
   changeSectionHierarchy,
 } from '@/lib/versioning/docSectionEngine';
+import { AppHeader } from '@/components/AppHeader';
 
 export const DIAGRAM_FAMILY_PRESETS = [
   { id: 'all', label: 'All 50 Blueprints', icon: '⚡' },
@@ -1959,8 +1960,8 @@ function DocGenContent() {
       {/* MAIN CONTENT WRAPPER */}
       <div className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
         {/* TOP STICKY NAVBAR */}
-        <header className="dark sticky top-0 w-full z-30 border-b backdrop-blur-md bg-[#0B111E] border-slate-800 text-white shadow-md no-print">
-          <div className="max-w-[1600px] mx-auto h-16 md:h-18 px-4 md:px-8 flex items-center justify-between gap-4">
+        <AppHeader noPrint>
+ <div className="w-full max-w-[1600px] mx-auto flex items-center justify-between gap-4">
             {/* Left Title & Sidebar Toggle */}
             <div className="flex items-center gap-3">
               {!isSidebarOpen && (
@@ -2034,14 +2035,14 @@ function DocGenContent() {
                 </select>
               </div>
 
-              {/* Quick Links & Launch Studio */}
+              {/* Quick Links & Studio CTA */}
               <Link
                 href="/studio"
                 className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white shadow-md shadow-sky-500/20 transition-all cursor-pointer shrink-0"
                 title="Launch Studio"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Launch Studio</span>
+                <span>Open in Studio</span>
               </Link>
 
               {/* Canonical Blueprints Link */}
@@ -2059,93 +2060,80 @@ function DocGenContent() {
               <ThemeToggleBtn id="docgen-theme-toggle-btn" />
             </div>
           </div>
-        </header>
+        </AppHeader>
 
         {/* DYNAMIC HERO SECTION (Catalog Tab Only) */}
-        <main className="max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8">
+        <main className="w-full max-w-none px-4 sm:px-6 lg:px-8 pt-2 pb-8">
         {activeTab === 'catalog' && (
-          <div className="space-y-6 pb-6 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
-            {/* Top Hero Glass Banner */}
-            <div className={`p-6 sm:p-8 rounded-3xl border shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-6 relative overflow-hidden ${
+          <div className="space-y-4 pb-4 border-b border-slate-200 dark:border-slate-800 no-print min-w-0">
+            {/* Consolidated Header & Telemetry Control Bar (Compact 56px) */}
+            <div className={`p-3 sm:p-4 rounded-2xl border shadow-xs flex flex-wrap items-center justify-between gap-3 relative overflow-hidden ${
               isLight
-                ? 'bg-gradient-to-br from-white via-teal-50/30 to-sky-50/40 border-slate-200/90 shadow-slate-200/50'
-                : 'bg-gradient-to-br from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-2xl'
+                ? 'bg-gradient-to-r from-white via-teal-50/20 to-sky-50/30 border-slate-200/90 shadow-slate-200/30'
+                : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-xl'
             }`}>
-              {/* Background Ambient Glow Halo */}
-              <div className="absolute top-0 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex-1 min-w-0 space-y-2 relative z-10">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20 shadow-xs">
-                    <FileText className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-                    <span>Enterprise Specification &amp; Document Engine</span>
-                  </span>
-                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
-                    17 Master Archetypes
-                  </span>
-                  <span className="text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
-                    50 Canonical Blueprints
-                  </span>
+              <div className="flex flex-wrap items-center gap-3 relative z-10 min-w-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-600 dark:text-teal-400 shrink-0">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h1 className="text-sm sm:text-base font-black tracking-tight leading-none text-slate-900 dark:text-white flex items-center gap-2">
+                      Enterprise Specification Engine
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20">
+                        17 ARCHETYPES
+                      </span>
+                    </h1>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">
+                      Synthesize multi-chapter engineering specs with attached 16:9 Draw.io diagrams &amp; compliance matrices.
+                    </p>
+                  </div>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">
-                  Architectural Grammar for{' '}
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-sky-600 to-indigo-600 dark:from-teal-400 dark:via-sky-400 dark:to-indigo-400">
-                    Production Enterprise Specifications
-                  </span>
-                </h1>
-
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl">
-                  Synthesize complete, multi-chapter engineering documents (BRD, PRD, SDD, TDD, STRIDE, GRC) with attached 16:9 Draw.io architecture diagrams, automated NIST/CIS compliance matrices, and 1-click Word/Markdown export.
-                </p>
-
-                {/* Real-Time Domain Quick Flavor Switcher */}
-                <div className="pt-2 flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                    <Sliders className="w-3.5 h-3.5 text-teal-500" />
-                    <span>Dynamic Domain Flavoring:</span>
-                  </span>
-                  {DOMAIN_PRESETS.slice(0, 6).map((dom) => {
-                    const isSelected = selectedDomain === dom.id;
-                    return (
-                      <button
-                        key={dom.id}
-                        type="button"
-                        onClick={() => setSelectedDomain(dom.id)}
-                        className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                          isSelected
-                            ? 'bg-teal-600 text-white shadow-md shadow-teal-500/20 scale-105'
-                            : isLight
-                            ? 'bg-white/80 hover:bg-white text-slate-700 border border-slate-200 shadow-xs'
-                            : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-800'
-                        }`}
-                      >
-                        {dom.name}
-                      </button>
-                    );
-                  })}
+                <div className="hidden lg:flex items-center gap-1.5 pl-2 border-l border-slate-200 dark:border-slate-800">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">Flavor:</span>
+                  <div className="flex items-center gap-1">
+                    {DOMAIN_PRESETS.slice(0, 4).map((dom) => {
+                      const isSelected = selectedDomain === dom.id;
+                      return (
+                        <button
+                          key={dom.id}
+                          type="button"
+                          onClick={() => setSelectedDomain(dom.id)}
+                          className={`px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-teal-600 text-white shadow-xs'
+                              : isLight
+                              ? 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                              : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
+                          }`}
+                        >
+                          {dom.name.split(' ')[0]}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
-              {/* Right: Quick Telemetry & Launch Action */}
-              <div className="flex flex-col sm:flex-row xl:flex-col items-stretch gap-3 relative z-10 shrink-0">
-                <div className={`p-4 rounded-2xl border shadow-xs flex items-center justify-around gap-4 ${
-                  isLight ? 'bg-white/90 border-slate-200 backdrop-blur-md' : 'bg-[#090D18]/90 border-slate-800'
+              {/* Right: Telemetry Chips & Studio Button */}
+              <div className="flex items-center gap-2 relative z-10 shrink-0">
+                <div className={`px-2.5 py-1 rounded-xl border flex items-center gap-3 text-xs ${
+                  isLight ? 'bg-white/90 border-slate-200' : 'bg-[#090D18]/90 border-slate-800'
                 }`}>
-                  <div className="text-center px-2">
-                    <div className="text-xl sm:text-2xl font-black text-teal-600 dark:text-teal-400">17</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Archetypes</div>
+                  <div className="flex items-center gap-1">
+                    <span className="font-extrabold text-teal-600 dark:text-teal-400">17</span>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold">Specs</span>
                   </div>
-                  <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                  <div className="text-center px-2">
-                    <div className="text-xl sm:text-2xl font-black text-sky-600 dark:text-sky-400">50</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Blueprints</div>
+                  <span className="text-slate-300 dark:text-slate-700">|</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-extrabold text-sky-600 dark:text-sky-400">50</span>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold">Blueprints</span>
                   </div>
-                  <div className="h-8 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                  <div className="text-center px-2">
-                    <div className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">100%</div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Word Ready</div>
+                  <span className="text-slate-300 dark:text-slate-700">|</span>
+                  <div className="flex items-center gap-1">
+                    <span className="font-extrabold text-emerald-600 dark:text-emerald-400">100%</span>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold">Word</span>
                   </div>
                 </div>
 
@@ -2155,10 +2143,10 @@ function DocGenContent() {
                     setStudioMode('both');
                     setActiveTab('studio');
                   }}
-                  className="px-5 py-3 rounded-2xl font-black text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-lg shadow-teal-500/25 transition-all hover:scale-[1.02] flex items-center justify-center gap-2 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl font-bold text-xs bg-gradient-to-r from-teal-600 to-indigo-600 hover:from-teal-500 hover:to-indigo-500 text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>Launch Unified Studio &rarr;</span>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Open in Studio</span>
                 </button>
               </div>
             </div>
@@ -2317,7 +2305,7 @@ function DocGenContent() {
                     Studio Generation Mode:
                   </span>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
-                    {studioMode === 'diagrams' && '50 Canonical 16:9 Master Blueprints'}
+                    {studioMode === 'diagrams' && '52 Canonical 16:9 Master Blueprints'}
                     {studioMode === 'documents' && '17 Production-Ready Archetypes'}
                     {studioMode === 'both' && 'Unified Multi-Blueprint Specifications'}
                   </span>

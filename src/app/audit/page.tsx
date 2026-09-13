@@ -62,6 +62,7 @@ import {
   CANONICAL_FAMILIES
 } from '@/lib/canonical/canonicalTemplates';
 import { AuditGap, AuditCategory } from '@/app/api/audit/route';
+import { AppHeader } from '@/components/AppHeader';
 
 // Audit Category Definition with metadata
 export interface CategoryMeta {
@@ -446,7 +447,7 @@ function AuditHubContent() {
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* TOP AUDIT COMMAND & NAVIGATION HEADER */}
-          <header className="dark h-16 border-b px-6 md:px-12 flex items-center justify-between sticky top-0 z-30 backdrop-blur-xl shrink-0 bg-[#0B111E] border-slate-800 text-white shadow-md">
+          <AppHeader>
             {/* Left: Breadcrumbs & Hub Badge */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
@@ -506,56 +507,50 @@ function AuditHubContent() {
               {/* Theme Toggle */}
               <ThemeToggleBtn id="audit-theme-toggle-btn" />
             </div>
-          </header>
+          </AppHeader>
 
           {/* MAIN COCKPIT CONTAINER */}
-          <main className="max-w-[1600px] w-full mx-auto px-6 md:px-12 py-6 space-y-6">
+          <main className="w-full max-w-none px-4 md:px-8 py-3 space-y-3">
             
             {/* ========================================================================= */}
-            {/* 1. TOP EXECUTIVE HEALTH & CATEGORY RADAR BANNER */}
+            {/* 1. TOP EXECUTIVE HEALTH & CATEGORY RADAR BANNER (Consolidated Compact) */}
             {/* ========================================================================= */}
-            <div className={`p-6 rounded-3xl border shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-6 ${
+            <div className={`p-3 sm:p-4 rounded-2xl border shadow-xs flex flex-wrap items-center justify-between gap-3 ${
               isLight
-                ? 'bg-gradient-to-r from-white via-slate-50/90 to-teal-50/30 border-slate-200/90 shadow-slate-200/50'
-                : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-2xl'
+                ? 'bg-gradient-to-r from-white via-slate-50/90 to-teal-50/30 border-slate-200/90 shadow-slate-200/30'
+                : 'bg-gradient-to-r from-[#0B111E] via-[#090E1A] to-[#071322] border-slate-800 shadow-xl'
             }`}>
-              {/* Left: Health Score Rating */}
-              <div className="flex items-start sm:items-center gap-5">
-                <div className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center border font-black shadow-xs shrink-0 ${scoreGrade.bg}`}>
-                  <span className={`text-2xl sm:text-3xl font-black ${scoreGrade.color}`}>{overallScore}%</span>
-                  <span className={`text-[9.5px] uppercase font-bold tracking-widest ${scoreGrade.color}`}>{scoreGrade.grade}</span>
+              {/* Left: Health Score Rating & Title */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border font-black shadow-2xs shrink-0 ${scoreGrade.bg}`}>
+                  <span className={`text-base sm:text-lg font-black leading-none ${scoreGrade.color}`}>{overallScore}%</span>
+                  <span className={`text-[8.5px] uppercase font-bold tracking-wider leading-none mt-0.5 ${scoreGrade.color}`}>{scoreGrade.grade}</span>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="space-y-0.5 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                    <h1 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
                       {scopeTab === 'artifacts'
                         ? (activeArtifact?.name || 'Generated Architecture Artifact')
                         : scopeTab === 'canonical'
                         ? `#${activeCanonicalTemplate.id} • ${activeCanonicalTemplate.name}`
                         : 'Custom Draw.io XML Specification'}
                     </h1>
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${scoreGrade.bg} ${scoreGrade.color}`}>
+                    <span className={`text-[9.5px] font-bold px-2 py-0.2 rounded-full border ${scoreGrade.bg} ${scoreGrade.color}`}>
                       {scoreGrade.label}
                     </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-2xl line-clamp-1 leading-relaxed">
-                    {activeArtifact?.prompt || activeArtifact?.business_usecase || 'Auditing user-generated architecture against CIS Google Cloud benchmarks, Zero-Trust controls, and 2D collision rules.'}
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-0.5 font-mono">
-                    <span><b>Type:</b> <code className="text-teal-600 dark:text-teal-400 font-bold">{activeArtifact?.architecture_type || 'Custom Architecture'}</code></span>
-                    <span>&bull;</span>
-                    <span>Target: <b>16:9 Ultra-Wide (1600x960)</b></span>
-                    <span>&bull;</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
-                      <CheckCheck className="w-3.5 h-3.5" /> 100% Collision-Free Guard
+                    <span className="hidden sm:inline-flex text-[10px] text-emerald-600 dark:text-emerald-400 font-bold items-center gap-1 font-mono">
+                      <CheckCheck className="w-3 h-3" /> 100% Collision-Free
                     </span>
                   </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-2xl truncate">
+                    {activeArtifact?.prompt || activeArtifact?.business_usecase || 'CIS Google Cloud benchmarks & Zero-Trust 2D layout rules.'}
+                  </p>
                 </div>
               </div>
 
-              {/* Right: 6 Category Radar Pills */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 w-full xl:w-auto shrink-0">
+              {/* Right: 6 Category Radar Pills (Compact Horizontal Strip) */}
+              <div className="flex flex-wrap items-center gap-1.5 shrink-0">
                 {AUDIT_CATEGORIES.map((cat) => {
                   const score = auditScores[cat.id] ?? 96;
                   const isActive = activeCategory === cat.id;
@@ -564,19 +559,19 @@ function AuditHubContent() {
                       key={cat.id}
                       type="button"
                       onClick={() => handleRunAuditForCategory(cat.id)}
-                      className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-between gap-1 group ${
+                      className={`px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer flex items-center gap-1.5 ${
                         isActive
-                          ? 'bg-teal-50 dark:bg-teal-950/50 border-teal-500 ring-2 ring-teal-500/30 shadow-md'
+                          ? 'bg-teal-50 dark:bg-teal-950/50 border-teal-500 ring-1 ring-teal-500/30 shadow-xs'
                           : isLight
                           ? 'bg-white hover:bg-slate-50 border-slate-200'
                           : 'bg-slate-900/60 hover:bg-slate-800 border-slate-800'
                       }`}
                     >
-                      <span className="text-lg group-hover:scale-110 transition-transform">{cat.icon}</span>
-                      <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate w-full">
+                      <span className="text-sm">{cat.icon}</span>
+                      <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
                         {cat.shortName}
                       </span>
-                      <span className={`text-xs font-black ${score >= 95 ? 'text-emerald-600 dark:text-emerald-400' : score >= 85 ? 'text-teal-600 dark:text-teal-400' : 'text-amber-500'}`}>
+                      <span className={`text-[11px] font-black ${score >= 95 ? 'text-emerald-600 dark:text-emerald-400' : score >= 85 ? 'text-teal-600 dark:text-teal-400' : 'text-amber-500'}`}>
                         {score}%
                       </span>
                     </button>
@@ -682,7 +677,7 @@ function AuditHubContent() {
                             className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-teal-600 text-white text-xs font-bold shadow-xs hover:bg-teal-500"
                           >
                             <Plus className="w-3.5 h-3.5" />
-                            <span>Launch Studio</span>
+                            <span>Open in Studio</span>
                           </Link>
                         </div>
                       ) : (
