@@ -330,9 +330,7 @@ function VisionPageContent() {
           const matched = SAMPLE_BLUEPRINTS.find(s =>
             s.id === dbDiagram.id ||
             s.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
-            (dbDiagram.name.toLowerCase().includes('multiagent') && s.id === 'GCP-MULTIAGENT-01') ||
-            (dbDiagram.name.toLowerCase().includes('pharma') && s.id === 'IND-PHARMA-01') ||
-            (dbDiagram.name.toLowerCase().includes('api') && s.id === '51')
+            (dbDiagram.name.toLowerCase().includes('multiagent') && s.id === 'GCP-MULTIAGENT-01')
           );
           if (matched) {
             setSelectedImageSrc(matched.image);
