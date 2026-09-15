@@ -36,7 +36,8 @@ import {
   X,
   LayoutGrid,
   BookOpen,
-  BookmarkPlus
+  BookmarkPlus,
+  ClipboardPaste
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -95,6 +96,9 @@ function VisionPageContent() {
   const [showUploadDropdown, setShowUploadDropdown] = useState<boolean>(false);
   const [showReplaceDropdown, setShowReplaceDropdown] = useState<boolean>(false);
   const [showUrlModal, setShowUrlModal] = useState<boolean>(false);
+  const [showPasteModal, setShowPasteModal] = useState<boolean>(false);
+  const [pasteError, setPasteError] = useState<string | null>(null);
+  const [isReadingClipboard, setIsReadingClipboard] = useState<boolean>(false);
   const [webUrlInput, setWebUrlInput] = useState<string>('');
   const [isScanningUrl, setIsScanningUrl] = useState<boolean>(false);
   const [scanError, setScanError] = useState<string | null>(null);
@@ -393,6 +397,114 @@ function VisionPageContent() {
     };
     reader.readAsDataURL(file);
   }, [triggerDecompile]);
+
+  // Convert a clipboard Blob into a File and trigger decompilation
+  const processClipboardImageBlob = useCallback(async (blob: Blob, sourceName = 'Clipboard_Diagram') => {
+    const ext = (blob.type && blob.type.split('/')[1]) || 'png';
+    const timestampStr = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
+    const file = new File([blob], `${sourceName}_${timestampStr}.${ext}`, {
+      type: blob.type || 'image/png'
+    });
+    setShowPasteModal(false);
+    setShowUploadDropdown(false);
+    setShowReplaceDropdown(false);
+    setPasteError(null);
+    showToast('📋 Pasted image from clipboard! Processing diagram...');
+    await handleFileUpload(file);
+  }, [handleFileUpload]);
+
+  // Handle clicking "Paste from Clipboard" in Upload/Replace dropdown
+  const handlePasteFromClipboard = useCallback(async () => {
+    setShowUploadDropdown(false);
+    setShowReplaceDropdown(false);
+    setPasteError(null);
+
+    if (navigator.clipboard && navigator.clipboard.read) {
+      setIsReadingClipboard(true);
+      try {
+        const items = await navigator.clipboard.read();
+        for (const item of items) {
+          const imageType = item.types.find(type => type.startsWith('image/'));
+          if (imageType) {
+            const blob = await item.getType(imageType);
+            setIsReadingClipboard(false);
+            await processClipboardImageBlob(blob);
+            return;
+          }
+        }
+      } catch (err) {
+        // Permission prompt denied or unsupported context; fall through to interactive modal
+      } finally {
+        setIsReadingClipboard(false);
+      }
+    }
+
+    // Open interactive Paste modal where user can press Cmd+V / Ctrl+V or Right-click -> Paste
+    setShowPasteModal(true);
+  }, [processClipboardImageBlob]);
+
+  // Handle native paste events (from keyboard Cmd+V / Ctrl+V or context menu Paste)
+  const handleClipboardPasteEvent = useCallback(async (e: ClipboardEvent | React.ClipboardEvent) => {
+    const clipboardData = 'clipboardData' in e ? e.clipboardData : (e as ClipboardEvent).clipboardData;
+    if (!clipboardData) return false;
+
+    // 1. Check files in clipboardData
+    if (clipboardData.files && clipboardData.files.length > 0) {
+      for (let i = 0; i < clipboardData.files.length; i++) {
+        const file = clipboardData.files[i];
+        if (file.type.startsWith('image/')) {
+          e.preventDefault();
+          await processClipboardImageBlob(file, file.name.replace(/\.[^/.]+$/, '') || 'Clipboard_Diagram');
+          return true;
+        }
+      }
+    }
+
+    // 2. Check items in clipboardData
+    if (clipboardData.items) {
+      for (let i = 0; i < clipboardData.items.length; i++) {
+        const item = clipboardData.items[i];
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            await processClipboardImageBlob(file);
+            return true;
+          }
+        }
+      }
+    }
+
+    // 3. Check if text/plain is a data:image base64 URI
+    const textData = clipboardData.getData('text/plain');
+    if (textData && textData.trim().startsWith('data:image/')) {
+      try {
+        e.preventDefault();
+        const res = await fetch(textData.trim());
+        const blob = await res.blob();
+        await processClipboardImageBlob(blob);
+        return true;
+      } catch (err) {}
+    }
+
+    if (showPasteModal) {
+      setPasteError('No image found in clipboard. Please copy an architecture diagram or screenshot first, then press ⌘V / Ctrl+V.');
+    }
+    return false;
+  }, [processClipboardImageBlob, showPasteModal]);
+
+  // Global page paste listener so Cmd+V works anywhere on /vision
+  useEffect(() => {
+    const onGlobalPaste = (e: ClipboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTextInput = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') && !target.classList.contains('paste-catcher-zone');
+      const hasImage = Array.from(e.clipboardData?.items || []).some(item => item.type.startsWith('image/'));
+      if (isTextInput && !hasImage && !showPasteModal) return;
+      handleClipboardPasteEvent(e);
+    };
+    window.addEventListener('paste', onGlobalPaste);
+    return () => window.removeEventListener('paste', onGlobalPaste);
+  }, [handleClipboardPasteEvent, showPasteModal]);
 
   // Handle Scanning Webpage for Images
   const handleScanWebUrl = useCallback(async (urlToScan?: string) => {
@@ -753,6 +865,21 @@ function VisionPageContent() {
                 <div className="h-px bg-slate-800 my-1" />
 
                 <button
+                  onClick={handlePasteFromClipboard}
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                >
+                  <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400 mt-0.5 border border-purple-500/30">
+                    <ClipboardPaste className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-white text-[11.5px]">Paste from Clipboard</div>
+                    <div className="text-[10px] text-slate-400">Paste copied image or screenshot (⌘V)</div>
+                  </div>
+                </button>
+
+                <div className="h-px bg-slate-800 my-1" />
+
+                <button
                   onClick={() => {
                     setShowUploadDropdown(false);
                     setShowUrlModal(true);
@@ -1059,6 +1186,13 @@ function VisionPageContent() {
                       >
                         <FolderUp className="w-3.5 h-3.5 text-teal-600" />
                         <span className="font-semibold text-[11px]">Local File Upload</span>
+                      </button>
+                      <button
+                        onClick={handlePasteFromClipboard}
+                        className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2 hover:bg-slate-50 transition cursor-pointer text-slate-700"
+                      >
+                        <ClipboardPaste className="w-3.5 h-3.5 text-purple-600" />
+                        <span className="font-semibold text-[11px]">Paste from Clipboard</span>
                       </button>
                       <button
                         onClick={() => {
@@ -1466,6 +1600,129 @@ function VisionPageContent() {
                     </>
                   )}
                 </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* 📋 PASTE FROM CLIPBOARD MODAL */}
+        {/* ========================================================================= */}
+        {showPasteModal && (
+          <div
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in"
+            onPaste={handleClipboardPasteEvent}
+          >
+            <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-5 space-y-4 relative">
+              <button
+                onClick={() => {
+                  setShowPasteModal(false);
+                  setPasteError(null);
+                }}
+                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600 flex-shrink-0">
+                  <ClipboardPaste className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0 pr-6">
+                  <h3 className="text-sm font-bold text-slate-900">
+                    Paste Image from Clipboard
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Press <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono font-bold text-slate-800">⌘V</kbd> / <kbd className="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded text-[10px] font-mono font-bold text-slate-800">Ctrl+V</kbd> anywhere, or right-click inside the box below and choose <strong>Paste</strong>.
+                  </p>
+                </div>
+              </div>
+
+              {/* Interactive Paste Target Box (supports Right-Click -> Paste & Cmd+V) */}
+              <div className="relative">
+                <textarea
+                  autoFocus
+                  value=""
+                  onChange={() => {}}
+                  onPaste={handleClipboardPasteEvent}
+                  aria-label="Paste image from clipboard target area"
+                  className="paste-catcher-zone w-full h-36 p-4 rounded-xl border-2 border-dashed border-purple-300 hover:border-purple-500 focus:border-purple-600 bg-purple-50/40 text-transparent caret-transparent focus:outline-none focus:ring-2 focus:ring-purple-500/20 resize-none cursor-pointer transition"
+                />
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 p-4">
+                  <ClipboardPaste className="w-7 h-7 text-purple-500 animate-pulse" />
+                  <span className="text-xs font-bold text-slate-800">
+                    Ready for Clipboard Image
+                  </span>
+                  <span className="text-[11px] text-slate-500 text-center">
+                    Click or Right-Click here → <strong>Paste</strong> (or press ⌘V / Ctrl+V)
+                  </span>
+                </div>
+              </div>
+
+              {pasteError && (
+                <div className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                  <span>{pasteError}</span>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                <span className="text-[11px] text-slate-400">
+                  Tip: You can also press ⌘V directly on the canvas anytime
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setShowPasteModal(false);
+                      setPasteError(null);
+                    }}
+                    className="px-3 py-1.5 rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (navigator.clipboard && navigator.clipboard.read) {
+                        setIsReadingClipboard(true);
+                        setPasteError(null);
+                        try {
+                          const items = await navigator.clipboard.read();
+                          for (const item of items) {
+                            const imageType = item.types.find(t => t.startsWith('image/'));
+                            if (imageType) {
+                              const blob = await item.getType(imageType);
+                              setIsReadingClipboard(false);
+                              await processClipboardImageBlob(blob);
+                              return;
+                            }
+                          }
+                          setPasteError('No image found in clipboard. Copy an image first, then press ⌘V.');
+                        } catch (err) {
+                          setPasteError('Browser blocked direct clipboard access. Please press ⌘V / Ctrl+V or Right-Click → Paste inside the dashed box above.');
+                        } finally {
+                          setIsReadingClipboard(false);
+                        }
+                      } else {
+                        setPasteError('Please press ⌘V / Ctrl+V or Right-Click → Paste inside the dashed box above.');
+                      }
+                    }}
+                    disabled={isReadingClipboard}
+                    className="px-4 py-1.5 rounded-md bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                  >
+                    {isReadingClipboard ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Reading Clipboard...</span>
+                      </>
+                    ) : (
+                      <>
+                        <ClipboardPaste className="w-3.5 h-3.5" />
+                        <span>Read Clipboard Now</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
