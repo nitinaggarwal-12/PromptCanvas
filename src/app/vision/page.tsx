@@ -37,7 +37,9 @@ import {
   LayoutGrid,
   BookOpen,
   BookmarkPlus,
-  ClipboardPaste
+  ClipboardPaste,
+  Tag,
+  Edit3
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -54,9 +56,95 @@ import {
   countDiagramNodes,
   SavedVisionBlueprint
 } from '@/lib/visionBlueprintStore';
+import {
+  enrichDrawioXmlWithVectorIcons,
+  embedSourceImageInXml,
+  extractSourceImageFromXml
+} from '@/lib/vectorIcons/visionIconEnricher';
 import { AppHeader } from '@/components/AppHeader';
 
 const SAMPLE_BLUEPRINTS = PRECOMPILED_SAMPLE_BLUEPRINTS;
+
+/**
+ * Generates a short, memorable, searchable Unique Blueprint ID (e.g. VIS-GEMINI-4829 or VIS-4829)
+ */
+function generateShortVisionBlueprintId(titleHint?: string): string {
+  const cleanPrefix = titleHint
+    ? titleHint
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, '')
+        .slice(0, 6)
+    : '';
+  const shortHash = Math.floor(1000 + Math.random() * 9000);
+  if (
+    cleanPrefix &&
+    cleanPrefix.length >= 3 &&
+    cleanPrefix !== 'CLIPBO' &&
+    cleanPrefix !== 'CUSTOM' &&
+    cleanPrefix !== 'PASTED' &&
+    cleanPrefix !== 'IMAGE'
+  ) {
+    return `VIS-${cleanPrefix}-${shortHash}`;
+  }
+  return `VIS-${shortHash}`;
+}
+
+/**
+ * Formats any blueprint ID into a clean, short display badge (e.g. VIS-6723 or GCP-MULTIAGENT-01)
+ */
+function formatDisplayBlueprintId(id: string): string {
+  if (!id) return 'VIS-0001';
+  if (id.startsWith('VIS-') || id.startsWith('GCP-')) return id.toUpperCase();
+  // Convert legacy custom_..._1789486723313 or web_... into a clean VIS-XXXX code
+  const numMatch = id.match(/(\d{4,6})$/);
+  if (numMatch) {
+    return `VIS-${numMatch[1].slice(-4)}`;
+  }
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash * 31 + id.charCodeAt(i)) % 9000;
+  }
+  return `VIS-${1000 + Math.abs(hash)}`;
+}
+
+/**
+ * Extracts a clean human-readable title from decompiled XML if the current title is generic
+ */
+function inferTitleFromXml(xml: string, currentTitle: string): string {
+  const lower = (currentTitle || '').toLowerCase();
+  const isGeneric =
+    !currentTitle ||
+    lower.startsWith('clipboard_diagram') ||
+    lower.startsWith('pasted_diagram') ||
+    lower.startsWith('custom_') ||
+    lower.startsWith('image_') ||
+    lower.startsWith('screenshot') ||
+    lower.startsWith('untitled') ||
+    lower === 'vision ai decompiled diagram';
+
+  if (!isGeneric) {
+    return currentTitle;
+  }
+  if (/gemini\s+enterprise/i.test(xml)) {
+    return 'Gemini Enterprise Agent Platform';
+  }
+  const matches = Array.from(xml.matchAll(/<mxCell\b[^>]*\bvalue="([^"]+)"[^>]*\bvertex="1"/gi));
+  for (const m of matches) {
+    const plain = m[1]
+      .replace(/&lt;br\s*\/?&gt;/gi, ' | ')
+      .replace(/&lt;[^&]+&gt;/g, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (plain.length >= 4 && plain.length <= 60 && !plain.startsWith('http')) {
+      const firstSeg = plain.split('|')[0].trim();
+      if (firstSeg.length >= 4) return firstSeg;
+    }
+  }
+  return currentTitle || 'Custom Architecture Diagram';
+}
 
 function VisionPageContent() {
   const router = useRouter();
@@ -99,6 +187,9 @@ function VisionPageContent() {
   const [showPasteModal, setShowPasteModal] = useState<boolean>(false);
   const [pasteError, setPasteError] = useState<string | null>(null);
   const [isReadingClipboard, setIsReadingClipboard] = useState<boolean>(false);
+  const [showRenameModal, setShowRenameModal] = useState<boolean>(false);
+  const [editTitleInput, setEditTitleInput] = useState<string>('');
+  const [editIdInput, setEditIdInput] = useState<string>('');
   const [webUrlInput, setWebUrlInput] = useState<string>('');
   const [isScanningUrl, setIsScanningUrl] = useState<boolean>(false);
   const [scanError, setScanError] = useState<string | null>(null);
@@ -169,11 +260,17 @@ function VisionPageContent() {
       if (curReqId !== reqIdRef.current) return;
 
       if (data.success && data.xml) {
-        const zones = data.extractedZones || ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'];
-        const count = data.componentCount || (data.xml.match(/<mxCell/g) || []).length;
-        const summary = data.summary || `Successfully decompiled ${projectName} into interactive Draw.io XML.`;
+        const enrichedXml = enrichDrawioXmlWithVectorIcons(data.xml);
+        const resolvedTitle = inferTitleFromXml(enrichedXml, data.detectedTitle || projectName);
+        const finalBlueprintId = isCustom
+          ? (blueprintId.startsWith('VIS-') ? blueprintId : generateShortVisionBlueprintId(resolvedTitle))
+          : blueprintId;
 
-        setDecompiledXml(data.xml);
+        const zones = data.extractedZones || ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'];
+        const count = data.componentCount || (enrichedXml.match(/<mxCell/g) || []).length;
+        const summary = data.summary || `Successfully decompiled ${resolvedTitle} into interactive Draw.io XML.`;
+
+        setDecompiledXml(enrichedXml);
         setExtractedZones(zones);
         setComponentCount(count);
         setSummaryText(summary);
@@ -195,9 +292,12 @@ function VisionPageContent() {
                ? base64Data
                : `data:${mimeType || 'image/png'};base64,${base64Data}`));
 
-        setSelectedBlueprintId(blueprintId);
+        const selfContainedXml = embedSourceImageInXml(enrichedXml, finalImageSrc);
+
+        setDecompiledXml(selfContainedXml);
+        setSelectedBlueprintId(finalBlueprintId);
         setSelectedImageSrc(finalImageSrc);
-        setSelectedImageName(projectName);
+        setSelectedImageName(resolvedTitle);
         setIsCustomUpload(isCustom);
         setLeftPaneMode('single');
 
@@ -214,12 +314,16 @@ function VisionPageContent() {
             setIsCertified(true);
           }
         } else {
+          // If temporary ID changed to final VIS-XXXX ID, remove old temp key if present
+          if (isCustom && blueprintId !== finalBlueprintId) {
+            deleteCustomVisionBlueprint(blueprintId);
+          }
           const toSave: SavedVisionBlueprint = {
-            id: blueprintId,
-            title: projectName,
+            id: finalBlueprintId,
+            title: resolvedTitle,
             category: isCustom ? 'Custom Upload' : (SAMPLE_BLUEPRINTS.find(s => s.id === blueprintId)?.category || 'Architecture'),
             imageSrc: finalImageSrc,
-            xml: data.xml,
+            xml: selfContainedXml,
             extractedZones: zones,
             componentCount: count,
             summaryText: summary,
@@ -231,7 +335,7 @@ function VisionPageContent() {
           if (isCustom) {
             setCustomBlueprints(getCustomVisionBlueprints());
           }
-          showToast('✨ Decompilation complete & saved to storage! Diagram synthesized.');
+          showToast(`✨ Decompiled "${resolvedTitle}" [ID: ${formatDisplayBlueprintId(finalBlueprintId)}] & saved to Library!`);
         }
       } else {
         throw new Error(data.error || 'Failed to decompile image.');
@@ -244,7 +348,8 @@ function VisionPageContent() {
       // Fallback: restore saved or precompiled version if available
       const fallback = getSavedVisionBlueprint(blueprintId);
       if (fallback && fallback.xml) {
-        setDecompiledXml(fallback.xml);
+        const enrichedFallback = enrichDrawioXmlWithVectorIcons(fallback.xml);
+        setDecompiledXml(enrichedFallback);
         setExtractedZones(fallback.extractedZones);
         setComponentCount(fallback.componentCount);
         setSummaryText(`${fallback.summaryText} (Restored saved version)`);
@@ -297,12 +402,23 @@ function VisionPageContent() {
     // 2. Check if it's a custom uploaded blueprint in localStorage
     const saved = getSavedVisionBlueprint(id);
     if (saved && saved.xml) {
+      const enrichedXml = enrichDrawioXmlWithVectorIcons(saved.xml);
+      const resolvedTitle = inferTitleFromXml(enrichedXml, saved.title);
+      if (enrichedXml !== saved.xml || resolvedTitle !== saved.title) {
+        const updatedBlueprint: SavedVisionBlueprint = {
+          ...saved,
+          title: resolvedTitle,
+          xml: enrichedXml
+        };
+        saveVisionBlueprint(updatedBlueprint);
+        setCustomBlueprints(getCustomVisionBlueprints());
+      }
       setSelectedBlueprintId(saved.id);
       setSelectedImageSrc(saved.imageSrc);
-      setSelectedImageName(saved.title);
+      setSelectedImageName(resolvedTitle);
       setIsCustomUpload(true);
       setLeftPaneMode('single'); // Guarantees original image appears on the left
-      setDecompiledXml(saved.xml);
+      setDecompiledXml(enrichedXml);
       setExtractedZones(saved.extractedZones);
       setComponentCount(saved.componentCount);
       setSummaryText(saved.summaryText);
@@ -319,25 +435,76 @@ function VisionPageContent() {
         const dbDiagram = await res.json();
         const latestVer = dbDiagram.versions && dbDiagram.versions[0] ? dbDiagram.versions[0] : null;
         if (latestVer && latestVer.xml_content) {
+          const enrichedXml = enrichDrawioXmlWithVectorIcons(latestVer.xml_content);
+          const resolvedTitle = inferTitleFromXml(enrichedXml, dbDiagram.name);
           setSelectedBlueprintId(dbDiagram.id);
-          setSelectedImageName(dbDiagram.name);
+          setSelectedImageName(resolvedTitle);
           setIsCustomUpload(true);
           setLeftPaneMode('single');
-          setDecompiledXml(latestVer.xml_content);
-          setComponentCount((latestVer.xml_content.match(/<mxCell/g) || []).length);
-          setSummaryText(latestVer.comment || dbDiagram.name);
+          setDecompiledXml(enrichedXml);
+          setComponentCount((enrichedXml.match(/<mxCell/g) || []).length);
+          setSummaryText(latestVer.comment || resolvedTitle);
           setSavedSource('cache');
           setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
           setIsDecompiling(false);
 
-          // Find best matching reference image or fallback
-          const matched = SAMPLE_BLUEPRINTS.find(s =>
-            s.id === dbDiagram.id ||
-            s.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
-            (dbDiagram.name.toLowerCase().includes('multiagent') && s.id === 'GCP-MULTIAGENT-01')
-          );
-          if (matched) {
-            setSelectedImageSrc(matched.image);
+          // Recover exact original image source:
+          // Priority 1: Embedded data-source-image attribute inside Draw.io XML
+          let recoveredImg = extractSourceImageFromXml(enrichedXml);
+
+          // Priority 2: Direct localStorage DB ID map
+          if (!recoveredImg && typeof window !== 'undefined') {
+            recoveredImg = localStorage.getItem(`vision_db_image_${dbDiagram.id}`);
+          }
+
+          // Priority 3: Match against custom blueprints stored in browser
+          if (!recoveredImg) {
+            const allCustoms = getCustomVisionBlueprints();
+            const customMatch = allCustoms.find(c =>
+              c.id === dbDiagram.id ||
+              c.title.toLowerCase() === resolvedTitle.toLowerCase() ||
+              c.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
+              (resolvedTitle.toLowerCase().includes('gemini enterprise') &&
+                (c.title.toLowerCase().includes('gemini enterprise') ||
+                 c.title.toLowerCase().includes('image_') ||
+                 c.title.toLowerCase().includes('clipboard') ||
+                 c.xml.toLowerCase().includes('gemini enterprise')))
+            ) || allCustoms[0]; // Fallback to user's most recent custom upload if it's a custom diagram
+            if (customMatch?.imageSrc) {
+              recoveredImg = customMatch.imageSrc;
+            }
+          }
+
+          // Priority 4: Certified Sample Blueprint match
+          if (!recoveredImg) {
+            const matched = SAMPLE_BLUEPRINTS.find(s =>
+              s.id === dbDiagram.id ||
+              s.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
+              (dbDiagram.name.toLowerCase().includes('multiagent') && s.id === 'GCP-MULTIAGENT-01')
+            );
+            if (matched) {
+              recoveredImg = matched.image;
+            }
+          }
+
+          if (recoveredImg) {
+            setSelectedImageSrc(recoveredImg);
+            const selfContained = embedSourceImageInXml(enrichedXml, recoveredImg);
+            setDecompiledXml(selfContained);
+            saveVisionBlueprint({
+              id: dbDiagram.id,
+              title: resolvedTitle,
+              category: 'Saved Vision Blueprint',
+              imageSrc: recoveredImg,
+              xml: selfContained,
+              extractedZones: ['Ingress & Security', 'Compute Tier', 'Data Tier', 'Agentic AI Services'],
+              componentCount: (enrichedXml.match(/<mxCell/g) || []).length,
+              summaryText: latestVer.comment || resolvedTitle,
+              isCustom: true,
+              timestamp: Date.now(),
+              source: 'cache'
+            });
+            setCustomBlueprints(getCustomVisionBlueprints());
           }
           return;
         }
@@ -372,7 +539,7 @@ function VisionPageContent() {
     reader.onload = async () => {
       const base64 = reader.result as string;
       const cleanName = file.name.replace(/\.[^/.]+$/, '');
-      const customId = `custom_${cleanName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${file.size}`;
+      const customId = generateShortVisionBlueprintId(cleanName);
 
       setSelectedBlueprintId(customId);
       setSelectedImageSrc(base64);
@@ -383,13 +550,14 @@ function VisionPageContent() {
       // Check if this exact file was previously compiled!
       const saved = getSavedVisionBlueprint(customId);
       if (saved && saved.xml) {
-        setDecompiledXml(saved.xml);
+        const enrichedXml = enrichDrawioXmlWithVectorIcons(saved.xml);
+        setDecompiledXml(enrichedXml);
         setExtractedZones(saved.extractedZones);
         setComponentCount(saved.componentCount);
         setSummaryText(saved.summaryText);
         setSavedSource('cache');
         setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
-        showToast('✨ Loaded saved decompilation for this image!');
+        showToast(`✨ Loaded saved decompilation [ID: ${formatDisplayBlueprintId(customId)}]!`);
         return;
       }
 
@@ -699,35 +867,97 @@ function VisionPageContent() {
 
       if (librarySearchQuery.trim()) {
         const q = librarySearchQuery.toLowerCase();
+        const displayId = formatDisplayBlueprintId(bp.id).toLowerCase();
+        const matchId = bp.id.toLowerCase().includes(q) || displayId.includes(q);
         const matchTitle = bp.title.toLowerCase().includes(q);
         const matchCat = bp.category.toLowerCase().includes(q);
         const matchDesc = (bp.desc || '').toLowerCase().includes(q);
-        return matchTitle || matchCat || matchDesc;
+        return matchId || matchTitle || matchCat || matchDesc;
       }
       return true;
     });
   }, [allLibraryBlueprints, libraryTabFilter, librarySearchQuery]);
+
+  // Save custom Renamed Title and Unique ID
+  const handleSaveRenamedBlueprint = () => {
+    const newTitle = editTitleInput.trim() || selectedImageName || 'Custom Diagram';
+    let newId = editIdInput.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '-');
+    if (!newId) {
+      newId = formatDisplayBlueprintId(selectedBlueprintId);
+    }
+
+    const oldId = selectedBlueprintId;
+    const existing = getSavedVisionBlueprint(oldId);
+
+    const updatedRecord: SavedVisionBlueprint = {
+      id: newId,
+      title: newTitle,
+      category: existing?.category || 'Custom Vision Blueprint',
+      imageSrc: selectedImageSrc,
+      xml: decompiledXml,
+      componentCount,
+      extractedZones,
+      summaryText: existing?.summaryText || summaryText || `Architecture Blueprint (${newId})`,
+      timestamp: Date.now(),
+      source: existing?.source || 'live',
+      isCustom: true
+    };
+
+    if (oldId !== newId && existing?.isCustom) {
+      deleteCustomVisionBlueprint(oldId);
+    }
+
+    saveVisionBlueprint(updatedRecord);
+    setSelectedBlueprintId(newId);
+    setSelectedImageName(newTitle);
+    setIsCustomUpload(true);
+    setCustomBlueprints(getCustomVisionBlueprints());
+    setShowRenameModal(false);
+    showToast(`✅ Updated Blueprint ID to [${newId}] and Title to "${newTitle}"!`);
+  };
 
   // Save active diagram to global architecture library in database
   const handleSaveCurrentToGlobalLibrary = async () => {
     if (!decompiledXml) return;
     setIsSavingToDb(true);
     try {
+      const enriched = enrichDrawioXmlWithVectorIcons(decompiledXml);
+      const xmlWithImage = embedSourceImageInXml(enriched, selectedImageSrc);
+      const resolvedTitle = inferTitleFromXml(xmlWithImage, selectedImageName || 'Vision AI Decompiled Diagram');
+
       const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: selectedImageName || 'Vision AI Decompiled Diagram',
-          xml: decompiledXml,
+          name: resolvedTitle,
+          xml: xmlWithImage,
           comment: `Decompiled with Vision AI (${componentCount} components)`,
-          prompt: `Vision Decompiler Blueprint: ${selectedImageName}`,
+          prompt: `Vision Decompiler Blueprint: ${resolvedTitle}`,
           architectureType: 'vision_decompiled',
           createdStudio: 'vision',
           isPrivate: false
         })
       });
       if (!res.ok) throw new Error('Failed to save to database');
-      showToast('🎉 Saved to Global Architecture Library! Accessible at /library');
+      const savedData = await res.json();
+      if (savedData?.id && selectedImageSrc && typeof window !== 'undefined') {
+        localStorage.setItem(`vision_db_image_${savedData.id}`, selectedImageSrc);
+        saveVisionBlueprint({
+          id: savedData.id,
+          title: resolvedTitle,
+          category: 'Saved Vision Blueprint',
+          imageSrc: selectedImageSrc,
+          xml: xmlWithImage,
+          extractedZones,
+          componentCount,
+          summaryText: summaryText || `Architecture Blueprint (${savedData.id})`,
+          isCustom: true,
+          timestamp: Date.now(),
+          source: 'cache'
+        });
+        setCustomBlueprints(getCustomVisionBlueprints());
+      }
+      showToast('🎉 Saved to Global Architecture Library with original image! Accessible at /library');
     } catch (err: any) {
       console.error('Failed to save diagram to DB:', err);
       showToast(`❌ Could not save to library: ${err?.message || 'Error'}`);
@@ -737,12 +967,14 @@ function VisionPageContent() {
   };
 
   // Save specific blueprint from library modal into global DB
-  const handleSaveBlueprintToGlobal = async (bp: { id: string; title: string; xml?: string; componentCount?: number }, e: React.MouseEvent) => {
+  const handleSaveBlueprintToGlobal = async (bp: { id: string; title: string; imageSrc?: string; xml?: string; componentCount?: number }, e: React.MouseEvent) => {
     e.stopPropagation();
     let xmlToSave = bp.xml;
-    if (!xmlToSave) {
+    let imgToSave = bp.imageSrc;
+    if (!xmlToSave || !imgToSave) {
       const full = getSavedVisionBlueprint(bp.id);
-      xmlToSave = full?.xml;
+      if (!xmlToSave) xmlToSave = full?.xml;
+      if (!imgToSave) imgToSave = full?.imageSrc;
     }
     if (!xmlToSave) {
       showToast('⚠️ No XML found for this blueprint.');
@@ -750,13 +982,15 @@ function VisionPageContent() {
     }
 
     try {
+      const enriched = enrichDrawioXmlWithVectorIcons(xmlToSave);
+      const xmlWithImage = imgToSave ? embedSourceImageInXml(enriched, imgToSave) : enriched;
       showToast(`💾 Saving "${bp.title}" to Global Architecture Library...`);
       const res = await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: bp.title,
-          xml: xmlToSave,
+          xml: xmlWithImage,
           comment: `Vision AI Blueprint: ${bp.title}`,
           prompt: `Vision Decompiler Blueprint: ${bp.title}`,
           architectureType: 'vision_decompiled',
@@ -765,6 +999,10 @@ function VisionPageContent() {
         })
       });
       if (!res.ok) throw new Error('Save failed');
+      const savedData = await res.json();
+      if (savedData?.id && imgToSave && typeof window !== 'undefined') {
+        localStorage.setItem(`vision_db_image_${savedData.id}`, imgToSave);
+      }
       showToast(`🎉 "${bp.title}" saved to Global Architecture Library! View in /library.`);
     } catch (err: any) {
       console.error('Failed to save to global library:', err);
@@ -1007,6 +1245,7 @@ function VisionPageContent() {
             {/* Custom Blueprints Chips */}
             {customBlueprints.map((cb) => {
               const isSelected = isCustomUpload && selectedBlueprintId === cb.id;
+              const shortId = formatDisplayBlueprintId(cb.id);
               return (
                 <div
                   key={cb.id}
@@ -1016,10 +1255,17 @@ function VisionPageContent() {
                       ? 'bg-teal-600 text-white border-teal-600 shadow-2xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
                   }`}
-                  title={`Custom Upload: ${cb.title}`}
+                  title={`Custom Upload [${shortId}]: ${cb.title}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white animate-pulse' : 'bg-amber-500'}`} />
-                  <span className="truncate max-w-[120px]">{cb.title}</span>
+                  <span
+                    className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
+                      isSelected ? 'bg-teal-700 text-white' : 'bg-amber-100 text-amber-800 border border-amber-200'
+                    }`}
+                  >
+                    {shortId}
+                  </span>
+                  <span className="truncate max-w-[140px]">{cb.title}</span>
                   <button
                     onClick={(e) => handleDeleteCustom(cb.id, e)}
                     className="hover:text-red-400 p-0.5 rounded cursor-pointer ml-0.5"
@@ -1042,8 +1288,38 @@ function VisionPageContent() {
             </button>
           </div>
 
-          {/* Right: Active Status Badge & Telemetry Metadata */}
+          {/* Right: Active Unique ID Badge, Rename Action & Telemetry Metadata */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
+            {/* Searchable & Copyable Unique Blueprint ID Pill */}
+            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-mono font-bold border border-slate-700 shadow-2xs">
+              <Tag className="w-2.5 h-2.5 text-teal-400" />
+              <span className="text-slate-400">ID:</span>
+              <span className="text-teal-300 tracking-tight">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
+              <button
+                onClick={() => {
+                  const idToCopy = formatDisplayBlueprintId(selectedBlueprintId);
+                  navigator.clipboard.writeText(idToCopy);
+                  showToast(`📋 Copied Unique ID [${idToCopy}] to clipboard! Use it to search in Library.`);
+                }}
+                className="ml-0.5 p-0.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
+                title="Copy Unique Blueprint ID to clipboard"
+              >
+                <Copy className="w-2.5 h-2.5" />
+              </button>
+              <button
+                onClick={() => {
+                  setEditTitleInput(selectedImageName || 'Custom Diagram');
+                  setEditIdInput(formatDisplayBlueprintId(selectedBlueprintId));
+                  setShowRenameModal(true);
+                }}
+                className="ml-0.5 px-1.5 py-0.2 rounded bg-teal-600/30 hover:bg-teal-600/50 text-teal-300 border border-teal-500/40 flex items-center gap-0.5 transition cursor-pointer"
+                title="Customize Unique ID & Blueprint Title"
+              >
+                <Edit3 className="w-2.5 h-2.5" />
+                <span className="hidden xl:inline text-[9.5px] font-sans font-bold">Rename / ID</span>
+              </button>
+            </div>
+
             {isDecompiling ? (
               <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold flex items-center gap-1">
                 <Loader2 className="w-2.5 h-2.5 animate-spin text-amber-600" />
@@ -1774,7 +2050,7 @@ function VisionPageContent() {
                     type="text"
                     value={librarySearchQuery}
                     onChange={(e) => setLibrarySearchQuery(e.target.value)}
-                    placeholder="Search by title, domain, keywords..."
+                    placeholder="Search by Unique ID (e.g. VIS-4829), title, domain, keywords..."
                     className="w-full pl-8 pr-7 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-teal-500 focus:border-teal-500 transition shadow-2xs"
                   />
                   {librarySearchQuery && (
@@ -1836,6 +2112,7 @@ function VisionPageContent() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredLibraryBlueprints.map((bp) => {
                       const isActive = selectedBlueprintId === bp.id;
+                      const shortId = formatDisplayBlueprintId(bp.id);
                       return (
                         <div
                           key={bp.id}
@@ -1880,14 +2157,29 @@ function VisionPageContent() {
                           {/* Card Content */}
                           <div className="p-3.5 flex-1 flex flex-col justify-between">
                             <div>
-                              <div className="flex items-center justify-between gap-2 mb-1">
-                                <span className="text-[10px] font-bold text-teal-700 uppercase tracking-wider">
-                                  {bp.category}
-                                </span>
+                              {/* Searchable Unique ID Badge inside Card */}
+                              <div className="flex items-center justify-between gap-2 mb-1.5">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigator.clipboard.writeText(shortId);
+                                    showToast(`📋 Copied Unique ID [${shortId}] to clipboard!`);
+                                  }}
+                                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-900 hover:bg-slate-800 text-teal-300 text-[9.5px] font-mono font-bold border border-slate-700 cursor-pointer transition"
+                                  title="Click to copy Unique ID"
+                                >
+                                  <Tag className="w-2.5 h-2.5 text-teal-400" />
+                                  <span>ID: {shortId}</span>
+                                  <Copy className="w-2.5 h-2.5 text-slate-400 ml-0.5" />
+                                </button>
                                 <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
                                   {bp.componentCount} nodes
                                 </span>
                               </div>
+
+                              <span className="text-[10px] font-bold text-teal-700 uppercase tracking-wider block mb-0.5">
+                                {bp.category}
+                              </span>
 
                               <h3 className="text-xs font-bold text-slate-900 leading-snug line-clamp-2 mb-1">
                                 {bp.title}
@@ -1973,6 +2265,83 @@ function VisionPageContent() {
                 </button>
               </div>
 
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* ✏️ RENAME BLUEPRINT & EDIT UNIQUE ID MODAL */}
+        {/* ========================================================================= */}
+        {showRenameModal && (
+          <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4 relative animate-in zoom-in-95 duration-150">
+              <button
+                onClick={() => setShowRenameModal(false)}
+                className="absolute top-3.5 right-3.5 p-1 rounded-md text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600 flex-shrink-0">
+                  <Tag className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">
+                    Customize Blueprint Title & Unique ID
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Set a memorable Unique ID (e.g., <code className="px-1 py-0.2 bg-slate-100 rounded font-mono text-[10px] font-bold">VIS-GEMINI-01</code>) so you can instantly search and retrieve this diagram in the Library.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-1">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Unique Blueprint ID (Search Key)
+                  </label>
+                  <div className="relative">
+                    <Tag className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-teal-600" />
+                    <input
+                      type="text"
+                      value={editIdInput}
+                      onChange={(e) => setEditIdInput(e.target.value.toUpperCase())}
+                      placeholder="e.g. VIS-GEMINI-01 or VIS-4829"
+                      className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Blueprint Title
+                  </label>
+                  <input
+                    type="text"
+                    value={editTitleInput}
+                    onChange={(e) => setEditTitleInput(e.target.value)}
+                    placeholder="e.g. Gemini Enterprise Agent Platform"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                <button
+                  onClick={() => setShowRenameModal(false)}
+                  className="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveRenamedBlueprint}
+                  className="px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>Save ID & Title</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

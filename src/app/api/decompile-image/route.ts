@@ -31,6 +31,11 @@ export async function POST(req: NextRequest) {
       modelUsed: result.modelUsed,
       attribution: result.attribution,
       fallbackReason: result.fallbackReason,
+      isCertified: result.isCertified,
+      auditReport: result.auditReport,
+      steps: result.steps,
+      matchedBlueprintId: result.matchedBlueprintId,
+      detectedTitle: result.detectedTitle,
     });
   } catch (error: any) {
     console.error('API Error in /api/decompile-image:', error);

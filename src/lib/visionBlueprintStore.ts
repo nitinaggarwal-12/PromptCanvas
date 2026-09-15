@@ -177,6 +177,32 @@ export function getPrecompiledBlueprint(id: string): SavedVisionBlueprint | null
 }
 
 /**
+ * Repairs any legacy truncated imageSrc strings by checking embedded XML or dedicated image storage keys.
+ */
+function recoverIntactImageSrc(id: string, currentImg: string, xml: string): string {
+  if (currentImg && !currentImg.includes('[truncated_for_storage]')) {
+    return currentImg;
+  }
+  if (typeof window !== 'undefined') {
+    const dedicated = localStorage.getItem(`vision_img_${id}`) || sessionStorage.getItem(`vision_img_${id}`) || localStorage.getItem(`vision_db_image_${id}`);
+    if (dedicated && !dedicated.includes('[truncated_for_storage]')) {
+      return dedicated;
+    }
+  }
+  if (xml) {
+    const match = xml.match(/data-source-image="([^"]+)"/);
+    if (match && match[1] && !match[1].includes('[truncated_for_storage]')) {
+      return match[1]
+        .replace(/&quot;/g, '"')
+        .replace(/&gt;/g, '>')
+        .replace(/&lt;/g, '<')
+        .replace(/&amp;/g, '&');
+    }
+  }
+  return currentImg;
+}
+
+/**
  * Retrieve saved blueprint from localStorage or certified precompiled master
  */
 export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null {
@@ -201,8 +227,10 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
           localStorage.removeItem(`${STORAGE_PREFIX}${id}`);
           return getPrecompiledBlueprint(id);
         }
+        const intactImage = recoverIntactImageSrc(id, parsed.imageSrc, parsed.xml);
         return {
           ...parsed,
+          imageSrc: intactImage,
           source: 'cache'
         };
       }
@@ -238,14 +266,21 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
   }
 
   try {
-    // 🛡️ Quota Armor: ensure imageSrc doesn't exceed 50KB in localStorage to avoid QuotaExceededError
-    const safeImageSrc = (blueprint.imageSrc && blueprint.imageSrc.startsWith('data:image') && blueprint.imageSrc.length > 50000)
-      ? (blueprint.imageSrc.slice(0, 1000) + '...[truncated_for_storage]')
-      : blueprint.imageSrc;
+    // Store intact image source (never slice base64 strings with '...[truncated_for_storage]')
+    const intactImageSrc = recoverIntactImageSrc(blueprint.id, blueprint.imageSrc, blueprint.xml);
+
+    if (intactImageSrc && intactImageSrc.startsWith('data:image')) {
+      try {
+        sessionStorage.setItem(`vision_img_${blueprint.id}`, intactImageSrc);
+      } catch {}
+      try {
+        localStorage.setItem(`vision_img_${blueprint.id}`, intactImageSrc);
+      } catch {}
+    }
 
     const payload = JSON.stringify({
       ...blueprint,
-      imageSrc: safeImageSrc,
+      imageSrc: intactImageSrc,
       source: 'cache'
     });
 
@@ -263,7 +298,15 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
       try {
         localStorage.setItem(`${STORAGE_PREFIX}${blueprint.id}`, payload);
       } catch (retryErr) {
-        console.warn('[VisionBlueprintStore] Could not persist to localStorage after pruning:', retryErr);
+        console.warn('[VisionBlueprintStore] Could not persist full payload to localStorage, storing compact record + sessionStorage image:', retryErr);
+        try {
+          const compactPayload = JSON.stringify({
+            ...blueprint,
+            imageSrc: intactImageSrc.length > 250000 ? '' : intactImageSrc,
+            source: 'cache'
+          });
+          localStorage.setItem(`${STORAGE_PREFIX}${blueprint.id}`, compactPayload);
+        } catch {}
       }
     }
 
@@ -273,11 +316,22 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
     if (blueprint.isCustom) {
       const existing = getCustomVisionBlueprints();
       const updated = [
-        { ...blueprint, imageSrc: safeImageSrc },
+        { ...blueprint, imageSrc: intactImageSrc },
         ...existing.filter(b => b.id !== blueprint.id)
       ].slice(0, 10); // Keep last 10 custom uploads
 
-      localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
+      try {
+        localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
+      } catch {
+        // If custom list exceeds quota due to multiple base64 images, keep full image on active item and use sessionStorage for older ones
+        const compactList = updated.map((item, idx) => ({
+          ...item,
+          imageSrc: idx === 0 ? item.imageSrc : (item.imageSrc && item.imageSrc.length > 100000 ? '' : item.imageSrc)
+        }));
+        try {
+          localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(compactList));
+        } catch {}
+      }
     }
   } catch (err) {
     console.warn('[VisionBlueprintStore] Error writing to localStorage:', err);
@@ -297,7 +351,12 @@ export function getCustomVisionBlueprints(): SavedVisionBlueprint[] {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        return parsed.filter(item => item && item.isCustom === true);
+        return parsed
+          .filter(item => item && item.isCustom === true)
+          .map(item => ({
+            ...item,
+            imageSrc: recoverIntactImageSrc(item.id, item.imageSrc, item.xml)
+          }));
       }
     }
   } catch (err) {
