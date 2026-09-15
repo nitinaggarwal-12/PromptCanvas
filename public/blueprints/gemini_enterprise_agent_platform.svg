@@ -1,0 +1,179 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="100%" height="100%">
+  <defs>
+    <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4285F4" />
+      <stop offset="50%" stop-color="#9B72CB" />
+      <stop offset="100%" stop-color="#D96570" />
+    </linearGradient>
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1600" height="1000" fill="#1E1F22" />
+
+  <!-- Top Header Sparkle & Title -->
+  <g transform="translate(56, 48)">
+    <!-- 4-Point Gemini Star -->
+    <path d="M24 0C24 13.2548 34.7452 24 48 24C34.7452 24 24 34.7452 24 48C24 34.7452 13.2548 24 0 24C13.2548 24 24 13.2548 24 0Z" fill="url(#geminiGrad)" />
+    <text x="64" y="36" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="40" font-weight="700" letter-spacing="-0.5">Gemini Enterprise</text>
+    <text x="0" y="84" fill="#E2E8F0" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="23" font-weight="500">End-to-end solution across business users, developers, security specialists &amp; platform engineers</text>
+  </g>
+
+  <!-- Top Two Value Pillars -->
+  <g transform="translate(56, 174)">
+    <rect x="0" y="0" width="728" height="76" rx="16" fill="#282A2E" stroke="#4285F4" stroke-width="2.5" />
+    <text x="364" y="45" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="21" font-weight="600" text-anchor="middle">Industry-leading models in every surface</text>
+
+    <rect x="760" y="0" width="728" height="76" rx="16" fill="#282A2E" stroke="#4285F4" stroke-width="2.5" />
+    <text x="1124" y="45" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="21" font-weight="600" text-anchor="middle">Unified spending flexibility and cost control</text>
+  </g>
+
+  <!-- Main Blue Outer Container Frame -->
+  <rect x="56" y="282" width="1488" height="610" rx="24" fill="#4285F4" filter="url(#cardShadow)" />
+
+  <!-- Upper Inner Container: Apps and solutions -->
+  <rect x="76" y="302" width="1448" height="196" rx="16" fill="#282A2E" />
+  <text x="104" y="346" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="23" font-weight="700">Apps and solutions</text>
+
+  <!-- 4 App Solutions Row -->
+  <!-- 1. Gemini Enterprise app -->
+  <g transform="translate(130, 392)">
+    <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#geminiGrad)" />
+    <text x="34" y="18" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="22" font-weight="700">Gemini Enterprise</text>
+    <text x="115" y="44" fill="#CBD5E1" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="18" font-weight="600" text-anchor="middle">app</text>
+  </g>
+
+  <!-- 2. Google Antigravity -->
+  <g transform="translate(465, 392)">
+    <path d="M12 2L3 22h3.5l1.8-4h7.4l1.8 4H21L12 2z" fill="none" stroke="#60A5FA" stroke-width="2.2" />
+    <path d="M8.5 14h7" stroke="#F43F5E" stroke-width="2.2" />
+    <text x="32" y="18" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="22" font-weight="700">Google Antigravity</text>
+  </g>
+
+  <!-- 3. CodeMender -->
+  <g transform="translate(820, 392)">
+    <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="#60A5FA" />
+    <text x="34" y="18" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="22" font-weight="700">CodeMender</text>
+  </g>
+
+  <!-- 4. Gemini Enterprise for Customer Experience -->
+  <g transform="translate(1140, 392)">
+    <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#geminiGrad)" />
+    <text x="34" y="18" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="22" font-weight="700">Gemini Enterprise</text>
+    <text x="128" y="44" fill="#CBD5E1" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="17" font-weight="500" text-anchor="middle">for Customer Experience</text>
+  </g>
+
+  <!-- Center Bridge Pill: Gemini Spark -->
+  <g transform="translate(640, 476)">
+    <rect x="0" y="0" width="320" height="48" rx="10" fill="#1E1F22" stroke="#4285F4" stroke-width="2" />
+    <path transform="translate(88, 12) scale(0.9)" d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="url(#geminiGrad)" />
+    <text x="120" y="31" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="21" font-weight="700">Gemini Spark</text>
+  </g>
+
+  <!-- Lower Inner Container: Gemini Enterprise Agent Platform -->
+  <rect x="76" y="514" width="1448" height="358" rx="16" fill="#282A2E" />
+  <text x="104" y="558" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="23" font-weight="700">Gemini Enterprise Agent Platform</text>
+
+  <!-- 8 Capability Columns -->
+  <g transform="translate(104, 610)">
+    <!-- Col 1: 1P, 3P, open models -->
+    <g transform="translate(0, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <path transform="translate(53, 12)" d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#60A5FA" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">1P, 3P,</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">open models</text>
+    </g>
+
+    <!-- Col 2: Model tuning and training -->
+    <g transform="translate(178, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <line x1="53" y1="18" x2="77" y2="18" stroke="#60A5FA" stroke-width="2" />
+      <line x1="53" y1="24" x2="77" y2="24" stroke="#60A5FA" stroke-width="2" />
+      <line x1="53" y1="30" x2="77" y2="30" stroke="#60A5FA" stroke-width="2" />
+      <circle cx="60" cy="18" r="3" fill="#FFFFFF" />
+      <circle cx="70" cy="24" r="3" fill="#FFFFFF" />
+      <circle cx="62" cy="30" r="3" fill="#FFFFFF" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Model tuning</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">and training</text>
+    </g>
+
+    <!-- Col 3: Agent frameworks and APIs -->
+    <g transform="translate(356, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <rect x="53" y="14" width="24" height="20" rx="3" fill="none" stroke="#60A5FA" stroke-width="2" />
+      <polyline points="59 21 63 24 59 27" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Agent</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">frameworks and</text>
+      <text x="65" y="116" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">APIs</text>
+    </g>
+
+    <!-- Col 4: Agent runtimes and sandboxes -->
+    <g transform="translate(534, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <circle cx="65" cy="24" r="7" fill="none" stroke="#60A5FA" stroke-width="2.2" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Agent runtimes</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">and</text>
+      <text x="65" y="116" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">sandboxes</text>
+    </g>
+
+    <!-- Col 5: Agent governance -->
+    <g transform="translate(712, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <circle cx="58" cy="18" r="3.5" fill="#60A5FA" />
+      <circle cx="72" cy="18" r="3.5" fill="#60A5FA" />
+      <circle cx="65" cy="31" r="3.5" fill="#60A5FA" />
+      <line x1="58" y1="18" x2="65" y2="31" stroke="#60A5FA" stroke-width="2" />
+      <line x1="72" y1="18" x2="65" y2="31" stroke="#60A5FA" stroke-width="2" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Agent</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">governance</text>
+    </g>
+
+    <!-- Col 6: Policy and security gateways -->
+    <g transform="translate(890, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <path d="M65 12L55 17v7c0 6.5 4.3 12.3 10 14 5.7-1.7 10-7.5 10-14v-7l-10-5z" fill="none" stroke="#60A5FA" stroke-width="2" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Policy and</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">security</text>
+      <text x="65" y="116" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">gateways</text>
+    </g>
+
+    <!-- Col 7: Advanced threat detection -->
+    <g transform="translate(1068, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <path d="M65 12L55 17v7c0 6.5 4.3 12.3 10 14 5.7-1.7 10-7.5 10-14v-7l-10-5z" fill="none" stroke="#F43F5E" stroke-width="2" />
+      <circle cx="65" cy="24" r="3" fill="#F43F5E" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Advanced</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">threat detection</text>
+    </g>
+
+    <!-- Col 8: Observability, evaluation, simulation -->
+    <g transform="translate(1246, 0)">
+      <circle cx="65" cy="24" r="22" fill="#1E293B" stroke="#60A5FA" stroke-width="1.8" />
+      <path d="M54 29a11 11 0 0 1 22 0" fill="none" stroke="#60A5FA" stroke-width="2" />
+      <line x1="65" y1="29" x2="71" y2="19" stroke="#FFFFFF" stroke-width="2" />
+      <text x="65" y="72" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Observability,</text>
+      <text x="65" y="94" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">evaluation,</text>
+      <text x="65" y="116" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">simulation</text>
+    </g>
+  </g>
+
+  <!-- Horizontal Double-Headed Arrow & Lifecycle Axis -->
+  <g transform="translate(120, 770)">
+    <text x="680" y="-12" fill="#94A3B8" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="16" font-weight="600" text-anchor="middle">Agentic capabilities across</text>
+    <line x1="20" y1="12" x2="1340" y2="12" stroke="#60A5FA" stroke-width="2.5" />
+    <polygon points="20,12 32,6 32,18" fill="#60A5FA" />
+    <polygon points="1340,12 1328,6 1328,18" fill="#60A5FA" />
+
+    <text x="170" y="44" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Build</text>
+    <text x="510" y="44" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Scale</text>
+    <text x="850" y="44" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Govern</text>
+    <text x="1190" y="44" fill="#FFFFFF" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="20" font-weight="700" text-anchor="middle">Optimize</text>
+  </g>
+
+  <!-- Bottom Footer: Google Cloud & Proprietary -->
+  <text x="56" y="950" fill="#CBD5E1" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="22" font-weight="700">Google Cloud</text>
+  <text x="1544" y="942" fill="#94A3B8" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="15" font-weight="600" text-anchor="end">Proprietary &amp;</text>
+  <text x="1544" y="962" fill="#94A3B8" font-family="'Google Sans', 'Inter', system-ui, sans-serif" font-size="15" font-weight="600" text-anchor="end">Confidential</text>
+</svg>

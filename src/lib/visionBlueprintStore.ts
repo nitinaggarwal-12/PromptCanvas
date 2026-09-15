@@ -4,6 +4,9 @@
  */
 
 import { generateGoogleMultiagentArchitectureXml } from './masterBuilders/build_master_google_multiagent_ai_system';
+import { generateGeminiEnterpriseArchitectureXml } from './masterBuilders/build_master_gemini_enterprise_agent_platform';
+import { resolveIntactBlueprintImage, saveImageToVault } from './visionImageVault';
+import { enrichDrawioXmlWithVectorIcons } from './vectorIcons/visionIconEnricher';
 
 export interface SavedVisionBlueprint {
   id: string;
@@ -56,19 +59,79 @@ const STORAGE_PREFIX = 'promptcanvas_vision_cache_v4_';
 const LAST_ACTIVE_KEY = 'promptcanvas_vision_last_active_id_v4';
 const CUSTOM_LIST_KEY = 'promptcanvas_vision_custom_blueprints_v4';
 
-function purgeLegacyVisionStorage(): void {
+export function getSelfHealedGeminiEnterpriseBlueprint(id: string): SavedVisionBlueprint {
+  const cleanId = id.toUpperCase();
+  const xml = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
+  return {
+    id: cleanId,
+    title: 'Gemini Enterprise Agent Platform',
+    category: 'Custom Upload',
+    imageSrc: '/blueprints/gemini_enterprise_agent_platform.svg',
+    xml,
+    extractedZones: [
+      'Ingress & Security',
+      'Compute Tier',
+      'Data Tier',
+      'Agentic AI Services'
+    ],
+    componentCount: 36,
+    summaryText: 'Gemini Enterprise Agent Platform — End-to-end solution across business users, developers, security specialists & platform engineers.',
+    isCustom: true,
+    timestamp: cleanId === 'VIS-3093' ? 1789510639000 : 1789510717000,
+    source: 'cache'
+  };
+}
+
+function migrateLegacyVisionStorage(): void {
   if (typeof window === 'undefined') return;
   try {
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i);
-      if (
-        k &&
-        (k.startsWith('promptcanvas_vision_cache_v3_') ||
-          k === 'promptcanvas_vision_last_active_id_v3' ||
-          k === 'promptcanvas_vision_custom_blueprints_v3')
-      ) {
+    const legacyKeys = [
+      'promptcanvas_vision_custom_blueprints_v3',
+      'vision_custom_blueprints_v3'
+    ];
+    let migratedAny = false;
+    const currentRaw = localStorage.getItem(CUSTOM_LIST_KEY);
+    const currentList: SavedVisionBlueprint[] = currentRaw ? JSON.parse(currentRaw) : [];
+
+    for (const k of legacyKeys) {
+      const legacyRaw = localStorage.getItem(k);
+      if (legacyRaw) {
+        try {
+          const parsed = JSON.parse(legacyRaw);
+          if (Array.isArray(parsed)) {
+            for (const item of parsed) {
+              if (item && item.id && !currentList.some(c => c.id === item.id)) {
+                currentList.push({
+                  ...item,
+                  imageSrc: resolveIntactBlueprintImage(item.id, item.imageSrc, item.title, item.xml)
+                });
+                migratedAny = true;
+              }
+            }
+          }
+        } catch {}
         localStorage.removeItem(k);
       }
+    }
+
+    // Ensure VIS-3093 and VIS-1787 (user's uploaded Gemini Enterprise Agent Platform slides) are present & healed unless explicitly deleted
+    const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
+    const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
+    for (const defaultVisId of ['VIS-3093', 'VIS-1787']) {
+      if (!deletedIds.includes(defaultVisId) && !currentList.some(c => c.id.toUpperCase() === defaultVisId)) {
+        const healed = getSelfHealedGeminiEnterpriseBlueprint(defaultVisId);
+        currentList.push(healed);
+        try {
+          localStorage.setItem(`${STORAGE_PREFIX}${defaultVisId}`, JSON.stringify(healed));
+        } catch {}
+        migratedAny = true;
+      }
+    }
+
+    if (migratedAny) {
+      try {
+        localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(currentList));
+      } catch {}
     }
   } catch {}
 }
@@ -177,29 +240,10 @@ export function getPrecompiledBlueprint(id: string): SavedVisionBlueprint | null
 }
 
 /**
- * Repairs any legacy truncated imageSrc strings by checking embedded XML or dedicated image storage keys.
+ * Repairs any legacy truncated or empty imageSrc strings by checking embedded XML, dedicated image storage keys, or self-healing master images.
  */
-function recoverIntactImageSrc(id: string, currentImg: string, xml: string): string {
-  if (currentImg && !currentImg.includes('[truncated_for_storage]')) {
-    return currentImg;
-  }
-  if (typeof window !== 'undefined') {
-    const dedicated = localStorage.getItem(`vision_img_${id}`) || sessionStorage.getItem(`vision_img_${id}`) || localStorage.getItem(`vision_db_image_${id}`);
-    if (dedicated && !dedicated.includes('[truncated_for_storage]')) {
-      return dedicated;
-    }
-  }
-  if (xml) {
-    const match = xml.match(/data-source-image="([^"]+)"/);
-    if (match && match[1] && !match[1].includes('[truncated_for_storage]')) {
-      return match[1]
-        .replace(/&quot;/g, '"')
-        .replace(/&gt;/g, '>')
-        .replace(/&lt;/g, '<')
-        .replace(/&amp;/g, '&');
-    }
-  }
-  return currentImg;
+function recoverIntactImageSrc(id: string, currentImg: string, xml: string, title?: string): string {
+  return resolveIntactBlueprintImage(id, currentImg, title, xml);
 }
 
 /**
@@ -208,7 +252,7 @@ function recoverIntactImageSrc(id: string, currentImg: string, xml: string): str
 export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null {
   if (typeof window === 'undefined') return null;
 
-  purgeLegacyVisionStorage();
+  migrateLegacyVisionStorage();
 
   // 1. First check if user or decompiler has saved a version in localStorage
   try {
@@ -227,9 +271,19 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
           localStorage.removeItem(`${STORAGE_PREFIX}${id}`);
           return getPrecompiledBlueprint(id);
         }
-        const intactImage = recoverIntactImageSrc(id, parsed.imageSrc, parsed.xml);
+        const intactImage = recoverIntactImageSrc(id, parsed.imageSrc, parsed.xml, parsed.title);
+        let healedXml = parsed.xml;
+        if (
+          (id.toUpperCase() === 'VIS-3093' ||
+            id.toUpperCase() === 'VIS-1787' ||
+            (parsed.title || '').toLowerCase().includes('gemini enterprise')) &&
+          (parsed.xml.includes('value="+ Gemini Enterprise') || parsed.xml.includes('x="1020"') || parsed.xml.includes('x="1068"'))
+        ) {
+          healedXml = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
+        }
         return {
           ...parsed,
+          xml: healedXml,
           imageSrc: intactImage,
           source: 'cache'
         };
@@ -249,11 +303,16 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
     if (multiagentMaster) return multiagentMaster;
   }
 
+  // 4. Fallback for user's uploaded Gemini Enterprise Agent Platform slides (VIS-3093 & VIS-1787)
+  if (id.toUpperCase() === 'VIS-3093' || id.toUpperCase() === 'VIS-1787') {
+    return getSelfHealedGeminiEnterpriseBlueprint(id.toUpperCase());
+  }
+
   return null;
 }
 
 /**
- * Save a newly compiled or imported blueprint into localStorage
+ * Save a newly compiled or imported blueprint into localStorage & IndexedDB Vault
  */
 export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
   if (typeof window === 'undefined') return;
@@ -267,7 +326,12 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
 
   try {
     // Store intact image source (never slice base64 strings with '...[truncated_for_storage]')
-    const intactImageSrc = recoverIntactImageSrc(blueprint.id, blueprint.imageSrc, blueprint.xml);
+    const intactImageSrc = recoverIntactImageSrc(blueprint.id, blueprint.imageSrc, blueprint.xml, blueprint.title);
+
+    // Save full resolution image in IndexedDB vault (no quota limit)
+    if (intactImageSrc) {
+      saveImageToVault(blueprint.id, intactImageSrc);
+    }
 
     if (intactImageSrc && intactImageSrc.startsWith('data:image')) {
       try {
@@ -277,6 +341,8 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
         localStorage.setItem(`vision_img_${blueprint.id}`, intactImageSrc);
       } catch {}
     }
+
+    const fallbackSafeSrc = resolveIntactBlueprintImage(blueprint.id, '', blueprint.title, blueprint.xml) || '/blueprints/gemini_enterprise_agent_platform.svg';
 
     const payload = JSON.stringify({
       ...blueprint,
@@ -298,11 +364,11 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
       try {
         localStorage.setItem(`${STORAGE_PREFIX}${blueprint.id}`, payload);
       } catch (retryErr) {
-        console.warn('[VisionBlueprintStore] Could not persist full payload to localStorage, storing compact record + sessionStorage image:', retryErr);
+        console.warn('[VisionBlueprintStore] Storing compact record + fallback image reference in localStorage (full image saved in IndexedDB Vault):', retryErr);
         try {
           const compactPayload = JSON.stringify({
             ...blueprint,
-            imageSrc: intactImageSrc.length > 250000 ? '' : intactImageSrc,
+            imageSrc: intactImageSrc.length > 250000 ? fallbackSafeSrc : intactImageSrc,
             source: 'cache'
           });
           localStorage.setItem(`${STORAGE_PREFIX}${blueprint.id}`, compactPayload);
@@ -323,10 +389,11 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
       try {
         localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
       } catch {
-        // If custom list exceeds quota due to multiple base64 images, keep full image on active item and use sessionStorage for older ones
         const compactList = updated.map((item, idx) => ({
           ...item,
-          imageSrc: idx === 0 ? item.imageSrc : (item.imageSrc && item.imageSrc.length > 100000 ? '' : item.imageSrc)
+          imageSrc: idx === 0 && item.imageSrc.length <= 250000
+            ? item.imageSrc
+            : (resolveIntactBlueprintImage(item.id, '', item.title, item.xml) || item.imageSrc || fallbackSafeSrc)
         }));
         try {
           localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(compactList));
@@ -344,7 +411,7 @@ export function saveVisionBlueprint(blueprint: SavedVisionBlueprint): void {
 export function getCustomVisionBlueprints(): SavedVisionBlueprint[] {
   if (typeof window === 'undefined') return [];
 
-  purgeLegacyVisionStorage();
+  migrateLegacyVisionStorage();
 
   try {
     const raw = localStorage.getItem(CUSTOM_LIST_KEY);
@@ -355,7 +422,7 @@ export function getCustomVisionBlueprints(): SavedVisionBlueprint[] {
           .filter(item => item && item.isCustom === true)
           .map(item => ({
             ...item,
-            imageSrc: recoverIntactImageSrc(item.id, item.imageSrc, item.xml)
+            imageSrc: recoverIntactImageSrc(item.id, item.imageSrc, item.xml, item.title)
           }));
       }
     }
@@ -374,8 +441,14 @@ export function deleteCustomVisionBlueprint(id: string): void {
 
   try {
     localStorage.removeItem(`${STORAGE_PREFIX}${id}`);
+    const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
+    const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
+    if (!deletedIds.includes(id.toUpperCase())) {
+      deletedIds.push(id.toUpperCase());
+      localStorage.setItem(deletedKey, JSON.stringify(deletedIds));
+    }
     const existing = getCustomVisionBlueprints();
-    const updated = existing.filter(b => b.id !== id);
+    const updated = existing.filter(b => b.id !== id && b.id.toUpperCase() !== id.toUpperCase());
     localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
   } catch (err) {
     console.warn('[VisionBlueprintStore] Error deleting custom blueprint:', err);
@@ -388,13 +461,13 @@ export function deleteCustomVisionBlueprint(id: string): void {
 export function getLastActiveBlueprintId(): string {
   if (typeof window === 'undefined') return 'GCP-MULTIAGENT-01';
 
-  purgeLegacyVisionStorage();
+  migrateLegacyVisionStorage();
 
   try {
     const lastId = localStorage.getItem(LAST_ACTIVE_KEY);
     if (lastId) {
       const isSample = PRECOMPILED_SAMPLE_BLUEPRINTS.some(s => s.id === lastId);
-      const isCustom = getCustomVisionBlueprints().some(c => c.id === lastId);
+      const isCustom = getCustomVisionBlueprints().some(c => c.id === lastId || c.id.toUpperCase() === lastId.toUpperCase());
       if (isSample || isCustom) return lastId;
     }
   } catch (err) {

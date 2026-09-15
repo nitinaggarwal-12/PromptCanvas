@@ -59,8 +59,15 @@ import {
 import {
   enrichDrawioXmlWithVectorIcons,
   embedSourceImageInXml,
-  extractSourceImageFromXml
+  extractSourceImageFromXml,
+  extractDiagramObjects,
+  DiagramObjectMetadata
 } from '@/lib/vectorIcons/visionIconEnricher';
+import {
+  resolveIntactBlueprintImage,
+  getImageFromVault,
+  saveImageToVault
+} from '@/lib/visionImageVault';
 import { AppHeader } from '@/components/AppHeader';
 
 const SAMPLE_BLUEPRINTS = PRECOMPILED_SAMPLE_BLUEPRINTS;
@@ -211,6 +218,39 @@ function VisionPageContent() {
   const [libraryTabFilter, setLibraryTabFilter] = useState<'all' | 'custom' | 'master'>('all');
   const [isSavingToDb, setIsSavingToDb] = useState<boolean>(false);
 
+  // URL Addressable Object Selection State (?id=VIS-XXXX&obj=OBJ-XX-NAME)
+  const [activeObjectSlug, setActiveObjectSlug] = useState<string | null>(null);
+
+  const diagramObjects = useMemo(
+    () => extractDiagramObjects(decompiledXml),
+    [decompiledXml]
+  );
+
+  const activeObject = useMemo(
+    () => diagramObjects.find(o => o.urlSlug === activeObjectSlug) || null,
+    [diagramObjects, activeObjectSlug]
+  );
+
+  /**
+   * Synchronizes the browser address bar URL with the active Blueprint ID and Object ID
+   * so every blueprint and every individual object has a unique addressable URL.
+   */
+  const syncVisionUrl = useCallback((bpId: string, objSlug?: string | null) => {
+    if (typeof window === 'undefined' || !bpId) return;
+    const params = new URLSearchParams(window.location.search);
+    const shortId = formatDisplayBlueprintId(bpId);
+    params.set('id', shortId);
+    if (objSlug) {
+      params.set('obj', objSlug);
+    } else {
+      params.delete('obj');
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    if (window.location.pathname + window.location.search !== newUrl) {
+      window.history.replaceState(null, '', newUrl);
+    }
+  }, []);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 4000);
@@ -300,6 +340,11 @@ function VisionPageContent() {
         setSelectedImageName(resolvedTitle);
         setIsCustomUpload(isCustom);
         setLeftPaneMode('single');
+        setActiveObjectSlug(null);
+        syncVisionUrl(finalBlueprintId, null);
+
+        // Save full resolution image in IndexedDB Vault
+        saveImageToVault(finalBlueprintId, finalImageSrc);
 
         // 💾 Persist to localStorage only when decompilation passes audit
         if (data.auditReport?.verdict === 'BLOCKED') {
@@ -361,18 +406,20 @@ function VisionPageContent() {
         setIsDecompiling(false);
       }
     }
-  }, []);
+  }, [syncVisionUrl]);
 
   // Core Blueprint Loader: checks localStorage first, renders instantly with 0ms delay!
-  const loadBlueprint = useCallback(async (id: string, forceRecompile = false) => {
+  const loadBlueprint = useCallback(async (id: string, forceRecompile = false, initialObjSlug?: string | null) => {
     // 1. Check if user selected one of the certified sample blueprints
-    const sample = SAMPLE_BLUEPRINTS.find(s => s.id === id);
+    const sample = SAMPLE_BLUEPRINTS.find(s => s.id === id || formatDisplayBlueprintId(s.id) === id.toUpperCase());
     if (sample) {
       setSelectedBlueprintId(sample.id);
       setSelectedImageSrc(sample.image);
       setSelectedImageName(sample.title);
       setIsCustomUpload(false);
       setLeftPaneMode('single'); // Guarantees original image appears on the left
+      setActiveObjectSlug(initialObjSlug || null);
+      syncVisionUrl(sample.id, initialObjSlug || null);
 
       if (!forceRecompile) {
         // Retrieve saved version from localStorage or certified precompiled master
@@ -399,25 +446,47 @@ function VisionPageContent() {
       return;
     }
 
-    // 2. Check if it's a custom uploaded blueprint in localStorage
-    const saved = getSavedVisionBlueprint(id);
+    // 2. Check if it's a custom uploaded blueprint in localStorage (by exact ID or short VIS-XXXX ID)
+    let saved = getSavedVisionBlueprint(id);
+    if (!saved) {
+      const allCustoms = getCustomVisionBlueprints();
+      const matchedCustom = allCustoms.find(c =>
+        c.id === id ||
+        formatDisplayBlueprintId(c.id).toUpperCase() === id.toUpperCase()
+      );
+      if (matchedCustom) {
+        saved = getSavedVisionBlueprint(matchedCustom.id) || matchedCustom;
+      }
+    }
+
     if (saved && saved.xml) {
       const enrichedXml = enrichDrawioXmlWithVectorIcons(saved.xml);
       const resolvedTitle = inferTitleFromXml(enrichedXml, saved.title);
-      if (enrichedXml !== saved.xml || resolvedTitle !== saved.title) {
+
+      // Recover full original image from IndexedDB Vault or self-healing fallback
+      let resolvedImg = resolveIntactBlueprintImage(saved.id, saved.imageSrc, resolvedTitle, enrichedXml);
+      const vaultImg = await getImageFromVault(saved.id);
+      if (vaultImg && vaultImg.length > 100) {
+        resolvedImg = vaultImg;
+      }
+
+      if (enrichedXml !== saved.xml || resolvedTitle !== saved.title || resolvedImg !== saved.imageSrc) {
         const updatedBlueprint: SavedVisionBlueprint = {
           ...saved,
           title: resolvedTitle,
-          xml: enrichedXml
+          imageSrc: resolvedImg,
+          xml: embedSourceImageInXml(enrichedXml, resolvedImg)
         };
         saveVisionBlueprint(updatedBlueprint);
         setCustomBlueprints(getCustomVisionBlueprints());
       }
       setSelectedBlueprintId(saved.id);
-      setSelectedImageSrc(saved.imageSrc);
+      setSelectedImageSrc(resolvedImg);
       setSelectedImageName(resolvedTitle);
       setIsCustomUpload(true);
       setLeftPaneMode('single'); // Guarantees original image appears on the left
+      setActiveObjectSlug(initialObjSlug || null);
+      syncVisionUrl(saved.id, initialObjSlug || null);
       setDecompiledXml(enrichedXml);
       setExtractedZones(saved.extractedZones);
       setComponentCount(saved.componentCount);
@@ -437,7 +506,8 @@ function VisionPageContent() {
         if (latestVer && latestVer.xml_content) {
           const enrichedXml = enrichDrawioXmlWithVectorIcons(latestVer.xml_content);
           const resolvedTitle = inferTitleFromXml(enrichedXml, dbDiagram.name);
-          setSelectedBlueprintId(dbDiagram.id);
+          const effectiveId = id.toUpperCase().startsWith('VIS-') ? id.toUpperCase() : dbDiagram.id;
+          setSelectedBlueprintId(effectiveId);
           setSelectedImageName(resolvedTitle);
           setIsCustomUpload(true);
           setLeftPaneMode('single');
@@ -452,9 +522,13 @@ function VisionPageContent() {
           // Priority 1: Embedded data-source-image attribute inside Draw.io XML
           let recoveredImg = extractSourceImageFromXml(enrichedXml);
 
-          // Priority 2: Direct localStorage DB ID map
+          // Priority 2: Direct localStorage DB ID map or IndexedDB Vault
           if (!recoveredImg && typeof window !== 'undefined') {
-            recoveredImg = localStorage.getItem(`vision_db_image_${dbDiagram.id}`);
+            recoveredImg = localStorage.getItem(`vision_db_image_${dbDiagram.id}`) || localStorage.getItem(`vision_db_image_${effectiveId}`);
+          }
+          if (!recoveredImg) {
+            const vaultImg = await getImageFromVault(dbDiagram.id) || await getImageFromVault(effectiveId);
+            if (vaultImg && vaultImg.length > 100) recoveredImg = vaultImg;
           }
 
           // Priority 3: Match against custom blueprints stored in browser
@@ -462,6 +536,7 @@ function VisionPageContent() {
             const allCustoms = getCustomVisionBlueprints();
             const customMatch = allCustoms.find(c =>
               c.id === dbDiagram.id ||
+              c.id.toUpperCase() === effectiveId.toUpperCase() ||
               c.title.toLowerCase() === resolvedTitle.toLowerCase() ||
               c.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
               (resolvedTitle.toLowerCase().includes('gemini enterprise') &&
@@ -469,22 +544,15 @@ function VisionPageContent() {
                  c.title.toLowerCase().includes('image_') ||
                  c.title.toLowerCase().includes('clipboard') ||
                  c.xml.toLowerCase().includes('gemini enterprise')))
-            ) || allCustoms[0]; // Fallback to user's most recent custom upload if it's a custom diagram
+            ) || allCustoms[0];
             if (customMatch?.imageSrc) {
               recoveredImg = customMatch.imageSrc;
             }
           }
 
-          // Priority 4: Certified Sample Blueprint match
+          // Priority 4: Certified Sample Blueprint or self-healing master slide match
           if (!recoveredImg) {
-            const matched = SAMPLE_BLUEPRINTS.find(s =>
-              s.id === dbDiagram.id ||
-              s.title.toLowerCase() === dbDiagram.name.toLowerCase() ||
-              (dbDiagram.name.toLowerCase().includes('multiagent') && s.id === 'GCP-MULTIAGENT-01')
-            );
-            if (matched) {
-              recoveredImg = matched.image;
-            }
+            recoveredImg = resolveIntactBlueprintImage(effectiveId, '', resolvedTitle, enrichedXml);
           }
 
           if (recoveredImg) {
@@ -492,7 +560,7 @@ function VisionPageContent() {
             const selfContained = embedSourceImageInXml(enrichedXml, recoveredImg);
             setDecompiledXml(selfContained);
             saveVisionBlueprint({
-              id: dbDiagram.id,
+              id: effectiveId,
               title: resolvedTitle,
               category: 'Saved Vision Blueprint',
               imageSrc: recoveredImg,
@@ -506,6 +574,8 @@ function VisionPageContent() {
             });
             setCustomBlueprints(getCustomVisionBlueprints());
           }
+          setActiveObjectSlug(initialObjSlug || null);
+          syncVisionUrl(effectiveId, initialObjSlug || null);
           return;
         }
       }
@@ -520,6 +590,8 @@ function VisionPageContent() {
     setSelectedImageName(firstSample.title);
     setIsCustomUpload(false);
     setLeftPaneMode('single');
+    setActiveObjectSlug(initialObjSlug || null);
+    syncVisionUrl(firstSample.id, initialObjSlug || null);
     const fallbackSaved = getSavedVisionBlueprint(firstSample.id);
     if (fallbackSaved && fallbackSaved.xml) {
       setDecompiledXml(fallbackSaved.xml);
@@ -530,7 +602,7 @@ function VisionPageContent() {
       setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
       setIsDecompiling(false);
     }
-  }, [triggerDecompile]);
+  }, [triggerDecompile, syncVisionUrl]);
 
   // Handle custom user file upload
   const handleFileUpload = useCallback(async (file: File) => {
@@ -772,8 +844,9 @@ function VisionPageContent() {
   useEffect(() => {
     setCustomBlueprints(getCustomVisionBlueprints());
     const queryId = searchParams.get('id') || searchParams.get('blueprint');
+    const queryObj = searchParams.get('obj');
     const targetId = queryId || getLastActiveBlueprintId();
-    loadBlueprint(targetId, false);
+    loadBlueprint(targetId, false, queryObj);
   }, [loadBlueprint, searchParams]);
 
   // Copy Draw.io XML
@@ -908,11 +981,15 @@ function VisionPageContent() {
     }
 
     saveVisionBlueprint(updatedRecord);
+    if (selectedImageSrc) {
+      saveImageToVault(newId, selectedImageSrc);
+    }
     setSelectedBlueprintId(newId);
     setSelectedImageName(newTitle);
     setIsCustomUpload(true);
     setCustomBlueprints(getCustomVisionBlueprints());
     setShowRenameModal(false);
+    syncVisionUrl(newId, activeObjectSlug);
     showToast(`✅ Updated Blueprint ID to [${newId}] and Title to "${newTitle}"!`);
   };
 
@@ -922,7 +999,8 @@ function VisionPageContent() {
     setIsSavingToDb(true);
     try {
       const enriched = enrichDrawioXmlWithVectorIcons(decompiledXml);
-      const xmlWithImage = embedSourceImageInXml(enriched, selectedImageSrc);
+      const imgToPersist = resolveIntactBlueprintImage(selectedBlueprintId, selectedImageSrc, selectedImageName, enriched);
+      const xmlWithImage = embedSourceImageInXml(enriched, imgToPersist);
       const resolvedTitle = inferTitleFromXml(xmlWithImage, selectedImageName || 'Vision AI Decompiled Diagram');
 
       const res = await fetch('/api/diagrams', {
@@ -940,17 +1018,21 @@ function VisionPageContent() {
       });
       if (!res.ok) throw new Error('Failed to save to database');
       const savedData = await res.json();
-      if (savedData?.id && selectedImageSrc && typeof window !== 'undefined') {
-        localStorage.setItem(`vision_db_image_${savedData.id}`, selectedImageSrc);
+      const dbId = savedData?.diagram?.id || savedData?.id;
+      if (dbId && imgToPersist && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(`vision_db_image_${dbId}`, imgToPersist);
+        } catch {}
+        saveImageToVault(dbId, imgToPersist);
         saveVisionBlueprint({
-          id: savedData.id,
+          id: dbId,
           title: resolvedTitle,
           category: 'Saved Vision Blueprint',
-          imageSrc: selectedImageSrc,
+          imageSrc: imgToPersist,
           xml: xmlWithImage,
           extractedZones,
           componentCount,
-          summaryText: summaryText || `Architecture Blueprint (${savedData.id})`,
+          summaryText: summaryText || `Architecture Blueprint (${dbId})`,
           isCustom: true,
           timestamp: Date.now(),
           source: 'cache'
@@ -983,7 +1065,8 @@ function VisionPageContent() {
 
     try {
       const enriched = enrichDrawioXmlWithVectorIcons(xmlToSave);
-      const xmlWithImage = imgToSave ? embedSourceImageInXml(enriched, imgToSave) : enriched;
+      const resolvedImg = resolveIntactBlueprintImage(bp.id, imgToSave, bp.title, enriched);
+      const xmlWithImage = resolvedImg ? embedSourceImageInXml(enriched, resolvedImg) : enriched;
       showToast(`💾 Saving "${bp.title}" to Global Architecture Library...`);
       const res = await fetch('/api/diagrams', {
         method: 'POST',
@@ -1000,8 +1083,12 @@ function VisionPageContent() {
       });
       if (!res.ok) throw new Error('Save failed');
       const savedData = await res.json();
-      if (savedData?.id && imgToSave && typeof window !== 'undefined') {
-        localStorage.setItem(`vision_db_image_${savedData.id}`, imgToSave);
+      const dbId = savedData?.diagram?.id || savedData?.id;
+      if (dbId && resolvedImg && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem(`vision_db_image_${dbId}`, resolvedImg);
+        } catch {}
+        saveImageToVault(dbId, resolvedImg);
       }
       showToast(`🎉 "${bp.title}" saved to Global Architecture Library! View in /library.`);
     } catch (err: any) {
@@ -1249,6 +1336,7 @@ function VisionPageContent() {
               return (
                 <div
                   key={cb.id}
+                  data-testid={`blueprint-tab-${shortId}`}
                   onClick={() => loadBlueprint(cb.id, false)}
                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
                     isSelected
@@ -1288,23 +1376,43 @@ function VisionPageContent() {
             </button>
           </div>
 
-          {/* Right: Active Unique ID Badge, Rename Action & Telemetry Metadata */}
+          {/* Right: Active Unique ID Badge, URL Object Badge, Rename Action & Telemetry Metadata */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
             {/* Searchable & Copyable Unique Blueprint ID Pill */}
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-mono font-bold border border-slate-700 shadow-2xs">
               <Tag className="w-2.5 h-2.5 text-teal-400" />
               <span className="text-slate-400">ID:</span>
               <span className="text-teal-300 tracking-tight">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
+              {activeObject && (
+                <>
+                  <span className="text-slate-600">/</span>
+                  <span className="text-amber-300 tracking-tight truncate max-w-[130px]" title={`Active Object URL ID: ${activeObject.urlSlug}`}>
+                    {activeObject.urlSlug}
+                  </span>
+                  <button
+                    onClick={() => {
+                      setActiveObjectSlug(null);
+                      syncVisionUrl(selectedBlueprintId, null);
+                    }}
+                    className="text-slate-400 hover:text-white px-0.5 cursor-pointer"
+                    title="Clear selected object filter"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
               <button
                 onClick={() => {
-                  const idToCopy = formatDisplayBlueprintId(selectedBlueprintId);
-                  navigator.clipboard.writeText(idToCopy);
-                  showToast(`📋 Copied Unique ID [${idToCopy}] to clipboard! Use it to search in Library.`);
+                  const shortId = formatDisplayBlueprintId(selectedBlueprintId);
+                  const shareUrl = `${window.location.origin}/vision?id=${encodeURIComponent(shortId)}${activeObject ? `&obj=${encodeURIComponent(activeObject.urlSlug)}` : ''}`;
+                  navigator.clipboard.writeText(shareUrl);
+                  showToast(`🔗 Copied Direct URL [${shareUrl}] to clipboard!`);
                 }}
-                className="ml-0.5 p-0.5 rounded hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
-                title="Copy Unique Blueprint ID to clipboard"
+                className="ml-0.5 px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-0.5 transition cursor-pointer"
+                title="Copy Direct Shareable URL (with Unique Blueprint & Object ID)"
               >
-                <Copy className="w-2.5 h-2.5" />
+                <Link2 className="w-2.5 h-2.5" />
+                <span className="hidden xl:inline text-[9.5px] font-sans font-bold">Copy URL</span>
               </button>
               <button
                 onClick={() => {
@@ -1549,21 +1657,42 @@ function VisionPageContent() {
               /* Single Image Viewport Container */
               <div className="flex-1 min-h-0 flex flex-col overflow-hidden my-1">
                 <div className="flex-1 min-h-0 bg-white rounded-lg border border-slate-200 p-0.5 flex items-center justify-center overflow-hidden relative">
-                  {selectedImageSrc ? (
-                    <div className="w-full h-full flex items-center justify-center overflow-hidden">
-                      <img
-                        src={selectedImageSrc}
-                        alt={selectedImageName}
-                        style={{ transform: `scale(${imageZoom})`, transformOrigin: 'center center', transition: 'transform 0.15s ease-out' }}
-                        className="w-full h-full max-w-full max-h-full object-contain rounded shadow-2xs select-none"
-                      />
-                    </div>
-                  ) : (
-                    <div className="text-center text-slate-400 py-12">
-                      <ImageIcon className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                      <p className="text-xs">No image selected</p>
-                    </div>
-                  )}
+                  {(() => {
+                    const effectiveImg = resolveIntactBlueprintImage(
+                      selectedBlueprintId,
+                      selectedImageSrc,
+                      selectedImageName,
+                      decompiledXml
+                    );
+                    return effectiveImg ? (
+                      <div className="w-full h-full flex items-center justify-center overflow-hidden">
+                        <img
+                          src={effectiveImg}
+                          alt={selectedImageName}
+                          style={{ transform: `scale(${imageZoom})`, transformOrigin: 'center center', transition: 'transform 0.15s ease-out' }}
+                          className="w-full h-full max-w-full max-h-full object-contain rounded shadow-2xs select-none"
+                          onError={(e) => {
+                            const healed = resolveIntactBlueprintImage(
+                              selectedBlueprintId,
+                              '',
+                              selectedImageName,
+                              decompiledXml
+                            );
+                            const target = e.target as HTMLImageElement;
+                            if (healed && target.src !== window.location.origin + healed && target.src !== healed) {
+                              target.src = healed;
+                              setSelectedImageSrc(healed);
+                            }
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-center text-slate-400 py-12">
+                        <ImageIcon className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                        <p className="text-xs">No image selected</p>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Bottom Extracted Webpage Thumbnail Strip */}
@@ -1729,22 +1858,83 @@ function VisionPageContent() {
               )}
             </div>
 
-            {/* Right Footer Action */}
-            <div className="flex items-center justify-between pt-1 border-t border-slate-100 flex-shrink-0">
-              <div className="flex items-center gap-2 text-[10px] text-slate-500 truncate mr-2">
-                <span>Zones:</span>
-                <div className="flex items-center gap-1 truncate">
-                  {extractedZones.slice(0, 3).map((z, idx) => (
-                    <span key={idx} className="px-1.5 py-0.2 rounded bg-slate-100 border border-slate-200 text-slate-700 text-[9px] font-mono font-bold truncate">
-                      {z}
-                    </span>
-                  ))}
-                  {extractedZones.length > 3 && (
-                    <span className="text-[9px] text-slate-500 font-bold">+{extractedZones.length - 3}</span>
-                  )}
+            {/* Active Object URL Inspector Banner (when an object is selected via URL or pill click) */}
+            {activeObject && (
+              <div className="mb-1 px-2.5 py-1.5 rounded-lg bg-slate-900 text-white border border-teal-500/40 shadow-sm flex flex-wrap items-center justify-between gap-2 animate-in fade-in duration-150 flex-shrink-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30 font-mono text-[9.5px] font-bold flex-shrink-0">
+                    {activeObject.urlSlug}
+                  </span>
+                  <span className="text-xs font-bold text-white truncate max-w-[260px]" title={activeObject.label}>
+                    {activeObject.label}
+                  </span>
+                  <span className="hidden sm:inline-block px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9px] font-mono border border-slate-700">
+                    Zone: {activeObject.zone}
+                  </span>
+                  <span className="hidden md:inline-block text-[9px] font-mono text-slate-400">
+                    ({Math.round(activeObject.x)},{Math.round(activeObject.y)} · {Math.round(activeObject.width)}×{Math.round(activeObject.height)}px)
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <button
+                    onClick={() => {
+                      const shortId = formatDisplayBlueprintId(selectedBlueprintId);
+                      const objUrl = `${window.location.origin}/vision?id=${encodeURIComponent(shortId)}&obj=${encodeURIComponent(activeObject.urlSlug)}`;
+                      navigator.clipboard.writeText(objUrl);
+                      showToast(`🔗 Copied Direct Object URL [${objUrl}] to clipboard!`);
+                    }}
+                    className="px-2 py-0.5 rounded bg-teal-600 hover:bg-teal-500 text-white text-[9.5px] font-bold flex items-center gap-1 transition cursor-pointer shadow-2xs"
+                    title="Copy direct URL pointing to this exact object"
+                  >
+                    <Link2 className="w-2.5 h-2.5" />
+                    <span>Copy Object URL</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveObjectSlug(null);
+                      syncVisionUrl(selectedBlueprintId, null);
+                    }}
+                    className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-[9.5px] font-bold cursor-pointer"
+                    title="Clear object selection"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Right Footer Action: Addressable Objects Strip & Edit in Studio */}
+            <div className="flex items-center justify-between pt-1 border-t border-slate-100 flex-shrink-0 gap-2">
+              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 min-w-0 flex-1 overflow-hidden">
+                <span className="font-bold text-slate-700 flex-shrink-0">
+                  Objects ({diagramObjects.length}):
+                </span>
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5 flex-1 min-w-0">
+                  {diagramObjects.map((obj) => {
+                    const isObjSelected = activeObjectSlug === obj.urlSlug;
+                    return (
+                      <button
+                        key={obj.id + '_' + obj.urlSlug}
+                        onClick={() => {
+                          const nextSlug = isObjSelected ? null : obj.urlSlug;
+                          setActiveObjectSlug(nextSlug);
+                          syncVisionUrl(selectedBlueprintId, nextSlug);
+                        }}
+                        className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold transition whitespace-nowrap flex-shrink-0 cursor-pointer border ${
+                          isObjSelected
+                            ? 'bg-slate-900 text-amber-300 border-amber-400 shadow-2xs'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                        }`}
+                        title={`Click to address object in URL: ?id=${formatDisplayBlueprintId(selectedBlueprintId)}&obj=${obj.urlSlug}`}
+                      >
+                        <span className={isObjSelected ? 'text-amber-400' : 'text-teal-700'}>{obj.urlSlug.split('-').slice(0, 2).join('-')}:</span>{' '}
+                        <span>{obj.label.slice(0, 22)}{obj.label.length > 22 ? '…' : ''}</span>
+                      </button>
+                    );
+                  })}
                 </div>
                 {auditReport && (
-                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold border ${
+                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold border flex-shrink-0 ${
                     auditReport.parityScore >= 90 ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : 'bg-amber-50 text-amber-700 border-amber-300'
                   }`}>
                     {auditReport.parityScore}% Parity

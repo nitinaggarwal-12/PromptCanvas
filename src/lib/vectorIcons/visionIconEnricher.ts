@@ -183,17 +183,33 @@ const ICON_MATCH_RULES: IconMatchRule[] = [
  * Strips HTML tags, entities, and leading ASCII icon placeholders ('+', '✦') to extract clean plain text.
  */
 function extractPlainText(escapedHtml: string): string {
-  return escapedHtml
-    .replace(/&lt;br\s*\/?&gt;/gi, ' ')
-    .replace(/&lt;[^&]+&gt;/g, ' ')
-    .replace(/<br\s*\/?>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
+  // Decode XML entities first so nested &quot; inside &lt;font style=&quot;...&quot;&gt; never blocks tag removal
+  const decoded = escapedHtml
     .replace(/&amp;/g, '&')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/^[+\u2726\u2728\u2022*•-]+\s*/g, '') // Strip leading +, ✦, ✨, •
-    .replace(/\s+/g, ' ')
-    .trim();
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>');
+
+  const lines = decoded
+    .split(/<br\s*\/?>|<font\b|<\/div>\s*<div\b/i)
+    .map(seg =>
+      seg
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/^[+\u2726\u2728\u2022*•-]+\s*/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+    )
+    .filter(Boolean);
+
+  if (lines.length === 0) return '';
+  if (lines.length === 1) return lines[0];
+
+  // If second line is a short qualifier (e.g. 'app' or 'for Customer Experience'), join it; if long sentence, drop it
+  if (lines[1].length <= 26 && !lines[1].toLowerCase().startsWith('end-to-end')) {
+    return `${lines[0]} ${lines[1]}`.trim();
+  }
+  return lines[0];
 }
 
 /**
@@ -205,15 +221,119 @@ function stripLeadingAsciiPlaceholder(valAttr: string): string {
     .trim();
 }
 
+export interface DiagramObjectMetadata {
+  id: string;
+  urlSlug: string;
+  label: string;
+  plainTitle: string;
+  zone: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  isContainer: boolean;
+}
+
+/**
+ * Extracts all addressable objects/vertices from Draw.io XML with unique URL-addressable slugs.
+ */
+export function extractDiagramObjects(xml: string): DiagramObjectMetadata[] {
+  if (!xml || typeof xml !== 'string') return [];
+
+  const objects: DiagramObjectMetadata[] = [];
+  const cellRegex = /<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi;
+  let match: RegExpExecArray | null;
+  let idx = 1;
+
+  while ((match = cellRegex.exec(xml)) !== null) {
+    const attrs = match[1];
+    const inner = match[2] || '';
+    if (!/\bvertex="1"/i.test(attrs)) continue;
+
+    const idMatch = attrs.match(/\bid="([^"]+)"/i);
+    const valMatch = attrs.match(/\bvalue="([^"]*)"/i);
+    const cellId = idMatch ? idMatch[1] : `node_${idx}`;
+    if (cellId === '0' || cellId === '1' || cellId === 'bg') continue;
+
+    const rawVal = valMatch ? valMatch[1] : '';
+    const plain = extractPlainText(rawVal);
+
+    const xMatch = inner.match(/\bx="([0-9.-]+)"/i);
+    const yMatch = inner.match(/\by="([0-9.-]+)"/i);
+    const wMatch = inner.match(/\bwidth="([0-9.-]+)"/i);
+    const hMatch = inner.match(/\bheight="([0-9.-]+)"/i);
+
+    const x = xMatch ? parseFloat(xMatch[1]) : 0;
+    const y = yMatch ? parseFloat(yMatch[1]) : 0;
+    const width = wMatch ? parseFloat(wMatch[1]) : 120;
+    const height = hMatch ? parseFloat(hMatch[1]) : 60;
+
+    // Skip empty background rectangles unless they have a meaningful label
+    if (!plain && cellId !== 'header_icon') continue;
+
+    const displayTitle = plain || (cellId === 'header_icon' ? 'Gemini Sparkle Brand Icon' : cellId);
+    const cleanSlug = displayTitle
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 24)
+      .replace(/-+$/g, '');
+
+    const paddedIdx = String(idx).padStart(2, '0');
+    const urlSlug = `OBJ-${paddedIdx}-${cleanSlug || cellId.toUpperCase()}`;
+
+    let zone = 'Core Architecture';
+    if (y < 200) zone = 'Header & Value Pillars';
+    else if (y < 510) zone = 'Apps & Solutions Tier';
+    else if (y < 880) zone = 'Agentic Capabilities Platform';
+    else zone = 'Governance & Footer';
+
+    objects.push({
+      id: cellId,
+      urlSlug,
+      label: displayTitle,
+      plainTitle: displayTitle,
+      zone,
+      x,
+      y,
+      width,
+      height,
+      isContainer: width > 600 && height > 150
+    });
+
+    idx++;
+  }
+
+  return objects;
+}
+
 /**
  * Post-processes Draw.io XML to inject crisp inline vector SVG icons into cells
- * that match known architecture/Gemini capabilities regardless of attribute order.
+ * that match known architecture/Gemini capabilities regardless of attribute order,
+ * and repairs malformed base64 SVG Data URIs in style="shape=image;image=data:image/svg+xml,..."
  */
 export function enrichDrawioXmlWithVectorIcons(xml: string): string {
   if (!xml || typeof xml !== 'string' || !xml.includes('<mxCell')) return xml;
 
+  // 1. Repair malformed base64 SVG data URIs that omitted ';base64' before the comma:
+  // e.g. image=data:image/svg+xml,PHN2Zy... -> image=data:image/svg+xml;base64,PHN2Zy...
+  let sanitizedXml = xml.replace(
+    /image=data:image\/svg\+xml,([A-Za-z0-9+/=]{20,})/g,
+    'image=data:image/svg+xml;base64,$1'
+  );
+
+  // 2. If 'header_icon' is a separate broken/duplicate shape=image cell next to Gemini Enterprise,
+  // convert it directly into a clean inline SVG vertex so Draw.io renders it with 100% vector fidelity
+  sanitizedXml = sanitizedXml.replace(
+    /<mxCell\s+id="header_icon"[^>]*?style="[^"]*shape=image[^"]*"[^>]*?>([\s\S]*?)<\/mxCell>/gi,
+    (_m, innerGeo) => {
+      const starSvg = escapeXmlAttr(RAW_SVGS.geminiSparkle(36, '#60A5FA'));
+      return `<mxCell id="header_icon" value="${starSvg}" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;" vertex="1" parent="1">${innerGeo}</mxCell>`;
+    }
+  );
+
   // Match every <mxCell ...> block (including self-closing or with child <mxGeometry>)
-  return xml.replace(/<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi, (fullMatch, attrs, innerContent = '') => {
+  return sanitizedXml.replace(/<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi, (fullMatch, attrs, innerContent = '') => {
     // Only process vertex="1" cells
     if (!/\bvertex="1"/i.test(attrs)) {
       return fullMatch;
@@ -224,10 +344,17 @@ export function enrichDrawioXmlWithVectorIcons(xml: string): string {
       return fullMatch;
     }
 
-    const valAttr = valMatch[1];
+    // Strip any broken relative <img> tags inside value attribute emitted by LLM
+    let valAttr = valMatch[1]
+      .replace(/&lt;img\b[^&]*?&gt;/gi, '')
+      .replace(/<img\b[^>]*?>/gi, '');
 
     // Skip if already contains an inline SVG or data:image
     if (valAttr.includes('&lt;svg') || valAttr.includes('<svg') || valAttr.includes('data:image/')) {
+      if (valAttr !== valMatch[1]) {
+        const cleanedAttrs = attrs.replace(/\bvalue="[^"]*"/i, `value="${valAttr}"`);
+        return innerContent ? `<mxCell${cleanedAttrs}>${innerContent}</mxCell>` : `<mxCell${cleanedAttrs}/>`;
+      }
       return fullMatch;
     }
 

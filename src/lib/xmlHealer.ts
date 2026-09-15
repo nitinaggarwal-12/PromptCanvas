@@ -152,7 +152,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('id="c4_system_context"') ||
     inputXml.includes('id="pharma_genomics_pipeline"') ||
     inputXml.includes('GCP ACTIVE-PASSIVE MULTI-REGION DR') ||
-    inputXml.includes('PromptCanvas-LayoutEngineV2')
+    inputXml.includes('PromptCanvas-LayoutEngineV2') ||
+    inputXml.includes('id="gemini_ent"') ||
+    inputXml.includes('Gemini Enterprise Agent Platform') ||
+    archType === 'vision_decompiled'
   );
 
   if (isMasterOrStructured) {

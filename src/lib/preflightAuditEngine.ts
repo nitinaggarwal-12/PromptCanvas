@@ -13,7 +13,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
   const isMasterOrStructured = (
     xmlInput.includes('id="exact_unified_system_view"') ||
     xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||
+    xmlInput.includes('id="gemini_ent"') ||
+    xmlInput.includes('Gemini Enterprise Agent Platform') ||
     (archType !== undefined && archType !== null && (
+      archType === 'vision_decompiled' ||
       archType === 'unified_system_view' ||
       archType === 'unified_flowchart' ||
       archType === 'tech_multi_region_dr' ||
