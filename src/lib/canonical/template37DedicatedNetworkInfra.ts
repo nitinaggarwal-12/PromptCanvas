@@ -9,7 +9,7 @@
  *   4. Hub-and-Spoke Network Foundation (Shared VPC Hub, 4 Subnet Pods, Security Policies, Network Services, 3 Spokes, VPC-SC)
  *   5. Application & Service Layer (Internal LB -> Apigee -> GKE -> Cloud Run -> Service Mesh -> Internal Services)
  *   6. Private Service Connect (PSC) Connectivity (3 Consumer Blue Pods -> 3 Attachment Purple Pods -> 3 Producer Blue Pods + Checklist)
- *   7. Private Egress & Controlled Outbound (5 Egress Icon Pods -> Controlled Destinations -> 🚫 No Direct Internet Access)
+ *   7. Private Egress & Controlled Outbound (5 Egress Icon Pods -> Controlled Destinations -> No Direct Internet Access)
  *   8. Data, Platform Services & Shared Controls (8 Rich Platform Cards with large vector icons)
  *   9. Security, Operations & Reliability Foundation (9 Rich Ops/Security Cards with large vector icons)
  * - Complete Right Sidebar:

@@ -2,7 +2,7 @@
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 28: Failure / Exception Flow Architecture
  * Matches 100% of images/28.png:
  * - Left Column: Potential Failure Sources (8 items)
- * - Top Center: End-to-End Failure Flow (6 steps: ❶ Detect ➔ ❻ Learn) with feedback loop
+ * - Top Center: End-to-End Failure Flow (6 steps: Detect Learn) with feedback loop
  * - Center: 6 Common Failure Scenarios (A. API Timeout, B. Data Quality, C. Model Generation, D. External API Rate Limit, E. Infra Exhaustion, F. Auth Failure) with decision diamonds and branch outcomes
  * - Right Sidebar: Exception Categories table (6 types), Response Patterns (8 items), Key Artifacts (6 items), Severity Matrix (Impact vs Urgency Heatmap)
  * - Bottom Row: Monitoring & Detection (5 icons), Escalation Paths (4 levels + Timeouts), Recovery & Validation (5 checkmarks), Post-Incident Activities (5 items), Legend, Notes
@@ -48,7 +48,7 @@ export function generateTemplate28FailureExceptionFlowXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -61,14 +61,14 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("lbl_sources", "POTENTIAL FAILURE SOURCES", 16, 80, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const failSources = [
-    { t: "User / Client", sub: "(Invalid input, timeouts)", icon: "👤" },
-    { t: "Network / Connectivity", sub: "(Latency, DNS, drops)", icon: "🌐" },
-    { t: "Application / Service", sub: "(Code errors, crashes)", icon: "💻" },
-    { t: "AI / Model Layer", sub: "(Model errors, timeouts, hallucination guardrails)", icon: "🧠" },
-    { t: "Data / Storage", sub: "(DB errors, schema issues, unavailable data)", icon: "🗄️" },
-    { t: "External Systems", sub: "(API errors, rate limits, third-party outages)", icon: "🔗" },
-    { t: "Infrastructure / Platform", sub: "(Resource exhaustion, VM/Container/Service down)", icon: "☁️" },
-    { t: "Security / Access", sub: "(Auth failures, token expiry, permission issues)", icon: "🔒" }
+    { t: "User / Client", sub: "(Invalid input, timeouts)", icon: "●" },
+    { t: "Network / Connectivity", sub: "(Latency, DNS, drops)", icon: "●" },
+    { t: "Application / Service", sub: "(Code errors, crashes)", icon: "●" },
+    { t: "AI / Model Layer", sub: "(Model errors, timeouts, hallucination guardrails)", icon: "●" },
+    { t: "Data / Storage", sub: "(DB errors, schema issues, unavailable data)", icon: "●" },
+    { t: "External Systems", sub: "(API errors, rate limits, third-party outages)", icon: "●" },
+    { t: "Infrastructure / Platform", sub: "(Resource exhaustion, VM/Container/Service down)", icon: "●" },
+    { t: "Security / Access", sub: "(Auth failures, token expiry, permission issues)", icon: "●" }
   ];
 
   failSources.forEach((fs, idx) => {
@@ -81,12 +81,12 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("lbl_e2e_flow", "END-TO-END FAILURE / EXCEPTION FLOW", 180, 80, 910, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const e2eSteps = [
-    { num: "1", name: "DETECT", desc: "Monitoring, alerts, health checks, user reports", icon: "🔍", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF" },
-    { num: "2", name: "CLASSIFY", desc: "Identify failure type, impact, severity, affected services", icon: "🏷️", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534" },
-    { num: "3", name: "ANALYZE", desc: "Correlate logs &amp; metrics, identify root cause, blast radius", icon: "📈", bg: "#FFFBEB", stroke: "#FDE68A", fg: "#D97706" },
-    { num: "4", name: "RESPOND", desc: "Execute runbook, contain, mitigate, communicate", icon: "⚡", bg: "#FAF5FF", stroke: "#E9D5FF", fg: "#7C3AED" },
-    { num: "5", name: "RECOVER", desc: "Restore service, validate, monitor stability", icon: "🔄", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF" },
-    { num: "6", name: "LEARN", desc: "Post-incident review, RCA, action items, update runbooks", icon: "🧠", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534" }
+    { num: "1", name: "DETECT", desc: "Monitoring, alerts, health checks, user reports", icon: "●", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF" },
+    { num: "2", name: "CLASSIFY", desc: "Identify failure type, impact, severity, affected services", icon: "●", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534" },
+    { num: "3", name: "ANALYZE", desc: "Correlate logs &amp; metrics, identify root cause, blast radius", icon: "●", bg: "#FFFBEB", stroke: "#FDE68A", fg: "#D97706" },
+    { num: "4", name: "RESPOND", desc: "Execute runbook, contain, mitigate, communicate", icon: "●", bg: "#FAF5FF", stroke: "#E9D5FF", fg: "#7C3AED" },
+    { num: "5", name: "RECOVER", desc: "Restore service, validate, monitor stability", icon: "●", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF" },
+    { num: "6", name: "LEARN", desc: "Post-incident review, RCA, action items, update runbooks", icon: "●", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534" }
   ];
 
   e2eSteps.forEach((es, idx) => {
@@ -108,61 +108,61 @@ export function generateTemplate28FailureExceptionFlowXml(
     {
       title: "A. API TIMEOUT /<br/>SERVICE UNAVAILABLE",
       steps: [
-        { t: "Request Timeout /<br/>5xx Error", icon: "🌐", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Retry with<br/>Exponential Backoff", icon: "🔄", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Request Timeout /<br/>5xx Error", icon: "●", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Retry with<br/>Exponential Backoff", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
         { t: "Still Failing?", diamond: true },
-        { t: "Failover to<br/>Healthy Instance", icon: "🛡️", bg: "#F0FDF4", fg: "#166534" },
-        { t: "Notify &amp; Create<br/>Incident (P1/P2)", icon: "🚨", bg: "#FEF2F2", fg: "#DC2626" }
+        { t: "Failover to<br/>Healthy Instance", icon: "●", bg: "#F0FDF4", fg: "#166534" },
+        { t: "Notify &amp; Create<br/>Incident (P1/P2)", icon: "●", bg: "#FEF2F2", fg: "#DC2626" }
       ]
     },
     {
       title: "B. DATA QUALITY<br/>EXCEPTION",
       steps: [
-        { t: "Data Validation<br/>Failed", icon: "📑", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Quarantine<br/>Bad Records", icon: "🔒", bg: "#FFFFFF", fg: "#0F172A" },
-        { t: "Route to Data<br/>Steward (Queue)", icon: "👥", bg: "#FAF5FF", fg: "#7C3AED" },
-        { t: "Use Last Known<br/>Good Data", icon: "🗄️", bg: "#F0FDF4", fg: "#166534" },
-        { t: "Alert &amp; Track in<br/>DQ Dashboard", icon: "📊", bg: "#FFFBEB", fg: "#D97706" }
+        { t: "Data Validation<br/>Failed", icon: "●", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Quarantine<br/>Bad Records", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Route to Data<br/>Steward (Queue)", icon: "●", bg: "#FAF5FF", fg: "#7C3AED" },
+        { t: "Use Last Known<br/>Good Data", icon: "●", bg: "#F0FDF4", fg: "#166534" },
+        { t: "Alert &amp; Track in<br/>DQ Dashboard", icon: "●", bg: "#FFFBEB", fg: "#D97706" }
       ]
     },
     {
       title: "C. MODEL GENERATION<br/>FAILURE",
       steps: [
-        { t: "Model Error /<br/>Hallucination Risk", icon: "🧠", bg: "#FFFBEB", fg: "#D97706" },
-        { t: "Re-ask with<br/>Guardrails / Tooling", icon: "⚙️", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Model Error /<br/>Hallucination Risk", icon: "●", bg: "#FFFBEB", fg: "#D97706" },
+        { t: "Re-ask with<br/>Guardrails / Tooling", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
         { t: "Still Failing?", diamond: true },
-        { t: "Fallback Model<br/>(Alternate LLM)", icon: "🤖", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Escalate to Human<br/>Review (HITL)", icon: "👤", bg: "#FAF5FF", fg: "#7C3AED" }
+        { t: "Fallback Model<br/>(Alternate LLM)", icon: "●", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Escalate to Human<br/>Review (HITL)", icon: "●", bg: "#FAF5FF", fg: "#7C3AED" }
       ]
     },
     {
       title: "D. EXTERNAL API<br/>RATE LIMIT / ERROR",
       steps: [
-        { t: "Rate Limit / 429<br/>or 5xx", icon: "⏱️", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Respect Retry-After<br/>Header", icon: "🕒", bg: "#FFFFFF", fg: "#0F172A" },
-        { t: "Retry with<br/>Jitter", icon: "🔀", bg: "#FFFFFF", fg: "#0F172A" },
-        { t: "Circuit Breaker<br/>Open", icon: "🔌", bg: "#FEF2F2", fg: "#DC2626" },
-        { t: "Degrade Gracefully<br/>(Cache / Queue)", icon: "🗄️", bg: "#F0FDF4", fg: "#166534" }
+        { t: "Rate Limit / 429<br/>or 5xx", icon: "⏱", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Respect Retry-After<br/>Header", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Retry with<br/>Jitter", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Circuit Breaker<br/>Open", icon: "●", bg: "#FEF2F2", fg: "#DC2626" },
+        { t: "Degrade Gracefully<br/>(Cache / Queue)", icon: "●", bg: "#F0FDF4", fg: "#166534" }
       ]
     },
     {
       title: "E. INFRASTRUCTURE<br/>RESOURCE EXHAUSTION",
       steps: [
-        { t: "High CPU / Memory /<br/>Disk / Connections", icon: "☁️", bg: "#FEF2F2", fg: "#DC2626" },
-        { t: "Auto-Scale /<br/>Scale-Up", icon: "⚡", bg: "#FFFFFF", fg: "#0F172A" },
-        { t: "Throttle / Shed<br/>Non-critical Load", icon: "⚙️", bg: "#FFFBEB", fg: "#D97706" },
-        { t: "Failover / Move<br/>Traffic", icon: "🔄", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Page On-call", icon: "🔔", bg: "#FEF2F2", fg: "#DC2626" }
+        { t: "High CPU / Memory /<br/>Disk / Connections", icon: "●", bg: "#FEF2F2", fg: "#DC2626" },
+        { t: "Auto-Scale /<br/>Scale-Up", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Throttle / Shed<br/>Non-critical Load", icon: "●", bg: "#FFFBEB", fg: "#D97706" },
+        { t: "Failover / Move<br/>Traffic", icon: "●", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Page On-call", icon: "●", bg: "#FEF2F2", fg: "#DC2626" }
       ]
     },
     {
       title: "F. AUTH / PERMISSION<br/>FAILURE",
       steps: [
-        { t: "Auth Failed /<br/>Token Expired", icon: "🔒", bg: "#EFF6FF", fg: "#1E40AF" },
-        { t: "Refresh Token /<br/>Re-authenticate", icon: "🔑", bg: "#FFFFFF", fg: "#0F172A" },
+        { t: "Auth Failed /<br/>Token Expired", icon: "●", bg: "#EFF6FF", fg: "#1E40AF" },
+        { t: "Refresh Token /<br/>Re-authenticate", icon: "●", bg: "#FFFFFF", fg: "#0F172A" },
         { t: "Still Failing?", diamond: true },
-        { t: "Deny Access &amp; Log<br/>Security Event", icon: "🛡️", bg: "#FEF2F2", fg: "#DC2626" },
-        { t: "Notify User &amp; SecOps", icon: "👤", bg: "#FAF5FF", fg: "#7C3AED" }
+        { t: "Deny Access &amp; Log<br/>Security Event", icon: "●", bg: "#FEF2F2", fg: "#DC2626" },
+        { t: "Notify User &amp; SecOps", icon: "●", bg: "#FAF5FF", fg: "#7C3AED" }
       ]
     }
   ];
@@ -215,14 +215,14 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("box_r_patt", "", 1100, 238, 420, 92, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_r_patt", "RESPONSE PATTERNS (TOOLS &amp; TECHNIQUES)", 1100, 240, 420, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;");
   const rPattHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
-    <div>🔄 <b>Retry</b> (Backoff + Jitter)</div>
-    <div>🛡️ <b>Fallback / Degradation</b></div>
-    <div>⚡ <b>Circuit Breaker</b> (Open/Closed)</div>
-    <div>📨 <b>Queue &amp; Async Processing</b></div>
-    <div>⏱️ <b>Timeouts &amp; Deadlines</b></div>
-    <div>👤 <b>Human-in-the-Loop</b></div>
-    <div>🔑 <b>Idempotency &amp; Safe Retries</b></div>
-    <div>🧱 <b>Bulkhead Isolation</b></div>
+    <div> <b>Retry</b> (Backoff + Jitter)</div>
+    <div> <b>Fallback / Degradation</b></div>
+    <div> <b>Circuit Breaker</b> (Open/Closed)</div>
+    <div> <b>Queue &amp; Async Processing</b></div>
+    <div>⏱ <b>Timeouts &amp; Deadlines</b></div>
+    <div> <b>Human-in-the-Loop</b></div>
+    <div> <b>Idempotency &amp; Safe Retries</b></div>
+    <div> <b>Bulkhead Isolation</b></div>
   </div>`;
   cell("txt_r_patt", rPattHtml, 1102, 256, 416, 72, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -230,12 +230,12 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("box_r_art", "", 1100, 334, 420, 90, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_art", "KEY ARTIFACTS", 1100, 336, 420, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;");
   const rArtHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;display:grid;grid-template-columns:1fr 1fr;gap:2px 12px;padding:2px 8px;">
-    <div>📑 <b>Runbooks</b> (Per Scenario)</div>
-    <div>🔔 <b>Alerts &amp; Notifications</b></div>
-    <div>🎫 <b>Incident Tickets</b> (P1..P3)</div>
-    <div>📜 <b>Post-Incident Reports</b> (PIR)</div>
-    <div>📊 <b>Dashboards</b> (SLOs, SLIs)</div>
-    <div>🔄 <b>Change / Action Items</b></div>
+    <div> <b>Runbooks</b> (Per Scenario)</div>
+    <div> <b>Alerts &amp; Notifications</b></div>
+    <div> <b>Incident Tickets</b> (P1..P3)</div>
+    <div> <b>Post-Incident Reports</b> (PIR)</div>
+    <div> <b>Dashboards</b> (SLOs, SLIs)</div>
+    <div> <b>Change / Action Items</b></div>
   </div>`;
   cell("txt_r_art", rArtHtml, 1102, 352, 416, 70, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -252,7 +252,7 @@ export function generateTemplate28FailureExceptionFlowXml(
   ];
 
   // Header Row
-  cell("sm_h_urg", "URGENCY ➔", 1106, 448, 70, 18, "fillColor=#F8FAFC;fontColor=#64748B;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
+  cell("sm_h_urg", "URGENCY", 1106, 448, 70, 18, "fillColor=#F8FAFC;fontColor=#64748B;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
   cell("sm_h_l", "Low", 1178, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
   cell("sm_h_m", "Medium", 1260, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
   cell("sm_h_h", "High", 1342, 448, 80, 18, "fillColor=#EFF6FF;fontColor=#1E40AF;fontSize=8;fontStyle=1;strokeColor=#CBD5E1;align=center;verticalAlign=middle;");
@@ -273,11 +273,11 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("lbl_b_mon", "MONITORING &amp; DETECTION", 16, 600, 320, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const monTools = [
-    { t: "Cloud Monitoring<br/>(Metrics, Logs)", icon: "📈" },
-    { t: "Distributed<br/>Tracing (Cloud Trace)", icon: "🔍" },
-    { t: "Uptime<br/>Checks (Health Probes)", icon: "🛡️" },
-    { t: "Log Analytics<br/>(BigQuery / Looker)", icon: "📊" },
-    { t: "User Feedback<br/>(In-App / Support)", icon: "👤" }
+    { t: "Cloud Monitoring<br/>(Metrics, Logs)", icon: "●" },
+    { t: "Distributed<br/>Tracing (Cloud Trace)", icon: "●" },
+    { t: "Uptime<br/>Checks (Health Probes)", icon: "●" },
+    { t: "Log Analytics<br/>(BigQuery / Looker)", icon: "●" },
+    { t: "User Feedback<br/>(In-App / Support)", icon: "●" }
   ];
   monTools.forEach((mt, idx) => {
     const col = idx % 2;
@@ -294,11 +294,11 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("lbl_b_escl", "ESCALATION PATHS", 344, 600, 340, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const esclNodes = [
-    { t: "Alert", icon: "🔔" },
-    { t: "On-call Eng<br/>(Level 1)", icon: "👤" },
-    { t: "Service Owner<br/>(Level 2)", icon: "👥" },
-    { t: "Eng Lead<br/>(Level 3)", icon: "🏛️" },
-    { t: "Incident<br/>Commander", icon: "👑" }
+    { t: "Alert", icon: "●" },
+    { t: "On-call Eng<br/>(Level 1)", icon: "●" },
+    { t: "Service Owner<br/>(Level 2)", icon: "●" },
+    { t: "Eng Lead<br/>(Level 3)", icon: "●" },
+    { t: "Incident<br/>Commander", icon: "●" }
   ];
   esclNodes.forEach((en, idx) => {
     const enx = 352 + idx * 64;
@@ -309,7 +309,7 @@ export function generateTemplate28FailureExceptionFlowXml(
   });
 
   const esclDetailHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px 8px;margin-top:90px;">
-    <b>Escalation Timeouts:</b> L1 (5m) ➔ L2 (15m) ➔ L3 (30m) ➔ IC (30m)<br/>
+    <b>Escalation Timeouts:</b> L1 (5m) L2 (15m) L3 (30m) IC (30m)<br/>
     <b>Channels:</b> PagerDuty • Slack • Email • Phone • War Room
   </div>`;
   cell("txt_b_escl_dtl", esclDetailHtml, 346, 718, 336, 230, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
@@ -318,25 +318,25 @@ export function generateTemplate28FailureExceptionFlowXml(
   cell("box_b_recov", "", 692, 598, 270, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_recov", "RECOVERY &amp; VALIDATION", 692, 600, 270, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const recovHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:6px 8px;">
-    ✔ <b>Restore Service / Failover Complete</b><br/><br/>
-    ✔ <b>Validate Functionality (Smoke Tests)</b><br/><br/>
-    ✔ <b>Check SLOs &amp; Error Rates Stabilize</b><br/><br/>
-    ✔ <b>Communicate Resolution</b><br/><br/>
-    ✔ <b>Monitor Closely (Watch Window)</b>
+     <b>Restore Service / Failover Complete</b><br/><br/>
+     <b>Validate Functionality (Smoke Tests)</b><br/><br/>
+     <b>Check SLOs &amp; Error Rates Stabilize</b><br/><br/>
+     <b>Communicate Resolution</b><br/><br/>
+     <b>Monitor Closely (Watch Window)</b>
   </div>`;
   cell("txt_b_recov", recovHtml, 694, 624, 266, 260, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
-  cell("btn_recov", "✔ Declare Resolved ➔ PIR Scheduled", 702, 894, 250, 36, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("btn_recov", "Declare Resolved PIR Scheduled", 702, 894, 250, 36, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#16A34A;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   // 4. Post-Incident Activities (w=260, x=970)
   cell("box_b_pir", "", 970, 598, 260, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_b_pir", "POST-INCIDENT ACTIVITIES", 970, 600, 260, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const pirHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:6px 8px;">
-    📑 <b>Root Cause Analysis (RCA)</b><br/><br/>
-    📜 <b>Blameless Post-Incident Review</b><br/><br/>
-    👥 <b>Action Items &amp; Owners</b><br/><br/>
-    ⚙️ <b>Update Runbooks / Alerts</b><br/><br/>
-    🧠 <b>Knowledge Base Update</b>
+     <b>Root Cause Analysis (RCA)</b><br/><br/>
+     <b>Blameless Post-Incident Review</b><br/><br/>
+     <b>Action Items &amp; Owners</b><br/><br/>
+     <b>Update Runbooks / Alerts</b><br/><br/>
+     <b>Knowledge Base Update</b>
   </div>`;
   cell("txt_b_pir", pirHtml, 972, 624, 256, 260, "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -356,7 +356,7 @@ export function generateTemplate28FailureExceptionFlowXml(
 
   // ==================== 7. FOOTER LEGEND (y=962, h=24) ====================
   const legendHtml = `<div style='font-size:8px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
-    <div><b>LEGEND:</b> &nbsp; ━━━━► Primary Flow &nbsp;|&nbsp; ┈┈┈► Feedback Loop &nbsp;|&nbsp; ───► Optional Flow &nbsp;|&nbsp; 🟦 Process &nbsp;|&nbsp; 🟨 Decision &nbsp;|&nbsp; 👤 Human Action</div>
+    <div><b>LEGEND:</b> &nbsp; ━━━━► Primary Flow &nbsp;|&nbsp; ┈┈┈► Feedback Loop &nbsp;|&nbsp; ───► Optional Flow &nbsp;|&nbsp; 🟦 Process &nbsp;|&nbsp; 🟨 Decision &nbsp;|&nbsp; Human Action</div>
     <div>Incident &amp; Failure Resilience Architecture &nbsp;|&nbsp; May 8, 2025</div>
   </div>`;
   cell("footer_legend", legendHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");

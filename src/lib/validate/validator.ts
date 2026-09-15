@@ -186,6 +186,13 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
                               id.endsWith('_title') ||
                               id.startsWith('banner_') ||
                               id.startsWith('legend_') ||
+                              id.startsWith('leg_') ||
+                              id.startsWith('enabler_') ||
+                              id.startsWith('tech_') ||
+                              id.startsWith('meta_') ||
+                              id.startsWith('footer_') ||
+                              id.startsWith('ftr_') ||
+                              id.startsWith('watermark_') ||
                               id.startsWith('callout_') ||
                               id.startsWith('why_') ||
                               id.startsWith('desc_') ||
@@ -252,8 +259,9 @@ export function validateDrawioXml(xmlString: string): ValidationResult {
       const target = cell['@_target'];
       const style = cell['@_style'] || '';
       const geom = cell.mxGeometry;
-      const rawPoints = geom?.Array?.mxPoint || geom?.mxPoint;
-      const points = rawPoints ? (Array.isArray(rawPoints) ? rawPoints : [rawPoints]) : [];
+      const directPoints = geom?.mxPoint ? (Array.isArray(geom.mxPoint) ? geom.mxPoint : [geom.mxPoint]) : [];
+      const arrayPoints = geom?.Array?.mxPoint ? (Array.isArray(geom.Array.mxPoint) ? geom.Array.mxPoint : [geom.Array.mxPoint]) : [];
+      const points = [...directPoints, ...arrayPoints];
       const hasSourcePoint = points.some((pt: any) => pt?.['@_as'] === 'sourcePoint');
       const hasTargetPoint = points.some((pt: any) => pt?.['@_as'] === 'targetPoint');
       const waypoints = points

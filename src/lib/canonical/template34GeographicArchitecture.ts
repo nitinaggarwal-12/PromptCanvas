@@ -29,13 +29,18 @@ export function generateTemplate34GeographicArchitectureXml(
       `<mxCell id="${id}" value="${E(v)}" style="ellipse;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.5;fontColor=${fontCol};fontSize=${fontSz};fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${d}" height="${d}" as="geometry"/></mxCell>`
     );
 
+  const edge = (id: string, sId: string, tId: string, s = "") =>
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${sId}" target="${tId}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;jettySize=auto;orthogonalLoop=1;${s}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+
   // ==================== 1. TOP HEADER BANNER (y=12..66) ====================
   rect("hdr_num", `<span style="font-size:32px;font-weight:900;color:#FFFFFF;">34</span>`, 16, 12, 68, 54, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=1;arcSize=12;align=center;verticalAlign=middle;");
   text(
     "hdr_title",
     `<div style='font-size:25px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>GEOGRAPHIC / REGIONAL ARCHITECTURE</div>` +
     `<div style='font-size:13px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: NovaCura – Multi-Region Regulatory Intelligence Platform</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: Multi-Region (Global) &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>Environment: Production &nbsp;|&nbsp; Region: Multi-Region (Global) &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
     760,
@@ -43,7 +48,7 @@ export function generateTemplate34GeographicArchitectureXml(
     "align=left;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   rect("hdr_brand", brandHtml, 860, 12, 270, 54, "fillColor=none;strokeColor=none;align=left;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.35;color:#0F172A;'>Deliver low-latency, highly available, and compliant services globally with data residency, disaster recovery, and local user experience.</div>`;
@@ -54,12 +59,12 @@ export function generateTemplate34GeographicArchitectureXml(
   rect("box_prin_bg", "", 16, 74, 180, 202, "strokeColor=#1E3A8A;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
   rect("lbl_prin", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;">ARCHITECTURE PRINCIPLES</b>`, 16, 74, 180, 26, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=0;align=center;");
   const prinItems = [
-    { t: "Data Residency &amp; Sovereignty", icon: "🛡️" },
-    { t: "Low-Latency Local Edge", icon: "⚡" },
-    { t: "High Availability &amp; Resilience", icon: "📈" },
-    { t: "Security by Design", icon: "🔒" },
-    { t: "Cost Optimization", icon: "💰" },
-    { t: "Operational Excellence", icon: "⚙️" }
+    { t: "Data Residency &amp; Sovereignty", icon: "●" },
+    { t: "Low-Latency Local Edge", icon: "●" },
+    { t: "High Availability &amp; Resilience", icon: "●" },
+    { t: "Security by Design", icon: "●" },
+    { t: "Cost Optimization", icon: "●" },
+    { t: "Operational Excellence", icon: "●" }
   ];
   prinItems.forEach((pi, idx) => {
     const py = 104 + idx * 28;
@@ -71,12 +76,12 @@ export function generateTemplate34GeographicArchitectureXml(
   text("lbl_users", "<div style='font-size:12.5px;font-weight:900;color:#1E3A8A;text-align:center;'>GLOBAL USER BASE</div>", 204, 78, 836, 18, "align=center;");
 
   const globalUsers = [
-    { n: "North America\nUsers", icon: "👤", loc: "🇺🇸 USA / Canada" },
-    { n: "South America\nUsers", icon: "👤", loc: "🇧🇷 Brazil" },
-    { n: "Europe\nUsers", icon: "👤", loc: "🇪🇺 UK / Germany" },
-    { n: "Middle East\nUsers", icon: "👤", loc: "🇦🇪 UAE (Dubai)" },
-    { n: "Asia Pacific\nUsers", icon: "👤", loc: "🇸🇬 Singapore / JP" },
-    { n: "Africa\nUsers", icon: "👤", loc: "🇿🇦 South Africa" }
+    { n: "North America\nUsers", icon: "●", loc: "[US] USA / Canada" },
+    { n: "South America\nUsers", icon: "●", loc: "[BR] Brazil" },
+    { n: "Europe\nUsers", icon: "●", loc: "[EU] UK / Germany" },
+    { n: "Middle East\nUsers", icon: "●", loc: "[AE] UAE (Dubai)" },
+    { n: "Asia Pacific\nUsers", icon: "●", loc: "[SG] Singapore / JP" },
+    { n: "Africa\nUsers", icon: "●", loc: "[ZA] South Africa" }
   ];
   globalUsers.forEach((gu, idx) => {
     const ux = 216 + idx * 136;
@@ -84,7 +89,7 @@ export function generateTemplate34GeographicArchitectureXml(
   });
 
   // Anycast Banner
-  rect("box_anycast", `<div style="font-size:9.5px;font-weight:800;color:#2563EB;text-align:center;">🌐 GLOBAL DISTRIBUTED EDGE ANYCAST NETWORK (Ultra-low latency edge routing to nearest active regional cloud point-of-presence)</div>`, 216, 234, 812, 32, "fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
+  rect("box_anycast", `<div style="font-size:9.5px;font-weight:800;color:#2563EB;text-align:center;">GLOBAL DISTRIBUTED EDGE ANYCAST NETWORK (Ultra-low latency edge routing to nearest active regional cloud point-of-presence)</div>`, 216, 234, 812, 32, "fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
 
   // Regional Overview Table (x=1048..1520)
   rect("box_reg_ov", "", 1048, 74, 472, 202, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
@@ -107,23 +112,23 @@ export function generateTemplate34GeographicArchitectureXml(
   rect("box_l_caps", "", 16, 286, 150, 390, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   const capsHtml = `<div style="font-size:7.5px;line-height:1.45;color:#0F172A;padding:4px;">
     <div style="font-weight:800;color:#1E3A8A;margin-bottom:2px;">REGIONAL CAPABILITIES:</div>
-    🗄️ Local Data Storage<br/>
-    💻 Regional Compute<br/>
-    📊 Local Monitoring &amp; Logging<br/>
-    🔒 KMS &amp; Secrets (Regional)<br/>
-    💾 Local Backup &amp; Replication<br/>
-    🌐 Regional Networking &amp; Edge<br/>
+     Local Data Storage<br/>
+    Regional Compute<br/>
+    Local Monitoring &amp; Logging<br/>
+    KMS &amp; Secrets (Regional)<br/>
+    Local Backup &amp; Replication<br/>
+    Regional Networking &amp; Edge<br/>
     <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
     <div style="font-weight:800;color:#2563EB;margin-bottom:2px;">TRAFFIC ROUTING:</div>
-    ⚡ DNS Geo-Routing (Latency-Based)<br/>
-    🩺 Health Checks (Active/Passive)<br/>
-    🔄 Failover (Automated)<br/>
-    🛡️ DDoS Protection (Global Edge)<br/>
-    🔒 WAF &amp; Bot Protection<br/>
+    DNS Geo-Routing (Latency-Based)<br/>
+    <b>+</b> Health Checks (Active/Passive)<br/>
+    Failover (Automated)<br/>
+     DDoS Protection (Global Edge)<br/>
+    WAF &amp; Bot Protection<br/>
     <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
     <div style="font-weight:800;color:#16A34A;margin-bottom:2px;">LEGEND:</div>
-    🟢 Active Region &nbsp; 🟠 Standby<br/>
-    🔵 DR Region &nbsp; ── Data Flow
+    <span style="color:#16A34A;font-weight:900;">■</span> Active Region &nbsp; <span style="color:#EA580C;font-weight:900;">■</span> Standby<br/>
+    DR Region &nbsp; ── Data Flow
   </div>`;
   text("txt_l_caps", capsHtml, 18, 290, 146, 382, "align=left;verticalAlign=top;");
 
@@ -163,12 +168,12 @@ export function generateTemplate34GeographicArchitectureXml(
   text("lbl_glob", "<div style='font-size:10px;font-weight:900;color:#1E3A8A;text-align:center;'>GLOBAL SERVICES (MULTI-REGION)</div>", 16, 686, 1504, 14, "align=center;");
 
   const globSvcs = [
-    { t: "Global DNS", sub: "Cloud DNS (Anycast)", icon: "🌐" },
-    { t: "Global Load Balancer", sub: "Cloud Load Balancing", icon: "⚖️" },
-    { t: "DDoS Protection", sub: "Cloud Armor", icon: "🛡️" },
-    { t: "WAF", sub: "App-Layer Security", icon: "🔒" },
-    { t: "Secrets &amp; KMS", sub: "Multi-Region Keys", icon: "🔑" },
-    { t: "Identity &amp; Access", sub: "IAM &amp; SSO", icon: "👤" }
+    { t: "Global DNS", sub: "Cloud DNS (Anycast)", icon: "●" },
+    { t: "Global Load Balancer", sub: "Cloud Load Balancing", icon: "●" },
+    { t: "DDoS Protection", sub: "Cloud Armor", icon: "●" },
+    { t: "WAF", sub: "App-Layer Security", icon: "●" },
+    { t: "Secrets &amp; KMS", sub: "Multi-Region Keys", icon: "●" },
+    { t: "Identity &amp; Access", sub: "IAM &amp; SSO", icon: "●" }
   ];
   globSvcs.forEach((gs, idx) => {
     const gx = 30 + idx * 248;
@@ -180,21 +185,21 @@ export function generateTemplate34GeographicArchitectureXml(
   rect("box_b_dp", "", 16, 752, 350, 202, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_dp", `<b style="font-size:10px;color:#1E3A8A;">DATA PROTECTION &amp; DISASTER RECOVERY</b>`, 16, 752, 350, 22, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_b_dp", `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px;">
-    <b>Primary (Active)</b> ➔ Cross-Region Replication ➔ <b>Warm Standby</b> ➔ DR Region (Backup)<br/><br/>
-    ⏱️ <b>RPO Target:</b> &lt; 15 minutes &nbsp;|&nbsp; ⏱️ <b>RTO Target:</b> &lt; 1 hour<br/>
-    💾 <b>Automated Backups:</b> Continuous WAL shipping + Daily Cloud SQL snapshots.<br/>
-    🗃️ <b>GCS Replication:</b> Cross-region bucket sync with retention rules.
+    <b>Primary (Active)</b> Cross-Region Replication <b>Warm Standby</b> DR Region (Backup)<br/><br/>
+    <b>[SLA] RPO Target:</b> &lt; 15 minutes &nbsp;|&nbsp; <b>[SLA] RTO Target:</b> &lt; 1 hour<br/>
+     <b>Automated Backups:</b> Continuous WAL shipping + Daily Cloud SQL snapshots.<br/>
+     <b>GCS Replication:</b> Cross-region bucket sync with retention rules.
   </div>`, 18, 776, 346, 172, "align=left;verticalAlign=top;padding=4;");
 
   // 2. Failover Flow (x=374, w=420)
   rect("box_b_fo", "", 374, 752, 420, 202, "strokeColor=#DC2626;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_fo", `<b style="font-size:10px;color:#DC2626;">FAILOVER FLOW</b>`, 374, 752, 420, 22, "fillColor=#FEF2F2;strokeColor=#CBD5E1;rounded=0;align=center;");
   const foSteps = [
-    { n: "1. Health Check\nFails", icon: "🩺" },
-    { n: "2. DNS Failover\n(Automatic)", icon: "🌐" },
-    { n: "3. Traffic ➔\nStandby Region", icon: "🔄" },
-    { n: "4. Auto-Scale &\nResume", icon: "⚙️" },
-    { n: "5. Notify &\nAlert Teams", icon: "🔔" }
+    { n: "1. Health Check\nFails", icon: "●" },
+    { n: "2. DNS Failover\n(Automatic)", icon: "●" },
+    { n: "3. Traffic\nStandby Region", icon: "●" },
+    { n: "4. Auto-Scale &\nResume", icon: "●" },
+    { n: "5. Notify &\nAlert Teams", icon: "●" }
   ];
   foSteps.forEach((fs, idx) => {
     const fx = 384 + idx * 80;
@@ -206,20 +211,20 @@ export function generateTemplate34GeographicArchitectureXml(
   rect("box_b_comp", "", 802, 752, 350, 202, "strokeColor=#16A34A;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_comp", `<b style="font-size:10px;color:#16A34A;">COMPLIANCE &amp; RESIDENCY</b>`, 802, 752, 350, 22, "fillColor=#F0FDF4;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_b_comp", `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px;">
-    ✔ <b>Data Residency:</b> Customer data never leaves defined regional boundaries.<br/>
-    ✔ <b>Encryption:</b> KMS managed keys stored in region (TLS 1.3 &amp; AES-256).<br/>
-    ✔ <b>Audit Trails:</b> Regional Cloud Audit Logs with centralized SIEM export.<br/>
-    ✔ <b>Standards:</b> GDPR, HIPAA, FDA 21 CFR Part 11, SOC 2 Type II, ISO 27001.
+     <b>Data Residency:</b> Customer data never leaves defined regional boundaries.<br/>
+     <b>Encryption:</b> KMS managed keys stored in region (TLS 1.3 &amp; AES-256).<br/>
+     <b>Audit Trails:</b> Regional Cloud Audit Logs with centralized SIEM export.<br/>
+     <b>Standards:</b> GDPR, HIPAA, FDA 21 CFR Part 11, SOC 2 Type II, ISO 27001.
   </div>`, 804, 776, 346, 172, "align=left;verticalAlign=top;padding=4;");
 
   // 4. Key Benefits (x=1160, w=360)
   rect("box_b_ben", "", 1160, 752, 360, 202, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_ben", `<b style="font-size:10px;color:#1E3A8A;">KEY BENEFITS</b>`, 1160, 752, 360, 22, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_b_ben", `<div style="font-size:8px;line-height:1.5;color:#0F172A;padding:4px;">
-    ✔ <b>Low Latency:</b> &lt; 50ms edge-to-dock globally via Anycast routing.<br/>
-    ✔ <b>High Availability:</b> 99.99%+ multi-region uptime SLA.<br/>
-    ✔ <b>Sovereignty-Audit:</b> Audit-checked GxP/GDPR local data silos.<br/>
-    ✔ <b>Route Healing:</b> Auto promotional multi-carrier reserve re-allocation.
+     <b>Low Latency:</b> &lt; 50ms edge-to-dock globally via Anycast routing.<br/>
+     <b>High Availability:</b> 99.99%+ multi-region uptime SLA.<br/>
+     <b>Sovereignty-Audit:</b> Audit-checked GxP/GDPR local data silos.<br/>
+     <b>Route Healing:</b> Auto promotional multi-carrier reserve re-allocation.
   </div>`, 1162, 776, 356, 172, "align=left;verticalAlign=top;padding=4;");
 
   // ==================== 6. FOOTER STATUS BAR (y=962, h=24) ====================
@@ -228,6 +233,29 @@ export function generateTemplate34GeographicArchitectureXml(
     <div>Version: 1.0 &nbsp;|&nbsp; Enterprise Architecture Team</div>
   </div>`;
   rect("footer_status", footerHtml, 16, 962, 1504, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=1;align=left;verticalAlign=middle;padding=4;");
+
+  // ==================== ARCHITECTURE FLOW CONNECTORS ====================
+  // 1. Global Anycast Edge / DNS routing to Primary Active Region
+  edge("e_flow_glb_na", "box_anycast", "pl_box_0", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;");
+  
+  // 2. Cross-Region Sync & Replication to Secondary Active/Standby Region
+  edge("e_flow_na_eu", "pl_box_0", "pl_box_1", "strokeColor=#0284C7;strokeWidth=2;dashed=1;dashPattern=6 4;endArrow=classic;endSize=5;");
+  
+  // 3. Low-Latency Regional Edge Extension to APAC
+  edge("e_flow_na_apac", "pl_box_1", "pl_box_2", "strokeColor=#D97706;strokeWidth=1.8;dashed=1;dashPattern=4 4;endArrow=classic;endSize=5;");
+
+  // 4. Data Residency & Edge Satellite Ingestion (LATAM)
+  edge("e_flow_na_latam", "pl_box_2", "pl_box_3", "strokeColor=#16A34A;strokeWidth=1.8;endArrow=classic;endSize=5;");
+
+  // 5. Global Mesh & Telemetry Back to Global Plane
+  edge("e_flow_na_mesh", "pl_box_0", "gs_0", "strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=5;");
+  edge("e_flow_eu_mesh", "pl_box_1", "gs_1", "strokeColor=#7C3AED;strokeWidth=1.5;endArrow=classic;endSize=5;");
+
+  // 6. Failover Sequence Flow
+  edge("e_fo_0_1", "fo_0", "fo_1", "strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_fo_1_2", "fo_1", "fo_2", "strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_fo_2_3", "fo_2", "fo_3", "strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;");
+  edge("e_fo_3_4", "fo_3", "fo_4", "strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;endSize=4;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_34_geographic_regional_architecture" name="Template 34: Geographic / Regional Architecture">

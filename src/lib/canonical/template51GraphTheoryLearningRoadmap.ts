@@ -48,10 +48,10 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   cell('hdr_main', topHdrHtml, 20, 14, 1560, 56, 'text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;');
 
   // ==================== 2. TOP CHEVRON PROCESS RIBBON (y=78..116) ====================
-  cell('chv_1', '🧭 GRAPH INTUITION &amp; DEFINITIONS', 20, 78, 375, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
+  cell('chv_1', 'GRAPH INTUITION &amp; DEFINITIONS', 20, 78, 375, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#3B82F6;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
   cell('chv_2', 'ESSENTIAL PREREQUISITES', 405, 78, 375, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#10B981;strokeColor=#047857;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
   cell('chv_3', 'STEP-BY-STEP TOPICS', 790, 78, 375, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#F97316;strokeColor=#C2410C;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
-  cell('chv_4', '🔬 MODERN GRAPH SCIENCE 🌐', 1175, 78, 405, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#EAB308;strokeColor=#A16207;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
+  cell('chv_4', 'MODERN GRAPH SCIENCE', 1175, 78, 405, 40, 'shape=hexagon;perimeter=hexagonPerimeter2;fixedSize=1;size=16;rounded=1;fillColor=#EAB308;strokeColor=#A16207;fontColor=#FFFFFF;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;');
 
   // ==================== 3. TOP SECTION CONTAINERS (y=126..500, h=374) ====================
   // Section 1: Graph Intuition (x=20..395)
@@ -59,13 +59,13 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   const sec1HeaderHtml = `<div style="text-align:center;font-weight:900;font-size:13px;color:#1E3A8A;padding-top:8px;">Social Network Analogy</div>`;
   cell('sec1_title', sec1HeaderHtml, 24, 130, 367, 24, 'text;html=1;whiteSpace=wrap;');
 
-  cell('node_alice', '👧', 50, 170, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
+  cell('node_alice', '●', 50, 170, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
   cell('lbl_alice', 'Alice', 40, 228, 76, 18, 'text;html=1;fontStyle=1;fontSize=11;fontColor:#1E293B;align=center;');
   
-  cell('node_bob', '👦', 290, 170, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
+  cell('node_bob', '●', 290, 170, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
   cell('lbl_bob', 'Bob', 280, 228, 76, 18, 'text;html=1;fontStyle=1;fontSize=11;fontColor:#1E293B;align=center;');
 
-  cell('node_carol', '👩', 170, 270, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
+  cell('node_carol', '●', 170, 270, 56, 56, 'ellipse;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;strokeWidth=2;fontSize=28;align=center;verticalAlign=middle;');
   cell('lbl_carol', 'Carol', 160, 328, 76, 18, 'text;html=1;fontStyle=1;fontSize=11;fontColor:#1E293B;align=center;');
 
   edge('edge_ab', 'node_alice', 'node_bob', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=6;');
@@ -75,10 +75,10 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   edge('edge_bc', 'node_bob', 'node_carol', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=6;');
 
   const legendHtml = `<div style="display:flex;align-items:center;justify-content:space-around;width:100%;height:100%;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;box-sizing:border-box;font-size:10px;font-weight:700;color:#1E293B;">
-    <div>📐 <strong>Vertex</strong> (Node)</div>
-    <div>🔗 <strong>Edge</strong> (Link)</div>
-    <div>📊 <strong>Adjacency</strong></div>
-    <div>🎯 <strong>Degree</strong></div>
+    <div> <strong>Vertex</strong> (Node)</div>
+    <div> <strong>Edge</strong> (Link)</div>
+    <div> <strong>Adjacency</strong></div>
+    <div> <strong>Degree</strong></div>
   </div>`;
   cell('sec1_legend', legendHtml, 30, 360, 355, 46, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
@@ -101,7 +101,7 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
         <div style="font-size:12px;font-weight:900;color:#047857;">Logic &amp; Proofs</div>
         <div style="font-size:10px;color:#065F46;margin-top:2px;">Induction, Pigeonhole Principle, Contradiction</div>
       </div>
-      <div style="font-size:22px;">💭 {ε; ∈}</div>
+      <div style="font-size:22px;"> {ε; ∈}</div>
     </div>
 
     <div style="background:#FFFFFF;border:1px solid #A7F3D0;border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
@@ -109,13 +109,13 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
         <div style="font-size:12px;font-weight:900;color:#047857;">Combinatorics</div>
         <div style="font-size:10px;color:#065F46;margin-top:2px;">Counting paths, permutations n!, combinations C(n, k)</div>
       </div>
-      <div style="font-size:24px;">🎲</div>
+      <div style="font-size:24px;"></div>
     </div>
 
     <div style="background:#D1FAE5;border:1px dashed #059669;border-radius:8px;padding:8px 10px;font-size:10px;color:#065F46;font-weight:700;">
-      <div style="margin-bottom:2px;">☑ Set Theory (G = (V, E)) Verification</div>
-      <div style="margin-bottom:2px;">☑ Graph Invariance &amp; Isomorphism Proofs</div>
-      <div>☑ Handshaking Lemma: ∑ deg(v) = 2|E|</div>
+      <div style="margin-bottom:2px;">Set Theory (G = (V, E)) Verification</div>
+      <div style="margin-bottom:2px;">Graph Invariance &amp; Isomorphism Proofs</div>
+      <div>Handshaking Lemma: ∑ deg(v) = 2|E|</div>
     </div>
   </div>`;
   cell('sec2_content', sec2ContentHtml, 405, 126, 375, 374, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
@@ -189,9 +189,9 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   edge('kge_5', 'kg_chem', 'kg_routing', 'strokeColor=#94A3B8;strokeWidth=1.5;endArrow=none;');
 
   const sec4BulletsHtml = `<div style="padding:10px 14px;font-family:system-ui,-apple-system,sans-serif;color:#713F12;font-size:10.5px;line-height:1.45;font-weight:700;">
-    <div style="margin-bottom:4px;">🔬 • Random Graphs &amp; Small World Phenomenon</div>
-    <div style="margin-bottom:4px;">🧠 • Spectral Graph Theory &amp; Graph Laplacians</div>
-    <div>💻 • NetworkX, Neo4j, Vertex AI Graph RAG &amp; PyG</div>
+    <div style="margin-bottom:4px;"> • Random Graphs &amp; Small World Phenomenon</div>
+    <div style="margin-bottom:4px;"> • Spectral Graph Theory &amp; Graph Laplacians</div>
+    <div> • NetworkX, Neo4j, Vertex AI Graph RAG &amp; PyG</div>
   </div>`;
   cell('sec4_bullets', sec4BulletsHtml, 1180, 365, 395, 80, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
@@ -209,8 +209,8 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
     <div style="font-size:12px;font-weight:900;color:#1E3A8A;text-transform:uppercase;margin-bottom:4px;">STEP 1: Problem Definition</div>
     <div style="font-size:10.5px;color:#64748B;font-weight:600;margin-bottom:10px;">Find Optimal Traversal / Shortest Path</div>
     <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px;text-align:center;margin-bottom:10px;">
-      <div style="font-size:36px;margin-bottom:4px;">🗺️ 📍</div>
-      <div style="font-size:11px;font-weight:800;color:#1D4ED8;">Source Node A ➔ Target Node B</div>
+      <div style="font-size:36px;margin-bottom:4px;"> </div>
+      <div style="font-size:11px;font-weight:800;color:#1D4ED8;">Source Node A Target Node B</div>
       <div style="font-size:9.5px;color:#475569;margin-top:2px;">Minimize edge cost metric: C(p) = ∑ w(u, v)</div>
     </div>
     <div style="font-size:10px;color:#334155;line-height:1.4;">
@@ -220,7 +220,7 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   </div>`;
   cell('step1_content', step1Html, 36, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  cell('arr_1_2', '➔', 382, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#3B82F6;fontStyle=1;align=center;');
+  cell('arr_1_2', '●', 382, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#3B82F6;fontStyle=1;align=center;');
 
   // Step 2: Algorithm Execution (Flowchart Loop)
   cell('step2_box', '', 420, 554, 340, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
@@ -236,13 +236,13 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
       <div style="font-size:9px;color:#047857;">Extract min vertex u with smallest dist</div>
     </div>
     <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:8px 10px;text-align:center;">
-      <div style="font-size:11px;font-weight:800;color:#065F46;">3. Edge Relaxation Loop 🔄</div>
-      <div style="font-size:9px;color:#047857;">If dist[u] + w(u,v) &lt; dist[v] ➔ Update dist[v]</div>
+      <div style="font-size:11px;font-weight:800;color:#065F46;">3. Edge Relaxation Loop</div>
+      <div style="font-size:9px;color:#047857;">If dist[u] + w(u,v) &lt; dist[v] Update dist[v]</div>
     </div>
   </div>`;
   cell('step2_content', step2Html, 420, 554, 340, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  cell('arr_2_3', '➔', 766, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#10B981;fontStyle=1;align=center;');
+  cell('arr_2_3', '●', 766, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#10B981;fontStyle=1;align=center;');
 
   // Step 3: Dijkstra's Engine & Bellman-Ford
   cell('step3_box', '', 804, 554, 350, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
@@ -261,12 +261,12 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
     </div>
 
     <div style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:6px 10px;text-align:center;font-size:10px;font-weight:800;color:#92400E;">
-      🗺️ GPS Turn-by-Turn Routing Ready
+       GPS Turn-by-Turn Routing Ready
     </div>
   </div>`;
   cell('step3_content', step3Html, 804, 554, 350, 316, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 
-  cell('arr_3_4', '➔', 1160, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#EA580C;fontStyle=1;align=center;');
+  cell('arr_3_4', '●', 1160, 690, 34, 40, 'text;html=1;fontSize=26;fontColor=#EA580C;fontStyle=1;align=center;');
 
   // Step 4: Output: Solution & Real-World Applications
   cell('step4_box', '', 1200, 554, 360, 316, 'rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;');
@@ -276,12 +276,12 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;">
       <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:6px;text-align:center;">
-        <div style="font-size:20px;">🚗</div>
+        <div style="font-size:20px;"></div>
         <div style="font-size:9.5px;font-weight:800;color:#1D4ED8;">GPS Navigation</div>
         <div style="font-size:8px;color:#475569;">Shortest Path Routing</div>
       </div>
       <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:6px;padding:6px;text-align:center;">
-        <div style="font-size:20px;">⚡</div>
+        <div style="font-size:20px;"></div>
         <div style="font-size:9.5px;font-weight:800;color:#047857;">Power Grid (MST)</div>
         <div style="font-size:8px;color:#475569;">Kruskal / Prim Min-Cost</div>
       </div>
@@ -289,12 +289,12 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
       <div style="background:#FAF5FF;border:1px solid #E9D5FF;border-radius:6px;padding:6px;text-align:center;">
-        <div style="font-size:20px;">🧬</div>
+        <div style="font-size:20px;"></div>
         <div style="font-size:9.5px;font-weight:800;color:#7E22CE;">DNA Sequencing</div>
         <div style="font-size:8px;color:#475569;">De Bruijn Eulerian Path</div>
       </div>
       <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:6px;padding:6px;text-align:center;">
-        <div style="font-size:20px;">🌊</div>
+        <div style="font-size:20px;"></div>
         <div style="font-size:9.5px;font-weight:800;color:#C2410C;">Max Flow Bandwidth</div>
         <div style="font-size:8px;color:#475569;">Ford-Fulkerson Cut</div>
       </div>
@@ -306,7 +306,7 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   const footerHtml = `<div style="display:flex;align-items:center;justify-content:space-between;width:100%;height:100%;box-sizing:border-box;padding:0 24px;background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;font-family:system-ui,-apple-system,sans-serif;font-size:11px;font-weight:800;color:#334155;letter-spacing:0.06em;">
     <div>PRODUCER INDEPENDENCE &nbsp;|&nbsp; CONSUMER INDEPENDENCE &nbsp;|&nbsp; FORMAT, NOT PLATFORM</div>
     <div style="color:#2563EB;display:flex;align-items:center;gap:6px;">
-      <span style="font-size:14px;">☁️</span>
+      <span style="font-size:14px;"></span>
       <span>Google Cloud Architecture Engine</span>
     </div>
   </div>`;

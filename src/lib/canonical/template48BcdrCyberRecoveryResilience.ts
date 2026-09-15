@@ -63,6 +63,17 @@ export function generateTemplate48BcdrCyberRecoveryResilienceXml(
     );
   };
 
+  const edge = (
+    id: string,
+    src: string,
+    trg: string,
+    style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;"
+  ) => {
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+  };
+
   const rawEdge = (
     id: string,
     style: string,
@@ -345,16 +356,19 @@ export function generateTemplate48BcdrCyberRecoveryResilienceXml(
 
   t8Items.forEach((it, i) => {
     const rx = 1174 + (i % 3) * 112;
-    const ry = 104 + Math.floor(i / 3) * 50;
-    cell(`t8_item_${i}`, "", rx, ry, 106, 44, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
+    const ry = 104 + Math.floor(i / 3) * 52;
+    cell(`t8_item_${i}`, "", rx, ry, 106, 46, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
     const ic = svgIcon(it.icon as keyof typeof SVG, "#7C3AED", 12);
-    cell(`t8_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#6B21A8;line-height:1.2;">${it.title}</div></div>`, rx + 4, ry + 2, 98, 40, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`t8_item_txt_${i}`, `<div style="display:flex;align-items:center;gap:4px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#6B21A8;line-height:1.2;">${it.title}</div></div>`, rx + 4, ry + 2, 98, 42, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // Third-Party Risk Pod
-  cell("t8_third_party", "", 1174, 212, 338, 38, "rounded=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#D8B4FE;strokeWidth=1;");
+  cell("t8_third_party", "", 1174, 214, 338, 62, "rounded=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#D8B4FE;strokeWidth=1;");
   const tpIc = svgIcon("users", "#7C3AED", 14);
-  cell("t8_third_party_txt", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">${tpIc}<b style="font-size:8px;color:#581C87;">Third-Party &amp; Supply Chain Risk</b></div>`, 1174, 212, 338, 38, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t8_third_party_txt", `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;">
+    <div style="display:flex;align-items:center;gap:6px;">${tpIc}<b style="font-size:8px;color:#581C87;">Third-Party &amp; Supply Chain Risk</b></div>
+    <div style="font-size:7.5px;color:#6B21A8;">Vendor Security Audits • Continuous Attestation • Escrow Verification</div>
+  </div>`, 1174, 214, 338, 62, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // -------------------------------------------------------------------------
   // TIER 9: OBSERVABILITY & ASSURANCE (y: 294, h: 236)
@@ -437,7 +451,7 @@ export function generateTemplate48BcdrCyberRecoveryResilienceXml(
     "Comply with Regulations &amp; Standards",
     "Strengthen Cyber Recovery Readiness"
   ];
-  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7.5px;color:#334155;line-height:1.15;"><span style="color:#2563EB;">✓</span> ${o}</div>`).join("");
+  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7.5px;color:#334155;line-height:1.15;"><span style="color:#2563EB;"></span> ${o}</div>`).join("");
   cell("outcomes_txt", outcomesHtml, 1176, 720, 250, 62, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Target Bullseye Icon
@@ -515,6 +529,22 @@ export function generateTemplate48BcdrCyberRecoveryResilienceXml(
     const ic = svgIcon(db.icon as keyof typeof SVG, "#059669", 13);
     cell(`ft_db_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#0F172A;text-align:center;line-height:1.15;">${db.title}</div></div>`, bx, 816, 58, 64, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
+
+  // =========================================================================
+  // 5. ARCHITECTURAL FLOW CONNECTORS & LEGEND
+  // =========================================================================
+  edge("e_bcdr_0_1", "t0_frame", "t1_frame", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_1_2", "t1_frame", "t2_frame", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_2_3", "t2_frame", "t3_frame", "strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=6 4;endArrow=classic;endSize=5;");
+  edge("e_bcdr_3_4", "t3_frame", "t4_frame", "strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_4_5", "t4_frame", "t5_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_5_6", "t5_frame", "t6_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_6_7", "t6_frame", "t7_frame", "strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_bcdr_3_9", "t3_frame", "t9_frame", "strokeColor=#DC2626;strokeWidth=2;dashed=1;dashPattern=4 4;endArrow=classic;endSize=5;");
+  edge("e_bcdr_5_out", "t5_frame", "outcomes_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // Architecture Legend Bar
+  cell("bcdr_legend_bar", `<div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;color:#475569;padding:0 8px;"><div><b>ARCHITECTURAL KEY &amp; LEGEND:</b> &nbsp; Synchronous Protection &nbsp;|&nbsp; 🟣 Air-Gapped Cyber Vault &nbsp;|&nbsp; 🟢 Clean Room Recovery &nbsp;|&nbsp; Threat Isolation</div><div>Status: Production Certified &nbsp;|&nbsp; Recovery Point Objective (RPO) &lt; 5m &nbsp;|&nbsp; Recovery Time Objective (RTO) &lt; 30m</div></div>`, 16, 894, 1504, 22, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_48" name="BCDR, Cyber Recovery &amp; Operational Resilience">

@@ -433,7 +433,7 @@ export function generateTemplate47MlopsAiLifecyclePlatformXml(
     "Governed, compliant &amp; responsible AI at scale",
     "Business ROI &amp; measurable impact"
   ];
-  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7px;color:#334155;line-height:1.2;"><span style="color:#2563EB;">✓</span> ${o}</div>`).join("");
+  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7px;color:#334155;line-height:1.2;"><span style="color:#2563EB;"></span> ${o}</div>`).join("");
   cell("outcomes_txt", outcomesHtml, 1176, 728, 250, 78, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   // Target Bullseye Icon

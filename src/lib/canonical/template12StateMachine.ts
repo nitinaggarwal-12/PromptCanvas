@@ -1,5 +1,5 @@
 /**
- * 🏛️ CANONICAL MASTER BLUEPRINT 12 — STATE MACHINE DIAGRAM
+ *  CANONICAL MASTER BLUEPRINT 12 — STATE MACHINE DIAGRAM
  * 
  * 1:1 Ground-Truth Reproduction of images/12.png
  * "12 STATE MACHINE DIAGRAM | NOVACURA AI Copilot – Study Protocol Intelligence Workflow"
@@ -43,7 +43,7 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
   // Top-Right Brand Logo Block
   const brandHtml = `<div style="text-align:right;font-family:Inter,system-ui,sans-serif;">
     <div style="display:inline-flex;align-items:center;gap:6px;">
-      <span style="font-size:20px;">🧬</span>
+      <span style="font-size:20px;"></span>
       <span style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</span>
     </div>
     <div style="font-size:9.5px;font-style:italic;color:#64748B;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
@@ -92,35 +92,35 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:8px;letter-spacing:0.5px;">EVENTS (TRIGGERS)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">🚀</span>
+        <span style="font-size:12px;"></span>
         <span><b>E1</b> Question Submitted</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">📑</span>
+        <span style="font-size:12px;"></span>
         <span><b>E2</b> Context Retrieved</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">🧠</span>
+        <span style="font-size:12px;"></span>
         <span><b>E3</b> LLM Response Generated</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">🛡️</span>
+        <span style="font-size:12px;"></span>
         <span><b>E4</b> Guardrail Check Completed</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">👤</span>
+        <span style="font-size:12px;"></span>
         <span><b>E5</b> Human Review Completed</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">👍</span>
+        <span style="font-size:12px;"></span>
         <span><b>E6</b> User Feedback Provided</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-size:12px;">⏱️</span>
+        <span style="font-size:12px;">⏱</span>
         <span><b>E7</b> Timeout / SLA Breach</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:12px;">⚠️</span>
+        <span style="font-size:12px;"></span>
         <span><b>E8</b> System / Service Error</span>
       </div>
     </div>
@@ -129,30 +129,30 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
 
   // Card 2: GUARDRAILS & RULES (y: 425, h: 290)
   const rulesHtml = `<div style="padding:6px;">
-    <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:8px;letter-spacing:0.5px;">🛡️ GUARDRAILS &amp; RULES</div>
+    <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:8px;letter-spacing:0.5px;"> GUARDRAILS &amp; RULES</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Toxicity / PII / PHI Detection</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Hallucination Detection</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Regulatory Compliance (GxP)</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Source Attribution Required</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Confidence Threshold Check</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="color:#0284C7;font-weight:900;">✔</span>
+        <span style="color:#0284C7;font-weight:900;"></span>
         <span>Data Residency &amp; Access Policy</span>
       </div>
     </div>
@@ -194,7 +194,7 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <div style="background:#0F2A4A;color:#FFFFFF;font-size:9.5px;font-weight:900;text-align:center;padding:4px;border-radius:2px;margin-bottom:6px;letter-spacing:0.5px;">KEY TRANSITIONS</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-weight:900;color:#0F172A;font-size:12px;">➔</span>
+        <span style="font-weight:900;color:#0F172A;font-size:12px;"></span>
         <span>Automatic Transition</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -202,15 +202,15 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
         <span>Conditional Transition</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-weight:900;color:#16A34A;font-size:12px;">➔</span>
+        <span style="font-weight:900;color:#16A34A;font-size:12px;"></span>
         <span>Success / Allowed Path</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-        <span style="font-weight:900;color:#DC2626;font-size:12px;">➔</span>
+        <span style="font-weight:900;color:#DC2626;font-size:12px;"></span>
         <span>Failure / Blocked Path</span>
       </div>
       <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-weight:900;color:#7C3AED;font-size:12px;">➔</span>
+        <span style="font-weight:900;color:#7C3AED;font-size:12px;"></span>
         <span>Human Intervention</span>
       </div>
     </div>
@@ -408,9 +408,9 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
   const alertHtml = `<div style="padding:4px;text-align:center;">
     <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;margin-bottom:4px;">ALERTING &amp; MONITORING</div>
     <div style="display:flex;align-items:center;justify-content:space-around;font-size:7.5px;font-weight:700;color:#334155;">
-      <div>📈 Cloud Monitoring</div>
-      <div>📑 Cloud Logging</div>
-      <div>🔔 Alerting (PagerDuty)</div>
+      <div>Cloud Monitoring</div>
+      <div>Cloud Logging</div>
+      <div>Alerting (PagerDuty)</div>
     </div>
   </div>`;
   rect("alerting_box", alertHtml, 710, 565, 265, 55, "fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=1.2;align=center;verticalAlign=middle;");
@@ -431,37 +431,37 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:8px;">
       <tr>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">🗄️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Clinical Trials<br>Database</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">📑</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Regulatory<br>Documents</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">📖</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Scientific<br>Literature</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">🗄️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Internal<br>Knowledge Base</div>
         </td>
       </tr>
       <tr>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">📑</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Study Protocols</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">📑</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>SOPs &amp; Policies</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">💬</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Historical Q&amp;A</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">🌐</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>External APIs</div>
         </td>
       </tr>
@@ -475,37 +475,37 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:8px;">
       <tr>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">🧠</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Vertex AI<br>(LLM &amp; RAG)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">📊</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>BigQuery<br>(Vector Search)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">⚙️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Dataproc<br>(Spark)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;">🗄️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Cloud Storage<br>(Artifacts)</div>
         </td>
       </tr>
       <tr>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">⚙️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Cloud Functions<br>(Orchestration)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">🚀</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Cloud Run<br>(Services)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">📡</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Pub/Sub<br>(Events)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;">🛡️</div>
+          <div style="font-size:18px;margin-bottom:2px;"></div>
           <div>Cloud Armor<br>(Guardrails)</div>
         </td>
       </tr>

@@ -301,13 +301,13 @@ export function generateTemplate42ModernDataLakehouseDataMeshXml(
   cell("t2_lbl", "<b style=\"font-size:9px;color:#EA580C;\">DATA INGESTION<br/>LAYER</b><br/><span style=\"font-size:7px;color:#64748B;\">Reliable • Scalable<br/>Continuous</span>", 50, 628, 95, 34, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const ingestionNodes = [
-    { n: "❶", t: "Batch Ingestion", p: "Transfer Appliance", icon: "server" },
-    { n: "❷", t: "Database Ingestion", p: "Database Migration Service", icon: "database" },
-    { n: "❸", t: "Streaming Ingestion", p: "Pub/Sub Lite", icon: "network" },
-    { n: "❹", t: "Change Data Capture", p: "Datastream CDC", icon: "repeat" },
-    { n: "❺", t: "Data Ingestion API", p: "Apigee Connect", icon: "network" },
-    { n: "❻", t: "Event Ingestion", p: "Eventarc", icon: "activity" },
-    { n: "❼", t: "File Ingestion", p: "Cloud Storage Transfer", icon: "cloud" }
+    { n: "●", t: "Batch Ingestion", p: "Transfer Appliance", icon: "server" },
+    { n: "●", t: "Database Ingestion", p: "Database Migration Service", icon: "database" },
+    { n: "●", t: "Streaming Ingestion", p: "Pub/Sub Lite", icon: "network" },
+    { n: "●", t: "Change Data Capture", p: "Datastream CDC", icon: "repeat" },
+    { n: "●", t: "Data Ingestion API", p: "Apigee Connect", icon: "network" },
+    { n: "●", t: "Event Ingestion", p: "Eventarc", icon: "activity" },
+    { n: "●", t: "File Ingestion", p: "Cloud Storage Transfer", icon: "cloud" }
   ];
   ingestionNodes.forEach((inNode, idx) => {
     const ix = 150 + idx * 153;
@@ -452,17 +452,17 @@ export function generateTemplate42ModernDataLakehouseDataMeshXml(
     <b style="font-size:9px;color:#1D4ED8;letter-spacing:0.5px;">DATA FLOW LEGEND</b>
     <div style="display:flex;align-items:center;gap:12px;font-size:8px;font-weight:700;color:#0F172A;">
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#DC2626;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">1</span> Source</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#EA580C;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">2</span> Ingestion</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#D97706;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">3</span> Processing</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#16A34A;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">4</span> Storage</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#1D4ED8;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">5</span> Governance</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#2563EB;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">6</span> Data Products</span>
-      <span style="color:#64748B;">➔</span>
+      <span style="color:#64748B;"></span>
       <span style="display:flex;align-items:center;gap:4px;"><span style="background:#1E40AF;color:#FFF;border-radius:10px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:9px;">7</span> Consumption</span>
     </div>
   </div>`;

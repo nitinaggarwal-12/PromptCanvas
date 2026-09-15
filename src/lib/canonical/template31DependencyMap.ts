@@ -41,7 +41,7 @@ export function generateTemplate31DependencyMapXml(
     "hdr_title",
     `<div style='font-size:25px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>DEPENDENCY / RELATIONSHIP MAP</div>` +
     `<div style='font-size:13px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: NovaCura – AI-Powered Regulatory Intelligence Platform</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
     760,
@@ -49,7 +49,7 @@ export function generateTemplate31DependencyMapXml(
     "align=left;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   rect("hdr_brand", brandHtml, 860, 12, 270, 54, "fillColor=none;strokeColor=none;align=left;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.35;color:#0F172A;'>Visualize and manage dependencies across applications, data, infrastructure, teams, and external partners to reduce risk and improve delivery velocity.</div>`;
@@ -61,12 +61,12 @@ export function generateTemplate31DependencyMapXml(
 
   const legHtml = `<div style="font-size:8px;line-height:1.4;color:#0F172A;padding:4px;">
     <div style="font-weight:800;color:#1E3A8A;margin-top:2px;">Node Types:</div>
-    💻 Application / Service<br/>
-    🗄️ Data Store / Database<br/>
-    ☁️ Platform / Infrastructure<br/>
-    🌐 External System / Partner<br/>
-    🔌 Interface / Integration<br/>
-    👥 Team / Owner<br/>
+    Application / Service<br/>
+     Data Store / Database<br/>
+     Platform / Infrastructure<br/>
+    External System / Partner<br/>
+    Interface / Integration<br/>
+    Team / Owner<br/>
     <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
     <div style="font-weight:800;color:#1E3A8A;">Dependency Types:</div>
     ── <b>Data Flow</b> (Read/Write)<br/>
@@ -76,7 +76,7 @@ export function generateTemplate31DependencyMapXml(
     ── <b>Network / Connectivity</b><br/>
     <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
     <div style="font-weight:800;color:#DC2626;">Criticality (Impact if Down):</div>
-    🔴 <b>Critical (High)</b><br/>
+     <b>Critical (High)</b><br/>
     🟠 <b>High</b><br/>
     🟡 <b>Medium</b><br/>
     🟢 <b>Low</b>
@@ -89,56 +89,56 @@ export function generateTemplate31DependencyMapXml(
 
   const rows = [
     { n: "USERS & CHANNELS", col: "#7C3AED", bg: "#FAF5FF", y: 100, h: 86, cards: [
-      { t: "Regulatory Users", icon: "👥" },
-      { t: "QA / Compliance Users", icon: "👥" },
-      { t: "External Partners", icon: "🤝" },
-      { t: "Mobile Users", icon: "📱" },
-      { t: "Admin Users", icon: "👤" }
+      { t: "Regulatory Users", icon: "●" },
+      { t: "QA / Compliance Users", icon: "●" },
+      { t: "External Partners", icon: "●" },
+      { t: "Mobile Users", icon: "●" },
+      { t: "Admin Users", icon: "●" }
     ]},
     { n: "APPLICATIONS", col: "#2563EB", bg: "#EFF6FF", y: 194, h: 96, cards: [
-      { t: "Web Portal\n(Frontend)", icon: "💻" },
-      { t: "API\nGateway", icon: "🚪" },
-      { t: "Auth Service\n(OAuth / Identity)", icon: "🔒" },
-      { t: "AI Service\n(LLM / Agents)", icon: "🧠" },
-      { t: "Document\nProcessing", icon: "📑" },
-      { t: "Search & RAG\nService", icon: "🔍" },
-      { t: "Reporting &\nAnalytics", icon: "📊" }
+      { t: "Web Portal\n(Frontend)", icon: "●" },
+      { t: "API\nGateway", icon: "●" },
+      { t: "Auth Service\n(OAuth / Identity)", icon: "●" },
+      { t: "AI Service\n(LLM / Agents)", icon: "●" },
+      { t: "Document\nProcessing", icon: "●" },
+      { t: "Search & RAG\nService", icon: "●" },
+      { t: "Reporting &\nAnalytics", icon: "●" }
     ]},
     { n: "DATA LAYER", col: "#16A34A", bg: "#F0FDF4", y: 298, h: 96, cards: [
-      { t: "Operational DB\n(Cloud SQL)", icon: "🗄️" },
-      { t: "Vector DB\n(Vertex AI Vector)", icon: "📐" },
-      { t: "Document Store\n(Cloud Storage)", icon: "🗃️" },
-      { t: "Data Warehouse\n(BigQuery)", icon: "📊" },
-      { t: "Cache\n(Memorystore)", icon: "⚡" },
-      { t: "Audit Logs\n(Cloud Logging)", icon: "📑" }
+      { t: "Operational DB\n(Cloud SQL)", icon: "●" },
+      { t: "Vector DB\n(Vertex AI Vector)", icon: "●" },
+      { t: "Document Store\n(Cloud Storage)", icon: "●" },
+      { t: "Data Warehouse\n(BigQuery)", icon: "●" },
+      { t: "Cache\n(Memorystore)", icon: "●" },
+      { t: "Audit Logs\n(Cloud Logging)", icon: "●" }
     ]},
     { n: "INTEGRATIONS", col: "#EA580C", bg: "#FFFBEB", y: 402, h: 96, cards: [
-      { t: "Salesforce\n(CRM)", icon: "☁️" },
-      { t: "Veeva Vault\n(eTMF)", icon: "📑" },
-      { t: "FDA APIs\n(FAERS Data)", icon: "🏛️" },
-      { t: "EMA APIs\n(EudraVigilance)", icon: "🇪🇺" },
-      { t: "Email Service\n(SendGrid)", icon: "✉️" },
-      { t: "Slack\n(Webhook)", icon: "💬" },
-      { t: "Partner SFTP\n(Secure File)", icon: "📁" }
+      { t: "Salesforce\n(CRM)", icon: "●" },
+      { t: "Veeva Vault\n(eTMF)", icon: "●" },
+      { t: "FDA APIs\n(FAERS Data)", icon: "●" },
+      { t: "EMA APIs\n(EudraVigilance)", icon: "[EU]" },
+      { t: "Email Service\n(SendGrid)", icon: "●" },
+      { t: "Slack\n(Webhook)", icon: "●" },
+      { t: "Partner SFTP\n(Secure File)", icon: "●" }
     ]},
     { n: "PLATFORM / INFRASTRUCTURE", col: "#0284C7", bg: "#F0F9FF", y: 506, h: 96, cards: [
-      { t: "Google Cloud\n(VPC Network)", icon: "🌐" },
-      { t: "Kubernetes Engine\n(GKE Cluster)", icon: "☸️" },
-      { t: "Cloud Run\n(Microservices)", icon: "🚀" },
-      { t: "Vertex AI\n(Models)", icon: "🧠" },
-      { t: "Cloud Armor\n(Security)", icon: "🛡️" },
-      { t: "Cloud Monitoring\n& Alerting", icon: "📈" },
-      { t: "Cloud Backup &\nDR", icon: "💾" }
+      { t: "Google Cloud\n(VPC Network)", icon: "●" },
+      { t: "Kubernetes Engine\n(GKE Cluster)", icon: "●" },
+      { t: "Cloud Run\n(Microservices)", icon: "●" },
+      { t: "Vertex AI\n(Models)", icon: "●" },
+      { t: "Cloud Armor\n(Security)", icon: "●" },
+      { t: "Cloud Monitoring\n& Alerting", icon: "●" },
+      { t: "Cloud Backup &\nDR", icon: "●" }
     ]},
     { n: "TEAMS / OWNERS", col: "#475569", bg: "#F8FAFC", y: 610, h: 76, cards: [
-      { t: "Product Team\n(Platform)", icon: "👥" },
-      { t: "Data Engineering\nTeam", icon: "⚙️" },
-      { t: "ML/AI Eng\nTeam", icon: "🧠" },
-      { t: "Platform / SRE\nTeam", icon: "🚀" },
-      { t: "Security Team\n(InfoSec)", icon: "🛡️" },
-      { t: "DevOps / CI/CD\nTeam", icon: "💻" },
-      { t: "Compliance & QA\nTeam", icon: "⚖️" },
-      { t: "Business Owners\n& Execs", icon: "👔" }
+      { t: "Product Team\n(Platform)", icon: "●" },
+      { t: "Data Engineering\nTeam", icon: "●" },
+      { t: "ML/AI Eng\nTeam", icon: "●" },
+      { t: "Platform / SRE\nTeam", icon: "●" },
+      { t: "Security Team\n(InfoSec)", icon: "●" },
+      { t: "DevOps / CI/CD\nTeam", icon: "●" },
+      { t: "Compliance & QA\nTeam", icon: "●" },
+      { t: "Business Owners\n& Execs", icon: "●" }
     ]}
   ];
 
@@ -203,15 +203,15 @@ export function generateTemplate31DependencyMapXml(
     <tr style='font-weight:800;border-bottom:1px solid #CBD5E1;background:#F8FAFC;'>
       <td style='padding:2px;'>ID</td><td>FROM</td><td>TO</td><td>TYPE</td><td style='text-align:center;'>CRIT</td><td>OWNER</td>
     </tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-01</td><td>Web Portal</td><td>API Gateway</td><td>REST API/HTTPS</td><td style='text-align:center;color:#DC2626;font-weight:900;'>🔴</td><td>Platform Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-02</td><td>API Gateway</td><td>Auth Service</td><td>OAuth / JWT</td><td style='text-align:center;color:#DC2626;font-weight:900;'>🔴</td><td>Security Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-03</td><td>API Gateway</td><td>AI Service</td><td>gRPC / Internal</td><td style='text-align:center;color:#DC2626;font-weight:900;'>🔴</td><td>ML/AI Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-04</td><td>AI Service</td><td>Vector DB</td><td>Data Read/Write</td><td style='text-align:center;color:#DC2626;font-weight:900;'>🔴</td><td>Data Eng Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-01</td><td>Web Portal</td><td>API Gateway</td><td>REST API/HTTPS</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Platform Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-02</td><td>API Gateway</td><td>Auth Service</td><td>OAuth / JWT</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Security Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-03</td><td>API Gateway</td><td>AI Service</td><td>gRPC / Internal</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>ML/AI Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-04</td><td>AI Service</td><td>Vector DB</td><td>Data Read/Write</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Data Eng Team</td></tr>
     <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-05</td><td>Document Processing</td><td>Document Store</td><td>Data Read/Write</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Data Eng Team</td></tr>
     <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-06</td><td>Search &amp; RAG Service</td><td>Data Warehouse</td><td>Data Read</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Data Eng Team</td></tr>
     <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-07</td><td>Reporting &amp; Analytics</td><td>Data Warehouse</td><td>Data Read</td><td style='text-align:center;color:#EAB308;font-weight:900;'>🟡</td><td>Analytics Team</td></tr>
     <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-08</td><td>API Gateway</td><td>Salesforce</td><td>API Integration</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Integration Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-09</td><td>All Apps</td><td>Cloud Armor / Sec</td><td>Access / Secur</td><td style='text-align:center;color:#DC2626;font-weight:900;'>🔴</td><td>Security Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-09</td><td>All Apps</td><td>Cloud Armor / Sec</td><td>Access / Secur</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Security Team</td></tr>
     <tr><td style='padding:2px;'>D-10</td><td>All Infra</td><td>Cloud Monitoring &amp; Logging</td><td>Observability</td><td style='text-align:center;color:#16A34A;font-weight:900;'>🟢</td><td>SRE Team</td></tr>
   </table>`;
   text("txt_r_cat", catTableHtml, 1226, 98, 292, 222, "align=left;verticalAlign=top;padding=2;");
@@ -237,7 +237,7 @@ export function generateTemplate31DependencyMapXml(
   rect("lbl_r_heat", `<b style="font-size:10.5px;color:#FFFFFF;letter-spacing:0.5px;">DEPENDENCY RISK MATRIX</b>`, 1224, 506, 296, 22, "fillColor=#DC2626;strokeColor=#DC2626;rounded=0;align=center;");
   const heatHtml = `<table style='width:100%;border-collapse:collapse;font-size:7.5px;text-align:center;'>
     <tr style='font-weight:800;background:#F8FAFC;'>
-      <td style='padding:2px;text-align:left;'>Impact ➔<br/>Likelihood ⬇</td><td>Low (1)</td><td>Medium (2)</td><td>High (3)</td><td>Critical (4)</td>
+      <td style='padding:2px;text-align:left;'>Impact<br/>Likelihood ⬇</td><td>Low (1)</td><td>Medium (2)</td><td>High (3)</td><td>Critical (4)</td>
     </tr>
     <tr><td style='padding:2px;text-align:left;font-weight:700;'>Critical (4)</td><td style='background:#FEF08A;'>M (4)</td><td style='background:#FED7AA;'>H (8)</td><td style='background:#FCA5A5;font-weight:900;'>C (12)</td><td style='background:#EF4444;color:#FFF;font-weight:900;'>C (16)</td></tr>
     <tr><td style='padding:2px;text-align:left;font-weight:700;'>High (3)</td><td style='background:#BBF7D0;'>L (3)</td><td style='background:#FEF08A;'>M (6)</td><td style='background:#FED7AA;font-weight:900;'>H (9)</td><td style='background:#FCA5A5;font-weight:900;'>C (12)</td></tr>
@@ -252,11 +252,11 @@ export function generateTemplate31DependencyMapXml(
   rect("box_b_crit", "", 16, 704, 370, 242, "strokeColor=#DC2626;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_crit", `<b style="font-size:10.5px;color:#DC2626;">CRITICAL DEPENDENCIES (TOP 5)</b>`, 16, 704, 370, 22, "fillColor=#FEF2F2;strokeColor=#CBD5E1;rounded=0;align=center;");
   const critList = [
-    { t: "AI Service ➔ Vector DB (Model Context Retrieval)", sub: "Impact: AI response unavailable" },
-    { t: "Document Processing ➔ Document Store", sub: "Impact: Document ingestion & processing stops" },
-    { t: "Search & RAG Service ➔ Data Warehouse", sub: "Impact: Search results & analytics degraded" },
-    { t: "API Gateway ➔ Auth Service", sub: "Impact: User authentication fails" },
-    { t: "GKE / Cloud Run ➔ All Applications", sub: "Impact: Service outage / unavailability" }
+    { t: "AI Service Vector DB (Model Context Retrieval)", sub: "Impact: AI response unavailable" },
+    { t: "Document Processing Document Store", sub: "Impact: Document ingestion & processing stops" },
+    { t: "Search & RAG Service Data Warehouse", sub: "Impact: Search results & analytics degraded" },
+    { t: "API Gateway Auth Service", sub: "Impact: User authentication fails" },
+    { t: "GKE / Cloud Run All Applications", sub: "Impact: Service outage / unavailability" }
   ];
   critList.forEach((cl, idx) => {
     const cy = 730 + idx * 42;
@@ -303,13 +303,13 @@ export function generateTemplate31DependencyMapXml(
   rect("box_b_gov", "", 1180, 704, 340, 242, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_b_gov", `<b style="font-size:10.5px;color:#1E3A8A;">DEPENDENCY GOVERNANCE &amp; NOTES</b>`, 1180, 704, 340, 22, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   const govNotesHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:4px;">
-    ☑ Maintain dependency inventory<br/>
-    ☑ Review &amp; validate dependencies on quarterly basis<br/>
-    ☑ Monitor health &amp; set SLA alerts<br/>
-    ☑ Define owners for all critical dependencies<br/>
-    ☑ Perform impact analysis before changes<br/>
-    ☑ Document contracts &amp; SLAs<br/>
-    ☑ Review third-party risk annually<br/>
+    Maintain dependency inventory<br/>
+    Review &amp; validate dependencies on quarterly basis<br/>
+    Monitor health &amp; set SLA alerts<br/>
+    Define owners for all critical dependencies<br/>
+    Perform impact analysis before changes<br/>
+    Document contracts &amp; SLAs<br/>
+    Review third-party risk annually<br/>
     <hr style="border:none;border-top:1px solid #CBD5E1;margin:6px 0;"/>
     <span style="color:#64748B;">• All dependencies are continuously discovered.<br/>
     • Feed this map into risk, DR, and change processes.</span>
@@ -319,11 +319,11 @@ export function generateTemplate31DependencyMapXml(
   // ==================== 6. KEY STATS BAR (y=952, h=30) ====================
   const statsHtml = `<div style='font-size:8.5px;font-weight:700;color:#1E3A8A;display:flex;justify-content:space-around;align-items:center;'>
     <div><b>KEY STATS:</b></div>
-    <div>💻 Total Applications: <b>12</b></div>
-    <div>🗄️ Data Stores: <b>6</b></div>
-    <div>🔌 Integrations: <b>8</b></div>
-    <div>⚠️ Critical Dependencies: <b>5</b></div>
-    <div>🌐 External Partners: <b>7</b></div>
+    <div>Total Applications: <b>12</b></div>
+    <div> Data Stores: <b>6</b></div>
+    <div>Integrations: <b>8</b></div>
+    <div> Critical Dependencies: <b>5</b></div>
+    <div>External Partners: <b>7</b></div>
   </div>`;
   rect("stats_bar", statsHtml, 16, 952, 1504, 30, "fillColor=#EFF6FF;strokeColor=#BFDBFE;rounded=1;align=center;verticalAlign=middle;padding=2;");
 

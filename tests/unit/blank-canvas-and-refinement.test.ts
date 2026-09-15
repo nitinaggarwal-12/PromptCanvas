@@ -105,7 +105,8 @@ describe('Blank Canvas & Iterative Refinement Suite', () => {
     const customResult = await customizeDiagramTemplateWithGemini(
       templateXml,
       'add accuracy and verification components',
-      'agentic_rag'
+      'agentic_rag',
+      'mock-test-api-key'
     );
 
     expect(customResult.xml).toContain('Accuracy Verification Engine');

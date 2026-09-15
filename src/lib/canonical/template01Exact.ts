@@ -32,16 +32,16 @@ export function generateTemplate01ExactXml(): string {
   text('legend1', '────────▶  Primary Data Flow', 1138, 42, 170, 18, 'fontSize=11;align=left;');
   text('legend2', '— — —▶  Async / Event Flow', 1138, 67, 170, 18, 'fontSize=11;align=left;');
   text('legend3', '··········  Optional / Reference Flow', 1324, 42, 180, 18, 'fontSize=11;align=left;');
-  text('legend4', '🔒  Secure / Encrypted', 1324, 67, 170, 18, 'fontSize=11;align=left;');
+  text('legend4', 'Secure / Encrypted', 1324, 67, 170, 18, 'fontSize=11;align=left;');
 
   // External actors
   rect('actorsBox', '', 15, 118, 206, 620, 'strokeColor=#315B9A;rounded=1;');
   sectionHeader('actorsHdr', 'EXTERNAL ACTORS', 15, 118, 206, '#0647B8');
   const actorRows = [
-    ['actor1','👥','Patients','Access care, view\nrecords, schedule\nappointments,\nmake payments',174],
+    ['actor1','●','Patients','Access care, view\nrecords, schedule\nappointments,\nmake payments',174],
     ['actor2','🩺','Providers','Clinicians, nurses\nand care teams\nusing the system\nfor patient care',306],
-    ['actor3','💻','Administrative\nUsers','Staff managing\noperations, billing,\nreports and\nconfigurations',438],
-    ['actor4','📱','Mobile Users','On-the-go access\nvia mobile app\nfor patients and\nproviders',588],
+    ['actor3','●','Administrative\nUsers','Staff managing\noperations, billing,\nreports and\nconfigurations',438],
+    ['actor4','●','Mobile Users','On-the-go access\nvia mobile app\nfor patients and\nproviders',588],
   ] as const;
   actorRows.forEach(([id, icon, name, desc, y]) => {
     text(`${id}_icon`, icon, 28, y, 54, 58, 'fontSize=88;align=center;');
@@ -51,18 +51,18 @@ export function generateTemplate01ExactXml(): string {
 
   // Main platform boundary
   rect('platform', '', 370, 120, 698, 614, 'strokeColor=#0647B8;strokeWidth=2;rounded=1;');
-  text('platformIcon', '♥', 455, 138, 70, 66, 'fontSize=86;fontColor=#0752B4;align=center;');
+  text('platformIcon', '●', 455, 138, 70, 66, 'fontSize=86;fontColor=#0752B4;align=center;');
   text('platformTitle', 'NovaCura Integrated Healthcare Platform', 545, 150, 460, 44, 'fontSize=24;fontStyle=1;fontColor=#0647B8;align=left;');
 
   const caps = [
-    ['cap1','👥  Patient Engagement','Patient Portal\nMobile App\nCommunications\nEducation',385,221],
+    ['cap1','Patient Engagement','Patient Portal\nMobile App\nCommunications\nEducation',385,221],
     ['cap2','🩺  Care Delivery','EHR / EMR\nClinical Workflows\nePrescribing\nCare Plans',557,221],
-    ['cap3','📅  Scheduling','Appointments\nResource Mgmt\nCalendar\nReminders',732,221],
-    ['cap4','💲  Billing & Revenue','Claims Mgmt\nInvoicing\nPayments\nAR / Collections',898,221],
-    ['cap5','📁  Clinical Data\nManagement','Clinical Notes\nDocuments\nLabs & Results\nImaging',385,389],
-    ['cap6','📊  Analytics & Reporting','Operational Reports\nClinical Analytics\nDashboards\nBI',557,389],
-    ['cap7','🧠  AI & Decision Support','Risk Stratification\nCDS Rules\nPredictive Analytics\nGenAI Insights',732,389],
-    ['cap8','⚙  Administration','User Mgmt\nRole Mgmt\nConfigurations\nAudit Logs',898,389],
+    ['cap3','Scheduling','Appointments\nResource Mgmt\nCalendar\nReminders',732,221],
+    ['cap4','Billing & Revenue','Claims Mgmt\nInvoicing\nPayments\nAR / Collections',898,221],
+    ['cap5','Clinical Data\nManagement','Clinical Notes\nDocuments\nLabs & Results\nImaging',385,389],
+    ['cap6','Analytics & Reporting','Operational Reports\nClinical Analytics\nDashboards\nBI',557,389],
+    ['cap7','AI & Decision Support','Risk Stratification\nCDS Rules\nPredictive Analytics\nGenAI Insights',732,389],
+    ['cap8','Administration','User Mgmt\nRole Mgmt\nConfigurations\nAudit Logs',898,389],
   ] as const;
   caps.forEach(([id, name, body, x, y]) => {
     rect(id, '', x, y, 160, 150, 'strokeColor=#7EA0D2;');
@@ -71,7 +71,7 @@ export function generateTemplate01ExactXml(): string {
   });
 
   rect('integration', '', 385, 556, 662, 70, 'strokeColor=#7EA0D2;');
-  text('integrationIcon', '🧩', 423, 566, 50, 44, 'fontSize=81;align=center;');
+  text('integrationIcon', '●', 423, 566, 50, 44, 'fontSize=81;align=center;');
   text('integrationTitle', 'Integration & API Layer', 500, 571, 220, 22, 'fontSize=15;fontStyle=1;fontColor=#0647B8;align=left;');
   text('integrationBody', 'REST / FHIR APIs  |  GraphQL  |  Webhooks  |  API Gateway  |  Service Orchestration', 500, 596, 500, 20, 'fontSize=11;align=left;');
 
@@ -88,10 +88,10 @@ export function generateTemplate01ExactXml(): string {
     ['sys2','Labcorp','Laboratory Systems','Lab orders, results,\nstatus updates','HL7 / FHIR',230],
     ['sys3','Nuance','Imaging Systems','Imaging orders, images,\nreports','DICOM / HL7',310],
     ['sys4','Rx','Pharmacy Systems','Medication orders,\nstatus, interactions','NCPDP / FHIR',390],
-    ['sys5','🛡','Insurance Payers','Eligibility, benefits,\nclaims status','X12 / FHIR',470],
+    ['sys5','●','Insurance Payers','Eligibility, benefits,\nclaims status','X12 / FHIR',470],
     ['sys6','stripe','Payment Gateways','Payment processing,\nrefunds','HTTPS / API',550],
     ['sys7','okta','Identity Provider','SSO, MFA,\nuser identity','SAML / OIDC',630],
-    ['sys8','❄','External Data Sources','Public Health, HIE,\nReference Data','API / Files',710],
+    ['sys8','●','External Data Sources','Public Health, HIE,\nReference Data','API / Files',710],
   ] as const;
   systems.forEach(([id, logo, name, desc, protocol, y]) => {
     rect(id, '', 1232, y, 278, 72, 'strokeColor=#91AAD2;');
@@ -99,7 +99,7 @@ export function generateTemplate01ExactXml(): string {
     text(`${id}_name`, name, 1350, y + 7, 150, 22, 'fontSize=13;fontStyle=1;align=left;');
     text(`${id}_desc`, desc, 1350, y + 30, 150, 38, 'fontSize=11;align=left;verticalAlign=top;');
     text(`${id}_protocol`, protocol, 1088, y + 23, 120, 20, 'fontSize=11;align=center;');
-    text(`${id}_lock`, '🔒', 1134, y + 44, 30, 20, 'fontSize=12;align=center;');
+    text(`${id}_lock`, '●', 1134, y + 44, 30, 20, 'fontSize=12;align=center;');
   });
 
   // Actor ingress connectors
@@ -125,8 +125,8 @@ export function generateTemplate01ExactXml(): string {
   rect('securityBox', '', 525, 783, 350, 217, 'strokeColor=#315B9A;');
   sectionHeader('securityHdr', 'SECURITY & COMPLIANCE', 525, 783, 350, '#0F8B55');
   const sec = [
-    ['🔒','Encrypt in Transit\nTLS 1.3',540,828],['🛡','Encrypt at Rest\nAES-256',653,828],['👥','Role-Based Access\nControl (RBAC)',767,828],
-    ['📋','Audit Logging\n& Monitoring',540,910],['⚕','HIPAA\nCompliant',653,910],['☁','Data Backup\n& DR',767,910],
+    ['●','Encrypt in Transit\nTLS 1.3',540,828],['●','Encrypt at Rest\nAES-256',653,828],['●','Role-Based Access\nControl (RBAC)',767,828],
+    ['●','Audit Logging\n& Monitoring',540,910],['●','HIPAA\nCompliant',653,910],['●','Data Backup\n& DR',767,910],
   ] as const;
   sec.forEach(([icon, label, x, y], i) => {
     text(`secI${i}`, icon, x, y, 34, 38, 'fontSize=24;align=center;');
@@ -147,7 +147,7 @@ export function generateTemplate01ExactXml(): string {
 
   rect('infoBox', '', 1221, 783, 299, 217, 'strokeColor=#315B9A;');
   sectionHeader('infoHdr', 'DIAGRAM INFO', 1221, 783, 299, '#0647B8');
-  const infos = [['📅','Date:     May 20, 2025'],['◎','Level:    1 (Context)'],['♙','Owner:    Enterprise Architecture'],['◆','Version:  1.0']] as const;
+  const infos = [['●','Date:     May 20, 2025'],['◎','Level:    1 (Context)'],['●','Owner:    Enterprise Architecture'],['◆','Version:  1.0']] as const;
   infos.forEach(([icon, label], i) => {
     text(`infoI${i}`, icon, 1236, 827 + i*39, 36, 28, 'fontSize=21;fontColor=#0647B8;align=center;');
     text(`infoT${i}`, label, 1280, 827 + i*39, 220, 28, 'fontSize=11;align=left;');

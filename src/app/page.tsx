@@ -35,8 +35,8 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 export default function LandingPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  // Main content is strictly light theme as specified (matching Studio in Image 2)
-  const isLight = true;
+  // Landing page is strictly all dark theme as requested
+  const isLight = false;
   const [user, setUser] = useState<{ id: string; email: string; name?: string | null; is_guest?: boolean } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -102,14 +102,14 @@ export default function LandingPage() {
   };
 
   return (
-    <div className={`relative min-h-screen font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-x-clip transition-colors duration-300 ${
+    <div className={`relative min-h-screen font-sans selection:bg-teal-500/30 selection:text-teal-200 overflow-clip transition-colors duration-300 ${
       isLight ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#070a13] text-slate-100'
     }`}>
       
       {/* Background Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-teal-500/10 blur-[120px] pointer-events-none z-0" />
       <div className="absolute top-[40%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-[-10%] left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
+      <div className="absolute bottom-0 left-[20%] w-[55vw] h-[55vw] rounded-full bg-purple-500/5 blur-[120px] pointer-events-none z-0" />
 
       {/* Blueprint Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(20,184,166,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(20,184,166,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-40 pointer-events-none z-0" />
@@ -789,8 +789,8 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Bottom Banner */}
-      <section className="relative py-24 z-10 max-w-6xl mx-auto px-6 text-center">
-        <div className={`rounded-3xl p-12 md:p-16 relative overflow-hidden shadow-2xl border ${
+      <section className="relative py-16 md:py-20 z-10 w-full max-w-8xl mx-auto px-6 md:px-12 text-center">
+        <div className={`rounded-3xl p-10 md:p-14 relative overflow-hidden shadow-2xl border ${
           isLight
             ? 'bg-gradient-to-br from-white via-teal-50/50 to-indigo-50/50 border-teal-200 shadow-xl'
             : 'bg-[#090d16] bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.08),transparent_50%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.08),transparent_50%)] border-teal-500/20'

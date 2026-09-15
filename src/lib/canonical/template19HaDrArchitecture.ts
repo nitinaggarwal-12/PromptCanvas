@@ -52,7 +52,7 @@ export function generateTemplate19HaDrArchitectureXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -75,34 +75,34 @@ export function generateTemplate19HaDrArchitectureXml(
 
   // Tier 1: Edge (Primary)
   cell("box_pri_edge", "", 106, 126, 424, 96, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
-  cell("pri_cdn", "<div style='font-size:18px;text-align:center;'>⚡</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud CDN</div>", 116, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_armor", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF)</div>", 256, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_lb", "<div style='font-size:18px;text-align:center;'>🌐</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Load<br/>Balancing</div>", 396, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_cdn", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud CDN</div>", 116, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_armor", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF)</div>", 256, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_lb", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Load<br/>Balancing</div>", 396, 136, 124, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 2: Application Layer (Primary)
   cell("box_pri_app", "", 106, 232, 424, 114, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;");
-  cell("pri_gke_f", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Frontend<br/>(GKE)</div>", 114, 244, 94, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_gke_b", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Backend Services<br/>(GKE)</div>", 216, 244, 100, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_vertex", "<div style='font-size:18px;text-align:center;'>🧠</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>AI/ML Services<br/>(Vertex AI)</div>", 324, 244, 98, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_apigw", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>API Gateway<br/>(Cloud Endpoints)</div>", 430, 244, 92, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_gke_f", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Frontend<br/>(GKE)</div>", 114, 244, 94, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_gke_b", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Backend Services<br/>(GKE)</div>", 216, 244, 100, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_vertex", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>AI/ML Services<br/>(Vertex AI)</div>", 324, 244, 98, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_apigw", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>API Gateway<br/>(Cloud Endpoints)</div>", 430, 244, 92, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 3: Data Layer (Primary)
   cell("box_pri_data", "", 106, 356, 424, 114, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.2;");
-  cell("pri_sql", "<div style='font-size:18px;text-align:center;'>🗄️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud SQL<br/>(Primary)</div>", 114, 368, 94, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_bq", "<div style='font-size:18px;text-align:center;'>📊</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>BigQuery<br/>(Primary)</div>", 216, 368, 100, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_redis", "<div style='font-size:18px;text-align:center;'>💾</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Memorystore<br/>(Redis)</div>", 324, 368, 98, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_gcs", "<div style='font-size:18px;text-align:center;'>🗃️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud Storage<br/>(Regional)</div>", 430, 368, 92, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_sql", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud SQL<br/>(Primary)</div>", 114, 368, 94, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_bq", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>BigQuery<br/>(Primary)</div>", 216, 368, 100, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_redis", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Memorystore<br/>(Redis)</div>", 324, 368, 98, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_gcs", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud Storage<br/>(Regional)</div>", 430, 368, 92, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 4: Platform Services (Primary)
   cell("box_pri_plat", "", 106, 480, 424, 146, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;");
-  cell("pri_iam", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>IAM</div>", 114, 494, 94, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_kms", "<div style='font-size:18px;text-align:center;'>🔑</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud KMS</div>", 216, 494, 100, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_secret", "<div style='font-size:18px;text-align:center;'>🔒</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Secret Manager</div>", 324, 494, 98, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("pri_mon", "<div style='font-size:18px;text-align:center;'>📊</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Monitoring<br/>&amp; Logging</div>", 430, 494, 92, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_iam", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>IAM</div>", 114, 494, 94, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_kms", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud KMS</div>", 216, 494, 100, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_secret", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Secret Manager</div>", 324, 494, 98, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("pri_mon", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Monitoring<br/>&amp; Logging</div>", 430, 494, 92, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // ==================== 3. CENTER: GLOBAL FAILOVER GATEWAY (x=548..666, y=116..640, w=118) ====================
-  cell("node_glb", "<div style='font-size:20px;text-align:center;'>🌐</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>Global<br/>HTTP(S)<br/>Load Balancer</div>", 552, 180, 110, 106, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=3;");
-  cell("node_dns", "<div style='font-size:20px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>Cloud DNS<br/>(Health Checks)</div>", 552, 330, 110, 106, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=3;");
+  cell("node_glb", "<div style='font-size:20px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>Global<br/>HTTP(S)<br/>Load Balancer</div>", 552, 180, 110, 106, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=3;");
+  cell("node_dns", "<div style='font-size:20px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.15;margin-top:2px;'>Cloud DNS<br/>(Health Checks)</div>", 552, 330, 110, 106, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=3;");
   
   cell("node_failover_lbl", "<div style='font-size:7.5px;font-weight:800;color:#DC2626;text-align:center;'>Failover via<br/>Traffic Director /<br/>DNS</div>", 552, 480, 110, 54, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
@@ -125,30 +125,30 @@ export function generateTemplate19HaDrArchitectureXml(
 
   // Tier 1: Edge (DR)
   cell("box_dr_edge", "", 684, 126, 504, 96, "rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;dashed=1;");
-  cell("dr_cdn", "<div style='font-size:18px;text-align:center;'>⚡</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud CDN</div>", 700, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_armor", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF)</div>", 860, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_lb", "<div style='font-size:18px;text-align:center;'>🌐</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Load<br/>Balancing</div>", 1020, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_cdn", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud CDN</div>", 700, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_armor", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Armor<br/>(WAF)</div>", 860, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_lb", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Load<br/>Balancing</div>", 1020, 136, 148, 76, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 2: Application Layer (DR)
   cell("box_dr_app", "", 684, 232, 504, 114, "rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;dashed=1;");
-  cell("dr_gke_f", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Frontend<br/>(GKE)</div>", 696, 244, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_gke_b", "<div style='font-size:18px;text-align:center;'>⚙️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Backend Services<br/>(GKE)</div>", 822, 244, 118, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_vertex", "<div style='font-size:18px;text-align:center;'>🧠</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>AI/ML Services<br/>(Vertex AI)</div>", 950, 244, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_apigw", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>API Gateway<br/>(Cloud Endpoints)</div>", 1074, 244, 104, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_gke_f", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Frontend<br/>(GKE)</div>", 696, 244, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_gke_b", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Backend Services<br/>(GKE)</div>", 822, 244, 118, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_vertex", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>AI/ML Services<br/>(Vertex AI)</div>", 950, 244, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_apigw", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>API Gateway<br/>(Cloud Endpoints)</div>", 1074, 244, 104, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 3: Data Layer (DR)
   cell("box_dr_data", "", 684, 356, 504, 114, "rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.2;dashed=1;");
-  cell("dr_sql", "<div style='font-size:18px;text-align:center;'>🗄️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud SQL<br/>(Standby)</div>", 696, 368, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_bq", "<div style='font-size:18px;text-align:center;'>📊</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>BigQuery<br/>(Standby)</div>", 822, 368, 118, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_redis", "<div style='font-size:18px;text-align:center;'>💾</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Memorystore<br/>(Redis)</div>", 950, 368, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_gcs", "<div style='font-size:18px;text-align:center;'>🗃️</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud Storage<br/>(Regional)</div>", 1074, 368, 104, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_sql", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud SQL<br/>(Standby)</div>", 696, 368, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_bq", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>BigQuery<br/>(Standby)</div>", 822, 368, 118, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_redis", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Memorystore<br/>(Redis)</div>", 950, 368, 114, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_gcs", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;'>Cloud Storage<br/>(Regional)</div>", 1074, 368, 104, 92, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 4: Platform Services (DR)
   cell("box_dr_plat", "", 684, 480, 504, 146, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;dashed=1;");
-  cell("dr_iam", "<div style='font-size:18px;text-align:center;'>🛡️</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>IAM</div>", 696, 494, 114, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_kms", "<div style='font-size:18px;text-align:center;'>🔑</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud KMS</div>", 822, 494, 118, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_secret", "<div style='font-size:18px;text-align:center;'>🔒</div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Secret Manager</div>", 950, 494, 114, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
-  cell("dr_mon", "<div style='font-size:18px;text-align:center;'>📊</div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Monitoring<br/>&amp; Logging</div>", 1074, 494, 104, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_iam", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>IAM</div>", 696, 494, 114, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_kms", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Cloud KMS</div>", 822, 494, 118, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_secret", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Secret Manager</div>", 950, 494, 114, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("dr_mon", "<div style='font-size:18px;text-align:center;'></div><div style='font-size:7px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;margin-top:2px;'>Cloud Monitoring<br/>&amp; Logging</div>", 1074, 494, 104, 118, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // ==================== 5. TOP RIGHT: RTO / RPO TARGETS & STRATEGIES (x=1208..1520, y=86..640, w=312) ====================
   // 1. RTO / RPO Targets
@@ -158,12 +158,12 @@ export function generateTemplate19HaDrArchitectureXml(
   const targetsHtml = `<table style="width:100%;border-collapse:collapse;text-align:center;margin-top:4px;">
     <tr>
       <td style="width:50%;padding:4px;border-right:1px solid #E2E8F0;">
-        <div style="font-size:24px;">⏱️</div>
+        <div style="font-size:24px;">⏱</div>
         <div style="font-size:11px;font-weight:900;color:#16A34A;margin-top:2px;">RTO</div>
         <div style="font-size:14px;font-weight:900;color:#0F172A;">≤ 1 Hour</div>
       </td>
       <td style="width:50%;padding:4px;">
-        <div style="font-size:24px;">⏱️</div>
+        <div style="font-size:24px;">⏱</div>
         <div style="font-size:11px;font-weight:900;color:#D97706;margin-top:2px;">RPO</div>
         <div style="font-size:14px;font-weight:900;color:#0F172A;">≤ 15 Minutes</div>
       </td>
@@ -175,11 +175,11 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("box_ha_strat", "", 1208, 230, 312, 196, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_ha_strat", "HA STRATEGY (WITHIN REGION)", 1208, 230, 312, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
   const haStratHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
-    ✔ <b>Multi-zone GKE node pools</b> (3 zones)<br/>
-    ✔ <b>Regional Cloud Load Balancing</b><br/>
-    ✔ <b>Zonal Cloud SQL</b> with automatic failover<br/>
-    ✔ <b>Multi-zone Memorystore</b> (Redis)<br/>
-    ✔ <b>SLO-based auto-healing &amp; self-monitoring</b>
+     <b>Multi-zone GKE node pools</b> (3 zones)<br/>
+     <b>Regional Cloud Load Balancing</b><br/>
+     <b>Zonal Cloud SQL</b> with automatic failover<br/>
+     <b>Multi-zone Memorystore</b> (Redis)<br/>
+     <b>SLO-based auto-healing &amp; self-monitoring</b>
   </div>`;
   cell("txt_ha_strat", haStratHtml, 1210, 256, 308, 164, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -187,11 +187,11 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("box_dr_strat", "", 1208, 434, 312, 206, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;");
   cell("lbl_dr_strat", "DR STRATEGY (CROSS-REGION)", 1208, 434, 312, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
   const drStratHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
-    ✔ <b>Cross-region asynchronous replication</b><br/>
-    ✔ <b>Scheduled backups</b> to DR region<br/>
-    ✔ <b>Infrastructure as Code</b> (Terraform)<br/>
-    ✔ <b>Runbooks &amp; automated failover</b> workflows<br/>
-    ✔ <b>Regular DR drills &amp; validations</b>
+     <b>Cross-region asynchronous replication</b><br/>
+     <b>Scheduled backups</b> to DR region<br/>
+     <b>Infrastructure as Code</b> (Terraform)<br/>
+     <b>Runbooks &amp; automated failover</b> workflows<br/>
+     <b>Regular DR drills &amp; validations</b>
   </div>`;
   cell("txt_dr_strat", drStratHtml, 1210, 460, 308, 174, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -201,12 +201,12 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("lbl_m_repl", "CROSS-REGION DATA REPLICATION &amp; BACKUP", 16, 650, 850, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const replNodes = [
-    { id: "rn_1", t: "Cloud SQL<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Async Replication</span>", icon: "🗄️" },
-    { id: "rn_2", t: "BigQuery<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Replication</span>", icon: "📊" },
-    { id: "rn_3", t: "Cloud Storage<br/><span style='color:#64748B;font-size:8px;'>Dual-Region<br/>(US)</span>", icon: "🗃️" },
-    { id: "rn_4", t: "Memorystore<br/><span style='color:#64748B;font-size:8px;'>Data Persistence<br/>&amp; Snapshots</span>", icon: "💾" },
-    { id: "rn_5", t: "Backups<br/><span style='color:#64748B;font-size:8px;'>(GCS DR Bucket)<br/>+ Retention</span>", icon: "📦" },
-    { id: "rn_6", t: "Archive (Optional)<br/><span style='color:#64748B;font-size:8px;'>Coldline / Archive<br/>for Long-Term</span>", icon: "📑" }
+    { id: "rn_1", t: "Cloud SQL<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Async Replication</span>", icon: "●" },
+    { id: "rn_2", t: "BigQuery<br/><span style='color:#64748B;font-size:8px;'>Cross-Region<br/>Replication</span>", icon: "●" },
+    { id: "rn_3", t: "Cloud Storage<br/><span style='color:#64748B;font-size:8px;'>Dual-Region<br/>(US)</span>", icon: "●" },
+    { id: "rn_4", t: "Memorystore<br/><span style='color:#64748B;font-size:8px;'>Data Persistence<br/>&amp; Snapshots</span>", icon: "●" },
+    { id: "rn_5", t: "Backups<br/><span style='color:#64748B;font-size:8px;'>(GCS DR Bucket)<br/>+ Retention</span>", icon: "●" },
+    { id: "rn_6", t: "Archive (Optional)<br/><span style='color:#64748B;font-size:8px;'>Coldline / Archive<br/>for Long-Term</span>", icon: "●" }
   ];
   replNodes.forEach((rn, idx) => {
     const rx = 26 + idx * 138;
@@ -222,12 +222,12 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("lbl_m_failover", "FAILOVER FLOW", 876, 650, 644, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FEF2F2;strokeColor=#CBD5E1;fontColor=#DC2626;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const failSteps = [
-    { id: "fs_1", num: "1", t: "Failure<br/>Detected", icon: "⚡" },
-    { id: "fs_2", num: "2", t: "Health Check<br/>Fails", icon: "❌" },
-    { id: "fs_3", num: "3", t: "Traffic Shift<br/>(DNS / TD)", icon: "🔄" },
-    { id: "fs_4", num: "4", t: "DR Services<br/>Activated", icon: "⚙️" },
-    { id: "fs_5", num: "5", t: "Data Consistency<br/>Validated", icon: "🗄️" },
-    { id: "fs_6", num: "6", t: "Operations<br/>Resumed", icon: "✔" }
+    { id: "fs_1", num: "1", t: "Failure<br/>Detected", icon: "●" },
+    { id: "fs_2", num: "2", t: "Health Check<br/>Fails", icon: "●" },
+    { id: "fs_3", num: "3", t: "Traffic Shift<br/>(DNS / TD)", icon: "●" },
+    { id: "fs_4", num: "4", t: "DR Services<br/>Activated", icon: "●" },
+    { id: "fs_5", num: "5", t: "Data Consistency<br/>Validated", icon: "●" },
+    { id: "fs_6", num: "6", t: "Operations<br/>Resumed", icon: "●" }
   ];
   failSteps.forEach((fs, idx) => {
     const fx = 886 + idx * 104;
@@ -243,11 +243,11 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("box_b_benefits", "", 16, 780, 320, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_benefits", "KEY BENEFITS", 16, 780, 320, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
   const bBenefitsHtml = `<div style="font-size:8px;line-height:1.5;color:#0F172A;padding:4px 8px;">
-    ✔ <b>High availability within region</b> with auto-recovery<br/>
-    ✔ <b>Disaster recovery across region</b> with defined RTO/RPO<br/>
-    ✔ <b>Minimal data loss</b> with cross-region replication<br/>
-    ✔ <b>Resilient, fault-tolerant</b> and self-healing architecture<br/>
-    ✔ <b>Regular DR testing</b> ensures readiness &amp; compliance
+     <b>High availability within region</b> with auto-recovery<br/>
+     <b>Disaster recovery across region</b> with defined RTO/RPO<br/>
+     <b>Minimal data loss</b> with cross-region replication<br/>
+     <b>Resilient, fault-tolerant</b> and self-healing architecture<br/>
+     <b>Regular DR testing</b> ensures readiness &amp; compliance
   </div>`;
   cell("txt_b_benefits", bBenefitsHtml, 18, 806, 316, 142, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -256,16 +256,16 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("lbl_b_tech", "TECHNOLOGIES", 346, 780, 470, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
   
   const techGrid = [
-    { t: "GKE", icon: "⚙️" },
-    { t: "Cloud SQL", icon: "🗄️" },
-    { t: "BigQuery", icon: "📊" },
-    { t: "Cloud Storage", icon: "🗃️" },
-    { t: "Memorystore", icon: "💾" },
-    { t: "Cloud Load<br/>Balancing", icon: "🌐" },
-    { t: "Cloud Armor", icon: "🛡️" },
-    { t: "Cloud CDN", icon: "⚡" },
-    { t: "Cloud DNS", icon: "🔒" },
-    { t: "Cloud Monitoring<br/>&amp; Logging", icon: "📈" }
+    { t: "GKE", icon: "●" },
+    { t: "Cloud SQL", icon: "●" },
+    { t: "BigQuery", icon: "●" },
+    { t: "Cloud Storage", icon: "●" },
+    { t: "Memorystore", icon: "●" },
+    { t: "Cloud Load<br/>Balancing", icon: "●" },
+    { t: "Cloud Armor", icon: "●" },
+    { t: "Cloud CDN", icon: "●" },
+    { t: "Cloud DNS", icon: "●" },
+    { t: "Cloud Monitoring<br/>&amp; Logging", icon: "●" }
   ];
   techGrid.forEach((tg, idx) => {
     const col = idx % 5;
@@ -279,11 +279,11 @@ export function generateTemplate19HaDrArchitectureXml(
   cell("box_b_backup", "", 826, 780, 290, 174, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
   cell("lbl_b_backup", "BACKUP &amp; RETENTION POLICY", 826, 780, 290, 22, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   const bBackupHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
-    📑 <b>Daily Automated Backups</b><br/>
-    ⏱️ <b>Point-in-Time Recovery (PITR)</b><br/>
-    📅 <b>Retention: 30 Days (Standard)</b><br/>
-    📦 <b>Archive Retention: 1 Year</b><br/>
-    🛡️ <b>Backup Validation: Weekly</b>
+     <b>Daily Automated Backups</b><br/>
+    ⏱ <b>Point-in-Time Recovery (PITR)</b><br/>
+     <b>Retention: 30 Days (Standard)</b><br/>
+     <b>Archive Retention: 1 Year</b><br/>
+     <b>Backup Validation: Weekly</b>
   </div>`;
   cell("txt_b_backup", bBackupHtml, 828, 806, 286, 142, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 

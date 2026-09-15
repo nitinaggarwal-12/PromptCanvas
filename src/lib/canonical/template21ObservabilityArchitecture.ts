@@ -59,11 +59,11 @@ export function generateTemplate21ObservabilityArchitectureXml(
   // Title Block
   const titleHtml = `<div style="font-size:22px;font-weight:900;color:#0F172A;letter-spacing:0.5px;line-height:1.1;">Observability Architecture</div>` +
     `<div style="font-size:11.5px;font-weight:800;color:#5B21B6;margin-top:2px;">Use Case: NovaCura – Full-Stack Observability</div>` +
-    `<div style="font-size:9.5px;font-weight:600;color:#64748B;margin-top:2px;">☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`;
+    `<div style="font-size:9.5px;font-weight:600;color:#64748B;margin-top:2px;">Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`;
   cell("hdr_title", titleHtml, 78, 10, 540, 56, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   // Center Brand Block
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:38px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:9.5px;color:#64748B;font-weight:700;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:38px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:9.5px;color:#64748B;font-weight:700;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 636, 10, 410, 54, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // Right Objective Box
@@ -83,17 +83,17 @@ export function generateTemplate21ObservabilityArchitectureXml(
   );
 
   const sources = [
-    { t: "Users", sub: "Web / Mobile", icon: "👥" },
-    { t: "API Gateway", sub: "(Cloud Endpoints)", icon: "🛡️" },
-    { t: "Microservices", sub: "(GKE / Cloud Run)", icon: "☸️" },
-    { t: "Databases", sub: "(Cloud SQL / BigQuery)", icon: "🗄️" },
-    { t: "Caching", sub: "(Memorystore Redis)", icon: "💾" },
-    { t: "Messaging", sub: "(Pub/Sub)", icon: "📨" },
-    { t: "AI / ML Services", sub: "(Vertex AI)", icon: "🧠" },
-    { t: "Data Pipeline", sub: "(Dataflow / Dataproc)", icon: "🔄" },
-    { t: "Infrastructure", sub: "(GCE / GKE / Network)", icon: "🖥️" },
-    { t: "Security", sub: "(IAM / KMS / SCC)", icon: "🔒" },
-    { t: "Third-Party", sub: "APIs / SaaS", icon: "☁️" }
+    { t: "Users", sub: "Web / Mobile", icon: "●" },
+    { t: "API Gateway", sub: "(Cloud Endpoints)", icon: "●" },
+    { t: "Microservices", sub: "(GKE / Cloud Run)", icon: "●" },
+    { t: "Databases", sub: "(Cloud SQL / BigQuery)", icon: "●" },
+    { t: "Caching", sub: "(Memorystore Redis)", icon: "●" },
+    { t: "Messaging", sub: "(Pub/Sub)", icon: "●" },
+    { t: "AI / ML Services", sub: "(Vertex AI)", icon: "●" },
+    { t: "Data Pipeline", sub: "(Dataflow / Dataproc)", icon: "●" },
+    { t: "Infrastructure", sub: "(GCE / GKE / Network)", icon: "●" },
+    { t: "Security", sub: "(IAM / KMS / SCC)", icon: "●" },
+    { t: "Third-Party", sub: "APIs / SaaS", icon: "●" }
   ];
 
   sources.forEach((s, idx) => {
@@ -147,12 +147,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("lbl_pillars", "OBSERVABILITY PILLARS", 16, 166, 148, 18, "html=1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const pillars = [
-    { name: "Reliability", desc: "Uptime, SLOs,<br/>Error budgets", icon: "🛡️" },
-    { name: "Performance", desc: "Latency, Throughput,<br/>Saturation", icon: "⏱️" },
-    { name: "Availability", desc: "Health, Failover,<br/>Capacity", icon: "⬆️" },
-    { name: "Security", desc: "Threats, Vulnerabilities,<br/>Audit", icon: "🔒" },
-    { name: "Business", desc: "User Journeys,<br/>Adoption, Outcomes", icon: "📊" },
-    { name: "Cost", desc: "Resource usage,<br/>Optimization", icon: "💲" }
+    { name: "Reliability", desc: "Uptime, SLOs,<br/>Error budgets", icon: "●" },
+    { name: "Performance", desc: "Latency, Throughput,<br/>Saturation", icon: "⏱" },
+    { name: "Availability", desc: "Health, Failover,<br/>Capacity", icon: "⬆" },
+    { name: "Security", desc: "Threats, Vulnerabilities,<br/>Audit", icon: "●" },
+    { name: "Business", desc: "User Journeys,<br/>Adoption, Outcomes", icon: "●" },
+    { name: "Cost", desc: "Resource usage,<br/>Optimization", icon: "●" }
   ];
 
   pillars.forEach((p, idx) => {
@@ -176,12 +176,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_p1", "", 186, 188, 216, 340, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
   cell("lbl_p1", "COLLECTION", 186, 190, 216, 16, "html=1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const p1Items = [
-    { t: "Cloud Operations", sub: "(Ops Agent)", icon: "⚙️" },
-    { t: "OpenTelemetry", sub: "Collector", icon: "📡" },
-    { t: "Cloud Audit Logs", sub: "", icon: "📑" },
-    { t: "VPC Flow Logs", sub: "", icon: "🌐" },
-    { t: "Application Logs", sub: "(Structured)", icon: "📜" },
-    { t: "Custom Metrics", sub: "", icon: "📈" }
+    { t: "Cloud Operations", sub: "(Ops Agent)", icon: "●" },
+    { t: "OpenTelemetry", sub: "Collector", icon: "●" },
+    { t: "Cloud Audit Logs", sub: "", icon: "●" },
+    { t: "VPC Flow Logs", sub: "", icon: "●" },
+    { t: "Application Logs", sub: "(Structured)", icon: "●" },
+    { t: "Custom Metrics", sub: "", icon: "●" }
   ];
   p1Items.forEach((it, idx) => {
     const iy = 210 + idx * 52;
@@ -200,11 +200,11 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_p2", "", 412, 188, 216, 340, "rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;");
   cell("lbl_p2", "INGESTION &amp; PROCESSING", 412, 190, 216, 16, "html=1;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const p2Items = [
-    { t: "Cloud Logging", icon: "📑" },
-    { t: "Cloud Monitoring", icon: "📈" },
-    { t: "Cloud Trace", icon: "🔍" },
-    { t: "Eventarc", icon: "⚡" },
-    { t: "Pub/Sub", icon: "📨" }
+    { t: "Cloud Logging", icon: "●" },
+    { t: "Cloud Monitoring", icon: "●" },
+    { t: "Cloud Trace", icon: "●" },
+    { t: "Eventarc", icon: "●" },
+    { t: "Pub/Sub", icon: "●" }
   ];
   p2Items.forEach((it, idx) => {
     const iy = 212 + idx * 63;
@@ -223,10 +223,10 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_p3", "", 638, 188, 216, 340, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1.2;");
   cell("lbl_p3", "STORAGE &amp; INDEXING", 638, 190, 216, 16, "html=1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const p3Items = [
-    { t: "Log Buckets", sub: "(Regional / CMEK)", icon: "🗄️" },
-    { t: "Time Series DB", sub: "(Monitoring Backend)", icon: "📊" },
-    { t: "Trace Storage", sub: "(Cloud Trace)", icon: "💾" },
-    { t: "BigQuery", sub: "(Long-term Analytics)", icon: "📈" }
+    { t: "Log Buckets", sub: "(Regional / CMEK)", icon: "●" },
+    { t: "Time Series DB", sub: "(Monitoring Backend)", icon: "●" },
+    { t: "Trace Storage", sub: "(Cloud Trace)", icon: "●" },
+    { t: "BigQuery", sub: "(Long-term Analytics)", icon: "●" }
   ];
   p3Items.forEach((it, idx) => {
     const iy = 214 + idx * 78;
@@ -245,11 +245,11 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_p4", "", 864, 188, 216, 340, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
   cell("lbl_p4", "ANALYSIS &amp; CORRELATION", 864, 190, 216, 16, "html=1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const p4Items = [
-    { t: "Monitoring Dashboards", sub: "(Metrics Explorer)", icon: "📈" },
-    { t: "Log Analytics", sub: "(Logs Explorer)", icon: "📑" },
-    { t: "Trace Analysis", sub: "(Trace Explorer)", icon: "🔍" },
-    { t: "Security Command Center", sub: "(Threat &amp; Vuln Mgmt)", icon: "🛡️" },
-    { t: "BigQuery Analytics", sub: "(Custom Queries)", icon: "📊" }
+    { t: "Monitoring Dashboards", sub: "(Metrics Explorer)", icon: "●" },
+    { t: "Log Analytics", sub: "(Logs Explorer)", icon: "●" },
+    { t: "Trace Analysis", sub: "(Trace Explorer)", icon: "●" },
+    { t: "Security Command Center", sub: "(Threat &amp; Vuln Mgmt)", icon: "●" },
+    { t: "BigQuery Analytics", sub: "(Custom Queries)", icon: "●" }
   ];
   p4Items.forEach((it, idx) => {
     const iy = 212 + idx * 63;
@@ -268,11 +268,11 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_p5", "", 1090, 188, 248, 340, "rounded=1;arcSize=4;fillColor=#FFFBEB;strokeColor=#FDE68A;strokeWidth=1.2;");
   cell("lbl_p5", "VISUALIZATION &amp; ALERTING", 1090, 190, 248, 16, "html=1;fontColor=#D97706;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const p5Items = [
-    { t: "Dashboards", sub: "(Looker Studio / Cloud Monitoring)", icon: "📊" },
-    { t: "Alert Policies", sub: "(Threshold / Anomaly)", icon: "🔔" },
-    { t: "Notification Channels", sub: "(Email / Slack / PagerDuty)", icon: "📨" },
-    { t: "SLO / Error Budget", sub: "(SLOs &amp; Uptime Checks)", icon: "🎯" },
-    { t: "Incident Management", sub: "(PagerDuty / Jira)", icon: "🚨" }
+    { t: "Dashboards", sub: "(Looker Studio / Cloud Monitoring)", icon: "●" },
+    { t: "Alert Policies", sub: "(Threshold / Anomaly)", icon: "●" },
+    { t: "Notification Channels", sub: "(Email / Slack / PagerDuty)", icon: "●" },
+    { t: "SLO / Error Budget", sub: "(SLOs &amp; Uptime Checks)", icon: "●" },
+    { t: "Incident Management", sub: "(PagerDuty / Jira)", icon: "●" }
   ];
   p5Items.forEach((it, idx) => {
     const iy = 212 + idx * 63;
@@ -310,12 +310,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("lbl_found", "OBSERVABILITY FOUNDATION", 186, 534, 1152, 14, "html=1;fontColor=#D97706;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const foundationItems = [
-    { t: "IAM &amp; Least Privilege", sub: "", icon: "👤" },
-    { t: "CMEK Encryption", sub: "(At Rest)", icon: "🔒" },
-    { t: "Retention Policies", sub: "(Per Data Type)", icon: "📅" },
-    { t: "Data Access Controls", sub: "(RBAC / ABAC)", icon: "🛡️" },
-    { t: "Sampling Policies", sub: "(Traces / Logs)", icon: "📊" },
-    { t: "Cost Controls", sub: "(Quotas / Budgets)", icon: "💰" }
+    { t: "IAM &amp; Least Privilege", sub: "", icon: "●" },
+    { t: "CMEK Encryption", sub: "(At Rest)", icon: "●" },
+    { t: "Retention Policies", sub: "(Per Data Type)", icon: "●" },
+    { t: "Data Access Controls", sub: "(RBAC / ABAC)", icon: "●" },
+    { t: "Sampling Policies", sub: "(Traces / Logs)", icon: "●" },
+    { t: "Cost Controls", sub: "(Quotas / Budgets)", icon: "●" }
   ];
   foundationItems.forEach((fi, idx) => {
     const fx = 192 + idx * 190;
@@ -342,12 +342,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("lbl_consumers", "CONSUMERS &amp; OUTCOMES", 1358, 166, 162, 18, "html=1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const consumers = [
-    { role: "SRE / DevOps", outcome: "Operate &amp; Improve", icon: "👥" },
-    { role: "Security Team", outcome: "Detect &amp; Respond", icon: "🛡️" },
-    { role: "Data / AI Team", outcome: "Monitor Pipelines<br/>&amp; Models", icon: "🧠" },
-    { role: "Product / Business", outcome: "Understand Impact", icon: "📈" },
-    { role: "Compliance / Audit", outcome: "Reports &amp; Evidence", icon: "📑" },
-    { role: "Leadership", outcome: "KPIs &amp; Health", icon: "👥" }
+    { role: "SRE / DevOps", outcome: "Operate &amp; Improve", icon: "●" },
+    { role: "Security Team", outcome: "Detect &amp; Respond", icon: "●" },
+    { role: "Data / AI Team", outcome: "Monitor Pipelines<br/>&amp; Models", icon: "●" },
+    { role: "Product / Business", outcome: "Understand Impact", icon: "●" },
+    { role: "Compliance / Audit", outcome: "Reports &amp; Evidence", icon: "●" },
+    { role: "Leadership", outcome: "KPIs &amp; Health", icon: "●" }
   ];
 
   consumers.forEach((cs, idx) => {
@@ -374,12 +374,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_b_benefits", "", 16, 614, 236, 348, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_benefits", "KEY BENEFITS", 16, 614, 236, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
   const bBenefitsHtml = `<div style="font-size:9.5px;line-height:1.65;color:#0F172A;padding:8px 8px;">
-    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;">✔</span> <b>Full-stack visibility</b> across applications, data, AI, and infrastructure</div>
-    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;">✔</span> <b>Proactive issue detection</b> with correlation across signals</div>
-    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;">✔</span> <b>Faster MTTR</b> with actionable insights</div>
-    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;">✔</span> <b>SLO-driven reliability</b> and error budget management</div>
-    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;">✔</span> <b>Security, compliance</b>, and audit readiness</div>
-    <div><span style="color:#16A34A;font-weight:900;">✔</span> <b>Cost visibility</b> and optimization</div>
+    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;"></span> <b>Full-stack visibility</b> across applications, data, AI, and infrastructure</div>
+    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;"></span> <b>Proactive issue detection</b> with correlation across signals</div>
+    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;"></span> <b>Faster MTTR</b> with actionable insights</div>
+    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;"></span> <b>SLO-driven reliability</b> and error budget management</div>
+    <div style="margin-bottom:12px;"><span style="color:#16A34A;font-weight:900;"></span> <b>Security, compliance</b>, and audit readiness</div>
+    <div><span style="color:#16A34A;font-weight:900;"></span> <b>Cost visibility</b> and optimization</div>
   </div>`;
   cell("txt_b_benefits", bBenefitsHtml, 18, 642, 232, 316, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -387,16 +387,16 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_b_kpis", "", 260, 614, 236, 348, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_b_kpis", "KEY SIGNALS &amp; KPIs (Examples)", 260, 614, 236, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
   const bKpisHtml = `<div style="font-size:8.5px;line-height:1.65;color:#0F172A;padding:6px 6px;">
-    <div>📊 <b>Availability</b> (SLA / SLO Compliance %)</div>
-    <div>⏱️ <b>Latency</b> (P50 / P95 / P99)</div>
-    <div>🎯 <b>Error Rate</b> (4xx / 5xx %)</div>
-    <div>🔄 <b>Throughput</b> (RPS / TPS)</div>
-    <div>⚙️ <b>CPU / Memory / Disk</b> Utilization</div>
-    <div>📦 <b>Queue Depth / Backlog</b></div>
-    <div>🧠 <b>AI Model Latency / Token Usage</b></div>
-    <div>🗄️ <b>Data Freshness / Pipeline Lag</b></div>
-    <div>🔒 <b>Security Findings / Incidents</b></div>
-    <div>💰 <b>Cost per Service / per User</b></div>
+    <div> <b>Availability</b> (SLA / SLO Compliance %)</div>
+    <div>⏱ <b>Latency</b> (P50 / P95 / P99)</div>
+    <div> <b>Error Rate</b> (4xx / 5xx %)</div>
+    <div> <b>Throughput</b> (RPS / TPS)</div>
+    <div> <b>CPU / Memory / Disk</b> Utilization</div>
+    <div> <b>Queue Depth / Backlog</b></div>
+    <div> <b>AI Model Latency / Token Usage</b></div>
+    <div> <b>Data Freshness / Pipeline Lag</b></div>
+    <div> <b>Security Findings / Incidents</b></div>
+    <div> <b>Cost per Service / per User</b></div>
   </div>`;
   cell("txt_b_kpis", bKpisHtml, 262, 642, 232, 316, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -404,10 +404,10 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_b_slo", "", 504, 614, 208, 348, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
   cell("lbl_b_slo", "SLO EXAMPLE (User API Service)", 504, 614, 208, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const bSloHtml = `<div style="font-size:9.5px;line-height:1.6;color:#0F172A;padding:8px 8px;">
-    <div style="margin-bottom:16px;"><span style="font-size:14px;">🛡️</span> <b>Availability SLO</b><br/><span style="color:#64748B;font-size:8.5px;">99.95% (Monthly)</span></div>
-    <div style="margin-bottom:16px;"><span style="font-size:14px;">⏱️</span> <b>Latency SLO</b><br/><span style="color:#64748B;font-size:8.5px;">P95 &lt; 500 ms</span></div>
-    <div style="margin-bottom:16px;"><span style="font-size:14px;">⚙️</span> <b>Error Budget</b><br/><span style="color:#64748B;font-size:8.5px;">21.6 minutes / month</span></div>
-    <div><span style="font-size:14px;">🔔</span> <b>Burn Rate Alerts</b><br/><span style="color:#64748B;font-size:8.5px;">2x (14m), 14x (2m)</span></div>
+    <div style="margin-bottom:16px;"><span style="font-size:14px;"></span> <b>Availability SLO</b><br/><span style="color:#64748B;font-size:8.5px;">99.95% (Monthly)</span></div>
+    <div style="margin-bottom:16px;"><span style="font-size:14px;">⏱</span> <b>Latency SLO</b><br/><span style="color:#64748B;font-size:8.5px;">P95 &lt; 500 ms</span></div>
+    <div style="margin-bottom:16px;"><span style="font-size:14px;"></span> <b>Error Budget</b><br/><span style="color:#64748B;font-size:8.5px;">21.6 minutes / month</span></div>
+    <div><span style="font-size:14px;"></span> <b>Burn Rate Alerts</b><br/><span style="color:#64748B;font-size:8.5px;">2x (14m), 14x (2m)</span></div>
   </div>`;
   cell("txt_b_slo", bSloHtml, 506, 642, 204, 316, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -415,12 +415,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_b_alerts", "", 720, 614, 216, 348, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.5;");
   cell("lbl_b_alerts", "ALERTING EXAMPLES", 720, 614, 216, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#FEF2F2;strokeColor=#CBD5E1;fontColor=#DC2626;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
   const bAlertsHtml = `<div style="font-size:8.5px;line-height:1.55;color:#0F172A;padding:6px 6px;">
-    <div style="margin-bottom:8px;"><span style="color:#DC2626;">🚨</span> <b>High Error Rate</b><br/><span style="color:#64748B;font-size:7.5px;">5xx &gt; 1% for 5 min</span></div>
-    <div style="margin-bottom:8px;"><span style="color:#DC2626;">⏱️</span> <b>High Latency</b><br/><span style="color:#64748B;font-size:7.5px;">P95 &gt; 1s for 5 min</span></div>
-    <div style="margin-bottom:8px;"><span style="color:#DC2626;">🔥</span> <b>SLO Burn Rate</b><br/><span style="color:#64748B;font-size:7.5px;">&gt; 2x for 14 min</span></div>
-    <div style="margin-bottom:8px;"><span style="color:#DC2626;">🔄</span> <b>Pipeline Delay</b><br/><span style="color:#64748B;font-size:7.5px;">Data lag &gt; 15 min</span></div>
-    <div style="margin-bottom:8px;"><span style="color:#DC2626;">🛡️</span> <b>Security Finding</b><br/><span style="color:#64748B;font-size:7.5px;">Critical severity</span></div>
-    <div><span style="color:#DC2626;">👤</span> <b>Instance Down</b><br/><span style="color:#64748B;font-size:7.5px;">Uptime &lt; 99.9%</span></div>
+    <div style="margin-bottom:8px;"><span style="color:#DC2626;"></span> <b>High Error Rate</b><br/><span style="color:#64748B;font-size:7.5px;">5xx &gt; 1% for 5 min</span></div>
+    <div style="margin-bottom:8px;"><span style="color:#DC2626;">⏱</span> <b>High Latency</b><br/><span style="color:#64748B;font-size:7.5px;">P95 &gt; 1s for 5 min</span></div>
+    <div style="margin-bottom:8px;"><span style="color:#DC2626;"></span> <b>SLO Burn Rate</b><br/><span style="color:#64748B;font-size:7.5px;">&gt; 2x for 14 min</span></div>
+    <div style="margin-bottom:8px;"><span style="color:#DC2626;"></span> <b>Pipeline Delay</b><br/><span style="color:#64748B;font-size:7.5px;">Data lag &gt; 15 min</span></div>
+    <div style="margin-bottom:8px;"><span style="color:#DC2626;"></span> <b>Security Finding</b><br/><span style="color:#64748B;font-size:7.5px;">Critical severity</span></div>
+    <div><span style="color:#DC2626;"></span> <b>Instance Down</b><br/><span style="color:#64748B;font-size:7.5px;">Uptime &lt; 99.9%</span></div>
   </div>`;
   cell("txt_b_alerts", bAlertsHtml, 722, 642, 212, 316, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -428,12 +428,12 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("box_b_ret", "", 944, 614, 216, 348, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.5;");
   cell("lbl_b_ret", "DATA RETENTION (Defaults)", 944, 614, 216, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const bRetHtml = `<table style="width:100%;border-collapse:collapse;font-size:9.5px;line-height:2.2;padding:6px 6px;">
-    <tr><td>📑 <b>Logs (Hot)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">30 Days</td></tr>
-    <tr><td>📦 <b>Logs (Archive)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">1 Year</td></tr>
-    <tr><td>📈 <b>Metrics (High Res)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">6 Weeks</td></tr>
-    <tr><td>📊 <b>Metrics (Standard)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">24 Months</td></tr>
-    <tr><td>💾 <b>Traces</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">30 Days</td></tr>
-    <tr><td>📜 <b>Audit Logs</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">1 Year</td></tr>
+    <tr><td> <b>Logs (Hot)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">30 Days</td></tr>
+    <tr><td> <b>Logs (Archive)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">1 Year</td></tr>
+    <tr><td> <b>Metrics (High Res)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">6 Weeks</td></tr>
+    <tr><td> <b>Metrics (Standard)</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">24 Months</td></tr>
+    <tr><td> <b>Traces</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">30 Days</td></tr>
+    <tr><td> <b>Audit Logs</b></td><td style="text-align:right;font-weight:900;color:#0F172A;">1 Year</td></tr>
   </table>`;
   cell("txt_b_ret", bRetHtml, 946, 642, 212, 316, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -442,16 +442,16 @@ export function generateTemplate21ObservabilityArchitectureXml(
   cell("lbl_b_tech", "TECHNOLOGIES", 1168, 614, 352, 26, "shape=rectangle;rounded=1;arcSize=6;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const techGrid = [
-    { t: "Cloud Logging", icon: "📑" },
-    { t: "BigQuery", icon: "📊" },
-    { t: "Cloud Monitoring", icon: "📈" },
-    { t: "Security Command Center", icon: "🛡️" },
-    { t: "Cloud Trace", icon: "🔍" },
-    { t: "Cloud Operations (Ops Agent)", icon: "⚙️" },
-    { t: "Eventarc", icon: "⚡" },
-    { t: "Looker Studio", icon: "📊" },
-    { t: "Pub/Sub", icon: "📨" },
-    { t: "PagerDuty / Slack / Email", icon: "🔔" }
+    { t: "Cloud Logging", icon: "●" },
+    { t: "BigQuery", icon: "●" },
+    { t: "Cloud Monitoring", icon: "●" },
+    { t: "Security Command Center", icon: "●" },
+    { t: "Cloud Trace", icon: "●" },
+    { t: "Cloud Operations (Ops Agent)", icon: "●" },
+    { t: "Eventarc", icon: "●" },
+    { t: "Looker Studio", icon: "●" },
+    { t: "Pub/Sub", icon: "●" },
+    { t: "PagerDuty / Slack / Email", icon: "●" }
   ];
   techGrid.forEach((tg, idx) => {
     const col = idx % 2;

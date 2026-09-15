@@ -53,8 +53,48 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/canvas',
+        destination: '/workspace',
+        permanent: true,
+      },
+      {
+        source: '/history',
+        destination: '/library',
+        permanent: true,
+      },
+      {
         source: '/canonical-templates',
-        destination: '/diablueprint',
+        destination: '/canonical',
+        permanent: true,
+      },
+      {
+        source: '/blueprints',
+        destination: '/canonical',
+        permanent: true,
+      },
+      {
+        source: '/templates',
+        destination: '/canonical',
+        permanent: true,
+      },
+      {
+        source: '/compare-diagrams',
+        destination: '/gcp',
+        permanent: true,
+      },
+      {
+        source: '/studio2',
+        destination: '/studio',
+        permanent: true,
+      },
+      {
+        source: '/studio3',
+        destination: '/studio',
+        permanent: true,
+      },
+      {
+        source: '/studioprod',
+        destination: '/studio',
         permanent: true,
       },
     ];

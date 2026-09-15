@@ -526,8 +526,28 @@ export class OmniQcChief {
 
       if (isSubstantiveCard) {
         if (isExplicitTextOnly || (!hasFill && !hasStroke)) {
-          // This is a bare floating text card
-          bareCards.push(v);
+          // Check if there is an underlying geometry card at these coordinates or immediately enclosing
+          const hasUnderlyingBox = allVerts.some(
+            other =>
+              other.id !== v.id &&
+              ((Math.abs(other.x - v.x) <= 8 &&
+                Math.abs(other.y - v.y) <= 8 &&
+                Math.abs(other.w - v.w) <= 16 &&
+                Math.abs(other.h - v.h) <= 16) ||
+                (v.x >= other.x - 4 &&
+                  v.y >= other.y - 4 &&
+                  v.x + v.w <= other.x + other.w + 8 &&
+                  v.y + v.h <= other.y + other.h + 8 &&
+                  other.w <= 500 &&
+                  other.h <= 250)) &&
+              (/fillColor=(?!none)(#[0-9a-fA-F]{6}|[a-zA-Z]+)/i.test(other.style) ||
+                /strokeColor=(?!none)(#[0-9a-fA-F]{6}|[a-zA-Z]+)/i.test(other.style))
+          );
+          if (hasUnderlyingBox) {
+            boxedCardsCount++;
+          } else {
+            bareCards.push(v);
+          }
         } else if (hasFill || hasStroke) {
           boxedCardsCount++;
         }

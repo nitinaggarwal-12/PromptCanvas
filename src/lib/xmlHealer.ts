@@ -22,10 +22,20 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
   const healingLog: string[] = [];
   let isHealed = false;
 
-  const isCompletelyEmpty = !inputXml || 
-    typeof inputXml !== 'string' || 
-    inputXml.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>') ||
-    !inputXml.includes('vertex="1"');
+  // 0. Auto-heal base64 data URIs missing the ';base64,' marker (e.g. data:image/svg+xml,PHN2...)
+  // Chrome and mxGraph fail to parse raw base64 without ;base64,, throwing net::ERR_INVALID_URL.
+  let workingXml = inputXml || '';
+  const rawDataUriRe = /data:image\/([a-zA-Z0-9+-]+),([A-Za-z0-9+/]{16,}={0,2})/g;
+  if (rawDataUriRe.test(workingXml)) {
+    workingXml = workingXml.replace(rawDataUriRe, 'data:image/$1;base64,$2');
+    isHealed = true;
+    healingLog.push('Normalized base64 data URIs missing ;base64, marker.');
+  }
+
+  const isCompletelyEmpty = !workingXml || 
+    typeof workingXml !== 'string' || 
+    workingXml.includes('<root><mxCell id="0"/><mxCell id="1" parent="0"/></root>') ||
+    !workingXml.includes('vertex="1"');
 
   if (isCompletelyEmpty) {
     healingLog.push('Input XML had 0 vertices or was empty. Injected full master template.');
@@ -146,16 +156,18 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
   );
 
   if (isMasterOrStructured) {
-    const safeXml = inputXml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
+    const safeXml = workingXml.replace(/&amp;amp;(?:amp;)*/g, '&amp;');
     return {
       isValid: true,
-      isHealed: false,
+      isHealed,
       xml: safeXml,
-      healingLog: ['Protected master/canonical blueprint passed through without geometric mutation.']
+      healingLog: isHealed 
+        ? [...healingLog, 'Protected master/canonical blueprint passed through without geometric mutation.']
+        : ['Protected master/canonical blueprint passed through without geometric mutation.']
     };
   }
 
-  let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(inputXml.trim(), archType || 'unified_system_view');
+  let cleaned = preflightVerifyAndHealXmlAcrossAll6Audits(workingXml.trim(), archType || 'unified_system_view');
 
   // 1. Strip Markdown Code Fences if present
   if (cleaned.includes('```')) {

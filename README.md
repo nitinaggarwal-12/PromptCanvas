@@ -34,9 +34,20 @@ Pass `layoutEngineV2: true` (or `false`) in the `POST /api/generate` request bod
 
 ## 🧪 Testing & Validation CLI
 
-### Run Complete Test Suite
-Executes unit tests for schema validation, XML pre-render validator, ELK determinism, golden pipeline tests across 10 blueprint templates, round-trip cell matching, and edit-flow minimal diff:
+### Master Omni 1.1 Architecture Quality Gate
+Executes the comprehensive 5-step quality verification gate covering render safety, master catalog quality (60 blueprints), canvas generator self-healing, hooks schema validation, and architecture documentation:
+```bash
+npm run quality-gate
+```
 
+### Automated Jetski Lifecycle Governance Hooks
+Automated agent safeguards in `.agents/hooks.json` enforce:
+- **`PreToolUse` (`scripts/pre_tool_guard.mjs`)**: Intercepts destructive shell commands (`rm -rf`, `DROP TABLE`, `git reset --hard`) and unauthorized root path writes.
+- **`PostToolUse` (`scripts/post_tool_verifier.mjs`)**: Post-tool execution verification protocol.
+- **`PreInvocation` (`scripts/pre_invocation_memory.mjs`)**: Injects Omni 1.1 layout standards (16:9 widescreen, zero visual collision gate, Dark Shell + Light Workspace law).
+- **`Stop` (`scripts/stop_quality_gate.mjs`)**: Blocks agent shutdown if any architecture quality gate fails.
+
+### Run Complete Vitest Suite
 ```bash
 npm test
 ```

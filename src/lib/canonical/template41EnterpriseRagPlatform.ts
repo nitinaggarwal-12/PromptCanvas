@@ -7,7 +7,7 @@
  * - Tier 2: ACCESS, IDENTITY & EXPERIENCE LAYER (9 Access & Identity blocks)
  * - Tier 3: KNOWLEDGE EXPERIENCE & ORCHESTRATION LAYER (5 Orchestration Steps + Knowledge Governance enclave)
  * - Tier 4: RAG / REASONING LAYER (Query Rewriter, Model Gateway, Models Pro/Flash/Embed, Re-ranker + Guardrails enclave)
- * - Tier 5: MEMORY, INDEX & KNOWLEDGE LAYER (7 Stores + 10-Step RAG Pipeline with sequential pill badges ❶..❿)
+ * - Tier 5: MEMORY, INDEX & KNOWLEDGE LAYER (7 Stores + 10-Step RAG Pipeline with sequential pill badges..)
  * - Tier 6: INGESTION, PARSING & CONNECTORS LAYER (6 Ingestion Components + Protocols enclave)
  * - Tier 7: ENTERPRISE KNOWLEDGE SOURCES LAYER (6 Source Zones: Collaboration, Apps, DBs, Files, External, Platforms)
  * - Tier 8: SECURITY / PRIVACY / SOVEREIGNTY FOUNDATION (10 Security & Governance controls)
@@ -17,7 +17,7 @@
  *   - Pillar C: PLATFORM OPERATIONS / DELIVERY (6 GitOps, prompt & lifecycle items)
  * - Bottom Section:
  *   - Legend (4 Arrow Types)
- *   - END-TO-END FLOW (6 Sequential Process Steps ❶..❻)
+ *   - END-TO-END FLOW (6 Sequential Process Steps..)
  *   - Google Cloud Brand Block ("Build. On Google Cloud.")
  * - 100% Native vector SVGs (0 raw emojis, 0 mojibake).
  */

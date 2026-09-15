@@ -36,7 +36,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">🧬</span></td>
+      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
       <td style="vertical-align:middle;text-align:left;">
         <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
         <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
@@ -52,13 +52,13 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   text("principles_title", "<b>INTEGRATION PRINCIPLES</b>", 230, 74, 970, 14, "fontSize=8;fontColor=#1E3A8A;align=center;");
 
   const principles = [
-    { name: "API-First", icon: "⚡" },
-    { name: "Loose Coupling", icon: "🔗" },
-    { name: "Event-Driven", icon: "📡" },
-    { name: "Secure by Design", icon: "🛡️" },
-    { name: "Reusable", icon: "🔄" },
-    { name: "Scalable", icon: "📈" },
-    { name: "Observable", icon: "👁️" },
+    { name: "API-First", icon: "●" },
+    { name: "Loose Coupling", icon: "●" },
+    { name: "Event-Driven", icon: "●" },
+    { name: "Secure by Design", icon: "●" },
+    { name: "Reusable", icon: "●" },
+    { name: "Scalable", icon: "●" },
+    { name: "Observable", icon: "●" },
   ];
   principles.forEach((pr, i) => {
     const prx = 240 + i * 136;
@@ -73,10 +73,10 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   rect("ext_sys_hdr", "<b style='font-size:9px;color:#FFFFFF;'>EXTERNAL SYSTEMS</b>", 20, 126, 200, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const extSysGroups = [
-    { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "🏢" },
-    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical (Medidata)", "EDC (Rave / OpenClinica)", "LIMS, ELN", "Safety / PV Systems", "Imaging Repositories"], icon: "🔬" },
-    { title: "Partner & External Data", items: ["CRO / Partner Portals", "Public Databases", "Regulatory Authorities", "Market & Competitor Data"], icon: "🌐" },
-    { title: "Real-time Sources", items: ["IoT / Sensors", "Manufacturing Systems", "Wearables / ePRO", "Clickstream / Web Events"], icon: "📡" },
+    { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "●" },
+    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical (Medidata)", "EDC (Rave / OpenClinica)", "LIMS, ELN", "Safety / PV Systems", "Imaging Repositories"], icon: "●" },
+    { title: "Partner & External Data", items: ["CRO / Partner Portals", "Public Databases", "Regulatory Authorities", "Market & Competitor Data"], icon: "●" },
+    { title: "Real-time Sources", items: ["IoT / Sensors", "Manufacturing Systems", "Wearables / ePRO", "Clickstream / Web Events"], icon: "●" },
   ];
   extSysGroups.forEach((es, i) => {
     const esy = 158 + i * 124;
@@ -97,12 +97,12 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   text("api_int_title", "<b>API &amp; SERVICE INTEGRATION</b>", 245, 158, 235, 16, "fontSize=7.5;fontColor=#0369A1;align=center;");
 
   const apiIntCards = [
-    { title: "API Gateway", sub: "Apigee X", icon: "⚡" },
-    { title: "Service Mesh", sub: "Istio", icon: "⛵" },
-    { title: "Authentication", sub: "OAuth 2.0 / OIDC", icon: "🔒" },
-    { title: "Rate Limiting & Quotas", sub: "Protection & QoS", icon: "⏱️" },
-    { title: "Transformation", sub: "Cloud Data Fusion", icon: "⚙️" },
-    { title: "Validation", sub: "Schema Registry (Confluent)", icon: "📑" },
+    { title: "API Gateway", sub: "Apigee X", icon: "●" },
+    { title: "Service Mesh", sub: "Istio", icon: "●" },
+    { title: "Authentication", sub: "OAuth 2.0 / OIDC", icon: "●" },
+    { title: "Rate Limiting & Quotas", sub: "Protection & QoS", icon: "⏱" },
+    { title: "Transformation", sub: "Cloud Data Fusion", icon: "●" },
+    { title: "Validation", sub: "Schema Registry (Confluent)", icon: "●" },
   ];
   apiIntCards.forEach((ac, i) => {
     const acy = 180 + i * 64;
@@ -114,7 +114,7 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   rect("ev_int_frame", "", 495, 156, 235, 416, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   text("ev_int_title", "<b>EVENT INTEGRATION</b>", 495, 158, 235, 16, "fontSize=7.5;fontColor=#6D28D9;align=center;");
 
-  const evTopHtml = `<table style="width:100%;height:100%;text-align:center;"><tr><td style="width:28px;"><span style="font-size:18px;">📡</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8.5px;font-weight:800;color:#6D28D9;">Event Streaming</div><div style="font-size:7px;color:#475569;">Pub/Sub</div></td></tr></table>`;
+  const evTopHtml = `<table style="width:100%;height:100%;text-align:center;"><tr><td style="width:28px;"><span style="font-size:18px;"></span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8.5px;font-weight:800;color:#6D28D9;">Event Streaming</div><div style="font-size:7px;color:#475569;">Pub/Sub</div></td></tr></table>`;
   rect("ev_stream_pod", evTopHtml, 501, 180, 223, 52, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
   // Topics Box
@@ -139,11 +139,11 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   text("dt_int_title", "<b>DATA INTEGRATION</b>", 745, 158, 255, 16, "fontSize=7.5;fontColor=#15803D;align=center;");
 
   const dtIntCards = [
-    { title: "Batch / Bulk", sub: "Cloud Storage", icon: "🗄️" },
-    { title: "ETL / ELT", sub: "Dataflow", icon: "🌊" },
-    { title: "Replication (CDC)", sub: "Datastream", icon: "🔄" },
-    { title: "Orchestration", sub: "Cloud Composer", icon: "🎼" },
-    { title: "File Transfer", sub: "Cloud Storage Transfer", icon: "📁" },
+    { title: "Batch / Bulk", sub: "Cloud Storage", icon: "●" },
+    { title: "ETL / ELT", sub: "Dataflow", icon: "●" },
+    { title: "Replication (CDC)", sub: "Datastream", icon: "●" },
+    { title: "Orchestration", sub: "Cloud Composer", icon: "●" },
+    { title: "File Transfer", sub: "Cloud Storage Transfer", icon: "●" },
   ];
   dtIntCards.forEach((dc, i) => {
     const dcy = 180 + i * 76;
@@ -156,14 +156,14 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   text("cross_int_title", "<b>CROSS-CUTTING INTEGRATION SERVICES</b>", 245, 584, 755, 14, "fontSize=7.5;fontColor=#0369A1;align=center;");
 
   const crossInt = [
-    { title: "Monitoring", sub: "Cloud Monitoring", icon: "📈" },
-    { title: "Logging", sub: "Cloud Logging", icon: "📑" },
-    { title: "Tracing", sub: "Cloud Trace", icon: "🔍" },
-    { title: "Error Handling", sub: "Dead Letter Queues", icon: "⚠️" },
-    { title: "Data Quality", sub: "Dataplex", icon: "🛡️" },
-    { title: "Schema Registry", sub: "Confluent", icon: "📑" },
-    { title: "Governance", sub: "Data Catalog", icon: "🏛️" },
-    { title: "Audit & Compliance", sub: "Cloud Audit Logs", icon: "📊" },
+    { title: "Monitoring", sub: "Cloud Monitoring", icon: "●" },
+    { title: "Logging", sub: "Cloud Logging", icon: "●" },
+    { title: "Tracing", sub: "Cloud Trace", icon: "●" },
+    { title: "Error Handling", sub: "Dead Letter Queues", icon: "●" },
+    { title: "Data Quality", sub: "Dataplex", icon: "●" },
+    { title: "Schema Registry", sub: "Confluent", icon: "●" },
+    { title: "Governance", sub: "Data Catalog", icon: "●" },
+    { title: "Audit & Compliance", sub: "Cloud Audit Logs", icon: "●" },
   ];
   crossInt.forEach((ci, i) => {
     const cix = 251 + i * 92;
@@ -180,11 +180,11 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   // Platform Services Section
   text("plat_cons_title", "<b>NOVACURA PLATFORM SERVICES</b>", 1025, 158, 245, 14, "fontSize=7.5;fontColor=#1E3A8A;align=center;");
   const platCons = [
-    { title: "Data Ingestion Services", icon: "📥" },
-    { title: "AI / ML Services", icon: "✨" },
-    { title: "Workflow & Automation", icon: "🔄" },
-    { title: "Analytics & Reporting", icon: "📊" },
-    { title: "Search & Discovery", icon: "🔍" },
+    { title: "Data Ingestion Services", icon: "●" },
+    { title: "AI / ML Services", icon: "●" },
+    { title: "Workflow & Automation", icon: "●" },
+    { title: "Analytics & Reporting", icon: "●" },
+    { title: "Search & Discovery", icon: "●" },
   ];
   platCons.forEach((pc, i) => {
     const pcy = 178 + i * 48;
@@ -195,11 +195,11 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   // External Consumers Section
   text("ext_cons_title", "<b>EXTERNAL CONSUMERS</b>", 1025, 432, 245, 14, "fontSize=7.5;fontColor=#0D9488;align=center;");
   const extCons = [
-    { title: "Downstream Applications", icon: "💻" },
-    { title: "Partner Applications", icon: "🤝" },
-    { title: "Regulatory Submissions", icon: "🏛️" },
-    { title: "Data Sharing Exports", icon: "📤" },
-    { title: "Third-party Analytics", icon: "📊" },
+    { title: "Downstream Applications", icon: "●" },
+    { title: "Partner Applications", icon: "●" },
+    { title: "Regulatory Submissions", icon: "●" },
+    { title: "Data Sharing Exports", icon: "●" },
+    { title: "Third-party Analytics", icon: "●" },
   ];
   extCons.forEach((ec, i) => {
     const ecy = 452 + i * 40;
@@ -274,12 +274,12 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   rect("pat_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>INTEGRATION PATTERNS</b>", 690, 672, 490, 20, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
   const patterns = [
-    { title: "API-led", sub: "Expose & consume standard APIs", icon: "⚡" },
-    { title: "Event-Driven", sub: "Decouple systems via events", icon: "📡" },
-    { title: "Batch ETL/ELT", sub: "Scheduled bulk movement", icon: "🔄" },
-    { title: "CDC Sync", sub: "Real-time data sync using CDC", icon: "🔄" },
-    { title: "File-based", sub: "Secure file exchange SFTP/AS2", icon: "📁" },
-    { title: "Request-Reply", sub: "Synchronous interactions", icon: "💬" },
+    { title: "API-led", sub: "Expose & consume standard APIs", icon: "●" },
+    { title: "Event-Driven", sub: "Decouple systems via events", icon: "●" },
+    { title: "Batch ETL/ELT", sub: "Scheduled bulk movement", icon: "●" },
+    { title: "CDC Sync", sub: "Real-time data sync using CDC", icon: "●" },
+    { title: "File-based", sub: "Secure file exchange SFTP/AS2", icon: "●" },
+    { title: "Request-Reply", sub: "Synchronous interactions", icon: "●" },
   ];
   patterns.forEach((pt, i) => {
     const row = Math.floor(i / 2);

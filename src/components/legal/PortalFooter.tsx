@@ -2,11 +2,26 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useLegal } from './LegalProvider';
 import { Shield, Cookie, FileText, Scale, Layers, ExternalLink } from 'lucide-react';
 
 export function PortalFooter() {
   const { openLegalModal } = useLegal();
+  const pathname = usePathname();
+
+  // Suppress global footer on landing page (which has its own footer) and full-screen workbench routes
+  const isFullScreenWorkbench =
+    pathname === '/' ||
+    pathname === '/vision' ||
+    pathname === '/studio' ||
+    pathname === '/workspace' ||
+    pathname?.startsWith('/studio1') ||
+    pathname === '/gcp';
+
+  if (isFullScreenWorkbench) {
+    return null;
+  }
 
   return (
     <footer className="w-full max-w-none bg-slate-950 border-t border-slate-800 text-slate-400 py-8 px-6 md:px-12 font-sans transition-colors">

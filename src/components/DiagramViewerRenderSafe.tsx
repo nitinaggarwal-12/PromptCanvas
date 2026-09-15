@@ -22,6 +22,8 @@ export interface DiagramViewerRenderSafeProps {
   description?: string;
   isLiveFlow?: boolean;
   allowFullScaleScroll?: boolean;
+  fitToWidth?: boolean;
+  minHeight?: string | number;
 }
 
 /**
@@ -47,6 +49,8 @@ export default function DiagramViewerRenderSafe({
   diagramType,
   isLiveFlow = false,
   allowFullScaleScroll = false,
+  fitToWidth = false,
+  minHeight,
 }: DiagramViewerRenderSafeProps) {
   const [mounted, setMounted] = React.useState(false);
   const [isCompactViewport, setIsCompactViewport] = React.useState(false);
@@ -101,7 +105,7 @@ export default function DiagramViewerRenderSafe({
   const responsiveFrameStyle: React.CSSProperties = {
     ...customHeightStyle,
     height: '100%',
-    minHeight: allowFullScaleScroll ? '760px' : '680px',
+    minHeight: minHeight !== undefined ? minHeight : allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px',
     width: '100%',
     ...(isCompactViewport && aspectRatioId !== '9:16' && aspectRatioId !== '16:9'
       ? { height: 'clamp(440px, 56vw, 720px)', minHeight: 0, alignSelf: 'flex-start' }
@@ -128,7 +132,7 @@ export default function DiagramViewerRenderSafe({
     toolbar: null,
     'toolbar-position': 'none',
     edit: '',
-    border: allowFullScaleScroll ? 15 : 30,
+    border: allowFullScaleScroll ? 15 : fitToWidth ? 12 : minHeight === 0 ? 4 : 16,
     transparent: true,
     fit: !allowFullScaleScroll,
     'max-scale': 4.0,
@@ -148,18 +152,23 @@ ${origin ? `<base href="${origin}/">` : ''}
     width: 100%;
     height: 100%;
     background: ${bgColor};
-    overflow: ${allowFullScaleScroll ? 'auto' : 'hidden'};
+    overflow-y: ${fitToWidth || allowFullScaleScroll ? 'auto' : 'hidden'};
+    overflow-x: ${allowFullScaleScroll ? 'auto' : 'hidden'};
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   .canvas-container {
-    ${allowFullScaleScroll
+    ${fitToWidth
+      ? `position: relative; width: 100%; min-height: 100%; padding: 12px 10px 32px 10px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;`
+      : allowFullScaleScroll
       ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
-      : `position: absolute; inset: 0; padding: 12px 16px 20px 16px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`}
+      : `position: absolute; inset: 0; padding: 4px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
   }
   .mxgraph {
-    ${allowFullScaleScroll
+    ${fitToWidth
+      ? `width: 100% !important; max-width: 100% !important; height: auto !important; min-height: auto !important; display: block !important; margin: 0 auto !important; background: transparent;`
+      : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block !important; margin: 0 auto; background: transparent;`
-      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: flex-start; justify-content: center; background: transparent; margin: 0 auto !important;`}
+      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent; margin: 0 auto !important;`}
   }
   #diagram-container {
     margin-top: 0 !important;
@@ -169,14 +178,18 @@ ${origin ? `<base href="${origin}/">` : ''}
   /* IMPORTANT: resize and scale the diagram SVG to fit neatly without clipping or distortion */
   .mxgraph > svg,
   .mxgraph > div > svg {
-    ${allowFullScaleScroll
+    ${fitToWidth
+      ? `width: 100% !important; max-width: 100% !important; height: auto !important; max-height: none !important; margin: 0 auto !important; display: block !important; overflow: visible !important;`
+      : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; margin: auto !important; display: block !important;`
       : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
   }
   .mxgraph > div {
-    ${allowFullScaleScroll
+    ${fitToWidth
+      ? `width: 100% !important; max-width: 100% !important; height: auto !important; max-height: none !important; display: block !important;`
+      : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block;`
-      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: flex-start; justify-content: center;`}
+      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;`}
   }
   .geEditor { background-color: transparent !important; }
 
@@ -309,15 +322,24 @@ ${origin ? `<base href="${origin}/">` : ''}
     }
   }
 
+  const fitToWidth = ${fitToWidth ? 'true' : 'false'};
+
   function finishPresentation() {
     if (canvasContainer) {
-      canvasContainer.scrollTop = 0;
-      canvasContainer.scrollLeft = 0;
+      if (!fitToWidth) {
+        canvasContainer.scrollTop = 0;
+        canvasContainer.scrollLeft = 0;
+      }
     }
     if (root) {
       root.style.setProperty('margin-top', '0px', 'important');
       root.style.setProperty('overflow', 'visible', 'important');
       root.style.setProperty('margin', '0 auto', 'important');
+      if (fitToWidth && window.__viewer && window.__viewer.graph) {
+        try {
+          window.__viewer.graph.fit(12, false, 0, true, false, true);
+        } catch(e) {}
+      }
     }
     suppressOversizedBlackOverlay();
   }
@@ -327,12 +349,25 @@ ${origin ? `<base href="${origin}/">` : ''}
 
   function triggerRender() {
     renderAttempts++;
-    if (window.GraphViewer && typeof window.GraphViewer.processElements === 'function') {
-      try {
-        window.GraphViewer.processElements();
-        renderSucceeded = true;
-      } catch(e) {
-        console.warn('[DiagramViewer] processElements warning:', e);
+    if (window.GraphViewer) {
+      if (fitToWidth && root) {
+        try {
+          root.innerHTML = '';
+          window.GraphViewer.createViewerForElement(root, function(viewer) {
+            window.__viewer = viewer;
+            viewer.graph.fit(12, false, 0, true, false, true);
+          });
+          renderSucceeded = true;
+        } catch(e) {
+          console.warn('[DiagramViewer] fitToWidth render warning:', e);
+        }
+      } else if (typeof window.GraphViewer.processElements === 'function') {
+        try {
+          window.GraphViewer.processElements();
+          renderSucceeded = true;
+        } catch(e) {
+          console.warn('[DiagramViewer] processElements warning:', e);
+        }
       }
     }
     requestAnimationFrame(finishPresentation);
@@ -342,6 +377,16 @@ ${origin ? `<base href="${origin}/">` : ''}
     if (!renderSucceeded && renderAttempts < 40) {
       setTimeout(triggerRender, 50);
     }
+  }
+
+  if (fitToWidth) {
+    window.addEventListener('resize', function() {
+      if (window.__viewer && window.__viewer.graph) {
+        try {
+          window.__viewer.graph.fit(12, false, 0, true, false, true);
+        } catch(e) {}
+      }
+    });
   }
 </script>
 <script src="${scriptUrl}" onload="triggerRender()" onerror="this.src='/viewer-static.min.js';"></script>
@@ -387,7 +432,7 @@ ${origin ? `<base href="${origin}/">` : ''}
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
           className="w-full h-full flex-1 border-0 bg-transparent"
-          style={{ minHeight: allowFullScaleScroll ? '760px' : '680px' }}
+          style={{ minHeight: allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px' }}
           title="PromptCanvas Draw.io Diagram Viewer"
           sandbox="allow-scripts allow-popups allow-forms"
         />

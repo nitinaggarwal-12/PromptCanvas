@@ -15,7 +15,7 @@
  *   - Tier 8: Governance / HITL / Compliance (Human Approval, Prompt Governance, Audit Trail, DLP, Responsible AI, Compliance)
  *   - Observability / Evaluation / FinOps (Logs/Metrics/Traces, Model Mon, Agent Eval, Feedback Loop, Cost/Token Tracking, SLOs)
  *   - Platform Operations / Delivery (CI/CD GitOps, Prompt Mgmt, Model Registry, Runtime Compute, Artifacts & Secrets)
- * - Complete Inter-Tier Connectors, Agent-to-Agent (A2A) loops, RAG pipeline chaining, and Step Flow Badges (❶..❿)
+ * - Complete Inter-Tier Connectors, Agent-to-Agent (A2A) loops, RAG pipeline chaining, and Step Flow Badges (..)
  * - Bottom Footer: Legend (Arrow Types) + End-to-End Flow Example (1..6) + Google Cloud brand
  * - 100% Native vector SVGs (0 raw emojis, 0 mojibake).
  */
@@ -507,11 +507,11 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   // RAG Pipeline Steps (y=562..594)
   cell("lbl_rag_pipe", "- RAG Pipeline -", 134, 560, 1206, 12, "fontColor:#2563EB;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const ragSteps = [
-    { n: "❶", t: "Retrieve", sub: "(Top-K)" },
-    { n: "❷", t: "Rerank", sub: "(Relevance)" },
-    { n: "❸", t: "Ground", sub: "(Verify & Filter)" },
-    { n: "❹", t: "Cite", sub: "(Sources & Links)" },
-    { n: "❺", t: "Context to Model", sub: "(Grounded Prompt)" }
+    { n: "●", t: "Retrieve", sub: "(Top-K)" },
+    { n: "●", t: "Rerank", sub: "(Relevance)" },
+    { n: "●", t: "Ground", sub: "(Verify & Filter)" },
+    { n: "●", t: "Cite", sub: "(Sources & Links)" },
+    { n: "●", t: "Context to Model", sub: "(Grounded Prompt)" }
   ];
   ragSteps.forEach((rs, i) => {
     const rsx = 200 + i * 210;

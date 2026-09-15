@@ -45,7 +45,7 @@ export function generateTemplate29CutoverRunbookXml(
     "hdr_title",
     `<div style='font-size:25px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>Cutover / Runbook Architecture</div>` +
     `<div style='font-size:13px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: NovaCura – Production Go-Live &amp; Environment Cutover</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:1px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
     760,
@@ -53,7 +53,7 @@ export function generateTemplate29CutoverRunbookXml(
     "align=left;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:30px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:22px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   rect("hdr_brand", brandHtml, 860, 12, 270, 54, "fillColor=none;strokeColor=none;align=left;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.35;color:#0F172A;'>Execute a safe, controlled and verifiable cutover to production with minimal downtime, zero/low data loss and rapid rollback capability using a well-defined runbook.</div>`;
@@ -64,13 +64,13 @@ export function generateTemplate29CutoverRunbookXml(
   rect("box_l_ov", "", 16, 74, 180, 230, "strokeColor=#1E3A8A;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
   rect("lbl_ov", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;">RUNBOOK OVERVIEW</b>`, 16, 74, 180, 26, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=0;align=center;");
   const ovItems = [
-    { t: "Application: NovaCura", icon: "💻" },
-    { t: "Domain: Regulatory Intel", icon: "🏛️" },
-    { t: "Platform: Google Cloud", icon: "☁️" },
-    { t: "Cutover Type: Blue/Green", icon: "🔄" },
-    { t: "Target: Prod (us-central1)", icon: "🎯" },
-    { t: "RTO: ≤ 30 minutes", icon: "⏱️" },
-    { t: "RPO: ≤ 5 minutes", icon: "⏱️" }
+    { t: "Application: NovaCura", icon: "●" },
+    { t: "Domain: Regulatory Intel", icon: "●" },
+    { t: "Platform: Google Cloud", icon: "●" },
+    { t: "Cutover Type: Blue/Green", icon: "●" },
+    { t: "Target: Prod (us-central1)", icon: "●" },
+    { t: "RTO: ≤ 30 minutes", icon: "⏱" },
+    { t: "RPO: ≤ 5 minutes", icon: "⏱" }
   ];
   ovItems.forEach((oi, idx) => {
     const oy = 104 + idx * 28;
@@ -89,7 +89,7 @@ export function generateTemplate29CutoverRunbookXml(
   ];
   gngItems.forEach((gi, idx) => {
     const gy = 344 + idx * 30;
-    rect(`gi_${idx}`, `<div style='font-size:9.5px;font-weight:700;color:#16A34A;display:flex;align-items:center;gap:6px;'>✔ <span style='color:#0F172A;'>${gi}</span></div>`, 22, gy, 168, 26, "fillColor=#F0FDF4;strokeColor=#BBF7D0;rounded=1;align=left;verticalAlign=middle;padding=4;");
+    rect(`gi_${idx}`, `<div style='font-size:9.5px;font-weight:700;color:#16A34A;display:flex;align-items:center;gap:6px;'> <span style='color:#0F172A;'>${gi}</span></div>`, 22, gy, 168, 26, "fillColor=#F0FDF4;strokeColor=#BBF7D0;rounded=1;align=left;verticalAlign=middle;padding=4;");
   });
 
   // ==================== 3. TOP STAGE: CUTOVER LIFECYCLE (x=204, y=74, w=960, h=230) ====================
@@ -97,12 +97,12 @@ export function generateTemplate29CutoverRunbookXml(
   text("lbl_life", "<div style='font-size:12.5px;font-weight:900;color:#1E3A8A;text-align:center;'>CUTOVER LIFECYCLE – PHASES</div>", 204, 78, 960, 18, "align=center;");
 
   const phases = [
-    { n: "1. PLAN & PREPARE\n(T-2 to T-14 Days)", col: "#1E3A8A", bg: "#EFF6FF", icon: "📋", sub: "• Finalize cutover approach<br/>• Validate readiness criteria<br/>• Complete DR &amp; rollback plan<br/>• Obtain business sign-off" },
-    { n: "2. PRE-CUTOVER\n(T-24 to T-1 Hours)", col: "#2563EB", bg: "#EFF6FF", icon: "⚙️", sub: "• Deploy &amp; warm up prod<br/>• Sync / freeze data (if needed)<br/>• Run pre-cutover checks<br/>• Get final go/no-go approval" },
-    { n: "3. CUTOVER\n(T-0 Window)", col: "#16A34A", bg: "#F0FDF4", icon: "🚀", sub: "• Switch traffic to production<br/>• Enable services / agents<br/>• Run smoke &amp; validation tests<br/>• Monitor in real-time" },
-    { n: "4. STABILIZATION\n(T+0 to T+24 Hours)", col: "#EA580C", bg: "#FFFBEB", icon: "📈", sub: "• Hypercare monitoring<br/>• Resolve P1/P2 issues<br/>• Validate KPIs &amp; SLAs<br/>• Confirm business usage" },
-    { n: "5. POST-CUTOVER\n(T+1 to T+7 Days)", col: "#0284C7", bg: "#F0F9FF", icon: "✔", sub: "• Performance optimization<br/>• Decommission old env<br/>• Documentation update<br/>• Formal go-live sign-off" },
-    { n: "6. OPERATE\n(BAU)", col: "#7C3AED", bg: "#FAF5FF", icon: "📊", sub: "• Steady state operations<br/>• Continuous monitoring<br/>• Cost &amp; usage optimization<br/>• Ongoing improvements" }
+    { n: "1. PLAN & PREPARE\n(T-2 to T-14 Days)", col: "#1E3A8A", bg: "#EFF6FF", icon: "●", sub: "• Finalize cutover approach<br/>• Validate readiness criteria<br/>• Complete DR &amp; rollback plan<br/>• Obtain business sign-off" },
+    { n: "2. PRE-CUTOVER\n(T-24 to T-1 Hours)", col: "#2563EB", bg: "#EFF6FF", icon: "●", sub: "• Deploy &amp; warm up prod<br/>• Sync / freeze data (if needed)<br/>• Run pre-cutover checks<br/>• Get final go/no-go approval" },
+    { n: "3. CUTOVER\n(T-0 Window)", col: "#16A34A", bg: "#F0FDF4", icon: "●", sub: "• Switch traffic to production<br/>• Enable services / agents<br/>• Run smoke &amp; validation tests<br/>• Monitor in real-time" },
+    { n: "4. STABILIZATION\n(T+0 to T+24 Hours)", col: "#EA580C", bg: "#FFFBEB", icon: "●", sub: "• Hypercare monitoring<br/>• Resolve P1/P2 issues<br/>• Validate KPIs &amp; SLAs<br/>• Confirm business usage" },
+    { n: "5. POST-CUTOVER\n(T+1 to T+7 Days)", col: "#0284C7", bg: "#F0F9FF", icon: "●", sub: "• Performance optimization<br/>• Decommission old env<br/>• Documentation update<br/>• Formal go-live sign-off" },
+    { n: "6. OPERATE\n(BAU)", col: "#7C3AED", bg: "#FAF5FF", icon: "●", sub: "• Steady state operations<br/>• Continuous monitoring<br/>• Cost &amp; usage optimization<br/>• Ongoing improvements" }
   ];
 
   phases.forEach((p, idx) => {
@@ -120,19 +120,19 @@ export function generateTemplate29CutoverRunbookXml(
   // Top Right: Environment Topology (x=1172, y=74, w=348, h=230)
   rect("box_env_bg", "", 1172, 74, 348, 230, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   text("lbl_env", `<b style="font-size:11px;color:#1E3A8A;text-align:center;">ENVIRONMENT TOPOLOGY (POST-CUTOVER)</b>`, 1172, 78, 348, 18, "align=center;");
-  text("env_gcp", `<div style="font-size:12px;font-weight:800;color:#475569;text-align:center;">☁️ Google Cloud</div>`, 1172, 98, 348, 18, "align=center;");
+  text("env_gcp", `<div style="font-size:12px;font-weight:800;color:#475569;text-align:center;"> Google Cloud</div>`, 1172, 98, 348, 18, "align=center;");
 
   // Topology Diagram Inside Box
-  rect("env_users", `<div style="font-size:18px;">👥</div><div style="font-size:9px;font-weight:800;">Users / Apps</div>`, 1182, 136, 68, 62, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
-  rect("env_lb", `<div style="font-size:18px;">⚖️</div><div style="font-size:8.5px;font-weight:800;">Cloud Load<br/>Balancing</div>`, 1262, 136, 70, 62, "fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
-  rect("env_prod", `<div style="font-size:20px;">🧬</div><div style="font-size:9.5px;font-weight:900;color:#16A34A;">NovaCura<br/>(Prod)</div>`, 1344, 132, 78, 70, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;rounded=1;align=center;verticalAlign=middle;");
+  rect("env_users", `<div style="font-size:18px;"></div><div style="font-size:9px;font-weight:800;">Users / Apps</div>`, 1182, 136, 68, 62, "fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
+  rect("env_lb", `<div style="font-size:18px;"></div><div style="font-size:8.5px;font-weight:800;">Cloud Load<br/>Balancing</div>`, 1262, 136, 70, 62, "fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;rounded=1;align=center;verticalAlign=middle;");
+  rect("env_prod", `<div style="font-size:20px;"></div><div style="font-size:9.5px;font-weight:900;color:#16A34A;">NovaCura<br/>(Prod)</div>`, 1344, 132, 78, 70, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;rounded=1;align=center;verticalAlign=middle;");
 
   const gcpServices = [
-    { n: "Vertex AI (Models)", icon: "🧠" },
-    { n: "BigQuery (Data)", icon: "📊" },
-    { n: "Cloud SQL (OLTP)", icon: "🗄️" },
-    { n: "Cloud Storage (Docs)", icon: "🗃️" },
-    { n: "Secret Manager", icon: "🔒" }
+    { n: "Vertex AI (Models)", icon: "●" },
+    { n: "BigQuery (Data)", icon: "●" },
+    { n: "Cloud SQL (OLTP)", icon: "●" },
+    { n: "Cloud Storage (Docs)", icon: "●" },
+    { n: "Secret Manager", icon: "●" }
   ];
   gcpServices.forEach((gs, i) => {
     const gy = 120 + i * 21;
@@ -149,14 +149,14 @@ export function generateTemplate29CutoverRunbookXml(
   text("lbl_steps", "<div style='font-size:12.5px;font-weight:900;color:#1E3A8A;text-align:center;'>DETAILED RUNBOOK – CUTOVER STEPS</div>", 204, 316, 1316, 18, "align=center;");
 
   const runbookSteps = [
-    { n: "1. Freeze & Validate", col: "#2563EB", icon: "🧊", sub: "• Freeze writes (if req)<br/>• Final data sync<br/>• Checksum validation" },
-    { n: "2. Deploy Production", col: "#2563EB", icon: "🚀", sub: "• Deploy services<br/>• Run DB migrations<br/>• Verify infra health" },
-    { n: "3. Enable Dependencies", col: "#2563EB", icon: "🔌", sub: "• Enable APIs<br/>• Activate connectors<br/>• Validate secrets &amp; IAM" },
-    { n: "4. Switch Traffic", col: "#EA580C", icon: "🔄", sub: "• Update DNS / LB<br/>• Route to prod<br/>• Verify traffic flow" },
-    { n: "5. Smoke Tests", col: "#16A34A", icon: "🧪", sub: "• Run automated tests<br/>• Validate user journeys" },
-    { n: "6. Business Validation", col: "#2563EB", icon: "👥", sub: "• User acceptance checks<br/>• Confirm data accuracy" },
-    { n: "7. Monitor & Observe", col: "#0D9488", icon: "📈", sub: "• Track SLOs / SLIs<br/>• Watch error rates<br/>• Confirm stability" },
-    { n: "8. Close Cutover", col: "#16A34A", icon: "✔", sub: "• Declare go-live<br/>• Lift data freeze<br/>• Notify stakeholders" }
+    { n: "1. Freeze & Validate", col: "#2563EB", icon: "●", sub: "• Freeze writes (if req)<br/>• Final data sync<br/>• Checksum validation" },
+    { n: "2. Deploy Production", col: "#2563EB", icon: "●", sub: "• Deploy services<br/>• Run DB migrations<br/>• Verify infra health" },
+    { n: "3. Enable Dependencies", col: "#2563EB", icon: "●", sub: "• Enable APIs<br/>• Activate connectors<br/>• Validate secrets &amp; IAM" },
+    { n: "4. Switch Traffic", col: "#EA580C", icon: "●", sub: "• Update DNS / LB<br/>• Route to prod<br/>• Verify traffic flow" },
+    { n: "5. Smoke Tests", col: "#16A34A", icon: "●", sub: "• Run automated tests<br/>• Validate user journeys" },
+    { n: "6. Business Validation", col: "#2563EB", icon: "●", sub: "• User acceptance checks<br/>• Confirm data accuracy" },
+    { n: "7. Monitor & Observe", col: "#0D9488", icon: "●", sub: "• Track SLOs / SLIs<br/>• Watch error rates<br/>• Confirm stability" },
+    { n: "8. Close Cutover", col: "#16A34A", icon: "●", sub: "• Declare go-live<br/>• Lift data freeze<br/>• Notify stakeholders" }
   ];
 
   runbookSteps.forEach((rs, idx) => {
@@ -179,7 +179,7 @@ export function generateTemplate29CutoverRunbookXml(
   // ==================== 5. LOWER SECTION (y=514..746, h=232) ====================
   // Rollback Plan (x=16, w=280)
   rect("box_rollback_bg", "", 16, 514, 280, 232, "strokeColor=#DC2626;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
-  rect("lbl_rollback", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;">⚠️ ROLLBACK PLAN</b>`, 16, 514, 280, 26, "fillColor=#DC2626;strokeColor=#DC2626;rounded=0;align=center;");
+  rect("lbl_rollback", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;"> ROLLBACK PLAN</b>`, 16, 514, 280, 26, "fillColor=#DC2626;strokeColor=#DC2626;rounded=0;align=center;");
   const rollSteps = [
     "Revert DNS / LB to previous environment",
     "Disable new production services",
@@ -216,9 +216,9 @@ export function generateTemplate29CutoverRunbookXml(
   rect("box_time_bg", "", 722, 514, 380, 232, "strokeColor=#2563EB;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
   rect("lbl_time", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;">CUTOVER TIMELINE (T-0 WINDOW EXAMPLE)</b>`, 722, 514, 380, 26, "fillColor=#2563EB;strokeColor=#2563EB;rounded=0;align=center;");
   const timeEvents = [
-    { t: "18:00", d: "Change freeze begins", dot: "🔵" },
-    { t: "19:00", d: "Final data sync &amp; pre-checks", dot: "🔵" },
-    { t: "20:00", d: "Production deployment", dot: "🔵" },
+    { t: "18:00", d: "Change freeze begins", dot: "●" },
+    { t: "19:00", d: "Final data sync &amp; pre-checks", dot: "●" },
+    { t: "20:00", d: "Production deployment", dot: "●" },
     { t: "21:00", d: "Switch traffic (DNS / LB)", dot: "🟢" },
     { t: "21:15", d: "Smoke tests &amp; validation", dot: "🟢" },
     { t: "22:00", d: "Business sign-off", dot: "🟠" },
@@ -234,12 +234,12 @@ export function generateTemplate29CutoverRunbookXml(
   rect("box_mon_bg", "", 1110, 514, 410, 232, "strokeColor=#16A34A;fillColor=#FFFFFF;strokeWidth=1.8;align=left;verticalAlign=top;");
   rect("lbl_mon", `<b style="font-size:11px;color:#FFFFFF;letter-spacing:0.5px;">MONITORING &amp; ALERTING (HYPERCARE)</b>`, 1110, 514, 410, 26, "fillColor=#16A34A;strokeColor=#16A34A;rounded=0;align=center;");
   const hyperCards = [
-    { t: "Cloud Monitoring", sub: "(Metrics)", icon: "📊" },
-    { t: "Cloud Logging", sub: "(Logs)", icon: "📑" },
-    { t: "Error Reporting", sub: "(Exceptions)", icon: "⚠️" },
+    { t: "Cloud Monitoring", sub: "(Metrics)", icon: "●" },
+    { t: "Cloud Logging", sub: "(Logs)", icon: "●" },
+    { t: "Error Reporting", sub: "(Exceptions)", icon: "●" },
     { t: "Uptime Checks", sub: "(Availability)", icon: "🩺" },
-    { t: "PagerDuty", sub: "(On-call)", icon: "📟" },
-    { t: "Slack / Email", sub: "(Notifications)", icon: "💬" }
+    { t: "PagerDuty", sub: "(On-call)", icon: "●" },
+    { t: "Slack / Email", sub: "(Notifications)", icon: "●" }
   ];
   hyperCards.forEach((hc, idx) => {
     const col = idx % 3;
@@ -254,12 +254,12 @@ export function generateTemplate29CutoverRunbookXml(
   rect("box_ksm", "", 16, 754, 235, 200, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_ksm", `<b style="font-size:10px;color:#1E3A8A;">KEY SUCCESS METRICS</b>`, 16, 754, 235, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_ksm", `<div style="font-size:9px;line-height:1.5;color:#0F172A;padding:4px;">
-    ✔ Service availability ≥ 99.9%<br/>
-    ✔ Error rate ≤ 0.1%<br/>
-    ✔ P95 latency within SLO (&lt; 2s)<br/>
-    ✔ Zero data loss (RPO met)<br/>
-    ✔ All critical business flows validated<br/>
-    ✔ No P1 incidents in first 24 hours
+    Service availability ≥ 99.9%<br/>
+    Error rate ≤ 0.1%<br/>
+    P95 latency within SLO (&lt; 2s)<br/>
+    Zero data loss (RPO met)<br/>
+    All critical business flows validated<br/>
+    No P1 incidents in first 24 hours
   </div>`, 18, 780, 231, 168, "align=left;verticalAlign=top;");
 
   // Risk & Mitigation (x=259, w=430)
@@ -281,22 +281,22 @@ export function generateTemplate29CutoverRunbookXml(
   rect("box_chk", "", 697, 754, 235, 200, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_chk", `<b style="font-size:10px;color:#16A34A;">CHECKLIST (EXECUTION)</b>`, 697, 754, 235, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_chk", `<div style="font-size:8.5px;line-height:1.45;color:#0F172A;padding:4px;">
-    ☑ Pre-cutover sign-off obtained<br/>
-    ☑ All runbook steps reviewed<br/>
-    ☑ Rollback plan validated (dry run)<br/>
-    ☑ Communication plan activated<br/>
-    ☑ Hypercare team on standby<br/>
-    ☑ Go-live confirmation recorded<br/>
-    <div style="text-align:center;margin-top:8px;"><span style="background:#DCFCE7;border:1px solid #16A34A;color:#16A34A;font-size:9px;padding:3px 10px;border-radius:4px;font-weight:800;">✔ Ready for Cutover</span></div>
+    Pre-cutover sign-off obtained<br/>
+    All runbook steps reviewed<br/>
+    Rollback plan validated (dry run)<br/>
+    Communication plan activated<br/>
+    Hypercare team on standby<br/>
+    Go-live confirmation recorded<br/>
+    <div style="text-align:center;margin-top:8px;"><span style="background:#DCFCE7;border:1px solid #16A34A;color:#16A34A;font-size:9px;padding:3px 10px;border-radius:4px;font-weight:800;">Ready for Cutover</span></div>
   </div>`, 699, 780, 231, 168, "align=left;verticalAlign=top;");
 
   // Communication Plan (x=940, w=215)
   rect("box_comm", "", 940, 754, 215, 200, "strokeColor=#CBD5E1;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_comm", `<b style="font-size:10px;color:#2563EB;">COMMUNICATION PLAN</b>`, 940, 754, 215, 24, "fillColor=#F8FAFC;strokeColor=#CBD5E1;rounded=0;align=center;");
   text("txt_comm", `<div style="font-size:8.5px;line-height:1.45;color:#0F172A;padding:4px;">
-    👥 <b>Stakeholders:</b><br/>Execs, Business, OC<br/><br/>
-    ✉️ <b>Channels:</b><br/>Email, Slack, War Room<br/><br/>
-    ⏱️ <b>Cadence:</b><br/>Pre / During / Post
+     <b>Stakeholders:</b><br/>Execs, Business, OC<br/><br/>
+     <b>Channels:</b><br/>Email, Slack, War Room<br/><br/>
+    ⏱ <b>Cadence:</b><br/>Pre / During / Post
   </div>`, 942, 780, 211, 168, "align=left;verticalAlign=top;");
 
   // Legend (x=1163, w=145)

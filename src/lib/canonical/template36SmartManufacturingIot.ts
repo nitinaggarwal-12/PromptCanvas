@@ -53,7 +53,7 @@ export function generateTemplate36SmartManufacturingIotXml(
     "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">☁️</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#4285F4;letter-spacing:1px;">Google Cloud</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">Industrial Reference Architecture</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#4285F4;letter-spacing:1px;">Google Cloud</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">Industrial Reference Architecture</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;white-space:normal;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;white-space:normal;word-break:break-word;'>
@@ -71,14 +71,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 1. SHOP FLOOR / OT CHANNELS (y=74..148, h=74)
   band("1", "SHOP FLOOR /<br/>OT CHANNELS", 74, 74, "#1D4ED8");
   const shopFloor = [
-    { t: "Production Lines", icon: "🏭" },
-    { t: "Machines &amp; CNC", icon: "⚙️" },
-    { t: "PLC / SCADA / DCS", icon: "🎛️" },
-    { t: "Robotics / Cobots", icon: "🤖" },
-    { t: "Sensors &amp; IoT", icon: "📡" },
-    { t: "Cameras / Vision", icon: "📷" },
-    { t: "Operator HMIs", icon: "📱" },
-    { t: "Quality Inspection", icon: "🔬" }
+    { t: "Production Lines", icon: "●" },
+    { t: "Machines &amp; CNC", icon: "●" },
+    { t: "PLC / SCADA / DCS", icon: "●" },
+    { t: "Robotics / Cobots", icon: "●" },
+    { t: "Sensors &amp; IoT", icon: "●" },
+    { t: "Cameras / Vision", icon: "●" },
+    { t: "Operator HMIs", icon: "●" },
+    { t: "Quality Inspection", icon: "●" }
   ];
   shopFloor.forEach((sf, idx) => {
     const sfx = 236 + idx * 125;
@@ -88,14 +88,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 2. EDGE CONTROL & SITE OPERATIONS (y=154..228, h=74)
   band("2", "EDGE CONTROL &amp;<br/>SITE OPERATIONS", 154, 74, "#0284C7");
   const edgeOps = [
-    { t: "Industrial Edge Gateway", icon: "🌐" },
-    { t: "OPC-UA / MQTT Collectors", icon: "🔌" },
-    { t: "Local Historian", icon: "🗄️" },
-    { t: "Site HMI Apps", icon: "🖥️" },
-    { t: "Edge Inference", icon: "🧠" },
-    { t: "Buffering &amp; Forward", icon: "📦" },
-    { t: "Site Connectivity", icon: "📶" },
-    { t: "Offline Resilience", icon: "🛡️" }
+    { t: "Industrial Edge Gateway", icon: "●" },
+    { t: "OPC-UA / MQTT Collectors", icon: "●" },
+    { t: "Local Historian", icon: "●" },
+    { t: "Site HMI Apps", icon: "●" },
+    { t: "Edge Inference", icon: "●" },
+    { t: "Buffering &amp; Forward", icon: "●" },
+    { t: "Site Connectivity", icon: "●" },
+    { t: "Offline Resilience", icon: "●" }
   ];
   edgeOps.forEach((eo, idx) => {
     const eox = 236 + idx * 125;
@@ -105,14 +105,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 3. MANUFACTURING OPERATIONS PLATFORM (y=234..308, h=74)
   band("3", "MANUFACTURING<br/>OPERATIONS PLATFORM", 234, 74, "#1E40AF");
   const mesCards = [
-    { t: "MES / MOM", icon: "🏢" },
-    { t: "Production Scheduling", icon: "📅" },
-    { t: "Work Orders", icon: "📋" },
-    { t: "Asset Maintenance", icon: "🔧" },
+    { t: "MES / MOM", icon: "●" },
+    { t: "Production Scheduling", icon: "●" },
+    { t: "Work Orders", icon: "●" },
+    { t: "Asset Maintenance", icon: "●" },
     { t: "Quality Mgmt", icon: "⭐" },
-    { t: "Batch Recipe Mgmt", icon: "🧪" },
-    { t: "OEE Monitoring", icon: "⏱️" },
-    { t: "Traceability / Genealogy", icon: "🧬" }
+    { t: "Batch Recipe Mgmt", icon: "●" },
+    { t: "OEE Monitoring", icon: "⏱" },
+    { t: "Traceability / Genealogy", icon: "●" }
   ];
   mesCards.forEach((mc, idx) => {
     const mcx = 236 + idx * 125;
@@ -122,14 +122,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 4. AI / OPTIMIZATION LAYER (y=314..388, h=74)
   band("4", "AI / OPTIMIZATION<br/>LAYER", 314, 74, "#7C3AED");
   const aiOpts = [
-    { t: "Predictive Maint. Agent", icon: "🤖" },
-    { t: "Quality Anomaly Detect", icon: "🔍" },
-    { t: "Process Opt. Copilot", icon: "✨" },
-    { t: "Energy Optimization", icon: "⚡" },
-    { t: "Demand Forecasting", icon: "📈" },
-    { t: "Digital Twin Simulation", icon: "🌐" },
-    { t: "Document SOP Assistant", icon: "📄" },
-    { t: "Human-in-Loop Review", icon: "👥" }
+    { t: "Predictive Maint. Agent", icon: "●" },
+    { t: "Quality Anomaly Detect", icon: "●" },
+    { t: "Process Opt. Copilot", icon: "●" },
+    { t: "Energy Optimization", icon: "●" },
+    { t: "Demand Forecasting", icon: "●" },
+    { t: "Digital Twin Simulation", icon: "●" },
+    { t: "Document SOP Assistant", icon: "●" },
+    { t: "Human-in-Loop Review", icon: "●" }
   ];
   aiOpts.forEach((ao, idx) => {
     const aox = 236 + idx * 125;
@@ -139,14 +139,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 5. ENTERPRISE & EXTERNAL ECOSYSTEM (y=394..468, h=74)
   band("5", "ENTERPRISE &amp;<br/>EXTERNAL ECOSYSTEM", 394, 74, "#EA580C");
   const extEco = [
-    { t: "ERP / SAP S/4HANA", icon: "🏢" },
-    { t: "Supply Chain / WMS", icon: "🚚" },
-    { t: "PLM System", icon: "📐" },
-    { t: "CRM / Service Systems", icon: "🤝" },
-    { t: "Supplier Partner APIs", icon: "🔗" },
-    { t: "Logistics Providers", icon: "🚢" },
-    { t: "Customer Channels", icon: "👥" },
-    { t: "Regulatory Compliance", icon: "🏛️" }
+    { t: "ERP / SAP S/4HANA", icon: "●" },
+    { t: "Supply Chain / WMS", icon: "●" },
+    { t: "PLM System", icon: "●" },
+    { t: "CRM / Service Systems", icon: "●" },
+    { t: "Supplier Partner APIs", icon: "●" },
+    { t: "Logistics Providers", icon: "●" },
+    { t: "Customer Channels", icon: "●" },
+    { t: "Regulatory Compliance", icon: "●" }
   ];
   extEco.forEach((ee, idx) => {
     const eex = 236 + idx * 125;
@@ -156,14 +156,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 6. DATA & INDUSTRIAL INTELLIGENCE LAYER (y=474..548, h=74)
   band("6", "DATA &amp; INDUSTRIAL<br/>INTELLIGENCE LAYER", 474, 74, "#0D9488");
   const dataInd = [
-    { t: "Industrial Data Lake", sub: "GCS", icon: "🗄️" },
-    { t: "Time-Series Store", sub: "Bigtable", icon: "⏱️" },
-    { t: "BigQuery Analytics", sub: "Analytics", icon: "📊" },
-    { t: "Streaming Backbone", sub: "Dataflow", icon: "🌊" },
-    { t: "Event Bus / PubSub", sub: "Pub/Sub", icon: "📬" },
-    { t: "Feature Store", sub: "Vertex AI", icon: "⚡" },
-    { t: "Data Quality &amp; Lineage", sub: "Dataplex", icon: "🛡️" },
-    { t: "Curated Mart", sub: "BigQuery", icon: "📈" }
+    { t: "Industrial Data Lake", sub: "GCS", icon: "●" },
+    { t: "Time-Series Store", sub: "Bigtable", icon: "⏱" },
+    { t: "BigQuery Analytics", sub: "Analytics", icon: "●" },
+    { t: "Streaming Backbone", sub: "Dataflow", icon: "●" },
+    { t: "Event Bus / PubSub", sub: "Pub/Sub", icon: "●" },
+    { t: "Feature Store", sub: "Vertex AI", icon: "●" },
+    { t: "Data Quality &amp; Lineage", sub: "Dataplex", icon: "●" },
+    { t: "Curated Mart", sub: "BigQuery", icon: "●" }
   ];
   dataInd.forEach((di, idx) => {
     const dix = 236 + idx * 125;
@@ -173,14 +173,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 7. RISK, SAFETY, COMPLIANCE & GOVERNANCE (y=554..628, h=74)
   band("7", "RISK, SAFETY,<br/>COMPLIANCE &amp; GOV.", 554, 74, "#E11D48");
   const safetyCards = [
-    { t: "Safety Monitoring", icon: "🛡️" },
-    { t: "Policy / SOP Rules", icon: "📜" },
-    { t: "Model Governance", icon: "🧠" },
-    { t: "Audit Trail", icon: "📋" },
-    { t: "Root Cause Analysis", icon: "🔬" },
-    { t: "Regulatory Reports", icon: "📑" },
-    { t: "Escalation Workflows", icon: "🚨" },
-    { t: "Governance Review", icon: "👥" }
+    { t: "Safety Monitoring", icon: "●" },
+    { t: "Policy / SOP Rules", icon: "●" },
+    { t: "Model Governance", icon: "●" },
+    { t: "Audit Trail", icon: "●" },
+    { t: "Root Cause Analysis", icon: "●" },
+    { t: "Regulatory Reports", icon: "●" },
+    { t: "Escalation Workflows", icon: "●" },
+    { t: "Governance Review", icon: "●" }
   ];
   safetyCards.forEach((sc, idx) => {
     const scx = 236 + idx * 125;
@@ -190,14 +190,14 @@ export function generateTemplate36SmartManufacturingIotXml(
   // 8. PLATFORM / DEVOPS / MLOPS (y=634..708, h=74)
   band("8", "PLATFORM / DEVOPS /<br/>MLOPS (Google Cloud)", 634, 74, "#0284C7");
   const devopsCards = [
-    { t: "API Gateway (Apigee)", icon: "🌐" },
-    { t: "Containers (GKE)", icon: "☸️" },
-    { t: "Cloud Workflows", icon: "🔄" },
-    { t: "Cloud Build CI/CD", icon: "🚀" },
-    { t: "Artifact Registry", icon: "📦" },
-    { t: "Model Registry (Vertex)", icon: "🧠" },
-    { t: "Observability (Cloud Log)", icon: "📈" },
-    { t: "Secret Manager", icon: "🔒" }
+    { t: "API Gateway (Apigee)", icon: "●" },
+    { t: "Containers (GKE)", icon: "●" },
+    { t: "Cloud Workflows", icon: "●" },
+    { t: "Cloud Build CI/CD", icon: "●" },
+    { t: "Artifact Registry", icon: "●" },
+    { t: "Model Registry (Vertex)", icon: "●" },
+    { t: "Observability (Cloud Log)", icon: "●" },
+    { t: "Secret Manager", icon: "●" }
   ];
   devopsCards.forEach((dc, idx) => {
     const dcx = 236 + idx * 125;
@@ -208,13 +208,13 @@ export function generateTemplate36SmartManufacturingIotXml(
   band("9", "SECURITY, NETWORK &amp;<br/>RELIABILITY FOUNDATION", 714, 74, "#0F172A");
   const secFound = [
     { t: "Device Identity", icon: "🪪" },
-    { t: "IAM / Access Mgmt", icon: "👤" },
-    { t: "Zero Trust Network", icon: "🔒" },
-    { t: "VPC Segmentation", icon: "🛡️" },
-    { t: "Private Interconnect", icon: "🌐" },
-    { t: "Encryption Transit/Rest", icon: "🔐" },
-    { t: "SOC / SIEM (Chronicle)", icon: "🚨" },
-    { t: "Multi-Site HA / DR", icon: "💾" }
+    { t: "IAM / Access Mgmt", icon: "●" },
+    { t: "Zero Trust Network", icon: "●" },
+    { t: "VPC Segmentation", icon: "●" },
+    { t: "Private Interconnect", icon: "●" },
+    { t: "Encryption Transit/Rest", icon: "●" },
+    { t: "SOC / SIEM (Chronicle)", icon: "●" },
+    { t: "Multi-Site HA / DR", icon: "●" }
   ];
   secFound.forEach((sf, idx) => {
     const sfx = 236 + idx * 125;
@@ -251,7 +251,7 @@ export function generateTemplate36SmartManufacturingIotXml(
   ];
   sec36.forEach((sh, idx) => {
     const shy = 334 + idx * 34;
-    cell(`sh36_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span style="font-size:8px;color:#0F172A;line-height:1.2;">${sh}</span></div>`, 1262, shy, 312, 28, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=left;verticalAlign=middle;padding=4;");
+    cell(`sh36_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span style="font-size:8px;color:#0F172A;line-height:1.2;">${sh}</span></div>`, 1262, shy, 312, 28, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=left;verticalAlign=middle;padding=4;");
   });
 
   // Diagram Info
@@ -272,7 +272,29 @@ export function generateTemplate36SmartManufacturingIotXml(
 
   // ==================== 11. BOTTOM FOOTER (y=796..822) ====================
   cell("ftr_note", "ⓘ This blueprint is a reference architecture for PromptCanvas. Components and services are illustrative and can be adapted to specific manufacturing environments.", 16, 796, 1224, 26, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#64748B;fontSize=8;html=1;align=left;spacingLeft=8;verticalAlign=middle;");
-  cell("ftr_brand", "❖ PromptCanvas | Enterprise Architecture Suite", 1252, 796, 332, 26, "rounded=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1D4ED8;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("ftr_brand", "PromptCanvas | Enterprise Architecture Suite", 1252, 796, 332, 26, "rounded=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1D4ED8;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // ==================== ARCHITECTURE FLOW CONNECTORS ====================
+  // 1. Shop Floor Telemetry to Edge Control & Site Operations
+  edge("e_flow_sf_edge", "band_box_1", "band_box_2", "strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 2. Edge Operations to MES Platform & Cloud Ingestion
+  edge("e_flow_edge_mes", "band_box_2", "band_box_3", "strokeColor=#0284C7;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_flow_edge_data", "band_box_2", "band_box_6", "strokeColor=#0D9488;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=classic;endSize=5;");
+
+  // 3. MES Platform to AI Optimization & Enterprise Supply Chain
+  edge("e_flow_mes_ai", "band_box_3", "band_box_4", "strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_flow_mes_erp", "band_box_3", "band_box_5", "strokeColor=#EA580C;strokeWidth=1.8;endArrow=classic;endSize=5;");
+
+  // 4. Closed-Loop AI Optimization Feedback to Edge
+  edge("e_flow_ai_feedback", "band_box_4", "band_box_2", "strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=5 5;endArrow=classic;endSize=5;");
+
+  // 5. AI to Safety, Risk & Governance
+  edge("e_flow_ai_risk", "band_box_4", "band_box_7", "strokeColor=#E11D48;strokeWidth=1.8;endArrow=classic;endSize=5;");
+
+  // 6. Data Platform & Infrastructure Foundation
+  edge("e_flow_data_plat", "band_box_6", "band_box_8", "strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;endSize=5;");
+  edge("e_flow_plat_sec", "band_box_8", "band_box_9", "strokeColor=#0F172A;strokeWidth=2;endArrow=classic;endSize=5;");
 
   const bg = isDark ? "#0F172A" : "#FFFFFF";
 

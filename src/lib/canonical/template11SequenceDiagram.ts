@@ -1,11 +1,11 @@
 /**
- * 🏛️ CANONICAL MASTER BLUEPRINT 11 — SEQUENCE DIAGRAM
+ *  CANONICAL MASTER BLUEPRINT 11 — SEQUENCE DIAGRAM
  * 
  * 1:1 Ground-Truth Reproduction of images/11.png
  * "11 SEQUENCE DIAGRAM | NOVACURA Enterprise AI Platform for Biopharma"
  * Scenario: Scientist asks clinical question in AI Copilot -> Context Retrieval -> LLM Reasoning -> Cited Response & Audit
  * 
- * Geometric Coordinates: 1600x980px, 12 Lifelines across full width, 20 Numbered Steps (❶..⑳), ALT Flow Box, 5 Bottom Summary Cards
+ * Geometric Coordinates: 1600x980px, 12 Lifelines across full width, 20 Numbered Steps (..⑳), ALT Flow Box, 5 Bottom Summary Cards
  */
 
 export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma", theme: "light" | "dark" = "light"): string {
@@ -50,7 +50,7 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     ? "AETHER Autonomous Multi-Tenant Enterprise Cloud Platform"
     : "Enterprise Architecture Platform";
 
-  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : isManufacturing ? "🏭" : isSaas ? "☁️" : "⚡";
+  const brandIcon = isRetail ? "●" : isFintech ? "●" : isManufacturing ? "●" : isSaas ? "●" : "●";
   const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isManufacturing ? "SYNACTIVE" : isSaas ? "AETHER" : "ENTERPRISE";
   const brandTagline = isRetail
     ? "Hyper-Scale Commerce. Intelligent Fulfillment."
@@ -100,77 +100,77 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // =========================================================================
   const lifelines = isRetail
     ? [
-        { id: "p_user", name: "Shopper<br><span style='color:#64748B;font-weight:500;'>(Mobile/Web)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-        { id: "p_copilot", name: "Storefront App<br><span style='color:#64748B;font-weight:500;'>(Next.js Client)</span>", icon: "🛒", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee X)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-        { id: "p_auth", name: "Auth Service<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-        { id: "p_orch", name: "Order Orchestrator<br><span style='color:#64748B;font-weight:500;'>(Saga Engine)</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-        { id: "p_rag", name: "Pricing Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>", icon: "🏷️", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-        { id: "p_vdb", name: "Inventory Hold<br><span style='color:#64748B;font-weight:500;'>(WMS Engine)</span>", icon: "📦", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-        { id: "p_data", name: "Payment Vault<br><span style='color:#64748B;font-weight:500;'>(Stripe / PCI CDE)</span>", icon: "💳", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-        { id: "p_llm", name: "Order Ledger<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "🗄️", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-        { id: "p_policy", name: "Fraud &amp; Tax<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-        { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+        { id: "p_user", name: "Shopper<br><span style='color:#64748B;font-weight:500;'>(Mobile/Web)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "Storefront App<br><span style='color:#64748B;font-weight:500;'>(Next.js Client)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee X)</span>", icon: "●", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth Service<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Order Orchestrator<br><span style='color:#64748B;font-weight:500;'>(Saga Engine)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "Pricing Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Inventory Hold<br><span style='color:#64748B;font-weight:500;'>(WMS Engine)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Payment Vault<br><span style='color:#64748B;font-weight:500;'>(Stripe / PCI CDE)</span>", icon: "●", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "Order Ledger<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "Fraud &amp; Tax<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "●", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ]
     : isFintech
     ? [
-        { id: "p_user", name: "Trader / Sender<br><span style='color:#64748B;font-weight:500;'>(Financial Client)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-        { id: "p_copilot", name: "Payment App<br><span style='color:#64748B;font-weight:500;'>(Portal UI)</span>", icon: "💳", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee mTLS)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-        { id: "p_auth", name: "Auth &amp; HSM<br><span style='color:#64748B;font-weight:500;'>(Cloud KMS)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-        { id: "p_orch", name: "Payment Saga<br><span style='color:#64748B;font-weight:500;'>(Orchestrator)</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-        { id: "p_rag", name: "Risk &amp; FX Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>", icon: "🏷️", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-        { id: "p_vdb", name: "Ledger Hold<br><span style='color:#64748B;font-weight:500;'>(Spanner Hold)</span>", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-        { id: "p_data", name: "Clearing Gateway<br><span style='color:#64748B;font-weight:500;'>(FedNow / Swift)</span>", icon: "🏛️", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-        { id: "p_llm", name: "Ledger Core<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "🗄️", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-        { id: "p_policy", name: "AML &amp; Fraud<br><span style='color:#64748B;font-weight:500;'>(Vertex AI Graph)</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-        { id: "p_audit", name: "SAR &amp; Audit Log<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-        { id: "p_mon", name: "FinOps Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+        { id: "p_user", name: "Trader / Sender<br><span style='color:#64748B;font-weight:500;'>(Financial Client)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "Payment App<br><span style='color:#64748B;font-weight:500;'>(Portal UI)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee mTLS)</span>", icon: "●", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth &amp; HSM<br><span style='color:#64748B;font-weight:500;'>(Cloud KMS)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Payment Saga<br><span style='color:#64748B;font-weight:500;'>(Orchestrator)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "Risk &amp; FX Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Ledger Hold<br><span style='color:#64748B;font-weight:500;'>(Spanner Hold)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Clearing Gateway<br><span style='color:#64748B;font-weight:500;'>(FedNow / Swift)</span>", icon: "●", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "Ledger Core<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "AML &amp; Fraud<br><span style='color:#64748B;font-weight:500;'>(Vertex AI Graph)</span>", icon: "●", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "SAR &amp; Audit Log<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "FinOps Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ]
     : isManufacturing
     ? [
-        { id: "p_user", name: "Fleet Operator<br><span style='color:#64748B;font-weight:500;'>(Control UI)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-        { id: "p_copilot", name: "Mission App<br><span style='color:#64748B;font-weight:500;'>(Edge Client)</span>", icon: "🛸", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee mTLS)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-        { id: "p_auth", name: "Auth &amp; Device KMS<br><span style='color:#64748B;font-weight:500;'>(Cloud KMS)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-        { id: "p_orch", name: "Flight Saga<br><span style='color:#64748B;font-weight:500;'>(Orchestrator)</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-        { id: "p_rag", name: "Telemetry Engine<br><span style='color:#64748B;font-weight:500;'>(MQTT / Redis)</span>", icon: "🏷️", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-        { id: "p_vdb", name: "Airspace Hold<br><span style='color:#64748B;font-weight:500;'>(UTM Corridor)</span>", icon: "🛰️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-        { id: "p_data", name: "Sensor Data APIs<br><span style='color:#64748B;font-weight:500;'>(SCADA / PLC)</span>", icon: "🏭", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-        { id: "p_llm", name: "Mission Ledger<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "🗄️", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-        { id: "p_policy", name: "Safety &amp; FAA<br><span style='color:#64748B;font-weight:500;'>(Collision Guard)</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-        { id: "p_audit", name: "Audit &amp; Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-        { id: "p_mon", name: "IoT Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+        { id: "p_user", name: "Fleet Operator<br><span style='color:#64748B;font-weight:500;'>(Control UI)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "Mission App<br><span style='color:#64748B;font-weight:500;'>(Edge Client)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee mTLS)</span>", icon: "●", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth &amp; Device KMS<br><span style='color:#64748B;font-weight:500;'>(Cloud KMS)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Flight Saga<br><span style='color:#64748B;font-weight:500;'>(Orchestrator)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "Telemetry Engine<br><span style='color:#64748B;font-weight:500;'>(MQTT / Redis)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Airspace Hold<br><span style='color:#64748B;font-weight:500;'>(UTM Corridor)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Sensor Data APIs<br><span style='color:#64748B;font-weight:500;'>(SCADA / PLC)</span>", icon: "●", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "Mission Ledger<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "Safety &amp; FAA<br><span style='color:#64748B;font-weight:500;'>(Collision Guard)</span>", icon: "●", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "Audit &amp; Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "IoT Telemetry<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ]
     : isSaas
     ? [
-        { id: "p_user", name: "Platform Admin<br><span style='color:#64748B;font-weight:500;'>(Client App)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-        { id: "p_copilot", name: "SaaS Console<br><span style='color:#64748B;font-weight:500;'>(Portal UI)</span>", icon: "💻", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Envoy Mesh)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-        { id: "p_auth", name: "Auth &amp; OIDC<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-        { id: "p_orch", name: "Service Orchestrator<br><span style='color:#64748B;font-weight:500;'>(GKE Microservice)</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-        { id: "p_rag", name: "Config Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Cache)</span>", icon: "🏷️", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-        { id: "p_vdb", name: "Tenant Meta<br><span style='color:#64748B;font-weight:500;'>(BigQuery Index)</span>", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-        { id: "p_data", name: "Tenant Data APIs<br><span style='color:#64748B;font-weight:500;'>(Storage Mesh)</span>", icon: "📁", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-        { id: "p_llm", name: "Tenant DB Core<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "🗄️", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-        { id: "p_policy", name: "RBAC &amp; Quota<br><span style='color:#64748B;font-weight:500;'>(Policy Engine)</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-        { id: "p_mon", name: "Observability<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+        { id: "p_user", name: "Platform Admin<br><span style='color:#64748B;font-weight:500;'>(Client App)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "SaaS Console<br><span style='color:#64748B;font-weight:500;'>(Portal UI)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Envoy Mesh)</span>", icon: "●", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth &amp; OIDC<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Service Orchestrator<br><span style='color:#64748B;font-weight:500;'>(GKE Microservice)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "Config Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Cache)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Tenant Meta<br><span style='color:#64748B;font-weight:500;'>(BigQuery Index)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Tenant Data APIs<br><span style='color:#64748B;font-weight:500;'>(Storage Mesh)</span>", icon: "●", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "Tenant DB Core<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "RBAC &amp; Quota<br><span style='color:#64748B;font-weight:500;'>(Policy Engine)</span>", icon: "●", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "Observability<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ]
     : [
-        { id: "p_user", name: "Scientist<br><span style='color:#64748B;font-weight:500;'>(User)</span>", icon: "👤", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
-        { id: "p_copilot", name: "AI Copilot<br><span style='color:#64748B;font-weight:500;'>(Web App)</span>", icon: "💬", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
-        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee X)</span>", icon: "🌐", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
-        { id: "p_auth", name: "Auth Service<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "🛡️", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
-        { id: "p_orch", name: "Orchestration<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "⚙️", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
-        { id: "p_rag", name: "RAG Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "🔍", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
-        { id: "p_vdb", name: "Vector DB<br><span style='color:#64748B;font-weight:500;'>(BigQuery Vector)</span>", icon: "🗄️", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
-        { id: "p_data", name: "Data Services<br><span style='color:#64748B;font-weight:500;'>(Clinical Data APIs)</span>", icon: "📁", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
-        { id: "p_llm", name: "LLM Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "🧠", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
-        { id: "p_policy", name: "Response &amp; Policy<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "🛡️", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
-        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "📑", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
-        { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "📊", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
+        { id: "p_user", name: "Scientist<br><span style='color:#64748B;font-weight:500;'>(User)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 40, w: 90 },
+        { id: "p_copilot", name: "AI Copilot<br><span style='color:#64748B;font-weight:500;'>(Web App)</span>", icon: "●", color: "#1D4ED8", bg: "#EFF6FF", x: 155, w: 96 },
+        { id: "p_gateway", name: "API Gateway<br><span style='color:#64748B;font-weight:500;'>(Apigee X)</span>", icon: "●", color: "#0D9488", bg: "#F0FDFA", x: 275, w: 96 },
+        { id: "p_auth", name: "Auth Service<br><span style='color:#64748B;font-weight:500;'>(Cloud Identity)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 395, w: 100 },
+        { id: "p_orch", name: "Orchestration<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 518, w: 96 },
+        { id: "p_rag", name: "RAG Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 638, w: 96 },
+        { id: "p_vdb", name: "Vector DB<br><span style='color:#64748B;font-weight:500;'>(BigQuery Vector)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 758, w: 104 },
+        { id: "p_data", name: "Data Services<br><span style='color:#64748B;font-weight:500;'>(Clinical Data APIs)</span>", icon: "●", color: "#059669", bg: "#F0FDF4", x: 885, w: 108 },
+        { id: "p_llm", name: "LLM Service<br><span style='color:#64748B;font-weight:500;'>(Vertex AI)</span>", icon: "●", color: "#7C3AED", bg: "#FAF5FF", x: 1015, w: 96 },
+        { id: "p_policy", name: "Response &amp; Policy<br><span style='color:#64748B;font-weight:500;'>Service</span>", icon: "●", color: "#6D28D9", bg: "#FAF5FF", x: 1135, w: 106 },
+        { id: "p_audit", name: "Audit &amp; Logging<br><span style='color:#64748B;font-weight:500;'>(Cloud Logging)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1262, w: 102 },
+        { id: "p_mon", name: "Monitoring<br><span style='color:#64748B;font-weight:500;'>(Cloud Monitoring)</span>", icon: "●", color: "#0284C7", bg: "#F0F9FF", x: 1385, w: 104 },
       ];
 
   const centers: Record<string, number> = {};
@@ -216,24 +216,24 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   // 4. SEQUENCE MESSAGES & NUMBERED STEPS (1..20)
   // =========================================================================
   if (isRetail) {
-    msg("m1", "❶ Click \"1-Click Buy\": SKU_9824 (Express Delivery)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
-    msg("m2", "❷ POST /api/v1/checkout/1-click (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
-    msg("m3", "❸ Validate shopper JWT token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
-    msg("m4", "❹ Token valid (shopper_id=usr_9281)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
-    msg("m5", "❺ Forward to Order Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+    msg("m1", "Click \"1-Click Buy\": SKU_9824 (Express Delivery)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    msg("m2", "POST /api/v1/checkout/1-click (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    msg("m3", "Validate shopper JWT token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    msg("m4", "Token valid (shopper_id=usr_9281)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    msg("m5", "Forward to Order Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
 
     const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
-      <b>❻ Saga Orchestration</b><br>
+      <b>Saga Orchestration</b><br>
       • Acquire distributed lock<br>
       • Reserve inventory hold<br>
       • Start 2PC Payment Auth
     </div>`;
     rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
 
-    msg("m7", "❼ Lookup real-time pricing &amp; tax", centers.p_orch, centers.p_rag, 375, "#7C3AED");
-    msg("m8", "❽ Reserve SKU inventory hold (TTL 900s)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
-    msg("m9", "❾ Inventory hold confirmed (hold_id=wms_5829)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
-    msg("m10", "❿ Authorize tokenized card with PCI Vault", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    msg("m7", "Lookup real-time pricing &amp; tax", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    msg("m8", "Reserve SKU inventory hold (TTL 900s)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    msg("m9", "Inventory hold confirmed (hold_id=wms_5829)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    msg("m10", "Authorize tokenized card with PCI Vault", centers.p_rag, centers.p_data, 450, "#7C3AED");
     msg("m11", "⓫ Charge authorized (auth_code=AUTH_89102)", centers.p_data, centers.p_rag, 475, "#64748B", true);
     msg("m12", "⓬ Pricing + inventory hold returned", centers.p_rag, centers.p_orch, 505, "#64748B", true);
     msg("m13", "⓭ Commit atomic order transaction to Spanner", centers.p_orch, centers.p_llm, 540, "#7C3AED");
@@ -243,24 +243,24 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     msg("m17", "⓱ Display order receipt &amp; tracking ETA", centers.p_copilot, centers.p_user, 670, "#1D4ED8", true);
     msg("m18", "⓲ Publish OrderCreated event &amp; log transaction", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
   } else if (isFintech) {
-    msg("m1", "❶ Initiate ISO 20022 wire transfer ($50k to ACC_9824)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
-    msg("m2", "❷ POST /api/v1/payments/transfer (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
-    msg("m3", "❸ Validate mTLS client cert &amp; JWT", centers.p_gateway, centers.p_auth, 230, "#0D9488");
-    msg("m4", "❹ Token valid (trader_id=usr_9281)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
-    msg("m5", "❺ Forward to Payment Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+    msg("m1", "Initiate ISO 20022 wire transfer ($50k to ACC_9824)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    msg("m2", "POST /api/v1/payments/transfer (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    msg("m3", "Validate mTLS client cert &amp; JWT", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    msg("m4", "Token valid (trader_id=usr_9281)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    msg("m5", "Forward to Payment Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
 
     const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
-      <b>❻ Payment Saga</b><br>
+      <b>Payment Saga</b><br>
       • Check risk budget<br>
       • Lock ledger accounts<br>
       • Start 2PC Settlement
     </div>`;
     rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
 
-    msg("m7", "❼ Query real-time FX rate &amp; pre-trade limits", centers.p_orch, centers.p_rag, 375, "#7C3AED");
-    msg("m8", "❽ Reserve source account balance hold", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
-    msg("m9", "❾ Balance hold confirmed (hold_id=hld_8192)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
-    msg("m10", "❿ Dispatch to FedNow / Clearing Gateway", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    msg("m7", "Query real-time FX rate &amp; pre-trade limits", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    msg("m8", "Reserve source account balance hold", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    msg("m9", "Balance hold confirmed (hold_id=hld_8192)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    msg("m10", "Dispatch to FedNow / Clearing Gateway", centers.p_rag, centers.p_data, 450, "#7C3AED");
     msg("m11", "⓫ Clearing confirmed (auth_code=CLR_7721)", centers.p_data, centers.p_rag, 475, "#64748B", true);
     msg("m12", "⓬ Settlement authorization returned", centers.p_rag, centers.p_orch, 505, "#64748B", true);
     msg("m13", "⓭ Commit double-entry ledger debit &amp; credit", centers.p_orch, centers.p_llm, 540, "#7C3AED");
@@ -270,24 +270,24 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     msg("m17", "⓱ Display wire confirmation &amp; Swift UETR", centers.p_copilot, centers.p_user, 670, "#1D4ED8", true);
     msg("m18", "⓲ Publish PaymentSettled event to Kafka &amp; log SAR", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
   } else if (isManufacturing) {
-    msg("m1", "❶ Dispatch mission: Node_9824 (Sector 4 Flight Corridor)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
-    msg("m2", "❷ POST /api/v1/missions/dispatch (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
-    msg("m3", "❸ Validate device mTLS &amp; operator token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
-    msg("m4", "❹ Device &amp; operator authorized (node_id=aer_9824)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
-    msg("m5", "❺ Forward to Flight Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+    msg("m1", "Dispatch mission: Node_9824 (Sector 4 Flight Corridor)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    msg("m2", "POST /api/v1/missions/dispatch (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    msg("m3", "Validate device mTLS &amp; operator token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    msg("m4", "Device &amp; operator authorized (node_id=aer_9824)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    msg("m5", "Forward to Flight Saga Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
 
     const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
-      <b>❻ Flight Mission Saga</b><br>
+      <b>Flight Mission Saga</b><br>
       • Acquire corridor lock<br>
       • Reserve micro-hub charging<br>
       • Start 2PC mission commit
     </div>`;
     rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
 
-    msg("m7", "❼ Query real-time weather &amp; telemetry", centers.p_orch, centers.p_rag, 375, "#7C3AED");
-    msg("m8", "❽ Reserve UTM airspace corridor (TTL 900s)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
-    msg("m9", "❾ Airspace clearance confirmed (corridor_id=utm_441)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
-    msg("m10", "❿ Query micro-hub battery swap &amp; PLC sensor", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    msg("m7", "Query real-time weather &amp; telemetry", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    msg("m8", "Reserve UTM airspace corridor (TTL 900s)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    msg("m9", "Airspace clearance confirmed (corridor_id=utm_441)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    msg("m10", "Query micro-hub battery swap &amp; PLC sensor", centers.p_rag, centers.p_data, 450, "#7C3AED");
     msg("m11", "⓫ Sensor &amp; battery swap slot ready", centers.p_data, centers.p_rag, 475, "#64748B", true);
     msg("m12", "⓬ Telemetry + airspace clearance returned", centers.p_rag, centers.p_orch, 505, "#64748B", true);
     msg("m13", "⓭ Commit atomic mission state to Spanner", centers.p_orch, centers.p_llm, 540, "#7C3AED");
@@ -297,24 +297,24 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     msg("m17", "⓱ Display flight clearance &amp; live waypoint ETA", centers.p_copilot, centers.p_user, 670, "#1D4ED8", true);
     msg("m18", "⓲ Publish MissionDispatched event to SCADA mesh", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
   } else if (isSaas) {
-    msg("m1", "❶ Submit API request: Tenant_9824 (Provision Workspace)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
-    msg("m2", "❷ POST /api/v1/tenants/workspace (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
-    msg("m3", "❸ Validate OAuth 2.0 / OIDC JWT token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
-    msg("m4", "❹ Token valid &amp; tenant identified (tenant_id=tnt_9824)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
-    msg("m5", "❺ Forward to Service Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+    msg("m1", "Submit API request: Tenant_9824 (Provision Workspace)", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    msg("m2", "POST /api/v1/tenants/workspace (Idempotency-Key)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    msg("m3", "Validate OAuth 2.0 / OIDC JWT token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    msg("m4", "Token valid &amp; tenant identified (tenant_id=tnt_9824)", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    msg("m5", "Forward to Service Orchestrator", centers.p_gateway, centers.p_orch, 280, "#0D9488");
 
     const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
-      <b>❻ Service Orchestration</b><br>
+      <b>Service Orchestration</b><br>
       • Check tenant quota<br>
       • Route to tenant shard<br>
       • Start 2PC transaction
     </div>`;
     rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
 
-    msg("m7", "❼ Query tenant configuration &amp; rate limits", centers.p_orch, centers.p_rag, 375, "#7C3AED");
-    msg("m8", "❽ Check tenant storage quota in BigQuery", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
-    msg("m9", "❾ Quota verification confirmed (quota_ok=true)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
-    msg("m10", "❿ Request storage bucket &amp; encryption keys", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    msg("m7", "Query tenant configuration &amp; rate limits", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    msg("m8", "Check tenant storage quota in BigQuery", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    msg("m9", "Quota verification confirmed (quota_ok=true)", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    msg("m10", "Request storage bucket &amp; encryption keys", centers.p_rag, centers.p_data, 450, "#7C3AED");
     msg("m11", "⓫ Storage resources allocated (bucket_id=bkt_8819)", centers.p_data, centers.p_rag, 475, "#64748B", true);
     msg("m12", "⓬ Configuration + resource endpoints returned", centers.p_rag, centers.p_orch, 505, "#64748B", true);
     msg("m13", "⓭ Commit tenant state to Cloud Spanner", centers.p_orch, centers.p_llm, 540, "#7C3AED");
@@ -325,24 +325,24 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     msg("m18", "⓲ Publish TenantProvisioned event &amp; log audit", centers.p_orch, centers.p_audit, 690, "#0284C7", true);
   } else {
     // Biopharma / Universal Default
-    msg("m1", "❶ Ask question: \"What are the safety signals for Target X in Phase 3 trials?\"", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
-    msg("m2", "❷ Send request (question, user context, session id)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
-    msg("m3", "❸ Validate token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
-    msg("m4", "❹ Token valid", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
-    msg("m5", "❺ Forward request", centers.p_gateway, centers.p_orch, 280, "#0D9488");
+    msg("m1", "Ask question: \"What are the safety signals for Target X in Phase 3 trials?\"", centers.p_user, centers.p_copilot, 175, "#1D4ED8");
+    msg("m2", "Send request (question, user context, session id)", centers.p_copilot, centers.p_gateway, 205, "#1D4ED8");
+    msg("m3", "Validate token", centers.p_gateway, centers.p_auth, 230, "#0D9488");
+    msg("m4", "Token valid", centers.p_auth, centers.p_gateway, 255, "#64748B", true);
+    msg("m5", "Forward request", centers.p_gateway, centers.p_orch, 280, "#0D9488");
 
     const planHtml = `<div style="font-size:8.5px;line-height:1.25;color:#0F172A;text-align:left;">
-      <b>❻ Plan &amp; Orchestrate</b><br>
+      <b>Plan &amp; Orchestrate</b><br>
       • Rewrite query<br>
       • Identify data sources<br>
       • Build retrieval plan
     </div>`;
     rect("plan_box", planHtml, centers.p_orch + 12, 305, 115, 54, "fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=1;align=left;spacingLeft=6;");
 
-    msg("m7", "❼ Retrieve relevant docs (query + filters)", centers.p_orch, centers.p_rag, 375, "#7C3AED");
-    msg("m8", "❽ Vector similarity search (top-k results)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
-    msg("m9", "❾ Top-k documents + metadata", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
-    msg("m10", "❿ Fetch latest research context &amp; clinical data", centers.p_rag, centers.p_data, 450, "#7C3AED");
+    msg("m7", "Retrieve relevant docs (query + filters)", centers.p_orch, centers.p_rag, 375, "#7C3AED");
+    msg("m8", "Vector similarity search (top-k results)", centers.p_rag, centers.p_vdb, 400, "#7C3AED");
+    msg("m9", "Top-k documents + metadata", centers.p_vdb, centers.p_rag, 425, "#64748B", true);
+    msg("m10", "Fetch latest research context &amp; clinical data", centers.p_rag, centers.p_data, 450, "#7C3AED");
     msg("m11", "⓫ Data payload (JSON)", centers.p_data, centers.p_rag, 475, "#64748B", true);
     msg("m12", "⓬ Context + retrieved documents", centers.p_rag, centers.p_orch, 505, "#64748B", true);
     msg("m13", "⓭ Generate answer (prompt + context)", centers.p_orch, centers.p_llm, 540, "#7C3AED");
@@ -444,7 +444,7 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   const card1Html = `<div style="padding:8px 10px;height:100%;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;">
     <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;">MESSAGE TYPES</div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:9px;color:#1E293B;">
-      <span style="font-weight:900;color:#1D4ED8;font-size:16px;">➔</span>
+      <span style="font-weight:900;color:#1D4ED8;font-size:16px;"></span>
       <span><b>Synchronous Call</b></span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin-top:14px;font-size:9px;color:#1E293B;">
@@ -465,16 +465,16 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;">❶</b> Shopper clicks 1-Click Buy in Storefront</div>
-          <div><b style="color:#1D4ED8;">❷</b> POST checkout request to Gateway</div>
-          <div><b style="color:#0D9488;">❸</b> Gateway validates shopper token</div>
-          <div><b style="color:#64748B;">❹</b> Session token valid response</div>
-          <div><b style="color:#0D9488;">❺</b> Request forwarded to Saga Orchestrator</div>
-          <div><b style="color:#7C3AED;">❻</b> Plan &amp; orchestrate 2PC saga</div>
-          <div><b style="color:#7C3AED;">❼</b> Query real-time pricing &amp; tax</div>
-          <div><b style="color:#7C3AED;">❽</b> Reserve inventory with WMS (TTL 900s)</div>
-          <div><b style="color:#64748B;">❾</b> Inventory hold confirmed</div>
-          <div><b style="color:#7C3AED;">❿</b> Authorize payment with PCI Vault</div>
+          <div><b style="color:#1D4ED8;"></b> Shopper clicks 1-Click Buy in Storefront</div>
+          <div><b style="color:#1D4ED8;"></b> POST checkout request to Gateway</div>
+          <div><b style="color:#0D9488;"></b> Gateway validates shopper token</div>
+          <div><b style="color:#64748B;"></b> Session token valid response</div>
+          <div><b style="color:#0D9488;"></b> Request forwarded to Saga Orchestrator</div>
+          <div><b style="color:#7C3AED;"></b> Plan &amp; orchestrate 2PC saga</div>
+          <div><b style="color:#7C3AED;"></b> Query real-time pricing &amp; tax</div>
+          <div><b style="color:#7C3AED;"></b> Reserve inventory with WMS (TTL 900s)</div>
+          <div><b style="color:#64748B;"></b> Inventory hold confirmed</div>
+          <div><b style="color:#7C3AED;"></b> Authorize payment with PCI Vault</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
           <div><b style="color:#64748B;">⓫</b> Payment authorization code</div>
@@ -497,16 +497,16 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;">❶</b> Trader initiates ISO 20022 wire transfer</div>
-          <div><b style="color:#1D4ED8;">❷</b> POST transfer request to API Gateway</div>
-          <div><b style="color:#0D9488;">❸</b> Validate mTLS client cert &amp; JWT</div>
-          <div><b style="color:#64748B;">❹</b> Token valid &amp; authorized response</div>
-          <div><b style="color:#0D9488;">❺</b> Forward to Payment Saga Orchestrator</div>
-          <div><b style="color:#7C3AED;">❻</b> Plan 2PC atomic transfer saga</div>
-          <div><b style="color:#7C3AED;">❼</b> Query FX rate &amp; pre-trade limits</div>
-          <div><b style="color:#7C3AED;">❽</b> Reserve account balance hold</div>
-          <div><b style="color:#64748B;">❾</b> Balance hold confirmed in Spanner</div>
-          <div><b style="color:#7C3AED;">❿</b> Dispatch to Clearing House Gateway</div>
+          <div><b style="color:#1D4ED8;"></b> Trader initiates ISO 20022 wire transfer</div>
+          <div><b style="color:#1D4ED8;"></b> POST transfer request to API Gateway</div>
+          <div><b style="color:#0D9488;"></b> Validate mTLS client cert &amp; JWT</div>
+          <div><b style="color:#64748B;"></b> Token valid &amp; authorized response</div>
+          <div><b style="color:#0D9488;"></b> Forward to Payment Saga Orchestrator</div>
+          <div><b style="color:#7C3AED;"></b> Plan 2PC atomic transfer saga</div>
+          <div><b style="color:#7C3AED;"></b> Query FX rate &amp; pre-trade limits</div>
+          <div><b style="color:#7C3AED;"></b> Reserve account balance hold</div>
+          <div><b style="color:#64748B;"></b> Balance hold confirmed in Spanner</div>
+          <div><b style="color:#7C3AED;"></b> Dispatch to Clearing House Gateway</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
           <div><b style="color:#64748B;">⓫</b> Clearing authorization code returned</div>
@@ -529,16 +529,16 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;">❶</b> Dispatch mission for drone Node_9824</div>
-          <div><b style="color:#1D4ED8;">❷</b> POST mission request to API Gateway</div>
-          <div><b style="color:#0D9488;">❸</b> Validate device mTLS &amp; operator token</div>
-          <div><b style="color:#64748B;">❹</b> Device authorized (node_id=aer_9824)</div>
-          <div><b style="color:#0D9488;">❺</b> Forward to Flight Saga Orchestrator</div>
-          <div><b style="color:#7C3AED;">❻</b> Plan flight corridor &amp; battery budget</div>
-          <div><b style="color:#7C3AED;">❼</b> Query weather &amp; real-time telemetry</div>
-          <div><b style="color:#7C3AED;">❽</b> Reserve UTM airspace corridor</div>
-          <div><b style="color:#64748B;">❾</b> Airspace clearance confirmed</div>
-          <div><b style="color:#7C3AED;">❿</b> Query vertiport &amp; battery swap slot</div>
+          <div><b style="color:#1D4ED8;"></b> Dispatch mission for drone Node_9824</div>
+          <div><b style="color:#1D4ED8;"></b> POST mission request to API Gateway</div>
+          <div><b style="color:#0D9488;"></b> Validate device mTLS &amp; operator token</div>
+          <div><b style="color:#64748B;"></b> Device authorized (node_id=aer_9824)</div>
+          <div><b style="color:#0D9488;"></b> Forward to Flight Saga Orchestrator</div>
+          <div><b style="color:#7C3AED;"></b> Plan flight corridor &amp; battery budget</div>
+          <div><b style="color:#7C3AED;"></b> Query weather &amp; real-time telemetry</div>
+          <div><b style="color:#7C3AED;"></b> Reserve UTM airspace corridor</div>
+          <div><b style="color:#64748B;"></b> Airspace clearance confirmed</div>
+          <div><b style="color:#7C3AED;"></b> Query vertiport &amp; battery swap slot</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
           <div><b style="color:#64748B;">⓫</b> Battery swap &amp; sensor slot ready</div>
@@ -561,16 +561,16 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;">❶</b> Submit workspace provisioning request</div>
-          <div><b style="color:#1D4ED8;">❷</b> POST request to API Gateway</div>
-          <div><b style="color:#0D9488;">❸</b> Validate OAuth 2.0 / OIDC JWT token</div>
-          <div><b style="color:#64748B;">❹</b> Token valid &amp; tenant verified</div>
-          <div><b style="color:#0D9488;">❺</b> Forward to Service Orchestrator</div>
-          <div><b style="color:#7C3AED;">❻</b> Plan tenant isolation &amp; shard allocation</div>
-          <div><b style="color:#7C3AED;">❼</b> Query tenant config &amp; rate limits</div>
-          <div><b style="color:#7C3AED;">❽</b> Check tenant quota in BigQuery</div>
-          <div><b style="color:#64748B;">❾</b> Storage quota verified</div>
-          <div><b style="color:#7C3AED;">❿</b> Request storage bucket &amp; KMS keys</div>
+          <div><b style="color:#1D4ED8;"></b> Submit workspace provisioning request</div>
+          <div><b style="color:#1D4ED8;"></b> POST request to API Gateway</div>
+          <div><b style="color:#0D9488;"></b> Validate OAuth 2.0 / OIDC JWT token</div>
+          <div><b style="color:#64748B;"></b> Token valid &amp; tenant verified</div>
+          <div><b style="color:#0D9488;"></b> Forward to Service Orchestrator</div>
+          <div><b style="color:#7C3AED;"></b> Plan tenant isolation &amp; shard allocation</div>
+          <div><b style="color:#7C3AED;"></b> Query tenant config &amp; rate limits</div>
+          <div><b style="color:#7C3AED;"></b> Check tenant quota in BigQuery</div>
+          <div><b style="color:#64748B;"></b> Storage quota verified</div>
+          <div><b style="color:#7C3AED;"></b> Request storage bucket &amp; KMS keys</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
           <div><b style="color:#64748B;">⓫</b> Storage bucket allocated</div>
@@ -592,16 +592,16 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;">❶</b> User asks question in AI Copilot</div>
-          <div><b style="color:#1D4ED8;">❷</b> Request sent to API Gateway</div>
-          <div><b style="color:#0D9488;">❸</b> Gateway validates access token</div>
-          <div><b style="color:#64748B;">❹</b> Token validation response</div>
-          <div><b style="color:#0D9488;">❺</b> Request forwarded to Orchestrator</div>
-          <div><b style="color:#7C3AED;">❻</b> Plan retrieval and data sources</div>
-          <div><b style="color:#7C3AED;">❼</b> Send query to RAG service</div>
-          <div><b style="color:#7C3AED;">❽</b> Perform vector search</div>
-          <div><b style="color:#64748B;">❾</b> Return top-k documents</div>
-          <div><b style="color:#7C3AED;">❿</b> Fetch latest domain data</div>
+          <div><b style="color:#1D4ED8;"></b> User asks question in AI Copilot</div>
+          <div><b style="color:#1D4ED8;"></b> Request sent to API Gateway</div>
+          <div><b style="color:#0D9488;"></b> Gateway validates access token</div>
+          <div><b style="color:#64748B;"></b> Token validation response</div>
+          <div><b style="color:#0D9488;"></b> Request forwarded to Orchestrator</div>
+          <div><b style="color:#7C3AED;"></b> Plan retrieval and data sources</div>
+          <div><b style="color:#7C3AED;"></b> Send query to RAG service</div>
+          <div><b style="color:#7C3AED;"></b> Perform vector search</div>
+          <div><b style="color:#64748B;"></b> Return top-k documents</div>
+          <div><b style="color:#7C3AED;"></b> Fetch latest domain data</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
           <div><b style="color:#64748B;">⓫</b> Return domain payload</div>
@@ -652,30 +652,30 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;text-align:center;font-size:8.5px;font-weight:700;color:#1E293B;margin-top:10px;">
       <tr>
         <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;">🌐</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>Apigee X</div>
         </td>
         <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;">🛡️</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>Cloud Identity</div>
         </td>
         <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;">🧠</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>Vertex AI</div>
         </td>
         <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;">📊</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>BigQuery<br>Vector Search</div>
         </td>
       </tr>
       <tr>
         <td style="padding:6px;"></td>
         <td style="padding:6px;">
-          <div style="font-size:20px;margin-bottom:2px;">📑</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>Cloud Logging</div>
         </td>
         <td style="padding:6px;">
-          <div style="font-size:20px;margin-bottom:2px;">📈</div>
+          <div style="font-size:20px;margin-bottom:2px;"></div>
           <div>Cloud Monitoring</div>
         </td>
         <td style="padding:6px;"></td>

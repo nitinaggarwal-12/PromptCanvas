@@ -53,7 +53,7 @@ export function generateTemplate35FintechWealthEngineXml(
     "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">☁️</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#4285F4;letter-spacing:1px;">Google Cloud</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">Enterprise Reference Architecture</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#4285F4;letter-spacing:1px;">Google Cloud</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">Enterprise Reference Architecture</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;white-space:normal;'>OBJECTIVE</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;white-space:normal;word-break:break-word;'>
@@ -66,10 +66,10 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier1", "1) CHANNELS / EXPERIENCE LAYER", 16, 76, 634, 18, "fillColor=#1D4ED8;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const channels = [
-    { t: "Retail Investor App", icon: "📱", x: 26, w: 140 },
-    { t: "Wealth Advisor Portal", icon: "💻", x: 176, w: 140 },
-    { t: "Operations Console", icon: "🖥️", x: 326, w: 140 },
-    { t: "Partner / API Consumers", icon: "🏢", x: 476, w: 160 }
+    { t: "Retail Investor App", icon: "●", x: 26, w: 140 },
+    { t: "Wealth Advisor Portal", icon: "●", x: 176, w: 140 },
+    { t: "Operations Console", icon: "●", x: 326, w: 140 },
+    { t: "Partner / API Consumers", icon: "●", x: 476, w: 160 }
   ];
   channels.forEach((ch, idx) => {
     cell(`ch_${idx}`, `<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:20px;">${ch.icon}</span><span style="font-size:10px;font-weight:800;color:#0F172A;">${ch.t}</span></div>`, ch.x, 102, ch.w, 64, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
@@ -80,12 +80,12 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier2", "2) IDENTITY, ONBOARDING, AND TRUST", 16, 186, 154, 18, "fillColor=#16A34A;fontColor=#FFFFFF;fontSize=7.5;fontStyle=1;align=left;spacingLeft=6;verticalAlign=middle;");
 
   const trustCards = [
-    { t: "Identity Provider / SSO", sub: "Google Identity Platform", icon: "🔒" },
-    { t: "Customer Onboarding", sub: "Digital Onboarding &amp; eSign", icon: "📝" },
+    { t: "Identity Provider / SSO", sub: "Google Identity Platform", icon: "●" },
+    { t: "Customer Onboarding", sub: "Digital Onboarding &amp; eSign", icon: "●" },
     { t: "KYC Verification", sub: "IDV • KYB • PEP", icon: "🪪" },
-    { t: "AML / Sanctions Screening", sub: "Watchlists • Adverse Media", icon: "🛡️" },
-    { t: "Fraud Checks", sub: "Device • Behavioral • Velocity", icon: "🚨" },
-    { t: "Consent Management", sub: "Preferences • Data Usage", icon: "📋" }
+    { t: "AML / Sanctions Screening", sub: "Watchlists • Adverse Media", icon: "●" },
+    { t: "Fraud Checks", sub: "Device • Behavioral • Velocity", icon: "●" },
+    { t: "Consent Management", sub: "Preferences • Data Usage", icon: "●" }
   ];
   trustCards.forEach((tc, idx) => {
     const tcy = 210 + idx * 54;
@@ -97,15 +97,15 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier3", "3) CORE WEALTH PLATFORM", 178, 186, 472, 18, "fillColor=#1E40AF;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const coreCards = [
-    { t: "Client Profile &amp; Goals", sub: "Lifecycle • Goals • Risk", icon: "👤", r: 0, c: 0 },
-    { t: "Portfolio Management", sub: "Positions • Holdings • P&amp;L", icon: "📊", r: 0, c: 1 },
-    { t: "Account Aggregation", sub: "Banking • Investments • Liabilities", icon: "🏛️", r: 0, c: 2 },
-    { t: "Cash Management", sub: "Cash Position • Sweeps • FX", icon: "💵", r: 1, c: 0 },
-    { t: "Financial Planning", sub: "Goals • Projections • Scenarios", icon: "📈", r: 1, c: 1 },
-    { t: "Rebalancing Engine", sub: "Drift Detection • Optimization", icon: "⚖️", r: 1, c: 2 },
+    { t: "Client Profile &amp; Goals", sub: "Lifecycle • Goals • Risk", icon: "●", r: 0, c: 0 },
+    { t: "Portfolio Management", sub: "Positions • Holdings • P&amp;L", icon: "●", r: 0, c: 1 },
+    { t: "Account Aggregation", sub: "Banking • Investments • Liabilities", icon: "●", r: 0, c: 2 },
+    { t: "Cash Management", sub: "Cash Position • Sweeps • FX", icon: "●", r: 1, c: 0 },
+    { t: "Financial Planning", sub: "Goals • Projections • Scenarios", icon: "●", r: 1, c: 1 },
+    { t: "Rebalancing Engine", sub: "Drift Detection • Optimization", icon: "●", r: 1, c: 2 },
     { t: "Recommendations", sub: "Personalized • Explainable", icon: "⭐", r: 2, c: 0 },
-    { t: "Tax Optimization", sub: "Tax-Loss Harvesting • Location", icon: "📉", r: 2, c: 1 },
-    { t: "Billing / Fee Engine", sub: "Fees • Invoicing • Revenue Share", icon: "🧾", r: 2, c: 2 }
+    { t: "Tax Optimization", sub: "Tax-Loss Harvesting • Location", icon: "●", r: 2, c: 1 },
+    { t: "Billing / Fee Engine", sub: "Fees • Invoicing • Revenue Share", icon: "●", r: 2, c: 2 }
   ];
   coreCards.forEach((cc, idx) => {
     const cx = 188 + cc.c * 150;
@@ -117,36 +117,36 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("box_tier4", "", 658, 184, 292, 366, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
   cell("lbl_tier4", "4) AUTONOMOUS AI LAYER", 658, 186, 292, 18, "fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
-  cell("ai_copilot", `<div style="display:flex;align-items:center;gap:6px;justify-content:center;"><span style="font-size:20px;">🤖</span><span style="font-size:10.5px;font-weight:900;color:#5B21B6;">AI Copilot (Natural Language Interface)</span></div>`, 668, 212, 272, 42, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("ai_copilot", `<div style="display:flex;align-items:center;gap:6px;justify-content:center;"><span style="font-size:20px;"></span><span style="font-size:10.5px;font-weight:900;color:#5B21B6;">AI Copilot (Natural Language Interface)</span></div>`, 668, 212, 272, 42, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=4;");
 
   // Autonomous Wealth Agents Pod
   cell("box_ai_agents", "", 668, 262, 272, 218, "rounded=1;arcSize=4;fillColor=#F5F3FF;strokeColor=#DDD6FE;strokeWidth=1;");
   cell("lbl_ai_agents", "Autonomous Wealth Agents", 668, 264, 272, 16, "fontColor=#6D28D9;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const agents = [
-    { t: "Risk Analysis Agent", sub: "Risk Scoring • Stress Testing", icon: "🛡️" },
-    { t: "Planning Agent", sub: "Goal Optimization • Scenarios", icon: "🎯" },
-    { t: "Market Intelligence Agent", sub: "Trends • Signals • Opportunities", icon: "🌐" },
-    { t: "Document / Research Assistant", sub: "Docs • Research • Summaries", icon: "📄" }
+    { t: "Risk Analysis Agent", sub: "Risk Scoring • Stress Testing", icon: "●" },
+    { t: "Planning Agent", sub: "Goal Optimization • Scenarios", icon: "●" },
+    { t: "Market Intelligence Agent", sub: "Trends • Signals • Opportunities", icon: "●" },
+    { t: "Document / Research Assistant", sub: "Docs • Research • Summaries", icon: "●" }
   ];
   agents.forEach((ag, idx) => {
     const agy = 286 + idx * 46;
     cell(`ag_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:16px;">${ag.icon}</span><div><div style="font-size:9px;font-weight:800;color:#0F172A;">${ag.t}</div><div style="font-size:7.5px;color:#64748B;">${ag.sub}</div></div></div>`, 676, agy, 256, 40, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");
   });
 
-  cell("ai_hitl", `<div style="display:flex;align-items:center;gap:6px;justify-content:center;"><span style="font-size:18px;">👥</span><div><div style="font-size:9.5px;font-weight:900;color:#5B21B6;">Human-in-the-Loop Approval</div><div style="font-size:7.5px;color:#64748B;">High-Risk Actions • Overrides</div></div></div>`, 668, 488, 272, 52, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("ai_hitl", `<div style="display:flex;align-items:center;gap:6px;justify-content:center;"><span style="font-size:18px;"></span><div><div style="font-size:9.5px;font-weight:900;color:#5B21B6;">Human-in-the-Loop Approval</div><div style="font-size:7.5px;color:#64748B;">High-Risk Actions • Overrides</div></div></div>`, 668, 488, 272, 52, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=center;verticalAlign=middle;padding=4;");
 
   // ==================== 6. TIER 5: TRADING & EXTERNAL MARKET ECOSYSTEM (x=958..1240, y=184..550) ====================
   cell("box_tier5", "", 958, 184, 282, 366, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;strokeWidth=1.5;");
   cell("lbl_tier5", "5) TRADING &amp; EXTERNAL MARKET ECOSYSTEM", 958, 186, 282, 18, "fillColor=#EA580C;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const extCards = [
-    { t: "Broker / Custodian Connectivity", sub: "Apex • Pershing • Interactive Brokers", icon: "🏛️" },
-    { t: "Trading / Order Management", sub: "OMS • Execution • Allocations", icon: "📈" },
-    { t: "Market Data Feeds", sub: "Real-time Prices • Reference • Depth", icon: "📊" },
-    { t: "News / Research Feeds", sub: "News • Research • Ratings", icon: "📰" },
-    { t: "Payment Rails / Banking", sub: "ACH • Wire • Cards • RTP", icon: "💳" },
-    { t: "CRM / External Partner Systems", sub: "Salesforce • HubSpot • Other APIs", icon: "☁️" }
+    { t: "Broker / Custodian Connectivity", sub: "Apex • Pershing • Interactive Brokers", icon: "●" },
+    { t: "Trading / Order Management", sub: "OMS • Execution • Allocations", icon: "●" },
+    { t: "Market Data Feeds", sub: "Real-time Prices • Reference • Depth", icon: "●" },
+    { t: "News / Research Feeds", sub: "News • Research • Ratings", icon: "●" },
+    { t: "Payment Rails / Banking", sub: "ACH • Wire • Cards • RTP", icon: "●" },
+    { t: "CRM / External Partner Systems", sub: "Salesforce • HubSpot • Other APIs", icon: "●" }
   ];
   extCards.forEach((ec, idx) => {
     const ecy = 210 + idx * 54;
@@ -158,14 +158,14 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier6", "6) DATA &amp; INTELLIGENCE LAYER (Google Cloud)", 16, 560, 824, 18, "fillColor=#0D9488;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const dataStores = [
-    { t: "Transactional Data Store", sub: "Cloud Spanner", icon: "🗄️" },
-    { t: "Customer 360", sub: "BigQuery", icon: "📊" },
-    { t: "Portfolio Analytics Warehouse", sub: "BigQuery", icon: "📈" },
-    { t: "Feature Store", sub: "Vertex AI", icon: "⚡" },
-    { t: "Vector / Search Index", sub: "Vertex Matching Engine", icon: "🔍" },
-    { t: "Document Knowledge Base", sub: "Cloud Storage", icon: "📁" },
-    { t: "Event Streaming", sub: "Pub/Sub", icon: "📬" },
-    { t: "Data Quality &amp; Lineage", sub: "Dataplex", icon: "🛡️" }
+    { t: "Transactional Data Store", sub: "Cloud Spanner", icon: "●" },
+    { t: "Customer 360", sub: "BigQuery", icon: "●" },
+    { t: "Portfolio Analytics Warehouse", sub: "BigQuery", icon: "●" },
+    { t: "Feature Store", sub: "Vertex AI", icon: "●" },
+    { t: "Vector / Search Index", sub: "Vertex Matching Engine", icon: "●" },
+    { t: "Document Knowledge Base", sub: "Cloud Storage", icon: "●" },
+    { t: "Event Streaming", sub: "Pub/Sub", icon: "●" },
+    { t: "Data Quality &amp; Lineage", sub: "Dataplex", icon: "●" }
   ];
   dataStores.forEach((ds, idx) => {
     const dsx = 24 + idx * 101;
@@ -177,12 +177,12 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier7", "7) RISK, COMPLIANCE, &amp; GOVERNANCE", 848, 560, 392, 18, "fillColor=#E11D48;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const riskGrid = [
-    { t: "Suitability Checks", sub: "Risk • Needs • Profile", icon: "⚖️" },
-    { t: "Model Governance", sub: "Validation • Monitoring", icon: "🧠" },
-    { t: "Policy Rules Engine", sub: "Business • Regulatory", icon: "📜" },
-    { t: "Audit Trail", sub: "Immutable Logs", icon: "🛡️" },
-    { t: "Surveillance", sub: "Market • Trade • Behavior", icon: "👁️" },
-    { t: "Regulatory Reporting", sub: "FINRA • SEC • FCA", icon: "📑" }
+    { t: "Suitability Checks", sub: "Risk • Needs • Profile", icon: "●" },
+    { t: "Model Governance", sub: "Validation • Monitoring", icon: "●" },
+    { t: "Policy Rules Engine", sub: "Business • Regulatory", icon: "●" },
+    { t: "Audit Trail", sub: "Immutable Logs", icon: "●" },
+    { t: "Surveillance", sub: "Market • Trade • Behavior", icon: "●" },
+    { t: "Regulatory Reporting", sub: "FINRA • SEC • FCA", icon: "●" }
   ];
   riskGrid.forEach((rg, idx) => {
     const rx = 856 + (idx % 3) * 126;
@@ -195,16 +195,16 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier8", "8) PLATFORM / MLOPS / DEVSECOPS (Google Cloud)", 16, 678, 1224, 18, "fillColor=#0284C7;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const platCards = [
-    { t: "API Gateway", sub: "Apigee", icon: "🌐" },
-    { t: "Microservices", sub: "GKE Autopilot", icon: "☸️" },
-    { t: "Workflow Orch.", sub: "Cloud Workflows", icon: "🔄" },
-    { t: "CI/CD Pipeline", sub: "Cloud Build", icon: "🚀" },
-    { t: "Artifact Registry", sub: "Containers", icon: "📦" },
-    { t: "Model Registry", sub: "Vertex AI", icon: "🧠" },
-    { t: "Evaluation / Mon.", sub: "Vertex AI Eval", icon: "📊" },
-    { t: "Observability", sub: "Cloud Logging/Trace", icon: "📈" },
-    { t: "SRE &amp; Reliability", sub: "SLIs • SLOs", icon: "⚡" },
-    { t: "Secrets / KMS", sub: "Secret Manager", icon: "🔒" }
+    { t: "API Gateway", sub: "Apigee", icon: "●" },
+    { t: "Microservices", sub: "GKE Autopilot", icon: "●" },
+    { t: "Workflow Orch.", sub: "Cloud Workflows", icon: "●" },
+    { t: "CI/CD Pipeline", sub: "Cloud Build", icon: "●" },
+    { t: "Artifact Registry", sub: "Containers", icon: "●" },
+    { t: "Model Registry", sub: "Vertex AI", icon: "●" },
+    { t: "Evaluation / Mon.", sub: "Vertex AI Eval", icon: "●" },
+    { t: "Observability", sub: "Cloud Logging/Trace", icon: "●" },
+    { t: "SRE &amp; Reliability", sub: "SLIs • SLOs", icon: "●" },
+    { t: "Secrets / KMS", sub: "Secret Manager", icon: "●" }
   ];
   platCards.forEach((pc, idx) => {
     const pcx = 24 + idx * 121;
@@ -216,14 +216,14 @@ export function generateTemplate35FintechWealthEngineXml(
   cell("lbl_tier9", "9) SECURITY &amp; RELIABILITY FOUNDATION (Built-in Google Cloud)", 16, 790, 1224, 18, "fillColor=#0F172A;fontColor=#FFFFFF;fontSize=8.5;fontStyle=1;align=left;spacingLeft=8;verticalAlign=middle;");
 
   const secCards = [
-    { t: "Encryption", sub: "In Transit &amp; At Rest (CMEK)", icon: "🔐" },
-    { t: "Tokenization", sub: "PAN • PII • Sensitive Data", icon: "💳" },
-    { t: "Network Segmentation", sub: "VPC • Subnets • FW Rules", icon: "🛡️" },
-    { t: "Zero Trust Architecture", sub: "BeyondCorp • Context Aware", icon: "🔒" },
-    { t: "Identity &amp; Access (IAM)", sub: "Least Privilege • RBAC", icon: "👤" },
-    { t: "SOC / SIEM", sub: "Chronicle • SCC • Alerting", icon: "🚨" },
-    { t: "Backup / DR", sub: "Cross-Region • RPO/RTO", icon: "💾" },
-    { t: "HA / Multi-Region", sub: "Active-Active • Auto Healing", icon: "🌐" }
+    { t: "Encryption", sub: "In Transit &amp; At Rest (CMEK)", icon: "●" },
+    { t: "Tokenization", sub: "PAN • PII • Sensitive Data", icon: "●" },
+    { t: "Network Segmentation", sub: "VPC • Subnets • FW Rules", icon: "●" },
+    { t: "Zero Trust Architecture", sub: "BeyondCorp • Context Aware", icon: "●" },
+    { t: "Identity &amp; Access (IAM)", sub: "Least Privilege • RBAC", icon: "●" },
+    { t: "SOC / SIEM", sub: "Chronicle • SCC • Alerting", icon: "●" },
+    { t: "Backup / DR", sub: "Cross-Region • RPO/RTO", icon: "●" },
+    { t: "HA / Multi-Region", sub: "Active-Active • Auto Healing", icon: "●" }
   ];
   secCards.forEach((sc, idx) => {
     const scx = 24 + idx * 151;
@@ -260,7 +260,7 @@ export function generateTemplate35FintechWealthEngineXml(
   ];
   secHighlights.forEach((sh, idx) => {
     const shy = 348 + idx * 36;
-    cell(`sh_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✔</span><span style="font-size:8px;color:#0F172A;line-height:1.2;">${sh}</span></div>`, 1262, shy, 312, 30, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=left;verticalAlign=middle;padding=4;");
+    cell(`sh_${idx}`, `<div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span style="font-size:8px;color:#0F172A;line-height:1.2;">${sh}</span></div>`, 1262, shy, 312, 30, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;html=1;align=left;verticalAlign=middle;padding=4;");
   });
 
   // Diagram Information
@@ -281,7 +281,33 @@ export function generateTemplate35FintechWealthEngineXml(
 
   // ==================== 12. BOTTOM FOOTER (y=904..930) ====================
   cell("ftr_note", "ⓘ This blueprint is a reference architecture for PromptCanvas. Components and services are illustrative and can be adapted to specific business and regulatory requirements.", 16, 904, 1224, 26, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#64748B;fontSize=8;html=1;align=left;spacingLeft=8;verticalAlign=middle;");
-  cell("ftr_brand", "❖ PromptCanvas | Enterprise Architecture Suite", 1252, 904, 332, 26, "rounded=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1D4ED8;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("ftr_brand", "PromptCanvas | Enterprise Architecture Suite", 1252, 904, 332, 26, "rounded=1;fillColor=#EFF6FF;strokeColor=#BFDBFE;fontColor=#1D4ED8;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+
+  // ==================== ARCHITECTURE FLOW CONNECTORS ====================
+  // 1. Channels to Identity & Core Platform
+  edge("e_flow_t1_t2", "box_tier1", "box_tier2", "strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_flow_t1_t3", "box_tier1", "box_tier3", "strokeColor=#1E40AF;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 2. Identity to Core Platform
+  edge("e_flow_t2_t3", "box_tier2", "box_tier3", "strokeColor=#16A34A;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 3. Core Wealth Platform to Autonomous AI Layer
+  edge("e_flow_t3_t4", "box_tier3", "box_tier4", "strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 4. AI Layer to Trading & External Market Ecosystem
+  edge("e_flow_t4_t5", "box_tier4", "box_tier5", "strokeColor=#EA580C;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 5. Core Platform to Data & Intelligence Layer
+  edge("e_flow_t3_t6", "box_tier3", "box_tier6", "strokeColor=#0D9488;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 6. Data Layer to Risk, Compliance & Governance
+  edge("e_flow_t6_t7", "box_tier6", "box_tier7", "strokeColor=#E11D48;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // 7. Closed-Loop AI Optimization Feedback to Core Platform
+  edge("e_flow_ai_feedback", "box_tier4", "box_tier3", "strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=5 5;endArrow=classic;endSize=5;");
+
+  // 8. Infrastructure Foundation
+  edge("e_flow_t8_t9", "box_tier8", "box_tier9", "strokeColor=#0F172A;strokeWidth=2;endArrow=classic;endSize=5;");
 
   const bg = isDark ? "#0F172A" : "#FFFFFF";
 

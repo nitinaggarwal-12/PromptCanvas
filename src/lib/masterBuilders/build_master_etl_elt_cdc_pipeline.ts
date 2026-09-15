@@ -1,11 +1,11 @@
 import { generateTemplate09DataFlowXml } from "../canonical/template09DataFlow";
 
 export function buildMasterEtlEltCdcPipelineXml(): string {
-  return generateTemplate09DataFlowXml("biopharma", "light");
+  return buildOldMasterEtlEltCdcPipelineXmlInternal();
 }
 
 export function buildOldMasterEtlEltCdcPipelineXml(): string {
-  return generateTemplate09DataFlowXml("biopharma", "light");
+  return buildOldMasterEtlEltCdcPipelineXmlInternal();
 }
 
 const esc = (value: string): string =>

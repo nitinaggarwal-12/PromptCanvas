@@ -15,6 +15,9 @@ Welcome to the **PromptCanvas** Operational Runbook. This document provides deve
 ## 2. Canonical Development Commands
 
 ```bash
+# 0. Run Master Omni 1.1 Architecture Quality Gate (Mandatory Pre-Commit)
+npm run quality-gate
+
 # 1. Start Local Development Server (Port 3000)
 npm run dev
 

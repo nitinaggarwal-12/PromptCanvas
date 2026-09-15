@@ -1,7 +1,7 @@
 /**
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 17: Identity & Access Flow
  * Matches 100% of images/17.png:
- * - Flow step headers ❶ Authenticate ➔ ❷ Authorize ➔ ❸ Access Resources ➔ ❹ Monitor & Audit
+ * - Flow step headers Authenticate Authorize Access Resources Monitor & Audit
  * - Users & Actors + External Partners on the left
  * - Identity Providers & Authentication Methods
  * - Access Management (IAM, Groups, Roles, Conditions, Duration) & Pyramid Privilege Model
@@ -53,7 +53,7 @@ export function generateTemplate17IdentityAccessFlowXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -73,10 +73,10 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_actors", "USERS &amp; ACTORS", 16, 98, 150, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const actorList = [
-    { id: "act_hum", t: "Human Users<br/>(Employees)", icon: "👤" },
-    { id: "act_adm", t: "Admins<br/>(Platform Admins)", icon: "👥" },
-    { id: "act_sa", t: "Service Accounts<br/>(Workloads)", icon: "⚙️" },
-    { id: "act_app", t: "Applications<br/>(Internal / External)", icon: "💻" }
+    { id: "act_hum", t: "Human Users<br/>(Employees)", icon: "●" },
+    { id: "act_adm", t: "Admins<br/>(Platform Admins)", icon: "●" },
+    { id: "act_sa", t: "Service Accounts<br/>(Workloads)", icon: "●" },
+    { id: "act_app", t: "Applications<br/>(Internal / External)", icon: "●" }
   ];
   actorList.forEach((ac, idx) => {
     const ay = 132 + idx * 92;
@@ -88,9 +88,9 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_partners", "EXTERNAL PARTNERS", 16, 520, 150, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const partnerList = [
-    { id: "pt_reg", t: "Regulatory<br/>Agencies", icon: "🏛️" },
-    { id: "pt_vend", t: "Vendors /<br/>Partners", icon: "🏢" },
-    { id: "pt_cont", t: "Contractors", icon: "👤" }
+    { id: "pt_reg", t: "Regulatory<br/>Agencies", icon: "●" },
+    { id: "pt_vend", t: "Vendors /<br/>Partners", icon: "●" },
+    { id: "pt_cont", t: "Contractors", icon: "●" }
   ];
   partnerList.forEach((pt, idx) => {
     const py = 552 + idx * 70;
@@ -102,13 +102,13 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("box_idp", "", 182, 98, 186, 410, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_idp", "IDENTITY PROVIDERS", 182, 98, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
-  cell("idp_cloud_id", "<div style='font-size:24px;text-align:center;'>🌐</div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Google Cloud Identity</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Primary IdP)</div>", 192, 132, 166, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
+  cell("idp_cloud_id", "<div style='font-size:24px;text-align:center;'></div><div style='font-size:8.5px;font-weight:800;color:#0F172A;text-align:center;margin-top:2px;'>Google Cloud Identity</div><div style='font-size:7.5px;color:#64748B;text-align:center;'>(Primary IdP)</div>", 192, 132, 166, 96, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=4;");
 
   cell("lbl_id_fed", "Identity Federation", 182, 236, 186, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const idFedList = [
-    { id: "fed_saml", t: "SAML 2.0", icon: "🔑" },
-    { id: "fed_oidc", t: "OIDC / OAuth 2.0", icon: "⚡" },
+    { id: "fed_saml", t: "SAML 2.0", icon: "●" },
+    { id: "fed_oidc", t: "OIDC / OAuth 2.0", icon: "●" },
     { id: "fed_ad", t: "Active Directory<br/>(via Cloud LDAP)", icon: "🪟" }
   ];
   idFedList.forEach((fd, idx) => {
@@ -121,10 +121,10 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_auth_m", "AUTHENTICATION METHODS", 182, 520, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const authMethods = [
-    { t: "Password", icon: "🔒" },
-    { t: "MFA (TOTP / Push)", icon: "📱" },
-    { t: "Security Keys (FIDO2)", icon: "🔑" },
-    { t: "Context-Aware Access<br/>(Device / Location)", icon: "🛡️" }
+    { t: "Password", icon: "●" },
+    { t: "MFA (TOTP / Push)", icon: "●" },
+    { t: "Security Keys (FIDO2)", icon: "●" },
+    { t: "Context-Aware Access<br/>(Device / Location)", icon: "●" }
   ];
   authMethods.forEach((am, idx) => {
     const ay = 552 + idx * 52;
@@ -148,11 +148,11 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_iam", "ACCESS MANAGEMENT", 384, 98, 196, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const iamItems = [
-    { id: "iam_0", t: "IAM<br/>(Identity &amp; Access<br/>Management)", icon: "🛡️" },
-    { id: "iam_1", t: "Groups<br/>(Google Groups)", icon: "👥" },
-    { id: "iam_2", t: "Roles<br/>(Predefined / Custom)", icon: "🏷️" },
-    { id: "iam_3", t: "Conditions<br/>(Context-Aware IAM)", icon: "📋" },
-    { id: "iam_4", t: "Access Duration<br/>(Time-bound Access)", icon: "⏱️" }
+    { id: "iam_0", t: "IAM<br/>(Identity &amp; Access<br/>Management)", icon: "●" },
+    { id: "iam_1", t: "Groups<br/>(Google Groups)", icon: "●" },
+    { id: "iam_2", t: "Roles<br/>(Predefined / Custom)", icon: "●" },
+    { id: "iam_3", t: "Conditions<br/>(Context-Aware IAM)", icon: "●" },
+    { id: "iam_4", t: "Access Duration<br/>(Time-bound Access)", icon: "⏱" }
   ];
   iamItems.forEach((im, idx) => {
     const iy = 132 + idx * 74;
@@ -182,12 +182,12 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_res_acc", "RESOURCE ACCESS", 596, 98, 250, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const resList = [
-    { id: "res_cmp", t: "Compute Resources<br/><span style='color:#64748B;font-weight:600;'>(GCE, GKE, Cloud Run)</span>", icon: "⚙️" },
-    { id: "res_dat", t: "Data &amp; Storage<br/><span style='color:#64748B;font-weight:600;'>(BigQuery, Cloud Storage, Cloud SQL)</span>", icon: "🗄️" },
-    { id: "res_app", t: "Applications<br/><span style='color:#64748B;font-weight:600;'>(Internal Apps, APIs)</span>", icon: "💻" },
-    { id: "res_ai", t: "AI / ML Services<br/><span style='color:#64748B;font-weight:600;'>(Vertex AI, Document AI)</span>", icon: "🧠" },
-    { id: "res_net", t: "Networking<br/><span style='color:#64748B;font-weight:600;'>(VPC, Load Balancers)</span>", icon: "🌐" },
-    { id: "res_sec", t: "Secret &amp; Keys<br/><span style='color:#64748B;font-weight:600;'>(Secret Manager, KMS)</span>", icon: "🔒" }
+    { id: "res_cmp", t: "Compute Resources<br/><span style='color:#64748B;font-weight:600;'>(GCE, GKE, Cloud Run)</span>", icon: "●" },
+    { id: "res_dat", t: "Data &amp; Storage<br/><span style='color:#64748B;font-weight:600;'>(BigQuery, Cloud Storage, Cloud SQL)</span>", icon: "●" },
+    { id: "res_app", t: "Applications<br/><span style='color:#64748B;font-weight:600;'>(Internal Apps, APIs)</span>", icon: "●" },
+    { id: "res_ai", t: "AI / ML Services<br/><span style='color:#64748B;font-weight:600;'>(Vertex AI, Document AI)</span>", icon: "●" },
+    { id: "res_net", t: "Networking<br/><span style='color:#64748B;font-weight:600;'>(VPC, Load Balancers)</span>", icon: "●" },
+    { id: "res_sec", t: "Secret &amp; Keys<br/><span style='color:#64748B;font-weight:600;'>(Secret Manager, KMS)</span>", icon: "●" }
   ];
   resList.forEach((rs, idx) => {
     const ry = 132 + idx * 104;
@@ -208,11 +208,11 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_mon_aud", "MONITORING &amp; AUDIT", 862, 98, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const monList = [
-    { id: "mon_0", t: "Cloud Audit Logs<br/><span style='color:#64748B;font-size:7px;'>(Admin, Data, Access)</span>", icon: "📑" },
-    { id: "mon_1", t: "Access Transparency<br/><span style='color:#64748B;font-size:7px;'>(Google AT Logs)</span>", icon: "🔍" },
-    { id: "mon_2", t: "Security Command<br/>Center (SCC)", icon: "🛡️" },
-    { id: "mon_3", t: "Alerting<br/><span style='color:#64748B;font-size:7px;'>(Cloud Monitoring)</span>", icon: "🚨" },
-    { id: "mon_4", t: "Anomaly Detection<br/><span style='color:#64748B;font-size:7px;'>(Chronicle / SCC)</span>", icon: "⚡" }
+    { id: "mon_0", t: "Cloud Audit Logs<br/><span style='color:#64748B;font-size:7px;'>(Admin, Data, Access)</span>", icon: "●" },
+    { id: "mon_1", t: "Access Transparency<br/><span style='color:#64748B;font-size:7px;'>(Google AT Logs)</span>", icon: "●" },
+    { id: "mon_2", t: "Security Command<br/>Center (SCC)", icon: "●" },
+    { id: "mon_3", t: "Alerting<br/><span style='color:#64748B;font-size:7px;'>(Cloud Monitoring)</span>", icon: "●" },
+    { id: "mon_4", t: "Anomaly Detection<br/><span style='color:#64748B;font-size:7px;'>(Chronicle / SCC)</span>", icon: "●" }
   ];
   monList.forEach((mn, idx) => {
     const my = 132 + idx * 74;
@@ -229,7 +229,7 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_log_ret", "LOG RETENTION", 862, 520, 186, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const logRetHtml = `<div style="text-align:center;padding:12px 6px;">
-    <div style="font-size:26px;margin-bottom:6px;">🗃️</div>
+    <div style="font-size:26px;margin-bottom:6px;"></div>
     <div style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.35;">Logs retained as per<br/>organization policy<br/>(e.g., 400 days)<br/>in Log Bucket /<br/>BigQuery</div>
   </div>`;
   cell("txt_log_ret", logRetHtml, 868, 552, 174, 210, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
@@ -242,11 +242,11 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_gov", "POLICIES &amp; GOVERNANCE", 182, 782, 866, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#D97706;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const govItems = [
-    { t: "Organization Policies<br/>(Constraints)", icon: "🛡️" },
-    { t: "Access Approval<br/>(JIT / Manual)", icon: "🔒" },
-    { t: "Periodic Access Review<br/>(Access Re-certification)", icon: "📋" },
-    { t: "Separation of Duties<br/>(SoD)", icon: "⚖️" },
-    { t: "Data Classification<br/>(Public / Confidential / Restricted)", icon: "🏷️" }
+    { t: "Organization Policies<br/>(Constraints)", icon: "●" },
+    { t: "Access Approval<br/>(JIT / Manual)", icon: "●" },
+    { t: "Periodic Access Review<br/>(Access Re-certification)", icon: "●" },
+    { t: "Separation of Duties<br/>(SoD)", icon: "●" },
+    { t: "Data Classification<br/>(Public / Confidential / Restricted)", icon: "●" }
   ];
   govItems.forEach((gv, idx) => {
     const gx = 190 + idx * 170;
@@ -262,11 +262,11 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("box_benefits", "", 1060, 98, 460, 240, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_benefits", "KEY BENEFITS", 1060, 98, 460, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   const benefitsHtml = `<div style="font-size:8.5px;line-height:1.6;color:#0F172A;padding:6px 12px;">
-    ✔ <b>Centralized identity management</b> with federation support<br/><br/>
-    ✔ <b>Strong authentication</b> with MFA and contextual access<br/><br/>
-    ✔ <b>Least privilege and just-in-time</b> access enforcement<br/><br/>
-    ✔ <b>Comprehensive audit &amp; monitoring</b> for compliance<br/><br/>
-    ✔ <b>Fine-grained access control</b> for all resources
+     <b>Centralized identity management</b> with federation support<br/><br/>
+     <b>Strong authentication</b> with MFA and contextual access<br/><br/>
+     <b>Least privilege and just-in-time</b> access enforcement<br/><br/>
+     <b>Comprehensive audit &amp; monitoring</b> for compliance<br/><br/>
+     <b>Fine-grained access control</b> for all resources
   </div>`;
   cell("txt_benefits", benefitsHtml, 1064, 126, 452, 208, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 
@@ -274,13 +274,13 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("box_tech", "", 1060, 348, 460, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_tech", "TECHNOLOGIES", 1060, 348, 460, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   const techHtml = `<div style="font-size:8.5px;line-height:1.7;color:#0F172A;padding:6px 12px;">
-    🌐 <b>Google Cloud Identity</b><br/>
-    🛡️ <b>IAM</b><br/>
-    🔒 <b>Cloud Identity-Aware Proxy</b><br/>
-    📑 <b>Cloud Audit Logs</b><br/>
-    📈 <b>Cloud Monitoring</b><br/>
-    🚨 <b>Security Command Center</b><br/>
-    🔑 <b>Secret Manager &amp; Cloud KMS</b>
+     <b>Google Cloud Identity</b><br/>
+     <b>IAM</b><br/>
+     <b>Cloud Identity-Aware Proxy</b><br/>
+     <b>Cloud Audit Logs</b><br/>
+     <b>Cloud Monitoring</b><br/>
+     <b>Security Command Center</b><br/>
+     <b>Secret Manager &amp; Cloud KMS</b>
   </div>`;
   cell("txt_tech", techHtml, 1064, 376, 452, 218, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 
@@ -303,10 +303,10 @@ export function generateTemplate17IdentityAccessFlowXml(
   cell("lbl_notes_banner", "NOTES", 16, 874, 60, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=9;fontStyle=1;align=left;spacingLeft=8;");
 
   const bottomNotes = [
-    { t: "• MFA is enforced for all interactive users.<br/>• Service accounts use workload identity federation.", icon: "🌐" },
-    { t: "• All access is logged and immutable.<br/>• Access reviews are performed quarterly.", icon: "✔" },
-    { t: "• Use Organization Policies to enforce security posture.<br/>• Deny by default and allow by exception.", icon: "🔒" },
-    { t: "• Complies with SOC 2, HIPAA, and ISO 27001 requirements.", icon: "🛡️" }
+    { t: "• MFA is enforced for all interactive users.<br/>• Service accounts use workload identity federation.", icon: "●" },
+    { t: "• All access is logged and immutable.<br/>• Access reviews are performed quarterly.", icon: "●" },
+    { t: "• Use Organization Policies to enforce security posture.<br/>• Deny by default and allow by exception.", icon: "●" },
+    { t: "• Complies with SOC 2, HIPAA, and ISO 27001 requirements.", icon: "●" }
   ];
   bottomNotes.forEach((bn, idx) => {
     const bx = 80 + idx * 356;

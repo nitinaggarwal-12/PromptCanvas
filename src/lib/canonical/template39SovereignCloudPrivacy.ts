@@ -447,7 +447,7 @@ export function generateTemplate39SovereignCloudPrivacyXml(
     const bx = isTop ? 350 + col * 92 : 396 + col * 92;
     const by = isTop ? 808 : 866;
     const iconSvg = bg.type === "eu" 
-      ? `<circle cx="12" cy="12" r="9" fill="#1E3A8A" stroke="none"/><text x="12" y="16" fill="#FBBF24" font-size="12" font-weight="bold" text-anchor="middle">★</text>`
+      ? `<circle cx="12" cy="12" r="9" fill="#1E3A8A" stroke="none"/><text x="12" y="16" fill="#FBBF24" font-size="12" font-weight="bold" text-anchor="middle"></text>`
       : bg.type === "shield"
       ? `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/>`
       : `<path d="M3 21h18M3 10h18M5 10v8M9 10v8M15 10v8M19 10v8M12 3 3 8h18z" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="2"/>`;

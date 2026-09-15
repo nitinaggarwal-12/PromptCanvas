@@ -39,7 +39,7 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">🧬</span></td>
+      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
       <td style="vertical-align:middle;text-align:left;">
         <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
         <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
@@ -55,12 +55,12 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   text("gov_title", "<b>GOVERNANCE &amp; OVERSIGHT</b>", 240, 80, 920, 18, "fontSize=9;fontColor=#1E40AF;align=center;");
 
   const govPods = [
-    { title: "Executive\nSteering Committee", icon: "👥" },
-    { title: "Data Governance\nCouncil", icon: "⚖️" },
-    { title: "Risk & Compliance\nCommittee", icon: "🛡️" },
-    { title: "Architecture Review\nBoard", icon: "📐" },
-    { title: "Change & Release\nAdvisory Board", icon: "⚙️" },
-    { title: "Privacy & Ethics\nBoard", icon: "🔒" },
+    { title: "Executive\nSteering Committee", icon: "●" },
+    { title: "Data Governance\nCouncil", icon: "●" },
+    { title: "Risk & Compliance\nCommittee", icon: "●" },
+    { title: "Architecture Review\nBoard", icon: "●" },
+    { title: "Change & Release\nAdvisory Board", icon: "●" },
+    { title: "Privacy & Ethics\nBoard", icon: "●" },
   ];
   govPods.forEach((gp, i) => {
     const gx = 240 + i * 153;
@@ -75,14 +75,14 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   rect("internal_users_hdr", "<b style='font-size:10.5px;color:#FFFFFF;'>INTERNAL USERS</b>", 20, 156, 200, 28, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const internalUsers = [
-    { title: "Research Scientists", desc: "Discover, design and develop\nnew therapies", icon: "🔬" },
-    { title: "Clinical Operations", desc: "Plan, execute and monitor\nclinical trials", icon: "📋" },
-    { title: "Regulatory Affairs Specialists", desc: "Prepare submissions and manage\nregulatory commitments", icon: "📄" },
-    { title: "Safety / PV Specialists", desc: "Monitor safety, manage cases\nand signal detection", icon: "🛡️" },
-    { title: "Quality Teams", desc: "Ensure quality, GxP compliance\nand CAPA management", icon: "🏅" },
+    { title: "Research Scientists", desc: "Discover, design and develop\nnew therapies", icon: "●" },
+    { title: "Clinical Operations", desc: "Plan, execute and monitor\nclinical trials", icon: "●" },
+    { title: "Regulatory Affairs Specialists", desc: "Prepare submissions and manage\nregulatory commitments", icon: "●" },
+    { title: "Safety / PV Specialists", desc: "Monitor safety, manage cases\nand signal detection", icon: "●" },
+    { title: "Quality Teams", desc: "Ensure quality, GxP compliance\nand CAPA management", icon: "●" },
     { title: "Medical Affairs", desc: "Medical evidence, publications\nand stakeholder education", icon: "🩺" },
-    { title: "Commercial Analytics", desc: "Market insights, forecasting and\nperformance analytics", icon: "📊" },
-    { title: "Platform Admins", desc: "Manage platform, users,\nsecurity & integrations", icon: "👤" },
+    { title: "Commercial Analytics", desc: "Market insights, forecasting and\nperformance analytics", icon: "●" },
+    { title: "Platform Admins", desc: "Manage platform, users,\nsecurity & integrations", icon: "●" },
   ];
 
   internalUsers.forEach((u, i) => {
@@ -109,7 +109,7 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   // Center Brand Logo & Description
   const centerHdrHtml = `<div style="text-align:center;padding:4px;">
     <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-      <span style="font-size:22px;">🧬</span>
+      <span style="font-size:22px;"></span>
       <span style="font-size:20px;font-weight:900;color:#0F2A4A;letter-spacing:1px;">NOVACURA</span>
     </div>
     <div style="font-size:11px;font-weight:800;color:#0284C7;letter-spacing:0.5px;">BIO-PHARMA PLATFORM</div>
@@ -121,14 +121,14 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
 
   // 8 Core Modules Grid (2 rows x 4 columns)
   const coreModules = [
-    { num: "1", name: "R&D & Clinical", icon: "⚗️" },
-    { num: "2", name: "Regulatory Affairs", icon: "📄" },
-    { num: "3", name: "Safety &\nPharmacovigilance", icon: "🛡️" },
-    { num: "4", name: "Quality &\nManufacturing", icon: "🏭" },
+    { num: "1", name: "R&D & Clinical", icon: "●" },
+    { num: "2", name: "Regulatory Affairs", icon: "●" },
+    { num: "3", name: "Safety &\nPharmacovigilance", icon: "●" },
+    { num: "4", name: "Quality &\nManufacturing", icon: "●" },
     { num: "5", name: "Medical\nInformation", icon: "🩺" },
-    { num: "6", name: "Commercial\nInsights", icon: "📊" },
-    { num: "7", name: "Document &\nKnowledge Hub", icon: "📁" },
-    { num: "8", name: "AI Copilot &\nWorkflow\nAutomation", icon: "✨" },
+    { num: "6", name: "Commercial\nInsights", icon: "●" },
+    { num: "7", name: "Document &\nKnowledge Hub", icon: "●" },
+    { num: "8", name: "AI Copilot &\nWorkflow\nAutomation", icon: "●" },
   ];
 
   coreModules.forEach((m, i) => {
@@ -153,10 +153,10 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   const gcpSubBarHtml = `<table style="width:100%;height:100%;text-align:center;">
     <tr>
       <td style="width:50%;text-align:right;padding-right:16px;vertical-align:middle;">
-        <span style="font-size:16px;">☁️</span> <b style="font-size:10px;color:#1E293B;">Google Cloud</b>
+        <span style="font-size:16px;"></span> <b style="font-size:10px;color:#1E293B;">Google Cloud</b>
       </td>
       <td style="width:50%;text-align:left;padding-left:16px;vertical-align:middle;border-left:1px solid #CBD5E1;">
-        <span style="font-size:14px;">☁️</span> <span style="font-size:9px;color:#64748B;font-weight:600;">Built on Google Cloud (Cloud-Native)</span>
+        <span style="font-size:14px;"></span> <span style="font-size:9px;color:#64748B;font-weight:600;">Built on Google Cloud (Cloud-Native)</span>
       </td>
     </tr>
   </table>`;
@@ -169,10 +169,10 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   rect("ext_participants_hdr", "<b style='font-size:10.5px;color:#FFFFFF;'>EXTERNAL PARTICIPANTS</b>", 1180, 156, 360, 28, "rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;");
 
   const extParticipants = [
-    { title: "CRO / CDMO Partners", desc: "Outsource clinical, manufacturing\nand services", icon: "👥" },
-    { title: "Investigators / Sites", desc: "Submit clinical data, documents\nand study updates", icon: "🏥" },
-    { title: "Regulatory Authorities", desc: "Receive submissions and\nreturn responses", icon: "🏛️" },
-    { title: "Patients / Patient Programs", desc: "Access programs, support and\ncommunications", icon: "👥" },
+    { title: "CRO / CDMO Partners", desc: "Outsource clinical, manufacturing\nand services", icon: "●" },
+    { title: "Investigators / Sites", desc: "Submit clinical data, documents\nand study updates", icon: "●" },
+    { title: "Regulatory Authorities", desc: "Receive submissions and\nreturn responses", icon: "●" },
+    { title: "Patients / Patient Programs", desc: "Access programs, support and\ncommunications", icon: "●" },
     { title: "HCPs / Healthcare Providers", desc: "Engage with medical content\nand communications", icon: "🩺" },
   ];
 
@@ -199,14 +199,14 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   text("ent_sys_title", "<b>ENTERPRISE BUSINESS SYSTEMS</b>", 20, 704, 720, 18, "fontSize=9;fontColor=#1E3A8A;align=center;");
 
   const entSystems = [
-    { title: "Salesforce\nHealth Cloud", desc: "CRM & patient\nengagement", icon: "☁️" },
-    { title: "SAP\nS/4HANA", desc: "Finance, supply\nchain & ERP", icon: "🏢" },
-    { title: "Veeva\nVault", desc: "Regulatory & quality\ndocuments", icon: "📁" },
-    { title: "Clinical Trial\nManagement (CTMS)", desc: "Trial planning,\ntracking & reporting", icon: "👥" },
-    { title: "Laboratory /\nLIMS Systems", desc: "Lab data, results\n& specifications", icon: "⚗️" },
-    { title: "Safety Database\n(Argus-like)", desc: "Safety cases,\nICSRs & analytics", icon: "🛡️" },
-    { title: "Data Lake /\nWarehouse", desc: "Curated data\n& analytics", icon: "🗄️" },
-    { title: "Identity Provider /\nSSO", desc: "Authentication,\nRBAC & SSO", icon: "🔒" },
+    { title: "Salesforce\nHealth Cloud", desc: "CRM & patient\nengagement", icon: "●" },
+    { title: "SAP\nS/4HANA", desc: "Finance, supply\nchain & ERP", icon: "●" },
+    { title: "Veeva\nVault", desc: "Regulatory & quality\ndocuments", icon: "●" },
+    { title: "Clinical Trial\nManagement (CTMS)", desc: "Trial planning,\ntracking & reporting", icon: "●" },
+    { title: "Laboratory /\nLIMS Systems", desc: "Lab data, results\n& specifications", icon: "●" },
+    { title: "Safety Database\n(Argus-like)", desc: "Safety cases,\nICSRs & analytics", icon: "●" },
+    { title: "Data Lake /\nWarehouse", desc: "Curated data\n& analytics", icon: "●" },
+    { title: "Identity Provider /\nSSO", desc: "Authentication,\nRBAC & SSO", icon: "●" },
   ];
   entSystems.forEach((es, i) => {
     const esx = 28 + i * 88;
@@ -218,9 +218,9 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   text("ai_svc_title", "<b>AI / KNOWLEDGE SERVICES</b>", 750, 704, 360, 18, "fontSize=9;fontColor=#6D28D9;align=center;");
 
   const aiServices = [
-    { title: "Enterprise Search /\nKnowledge Base", desc: "Unified search across\ndocuments, data & knowledge", icon: "🔍" },
-    { title: "Vector Index /\nSemantic Search", desc: "Semantic indexing\nfor contextual retrieval", icon: "✨" },
-    { title: "Approved LLM Service\n(Google Vertex AI)", desc: "Grounded AI copilots,\ncontent generation & insights", icon: "🧠" },
+    { title: "Enterprise Search /\nKnowledge Base", desc: "Unified search across\ndocuments, data & knowledge", icon: "●" },
+    { title: "Vector Index /\nSemantic Search", desc: "Semantic indexing\nfor contextual retrieval", icon: "●" },
+    { title: "Approved LLM Service\n(Google Vertex AI)", desc: "Grounded AI copilots,\ncontent generation & insights", icon: "●" },
   ];
   aiServices.forEach((ai, i) => {
     const aix = 758 + i * 115;
@@ -232,10 +232,10 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   text("plat_svc_title", "<b>INTEGRATION / PLATFORM SERVICES</b>", 1120, 704, 420, 18, "fontSize=9;fontColor=#15803D;align=center;");
 
   const platServices = [
-    { title: "API\nGateway", desc: "Secure APIs,\nrouting & throttling", icon: "⚡" },
-    { title: "Event Bus /\nPub/Sub", desc: "Real-time events\n& async messaging", icon: "📡" },
-    { title: "Workflow\nOrchestration", desc: "Process, rules &\nautomation workflows", icon: "🔄" },
-    { title: "Monitoring /\nAudit Logging", desc: "Observability,\nlogs & audit trails", icon: "📊" },
+    { title: "API\nGateway", desc: "Secure APIs,\nrouting & throttling", icon: "●" },
+    { title: "Event Bus /\nPub/Sub", desc: "Real-time events\n& async messaging", icon: "●" },
+    { title: "Workflow\nOrchestration", desc: "Process, rules &\nautomation workflows", icon: "●" },
+    { title: "Monitoring /\nAudit Logging", desc: "Observability,\nlogs & audit trails", icon: "●" },
   ];
   platServices.forEach((ps, i) => {
     const psx = 1128 + i * 101;
@@ -250,12 +250,12 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
   text("ctrl_title", "<b>CROSS-CUTTING CONTROLS &amp; STANDARDS</b>", 20, 862, 1520, 16, "fontSize=8.5;fontColor=#0369A1;align=center;");
 
   const controls = [
-    { title: "Security & Privacy", desc: "Data protection, encryption, DLP & least privilege", icon: "🔒" },
-    { title: "Audit & Compliance", desc: "GxP / 21 CFR Part 11, e-records & audit trails", icon: "📑" },
-    { title: "Data Lineage & Quality", desc: "Lineage, provenance, validation & QC", icon: "🔗" },
-    { title: "Interoperability Standards & APIs", desc: "HL7 FHIR, IDMP, CDISC, OpenAPI", icon: "⚡" },
-    { title: "GxP / 21 CFR Part 11 Compliant", desc: "Validated systems, e-signatures, audit trail", icon: "🛡️" },
-    { title: "Zero Trust Architecture", desc: "Verify explicitly, continuous monitoring", icon: "🛡️" },
+    { title: "Security & Privacy", desc: "Data protection, encryption, DLP & least privilege", icon: "●" },
+    { title: "Audit & Compliance", desc: "GxP / 21 CFR Part 11, e-records & audit trails", icon: "●" },
+    { title: "Data Lineage & Quality", desc: "Lineage, provenance, validation & QC", icon: "●" },
+    { title: "Interoperability Standards & APIs", desc: "HL7 FHIR, IDMP, CDISC, OpenAPI", icon: "●" },
+    { title: "GxP / 21 CFR Part 11 Compliant", desc: "Validated systems, e-signatures, audit trail", icon: "●" },
+    { title: "Zero Trust Architecture", desc: "Verify explicitly, continuous monitoring", icon: "●" },
   ];
   controls.forEach((ct, i) => {
     const cx = 30 + i * 251;
@@ -271,12 +271,12 @@ export function generateTemplate06C4ContextXml(domainFlavor = "biopharma", theme
       <td style="width:65px;vertical-align:middle;font-size:9.5px;font-weight:900;color:#0F172A;">LEGEND:</td>
       <td style="vertical-align:middle;">
         <div style="display:flex;align-items:center;gap:16px;font-size:8px;color:#334155;">
-          <div style="display:flex;align-items:center;gap:4px;"><span>—➔</span><div>Information / Data Flow</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#7C3AED;">—➔</span><div>System Integration / Sync</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0D9488;">—➔</span><div>External Collaboration</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0284C7;">- - ➔</span><div>AI / Knowledge Flow</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#15803D;">- - ➔</span><div>Operational / Telemetry Flow</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span>- - - ➔</span><div>Control / Governance Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span>—</span><div>Information / Data Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#7C3AED;">—</span><div>System Integration / Sync</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0D9488;">—</span><div>External Collaboration</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0284C7;">- - </span><div>AI / Knowledge Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#15803D;">- - </span><div>Operational / Telemetry Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span>- - - </span><div>Control / Governance Flow</div></div>
         </div>
       </td>
       <td style="width:180px;text-align:right;vertical-align:middle;font-size:8px;color:#64748B;">

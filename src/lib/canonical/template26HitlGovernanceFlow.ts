@@ -2,7 +2,7 @@
  * Master 1:1 High-Craft Exact Ground-Truth Replica for Template 26: HITL / Governance Architecture
  * Matches 100% of images/26.png:
  * - Left Column: Inputs & Triggers (7 items)
- * - 6-step HITL Governance Workflow (❶ Assess & Route ➔ ❻ Learn & Improve) with type tags (Automated, Human, System, Continuous)
+ * - 6-step HITL Governance Workflow (Assess & Route Learn & Improve) with type tags (Automated, Human, System, Continuous)
  * - HITL Roles & Responsibilities (RACI) with 7 Role Pods and RACI badges + RACI Legend
  * - Governance Controls cross-cutting bar (8 controls)
  * - Examples of HITL Checkpoints (7 cards with Risk High / Medium badges)
@@ -51,7 +51,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -64,13 +64,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("lbl_inputs", "INPUTS &amp; TRIGGERS", 16, 80, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const inputTriggers = [
-    { t: "User Query / Request", icon: "💬" },
-    { t: "Agent / Workflow Output", icon: "🤖" },
-    { t: "Automated Decision", icon: "⚙️" },
-    { t: "Policy / Rule Trigger", icon: "📑" },
-    { t: "Regulatory / Compliance Change", icon: "⚖️" },
-    { t: "Data / Content Update", icon: "🗄️" },
-    { t: "Risk / Anomaly Detected", icon: "⚠️" }
+    { t: "User Query / Request", icon: "●" },
+    { t: "Agent / Workflow Output", icon: "●" },
+    { t: "Automated Decision", icon: "●" },
+    { t: "Policy / Rule Trigger", icon: "●" },
+    { t: "Regulatory / Compliance Change", icon: "●" },
+    { t: "Data / Content Update", icon: "●" },
+    { t: "Risk / Anomaly Detected", icon: "●" }
   ];
   inputTriggers.forEach((it, idx) => {
     const ity = 104 + idx * 58;
@@ -86,32 +86,32 @@ export function generateTemplate26HitlGovernanceFlowXml(
     {
       num: "1", name: "ASSESS &amp; ROUTE",
       desc: "• Assess risk, impact &amp; sensitivity<br/>• Apply policies &amp; rules<br/>• Route to right human role",
-      tag: "Automated", tbg: "#EFF6FF", tfg: "#1E40AF", icon: "🔍"
+      tag: "Automated", tbg: "#EFF6FF", tfg: "#1E40AF", icon: "●"
     },
     {
       num: "2", name: "REVIEW &amp; EVALUATE",
       desc: "• Human reviews context &amp; AI output<br/>• Validate accuracy, completeness<br/>• Add comments",
-      tag: "Human", tbg: "#F0FDF4", tfg: "#166534", icon: "👤"
+      tag: "Human", tbg: "#F0FDF4", tfg: "#166534", icon: "●"
     },
     {
       num: "3", name: "DECISION &amp; ACTION",
       desc: "• Approve / Reject / Modify / Escalate<br/>• Request more info<br/>• Provide rationale",
-      tag: "Human", tbg: "#FFFBEB", tfg: "#D97706", icon: "⚖️"
+      tag: "Human", tbg: "#FFFBEB", tfg: "#D97706", icon: "●"
     },
     {
       num: "4", name: "ENFORCE &amp; EXECUTE",
       desc: "• Execute approved action<br/>• Block or rollback if rejected<br/>• Apply guardrails &amp; controls",
-      tag: "System", tbg: "#FAF5FF", tfg: "#7C3AED", icon: "⚙️"
+      tag: "System", tbg: "#FAF5FF", tfg: "#7C3AED", icon: "●"
     },
     {
       num: "5", name: "RECORD &amp; AUDIT",
       desc: "• Log decision, rationale &amp; artifacts<br/>• Version &amp; retain records<br/>• Ensure traceability",
-      tag: "Automated", tbg: "#EFF6FF", tfg: "#1E40AF", icon: "📑"
+      tag: "Automated", tbg: "#EFF6FF", tfg: "#1E40AF", icon: "●"
     },
     {
       num: "6", name: "LEARN &amp; IMPROVE",
       desc: "• Analyze feedback &amp; outcomes<br/>• Improve models, prompts, policies<br/>• Update knowledge base",
-      tag: "Continuous", tbg: "#F0FDF4", tfg: "#166534", icon: "📈"
+      tag: "Continuous", tbg: "#F0FDF4", tfg: "#166534", icon: "●"
     }
   ];
 
@@ -170,14 +170,14 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("lbl_gov_caps", "GOVERNANCE CONTROLS (APPLIED ACROSS WORKFLOW)", 180, 404, 1040, 12, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7;fontStyle=1;align=center;verticalAlign=middle;");
 
   const govControls = [
-    { t: "Policy Enforcement<br/>&amp; Guardrails", icon: "🛡️" },
-    { t: "Access Control<br/>(IAM, Least Privilege)", icon: "🔒" },
-    { t: "Segregation of Duties<br/>(SoD)", icon: "👥" },
-    { t: "Data Classification &amp;<br/>Handling", icon: "📑" },
-    { t: "Consent &amp;<br/>Transparency", icon: "📜" },
-    { t: "Audit Logging &amp;<br/>Traceability", icon: "📑" },
-    { t: "Retention &amp;<br/>Record Management", icon: "📦" },
-    { t: "Monitoring &amp;<br/>Anomaly Detection", icon: "📈" }
+    { t: "Policy Enforcement<br/>&amp; Guardrails", icon: "●" },
+    { t: "Access Control<br/>(IAM, Least Privilege)", icon: "●" },
+    { t: "Segregation of Duties<br/>(SoD)", icon: "●" },
+    { t: "Data Classification &amp;<br/>Handling", icon: "●" },
+    { t: "Consent &amp;<br/>Transparency", icon: "●" },
+    { t: "Audit Logging &amp;<br/>Traceability", icon: "●" },
+    { t: "Retention &amp;<br/>Record Management", icon: "●" },
+    { t: "Monitoring &amp;<br/>Anomaly Detection", icon: "●" }
   ];
   govControls.forEach((gc, idx) => {
     const gcx = 186 + idx * 128;
@@ -208,13 +208,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("box_m_audit", "", 922, 450, 290, 138, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_m_audit", "AUDIT TRAIL (WHAT WE CAPTURE)", 922, 452, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const auditHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;">
-    📑 <b>Request ID &amp; Context</b><br/>
-    🤖 <b>AI Output / Artifacts</b><br/>
-    👤 <b>Human Decisions &amp; Comments</b><br/>
-    📜 <b>Rationale &amp; Evidence</b><br/>
-    ⏱️ <b>Timestamps &amp; SLA Metrics</b><br/>
-    ⚙️ <b>Versioning &amp; Changes</b><br/>
-    ✔ <b>Final Outcome &amp; Actions</b>
+     <b>Request ID &amp; Context</b><br/>
+     <b>AI Output / Artifacts</b><br/>
+     <b>Human Decisions &amp; Comments</b><br/>
+     <b>Rationale &amp; Evidence</b><br/>
+    ⏱ <b>Timestamps &amp; SLA Metrics</b><br/>
+     <b>Versioning &amp; Changes</b><br/>
+     <b>Final Outcome &amp; Actions</b>
   </div>`;
   cell("txt_m_audit", auditHtml, 924, 468, 286, 116, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -222,13 +222,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("box_m_std", "", 1220, 450, 300, 138, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_m_std", "STANDARDS &amp; COMPLIANCE", 1220, 452, 300, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const stdHtml = `<div style="font-size:7.5px;line-height:1.3;color:#0F172A;padding:2px 6px;">
-    ✔ <b>EU AI Act</b> (Risk Management &amp; Oversight)<br/>
-    ✔ <b>ISO/IEC 42001</b> (AI Management System)<br/>
-    ✔ <b>NIST AI RMF</b> (Govern, Map, Measure, Manage)<br/>
-    ✔ <b>SOC 2</b> (CC6.1 Logical Access, CC7 Change Mgmt)<br/>
-    ✔ <b>GDPR</b> (Art. 5, 24, 25, 32 Data Protection by Design)<br/>
-    ✔ <b>FDA GxP</b> (21 CFR Part 11 Audit Trails)<br/>
-    ✔ <b>HIPAA</b> (Privacy &amp; Security Rules)
+     <b>EU AI Act</b> (Risk Management &amp; Oversight)<br/>
+     <b>ISO/IEC 42001</b> (AI Management System)<br/>
+     <b>NIST AI RMF</b> (Govern, Map, Measure, Manage)<br/>
+     <b>SOC 2</b> (CC6.1 Logical Access, CC7 Change Mgmt)<br/>
+     <b>GDPR</b> (Art. 5, 24, 25, 32 Data Protection by Design)<br/>
+     <b>FDA GxP</b> (21 CFR Part 11 Audit Trails)<br/>
+     <b>HIPAA</b> (Privacy &amp; Security Rules)
   </div>`;
   cell("txt_m_std", stdHtml, 1222, 468, 296, 116, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -237,13 +237,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("box_r_princ", "", 1230, 78, 290, 130, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_princ", "HITL / GOVERNANCE PRINCIPLES", 1230, 80, 290, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#16A34A;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const hPrincHtml = `<div style="font-size:8px;line-height:1.3;color:#0F172A;padding:2px 6px;">
-    ✔ <b>Human oversight for high-risk decisions</b><br/>
-    ✔ <b>Clear roles, responsibilities &amp; escalation paths</b><br/>
-    ✔ <b>Explainability &amp; transparency</b><br/>
-    ✔ <b>Auditability &amp; end-to-end traceability</b><br/>
-    ✔ <b>Fairness, safety &amp; ethical AI</b><br/>
-    ✔ <b>Continuous learning &amp; improvement</b><br/>
-    ✔ <b>Compliance with regulations &amp; standards</b>
+     <b>Human oversight for high-risk decisions</b><br/>
+     <b>Clear roles, responsibilities &amp; escalation paths</b><br/>
+     <b>Explainability &amp; transparency</b><br/>
+     <b>Auditability &amp; end-to-end traceability</b><br/>
+     <b>Fairness, safety &amp; ethical AI</b><br/>
+     <b>Continuous learning &amp; improvement</b><br/>
+     <b>Compliance with regulations &amp; standards</b>
   </div>`;
   cell("txt_r_princ", hPrincHtml, 1232, 98, 286, 106, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -251,24 +251,24 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("box_r_escl", "", 1230, 214, 290, 110, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.2;");
   cell("lbl_r_escl", "ESCALATION PATHS", 1230, 216, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const esclHtml = `<div style="font-size:8px;line-height:1.35;color:#0F172A;padding:2px 6px;text-align:center;">
-    👤 <b>Level 1: Reviewer / SME</b><br/>⬇<br/>
-    👥 <b>Level 2: Approver / Manager</b><br/>⬇<br/>
-    ⚖️ <b>Level 3: Compliance / Legal</b><br/>⬇<br/>
-    🏛️ <b>Level 4: Executive / Governance Board</b>
+     <b>Level 1: Reviewer / SME</b><br/>⬇<br/>
+     <b>Level 2: Approver / Manager</b><br/>⬇<br/>
+     <b>Level 3: Compliance / Legal</b><br/>⬇<br/>
+     <b>Level 4: Executive / Governance Board</b>
   </div>`;
   cell("txt_r_escl", esclHtml, 1232, 232, 286, 88, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // 3. Key Risks
   cell("box_r_risks", "", 1230, 328, 290, 116, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;");
-  cell("lbl_r_risks", "⚠️ KEY RISKS", 1230, 330, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_r_risks", " KEY RISKS", 1230, 330, 290, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
   const hRisksHtml = `<div style="font-size:7.5px;line-height:1.25;color:#0F172A;padding:2px 6px;">
-    🔴 <b>Incorrect / biased AI output</b><br/>
-    🔴 <b>Inadequate human review</b><br/>
-    🔴 <b>Policy non-compliance</b><br/>
-    🔴 <b>Lack of auditability / traceability</b><br/>
-    🔴 <b>Privilege misuse / access issues</b><br/>
-    🔴 <b>Feedback not captured / acted upon</b><br/>
-    🔴 <b>Delayed decisions / bottlenecks</b>
+     <b>Incorrect / biased AI output</b><br/>
+     <b>Inadequate human review</b><br/>
+     <b>Policy non-compliance</b><br/>
+     <b>Lack of auditability / traceability</b><br/>
+     <b>Privilege misuse / access issues</b><br/>
+     <b>Feedback not captured / acted upon</b><br/>
+     <b>Delayed decisions / bottlenecks</b>
   </div>`;
   cell("txt_r_risks", hRisksHtml, 1232, 346, 286, 94, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -278,16 +278,16 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("lbl_b_tech", "TECHNOLOGIES (Google Cloud)", 16, 600, 680, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   
   const gcpTechs = [
-    { t: "Vertex AI (Agents)", icon: "🧠" },
-    { t: "Cloud Functions / Run", icon: "⚡" },
-    { t: "BigQuery", icon: "📊" },
-    { t: "Firestore / AlloyDB", icon: "🗄️" },
-    { t: "Cloud Storage", icon: "📦" },
-    { t: "Pub/Sub", icon: "📨" },
-    { t: "IAM / Access Mgmt", icon: "🔒" },
-    { t: "Dataplex", icon: "📁" },
-    { t: "Cloud Audit Logs", icon: "📜" },
-    { t: "Security Command Center", icon: "🛡️" }
+    { t: "Vertex AI (Agents)", icon: "●" },
+    { t: "Cloud Functions / Run", icon: "●" },
+    { t: "BigQuery", icon: "●" },
+    { t: "Firestore / AlloyDB", icon: "●" },
+    { t: "Cloud Storage", icon: "●" },
+    { t: "Pub/Sub", icon: "●" },
+    { t: "IAM / Access Mgmt", icon: "●" },
+    { t: "Dataplex", icon: "●" },
+    { t: "Cloud Audit Logs", icon: "●" },
+    { t: "Security Command Center", icon: "●" }
   ];
   gcpTechs.forEach((gt, idx) => {
     const col = idx % 5;
@@ -312,11 +312,11 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("lbl_b_obs", "OBSERVABILITY", 706, 600, 430, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   
   const obsIcons = [
-    { t: "Monitoring<br/>(Metrics)", icon: "📈" },
-    { t: "Logging<br/>(Cloud Logging)", icon: "📑" },
-    { t: "Alerting<br/>(Policies)", icon: "🔔" },
-    { t: "Tracing<br/>(Cloud Trace)", icon: "🔍" },
-    { t: "SLOs &amp; SLA<br/>Dashboards", icon: "📊" }
+    { t: "Monitoring<br/>(Metrics)", icon: "●" },
+    { t: "Logging<br/>(Cloud Logging)", icon: "●" },
+    { t: "Alerting<br/>(Policies)", icon: "●" },
+    { t: "Tracing<br/>(Cloud Trace)", icon: "●" },
+    { t: "SLOs &amp; SLA<br/>Dashboards", icon: "●" }
   ];
   obsIcons.forEach((ob, idx) => {
     const obx = 716 + idx * 82;
@@ -324,9 +324,9 @@ export function generateTemplate26HitlGovernanceFlowXml(
   });
 
   const obsDetailsHtml = `<div style="font-size:8px;line-height:1.45;color:#0F172A;padding:6px 12px;margin-top:90px;">
-    ✔ <b>Audit Log Retention:</b> Immutable 7-year storage for FDA 21 CFR Part 11.<br/>
-    ✔ <b>Reviewer SLA Tracking:</b> Alert when review queue latency exceeds 15 minutes.<br/>
-    ✔ <b>Drift &amp; Anomaly Monitoring:</b> Real-time detection of model confidence degradation.
+     <b>Audit Log Retention:</b> Immutable 7-year storage for FDA 21 CFR Part 11.<br/>
+     <b>Reviewer SLA Tracking:</b> Alert when review queue latency exceeds 15 minutes.<br/>
+     <b>Drift &amp; Anomaly Monitoring:</b> Real-time detection of model confidence degradation.
   </div>`;
   cell("txt_b_obs_dtl", obsDetailsHtml, 708, 716, 426, 230, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -334,13 +334,13 @@ export function generateTemplate26HitlGovernanceFlowXml(
   cell("box_b_met", "", 1146, 598, 374, 356, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_b_met", "METRICS (EXAMPLES)", 1146, 600, 374, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const metHtml = `<div style="font-size:7px;line-height:1.6;color:#0F172A;padding:6px 12px;">
-    📈 <b>HITL Review Rate (%)</b><br/><br/>
-    ✔ <b>Approval Rate (%)</b><br/><br/>
-    ⏱️ <b>Avg Review Time (mins)</b><br/><br/>
-    ⚠️ <b>Escalation Rate (%)</b><br/><br/>
-    🔄 <b>Rework Rate (%)</b><br/><br/>
-    📑 <b>Audit Trail Completeness (%)</b><br/><br/>
-    🛡️ <b>Policy Violation Count</b>
+     <b>HITL Review Rate (%)</b><br/><br/>
+     <b>Approval Rate (%)</b><br/><br/>
+    ⏱ <b>Avg Review Time (mins)</b><br/><br/>
+     <b>Escalation Rate (%)</b><br/><br/>
+     <b>Rework Rate (%)</b><br/><br/>
+     <b>Audit Trail Completeness (%)</b><br/><br/>
+     <b>Policy Violation Count</b>
   </div>`;
   cell("txt_b_met", metHtml, 1148, 624, 370, 324, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 

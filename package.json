@@ -11,6 +11,7 @@
     "start": "next start",
     "lint": "eslint",
     "validate": "tsx bin/validate-cli.ts",
+    "quality-gate": "tsx scripts/runQualityGate.ts",
     "validate:xml": "tsx bin/validate-cli.ts",
     "validate:blueprints": "tsx scripts/check-blueprint-catalog-quality.ts",
     "validate:blueprint61": "tsx scripts/check-blueprint61-catalog.ts",

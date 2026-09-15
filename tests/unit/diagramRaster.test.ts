@@ -78,7 +78,7 @@ describe('Phase 1 & 2: Diagram Rasterizer & Export Protocols', () => {
 
     expect(createdIframes.length).toBe(1);
     const iframe = createdIframes[0];
-    expect(iframe.src).toBe('https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&configure=0');
+    expect(iframe.src).toBe('https://embed.diagrams.net/?embed=1&proto=json&spin=0&ui=min&configure=0&stealth=1');
 
     // Simulate init event from embed.diagrams.net
     const initEvent = {

@@ -43,7 +43,7 @@ export function generateTemplate33MatrixHeatmapXml(
     "hdr_title",
     `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>ARCHITECTURE MATRIX HEATMAP</div>` +
     `<div style='font-size:12.5px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Evaluate &amp; Prioritize Architectural Options for NovaCura</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
     760,
@@ -51,7 +51,7 @@ export function generateTemplate33MatrixHeatmapXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const howToReadHtml = `<div style='font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>HOW TO READ</div><div style='font-size:8.5px;line-height:1.35;color:#0F172A;'><b>Scores:</b> 1 (Low / Poor) to 5 (High / Excellent)<br/><span style='color:#16A34A;font-weight:700;'>Colors: Green = Strong</span> &nbsp; <span style='color:#CA8A04;font-weight:700;'>Yellow = Moderate</span> &nbsp; <span style='color:#DC2626;font-weight:700;'>Red = Weak</span><br/><b>Higher score is better for all criteria</b></div>`;
@@ -62,15 +62,15 @@ export function generateTemplate33MatrixHeatmapXml(
   cell("box_l_crit", "", 16, 74, 220, 310, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.8;");
   cell("lbl_l_crit", "EVALUATION CRITERIA (WEIGHT)", 16, 74, 220, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
   const critItems = [
-    { t: "Business Value (15%)", icon: "📈" },
-    { t: "Scalability (10%)", icon: "🚀" },
-    { t: "Performance (10%)", icon: "⚡" },
-    { t: "Security (15%)", icon: "🛡️" },
-    { t: "Compliance Fit (10%)", icon: "⚖️" },
-    { t: "Cost Efficiency (10%)", icon: "💰" },
-    { t: "Implementation Effort (10%)", icon: "⚙️" },
-    { t: "Operational Complexity (5%)", icon: "🧩" },
-    { t: "Time to Value (5%)", icon: "⏱️" }
+    { t: "Business Value (15%)", icon: "●" },
+    { t: "Scalability (10%)", icon: "●" },
+    { t: "Performance (10%)", icon: "●" },
+    { t: "Security (15%)", icon: "●" },
+    { t: "Compliance Fit (10%)", icon: "●" },
+    { t: "Cost Efficiency (10%)", icon: "●" },
+    { t: "Implementation Effort (10%)", icon: "●" },
+    { t: "Operational Complexity (5%)", icon: "●" },
+    { t: "Time to Value (5%)", icon: "⏱" }
   ];
   critItems.forEach((ci, idx) => {
     cell(`ci_${idx}`, `<div style="font-size:9.5px;font-weight:700;color:#0F172A;">${ci.icon} &nbsp; ${ci.t}</div>`, 22, 104 + idx * 30, 210, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
@@ -123,35 +123,35 @@ export function generateTemplate33MatrixHeatmapXml(
       <td style="width:180px;padding:4px;vertical-align:top;border-right:1px solid #CBD5E1;">
         <div style="background:#1E40AF;color:#FFFFFF;padding:3px;font-weight:900;font-size:9.5px;border-radius:3px;">A &nbsp; CURRENT STATE (AS-IS)</div>
         <div style="font-size:8px;color:#64748B;margin:3px 0;">On-Prem Monolith</div>
-        <div style="font-size:16px;">🗄️ ➔ 💻</div>
+        <div style="font-size:16px;">  </div>
       </td>
 
       <!-- Option B -->
       <td style="width:180px;padding:4px;vertical-align:top;border-right:1px solid #CBD5E1;">
         <div style="background:#0D9488;color:#FFFFFF;padding:3px;font-weight:900;font-size:9.5px;border-radius:3px;">B &nbsp; LIFT &amp; SHIFT</div>
         <div style="font-size:8px;color:#64748B;margin:3px 0;">Rehost to Cloud (IaaS)</div>
-        <div style="font-size:16px;">☁️ ➔ 🖥️</div>
+        <div style="font-size:16px;">  </div>
       </td>
 
       <!-- Option C -->
       <td style="width:180px;padding:4px;vertical-align:top;border-right:1px solid #CBD5E1;">
         <div style="background:#7C3AED;color:#FFFFFF;padding:3px;font-weight:900;font-size:9.5px;border-radius:3px;">C &nbsp; MODERNIZE</div>
         <div style="font-size:8px;color:#64748B;margin:3px 0;">Incremental Modernization</div>
-        <div style="font-size:16px;">☁️ ➔ 📦</div>
+        <div style="font-size:16px;">  </div>
       </td>
 
       <!-- Option D -->
       <td style="width:180px;padding:4px;vertical-align:top;border-right:1px solid #CBD5E1;">
         <div style="background:#EA580C;color:#FFFFFF;padding:3px;font-weight:900;font-size:9.5px;border-radius:3px;">D &nbsp; CLOUD NATIVE</div>
         <div style="font-size:8px;color:#64748B;margin:3px 0;">Microservices + Managed Services</div>
-        <div style="font-size:16px;">☁️ ➔ 🧩</div>
+        <div style="font-size:16px;">  </div>
       </td>
 
       <!-- Option E -->
       <td style="width:180px;padding:4px;vertical-align:top;border-right:1.5px solid #CBD5E1;">
         <div style="background:#1D4ED8;color:#FFFFFF;padding:3px;font-weight:900;font-size:9.5px;border-radius:3px;">E &nbsp; FUTURE STATE (AI-NATIVE)</div>
         <div style="font-size:8px;color:#64748B;margin:3px 0;">AI-Native, Autonomous Platform</div>
-        <div style="font-size:16px;">☁️ ➔ 🧠</div>
+        <div style="font-size:16px;">  </div>
       </td>
 
       <!-- WEIGHT -->
@@ -167,7 +167,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 1: Business Value -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">📈 &nbsp; Business Value</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">&nbsp; Business Value</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -179,7 +179,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 2: Scalability -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">🚀 &nbsp; Scalability</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">&nbsp; Scalability</td>
       <td style="background:#FCA5A5;color:#991B1B;font-size:16px;font-weight:900;border:1px solid #FFF;">1</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -191,7 +191,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 3: Performance -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">⚡ &nbsp; Performance</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">&nbsp; Performance</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -203,7 +203,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 4: Security -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">🛡️ &nbsp; Security</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;"> &nbsp; Security</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -215,7 +215,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 5: Compliance Fit -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">⚖️ &nbsp; Compliance Fit</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;"> &nbsp; Compliance Fit</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -227,7 +227,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 6: Cost Efficiency -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">💰 &nbsp; Cost Efficiency</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">&nbsp; Cost Efficiency</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
@@ -239,7 +239,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 7: Implementation Effort -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">⚙️ &nbsp; Implementation Effort</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;"> &nbsp; Implementation Effort</td>
       <td style="background:#16A34A;color:#FFFFFF;font-size:16px;font-weight:900;border:1px solid #FFF;">5</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
@@ -251,7 +251,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 8: Operational Complexity -->
     <tr style="height:42px;border-bottom:1px solid #E2E8F0;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">🧩 &nbsp; Operational Complexity</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">&nbsp; Operational Complexity</td>
       <td style="background:#FED7AA;color:#9A3412;font-size:16px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
@@ -263,7 +263,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
     <!-- Row 9: Time to Value -->
     <tr style="height:42px;border-bottom:2px solid #CBD5E1;">
-      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">⏱️ &nbsp; Time to Value</td>
+      <td style="text-align:left;padding-left:10px;font-size:9.5px;font-weight:700;">⏱ &nbsp; Time to Value</td>
       <td style="background:#16A34A;color:#FFFFFF;font-size:16px;font-weight:900;border:1px solid #FFF;">5</td>
       <td style="background:#BBF7D0;color:#166534;font-size:16px;font-weight:900;border:1px solid #FFF;">4</td>
       <td style="background:#FEF08A;color:#854D0E;font-size:16px;font-weight:900;border:1px solid #FFF;">3</td>
@@ -292,7 +292,7 @@ export function generateTemplate33MatrixHeatmapXml(
       <td style="background:#FACC15;color:#713F12;font-size:18px;font-weight:900;border:1px solid #FFF;">3</td>
       <td style="background:#4ADE80;color:#14532D;font-size:18px;font-weight:900;border:1px solid #FFF;">2</td>
       <td style="background:#15803D;color:#FFFFFF;font-size:18px;font-weight:900;border:1px solid #FFF;">1</td>
-      <td colspan="2" style="font-size:9px;font-weight:800;color:#15803D;">🏆 TOP RANK: OPTION E</td>
+      <td colspan="2" style="font-size:9px;font-weight:800;color:#15803D;">TOP RANK: OPTION E</td>
     </tr>
   </table>`;
   cell("txt_matrix", matrixHtml, 248, 96, 1268, 648, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;padding=0;");
@@ -302,11 +302,11 @@ export function generateTemplate33MatrixHeatmapXml(
   cell("box_b_insights", "", 16, 758, 350, 196, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_b_insights", "SUMMARY INSIGHTS", 16, 758, 350, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
   const insightsHtml = `<div style="font-size:8.5px;line-height:1.45;color:#0F172A;padding:4px 8px;">
-    <div style="margin-bottom:4px;"><span style="color:#2563EB;font-size:10px;">★</span> <b>Option E (AI-Native)</b> scores highest overall, delivering best long-term value, scalability, security &amp; compliance.</div>
-    <div style="margin-bottom:4px;"><span style="color:#EA580C;font-size:10px;">★</span> <b>Option D (Cloud Native)</b> is a strong near-term target with balanced cost, performance &amp; operational efficiency.</div>
-    <div style="margin-bottom:4px;"><span style="color:#7C3AED;font-size:10px;">★</span> <b>Option C (Modernize)</b> offers a practical stepping stone with lower risk and incremental benefits.</div>
-    <div style="margin-bottom:4px;"><span style="color:#0D9488;font-size:10px;">★</span> <b>Option B (Lift &amp; Shift)</b> provides quick relocation but limited value realization.</div>
-    <div><span style="color:#DC2626;font-size:10px;">★</span> <b>Option A (As-Is)</b> has lowest strategic value and scalability; not future-ready.</div>
+    <div style="margin-bottom:4px;"><span style="color:#2563EB;font-size:10px;"></span> <b>Option E (AI-Native)</b> scores highest overall, delivering best long-term value, scalability, security &amp; compliance.</div>
+    <div style="margin-bottom:4px;"><span style="color:#EA580C;font-size:10px;"></span> <b>Option D (Cloud Native)</b> is a strong near-term target with balanced cost, performance &amp; operational efficiency.</div>
+    <div style="margin-bottom:4px;"><span style="color:#7C3AED;font-size:10px;"></span> <b>Option C (Modernize)</b> offers a practical stepping stone with lower risk and incremental benefits.</div>
+    <div style="margin-bottom:4px;"><span style="color:#0D9488;font-size:10px;"></span> <b>Option B (Lift &amp; Shift)</b> provides quick relocation but limited value realization.</div>
+    <div><span style="color:#DC2626;font-size:10px;"></span> <b>Option A (As-Is)</b> has lowest strategic value and scalability; not future-ready.</div>
   </div>`;
   cell("txt_b_insights", insightsHtml, 18, 784, 346, 166, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -321,18 +321,19 @@ export function generateTemplate33MatrixHeatmapXml(
 
   edge("e_path_1", "p_stage_c", "p_stage_d", "strokeColor=#64748B;strokeWidth=1.8;endArrow=classic;endSize=4;");
   edge("e_path_2", "p_stage_d", "p_stage_e", "strokeColor=#64748B;strokeWidth=1.8;endArrow=classic;endSize=4;");
+  edge("e_rec_target", "p_stage_e", "box_b_rec", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;dashed=1;dashPattern=4 4;");
 
-  cell("txt_path_sub", "<div style='font-size:8px;color:#64748B;text-align:center;'>┈┈┈┈┈┈┈┈┈ Continuous Evolution, Observability &amp; FinOps ┈┈┈┈┈┈┈┈┈➔</div>", 380, 922, 398, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("txt_path_sub", "<div style='font-size:8px;color:#64748B;text-align:center;'>┈┈┈┈┈┈┈┈┈ Continuous Evolution, Observability &amp; FinOps ┈┈┈┈┈┈┈┈┈</div>", 380, 922, 398, 20, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // 3. Key Considerations (x=792, w=240)
   cell("box_b_consid", "", 792, 758, 240, 196, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_b_consid", "KEY CONSIDERATIONS", 792, 758, 240, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
   const considHtml = `<table style="width:100%;border-collapse:collapse;font-size:9px;margin-top:6px;">
-    <tr style="height:26px;"><td style="width:20px;color:#16A34A;font-size:12px;">☑</td><td><b>Business priorities &amp; risk appetite</b></td></tr>
-    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Regulatory &amp; data residency needs</b></td></tr>
-    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Skill sets &amp; organizational readiness</b></td></tr>
-    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Change management &amp; training</b></td></tr>
-    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>TCO &amp; ROI over 3–5 years</b></td></tr>
+    <tr style="height:26px;"><td style="width:20px;color:#16A34A;font-size:12px;"></td><td><b>Business priorities &amp; risk appetite</b></td></tr>
+    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Regulatory &amp; data residency needs</b></td></tr>
+    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Skill sets &amp; organizational readiness</b></td></tr>
+    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Change management &amp; training</b></td></tr>
+    <tr style="height:26px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>TCO &amp; ROI over 3–5 years</b></td></tr>
   </table>`;
   cell("txt_b_consid", considHtml, 796, 784, 232, 166, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 
@@ -342,7 +343,7 @@ export function generateTemplate33MatrixHeatmapXml(
   const recHtml = `<table style="width:100%;border-collapse:collapse;margin-top:16px;">
     <tr>
       <td style="width:100px;text-align:center;vertical-align:middle;">
-        <span style="font-size:48px;">🏆</span>
+        <span style="font-size:48px;"></span>
       </td>
       <td style="vertical-align:middle;padding-left:12px;">
         <div style="font-size:20px;font-weight:900;color:#1E40AF;letter-spacing:0.5px;">Option E</div>
@@ -355,7 +356,7 @@ export function generateTemplate33MatrixHeatmapXml(
 
   // ==================== 5. FOOTER STATUS BAR (y=962, h=24) ====================
   const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
-    <div><b>LEGEND:</b> &nbsp; 🟥 1 Poor &nbsp;|&nbsp; 🟧 2 Low &nbsp;|&nbsp; 🟨 3 Moderate &nbsp;|&nbsp; 🟩 4 Good &nbsp;|&nbsp; 🟩 5 Excellent &nbsp;|&nbsp; 🗄️ On-Prem &nbsp;|&nbsp; ☁️ IaaS &nbsp;|&nbsp; 📦 Containers &nbsp;|&nbsp; 🧩 Microservices &nbsp;|&nbsp; 🧠 AI/ML</div>
+    <div><b>LEGEND:</b> &nbsp; 🟥 1 Poor &nbsp;|&nbsp; 🟧 2 Low &nbsp;|&nbsp; 🟨 3 Moderate &nbsp;|&nbsp; 🟩 4 Good &nbsp;|&nbsp; 🟩 5 Excellent &nbsp;|&nbsp;  On-Prem &nbsp;|&nbsp;  IaaS &nbsp;|&nbsp; Containers &nbsp;|&nbsp; Microservices &nbsp;|&nbsp; AI/ML</div>
     <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; Owner: Enterprise Architecture Team</div>
   </div>`;
   cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");

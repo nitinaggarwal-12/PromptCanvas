@@ -44,7 +44,7 @@ export function generateTemplate32RoadmapEvolutionXml(
     "hdr_title",
     `<div style='font-size:24px;font-weight:900;color:#0F172A;letter-spacing:0.5px;'>ARCHITECTURE EVOLUTION &amp; ROADMAP</div>` +
     `<div style='font-size:12.5px;font-weight:700;color:#1E3A8A;margin-top:2px;'>Use Case: NovaCura – AI-Powered Regulatory Intelligence Platform</div>` +
-    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>☁️ Environment: Production &nbsp;|&nbsp; 📍 Region: us-central1 &nbsp;|&nbsp; 📅 Last Updated: May 8, 2025</div>`,
+    `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
     760,
@@ -52,7 +52,7 @@ export function generateTemplate32RoadmapEvolutionXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.4;color:#0F172A;'>Evolve the architecture in phases to achieve business outcomes, reduce risk, and enable continuous innovation with cloud-native, secure, and scalable capabilities.</div>`;
@@ -63,13 +63,13 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_l_prin", "", 16, 74, 172, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.8;");
   cell("lbl_l_prin", "EVOLUTION PRINCIPLES", 16, 74, 172, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
   const prinItems = [
-    { t: "Iterative &amp; Value-Driven", icon: "🔄" },
-    { t: "Cloud Native &amp; API-First", icon: "☁️" },
-    { t: "Security &amp; Compliance", icon: "🛡️" },
-    { t: "Data as Strategic Asset", icon: "🗄️" },
-    { t: "Automate Everything", icon: "⚙️" },
+    { t: "Iterative &amp; Value-Driven", icon: "●" },
+    { t: "Cloud Native &amp; API-First", icon: "●" },
+    { t: "Security &amp; Compliance", icon: "●" },
+    { t: "Data as Strategic Asset", icon: "●" },
+    { t: "Automate Everything", icon: "●" },
     { t: "Observability &amp; Resilience", icon: "🩺" },
-    { t: "Cost Efficient &amp; Sustainable", icon: "💰" }
+    { t: "Cost Efficient &amp; Sustainable", icon: "●" }
   ];
   prinItems.forEach((pi, idx) => {
     cell(`pi_${idx}`, `<div style="font-size:9px;font-weight:700;color:#0F172A;">${pi.icon} ${pi.t}</div>`, 20, 106 + idx * 30, 164, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
@@ -79,13 +79,13 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_l_driv", "", 16, 330, 172, 250, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_l_driv", "DRIVERS", 16, 330, 172, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
   const drivItems = [
-    { t: "Regulatory Complexity Growth", icon: "📈" },
-    { t: "Data Volume &amp; Variety", icon: "🗃️" },
-    { t: "Real-time Intelligence Need", icon: "⚡" },
-    { t: "AI / ML Capability Maturity", icon: "🧠" },
-    { t: "Operational Efficiency", icon: "⚙️" },
-    { t: "Scalability &amp; Performance", icon: "🚀" },
-    { t: "Compliance Pressure", icon: "🔒" }
+    { t: "Regulatory Complexity Growth", icon: "●" },
+    { t: "Data Volume &amp; Variety", icon: "●" },
+    { t: "Real-time Intelligence Need", icon: "●" },
+    { t: "AI / ML Capability Maturity", icon: "●" },
+    { t: "Operational Efficiency", icon: "●" },
+    { t: "Scalability &amp; Performance", icon: "●" },
+    { t: "Compliance Pressure", icon: "●" }
   ];
   drivItems.forEach((di, idx) => {
     cell(`di_${idx}`, `<div style="font-size:9px;font-weight:700;color:#0F172A;">${di.icon} ${di.t}</div>`, 20, 362 + idx * 30, 164, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
@@ -95,14 +95,14 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_stake_bg", "", 196, 74, 1032, 60, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_stake", "STAKEHOLDERS", 196, 76, 1032, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
   const stakes = [
-    { t: "Business Leaders", icon: "👤" },
-    { t: "Regulatory &amp; Compliance", icon: "⚖️" },
-    { t: "Product Management", icon: "💻" },
-    { t: "Enterprise Architecture", icon: "🏛️" },
-    { t: "Security &amp; Risk", icon: "🛡️" },
-    { t: "Data Governance", icon: "🗄️" },
-    { t: "Platform Engineering", icon: "🚀" },
-    { t: "Dev / QA Teams", icon: "👥" }
+    { t: "Business Leaders", icon: "●" },
+    { t: "Regulatory &amp; Compliance", icon: "●" },
+    { t: "Product Management", icon: "●" },
+    { t: "Enterprise Architecture", icon: "●" },
+    { t: "Security &amp; Risk", icon: "●" },
+    { t: "Data Governance", icon: "●" },
+    { t: "Platform Engineering", icon: "●" },
+    { t: "Dev / QA Teams", icon: "●" }
   ];
   stakes.forEach((st, idx) => {
     const sx = 204 + idx * 128;
@@ -113,13 +113,13 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_r_themes", "", 1236, 74, 284, 246, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#1E3A8A;strokeWidth=1.5;");
   cell("lbl_r_themes", "MODERNIZATION THEMES", 1236, 74, 284, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
   const themeItems = [
-    { t: "Decompose &amp; Modularize", icon: "🧩" },
-    { t: "Event-driven Architecture", icon: "⚡" },
-    { t: "Data Platform Modernization", icon: "🗄️" },
-    { t: "AI / ML Integration", icon: "🧠" },
-    { t: "Automation &amp; Orchestration", icon: "⚙️" },
-    { t: "Developer Experience", icon: "💻" },
-    { t: "Ecosystem &amp; Extensibility", icon: "🌐" }
+    { t: "Decompose &amp; Modularize", icon: "●" },
+    { t: "Event-driven Architecture", icon: "●" },
+    { t: "Data Platform Modernization", icon: "●" },
+    { t: "AI / ML Integration", icon: "●" },
+    { t: "Automation &amp; Orchestration", icon: "●" },
+    { t: "Developer Experience", icon: "●" },
+    { t: "Ecosystem &amp; Extensibility", icon: "●" }
   ];
   themeItems.forEach((ti, idx) => {
     cell(`ti_${idx}`, `<div style="font-size:9px;font-weight:700;color:#0F172A;">${ti.icon} ${ti.t}</div>`, 1242, 106 + idx * 30, 272, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
@@ -130,10 +130,10 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("lbl_road", "ARCHITECTURE EVOLUTION ROADMAP", 196, 144, 1032, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E3A8A;fontSize=12.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const phases = [
-    { id: "ph_0", n: "PHASE 0", subN: "FOUNDATION (Now – Q2 2025)", sub: "Stabilize core platform, establish security foundation, and enable initial AI capabilities.", col: "#16A34A", bg: "#F0FDF4", icon: "⚙️", out: "• Compliant &amp; Secure Core Platform<br/>• Single Source of Regulatory Truth<br/>• Faster Manual Research" },
-    { id: "ph_1", n: "PHASE 1", subN: "SCALE &amp; INTEGRATE (Q3 – Q4 2025)", sub: "Scale platform, integrate more data sources, and expand AI/automation capabilities.", col: "#2563EB", bg: "#EFF6FF", icon: "⚡", out: "• Wider Coverage &amp; Integrations<br/>• Higher Automation &amp; Efficiency<br/>• Scalable &amp; Reusable Platform" },
-    { id: "ph_2", n: "PHASE 2", subN: "INTELLIGENT &amp; AUTOMATED (H1 2026)", sub: "Increase automation, enable predictive intelligence, and self-service analytics.", col: "#7C3AED", bg: "#FAF5FF", icon: "🧠", out: "• Predictive Regulatory Intelligence<br/>• Self-Service Insights<br/>• Reduced Time-to-Insight by 60%+" },
-    { id: "ph_3", n: "PHASE 3", subN: "AUTONOMOUS &amp; OPTIMIZED (H2 2026+)", sub: "Autonomous operations, advanced AI agents, and ecosystem-driven innovation.", col: "#EA580C", bg: "#FFFBEB", icon: "🚀", out: "• Autonomous Regulatory Operations<br/>• Proactive Compliance<br/>• Continuous Innovation Engine" }
+    { id: "ph_0", n: "PHASE 0", subN: "FOUNDATION (Now – Q2 2025)", sub: "Stabilize core platform, establish security foundation, and enable initial AI capabilities.", col: "#16A34A", bg: "#F0FDF4", icon: "●", out: "• Compliant &amp; Secure Core Platform<br/>• Single Source of Regulatory Truth<br/>• Faster Manual Research" },
+    { id: "ph_1", n: "PHASE 1", subN: "SCALE &amp; INTEGRATE (Q3 – Q4 2025)", sub: "Scale platform, integrate more data sources, and expand AI/automation capabilities.", col: "#2563EB", bg: "#EFF6FF", icon: "●", out: "• Wider Coverage &amp; Integrations<br/>• Higher Automation &amp; Efficiency<br/>• Scalable &amp; Reusable Platform" },
+    { id: "ph_2", n: "PHASE 2", subN: "INTELLIGENT &amp; AUTOMATED (H1 2026)", sub: "Increase automation, enable predictive intelligence, and self-service analytics.", col: "#7C3AED", bg: "#FAF5FF", icon: "●", out: "• Predictive Regulatory Intelligence<br/>• Self-Service Insights<br/>• Reduced Time-to-Insight by 60%+" },
+    { id: "ph_3", n: "PHASE 3", subN: "AUTONOMOUS &amp; OPTIMIZED (H2 2026+)", sub: "Autonomous operations, advanced AI agents, and ecosystem-driven innovation.", col: "#EA580C", bg: "#FFFBEB", icon: "●", out: "• Autonomous Regulatory Operations<br/>• Proactive Compliance<br/>• Continuous Innovation Engine" }
   ];
 
   phases.forEach((ph, idx) => {
@@ -177,7 +177,7 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p0_db3", "Cache", px + 164, 380, 70, 28, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;fontSize=7;fontStyle=1;fontColor=#16A34A;align=center;verticalAlign=middle;");
 
       // Tier 4: Cloud Infrastructure with Cloud icon
-      cell("p0_infra", "☁️  Cloud Infrastructure", px + 12, 420, 222, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;fontSize=7.5;fontStyle=1;fontColor=#16A34A;align=center;verticalAlign=middle;");
+      cell("p0_infra", "  Cloud Infrastructure", px + 12, 420, 222, 24, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;fontSize=7.5;fontStyle=1;fontColor=#16A34A;align=center;verticalAlign=middle;");
 
       edge("p0_e1", "p0_n1", "p0_ms", "strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
       edge("p0_e2", "p0_n2", "p0_ms", "strokeColor=#16A34A;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
@@ -207,7 +207,7 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p1_d4", "Cache", px + 178, 400, 56, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=8.5;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
 
       // Tier 4: Cloud Infrastructure with Cloud icon
-      cell("p1_infra", "☁️  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=7;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
+      cell("p1_infra", "  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;fontSize=7;fontStyle=1;fontColor=#2563EB;align=center;verticalAlign=middle;");
 
       edge("p1_e1", "p1_n2", "p1_ms", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
       edge("p1_e2", "p1_ms", "p1_eb", "strokeColor=#2563EB;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
@@ -234,7 +234,7 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p2_d3", "Feature Store", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=8.5;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
 
       // Tier 4: Cloud Infrastructure with Cloud icon
-      cell("p2_infra", "☁️  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
+      cell("p2_infra", "  Cloud Infrastructure", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#7C3AED;fontSize=7;fontStyle=1;fontColor=#7C3AED;align=center;verticalAlign=middle;");
 
       edge("p2_e1", "p2_n3", "p2_ai", "strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
       edge("p2_e2", "p2_ai", "p2_d2", "strokeColor=#7C3AED;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
@@ -258,7 +258,7 @@ export function generateTemplate32RoadmapEvolutionXml(
       cell("p3_d3", "AutoML Platform", px + 164, 400, 70, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=8.5;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
 
       // Tier 4: Multi-Cloud / Hybrid with Cloud icon
-      cell("p3_infra", "☁️  Multi-Cloud / Hybrid", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=7;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
+      cell("p3_infra", "  Multi-Cloud / Hybrid", px + 10, 430, 224, 22, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#EA580C;fontSize=7;fontStyle=1;fontColor=#EA580C;align=center;verticalAlign=middle;");
 
       edge("p3_e1", "p3_n1", "p3_orch", "strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
       edge("p3_e2", "p3_orch", "p3_kg", "strokeColor=#EA580C;strokeWidth=1.2;dashed=1;endArrow=classic;startArrow=classic;endSize=3;startSize=3;");
@@ -271,13 +271,13 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_enablers_bg", "", 196, 518, 1032, 62, "rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.5;");
   cell("lbl_enablers", "KEY ENABLERS (CROSS-PHASE)", 196, 520, 1032, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
   const enablers = [
-    { t: "Security &amp;<br/>Zero Trust", icon: "🔒" },
-    { t: "Identity &amp; Access<br/>Management", icon: "👤" },
-    { t: "Observability &amp;<br/>Monitoring", icon: "📈" },
-    { t: "CI/CD &amp;<br/>GitOps", icon: "⚙️" },
-    { t: "Infrastructure<br/>as Code", icon: "☁️" },
-    { t: "Data Governance<br/>Optimization", icon: "🗄️" },
-    { t: "Backup &amp; DR<br/>Strategy", icon: "💾" }
+    { t: "Security &amp;<br/>Zero Trust", icon: "●" },
+    { t: "Identity &amp; Access<br/>Management", icon: "●" },
+    { t: "Observability &amp;<br/>Monitoring", icon: "●" },
+    { t: "CI/CD &amp;<br/>GitOps", icon: "●" },
+    { t: "Infrastructure<br/>as Code", icon: "●" },
+    { t: "Data Governance<br/>Optimization", icon: "●" },
+    { t: "Backup &amp; DR<br/>Strategy", icon: "●" }
   ];
   enablers.forEach((en, idx) => {
     const ex = 204 + idx * 145;
@@ -309,12 +309,12 @@ export function generateTemplate32RoadmapEvolutionXml(
       <td style='color:#7C3AED;font-weight:900;'>PHASE 2 (H1 2026)</td>
       <td style='color:#EA580C;font-weight:900;'>PHASE 3 (H2 2026+)</td>
     </tr>
-    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>🚀 Platform</b></td><td>• Set up core GKE platform, networking, security baseline</td><td>• Multi-environment, autoscaling, advanced CI/CD</td><td>• Service mesh, platform hardening, resilience automation</td><td>• Multi-cloud / hybrid, autonomous scaling</td></tr>
-    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>🗄️ Data</b></td><td>• Centralize data, build data lake &amp; warehouse</td><td>• Data catalog, streaming ingestion, vector DB</td><td>• Data mesh, real-time lakehouse, quality automation</td><td>• Active data products, dynamic data fabric</td></tr>
-    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>🔌 Integration</b></td><td>• Core system integrations (APIs, SFTP, DB)</td><td>• Event-driven integrations, partner APIs</td><td>• Ecosystem integrations, API marketplace</td><td>• Open ecosystem, plug-and-play connectors</td></tr>
-    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>🧠 AI / Analytics</b></td><td>• LLM integration, basic search &amp; summarization</td><td>• RAG, advanced NLP, dashboards</td><td>• Predictive models, recommendations, anomaly detection</td><td>• Autonomous agents, generative decisioning</td></tr>
-    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>⚙️ Operations</b></td><td>• Logging, basic monitoring, backup</td><td>• SRE practices, alerting, runbooks</td><td>• AIOps, predictive monitoring, chaos testing</td><td>• Autonomous ops, self-healing systems</td></tr>
-    <tr style='height:25px;'><td style='padding:4px 8px;'><b>🛡️ Security &amp; Compliance</b></td><td>• IAM, encryption, vulnerability scanning</td><td>• Policy as Code, compliance automation</td><td>• Continuous compliance, risk scoring</td><td>• Adaptive security, zero-trust automation</td></tr>
+    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>Platform</b></td><td>• Set up core GKE platform, networking, security baseline</td><td>• Multi-environment, autoscaling, advanced CI/CD</td><td>• Service mesh, platform hardening, resilience automation</td><td>• Multi-cloud / hybrid, autonomous scaling</td></tr>
+    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b> Data</b></td><td>• Centralize data, build data lake &amp; warehouse</td><td>• Data catalog, streaming ingestion, vector DB</td><td>• Data mesh, real-time lakehouse, quality automation</td><td>• Active data products, dynamic data fabric</td></tr>
+    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>Integration</b></td><td>• Core system integrations (APIs, SFTP, DB)</td><td>• Event-driven integrations, partner APIs</td><td>• Ecosystem integrations, API marketplace</td><td>• Open ecosystem, plug-and-play connectors</td></tr>
+    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b>AI / Analytics</b></td><td>• LLM integration, basic search &amp; summarization</td><td>• RAG, advanced NLP, dashboards</td><td>• Predictive models, recommendations, anomaly detection</td><td>• Autonomous agents, generative decisioning</td></tr>
+    <tr style='border-bottom:1px solid #E2E8F0;height:25px;'><td style='padding:4px 8px;'><b> Operations</b></td><td>• Logging, basic monitoring, backup</td><td>• SRE practices, alerting, runbooks</td><td>• AIOps, predictive monitoring, chaos testing</td><td>• Autonomous ops, self-healing systems</td></tr>
+    <tr style='height:25px;'><td style='padding:4px 8px;'><b> Security &amp; Compliance</b></td><td>• IAM, encryption, vulnerability scanning</td><td>• Policy as Code, compliance automation</td><td>• Continuous compliance, risk scoring</td><td>• Adaptive security, zero-trust automation</td></tr>
   </table>`;
   cell("txt_caps_table", capsTableHtml, 20, 592, 1204, 184, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=2;");
 
@@ -322,12 +322,12 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_r_metrics", "", 1236, 588, 284, 192, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;");
   cell("lbl_r_metrics", "SUCCESS METRICS", 1236, 588, 284, 26, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#CBD5E1;fontColor=#16A34A;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
   const metricsHtml = `<table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-top:6px;">
-    <tr style="height:24px;"><td>⏱️ <b>Time to Regulatory Insight</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▼ 60%+</td></tr>
-    <tr style="height:24px;"><td>⚙️ <b>Automation Rate</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 70%+</td></tr>
-    <tr style="height:24px;"><td>📈 <b>Platform Availability</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">99.99%+</td></tr>
-    <tr style="height:24px;"><td>💰 <b>Cost Efficiency</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 30%+</td></tr>
-    <tr style="height:24px;"><td>👤 <b>User Adoption</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 80%+</td></tr>
-    <tr style="height:24px;"><td>✔ <b>Compliance Coverage</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">100%</td></tr>
+    <tr style="height:24px;"><td>⏱ <b>Time to Regulatory Insight</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▼ 60%+</td></tr>
+    <tr style="height:24px;"><td> <b>Automation Rate</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 70%+</td></tr>
+    <tr style="height:24px;"><td> <b>Platform Availability</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">99.99%+</td></tr>
+    <tr style="height:24px;"><td> <b>Cost Efficiency</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 30%+</td></tr>
+    <tr style="height:24px;"><td> <b>User Adoption</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">▲ 80%+</td></tr>
+    <tr style="height:24px;"><td> <b>Compliance Coverage</b></td><td style="text-align:right;color:#16A34A;font-weight:900;font-size:11px;">100%</td></tr>
   </table>`;
   cell("txt_r_metrics", metricsHtml, 1242, 616, 272, 160, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 
@@ -393,11 +393,11 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_b_dep", "", 722, 788, 290, 166, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;");
   cell("lbl_b_dep", "DEPENDENCIES", 722, 788, 290, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontColor=#1E3A8A;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
   const depHtml = `<table style="width:100%;border-collapse:collapse;font-size:9.5px;margin-top:6px;">
-    <tr style="height:22px;"><td style="width:20px;color:#16A34A;font-size:12px;">☑</td><td><b>Executive Sponsorship</b></td></tr>
-    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Budget &amp; Resource Allocation</b></td></tr>
-    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Data Availability &amp; Quality</b></td></tr>
-    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Vendor &amp; Partner Alignment</b></td></tr>
-    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;">☑</td><td><b>Change Management &amp; Training</b></td></tr>
+    <tr style="height:22px;"><td style="width:20px;color:#16A34A;font-size:12px;"></td><td><b>Executive Sponsorship</b></td></tr>
+    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Budget &amp; Resource Allocation</b></td></tr>
+    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Data Availability &amp; Quality</b></td></tr>
+    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Vendor &amp; Partner Alignment</b></td></tr>
+    <tr style="height:22px;"><td style="color:#16A34A;font-size:12px;"></td><td><b>Change Management &amp; Training</b></td></tr>
   </table>`;
   cell("txt_b_dep", depHtml, 726, 816, 282, 132, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;padding=4;");
 
@@ -405,11 +405,11 @@ export function generateTemplate32RoadmapEvolutionXml(
   cell("box_b_next", "", 1020, 788, 500, 166, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_b_next", "NEXT STEPS", 1020, 788, 500, 24, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=10;fontStyle=1;align=center;verticalAlign=middle;");
   const nextSteps = [
-    { id: "ns_0", n: "Validate<br/>Roadmap", sub: "Now", icon: "📋" },
-    { id: "ns_1", n: "Prioritize<br/>Initiatives", sub: "May '25", icon: "📑" },
-    { id: "ns_2", n: "Detailed Design<br/>&amp; Planning", sub: "Jun '25", icon: "📐" },
-    { id: "ns_3", n: "Execute<br/>Phase 0", sub: "Q2 2025", icon: "⚙️" },
-    { id: "ns_4", n: "Review &amp;<br/>Iterate", sub: "Quarterly", icon: "🔄" }
+    { id: "ns_0", n: "Validate<br/>Roadmap", sub: "Now", icon: "●" },
+    { id: "ns_1", n: "Prioritize<br/>Initiatives", sub: "May '25", icon: "●" },
+    { id: "ns_2", n: "Detailed Design<br/>&amp; Planning", sub: "Jun '25", icon: "●" },
+    { id: "ns_3", n: "Execute<br/>Phase 0", sub: "Q2 2025", icon: "●" },
+    { id: "ns_4", n: "Review &amp;<br/>Iterate", sub: "Quarterly", icon: "●" }
   ];
   nextSteps.forEach((ns, idx) => {
     const nx = 1028 + idx * 98;
@@ -421,7 +421,7 @@ export function generateTemplate32RoadmapEvolutionXml(
 
   // ==================== 7. FOOTER STATUS BAR (y=962, h=24) ====================
   const footerHtml = `<div style='font-size:9px;color:#64748B;display:flex;justify-content:space-between;align-items:center;'>
-    <div><b>LEGEND:</b> &nbsp; 🟢 Phase 0 (Foundation) &nbsp;|&nbsp; 🔵 Phase 1 (Scale &amp; Integrate) &nbsp;|&nbsp; 🟣 Phase 2 (Intelligent) &nbsp;|&nbsp; 🟠 Phase 3 (Autonomous) &nbsp;|&nbsp; ➔ Evolution Flow</div>
+    <div><b>LEGEND:</b> &nbsp; 🟢 Phase 0 (Foundation) &nbsp;|&nbsp; Phase 1 (Scale &amp; Integrate) &nbsp;|&nbsp; 🟣 Phase 2 (Intelligent) &nbsp;|&nbsp; 🟠 Phase 3 (Autonomous) &nbsp;|&nbsp; Evolution Flow</div>
     <div>Last Updated: May 8, 2025 &nbsp;|&nbsp; Next Review: Aug 8, 2025 &nbsp;|&nbsp; Owner: Enterprise Architecture Team</div>
   </div>`;
   cell("footer_status", footerHtml, 16, 962, 1504, 24, "rounded=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=4;");

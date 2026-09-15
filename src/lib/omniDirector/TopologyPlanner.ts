@@ -16,6 +16,7 @@ import { generateTemplate10IntegrationArchXml } from '../canonical/template10Int
 import { generateTemplate20CiCdPipelineXml } from '../canonical/template20CiCdPipeline';
 import { generateTemplate35FintechWealthEngineXml } from '../canonical/template35FintechWealthEngine';
 import { buildMasterPharmaGenomicsPipelineXml } from '../masterBuilders/build_master_pharma_genomics_pipeline';
+import { CANONICAL_TEMPLATES } from '../canonical/canonicalTemplates';
 
 export interface DiagramSideEnclosure {
   title: string;
@@ -197,9 +198,9 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
     return {
       isMatch: true,
       id: '35',
-      title: '35 — FinTech Autonomous Wealth & Payments',
+      title: '35. FinTech & Autonomous Wealth Engine',
       xml: generateTemplate35FintechWealthEngineXml('fintech', 'light'),
-      family: 'VALUE_STREAM',
+      family: 'CLOUD_TOPOLOGY',
       badge: '35'
     };
   }
@@ -217,6 +218,29 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
       xml: buildMasterPharmaGenomicsPipelineXml(),
       family: 'DATA_PIPELINE'
     };
+  }
+
+  // 8. Universal Master Blueprint Matcher across all CANONICAL_TEMPLATES
+  for (const t of CANONICAL_TEMPLATES) {
+    const tIdClean = t.id.toLowerCase().trim();
+    const tNameClean = t.name.toLowerCase().trim();
+    const idRegex = new RegExp(`\\b${tIdClean}\\b`, 'i');
+    if (
+      (badgeNumber && badgeNumber.toLowerCase() === tIdClean) ||
+      (idRegex.test(combined) && (combined.includes(tNameClean.split(' ')[0]) || tNameClean.length < 5)) ||
+      combined.includes(tNameClean)
+    ) {
+      try {
+        return {
+          isMatch: true,
+          id: t.id,
+          title: `${t.id} — ${t.name}`,
+          xml: t.generateXml('biopharma', 'light'),
+          family: 'CLOUD_TOPOLOGY',
+          badge: t.id
+        };
+      } catch {}
+    }
   }
 
   return { isMatch: false };

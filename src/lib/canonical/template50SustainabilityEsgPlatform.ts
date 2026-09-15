@@ -58,6 +58,17 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     );
   };
 
+  const edge = (
+    id: string,
+    src: string,
+    trg: string,
+    style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;"
+  ) => {
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+  };
+
   const rawEdge = (
     id: string,
     style: string,
@@ -428,7 +439,7 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     "Reduced emissions &amp; environmental impact",
     "Stronger stakeholder trust &amp; brand value"
   ];
-  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7.5px;color:#334155;line-height:1.15;"><span style="color:#0F766E;">✓</span> ${o}</div>`).join("");
+  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:7.5px;color:#334155;line-height:1.15;"><span style="color:#0F766E;"></span> ${o}</div>`).join("");
   cell("outcomes_txt", outcomesHtml, 1176, 704, 250, 58, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const targetSvg = `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
@@ -469,8 +480,13 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
   cell("ft_standards_box", "", 492, 770, 290, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("ft_standards_hdr", `<b style="font-size:8.5px;color:#1E293B;">FRAMEWORKS &amp; STANDARDS</b>`, 500, 774, 200, 16, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   const stds = ["GRI", "SASB", "TCFD", "CDP", "ISSB", "EU Taxonomy"];
-  const stdsHtml = stds.map(s => `<span style="font-size:8px;font-weight:bold;color:#0F172A;background:#F1F5F9;padding:4px 8px;border-radius:4px;border:1px solid #CBD5E1;">${s}</span>`).join(" ");
-  cell("ft_standards_txt", `<div style="padding-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">${stdsHtml}</div>`, 500, 794, 274, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  stds.forEach((s, i) => {
+    const col = i % 3;
+    const row = Math.floor(i / 3);
+    const sx = 502 + col * 90;
+    const sy = 800 + row * 34;
+    cell(`ft_std_${i}`, s, sx, sy, 84, 28, "rounded=1;arcSize=4;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;fontSize=8.5;fontStyle=1;fontColor=#0F172A;align=center;verticalAlign=middle;");
+  });
 
   // Box 4: DEPLOYMENT PATTERNS (x: 790, w: 240)
   cell("ft_deploy_box", "", 790, 770, 240, 104, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
@@ -502,6 +518,22 @@ export function generateTemplate50SustainabilityEsgPlatformXml(
     const ic = svgIcon(sd.icon as keyof typeof SVG, "#059669", 14);
     cell(`ft_sd_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">${ic}<div style="font-size:7.5px;font-weight:700;color:#065F46;text-align:center;line-height:1.15;">${sd.title}</div></div>`, sx, 794, 110, 68, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
+
+  // =========================================================================
+  // 5. ARCHITECTURAL FLOW CONNECTORS & LEGEND
+  // =========================================================================
+  edge("e_esg_0_1", "t0_frame", "t1_frame", "strokeColor=#0F766E;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_1_2", "t1_frame", "t2_frame", "strokeColor=#0F766E;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_2_3", "t2_frame", "t3_frame", "strokeColor=#0D9488;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_3_4", "t3_frame", "t4_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_4_5", "t4_frame", "t5_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_5_6", "t5_frame", "t6_frame", "strokeColor=#0D9488;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_6_7", "t6_frame", "t7_frame", "strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_esg_5_8", "t5_frame", "t8_frame", "strokeColor=#7C3AED;strokeWidth=2;dashed=1;dashPattern=4 4;endArrow=classic;endSize=5;");
+  edge("e_esg_6_out", "t6_frame", "outcomes_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // Architecture Legend Bar
+  cell("esg_legend_bar", `<div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;color:#475569;padding:0 8px;"><div><b>ARCHITECTURAL KEY &amp; LEGEND:</b> &nbsp; IoT &amp; Utility Ingestion &nbsp;|&nbsp; 🟢 Carbon Lakehouse &amp; GHG Accounting &nbsp;|&nbsp; 🟣 ESG Predictive AI &nbsp;|&nbsp; Regulatory Governance</div><div>Status: Production Certified &nbsp;|&nbsp; Standards: GHG Protocol / CSRD / SEC Climate / ISSB &nbsp;|&nbsp; Scopes Covered: Scope 1, 2, 3 Supply Chain</div></div>`, 16, 894, 1504, 22, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_50" name="Sustainability &amp; ESG Intelligence Platform">

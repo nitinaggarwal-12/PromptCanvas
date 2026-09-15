@@ -115,16 +115,27 @@ export function auditTemplate(xml: string, templateId: string, templateName: str
   const hasBrand = xml.includes('NOVACURA') || xml.includes('NovaCura') || xml.includes('Google Cloud') || xml.includes('NEXUSFIN') || xml.includes('SYNACTIVE');
   const hasLegend = /legend|flow:|key:|indicators|controls|summary/i.test(xml);
   const nodeCount = rects.length;
+  const edgeCount = (xml.match(/<mxCell[^>]+edge="1"/gi) || []).length;
+  const rawEmojiMatches = xml.match(/(?:⚙️|🤖|☁️|📦|🔧|🔒|📊|⚡|🛡️|💡|🔍|📱|💻|🖥️|🗄️|🏛️|💵|📈|📉|🧾|👤|🎯|🌐|📄|👥|📰|💳|📁|📬|🧠|📜|👁️|📑|☸️|🔄|🚀|🔐|💾)/gu) || [];
+
+  const defects: string[] = [...collisions];
+  if (nodeCount >= 10 && edgeCount < 3) {
+    defects.push(`Disconnected Graph: Template has ${nodeCount} vertices but only ${edgeCount} connectors.`);
+  }
+  if (rawEmojiMatches.length > 0) {
+    defects.push(`Raw Emoji Defect: Template contains ${rawEmojiMatches.length} raw emojis.`);
+  }
 
   return {
     templateId,
     templateName,
     nodeCount,
-    lineCount: segments.length,
+    lineCount: Math.max(segments.length, edgeCount),
     hasEnvelope,
     hasBrand,
     hasLegend,
-    collisions
+    collisions,
+    defects
   };
 }
 
@@ -134,27 +145,31 @@ async function runSuite() {
   console.log("================================================================================\n");
 
   const results = [];
-  let totalCollisions = 0;
+  let totalDefects = 0;
 
   for (const t of CANONICAL_TEMPLATES) {
     const xml = t.generateXml('biopharma', 'light');
     const res = auditTemplate(xml, t.id, t.name);
     results.push(res);
-    totalCollisions += res.collisions.length;
+    totalDefects += res.defects.length;
 
-    const status = res.collisions.length === 0 ? "✅ PASS" : `❌ ${res.collisions.length} COLLISIONS`;
+    const status = res.defects.length === 0 ? "✅ PASS" : `❌ ${res.defects.length} DEFECTS`;
     console.log(`[${status}] Template ${t.id.padStart(2, '0')}: ${t.name.padEnd(36)} | Nodes: ${res.nodeCount.toString().padStart(3)} | Lines: ${res.lineCount.toString().padStart(2)} | Envelope: ${res.hasEnvelope ? '✓' : '✗'} | Legend: ${res.hasLegend ? '✓' : '✗'}`);
     
-    if (res.collisions.length > 0) {
-      for (const col of res.collisions) {
-        console.log(`    ↳ ⚠️ ${col}`);
+    if (res.defects.length > 0) {
+      for (const d of res.defects) {
+        console.log(`    ↳ ⚠️ ${d}`);
       }
     }
   }
 
   console.log("\n================================================================================");
-  console.log(`SUMMARY: ${CANONICAL_TEMPLATES.length} Templates Audited | Total Geometric Collisions: ${totalCollisions}`);
+  console.log(`SUMMARY: ${CANONICAL_TEMPLATES.length} Templates Audited | Total Defects: ${totalDefects}`);
   console.log("================================================================================\n");
+
+  if (totalDefects > 0) {
+    process.exit(1);
+  }
 }
 
 runSuite();

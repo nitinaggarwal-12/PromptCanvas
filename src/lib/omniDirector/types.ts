@@ -20,7 +20,53 @@ export type AuditCategory =
   | 'LEGEND_INTEGRITY'  // Non-empty legend box, verified definitions table
   | 'CHEVRON_STAGE'     // Process chevron cards vs plain unstyled text lines
   | 'MASCOT_AVATAR'     // Agentic robot avatars (🤖) and interface nodes
-  | 'BRANDING_STYLE';   // Gemini gradient logos, palette contrast, font scaling
+  | 'BRANDING_STYLE'    // Gemini gradient logos, palette contrast, font scaling
+  | 'SOURCE_PARITY';    // Does the emitted XML actually depict the SOURCE image?
+
+export interface DiagramRowCard {
+  title: string;
+  bullets?: string[];
+  meta?: string;
+  icon?: string;
+}
+
+export interface DiagramRowInventory {
+  rowTitle: string;
+  cards: DiagramRowCard[];
+}
+
+export interface DiagramZoneColor {
+  stageName: string;
+  color: string;
+  bgLight?: string;
+  border?: string;
+}
+
+export interface DiagramBrandBlock {
+  logoText: string;
+  subtitle?: string;
+  badgeNumber?: string;
+}
+
+/**
+ * Ground-truth context extracted from the source image by the Topology Planner.
+ * Without this the QC Chief can only check a diagram against itself, which cannot
+ * detect a wholesale substitution of an unrelated master blueprint.
+ */
+export interface SourceParityContext {
+  detectedTitle?: string;
+  detectedSubtitle?: string;
+  detectedZones?: string[];
+  keyComponents?: string[];
+  rows?: DiagramRowInventory[];
+  technologies?: string[];
+  legend?: string[];
+  badgeNumber?: string;
+  theme?: 'light' | 'dark';
+  brandBlock?: DiagramBrandBlock;
+  zoneColors?: DiagramZoneColor[];
+  hasLeftColumn?: boolean;
+}
 
 export interface QualityGap {
   category: AuditCategory;
@@ -47,6 +93,8 @@ export interface OmniAuditReport {
     chevrons: boolean;
     mascots: boolean;
     branding: boolean;
+    /** True only when the XML was actually compared against source-image ground truth. */
+    sourceParity: boolean;
   };
   gaps: QualityGap[];
   remediationDirectives: string[];

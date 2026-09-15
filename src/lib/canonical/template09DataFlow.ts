@@ -36,7 +36,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">🧬</span></td>
+      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
       <td style="vertical-align:middle;text-align:left;">
         <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
         <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
@@ -76,11 +76,11 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("sources_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>DATA SOURCES</b>", 20, 130, 160, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const sources = [
-    { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "🏢" },
-    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical (Medidata)", "EDC (Rave / OpenClinica)", "LIMS, ELN", "Safety / PV Systems", "Imaging Repositories"], icon: "🔬" },
-    { title: "External & Partner Data", items: ["CRO / Partner Portals", "Public Databases", "Regulatory Authorities", "Market & Competitor Data"], icon: "🌐" },
-    { title: "Unstructured Content", items: ["PDF / Word / PPT", "Emails", "Scientific Publications", "Reports / Spreadsheets"], icon: "📄" },
-    { title: "Real-time Streams", items: ["IoT / Sensors (Manufacturing)", "Field Data / Wearables", "Clickstream / Web Events", "System Logs / Audit Events"], icon: "📡" },
+    { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "●" },
+    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical (Medidata)", "EDC (Rave / OpenClinica)", "LIMS, ELN", "Safety / PV Systems", "Imaging Repositories"], icon: "●" },
+    { title: "External & Partner Data", items: ["CRO / Partner Portals", "Public Databases", "Regulatory Authorities", "Market & Competitor Data"], icon: "●" },
+    { title: "Unstructured Content", items: ["PDF / Word / PPT", "Emails", "Scientific Publications", "Reports / Spreadsheets"], icon: "●" },
+    { title: "Real-time Streams", items: ["IoT / Sensors (Manufacturing)", "Field Data / Wearables", "Clickstream / Web Events", "System Logs / Audit Events"], icon: "●" },
   ];
   sources.forEach((sc, i) => {
     const sy = 160 + i * 100;
@@ -97,11 +97,11 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("ingest_hdr", "<b style='font-size:8px;color:#FFFFFF;'>INGESTION LAYER</b>", 188, 130, 100, 24, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
   const ingestPods = [
-    { title: "APIs &\nConnectors", sub: "REST / SOAP /\nGraphQL", icon: "⚡" },
-    { title: "File Ingestion", sub: "SFTP / FTPS /\nBatch Upload", icon: "📁" },
-    { title: "Streaming\nIngestion", sub: "Pub/Sub\n(Real-time)", icon: "📡" },
-    { title: "CDC /\nReplication", sub: "Change Data\nCapture", icon: "🔄" },
-    { title: "Partner Gateway", sub: "Secure Partner\nData Exchange", icon: "🤝" },
+    { title: "APIs &\nConnectors", sub: "REST / SOAP /\nGraphQL", icon: "●" },
+    { title: "File Ingestion", sub: "SFTP / FTPS /\nBatch Upload", icon: "●" },
+    { title: "Streaming\nIngestion", sub: "Pub/Sub\n(Real-time)", icon: "●" },
+    { title: "CDC /\nReplication", sub: "Change Data\nCapture", icon: "●" },
+    { title: "Partner Gateway", sub: "Secure Partner\nData Exchange", icon: "●" },
   ];
   ingestPods.forEach((ip, i) => {
     const ipy = 160 + i * 100;
@@ -136,7 +136,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   text("proc_title", "<b>PROCESSING LAYER</b>", 422, 160, 120, 20, "fontSize=7.5;fontColor=#1E40AF;align=center;");
 
   const proc1Html = `<div style="text-align:center;padding:4px;">
-    <div style="display:flex;justify-content:center;gap:6px;"><span style="font-size:18px;">🌊</span><span style="font-size:18px;">⚙️</span></div>
+    <div style="display:flex;justify-content:center;gap:6px;"><span style="font-size:18px;"></span><span style="font-size:18px;"></span></div>
     <div style="font-size:8px;font-weight:800;color:#1E40AF;margin-top:3px;">Dataproc / Dataflow</div>
     <div style="font-size:7px;color:#475569;margin-top:8px;text-align:left;line-height:1.4;">
       &bull; Validation<br/>
@@ -149,7 +149,7 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("proc_pod_1", proc1Html, 428, 188, 108, 220, "rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;");
 
   const proc2Html = `<div style="text-align:center;padding:4px;">
-    <span style="font-size:22px;">🛡️</span>
+    <span style="font-size:22px;"></span>
     <div style="font-size:8px;font-weight:800;color:#1E40AF;margin-top:3px;">Data Quality</div>
     <div style="font-size:7px;color:#475569;margin-top:8px;text-align:left;line-height:1.4;">
       &bull; Rules Engine<br/>
@@ -163,13 +163,13 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("curated_frame", "", 548, 158, 150, 502, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;");
   text("curated_title", "<b>CURATED DATA LAYER</b>", 548, 160, 150, 20, "fontSize=7.5;fontColor=#6D28D9;align=center;");
 
-  const cur1Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🗄️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Curated Storage (Silver / Gold)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Optimized<br/>&bull; ACID Tables (Delta)<br/>&bull; Time Travel<br/>&bull; Z-Order / Partitioned</div></td></tr></table>`;
+  const cur1Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;"></span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Curated Storage (Silver / Gold)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Optimized<br/>&bull; ACID Tables (Delta)<br/>&bull; Time Travel<br/>&bull; Z-Order / Partitioned</div></td></tr></table>`;
   rect("cur_pod_1", cur1Html, 554, 186, 138, 134, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
-  const cur2Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">📑</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Master Data (MDM)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Reference Data<br/>&bull; Hierarchies</div></td></tr></table>`;
+  const cur2Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;"></span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Master Data (MDM)</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Reference Data<br/>&bull; Hierarchies</div></td></tr></table>`;
   rect("cur_pod_2", cur2Html, 554, 328, 138, 134, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
-  const cur3Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;">🕸️</span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Semantic Layer</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Business Models<br/>&bull; Metrics &amp; KPIs<br/>&bull; Data Marts</div></td></tr></table>`;
+  const cur3Html = `<table style="width:100%;height:100%;"><tr><td style="width:24px;vertical-align:top;padding-top:4px;"><span style="font-size:18px;"></span></td><td style="vertical-align:top;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#6D28D9;">Semantic Layer</div><div style="font-size:8px;color:#64748B;line-height:1.2;margin-top:2px;">&bull; Business Models<br/>&bull; Metrics &amp; KPIs<br/>&bull; Data Marts</div></td></tr></table>`;
   rect("cur_pod_3", cur3Html, 554, 470, 138, 182, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
 
   // 4. Serving Layer (x: 704 to 930)
@@ -177,11 +177,11 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   text("serv_title", "<b>SERVING LAYER</b>", 704, 160, 226, 20, "fontSize=7.5;fontColor=#0369A1;align=center;");
 
   const servItems = [
-    { title: "Data APIs", sub: "REST / GraphQL", icon: "⚡" },
-    { title: "Data Views", sub: "Lookups / Views (Materialized)", icon: "📊" },
-    { title: "Feature Store", sub: "AI / ML Features", icon: "✨" },
-    { title: "Search Index", sub: "Vertex AI Search (BigQuery Index)", icon: "🔍" },
-    { title: "Event Hub", sub: "Pub/Sub (Events)", icon: "📡" },
+    { title: "Data APIs", sub: "REST / GraphQL", icon: "●" },
+    { title: "Data Views", sub: "Lookups / Views (Materialized)", icon: "●" },
+    { title: "Feature Store", sub: "AI / ML Features", icon: "●" },
+    { title: "Search Index", sub: "Vertex AI Search (BigQuery Index)", icon: "●" },
+    { title: "Event Hub", sub: "Pub/Sub (Events)", icon: "●" },
   ];
   servItems.forEach((sv, i) => {
     const svy = 188 + i * 92;
@@ -196,11 +196,11 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("consumers_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>CONSUMERS</b>", 950, 130, 130, 24, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
   const consumers = [
-    { title: "Web & Mobile Apps", icon: "💻" },
-    { title: "Dashboards &\nBI (Looker)", icon: "📊" },
-    { title: "AI Agents & Apps", icon: "🤖" },
-    { title: "Notebooks &\nData Science", icon: "📓" },
-    { title: "Partner / External\nApplications", icon: "🌐" },
+    { title: "Web & Mobile Apps", icon: "●" },
+    { title: "Dashboards &\nBI (Looker)", icon: "●" },
+    { title: "AI Agents & Apps", icon: "●" },
+    { title: "Notebooks &\nData Science", icon: "●" },
+    { title: "Partner / External\nApplications", icon: "●" },
   ];
   consumers.forEach((cs, i) => {
     const csy = 162 + i * 100;
@@ -213,12 +213,12 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("outcomes_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>BUSINESS OUTCOMES</b>", 1090, 130, 450, 24, "rounded=0;fillColor=#15803D;strokeColor=#15803D;align=center;");
 
   const outcomes = [
-    { title: "Faster Decision Making", icon: "⏱️" },
-    { title: "Operational Efficiency", icon: "⚙️" },
-    { title: "Risk & Compliance", icon: "🛡️" },
-    { title: "Cost Optimization", icon: "💲" },
+    { title: "Faster Decision Making", icon: "⏱" },
+    { title: "Operational Efficiency", icon: "●" },
+    { title: "Risk & Compliance", icon: "●" },
+    { title: "Cost Optimization", icon: "●" },
     { title: "Better Patient Outcomes", icon: "🩺" },
-    { title: "Innovation & Growth", icon: "💡" },
+    { title: "Innovation & Growth", icon: "●" },
   ];
   outcomes.forEach((oc, i) => {
     const ocy = 165 + i * 82;
@@ -233,12 +233,12 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   text("cross_title", "<b>CROSS-CUTTING SERVICES</b>", 20, 682, 1520, 14, "fontSize=8;fontColor=#0369A1;align=center;");
 
   const crossServices = [
-    { title: "IAM & Security", sub: "AuthN / AuthZ (RBAC/ABAC)", icon: "👤" },
-    { title: "Encryption", sub: "In Transit & At Rest (KMS)", icon: "🔑" },
-    { title: "Data Catalog", sub: "Metadata Mgmt & Lineage", icon: "📑" },
-    { title: "Monitoring", sub: "Metrics / Logs / Traces", icon: "📈" },
-    { title: "Governance", sub: "Policies & Data Ownership", icon: "🏛️" },
-    { title: "Audit & Compliance", sub: "Audit Logs (Cloud Audit)", icon: "📊" },
+    { title: "IAM & Security", sub: "AuthN / AuthZ (RBAC/ABAC)", icon: "●" },
+    { title: "Encryption", sub: "In Transit & At Rest (KMS)", icon: "●" },
+    { title: "Data Catalog", sub: "Metadata Mgmt & Lineage", icon: "●" },
+    { title: "Monitoring", sub: "Metrics / Logs / Traces", icon: "●" },
+    { title: "Governance", sub: "Policies & Data Ownership", icon: "●" },
+    { title: "Audit & Compliance", sub: "Audit Logs (Cloud Audit)", icon: "●" },
   ];
   crossServices.forEach((cs, i) => {
     const csx = 28 + i * 252;
@@ -264,10 +264,10 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   text("dt_types_title", "<b>KEY DATA TYPES</b>", 610, 758, 320, 14, "fontSize=8.5;fontColor=#0F2A4A;align=center;");
 
   const dataTypes = [
-    { title: "Structured Data", sub: "(RDBMS, ERP, CRM)", icon: "🗄️" },
+    { title: "Structured Data", sub: "(RDBMS, ERP, CRM)", icon: "●" },
     { title: "Semi-structured Data", sub: "(JSON, XML, Logs)", icon: "{}" },
-    { title: "Unstructured Data", sub: "(Docs, PDFs, Images)", icon: "📄" },
-    { title: "Event / Streaming Data", sub: "(IoT, Clickstream, Logs)", icon: "📡" },
+    { title: "Unstructured Data", sub: "(Docs, PDFs, Images)", icon: "●" },
+    { title: "Event / Streaming Data", sub: "(IoT, Clickstream, Logs)", icon: "●" },
   ];
   dataTypes.forEach((dt, i) => {
     const row = Math.floor(i / 2);
@@ -283,14 +283,14 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   text("gcp_stack_title", "<b>TECHNOLOGY STACK (GOOGLE CLOUD)</b>", 940, 758, 600, 14, "fontSize=8.5;fontColor=#0369A1;align=center;");
 
   const gcpStack = [
-    { name: "Cloud Storage", icon: "🗄️" },
-    { name: "Dataproc", icon: "🌊" },
-    { name: "Dataflow", icon: "🌊" },
-    { name: "BigQuery", icon: "🔍" },
-    { name: "Pub/Sub", icon: "📡" },
-    { name: "Vertex AI", icon: "✨" },
-    { name: "Cloud Functions", icon: "⚡" },
-    { name: "Looker", icon: "📊" },
+    { name: "Cloud Storage", icon: "●" },
+    { name: "Dataproc", icon: "●" },
+    { name: "Dataflow", icon: "●" },
+    { name: "BigQuery", icon: "●" },
+    { name: "Pub/Sub", icon: "●" },
+    { name: "Vertex AI", icon: "●" },
+    { name: "Cloud Functions", icon: "●" },
+    { name: "Looker", icon: "●" },
   ];
   gcpStack.forEach((gs, i) => {
     const gsx = 948 + i * 74;

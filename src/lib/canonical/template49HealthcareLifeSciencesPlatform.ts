@@ -59,6 +59,17 @@ export function generateTemplate49HealthcareLifeSciencesPlatformXml(
     );
   };
 
+  const edge = (
+    id: string,
+    src: string,
+    trg: string,
+    style = "edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;endSize=5;"
+  ) => {
+    c.push(
+      `<mxCell id="${id}" edge="1" parent="1" source="${src}" target="${trg}" style="${style}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+    );
+  };
+
   const rawEdge = (
     id: string,
     style: string,
@@ -435,7 +446,7 @@ export function generateTemplate49HealthcareLifeSciencesPlatformXml(
     "Data-Driven Decisions at Scale",
     "Trust, Compliance &amp; Risk Reduction"
   ];
-  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:6.5px;color:#334155;line-height:1.1;"><span style="color:#6D28D9;">✓</span> ${o}</div>`).join("");
+  const outcomesHtml = outcomeList.map(o => `<div style="display:flex;align-items:center;gap:4px;font-size:6.5px;color:#334155;line-height:1.1;"><span style="color:#6D28D9;"></span> ${o}</div>`).join("");
   cell("outcomes_txt", outcomesHtml, 1176, 716, 250, 56, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const targetSvg = `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
@@ -508,6 +519,21 @@ export function generateTemplate49HealthcareLifeSciencesPlatformXml(
     const ic = svgIcon(ls.icon as keyof typeof SVG, "#6D28D9", 13);
     cell(`ft_ls_txt_${i}`, `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;">${ic}<div style="font-size:6.5px;font-weight:700;color:#6B21A8;text-align:center;line-height:1.1;">${ls.title}</div></div>`, lx, 804, 76, 74, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   });
+
+  // =========================================================================
+  // 5. ARCHITECTURAL FLOW CONNECTORS & LEGEND
+  // =========================================================================
+  edge("e_hcls_1_2", "t1_frame", "t2_frame", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_2_3", "t2_frame", "t3_frame", "strokeColor=#2563EB;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_3_4", "t3_frame", "t4_frame", "strokeColor=#0D9488;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_4_5", "t4_frame", "t5_frame", "strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_5_6", "t5_frame", "t6_frame", "strokeColor=#7C3AED;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_6_7", "t6_frame", "t7_frame", "strokeColor=#1D4ED8;strokeWidth=2;endArrow=classic;endSize=5;");
+  edge("e_hcls_5_8", "t5_frame", "t8_frame", "strokeColor=#6D28D9;strokeWidth=2;dashed=1;dashPattern=4 4;endArrow=classic;endSize=5;");
+  edge("e_hcls_6_out", "t6_frame", "outcomes_frame", "strokeColor=#059669;strokeWidth=2;endArrow=classic;endSize=5;");
+
+  // Architecture Legend Bar
+  cell("hcls_legend_bar", `<div style="display:flex;align-items:center;justify-content:space-between;font-size:8px;color:#475569;padding:0 8px;"><div><b>ARCHITECTURAL KEY &amp; LEGEND:</b> &nbsp; HL7/FHIR Ingestion &nbsp;|&nbsp; 🟢 Lakehouse Harmonization &nbsp;|&nbsp; 🟣 Med-PaLM &amp; Vertex AI &nbsp;|&nbsp; HIPAA Security &amp; Zero Trust</div><div>Status: Production Certified &nbsp;|&nbsp; Interoperability Standards: FHIR R4 / DICOM / OMOP &nbsp;|&nbsp; Compliance: HIPAA / GxP / FDA 21 CFR Part 11</div></div>`, 16, 894, 1504, 22, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;");
 
   return `<mxfile host="embed.diagrams.net">
   <diagram id="template_49" name="Healthcare &amp; Life Sciences Digital Platform">

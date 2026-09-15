@@ -46,7 +46,7 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
     ? "Core Architecture Family | Autonomous Multi-Tenant SaaS"
     : "Core Architecture Family | Enterprise Product";
 
-  const brandIcon = isRetail ? "🛒" : isFintech ? "💳" : isManufacturing ? "🏭" : isSaas ? "☁️" : "⚡";
+  const brandIcon = isRetail ? "●" : isFintech ? "●" : isManufacturing ? "●" : isSaas ? "●" : "●";
   const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isManufacturing ? "SYNACTIVE" : isSaas ? "AETHER" : "ENTERPRISE";
   const brandTagline = isRetail
     ? "Hyper-Scale Commerce. Intelligent Fulfillment."
@@ -90,57 +90,57 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const primaryUsers = isRetail
     ? [
-        { title: "Global\nShoppers", icon: "🛒" },
-        { title: "3P Marketplace\nMerchants", icon: "🏪" },
-        { title: "Warehouse\nLogistics", icon: "📦" },
-        { title: "Fraud & Risk\nSpecialists", icon: "🛡️" },
-        { title: "Catalog & SKU\nQA Teams", icon: "🏅" },
-        { title: "Customer\nSupport", icon: "🎧" },
-        { title: "E-Commerce\nAnalytics", icon: "📊" },
-        { title: "Platform\nAdmins", icon: "⚙️" },
+        { title: "Global\nShoppers", icon: "●" },
+        { title: "3P Marketplace\nMerchants", icon: "●" },
+        { title: "Warehouse\nLogistics", icon: "●" },
+        { title: "Fraud & Risk\nSpecialists", icon: "●" },
+        { title: "Catalog & SKU\nQA Teams", icon: "●" },
+        { title: "Customer\nSupport", icon: "●" },
+        { title: "E-Commerce\nAnalytics", icon: "●" },
+        { title: "Platform\nAdmins", icon: "●" },
       ]
     : isFintech
     ? [
-        { title: "Institutional\nTraders", icon: "💼" },
-        { title: "Retail\nInvestors", icon: "📱" },
-        { title: "Compliance &\nAML Officers", icon: "🛡️" },
-        { title: "Risk & Quant\nAnalysts", icon: "📈" },
-        { title: "Portfolio\nManagers", icon: "🏦" },
-        { title: "Custody &\nClearing Teams", icon: "🏛️" },
-        { title: "FinOps &\nSettlement Ops", icon: "📊" },
-        { title: "Platform\nAdmins", icon: "⚙️" },
+        { title: "Institutional\nTraders", icon: "●" },
+        { title: "Retail\nInvestors", icon: "●" },
+        { title: "Compliance &\nAML Officers", icon: "●" },
+        { title: "Risk & Quant\nAnalysts", icon: "●" },
+        { title: "Portfolio\nManagers", icon: "●" },
+        { title: "Custody &\nClearing Teams", icon: "●" },
+        { title: "FinOps &\nSettlement Ops", icon: "●" },
+        { title: "Platform\nAdmins", icon: "●" },
       ]
     : isManufacturing
     ? [
-        { title: "Fleet\nControllers", icon: "🛸" },
-        { title: "Drone Hub\nEngineers", icon: "🔧" },
-        { title: "Airspace\nOperators", icon: "🌐" },
-        { title: "Safety & FAA\nOfficers", icon: "🛡️" },
-        { title: "Maintenance\nCrew", icon: "🏅" },
-        { title: "Dispatch &\nRouting Ops", icon: "🎧" },
-        { title: "Telemetry\nAnalysts", icon: "📊" },
-        { title: "Platform\nAdmins", icon: "⚙️" },
+        { title: "Fleet\nControllers", icon: "●" },
+        { title: "Drone Hub\nEngineers", icon: "●" },
+        { title: "Airspace\nOperators", icon: "●" },
+        { title: "Safety & FAA\nOfficers", icon: "●" },
+        { title: "Maintenance\nCrew", icon: "●" },
+        { title: "Dispatch &\nRouting Ops", icon: "●" },
+        { title: "Telemetry\nAnalysts", icon: "●" },
+        { title: "Platform\nAdmins", icon: "●" },
       ]
     : isSaas
     ? [
-        { title: "Platform\nAdmins", icon: "⚙️" },
-        { title: "Workspace\nOwners", icon: "🏢" },
-        { title: "Tenant\nDevelopers", icon: "💻" },
-        { title: "Security &\nCompliance", icon: "🛡️" },
-        { title: "Billing &\nFinOps Ops", icon: "💳" },
-        { title: "Customer\nSuccess", icon: "🎧" },
-        { title: "SaaS Product\nAnalytics", icon: "📊" },
-        { title: "DevOps\nEngineers", icon: "🚀" },
+        { title: "Platform\nAdmins", icon: "●" },
+        { title: "Workspace\nOwners", icon: "●" },
+        { title: "Tenant\nDevelopers", icon: "●" },
+        { title: "Security &\nCompliance", icon: "●" },
+        { title: "Billing &\nFinOps Ops", icon: "●" },
+        { title: "Customer\nSuccess", icon: "●" },
+        { title: "SaaS Product\nAnalytics", icon: "●" },
+        { title: "DevOps\nEngineers", icon: "●" },
       ]
     : [
-        { title: "Research\nScientists", icon: "🔬" },
-        { title: "Clinical\nOperations", icon: "👥" },
-        { title: "Regulatory\nAffairs", icon: "📄" },
-        { title: "Safety/PV\nSpecialists", icon: "🛡️" },
-        { title: "Quality\nTeams", icon: "🏅" },
+        { title: "Research\nScientists", icon: "●" },
+        { title: "Clinical\nOperations", icon: "●" },
+        { title: "Regulatory\nAffairs", icon: "●" },
+        { title: "Safety/PV\nSpecialists", icon: "●" },
+        { title: "Quality\nTeams", icon: "●" },
         { title: "Medical\nAffairs", icon: "🩺" },
-        { title: "Commercial\nAnalytics", icon: "📊" },
-        { title: "Platform\nAdmins", icon: "⚙️" },
+        { title: "Commercial\nAnalytics", icon: "●" },
+        { title: "Platform\nAdmins", icon: "●" },
       ];
 
   primaryUsers.forEach((u, i) => {
@@ -157,52 +157,52 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const sorList = isRetail
     ? [
-        { title: "Enterprise Product Catalog", sub: "SKUs, Pricing,\nMedia Assets", icon: "📁" },
-        { title: "Warehouse WMS", sub: "Inventory, Bins,\nCross-Dock", icon: "📦" },
-        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "💳" },
-        { title: "SAP S/4HANA Supply Chain", sub: "Procurement, ERP,\nPO Tracking", icon: "🏢" },
-        { title: "Salesforce Commerce", sub: "Loyalty, Prime,\nCustomer CRM", icon: "☁️" },
-        { title: "Carrier Fleet & 3PL", sub: "FedEx, UPS,\nLast-Mile Routing", icon: "🚚" },
-        { title: "Customs & Tax Gateways", sub: "Avalara, Vertex,\nCross-Border Duties", icon: "🏛️" },
+        { title: "Enterprise Product Catalog", sub: "SKUs, Pricing,\nMedia Assets", icon: "●" },
+        { title: "Warehouse WMS", sub: "Inventory, Bins,\nCross-Dock", icon: "●" },
+        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "●" },
+        { title: "SAP S/4HANA Supply Chain", sub: "Procurement, ERP,\nPO Tracking", icon: "●" },
+        { title: "Salesforce Commerce", sub: "Loyalty, Prime,\nCustomer CRM", icon: "●" },
+        { title: "Carrier Fleet & 3PL", sub: "FedEx, UPS,\nLast-Mile Routing", icon: "●" },
+        { title: "Customs & Tax Gateways", sub: "Avalara, Vertex,\nCross-Border Duties", icon: "●" },
       ]
     : isFintech
     ? [
-        { title: "Bloomberg Core Feed", sub: "Tickers, Order Books,\nQuotes", icon: "📈" },
-        { title: "FIX Protocol 4.4 Engine", sub: "DMA, OMS Ingress,\nExecution Routing", icon: "⚡" },
-        { title: "Core Banking Ledger", sub: "Double-Entry, DDA,\nBalance Ledger", icon: "🗄️" },
-        { title: "Plaid Open Banking", sub: "ACH, Fast Transfers,\nAccount Linking", icon: "🏢" },
-        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "💳" },
-        { title: "FedNow / Swift Network", sub: "ISO 20022, Wire Rails,\nRTGS Settlement", icon: "🏛️" },
-        { title: "OFAC & FinCEN Watchlist", sub: "PEP Screening, Sanctions,\nSAR Filing", icon: "🛡️" },
+        { title: "Bloomberg Core Feed", sub: "Tickers, Order Books,\nQuotes", icon: "●" },
+        { title: "FIX Protocol 4.4 Engine", sub: "DMA, OMS Ingress,\nExecution Routing", icon: "●" },
+        { title: "Core Banking Ledger", sub: "Double-Entry, DDA,\nBalance Ledger", icon: "●" },
+        { title: "Plaid Open Banking", sub: "ACH, Fast Transfers,\nAccount Linking", icon: "●" },
+        { title: "Stripe / Adyen Vault", sub: "PCI CDE, Cards,\nWallets", icon: "●" },
+        { title: "FedNow / Swift Network", sub: "ISO 20022, Wire Rails,\nRTGS Settlement", icon: "●" },
+        { title: "OFAC & FinCEN Watchlist", sub: "PEP Screening, Sanctions,\nSAR Filing", icon: "●" },
       ]
     : isManufacturing
     ? [
-        { title: "SCADA PLCs / Sensors", sub: "Edge Telemetry,\nSensors, Motor RPM", icon: "⚙️" },
-        { title: "UTM Airspace Gateway", sub: "Corridors, ADS-B,\nAltitude Feeds", icon: "🌐" },
-        { title: "Flight Mission Blackbox", sub: "Flight Logs, Lat/Lon,\nBattery Health", icon: "🗄️" },
-        { title: "SAP Plant Maintenance", sub: "Spares, Asset Ledger,\nWork Orders", icon: "🏢" },
-        { title: "Weather Radar Feeds", sub: "NOAA, Wind Vectors,\nTurbulence Model", icon: "☁️" },
-        { title: "Vertiport Hub Stations", sub: "Pad Allocation,\nFast Charging Units", icon: "🛸" },
-        { title: "FAA / EASA Registries", sub: "Airworthiness Certs,\nRemote ID Tokens", icon: "🏛️" },
+        { title: "SCADA PLCs / Sensors", sub: "Edge Telemetry,\nSensors, Motor RPM", icon: "●" },
+        { title: "UTM Airspace Gateway", sub: "Corridors, ADS-B,\nAltitude Feeds", icon: "●" },
+        { title: "Flight Mission Blackbox", sub: "Flight Logs, Lat/Lon,\nBattery Health", icon: "●" },
+        { title: "SAP Plant Maintenance", sub: "Spares, Asset Ledger,\nWork Orders", icon: "●" },
+        { title: "Weather Radar Feeds", sub: "NOAA, Wind Vectors,\nTurbulence Model", icon: "●" },
+        { title: "Vertiport Hub Stations", sub: "Pad Allocation,\nFast Charging Units", icon: "●" },
+        { title: "FAA / EASA Registries", sub: "Airworthiness Certs,\nRemote ID Tokens", icon: "●" },
       ]
     : isSaas
     ? [
-        { title: "Stripe Billing & Meter", sub: "Usage Invoicing,\nCards, MRR Ledger", icon: "💳" },
-        { title: "Multi-Cloud K8s Mesh", sub: "GCP, AWS EKS,\nCluster Telemetry", icon: "☁️" },
-        { title: "Auth0 / Okta OIDC", sub: "SAML, SSO, MFA,\nTenant Identity", icon: "🔒" },
-        { title: "Salesforce CRM", sub: "Accounts, Deals,\nCSM Health Scores", icon: "🏢" },
-        { title: "HubSpot Marketing Hub", sub: "Leads, Events,\nEmail Campaigns", icon: "📊" },
-        { title: "Snowflake Usage Vault", sub: "Egress Analytics,\nQuery Log Lake", icon: "🗄️" },
-        { title: "Compliance Registry", sub: "SOC 2, ISO 27001,\nGDPR Evidence", icon: "🛡️" },
+        { title: "Stripe Billing & Meter", sub: "Usage Invoicing,\nCards, MRR Ledger", icon: "●" },
+        { title: "Multi-Cloud K8s Mesh", sub: "GCP, AWS EKS,\nCluster Telemetry", icon: "●" },
+        { title: "Auth0 / Okta OIDC", sub: "SAML, SSO, MFA,\nTenant Identity", icon: "●" },
+        { title: "Salesforce CRM", sub: "Accounts, Deals,\nCSM Health Scores", icon: "●" },
+        { title: "HubSpot Marketing Hub", sub: "Leads, Events,\nEmail Campaigns", icon: "●" },
+        { title: "Snowflake Usage Vault", sub: "Egress Analytics,\nQuery Log Lake", icon: "●" },
+        { title: "Compliance Registry", sub: "SOC 2, ISO 27001,\nGDPR Evidence", icon: "●" },
       ]
     : [
-        { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "📁" },
-        { title: "CTMS / Medidata Rave", sub: "Clinical Trials,\nSubject Data", icon: "👥" },
-        { title: "Argus Safety", sub: "Safety Cases,\nICSRs, Signals", icon: "🛡️" },
-        { title: "SAP S/4HANA", sub: "Finance, Supply Chain,\nProcurement", icon: "🏢" },
-        { title: "Salesforce Health Cloud", sub: "HCP Engagement,\nPatient Insights", icon: "☁️" },
-        { title: "Laboratory / LIMS", sub: "Lab Data, Results,\nCertificates", icon: "⚗️" },
-        { title: "Regulatory Gateways", sub: "eSubmissions, Queries,\nResponses", icon: "🏛️" },
+        { title: "Veeva Vault", sub: "Documents, Quality,\nRegistrations", icon: "●" },
+        { title: "CTMS / Medidata Rave", sub: "Clinical Trials,\nSubject Data", icon: "●" },
+        { title: "Argus Safety", sub: "Safety Cases,\nICSRs, Signals", icon: "●" },
+        { title: "SAP S/4HANA", sub: "Finance, Supply Chain,\nProcurement", icon: "●" },
+        { title: "Salesforce Health Cloud", sub: "HCP Engagement,\nPatient Insights", icon: "●" },
+        { title: "Laboratory / LIMS", sub: "Lab Data, Results,\nCertificates", icon: "●" },
+        { title: "Regulatory Gateways", sub: "eSubmissions, Queries,\nResponses", icon: "●" },
       ];
 
   sorList.forEach((s, i) => {
@@ -240,10 +240,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#1E3A8A",
           items: [
-            { title: "Next.js Storefront /\nMobile iOS App", icon: "🌐" },
-            { title: "Merchant Seller\nCentral Dashboard", icon: "📊" },
-            { title: "Customer Order\nTracking & Alerts", icon: "🔔" },
-            { title: "GraphQL API &\nPartner Ingress", icon: "⚡" },
+            { title: "Next.js Storefront /\nMobile iOS App", icon: "●" },
+            { title: "Merchant Seller\nCentral Dashboard", icon: "●" },
+            { title: "Customer Order\nTracking & Alerts", icon: "●" },
+            { title: "GraphQL API &\nPartner Ingress", icon: "●" },
           ]
         },
         {
@@ -253,11 +253,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 68,
           color: "#1E40AF",
           items: [
-            { title: "Temporal Order\nSaga Orchestrator", icon: "🔄" },
-            { title: "Dynamic Pricing &\nPromotion Rules", icon: "⚙️" },
-            { title: "Returns & Dispute\nWorkflow Service", icon: "📋" },
-            { title: "Fulfillment &\nCarrier Router", icon: "📦" },
-            { title: "Fraud Assessment\nPipeline Service", icon: "🛡️" },
+            { title: "Temporal Order\nSaga Orchestrator", icon: "●" },
+            { title: "Dynamic Pricing &\nPromotion Rules", icon: "●" },
+            { title: "Returns & Dispute\nWorkflow Service", icon: "●" },
+            { title: "Fulfillment &\nCarrier Router", icon: "●" },
+            { title: "Fraud Assessment\nPipeline Service", icon: "●" },
           ]
         },
         {
@@ -267,12 +267,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0369A1",
           items: [
-            { title: "Product & SKU\nCatalog Service", icon: "📁" },
-            { title: "Shopping Cart &\nSession Mesh", icon: "🛒" },
-            { title: "Order Management\nSystem (OMS)", icon: "📑" },
-            { title: "Inventory Allocation\n& WMS Hold Engine", icon: "📦" },
-            { title: "Payment Vault &\nSettlement Gateway", icon: "💳" },
-            { title: "Customer Profile &\nLoyalty Service", icon: "👤" },
+            { title: "Product & SKU\nCatalog Service", icon: "●" },
+            { title: "Shopping Cart &\nSession Mesh", icon: "●" },
+            { title: "Order Management\nSystem (OMS)", icon: "●" },
+            { title: "Inventory Allocation\n& WMS Hold Engine", icon: "●" },
+            { title: "Payment Vault &\nSettlement Gateway", icon: "●" },
+            { title: "Customer Profile &\nLoyalty Service", icon: "●" },
           ]
         },
         {
@@ -282,11 +282,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0284C7",
           items: [
-            { title: "Vertex AI Product\nRecommender Engine", icon: "🧠" },
-            { title: "OpenSearch Semantic\nCatalog Search", icon: "🔍" },
-            { title: "Dynamic Real-Time\nPricing Optimizer", icon: "🏷️" },
-            { title: "Fraud & Anomaly\nDetection ML", icon: "🛡️" },
-            { title: "Conversational AI\nShopping Assistant", icon: "💬" },
+            { title: "Vertex AI Product\nRecommender Engine", icon: "●" },
+            { title: "OpenSearch Semantic\nCatalog Search", icon: "●" },
+            { title: "Dynamic Real-Time\nPricing Optimizer", icon: "●" },
+            { title: "Fraud & Anomaly\nDetection ML", icon: "●" },
+            { title: "Conversational AI\nShopping Assistant", icon: "●" },
           ]
         },
         {
@@ -296,11 +296,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#0D9488",
           items: [
-            { title: "Kafka Real-Time\nEvent Streaming Bus", icon: "⚡" },
-            { title: "BigQuery Enterprise\nData Lakehouse", icon: "🗄️" },
-            { title: "Search Index\nCDC Pipeline", icon: "🔄" },
-            { title: "Real-Time GMV &\nSales Analytics", icon: "📊" },
-            { title: "Customer Data\nPlatform (CDP)", icon: "👥" },
+            { title: "Kafka Real-Time\nEvent Streaming Bus", icon: "●" },
+            { title: "BigQuery Enterprise\nData Lakehouse", icon: "●" },
+            { title: "Search Index\nCDC Pipeline", icon: "●" },
+            { title: "Real-Time GMV &\nSales Analytics", icon: "●" },
+            { title: "Customer Data\nPlatform (CDP)", icon: "●" },
           ]
         },
         {
@@ -310,11 +310,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 64,
           color: "#0F766E",
           items: [
-            { title: "Apigee API Gateway\n& Rate Limiter", icon: "🌐" },
-            { title: "Cloud Identity &\nOAuth2/OIDC Auth", icon: "🔒" },
-            { title: "OpenTelemetry APM\n& Cloud Logging", icon: "📊" },
-            { title: "Vault Secrets &\nPCI Tokenization", icon: "🛡️" },
-            { title: "GitOps CI/CD &\nArgoCD Deployer", icon: "🚀" },
+            { title: "Apigee API Gateway\n& Rate Limiter", icon: "●" },
+            { title: "Cloud Identity &\nOAuth2/OIDC Auth", icon: "●" },
+            { title: "OpenTelemetry APM\n& Cloud Logging", icon: "●" },
+            { title: "Vault Secrets &\nPCI Tokenization", icon: "●" },
+            { title: "GitOps CI/CD &\nArgoCD Deployer", icon: "●" },
           ]
         },
         {
@@ -324,11 +324,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 60,
           color: "#047857",
           items: [
-            { title: "GKE Multi-AZ\nKubernetes Mesh", icon: "☁️" },
-            { title: "Cloud Storage CDN\n& Media Bucket", icon: "📦" },
-            { title: "Cloud Spanner Multi-\nRegion Database", icon: "🗄️" },
-            { title: "Memorystore Redis\nDistributed Cache", icon: "⚡" },
-            { title: "Cloud Armor DDoS\n& WAF Security", icon: "🛡️" },
+            { title: "GKE Multi-AZ\nKubernetes Mesh", icon: "●" },
+            { title: "Cloud Storage CDN\n& Media Bucket", icon: "●" },
+            { title: "Cloud Spanner Multi-\nRegion Database", icon: "●" },
+            { title: "Memorystore Redis\nDistributed Cache", icon: "●" },
+            { title: "Cloud Armor DDoS\n& WAF Security", icon: "●" },
           ]
         }
       ]
@@ -341,10 +341,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#1E3A8A",
           items: [
-            { title: "Trader Web Terminal /\nMobile FinApp", icon: "🌐" },
-            { title: "Wealth Management\nAdvisor Dashboard", icon: "📊" },
-            { title: "Real-Time Market\nAlerts & Notifications", icon: "🔔" },
-            { title: "FIX Protocol & High-Speed\nREST/gRPC Ingress", icon: "⚡" },
+            { title: "Trader Web Terminal /\nMobile FinApp", icon: "●" },
+            { title: "Wealth Management\nAdvisor Dashboard", icon: "●" },
+            { title: "Real-Time Market\nAlerts & Notifications", icon: "●" },
+            { title: "FIX Protocol & High-Speed\nREST/gRPC Ingress", icon: "●" },
           ]
         },
         {
@@ -354,11 +354,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 68,
           color: "#1E40AF",
           items: [
-            { title: "Payment Saga &\n2PC Orchestrator", icon: "🔄" },
-            { title: "Sub-Millisecond Pre-Trade\nRisk Rules Engine", icon: "⚙️" },
-            { title: "Automated SAR Filing &\nAML Investigation", icon: "📋" },
-            { title: "Smart Order Router (SOR)\n& Execution Allocator", icon: "📄" },
-            { title: "Custody & Escrow\nSettlement Pipeline", icon: "🛡️" },
+            { title: "Payment Saga &\n2PC Orchestrator", icon: "●" },
+            { title: "Sub-Millisecond Pre-Trade\nRisk Rules Engine", icon: "●" },
+            { title: "Automated SAR Filing &\nAML Investigation", icon: "●" },
+            { title: "Smart Order Router (SOR)\n& Execution Allocator", icon: "●" },
+            { title: "Custody & Escrow\nSettlement Pipeline", icon: "●" },
           ]
         },
         {
@@ -368,12 +368,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0369A1",
           items: [
-            { title: "Trade Order Matching\n& Execution Engine", icon: "⚡" },
-            { title: "Double-Entry General\nLedger (Spanner)", icon: "🗄️" },
-            { title: "Portfolio Valuation &\nReal-Time P&L Engine", icon: "📊" },
-            { title: "Payment Vault & ISO\n20022 Swift Router", icon: "💳" },
-            { title: "AML & OFAC Sanctions\nScreening Service", icon: "🛡️" },
-            { title: "Account & Margin\nManagement Service", icon: "👤" },
+            { title: "Trade Order Matching\n& Execution Engine", icon: "●" },
+            { title: "Double-Entry General\nLedger (Spanner)", icon: "●" },
+            { title: "Portfolio Valuation &\nReal-Time P&L Engine", icon: "●" },
+            { title: "Payment Vault & ISO\n20022 Swift Router", icon: "●" },
+            { title: "AML & OFAC Sanctions\nScreening Service", icon: "●" },
+            { title: "Account & Margin\nManagement Service", icon: "●" },
           ]
         },
         {
@@ -383,11 +383,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0284C7",
           items: [
-            { title: "Vertex AI Real-Time\nFraud Anomaly ML", icon: "🧠" },
-            { title: "Graph Neural Network\nfor Money Mules", icon: "🤖" },
-            { title: "Algorithmic Market\nRegime Classifier", icon: "📈" },
-            { title: "Sub-Millisecond Volatility\n& VaR Predictor", icon: "💡" },
-            { title: "Conversational Wealth\nAI Copilot Assistant", icon: "💬" },
+            { title: "Vertex AI Real-Time\nFraud Anomaly ML", icon: "●" },
+            { title: "Graph Neural Network\nfor Money Mules", icon: "●" },
+            { title: "Algorithmic Market\nRegime Classifier", icon: "●" },
+            { title: "Sub-Millisecond Volatility\n& VaR Predictor", icon: "●" },
+            { title: "Conversational Wealth\nAI Copilot Assistant", icon: "●" },
           ]
         },
         {
@@ -397,11 +397,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#0D9488",
           items: [
-            { title: "Kafka / Flink Real-Time\nEvent Stream Mesh", icon: "⚡" },
-            { title: "BigQuery Financial\nData Lakehouse", icon: "🗄️" },
-            { title: "Real-Time Ticks &\nOrder Book CDC", icon: "🔄" },
-            { title: "Real-Time P&L, Risk\n& Exposure Telemetry", icon: "📊" },
-            { title: "Audit Vault & Immutable\nTransaction Ledger", icon: "🛡️" },
+            { title: "Kafka / Flink Real-Time\nEvent Stream Mesh", icon: "●" },
+            { title: "BigQuery Financial\nData Lakehouse", icon: "●" },
+            { title: "Real-Time Ticks &\nOrder Book CDC", icon: "●" },
+            { title: "Real-Time P&L, Risk\n& Exposure Telemetry", icon: "●" },
+            { title: "Audit Vault & Immutable\nTransaction Ledger", icon: "●" },
           ]
         },
         {
@@ -411,11 +411,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 64,
           color: "#0F766E",
           items: [
-            { title: "Apigee mTLS API Gateway\n& Token Vault", icon: "🌐" },
-            { title: "Cloud Identity &\nHSM Key Management", icon: "🔒" },
-            { title: "SEC 15c3-5 Compliance &\nAudit Observability", icon: "📊" },
-            { title: "Core Banking & Clearing\nHouse Adapters", icon: "🔌" },
-            { title: "Zero-Trust Network &\nPCI Tokenizer", icon: "🔑" },
+            { title: "Apigee mTLS API Gateway\n& Token Vault", icon: "●" },
+            { title: "Cloud Identity &\nHSM Key Management", icon: "●" },
+            { title: "SEC 15c3-5 Compliance &\nAudit Observability", icon: "●" },
+            { title: "Core Banking & Clearing\nHouse Adapters", icon: "●" },
+            { title: "Zero-Trust Network &\nPCI Tokenizer", icon: "●" },
           ]
         },
         {
@@ -425,11 +425,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 60,
           color: "#047857",
           items: [
-            { title: "GKE Ultra-Low Latency\nKubernetes Mesh", icon: "☁️" },
-            { title: "Cloud Spanner Multi-Region\nActive-Active Ledger", icon: "🗄️" },
-            { title: "Memorystore Redis\nSub-ms Risk Cache", icon: "⚡" },
-            { title: "Cloud Armor DDoS &\nFinTech WAF Perimeter", icon: "🛡️" },
-            { title: "Multi-Region Failover &\nHot-Standby Node", icon: "🔄" },
+            { title: "GKE Ultra-Low Latency\nKubernetes Mesh", icon: "●" },
+            { title: "Cloud Spanner Multi-Region\nActive-Active Ledger", icon: "●" },
+            { title: "Memorystore Redis\nSub-ms Risk Cache", icon: "●" },
+            { title: "Cloud Armor DDoS &\nFinTech WAF Perimeter", icon: "●" },
+            { title: "Multi-Region Failover &\nHot-Standby Node", icon: "●" },
           ]
         }
       ]
@@ -442,10 +442,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#1E3A8A",
           items: [
-            { title: "Flight Operations UI /\nMobile Field App", icon: "🌐" },
-            { title: "Fleet Telemetry &\nStatus Dashboard", icon: "📊" },
-            { title: "Waypoint Dispatch &\nCollision Alerts", icon: "🔔" },
-            { title: "gRPC & MQTT Ingress\nfor Drone Nodes", icon: "⚡" },
+            { title: "Flight Operations UI /\nMobile Field App", icon: "●" },
+            { title: "Fleet Telemetry &\nStatus Dashboard", icon: "●" },
+            { title: "Waypoint Dispatch &\nCollision Alerts", icon: "●" },
+            { title: "gRPC & MQTT Ingress\nfor Drone Nodes", icon: "●" },
           ]
         },
         {
@@ -455,11 +455,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 68,
           color: "#1E40AF",
           items: [
-            { title: "Mission Saga &\nWaypoint Orchestrator", icon: "🔄" },
-            { title: "Airspace Conflict &\nCorridor Rules Engine", icon: "⚙️" },
-            { title: "Auto-RTH & Emergency\nSafety Interlock", icon: "📋" },
-            { title: "Vertiport Pad &\nCharger Router", icon: "🛸" },
-            { title: "Geofence Enforcement\nPipeline Service", icon: "🛡️" },
+            { title: "Mission Saga &\nWaypoint Orchestrator", icon: "●" },
+            { title: "Airspace Conflict &\nCorridor Rules Engine", icon: "●" },
+            { title: "Auto-RTH & Emergency\nSafety Interlock", icon: "●" },
+            { title: "Vertiport Pad &\nCharger Router", icon: "●" },
+            { title: "Geofence Enforcement\nPipeline Service", icon: "●" },
           ]
         },
         {
@@ -469,12 +469,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0369A1",
           items: [
-            { title: "Drone Fleet Registry\n& OTA Firmware Mesh", icon: "🛸" },
-            { title: "Battery Health &\nCharging State Service", icon: "⚡" },
-            { title: "Flight Path Vector\n& ADS-B Tracker", icon: "📊" },
-            { title: "SCADA & Telemetry\nIngestion Streamer", icon: "⚙️" },
-            { title: "Airspace Policy &\nFAA Guard Service", icon: "🛡️" },
-            { title: "Operator Roster &\nShift Manager", icon: "👤" },
+            { title: "Drone Fleet Registry\n& OTA Firmware Mesh", icon: "●" },
+            { title: "Battery Health &\nCharging State Service", icon: "●" },
+            { title: "Flight Path Vector\n& ADS-B Tracker", icon: "●" },
+            { title: "SCADA & Telemetry\nIngestion Streamer", icon: "●" },
+            { title: "Airspace Policy &\nFAA Guard Service", icon: "●" },
+            { title: "Operator Roster &\nShift Manager", icon: "●" },
           ]
         },
         {
@@ -484,11 +484,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0284C7",
           items: [
-            { title: "Vertex AI Collision\nAvoidance ML", icon: "🧠" },
-            { title: "Wind Vector &\nTurbulence Predictor", icon: "🤖" },
-            { title: "Battery Degradation\n& Range AI Model", icon: "📈" },
-            { title: "Autonomous Flight Plan\nOptimizer Engine", icon: "💡" },
-            { title: "Conversational Fleet\nCopilot Assistant", icon: "💬" },
+            { title: "Vertex AI Collision\nAvoidance ML", icon: "●" },
+            { title: "Wind Vector &\nTurbulence Predictor", icon: "●" },
+            { title: "Battery Degradation\n& Range AI Model", icon: "●" },
+            { title: "Autonomous Flight Plan\nOptimizer Engine", icon: "●" },
+            { title: "Conversational Fleet\nCopilot Assistant", icon: "●" },
           ]
         },
         {
@@ -498,11 +498,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#0D9488",
           items: [
-            { title: "Kafka / MQTT Real-Time\nTelemetry Stream", icon: "⚡" },
-            { title: "BigQuery Industrial\nData Lakehouse", icon: "🗄️" },
-            { title: "Spatial GIS Index &\nAltitude CDC Pipeline", icon: "🔄" },
-            { title: "Real-Time Fleet Latency\n& Motor RPM Telemetry", icon: "📊" },
-            { title: "Flight Blackbox Ledger\n& Tamper-Proof Logs", icon: "🛡️" },
+            { title: "Kafka / MQTT Real-Time\nTelemetry Stream", icon: "●" },
+            { title: "BigQuery Industrial\nData Lakehouse", icon: "●" },
+            { title: "Spatial GIS Index &\nAltitude CDC Pipeline", icon: "●" },
+            { title: "Real-Time Fleet Latency\n& Motor RPM Telemetry", icon: "●" },
+            { title: "Flight Blackbox Ledger\n& Tamper-Proof Logs", icon: "●" },
           ]
         },
         {
@@ -512,11 +512,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 64,
           color: "#0F766E",
           items: [
-            { title: "Apigee mTLS Drone Gateway\n& Device Token Vault", icon: "🌐" },
-            { title: "KMS Remote ID &\nDevice Hardware TPM", icon: "🔒" },
-            { title: "FAA Part 107 Compliance\n& Audit Telemetry", icon: "📊" },
-            { title: "SCADA Modbus & PLC\nHardware Adapters", icon: "🔌" },
-            { title: "Zero-Trust Firmware &\nOTA Image Signer", icon: "🔑" },
+            { title: "Apigee mTLS Drone Gateway\n& Device Token Vault", icon: "●" },
+            { title: "KMS Remote ID &\nDevice Hardware TPM", icon: "●" },
+            { title: "FAA Part 107 Compliance\n& Audit Telemetry", icon: "●" },
+            { title: "SCADA Modbus & PLC\nHardware Adapters", icon: "●" },
+            { title: "Zero-Trust Firmware &\nOTA Image Signer", icon: "●" },
           ]
         },
         {
@@ -526,11 +526,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 60,
           color: "#047857",
           items: [
-            { title: "GKE Low-Latency Edge\nKubernetes Mesh", icon: "☁️" },
-            { title: "Cloud Spanner Multi-Region\nMission Database", icon: "🗄️" },
-            { title: "Memorystore Redis\nSub-ms GPS Cache", icon: "⚡" },
-            { title: "Cloud Armor DDoS &\nDrone WAF Perimeter", icon: "🛡️" },
-            { title: "Multi-Hub Failover &\nHot-Standby Node", icon: "🔄" },
+            { title: "GKE Low-Latency Edge\nKubernetes Mesh", icon: "●" },
+            { title: "Cloud Spanner Multi-Region\nMission Database", icon: "●" },
+            { title: "Memorystore Redis\nSub-ms GPS Cache", icon: "●" },
+            { title: "Cloud Armor DDoS &\nDrone WAF Perimeter", icon: "●" },
+            { title: "Multi-Hub Failover &\nHot-Standby Node", icon: "●" },
           ]
         }
       ]
@@ -543,10 +543,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#1E3A8A",
           items: [
-            { title: "Multi-Tenant Web Console\n/ Developer Portal", icon: "🌐" },
-            { title: "Tenant Admin &\nWorkspace Dashboard", icon: "📊" },
-            { title: "Usage Quota Alerts &\nSystem Notifications", icon: "🔔" },
-            { title: "GraphQL & REST Ingress\nGateway Mesh", icon: "⚡" },
+            { title: "Multi-Tenant Web Console\n/ Developer Portal", icon: "●" },
+            { title: "Tenant Admin &\nWorkspace Dashboard", icon: "●" },
+            { title: "Usage Quota Alerts &\nSystem Notifications", icon: "●" },
+            { title: "GraphQL & REST Ingress\nGateway Mesh", icon: "●" },
           ]
         },
         {
@@ -556,11 +556,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 68,
           color: "#1E40AF",
           items: [
-            { title: "Tenant Provisioning\nSaga Orchestrator", icon: "🔄" },
-            { title: "Dynamic Rate Limiting\n& QPS Rules Engine", icon: "⚙️" },
-            { title: "Subscription Renewal &\nBilling Workflow", icon: "📋" },
-            { title: "Tenant Shard Router &\nDatabase Allocator", icon: "🏢" },
-            { title: "Quota Breach Mitigation\nPipeline Service", icon: "🛡️" },
+            { title: "Tenant Provisioning\nSaga Orchestrator", icon: "●" },
+            { title: "Dynamic Rate Limiting\n& QPS Rules Engine", icon: "●" },
+            { title: "Subscription Renewal &\nBilling Workflow", icon: "●" },
+            { title: "Tenant Shard Router &\nDatabase Allocator", icon: "●" },
+            { title: "Quota Breach Mitigation\nPipeline Service", icon: "●" },
           ]
         },
         {
@@ -570,12 +570,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0369A1",
           items: [
-            { title: "Tenant Registry &\nOrganization Service", icon: "🏢" },
-            { title: "Workspace RBAC &\nAccess Engine", icon: "🔒" },
-            { title: "API Key Vault &\nToken Quota Mesh", icon: "🔑" },
-            { title: "Usage Invoicing &\nStripe Metering Core", icon: "💳" },
-            { title: "Compliance & Audit\nLogging Service", icon: "🛡️" },
-            { title: "User Roster & Team\nProvisioning Service", icon: "👤" },
+            { title: "Tenant Registry &\nOrganization Service", icon: "●" },
+            { title: "Workspace RBAC &\nAccess Engine", icon: "●" },
+            { title: "API Key Vault &\nToken Quota Mesh", icon: "●" },
+            { title: "Usage Invoicing &\nStripe Metering Core", icon: "●" },
+            { title: "Compliance & Audit\nLogging Service", icon: "●" },
+            { title: "User Roster & Team\nProvisioning Service", icon: "●" },
           ]
         },
         {
@@ -585,11 +585,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0284C7",
           items: [
-            { title: "Vertex AI Tenant\nCopilot Framework", icon: "🧠" },
-            { title: "Semantic Log Search\n& Anomaly Detector", icon: "🤖" },
-            { title: "Predictive Churn &\nSeat Expansion AI", icon: "📈" },
-            { title: "Adaptive Rate Limit\nOptimizer Engine", icon: "💡" },
-            { title: "Conversational Admin\nAI Assistant", icon: "💬" },
+            { title: "Vertex AI Tenant\nCopilot Framework", icon: "●" },
+            { title: "Semantic Log Search\n& Anomaly Detector", icon: "●" },
+            { title: "Predictive Churn &\nSeat Expansion AI", icon: "●" },
+            { title: "Adaptive Rate Limit\nOptimizer Engine", icon: "●" },
+            { title: "Conversational Admin\nAI Assistant", icon: "●" },
           ]
         },
         {
@@ -599,11 +599,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#0D9488",
           items: [
-            { title: "Kafka Multi-Tenant\nEvent Streaming Bus", icon: "⚡" },
-            { title: "BigQuery Enterprise\nSaaS Lakehouse", icon: "🗄️" },
-            { title: "Tenant Isolation CDC\n& Replication Bus", icon: "🔄" },
-            { title: "Real-Time MRR, QPS\n& Latency Telemetry", icon: "📊" },
-            { title: "Audit Trail Vault &\nImmutable Event Log", icon: "🛡️" },
+            { title: "Kafka Multi-Tenant\nEvent Streaming Bus", icon: "●" },
+            { title: "BigQuery Enterprise\nSaaS Lakehouse", icon: "●" },
+            { title: "Tenant Isolation CDC\n& Replication Bus", icon: "●" },
+            { title: "Real-Time MRR, QPS\n& Latency Telemetry", icon: "●" },
+            { title: "Audit Trail Vault &\nImmutable Event Log", icon: "●" },
           ]
         },
         {
@@ -613,11 +613,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 64,
           color: "#0F766E",
           items: [
-            { title: "Apigee API Gateway\n& Rate Limiter Mesh", icon: "🌐" },
-            { title: "Cloud Identity & OIDC\nTenant Key Vault", icon: "🔒" },
-            { title: "SOC 2 Type II & GDPR\nAudit Observability", icon: "📊" },
-            { title: "Third-Party SaaS\nWebhook Connectors", icon: "🔌" },
-            { title: "Zero-Trust Encryption\n& Shard Tokenizer", icon: "🔑" },
+            { title: "Apigee API Gateway\n& Rate Limiter Mesh", icon: "●" },
+            { title: "Cloud Identity & OIDC\nTenant Key Vault", icon: "●" },
+            { title: "SOC 2 Type II & GDPR\nAudit Observability", icon: "●" },
+            { title: "Third-Party SaaS\nWebhook Connectors", icon: "●" },
+            { title: "Zero-Trust Encryption\n& Shard Tokenizer", icon: "●" },
           ]
         },
         {
@@ -627,11 +627,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 60,
           color: "#047857",
           items: [
-            { title: "GKE Multi-Tenant\nKubernetes Mesh", icon: "☁️" },
-            { title: "Cloud Spanner Sharded\nMulti-Region Database", icon: "🗄️" },
-            { title: "Memorystore Redis\nDistributed Token Cache", icon: "⚡" },
-            { title: "Cloud Armor DDoS &\nWAF Enterprise Shield", icon: "🛡️" },
-            { title: "Multi-Region Active-Active\nHigh Availability", icon: "🔄" },
+            { title: "GKE Multi-Tenant\nKubernetes Mesh", icon: "●" },
+            { title: "Cloud Spanner Sharded\nMulti-Region Database", icon: "●" },
+            { title: "Memorystore Redis\nDistributed Token Cache", icon: "●" },
+            { title: "Cloud Armor DDoS &\nWAF Enterprise Shield", icon: "●" },
+            { title: "Multi-Region Active-Active\nHigh Availability", icon: "●" },
           ]
         }
       ]
@@ -643,10 +643,10 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#1E3A8A",
           items: [
-            { title: "Web Portal /\nWorkspace UI", icon: "🌐" },
-            { title: "Role-Based\nDashboards", icon: "📊" },
-            { title: "Task Inbox &\nNotifications", icon: "🔔" },
-            { title: "API / Partner\nAccess Channel", icon: "⚡" },
+            { title: "Web Portal /\nWorkspace UI", icon: "●" },
+            { title: "Role-Based\nDashboards", icon: "●" },
+            { title: "Task Inbox &\nNotifications", icon: "●" },
+            { title: "API / Partner\nAccess Channel", icon: "●" },
           ]
         },
         {
@@ -656,11 +656,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 68,
           color: "#1E40AF",
           items: [
-            { title: "Workflow\nOrchestrator", icon: "🔄" },
-            { title: "Business Rules\nEngine", icon: "⚙️" },
-            { title: "Case / Task\nManagement Service", icon: "📋" },
-            { title: "Submission\nOrchestration Service", icon: "📄" },
-            { title: "CAPA / Quality\nWorkflow Service", icon: "🛡️" },
+            { title: "Workflow\nOrchestrator", icon: "●" },
+            { title: "Business Rules\nEngine", icon: "●" },
+            { title: "Case / Task\nManagement Service", icon: "●" },
+            { title: "Submission\nOrchestration Service", icon: "●" },
+            { title: "CAPA / Quality\nWorkflow Service", icon: "●" },
           ]
         },
         {
@@ -670,12 +670,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0369A1",
           items: [
-            { title: "R&D / Clinical\nStudy Service", icon: "🔬" },
-            { title: "Regulatory Operations\n& Submissions", icon: "📄" },
-            { title: "Safety & Pharmacovigilance\nService", icon: "🛡️" },
-            { title: "Quality & Compliance\nManagement Service", icon: "🏅" },
+            { title: "R&D / Clinical\nStudy Service", icon: "●" },
+            { title: "Regulatory Operations\n& Submissions", icon: "●" },
+            { title: "Safety & Pharmacovigilance\nService", icon: "●" },
+            { title: "Quality & Compliance\nManagement Service", icon: "●" },
             { title: "Medical Affairs &\nMSL Service", icon: "🩺" },
-            { title: "Supply Chain &\nSerialization", icon: "📦" },
+            { title: "Supply Chain &\nSerialization", icon: "●" },
           ]
         },
         {
@@ -685,11 +685,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 70,
           color: "#0284C7",
           items: [
-            { title: "Vertex AI LLM\nFoundation Service", icon: "🧠" },
-            { title: "Domain Specific\nAgents Framework", icon: "🤖" },
-            { title: "Document Intelligence\n& Extraction Service", icon: "📄" },
-            { title: "Regulatory Intelligence\n& Insights Service", icon: "💡" },
-            { title: "Safety Signal Detection\n& Prediction Engine", icon: "📈" },
+            { title: "Vertex AI LLM\nFoundation Service", icon: "●" },
+            { title: "Domain Specific\nAgents Framework", icon: "●" },
+            { title: "Document Intelligence\n& Extraction Service", icon: "●" },
+            { title: "Regulatory Intelligence\n& Insights Service", icon: "●" },
+            { title: "Safety Signal Detection\n& Prediction Engine", icon: "●" },
           ]
         },
         {
@@ -699,11 +699,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 66,
           color: "#0D9488",
           items: [
-            { title: "Enterprise Knowledge\nGraph & Ontologies", icon: "🔗" },
-            { title: "Vector Database &\nSemantic Search", icon: "🔍" },
-            { title: "Clinical Data\nRepository (CDR)", icon: "🗄️" },
-            { title: "Data Lakehouse &\nAnalytics Engine", icon: "📊" },
-            { title: "Data Governance &\nLineage Service", icon: "🛡️" },
+            { title: "Enterprise Knowledge\nGraph & Ontologies", icon: "●" },
+            { title: "Vector Database &\nSemantic Search", icon: "●" },
+            { title: "Clinical Data\nRepository (CDR)", icon: "●" },
+            { title: "Data Lakehouse &\nAnalytics Engine", icon: "●" },
+            { title: "Data Governance &\nLineage Service", icon: "●" },
           ]
         },
         {
@@ -713,11 +713,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 64,
           color: "#0F766E",
           items: [
-            { title: "API Gateway &\nService Mesh", icon: "🌐" },
-            { title: "Identity & Access\nManagement (IAM)", icon: "🔒" },
-            { title: "Audit Trail, Logging &\nObservability", icon: "📊" },
-            { title: "Integration Adapters &\nConnectors", icon: "🔌" },
-            { title: "Secrets & Key\nManagement Service", icon: "🔑" },
+            { title: "API Gateway &\nService Mesh", icon: "●" },
+            { title: "Identity & Access\nManagement (IAM)", icon: "●" },
+            { title: "Audit Trail, Logging &\nObservability", icon: "●" },
+            { title: "Integration Adapters &\nConnectors", icon: "●" },
+            { title: "Secrets & Key\nManagement Service", icon: "●" },
           ]
         },
         {
@@ -727,11 +727,11 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
           h: 60,
           color: "#047857",
           items: [
-            { title: "Hybrid Multi-Cloud\nDeployment (GCP/AWS)", icon: "☁️" },
-            { title: "Enterprise Network &\nPerimeter Security", icon: "🛡️" },
-            { title: "High Availability &\nDisaster Recovery", icon: "🔄" },
-            { title: "Container Runtime &\nKubernetes (GKE/EKS)", icon: "⚙️" },
-            { title: "Storage, Database &\nCompute Infrastructure", icon: "🗄️" },
+            { title: "Hybrid Multi-Cloud\nDeployment (GCP/AWS)", icon: "●" },
+            { title: "Enterprise Network &\nPerimeter Security", icon: "●" },
+            { title: "High Availability &\nDisaster Recovery", icon: "●" },
+            { title: "Container Runtime &\nKubernetes (GKE/EKS)", icon: "●" },
+            { title: "Storage, Database &\nCompute Infrastructure", icon: "●" },
           ]
         }
       ];
@@ -763,41 +763,41 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const extList = isRetail
     ? [
-        { title: "3P Marketplace Sellers", sub: "Catalog feeds, inventory sync\n& fulfillment updates", icon: "🏪" },
-        { title: "Carrier Logistics & 3PL", sub: "FedEx, UPS, DHL last-mile\nrouting & tracking", icon: "🚚" },
-        { title: "Payment Gateways & Banks", sub: "Stripe, Adyen, Apple Pay\ntokenized settlement", icon: "💳" },
-        { title: "Global Shoppers & Prime", sub: "Storefront sessions, 1-Click\n& order alerts", icon: "🛒" },
-        { title: "Tax & Customs Authorities", sub: "Avalara, Vertex, Cross-border\nduties clearing", icon: "🏛️" },
+        { title: "3P Marketplace Sellers", sub: "Catalog feeds, inventory sync\n& fulfillment updates", icon: "●" },
+        { title: "Carrier Logistics & 3PL", sub: "FedEx, UPS, DHL last-mile\nrouting & tracking", icon: "●" },
+        { title: "Payment Gateways & Banks", sub: "Stripe, Adyen, Apple Pay\ntokenized settlement", icon: "●" },
+        { title: "Global Shoppers & Prime", sub: "Storefront sessions, 1-Click\n& order alerts", icon: "●" },
+        { title: "Tax & Customs Authorities", sub: "Avalara, Vertex, Cross-border\nduties clearing", icon: "●" },
       ]
     : isFintech
     ? [
-        { title: "Liquidity Providers / Exchanges", sub: "NYSE, NASDAQ, CME, FIX\n4.4 DMA Gateways", icon: "🏛️" },
-        { title: "Clearing Houses & Custodians", sub: "DTCC, Euroclear, Apex,\nSwift RTGS rails", icon: "🏦" },
-        { title: "Financial Regulators", sub: "SEC, FINRA, CFTC automated\nCAT/SAR auditing", icon: "⚖️" },
-        { title: "Institutional Clients", sub: "Hedge Funds, Family Offices\ndirect API ingress", icon: "💼" },
-        { title: "Payment Networks & Banks", sub: "FedNow, Visa, Mastercard,\nACH settlement", icon: "💳" },
+        { title: "Liquidity Providers / Exchanges", sub: "NYSE, NASDAQ, CME, FIX\n4.4 DMA Gateways", icon: "●" },
+        { title: "Clearing Houses & Custodians", sub: "DTCC, Euroclear, Apex,\nSwift RTGS rails", icon: "●" },
+        { title: "Financial Regulators", sub: "SEC, FINRA, CFTC automated\nCAT/SAR auditing", icon: "●" },
+        { title: "Institutional Clients", sub: "Hedge Funds, Family Offices\ndirect API ingress", icon: "●" },
+        { title: "Payment Networks & Banks", sub: "FedNow, Visa, Mastercard,\nACH settlement", icon: "●" },
       ]
     : isManufacturing
     ? [
-        { title: "FAA / UTM Regulators", sub: "Flight plans, remote ID\n& airspace clearance", icon: "🏛️" },
-        { title: "Vertiport Base Stations", sub: "Pad allocation, power\n& weather radar", icon: "🛸" },
-        { title: "Ground Delivery Couriers", sub: "Last-mile handoff &\npackage lockers", icon: "🚚" },
-        { title: "Maintenance & Field Hubs", sub: "Battery swap, motor QA\n& airframe repair", icon: "🔧" },
-        { title: "Emergency Response Units", sub: "First responders, live\nincident coordinates", icon: "🚨" },
+        { title: "FAA / UTM Regulators", sub: "Flight plans, remote ID\n& airspace clearance", icon: "●" },
+        { title: "Vertiport Base Stations", sub: "Pad allocation, power\n& weather radar", icon: "●" },
+        { title: "Ground Delivery Couriers", sub: "Last-mile handoff &\npackage lockers", icon: "●" },
+        { title: "Maintenance & Field Hubs", sub: "Battery swap, motor QA\n& airframe repair", icon: "●" },
+        { title: "Emergency Response Units", sub: "First responders, live\nincident coordinates", icon: "●" },
       ]
     : isSaas
     ? [
-        { title: "Third-Party SaaS Apps", sub: "Webhooks, REST APIs\n& Zapier automations", icon: "🔌" },
-        { title: "Identity Providers (IdP)", sub: "Okta, Azure AD, Google\nSAML/SSO tokens", icon: "🔒" },
-        { title: "Payment Processors", sub: "Stripe, Chargebee usage\n& subscription webhooks", icon: "💳" },
-        { title: "Multi-Cloud Infrastructure", sub: "GCP, AWS, Azure multi-\nregion VPC peering", icon: "☁️" },
-        { title: "Compliance Auditors", sub: "SOC 2 Type II, ISO\n27001 evidence logs", icon: "🛡️" },
+        { title: "Third-Party SaaS Apps", sub: "Webhooks, REST APIs\n& Zapier automations", icon: "●" },
+        { title: "Identity Providers (IdP)", sub: "Okta, Azure AD, Google\nSAML/SSO tokens", icon: "●" },
+        { title: "Payment Processors", sub: "Stripe, Chargebee usage\n& subscription webhooks", icon: "●" },
+        { title: "Multi-Cloud Infrastructure", sub: "GCP, AWS, Azure multi-\nregion VPC peering", icon: "●" },
+        { title: "Compliance Auditors", sub: "SOC 2 Type II, ISO\n27001 evidence logs", icon: "●" },
       ]
     : [
-        { title: "CRO / CDMO Partners", sub: "Collaborate on studies, data\n& supply chain", icon: "👥" },
-        { title: "Investigators / Sites", sub: "Study conduct, data capture\n& updates", icon: "🏥" },
-        { title: "Regulatory Authorities", sub: "eSubmissions, queries,\ncompliance comms", icon: "🏛️" },
-        { title: "Patients / Patient Programs", sub: "Access programs, support\n& communications", icon: "👥" },
+        { title: "CRO / CDMO Partners", sub: "Collaborate on studies, data\n& supply chain", icon: "●" },
+        { title: "Investigators / Sites", sub: "Study conduct, data capture\n& updates", icon: "●" },
+        { title: "Regulatory Authorities", sub: "eSubmissions, queries,\ncompliance comms", icon: "●" },
+        { title: "Patients / Patient Programs", sub: "Access programs, support\n& communications", icon: "●" },
         { title: "HCPs / Healthcare Providers", sub: "Engage with medical content\n& communications", icon: "🩺" },
       ];
   extList.forEach((ep, i) => {
@@ -838,19 +838,19 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   text("tech_map_title", "<b>GOOGLE CLOUD TECHNOLOGY MAPPING</b>", 20, 690, 1140, 14, "fontSize=8;fontColor=#0369A1;align=center;");
 
   const gcpTech = [
-    { name: "Compute", tech: "Cloud Run / GKE", icon: "☸️" },
-    { name: "API Mgmt", tech: "Apigee", icon: "⚡" },
-    { name: "Eventing", tech: "Pub/Sub", icon: "📡" },
-    { name: "Processing", tech: "Dataflow", icon: "🌊" },
-    { name: "Data Warehouse", tech: "BigQuery", icon: "🔍" },
-    { name: "Object Storage", tech: "Cloud Storage", icon: "🗄️" },
-    { name: "AI Platform", tech: "Vertex AI", icon: "✨" },
-    { name: "Transactional", tech: "AlloyDB / Spanner", icon: "🗄️" },
-    { name: "Data Governance", tech: "Dataplex", icon: "🕸️" },
-    { name: "Analytics & BI", tech: "Looker", icon: "📊" },
-    { name: "Secrets & Keys", tech: "Secret Manager", icon: "🔒" },
-    { name: "Logs & Metrics", tech: "Cloud Logging", icon: "📈" },
-    { name: "IAM", tech: "Identity Mgmt", icon: "👤" },
+    { name: "Compute", tech: "Cloud Run / GKE", icon: "●" },
+    { name: "API Mgmt", tech: "Apigee", icon: "●" },
+    { name: "Eventing", tech: "Pub/Sub", icon: "●" },
+    { name: "Processing", tech: "Dataflow", icon: "●" },
+    { name: "Data Warehouse", tech: "BigQuery", icon: "●" },
+    { name: "Object Storage", tech: "Cloud Storage", icon: "●" },
+    { name: "AI Platform", tech: "Vertex AI", icon: "●" },
+    { name: "Transactional", tech: "AlloyDB / Spanner", icon: "●" },
+    { name: "Data Governance", tech: "Dataplex", icon: "●" },
+    { name: "Analytics & BI", tech: "Looker", icon: "●" },
+    { name: "Secrets & Keys", tech: "Secret Manager", icon: "●" },
+    { name: "Logs & Metrics", tech: "Cloud Logging", icon: "●" },
+    { name: "IAM", tech: "Identity Mgmt", icon: "●" },
   ];
   gcpTech.forEach((gt, i) => {
     const gtx = 26 + i * 86;
@@ -864,37 +864,37 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const connApps = isRetail
     ? [
-        { title: "Salesforce\nCommerce Cloud", icon: "☁️" },
-        { title: "SAP S/4HANA\nSupply Chain", icon: "🏢" },
-        { title: "Stripe / Adyen\nPCI Vault", icon: "💳" },
-        { title: "FedEx / UPS\nLogistics Mesh", icon: "🚚" },
+        { title: "Salesforce\nCommerce Cloud", icon: "●" },
+        { title: "SAP S/4HANA\nSupply Chain", icon: "●" },
+        { title: "Stripe / Adyen\nPCI Vault", icon: "●" },
+        { title: "FedEx / UPS\nLogistics Mesh", icon: "●" },
       ]
     : isFintech
     ? [
-        { title: "Bloomberg Core\n& Reuters Feed", icon: "📈" },
-        { title: "Core Banking\nLedger (Spanner)", icon: "🗄️" },
-        { title: "FedNow / Swift\nISO 20022 Network", icon: "🏛️" },
-        { title: "DTCC / Apex\nClearing Gateway", icon: "🏦" },
+        { title: "Bloomberg Core\n& Reuters Feed", icon: "●" },
+        { title: "Core Banking\nLedger (Spanner)", icon: "●" },
+        { title: "FedNow / Swift\nISO 20022 Network", icon: "●" },
+        { title: "DTCC / Apex\nClearing Gateway", icon: "●" },
       ]
     : isManufacturing
     ? [
-        { title: "SCADA / PLC\nPlant Controllers", icon: "⚙️" },
-        { title: "SAP Plant\nMaintenance", icon: "🏢" },
-        { title: "FAA UTM\nAirspace Radar", icon: "🌐" },
-        { title: "Vertiport Pad\nCharging Network", icon: "🛸" },
+        { title: "SCADA / PLC\nPlant Controllers", icon: "●" },
+        { title: "SAP Plant\nMaintenance", icon: "●" },
+        { title: "FAA UTM\nAirspace Radar", icon: "●" },
+        { title: "Vertiport Pad\nCharging Network", icon: "●" },
       ]
     : isSaas
     ? [
-        { title: "Stripe Billing\n& Metering API", icon: "💳" },
-        { title: "Salesforce CRM\n& Deal Desk", icon: "🏢" },
-        { title: "Auth0 / Okta\nIdentity Cloud", icon: "🔒" },
-        { title: "Snowflake Usage\n& Query Vault", icon: "🗄️" },
+        { title: "Stripe Billing\n& Metering API", icon: "●" },
+        { title: "Salesforce CRM\n& Deal Desk", icon: "●" },
+        { title: "Auth0 / Okta\nIdentity Cloud", icon: "●" },
+        { title: "Snowflake Usage\n& Query Vault", icon: "●" },
       ]
     : [
-        { title: "Salesforce\nHealth Cloud", icon: "☁️" },
-        { title: "SAP\nS/4HANA", icon: "🏢" },
-        { title: "Veeva\nVault", icon: "📁" },
-        { title: "Medidata\nRave", icon: "👥" },
+        { title: "Salesforce\nHealth Cloud", icon: "●" },
+        { title: "SAP\nS/4HANA", icon: "●" },
+        { title: "Veeva\nVault", icon: "●" },
+        { title: "Medidata\nRave", icon: "●" },
       ];
   connApps.forEach((ca, i) => {
     const cax = 1178 + i * 89;
@@ -910,47 +910,47 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
 
   const chars = isRetail
     ? [
-        { title: "Omnichannel Elasticity", desc: "Sub-50ms catalog search & 100k TPS flash sale auto-scaling", icon: "🚀" },
-        { title: "PCI-DSS Level 1 CDE", desc: "Tokenized payment vault with zero PAN plaintext storage", icon: "🛡️" },
-        { title: "Sub-Second WMS Hold", desc: "Two-phase commit inventory reservation with 900s TTL lock", icon: "📦" },
-        { title: "Cloud Spanner ACID", desc: "Multi-region strict serializability for order transactions", icon: "🗄️" },
-        { title: "Real-Time Fraud Graph", desc: "Vertex AI streaming risk scoring on checkout ingress", icon: "🧠" },
-        { title: "Global CDN & Edge Cache", desc: "Edge SSR storefront with 99.999% SLA availability", icon: "🌐" },
+        { title: "Omnichannel Elasticity", desc: "Sub-50ms catalog search & 100k TPS flash sale auto-scaling", icon: "●" },
+        { title: "PCI-DSS Level 1 CDE", desc: "Tokenized payment vault with zero PAN plaintext storage", icon: "●" },
+        { title: "Sub-Second WMS Hold", desc: "Two-phase commit inventory reservation with 900s TTL lock", icon: "●" },
+        { title: "Cloud Spanner ACID", desc: "Multi-region strict serializability for order transactions", icon: "●" },
+        { title: "Real-Time Fraud Graph", desc: "Vertex AI streaming risk scoring on checkout ingress", icon: "●" },
+        { title: "Global CDN & Edge Cache", desc: "Edge SSR storefront with 99.999% SLA availability", icon: "●" },
       ]
     : isFintech
     ? [
-        { title: "Sub-Millisecond Risk", desc: "Pre-trade risk budget check < 5ms on Redis cluster", icon: "⚡" },
-        { title: "SOC 2 & SEC 15c3-5", desc: "FINRA CAT / OATS compliant tamper-evident audit ledger", icon: "🛡️" },
-        { title: "Cloud Spanner Ledger", desc: "Multi-region double-entry active-active financial ledger", icon: "🗄️" },
-        { title: "ISO 20022 Messaging", desc: "End-to-end Swift MX and FedNow wire messaging interoperability", icon: "🏛️" },
-        { title: "Graph Fraud ML Anomaly", desc: "Vertex AI money-mule and anomaly detection under 20ms", icon: "🧠" },
-        { title: "Zero-Trust mTLS Mesh", desc: "Hardware Security Module (HSM) keys and mutual TLS", icon: "🔒" },
+        { title: "Sub-Millisecond Risk", desc: "Pre-trade risk budget check < 5ms on Redis cluster", icon: "●" },
+        { title: "SOC 2 & SEC 15c3-5", desc: "FINRA CAT / OATS compliant tamper-evident audit ledger", icon: "●" },
+        { title: "Cloud Spanner Ledger", desc: "Multi-region double-entry active-active financial ledger", icon: "●" },
+        { title: "ISO 20022 Messaging", desc: "End-to-end Swift MX and FedNow wire messaging interoperability", icon: "●" },
+        { title: "Graph Fraud ML Anomaly", desc: "Vertex AI money-mule and anomaly detection under 20ms", icon: "●" },
+        { title: "Zero-Trust mTLS Mesh", desc: "Hardware Security Module (HSM) keys and mutual TLS", icon: "●" },
       ]
     : isManufacturing
     ? [
-        { title: "Sub-10ms Telemetry Stream", desc: "Real-time MQTT telemetry stream & edge collision guard", icon: "⚡" },
-        { title: "FAA Part 107 & ISO 27001", desc: "Strict airspace regulation, tamper-evident blackbox audit", icon: "🛡️" },
-        { title: "Cloud Spanner Mission State", desc: "Multi-region active-active drone state and fleet mesh", icon: "🗄️" },
-        { title: "Vertex AI Collision ML", desc: "Predictive spatial corridor & weather vector routing", icon: "🧠" },
-        { title: "Multi-Hub Active Failover", desc: "Seamless vertiport failover & automated RTH interlock", icon: "🔄" },
-        { title: "Encrypted GPS & Remote ID", desc: "Hardware TPM keys and authenticated Remote ID beacons", icon: "🔒" },
+        { title: "Sub-10ms Telemetry Stream", desc: "Real-time MQTT telemetry stream & edge collision guard", icon: "●" },
+        { title: "FAA Part 107 & ISO 27001", desc: "Strict airspace regulation, tamper-evident blackbox audit", icon: "●" },
+        { title: "Cloud Spanner Mission State", desc: "Multi-region active-active drone state and fleet mesh", icon: "●" },
+        { title: "Vertex AI Collision ML", desc: "Predictive spatial corridor & weather vector routing", icon: "●" },
+        { title: "Multi-Hub Active Failover", desc: "Seamless vertiport failover & automated RTH interlock", icon: "●" },
+        { title: "Encrypted GPS & Remote ID", desc: "Hardware TPM keys and authenticated Remote ID beacons", icon: "●" },
       ]
     : isSaas
     ? [
-        { title: "Strict Multi-Tenant Isolation", desc: "Row-level security, isolated DB schemas & KMS encryption", icon: "🔒" },
-        { title: "SOC 2 Type II & GDPR", desc: "Immutable audit logs, SCIM identity & automated compliance", icon: "🛡️" },
-        { title: "Sub-Millisecond Quota Check", desc: "Distributed Redis token bucket with burst tolerance", icon: "⚡" },
-        { title: "Cloud Spanner ACID Scale", desc: "Multi-region horizontal scaling with zero maintenance downtime", icon: "🗄️" },
-        { title: "Vertex AI Tenant Copilot", desc: "Isolated RAG models and tenant-specific knowledge grounding", icon: "🧠" },
-        { title: "99.999% SLA High Availability", desc: "Multi-region active-active cluster mesh & auto-healing pods", icon: "🌐" },
+        { title: "Strict Multi-Tenant Isolation", desc: "Row-level security, isolated DB schemas & KMS encryption", icon: "●" },
+        { title: "SOC 2 Type II & GDPR", desc: "Immutable audit logs, SCIM identity & automated compliance", icon: "●" },
+        { title: "Sub-Millisecond Quota Check", desc: "Distributed Redis token bucket with burst tolerance", icon: "●" },
+        { title: "Cloud Spanner ACID Scale", desc: "Multi-region horizontal scaling with zero maintenance downtime", icon: "●" },
+        { title: "Vertex AI Tenant Copilot", desc: "Isolated RAG models and tenant-specific knowledge grounding", icon: "●" },
+        { title: "99.999% SLA High Availability", desc: "Multi-region active-active cluster mesh & auto-healing pods", icon: "●" },
       ]
     : [
-        { title: "Compliant by Design", desc: "Built-in compliance with GxP, 21 CFR Part 11, EU Annex 11, HIPAA", icon: "🛡️" },
-        { title: "Traceable & Auditable", desc: "End-to-end traceability, audit logging & evidence management", icon: "📑" },
-        { title: "AI-Grounded Knowledge", desc: "AI Copilot with governed guardrails & trusted RAG", icon: "🧠" },
-        { title: "Scalable Cloud-Native", desc: "Microservices, containers & serverless elasticity", icon: "☁️" },
-        { title: "Secure Integration", desc: "API-first, zero trust, encryption at scale", icon: "🔒" },
-        { title: "Reusable Shared Services", desc: "Common capabilities reused globally to accelerate delivery", icon: "⚙️" },
+        { title: "Compliant by Design", desc: "Built-in compliance with GxP, 21 CFR Part 11, EU Annex 11, HIPAA", icon: "●" },
+        { title: "Traceable & Auditable", desc: "End-to-end traceability, audit logging & evidence management", icon: "●" },
+        { title: "AI-Grounded Knowledge", desc: "AI Copilot with governed guardrails & trusted RAG", icon: "●" },
+        { title: "Scalable Cloud-Native", desc: "Microservices, containers & serverless elasticity", icon: "●" },
+        { title: "Secure Integration", desc: "API-first, zero trust, encryption at scale", icon: "●" },
+        { title: "Reusable Shared Services", desc: "Common capabilities reused globally to accelerate delivery", icon: "●" },
       ];
   chars.forEach((ch, i) => {
     const chx = 28 + i * 252;

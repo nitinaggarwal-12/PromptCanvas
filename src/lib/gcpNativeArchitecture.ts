@@ -241,13 +241,13 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     `<div style="width:1560px;box-sizing:border-box;padding:0 8px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;display:flex;align-items:center;justify-content:space-between;color:#FFFFFF;">` +
     `<div style="display:flex;align-items:center;gap:14px;">` +
     `<div style="display:flex;align-items:center;gap:8px;">` +
-    `<span style="font-size:18px;">⚡</span>` +
+    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>` +
     `<div style="font-size:16px;font-weight:800;letter-spacing:0.5px;color:#38BDF8;">${encodeXml(title)}</div>` +
     `</div>` +
     `<div style="font-size:10px;font-weight:800;color:#38BDF8;background:#0369A130;border:1px solid #38BDF850;padding:3px 10px;border-radius:6px;letter-spacing:0.5px;">${encodeXml(domainBadge)}</div>` +
     `</div>` +
     `<div style="display:flex;align-items:center;gap:18px;font-size:11px;color:#E2E8F0;font-weight:600;">` +
-    `<span>🌐 Dual-Hub VPC: <b style="color:#FFFFFF;">10.100.0.0/16 • 10.200.0.0/16</b></span>` +
+    `<span style="display:inline-flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Dual-Hub VPC: <b style="color:#FFFFFF;">10.100.0.0/16 • 10.200.0.0/16</b></span>` +
     `<span style="color:#34D399;">● ${encodeXml(slaText)} (${encodeXml(drText)})</span>` +
     `<span style="color:#C084FC;">✦ Vertex AI & Gemini 3.7 Flash Reasoning</span>` +
     `</div>` +

@@ -36,7 +36,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
 
   const logoHtml = `<table style="text-align:right;float:right;">
     <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">🧬</span></td>
+      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
       <td style="vertical-align:middle;text-align:left;">
         <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
         <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
@@ -52,14 +52,14 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   rect("internal_users_hdr", "<b style='font-size:10.5px;color:#FFFFFF;'>INTERNAL USERS</b>", 20, 78, 200, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const internalUsers = [
-    { title: "Research Scientists", desc: "Design studies, manage\nexperiments & data", icon: "🔬" },
-    { title: "Clinical Operations", desc: "Run trials, monitor sites,\nparticipants & activities", icon: "📋" },
-    { title: "Regulatory Affairs Specialists", desc: "Prepare submissions,\ntrack commitments", icon: "📄" },
-    { title: "Safety / PV Specialists", desc: "Detect, evaluate & report\nsafety events", icon: "🛡️" },
-    { title: "Quality Teams", desc: "Ensure quality, GxP compliance\n& CAPA management", icon: "🏅" },
+    { title: "Research Scientists", desc: "Design studies, manage\nexperiments & data", icon: "●" },
+    { title: "Clinical Operations", desc: "Run trials, monitor sites,\nparticipants & activities", icon: "●" },
+    { title: "Regulatory Affairs Specialists", desc: "Prepare submissions,\ntrack commitments", icon: "●" },
+    { title: "Safety / PV Specialists", desc: "Detect, evaluate & report\nsafety events", icon: "●" },
+    { title: "Quality Teams", desc: "Ensure quality, GxP compliance\n& CAPA management", icon: "●" },
     { title: "Medical Affairs", desc: "Medical inquiries, content\n& stakeholder education", icon: "🩺" },
-    { title: "Commercial Analytics", desc: "Market insights, forecasting\n& customer analytics", icon: "📊" },
-    { title: "Platform Admins", desc: "Manage platform, users,\nsecurity & integrations", icon: "👤" },
+    { title: "Commercial Analytics", desc: "Market insights, forecasting\n& customer analytics", icon: "●" },
+    { title: "Platform Admins", desc: "Manage platform, users,\nsecurity & integrations", icon: "●" },
   ];
 
   internalUsers.forEach((u, i) => {
@@ -82,7 +82,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   rect("plat_cont_frame", "", 230, 78, 1080, 582, "rounded=1;strokeColor=#0284C7;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
 
   const platHdrHtml = `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-    <span style="font-size:22px;">🧬</span>
+    <span style="font-size:22px;"></span>
     <span style="font-size:18px;font-weight:900;color:#0F2A4A;letter-spacing:1.5px;">NOVACURA</span>
     <span style="font-size:11px;font-weight:800;color:#0284C7;letter-spacing:1px;margin-left:4px;">BIO-PHARMA PLATFORM</span>
   </div>`;
@@ -90,18 +90,18 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
 
   // 12 Grid Containers (3 rows x 4 columns)
   const containers = [
-    { num: "1", title: "User Experience Portal", desc: "Role-based web portal for users, dashboards, tasks and insights.", icon: "💻" },
-    { num: "2", title: "Workflow & Case Management", desc: "Manages business workflows, approvals, tasks, CAPA and case flows.", icon: "🔄" },
-    { num: "3", title: "R&D & Clinical App", desc: "Study planning, protocol management, trial oversight & data capture.", icon: "⚗️" },
-    { num: "4", title: "Regulatory Affairs App", desc: "Submissions, eCTD / IDMP coordination & authority correspondence.", icon: "📄" },
-    { num: "5", title: "Safety & Pharmacovigilance App", desc: "Case intake, signal detection, benefit-risk workflows & reporting.", icon: "🛡️" },
-    { num: "6", title: "Quality & Manufacturing App", desc: "Quality events, batch & release visibility, deviations & change control.", icon: "🏭" },
-    { num: "7", title: "Medical & Commercial App", desc: "Medical information, customer insights, forecasting & field engagement.", icon: "👥" },
-    { num: "8", title: "Document & Content Hub", desc: "Controlled documents, versioning, collaboration & knowledge content.", icon: "📁" },
-    { num: "9", title: "Data & Analytics Platform", desc: "Curated enterprises data, analytics, dashboards & semantic model.", icon: "📊" },
-    { num: "10", title: "AI Copilot & Knowledge Services", desc: "Grounded copilots, semantic search, summarization & workflow assistance.", icon: "✨" },
-    { num: "11", title: "Integration & API Layer", desc: "APIs, events, orchestration, file exchange & external connectivity.", icon: "⚡" },
-    { num: "12", title: "Identity & Access Service", desc: "SSO, RBAC, authentication & authorization for apps and services.", icon: "🔒" },
+    { num: "1", title: "User Experience Portal", desc: "Role-based web portal for users, dashboards, tasks and insights.", icon: "●" },
+    { num: "2", title: "Workflow & Case Management", desc: "Manages business workflows, approvals, tasks, CAPA and case flows.", icon: "●" },
+    { num: "3", title: "R&D & Clinical App", desc: "Study planning, protocol management, trial oversight & data capture.", icon: "●" },
+    { num: "4", title: "Regulatory Affairs App", desc: "Submissions, eCTD / IDMP coordination & authority correspondence.", icon: "●" },
+    { num: "5", title: "Safety & Pharmacovigilance App", desc: "Case intake, signal detection, benefit-risk workflows & reporting.", icon: "●" },
+    { num: "6", title: "Quality & Manufacturing App", desc: "Quality events, batch & release visibility, deviations & change control.", icon: "●" },
+    { num: "7", title: "Medical & Commercial App", desc: "Medical information, customer insights, forecasting & field engagement.", icon: "●" },
+    { num: "8", title: "Document & Content Hub", desc: "Controlled documents, versioning, collaboration & knowledge content.", icon: "●" },
+    { num: "9", title: "Data & Analytics Platform", desc: "Curated enterprises data, analytics, dashboards & semantic model.", icon: "●" },
+    { num: "10", title: "AI Copilot & Knowledge Services", desc: "Grounded copilots, semantic search, summarization & workflow assistance.", icon: "●" },
+    { num: "11", title: "Integration & API Layer", desc: "APIs, events, orchestration, file exchange & external connectivity.", icon: "●" },
+    { num: "12", title: "Identity & Access Service", desc: "SSO, RBAC, authentication & authorization for apps and services.", icon: "●" },
   ];
 
   containers.forEach((ct, i) => {
@@ -134,7 +134,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
         <div style="width:22px;height:22px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;">13</div>
       </td>
       <td style="vertical-align:middle;padding-left:8px;text-align:left;">
-        <span style="font-size:15px;">🛡️</span> <b style="font-size:9.5px;color:#0F2A4A;">Audit, Monitoring &amp; Compliance Service</b>
+        <span style="font-size:15px;"></span> <b style="font-size:9.5px;color:#0F2A4A;">Audit, Monitoring &amp; Compliance Service</b>
         <span style="font-size:8px;color:#64748B;margin-left:10px;">Audit logs, monitoring, alerts, compliance evidence &amp; reporting across the platform.</span>
       </td>
     </tr>
@@ -148,10 +148,10 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   rect("ext_participants_hdr", "<b style='font-size:10.5px;color:#FFFFFF;'>EXTERNAL PARTICIPANTS</b>", 1320, 78, 220, 26, "rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;");
 
   const extParticipants = [
-    { title: "CRO / CDMO Partners", desc: "Collaborate on studies, data\nmanagement & supply", icon: "👥" },
-    { title: "Investigators / Sites", desc: "Submit clinical data,\ndocuments & updates", icon: "🏥" },
-    { title: "Regulatory Authorities", desc: "Receive submissions,\nqueries & responses", icon: "🏛️" },
-    { title: "Patients / Patient Programs", desc: "Access programs, support\n& communications", icon: "👥" },
+    { title: "CRO / CDMO Partners", desc: "Collaborate on studies, data\nmanagement & supply", icon: "●" },
+    { title: "Investigators / Sites", desc: "Submit clinical data,\ndocuments & updates", icon: "●" },
+    { title: "Regulatory Authorities", desc: "Receive submissions,\nqueries & responses", icon: "●" },
+    { title: "Patients / Patient Programs", desc: "Access programs, support\n& communications", icon: "●" },
     { title: "HCPs / Healthcare Providers", desc: "Engage with medical content\n& communications", icon: "🩺" },
   ];
 
@@ -176,14 +176,14 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   text("ent_sys_title", "<b>ENTERPRISE SYSTEMS / DATA SOURCES (System of Record)</b>", 20, 676, 720, 18, "fontSize=9;fontColor=#1E3A8A;align=center;");
 
   const entSystems = [
-    { title: "Salesforce\nHealth Cloud", desc: "Patient & HCP\nengagement", icon: "☁️" },
-    { title: "SAP\nS/4HANA", desc: "Finance, procurement,\nsupply chain", icon: "🏢" },
-    { title: "Veeva\nVault", desc: "Regulatory &\nquality docs", icon: "📁" },
-    { title: "Clinical Trial\nManagement (CTMS)", desc: "Study, site &\nsubject mgmt", icon: "👥" },
-    { title: "Laboratory /\nLIMS Systems", desc: "Lab data, results\n& samples", icon: "⚗️" },
-    { title: "Safety Database\n(Argus-like)", desc: "Safety cases,\nreports & signals", icon: "🛡️" },
-    { title: "Data Lake /\nWarehouse", desc: "Structured &\nunstructured data", icon: "🗄️" },
-    { title: "Identity Provider /\nSSO", desc: "Enterprise SSO\n& identity mgmt", icon: "🔒" },
+    { title: "Salesforce\nHealth Cloud", desc: "Patient & HCP\nengagement", icon: "●" },
+    { title: "SAP\nS/4HANA", desc: "Finance, procurement,\nsupply chain", icon: "●" },
+    { title: "Veeva\nVault", desc: "Regulatory &\nquality docs", icon: "●" },
+    { title: "Clinical Trial\nManagement (CTMS)", desc: "Study, site &\nsubject mgmt", icon: "●" },
+    { title: "Laboratory /\nLIMS Systems", desc: "Lab data, results\n& samples", icon: "●" },
+    { title: "Safety Database\n(Argus-like)", desc: "Safety cases,\nreports & signals", icon: "●" },
+    { title: "Data Lake /\nWarehouse", desc: "Structured &\nunstructured data", icon: "●" },
+    { title: "Identity Provider /\nSSO", desc: "Enterprise SSO\n& identity mgmt", icon: "●" },
   ];
   entSystems.forEach((es, i) => {
     const esx = 28 + i * 88;
@@ -195,9 +195,9 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   text("ai_svc_title", "<b>AI / KNOWLEDGE SERVICES</b>", 750, 676, 360, 18, "fontSize=9;fontColor=#6D28D9;align=center;");
 
   const aiServices = [
-    { title: "Enterprise Search /\nKnowledge Base", desc: "Search, taxonomy & knowledge articles", icon: "🔍" },
-    { title: "Vector Index /\nSemantic Search", desc: "Embeddings store & semantic retrieval", icon: "✨" },
-    { title: "Approved LLM Service\n(Google Vertex AI)", desc: "Secure, governed LLM for enterprise use", icon: "🧠" },
+    { title: "Enterprise Search /\nKnowledge Base", desc: "Search, taxonomy & knowledge articles", icon: "●" },
+    { title: "Vector Index /\nSemantic Search", desc: "Embeddings store & semantic retrieval", icon: "●" },
+    { title: "Approved LLM Service\n(Google Vertex AI)", desc: "Secure, governed LLM for enterprise use", icon: "●" },
   ];
   aiServices.forEach((ai, i) => {
     const aix = 758 + i * 115;
@@ -209,10 +209,10 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   text("plat_svc_title", "<b>PLATFORM SERVICES</b>", 1120, 676, 420, 18, "fontSize=9;fontColor=#15803D;align=center;");
 
   const platServices = [
-    { title: "API\nGateway", desc: "Routing, security\n& throttling", icon: "⚡" },
-    { title: "Event Bus /\nPub/Sub", desc: "Realtime events\n& async messaging", icon: "📡" },
-    { title: "Workflow\nOrchestration", desc: "Orchestrate\nprocesses & rules", icon: "🔄" },
-    { title: "Monitoring /\nAudit Logging", desc: "Metrics, logs,\ntraces & alerts", icon: "📊" },
+    { title: "API\nGateway", desc: "Routing, security\n& throttling", icon: "●" },
+    { title: "Event Bus /\nPub/Sub", desc: "Realtime events\n& async messaging", icon: "●" },
+    { title: "Workflow\nOrchestration", desc: "Orchestrate\nprocesses & rules", icon: "●" },
+    { title: "Monitoring /\nAudit Logging", desc: "Metrics, logs,\ntraces & alerts", icon: "●" },
   ];
   platServices.forEach((ps, i) => {
     const psx = 1128 + i * 101;
@@ -227,12 +227,12 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   text("ctrl_title", "<b>CROSS-CUTTING CONTROLS &amp; STANDARDS (Apply Across All Containers)</b>", 20, 834, 1520, 16, "fontSize=8.5;fontColor=#0369A1;align=center;");
 
   const controls = [
-    { title: "Security & Privacy", desc: "Encryption, DLP & privacy by design", icon: "🔒" },
-    { title: "Audit & Compliance", desc: "Audit trails, retention, eDiscovery", icon: "📑" },
-    { title: "Data Lineage & Quality", desc: "Lineage, catalog, QC rules", icon: "🔗" },
-    { title: "Interoperability Standards & APIs", desc: "HL7 FHIR, IDMP, CDISC, OpenAPI", icon: "⚡" },
-    { title: "GxP / 21 CFR Part 11", desc: "e-Records, eSignatures, validation", icon: "🛡️" },
-    { title: "Zero Trust Architecture", desc: "Micro-segmentation, continuous verify", icon: "🛡️" },
+    { title: "Security & Privacy", desc: "Encryption, DLP & privacy by design", icon: "●" },
+    { title: "Audit & Compliance", desc: "Audit trails, retention, eDiscovery", icon: "●" },
+    { title: "Data Lineage & Quality", desc: "Lineage, catalog, QC rules", icon: "●" },
+    { title: "Interoperability Standards & APIs", desc: "HL7 FHIR, IDMP, CDISC, OpenAPI", icon: "●" },
+    { title: "GxP / 21 CFR Part 11", desc: "e-Records, eSignatures, validation", icon: "●" },
+    { title: "Zero Trust Architecture", desc: "Micro-segmentation, continuous verify", icon: "●" },
   ];
   controls.forEach((ct, i) => {
     const cx = 30 + i * 251;
@@ -248,11 +248,11 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
       <td style="width:65px;vertical-align:middle;font-size:9.5px;font-weight:900;color:#0F172A;">LEGEND:</td>
       <td style="vertical-align:middle;">
         <div style="display:flex;align-items:center;gap:16px;font-size:8px;color:#334155;">
-          <div style="display:flex;align-items:center;gap:4px;"><span>—➔</span><div>User Interaction</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#1D4ED8;">—➔</span><div>System Integration / Data Exchange</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#7C3AED;">- - ➔</span><div>AI / Knowledge Flow</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0D9488;">- - ➔</span><div>External Collaboration</div></div>
-          <div style="display:flex;align-items:center;gap:4px;"><span>- - - ➔</span><div>Governance / Control Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span>—</span><div>User Interaction</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#1D4ED8;">—</span><div>System Integration / Data Exchange</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#7C3AED;">- - </span><div>AI / Knowledge Flow</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span style="color:#0D9488;">- - </span><div>External Collaboration</div></div>
+          <div style="display:flex;align-items:center;gap:4px;"><span>- - - </span><div>Governance / Control Flow</div></div>
         </div>
       </td>
       <td style="width:180px;text-align:right;vertical-align:middle;font-size:8px;color:#64748B;">

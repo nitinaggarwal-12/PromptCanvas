@@ -49,7 +49,7 @@ export function generateTemplate27ThreatModelXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:40px;vertical-align:middle;text-align:center;"><span style="font-size:36px;">🧬</span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:26px;font-weight:900;color:#0284C7;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:11px;color:#64748B;font-weight:700;font-style:italic;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:40px;vertical-align:middle;text-align:center;"><span style="font-size:36px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:26px;font-weight:900;color:#0284C7;letter-spacing:1px;line-height:1;">NOVACURA</div><div style="font-size:11px;color:#64748B;font-weight:700;font-style:italic;margin-top:2px;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:11px;font-weight:900;color:#1E3A8A;margin-bottom:3px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:9.5px;line-height:1.4;color:#0F172A;font-weight:600;'>
@@ -65,32 +65,32 @@ export function generateTemplate27ThreatModelXml(
     {
       num: "1", name: "USERS &amp; CLIENTS",
       items: ["Web App", "Mobile App", "APIs / Integrations", "Client Systems"],
-      icon: "👥", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534"
+      icon: "●", bg: "#F0FDF4", stroke: "#BBF7D0", fg: "#166534"
     },
     {
       num: "2", name: "EDGE &amp; ACCESS",
       items: ["Cloud Armor (WAF)", "HTTPS / TLS", "Identity-Aware Proxy", "DDoS Protection"],
-      icon: "🛡️", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF"
+      icon: "●", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF"
     },
     {
       num: "3", name: "APPLICATION LAYER",
       items: ["Frontend (UI)", "API Gateway", "Auth Service", "Orchestration Service"],
-      icon: "💻", bg: "#FAF5FF", stroke: "#E9D5FF", fg: "#7C3AED"
+      icon: "●", bg: "#FAF5FF", stroke: "#E9D5FF", fg: "#7C3AED"
     },
     {
       num: "4", name: "AI &amp; AGENT LAYER",
       items: ["Agent Orchestrator", "LLM / Model Serving", "Vector Search Service", "Tool / Function Calls"],
-      icon: "🧠", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF"
+      icon: "●", bg: "#EFF6FF", stroke: "#BFDBFE", fg: "#1E40AF"
     },
     {
       num: "5", name: "DATA &amp; STORAGE LAYER",
       items: ["Vector DB (AlloyDB / PG)", "Operational DB (Cloud SQL)", "Object Storage (GCS)", "Knowledge Store"],
-      icon: "🗄️", bg: "#FFFBEB", stroke: "#FDE68A", fg: "#D97706"
+      icon: "●", bg: "#FFFBEB", stroke: "#FDE68A", fg: "#D97706"
     },
     {
       num: "6", name: "EXTERNAL SYSTEMS",
       items: ["Regulatory Sources", "Third-Party APIs", "Partner Systems", "External Tools"],
-      icon: "🌐", bg: "#FEF2F2", stroke: "#FECACA", fg: "#DC2626"
+      icon: "●", bg: "#FEF2F2", stroke: "#FECACA", fg: "#DC2626"
     }
   ];
 
@@ -112,13 +112,13 @@ export function generateTemplate27ThreatModelXml(
   cell("lbl_shared_sec", "SHARED SECURITY SERVICES (ACROSS ALL ZONES)", 24, 218, 1056, 12, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   const sharedSecItems = [
-    { t: "IAM &amp; Access<br/>Management", icon: "🔒" },
-    { t: "Secrets Manager", icon: "🔑" },
-    { t: "KMS / Encryption", icon: "🛡️" },
-    { t: "VPC Service<br/>Controls", icon: "🌐" },
-    { t: "Audit Logging", icon: "📜" },
-    { t: "Security Command<br/>Center", icon: "🛡️" },
-    { t: "Monitoring &amp;<br/>Alerting", icon: "📈" }
+    { t: "IAM &amp; Access<br/>Management", icon: "●" },
+    { t: "Secrets Manager", icon: "●" },
+    { t: "KMS / Encryption", icon: "●" },
+    { t: "VPC Service<br/>Controls", icon: "●" },
+    { t: "Audit Logging", icon: "●" },
+    { t: "Security Command<br/>Center", icon: "●" },
+    { t: "Monitoring &amp;<br/>Alerting", icon: "●" }
   ];
   sharedSecItems.forEach((ss, idx) => {
     const ssx = 30 + idx * 148;
@@ -130,17 +130,17 @@ export function generateTemplate27ThreatModelXml(
   cell("lbl_attack_surf", "ATTACK SURFACE MAP", 16, 270, 1074, 12, "text;html=1;strokeColor=none;fillColor=none;fontColor=#DC2626;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const attackSurfaces = [
-    { t: "Public Endpoints<br/>(Internet)", tags: ["T1", "T5", "T2"], icon: "🌐" },
-    { t: "Auth &amp; Identity<br/>(IAM, OAuth)", tags: ["T1", "T6"], icon: "👤" },
-    { t: "APIs &amp; Gateways", tags: ["T1", "T2", "T5"], icon: "💻" },
-    { t: "Web / UI", tags: ["T2", "T5"], icon: "🖥️" },
-    { t: "Agent Orchestrator<br/>&amp; Tools", tags: ["T2", "T7", "T6"], icon: "🤖" },
-    { t: "LLM / Model<br/>Serving", tags: ["T2", "T7", "T3"], icon: "🧠" },
-    { t: "Data Stores<br/>(DB, Vector DB)", tags: ["T2", "T4", "T6"], icon: "🗄️" },
-    { t: "Object Storage<br/>(GCS)", tags: ["T4", "T2", "T5"], icon: "📦" },
-    { t: "External APIs &amp;<br/>Data Sources", tags: ["T1", "T8", "T2"], icon: "🔗" },
-    { t: "CI/CD &amp; DevOps<br/>Pipelines", tags: ["T8", "T6", "T5"], icon: "⚙️" },
-    { t: "Admin &amp; Ops<br/>Interfaces", tags: ["T1", "T6"], icon: "👤" }
+    { t: "Public Endpoints<br/>(Internet)", tags: ["T1", "T5", "T2"], icon: "●" },
+    { t: "Auth &amp; Identity<br/>(IAM, OAuth)", tags: ["T1", "T6"], icon: "●" },
+    { t: "APIs &amp; Gateways", tags: ["T1", "T2", "T5"], icon: "●" },
+    { t: "Web / UI", tags: ["T2", "T5"], icon: "●" },
+    { t: "Agent Orchestrator<br/>&amp; Tools", tags: ["T2", "T7", "T6"], icon: "●" },
+    { t: "LLM / Model<br/>Serving", tags: ["T2", "T7", "T3"], icon: "●" },
+    { t: "Data Stores<br/>(DB, Vector DB)", tags: ["T2", "T4", "T6"], icon: "●" },
+    { t: "Object Storage<br/>(GCS)", tags: ["T4", "T2", "T5"], icon: "●" },
+    { t: "External APIs &amp;<br/>Data Sources", tags: ["T1", "T8", "T2"], icon: "●" },
+    { t: "CI/CD &amp; DevOps<br/>Pipelines", tags: ["T8", "T6", "T5"], icon: "●" },
+    { t: "Admin &amp; Ops<br/>Interfaces", tags: ["T1", "T6"], icon: "●" }
   ];
 
   attackSurfaces.forEach((as, idx) => {
@@ -164,42 +164,42 @@ export function generateTemplate27ThreatModelXml(
     {
       name: "Prompt Injection", bg: "#6D28D9",
       desc: "Attacker crafts input to override instructions and exfiltrate data.",
-      impact: "Data leakage, harmful responses", risk: "⚠️ High", rfg: "#DC2626",
+      impact: "Data leakage, harmful responses", risk: " High", rfg: "#DC2626",
       mit: "• Input validation &amp; content filtering<br/>• System prompts &amp; guardrails<br/>• Least data exposure, RAG with scoped context",
       det: "• Prompt anomaly detection<br/>• Output monitoring &amp; alerting<br/>• Human review for high-risk outputs"
     },
     {
       name: "Data Leakage via Over-Privileged Access", bg: "#1D4ED8",
       desc: "Excessive permissions allow unauthorized data access.",
-      impact: "PII/PHI exposure, compliance breach", risk: "⚠️ High", rfg: "#DC2626",
+      impact: "PII/PHI exposure, compliance breach", risk: " High", rfg: "#DC2626",
       mit: "• Least privilege IAM<br/>• Row/Column level security<br/>• VPC Service Controls, Restricted sharing",
       det: "• Access logs &amp; anomaly detection<br/>• SCC findings &amp; alerts<br/>• Automated containment"
     },
     {
       name: "Model / Data Poisoning", bg: "#16A34A",
       desc: "Malicious data introduced to corrupt training or retrieval data.",
-      impact: "Incorrect / biased answers, reputational damage", risk: "⚠️ High", rfg: "#DC2626",
+      impact: "Incorrect / biased answers, reputational damage", risk: " High", rfg: "#DC2626",
       mit: "• Data provenance &amp; validation<br/>• Trusted data pipelines<br/>• Regular data quality checks",
       det: "• Data drift &amp; quality monitoring<br/>• Anomaly detection in embeddings<br/>• Rollback &amp; quarantine"
     },
     {
       name: "DDoS / Service Exhaustion", bg: "#EA580C",
       desc: "Attackers overwhelm services with traffic or heavy requests.",
-      impact: "Service disruption, SLA impact", risk: "⚠️ Medium", rfg: "#D97706",
+      impact: "Service disruption, SLA impact", risk: " Medium", rfg: "#D97706",
       mit: "• Cloud Armor, DDoS protection<br/>• Rate limiting, quotas, autoscaling<br/>• Caching &amp; request throttling",
       det: "• Traffic anomaly detection<br/>• Auto-scaling &amp; load shedding<br/>• Incident response runbooks"
     },
     {
       name: "Privilege Escalation", bg: "#DC2626",
       desc: "Attacker gains higher privileges through misconfig or exploits.",
-      impact: "Full system access, data compromise", risk: "⚠️ High", rfg: "#DC2626",
+      impact: "Full system access, data compromise", risk: " High", rfg: "#DC2626",
       mit: "• Strong IAM policies &amp; SoD<br/>• Regular access reviews<br/>• Hardened configs, patch management",
       det: "• IAM change monitoring<br/>• Privilege escalation alerts<br/>• Immediate revocation &amp; forensics"
     },
     {
       name: "Third-Party / Supply Chain Risk", bg: "#0F766E",
       desc: "Vulnerable third-party or dependencies cause breach.",
-      impact: "Data / service impact, trust erosion", risk: "⚠️ Medium", rfg: "#D97706",
+      impact: "Data / service impact, trust erosion", risk: " Medium", rfg: "#D97706",
       mit: "• Vendor risk assessment<br/>• Dependency scanning (SCA)<br/>• Contractual &amp; security requirements",
       det: "• Vulnerability scanning &amp; alerts<br/>• External dependency monitoring<br/>• Incident communication plan"
     }
@@ -248,7 +248,7 @@ export function generateTemplate27ThreatModelXml(
   cell("box_r_ratings", "", 1100, 304, 420, 38, "rounded=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;");
   const rRatingHtml = `<div style="font-size:8.5px;color:#0F172A;display:flex;justify-content:space-around;align-items:center;height:100%;">
     <b>RISK RATING:</b> &nbsp;
-    <span>🔴 <b>Critical</b></span> &nbsp;
+    <span> <b>Critical</b></span> &nbsp;
     <span>🟠 <b>High</b></span> &nbsp;
     <span>🟡 <b>Medium</b></span> &nbsp;
     <span>🟢 <b>Low</b></span>
@@ -259,14 +259,14 @@ export function generateTemplate27ThreatModelXml(
   cell("box_r_sec_ctrls", "", 1100, 348, 206, 240, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;");
   cell("lbl_r_sec_ctrls", "KEY SECURITY CONTROLS", 1100, 350, 206, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const secCtrlsHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
-    ✔ <b>Identity &amp; Access</b> (IAM, Least Privilege)<br/><br/>
-    ✔ <b>Network Security</b> (VPC-SC, Firewall, WAF)<br/><br/>
-    ✔ <b>Data Protection</b> (Encryption, DLP)<br/><br/>
-    ✔ <b>Application Security</b> (Secure SDLC)<br/><br/>
-    ✔ <b>Secrets Management</b><br/><br/>
-    ✔ <b>Logging &amp; Audit</b> (Cloud Audit Logs)<br/><br/>
-    ✔ <b>Monitoring &amp; Alerting</b> (SCC, SIEM)<br/><br/>
-    ✔ <b>Backup &amp; Resilience</b> (Multi-region)
+     <b>Identity &amp; Access</b> (IAM, Least Privilege)<br/><br/>
+     <b>Network Security</b> (VPC-SC, Firewall, WAF)<br/><br/>
+     <b>Data Protection</b> (Encryption, DLP)<br/><br/>
+     <b>Application Security</b> (Secure SDLC)<br/><br/>
+     <b>Secrets Management</b><br/><br/>
+     <b>Logging &amp; Audit</b> (Cloud Audit Logs)<br/><br/>
+     <b>Monitoring &amp; Alerting</b> (SCC, SIEM)<br/><br/>
+     <b>Backup &amp; Resilience</b> (Multi-region)
   </div>`;
   cell("txt_r_sec_ctrls", secCtrlsHtml, 1102, 366, 202, 218, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -274,12 +274,12 @@ export function generateTemplate27ThreatModelXml(
   cell("box_r_comp_std", "", 1314, 348, 206, 240, "rounded=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;");
   cell("lbl_r_comp_std", "COMPLIANCE &amp; STANDARDS", 1314, 350, 206, 14, "text;html=1;strokeColor=none;fillColor=none;fontColor=#166534;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   const compStdHtml = `<div style="font-size:8px;line-height:1.55;color:#0F172A;padding:4px 8px;">
-    ✔ <b>GDPR, HIPAA, 21 CFR Part 11</b><br/><br/>
-    ✔ <b>ISO/IEC 27001, 27017, 27018</b><br/><br/>
-    ✔ <b>SOC 2</b> (CC6.1, CC7.1, CC7.2)<br/><br/>
-    ✔ <b>NIST AI RMF, NIST CSF</b><br/><br/>
-    ✔ <b>OWASP Top 10 for LLM Apps</b><br/><br/>
-    ✔ <b>Google Cloud Security Best Practices</b>
+     <b>GDPR, HIPAA, 21 CFR Part 11</b><br/><br/>
+     <b>ISO/IEC 27001, 27017, 27018</b><br/><br/>
+     <b>SOC 2</b> (CC6.1, CC7.1, CC7.2)<br/><br/>
+     <b>NIST AI RMF, NIST CSF</b><br/><br/>
+     <b>OWASP Top 10 for LLM Apps</b><br/><br/>
+     <b>Google Cloud Security Best Practices</b>
   </div>`;
   cell("txt_r_comp_std", compStdHtml, 1316, 366, 202, 218, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -289,11 +289,11 @@ export function generateTemplate27ThreatModelXml(
   cell("lbl_b_ir", "INCIDENT RESPONSE FLOW (HIGH LEVEL)", 16, 600, 430, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#CBD5E1;fontColor=#1E40AF;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const irSteps = [
-    { t: "Detect", icon: "🔍" },
-    { t: "Triage", icon: "📋" },
-    { t: "Contain", icon: "🛡️" },
-    { t: "Eradicate", icon: "🧹" },
-    { t: "Post-Incident<br/>Review", icon: "📑" }
+    { t: "Detect", icon: "●" },
+    { t: "Triage", icon: "●" },
+    { t: "Contain", icon: "●" },
+    { t: "Eradicate", icon: "●" },
+    { t: "Post-Incident<br/>Review", icon: "●" }
   ];
   irSteps.forEach((ir, idx) => {
     const irx = 26 + idx * 82;
@@ -304,9 +304,9 @@ export function generateTemplate27ThreatModelXml(
   });
 
   const irDetailsHtml = `<div style="font-size:8px;line-height:1.6;color:#0F172A;padding:8px 12px;margin-top:92px;">
-    ✔ <b>Automated Isolation:</b> Workloads flagged as compromised are cordoned automatically.<br/><br/>
-    ✔ <b>Forensic Preservation:</b> Snapshots &amp; audit trails exported to immutable GCS vault.<br/><br/>
-    ✔ <b>Regulatory Notification:</b> FDA &amp; GDPR breach notification workflows triggered within 72h.
+     <b>Automated Isolation:</b> Workloads flagged as compromised are cordoned automatically.<br/><br/>
+     <b>Forensic Preservation:</b> Snapshots &amp; audit trails exported to immutable GCS vault.<br/><br/>
+     <b>Regulatory Notification:</b> FDA &amp; GDPR breach notification workflows triggered within 72h.
   </div>`;
   cell("txt_b_ir_dtl", irDetailsHtml, 18, 718, 426, 230, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
@@ -315,10 +315,10 @@ export function generateTemplate27ThreatModelXml(
   cell("lbl_b_mon", "MONITORING &amp; DETECTION", 454, 600, 340, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#CBD5E1;fontColor=#7C3AED;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const monIcons = [
-    { t: "Cloud Monitoring<br/>(Metrics, Logs)", icon: "📈" },
-    { t: "SIEM Integration<br/>(Splunk / Chronicle)", icon: "⚙️" },
-    { t: "Alerting Policies<br/>(Email, Slack, PagerDuty)", icon: "🔔" },
-    { t: "Intelligence<br/>Feeds", icon: "🌐" }
+    { t: "Cloud Monitoring<br/>(Metrics, Logs)", icon: "●" },
+    { t: "SIEM Integration<br/>(Splunk / Chronicle)", icon: "●" },
+    { t: "Alerting Policies<br/>(Email, Slack, PagerDuty)", icon: "●" },
+    { t: "Intelligence<br/>Feeds", icon: "●" }
   ];
   monIcons.forEach((mi, idx) => {
     const col = idx % 2;
@@ -339,7 +339,7 @@ export function generateTemplate27ThreatModelXml(
   cell("lbl_b_risk_sum", "RISK ASSESSMENT SUMMARY", 802, 600, 350, 20, "shape=rectangle;rounded=1;arcSize=8;fillColor=#FFFBEB;strokeColor=#CBD5E1;fontColor=#D97706;fontSize=9.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const riskSumHtml = `<div style="display:flex;align-items:center;justify-content:center;gap:18px;padding:14px;">
-    <div style="font-size:52px;">🍩</div>
+    <div style="font-size:52px;"></div>
     <div style="font-size:9.5px;line-height:1.8;color:#0F172A;">
       <span style="color:#DC2626;font-weight:900;">■ Critical: 10%</span><br/>
       <span style="color:#EA580C;font-weight:900;">■ High: 35%</span><br/>
