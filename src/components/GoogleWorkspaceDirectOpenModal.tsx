@@ -93,11 +93,18 @@ export default function GoogleWorkspaceDirectOpenModal({
   blueprintId,
   masterImageSrc,
 }: GoogleWorkspaceDirectOpenModalProps) {
+  const [activeMode, setActiveMode] = useState<'slides' | 'docs'>(mode);
   const [activeSlideIndex, setActiveSlideIndex] = useState<number>(0);
   const [slide1ViewMode, setSlide1ViewMode] = useState<'interactive-twin' | 'decomposed-shapes'>('interactive-twin');
+  const [docsDiagramViewMode, setDocsDiagramViewMode] = useState<'decomposed-shapes' | 'interactive-twin'>('decomposed-shapes');
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [pngPreviewUrl, setPngPreviewUrl] = useState<string | null>(masterImageSrc || null);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState<boolean>(false);
+  const [launchAssistantModal, setLaunchAssistantModal] = useState<'slides' | 'docs' | null>(null);
+
+  useEffect(() => {
+    setActiveMode(mode);
+  }, [mode]);
 
   // Cloud / OAuth states
   const [googleAccessToken, setGoogleAccessToken] = useState<string>('');
@@ -113,7 +120,7 @@ export default function GoogleWorkspaceDirectOpenModal({
     url?: string;
   } | null>(null);
 
-  // Interactive editable nodes state for Slide 1
+  // Interactive editable nodes state for Slide 1 & Google Docs Editable Diagram
   const parsedTopology = useMemo(() => {
     if (!xmlContent) {
       return {
@@ -293,18 +300,22 @@ export default function GoogleWorkspaceDirectOpenModal({
     setIsUploadingToGoogleDrive(true);
     setStatusMessage({
       type: 'info',
-      text: `Compiling 100% 1:1 Master & Editable ${mode === 'slides' ? 'Presentation (.pptx)' : 'Specification (.docx)'} in memory...`,
+      text: `Compiling 100% 1:1 Master & Editable ${activeMode === 'slides' ? 'Presentation (.pptx)' : 'Specification (.docx)'} in memory...`,
     });
 
     try {
       let blob: Blob | string | void;
-      if (mode === 'slides') {
+      if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
-        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, { returnBlob: true });
+        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
+          returnBlob: true,
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          editableOverrides,
+        });
       }
 
       if (!blob || typeof blob === 'string') {
@@ -358,14 +369,14 @@ export default function GoogleWorkspaceDirectOpenModal({
 
       const { publicUrl, googleWebViewLink } = await uploadToCloudBridgeAndGetPublicUrl(
         base64Data,
-        mode === 'slides' ? 'pptx' : 'docx',
+        activeMode === 'slides' ? 'pptx' : 'docx',
         activeToken
       );
 
       if (googleWebViewLink) {
         setStatusMessage({
           type: 'success',
-          text: `🎉 Created native ${mode === 'slides' ? 'Google Slides Presentation' : 'Google Doc'} with 1:1 Master & Editable Shapes! Opening tab...`,
+          text: `🎉 Created native ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Doc'} with 1:1 Master & Editable Shapes! Opening tab...`,
           url: googleWebViewLink,
         });
         window.open(googleWebViewLink, '_blank');
@@ -373,7 +384,7 @@ export default function GoogleWorkspaceDirectOpenModal({
         const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
         setStatusMessage({
           type: 'success',
-          text: `✨ Opened populated ${mode === 'slides' ? 'Presentation' : 'Document'} in Cloud Presentation Viewer! Use the top switcher for Google Cloud Viewer or PowerPoint Web Viewer.`,
+          text: `✨ Opened populated ${activeMode === 'slides' ? 'Presentation' : 'Document'} in Cloud Presentation Viewer!`,
           url: viewerUrl,
         });
         window.open(viewerUrl, '_blank');
@@ -400,26 +411,30 @@ export default function GoogleWorkspaceDirectOpenModal({
 
     try {
       let blob: Blob | string | void;
-      if (mode === 'slides') {
+      if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
-        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, { returnBlob: true });
+        blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
+          returnBlob: true,
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          editableOverrides,
+        });
       }
       if (!blob || typeof blob === 'string') throw new Error('Failed to compile blob');
 
       const base64Data = await blobToBase64(blob);
       const { publicUrl } = await uploadToCloudBridgeAndGetPublicUrl(
         base64Data,
-        mode === 'slides' ? 'pptx' : 'docx'
+        activeMode === 'slides' ? 'pptx' : 'docx'
       );
 
       const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
       setStatusMessage({
         type: 'success',
-        text: `🌐 Opened populated ${mode === 'slides' ? 'Slide Deck' : 'Specification'} in Cloud Presentation Viewer!`,
+        text: `🌐 Opened populated ${activeMode === 'slides' ? 'Slide Deck' : 'Specification'} in Cloud Presentation Viewer!`,
         url: viewerUrl,
       });
       window.open(viewerUrl, '_blank');
@@ -439,16 +454,19 @@ export default function GoogleWorkspaceDirectOpenModal({
   const handleDirectDownloadFile = async () => {
     setIsDownloadingDeck(true);
     try {
-      if (mode === 'slides') {
+      if (activeMode === 'slides') {
         await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
-        await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId);
+        await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+          editableOverrides,
+        });
       }
       setStatusMessage({
         type: 'success',
-        text: `⬇️ Downloaded ${diagramName} (${blueprintId}).${mode === 'slides' ? 'pptx' : 'docx'} to your device!`,
+        text: `⬇️ Downloaded ${diagramName} (${blueprintId}).${activeMode === 'slides' ? 'pptx' : 'docx'} to your device!`,
       });
     } catch (err: any) {
       setStatusMessage({
@@ -461,7 +479,7 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 3: Auto-Copy Populated Rich HTML + Guaranteed PNG Image & Open slides.new / docs.new
+   * Method 3: Auto-Copy Populated Rich HTML + Guaranteed PNG Image & Open Guided Launch Assistant
    */
   const handleCopyAndLaunchNewTab = async () => {
     setIsCopyingAndLaunching(true);
@@ -469,7 +487,10 @@ export default function GoogleWorkspaceDirectOpenModal({
       const displayNodes = sortedVertices.filter((v) => cleanHtmlToPlainText(v.value).title.length > 0);
       const tableHtmlRows = displayNodes
         .map((n, idx) => {
-          const { title, subtitle } = cleanHtmlToPlainText(n.value);
+          const parsed = cleanHtmlToPlainText(n.value);
+          const ov = editableOverrides[n.id];
+          const title = ov ? ov.title : parsed.title;
+          const subtitle = ov ? ov.subtitle : parsed.subtitle;
           return `<tr>
             <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#0f172a;">OBJ-${String(idx + 1).padStart(2, '0')}</td>
             <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#1e3a8a;">${title}</td>
@@ -478,18 +499,25 @@ export default function GoogleWorkspaceDirectOpenModal({
         })
         .join('');
 
+      const publicDiagramImgUrl =
+        pngPreviewUrl && pngPreviewUrl.startsWith('http')
+          ? pngPreviewUrl
+          : 'https://promptcanvas.up.railway.app/blueprints/azure_application_landing_zone.png';
+
       const richHtml = `
         <div style="font-family: Arial, sans-serif; color: #0f172a;">
           <h1 style="color: #0f172a; font-size: 22pt; margin-bottom: 4px;">${diagramName} (${blueprintId})</h1>
-          <p style="color: #475569; font-size: 11pt; margin-top: 0;">Generated by PromptCanvas Vision Decompiler • 100% Editable Architecture</p>
-          ${pngPreviewUrl ? `<div style="margin: 16px 0;"><img src="${pngPreviewUrl}" style="max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 8px;" /></div>` : ''}
+          <p style="color: #475569; font-size: 11pt; margin-top: 0;">Generated by PromptCanvas Vision Decompiler • 100% Editable Architecture Specification</p>
+          <div style="margin: 16px 0;">
+            <img src="${publicDiagramImgUrl}" width="680" style="max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 8px;" alt="${diagramName}" />
+          </div>
           <h2 style="color: #0f172a; font-size: 15pt; margin-top: 20px;">Architectural Component Specification Table (${displayNodes.length} Nodes)</h2>
           <table style="border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 10pt;">
             <thead>
               <tr style="background-color: #0f172a; color: #ffffff;">
                 <th style="border:1px solid #0f172a;padding:8px;text-align:left;">Object ID</th>
                 <th style="border:1px solid #0f172a;padding:8px;text-align:left;">Component Name</th>
-                <th style="border:1px solid #0f172a;padding:8px;text-align:left;">Architectural Role & Specification</th>
+                <th style="border:1px solid #0f172a;padding:8px;text-align:left;">Architectural Role &amp; Specification</th>
               </tr>
             </thead>
             <tbody>${tableHtmlRows}</tbody>
@@ -502,22 +530,24 @@ export default function GoogleWorkspaceDirectOpenModal({
         'text/plain': new Blob([`${diagramName} (${blueprintId}) - Architecture Specification`], { type: 'text/plain' }),
       };
 
-      if (pngPreviewUrl) {
+      // For Slides mode, include high-res PNG blob for instant slide paste; for Docs mode, omit image/png so Chrome pastes the full HTML table + image!
+      if (activeMode === 'slides' && pngPreviewUrl) {
         const pngBlob = await convertAnyImageUrlToPngBlob(pngPreviewUrl);
         if (pngBlob) {
           clipboardItems['image/png'] = pngBlob;
         }
+        // Also auto-download the .pptx file so it's immediately ready for File -> Import Slides!
+        await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
+        });
       }
 
       await navigator.clipboard.write([new ClipboardItem(clipboardItems)]);
 
-      const targetUrl = mode === 'slides' ? 'https://slides.new' : 'https://docs.new';
-      window.open(targetUrl, '_blank');
-
+      setLaunchAssistantModal(activeMode);
       setStatusMessage({
         type: 'success',
-        text: `✅ Copied high-resolution Architecture Diagram & Editable Table to clipboard and opened ${targetUrl}! Press ⌘V (or Ctrl+V) inside the new Google tab!`,
-        url: targetUrl,
+        text: `✅ Copied populated ${activeMode === 'slides' ? 'Slide Deck & downloaded .pptx' : 'Specification & 177-row Table'}! Follow the 1-click prompt below to populate your Google tab.`,
       });
     } catch (err: any) {
       setStatusMessage({
@@ -551,17 +581,17 @@ export default function GoogleWorkspaceDirectOpenModal({
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${
-                mode === 'slides'
+                activeMode === 'slides'
                   ? 'bg-amber-500/15 border border-amber-500/40 text-amber-400'
                   : 'bg-sky-500/15 border border-sky-500/40 text-sky-400'
               }`}
             >
-              {mode === 'slides' ? <Presentation className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+              {activeMode === 'slides' ? <Presentation className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-base md:text-lg font-bold text-white tracking-tight">
-                  {mode === 'slides'
+                  {activeMode === 'slides'
                     ? 'In-Browser Google Slides Studio & Direct Cloud Open'
                     : 'In-Browser Google Docs Specification Studio & Direct Cloud Open'}
                 </h2>
@@ -577,6 +607,34 @@ export default function GoogleWorkspaceDirectOpenModal({
             </div>
           </div>
 
+          {/* Center Switcher: Open with Google Slides vs Open with Google Docs */}
+          <div className="flex items-center gap-1.5 bg-slate-900/95 p-1 rounded-xl border border-slate-800">
+            <button
+              onClick={() => setActiveMode('slides')}
+              data-testid="switch-to-google-slides-btn"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeMode === 'slides'
+                  ? 'bg-amber-500 text-slate-950 shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Presentation className="w-3.5 h-3.5" />
+              <span>Open with Google Slides</span>
+            </button>
+            <button
+              onClick={() => setActiveMode('docs')}
+              data-testid="switch-to-google-docs-btn"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeMode === 'docs'
+                  ? 'bg-sky-500 text-white shadow-md'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Open with Google Docs</span>
+            </button>
+          </div>
+
           {/* Direct Cloud Launch Buttons */}
           <div className="flex flex-wrap items-center gap-2">
             {/* Button 1: 1-Click Direct Google Drive API Creation / Cloud Viewer */}
@@ -585,7 +643,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               disabled={isUploadingToGoogleDrive}
               data-testid="direct-google-drive-open-btn"
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold shadow-lg transition-all cursor-pointer ${
-                mode === 'slides'
+                activeMode === 'slides'
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950'
                   : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white'
               }`}
@@ -596,13 +654,13 @@ export default function GoogleWorkspaceDirectOpenModal({
                 <CloudUpload className="w-4 h-4" />
               )}
               <span>
-                {mode === 'slides'
+                {activeMode === 'slides'
                   ? '1-Click Create & Open in Google Slides ↗'
                   : '1-Click Create & Open in Google Docs ↗'}
               </span>
             </button>
 
-            {/* Button 2: Google Cloud Viewer (Public HTTPS .pptx Preview Tab) */}
+            {/* Button 2: Google Cloud Viewer (Public HTTPS .pptx/.docx Preview Tab) */}
             <button
               onClick={handleOpenGoogleCloudViewer}
               disabled={isOpeningCloudViewer}
@@ -610,7 +668,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition-all cursor-pointer"
             >
               {isOpeningCloudViewer ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4 text-sky-400" />}
-              <span>Open Populated in Google Viewer ↗</span>
+              <span>Open Populated in Cloud Viewer ↗</span>
             </button>
 
             {/* Button 3: Direct Download .pptx / .docx */}
@@ -619,22 +677,22 @@ export default function GoogleWorkspaceDirectOpenModal({
               disabled={isDownloadingDeck}
               data-testid="direct-download-deck-btn"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all cursor-pointer"
-              title="Download populated .pptx presentation directly to your computer"
+              title="Download populated presentation/specification directly to your computer"
             >
               {isDownloadingDeck ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-              <span>Download .{mode === 'slides' ? 'pptx' : 'docx'}</span>
+              <span>Download .{activeMode === 'slides' ? 'pptx' : 'docx'}</span>
             </button>
 
-            {/* Button 4: Auto-Copy & Open slides.new / docs.new */}
+            {/* Button 4: Auto-Copy & Open Guided Google Tab */}
             <button
               onClick={handleCopyAndLaunchNewTab}
               disabled={isCopyingAndLaunching}
               data-testid="copy-and-launch-new-tab-btn"
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
-              title="Copies rich diagram & editable table to clipboard and launches Google tab"
+              title="Copies rich diagram & editable table to clipboard and opens guided Google launch assistant"
             >
               <Copy className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Copy &amp; {mode === 'slides' ? 'slides.new' : 'docs.new'}</span>
+              <span>Copy &amp; {activeMode === 'slides' ? 'slides.new' : 'docs.new'}</span>
             </button>
 
             {/* OAuth Config Toggle */}
@@ -669,6 +727,65 @@ export default function GoogleWorkspaceDirectOpenModal({
             </button>
           </div>
         </div>
+
+        {/* Guided Populated Google Launch Assistant Modal (Prevents Blank Doc / Blank Slide Confusion) */}
+        {launchAssistantModal && (
+          <div className="px-6 py-4 bg-gradient-to-r from-emerald-950/95 via-slate-900 to-emerald-950/95 border-b border-emerald-500/50 flex flex-col md:flex-row items-center justify-between gap-4 z-50">
+            <div className="space-y-1.5 max-w-3xl">
+              <div className="flex items-center gap-2 text-sm font-bold text-emerald-300">
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span>
+                  {launchAssistantModal === 'docs'
+                    ? '✅ Complete 177-Node Specification & High-Res Diagram Copied to Clipboard!'
+                    : '✅ Populated 3-Slide Editable Vector Deck (.pptx) Downloaded & Slide Copied!'}
+                </span>
+              </div>
+              {launchAssistantModal === 'docs' ? (
+                <p className="text-xs text-slate-200 leading-relaxed">
+                  Google&apos;s <code className="text-sky-300 font-mono">docs.new</code> shortcut opens a fresh document tab. As soon as it opens, press{' '}
+                  <kbd className="px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-extrabold font-mono text-xs shadow">
+                    ⌘V (Mac) / Ctrl+V (Win)
+                  </kbd>{' '}
+                  once to paste your entire <strong>1:1 Architecture Diagram + All 177 Editable Specification Table Rows</strong>!
+                </p>
+              ) : (
+                <p className="text-xs text-slate-200 leading-relaxed">
+                  To edit all 3 slides &amp; 89 native vector shapes in Google Slides: click <strong>File → Import slides → Upload</strong> in the new tab and select the downloaded <code className="text-amber-300 font-mono">{diagramName}.pptx</code> file (or press <kbd className="px-1.5 py-0.5 rounded bg-amber-500 text-slate-950 font-bold font-mono text-xs">⌘V</kbd> to paste the widescreen slide immediately!).
+                </p>
+              )}
+            </div>
+            <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => {
+                  const target = launchAssistantModal === 'slides' ? 'https://slides.new' : 'https://docs.new';
+                  window.open(target, '_blank');
+                  setLaunchAssistantModal(null);
+                }}
+                data-testid="confirm-launch-google-tab-btn"
+                className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <span>
+                  {launchAssistantModal === 'docs'
+                    ? '🚀 Open Google Docs (docs.new) & Press ⌘V ↗'
+                    : '🚀 Open Google Slides (slides.new) & Import ↗'}
+                </span>
+              </button>
+              <button
+                onClick={handleDirectDownloadFile}
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/40 font-bold text-xs transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download .{launchAssistantModal === 'slides' ? 'pptx' : 'docx'}</span>
+              </button>
+              <button
+                onClick={() => setLaunchAssistantModal(null)}
+                className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Status / Notification Banner */}
         {statusMessage && (
@@ -731,7 +848,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
         {/* Main Workspace Body: In-Browser Populated Slide Deck OR Google Docs Spec */}
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden bg-[#F8FAFC] text-slate-900">
-          {mode === 'slides' ? (
+          {activeMode === 'slides' ? (
             <>
               {/* Left Slide Thumbnail Rail (Google Slides style) */}
               <div className="w-full md:w-64 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto shrink-0">
@@ -1303,67 +1420,527 @@ export default function GoogleWorkspaceDirectOpenModal({
               </div>
             </>
           ) : (
-            /* GOOGLE DOCS SPECIFICATION LIVE STUDIO VIEW */
-            <div className="flex-1 overflow-y-auto bg-slate-200/80 p-4 md:p-8 flex justify-center">
-              <div
-                className="w-full max-w-[920px] bg-white shadow-2xl rounded-xl border border-slate-300 p-8 md:p-12 space-y-6 text-slate-900"
-                data-testid="live-browser-docs-canvas"
-              >
-                <div className="border-b border-slate-200 pb-6">
-                  <div className="flex items-center gap-2 text-xs font-bold text-sky-600 uppercase tracking-wider mb-2">
-                    <FileText className="w-4 h-4" />
-                    <span>Google Docs Technical Architecture Specification</span>
-                  </div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">{diagramName}</h1>
-                  <p className="text-sm text-slate-500 mt-1">
-                    Blueprint ID: <span className="font-mono font-bold text-slate-700">{blueprintId}</span> • Compiled for
-                    100% Editable Google Docs Collaboration
-                  </p>
+            /* GOOGLE DOCS SPECIFICATION LIVE STUDIO VIEW (WITH 100% EDITABLE DIAGRAM + LIVE NODE EDITOR) */
+            <>
+              {/* Left Document Outline & Live Node Editor Rail */}
+              <div className="w-full md:w-72 bg-slate-100 border-r border-slate-200 p-3.5 flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto shrink-0">
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-0.5 hidden md:block">
+                  Google Docs Specification Sections
                 </div>
 
-                <div className="space-y-3">
-                  <h2 className="text-lg font-bold text-slate-900">1. Master Architecture Topology Diagram</h2>
-                  <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-xs">
-                    {pngPreviewUrl ? (
-                      <img src={pngPreviewUrl} alt={diagramName} className="max-h-[440px] w-auto rounded-lg" />
-                    ) : (
-                      <div className="py-12 text-xs text-slate-400">Loading high-resolution architecture visual...</div>
-                    )}
+                <div className="flex md:flex-col gap-2 shrink-0">
+                  <div className="p-3 rounded-xl bg-white border-2 border-sky-500 shadow-xs">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-xs font-bold text-slate-900">1. Editable Vector Diagram</span>
+                      <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-sky-100 text-sky-800">
+                        177 Vector Nodes
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      Interactive decomposed Azure/GCP shapes, 89 vector icons &amp; orthogonal connectors.
+                    </p>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-white/80 border border-slate-200">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className="text-xs font-bold text-slate-900">2. Component Spec Matrix</span>
+                      <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">
+                        Inline Editable
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-600">
+                      Click any table row or diagram box to edit titles &amp; roles live.
+                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h2 className="text-lg font-bold text-slate-900">
-                    2. Component Inventory &amp; Technical Specification Matrix ({sortedVertices.length} Objects)
-                  </h2>
-                  <table className="w-full border-collapse text-xs border border-slate-300">
-                    <thead>
-                      <tr className="bg-slate-900 text-white">
-                        <th className="p-2.5 text-left border border-slate-700 w-24">Object ID</th>
-                        <th className="p-2.5 text-left border border-slate-700 w-60">Component Name</th>
-                        <th className="p-2.5 text-left border border-slate-700">Technical Role &amp; Specification</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedVertices
-                        .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
-                        .map((node, idx) => {
-                          const { title, subtitle } = cleanHtmlToPlainText(node.value);
-                          return (
-                            <tr key={node.id} className="border-b border-slate-200 hover:bg-slate-50">
-                              <td className="p-2.5 font-mono font-bold text-slate-900 border-r border-slate-200">
-                                OBJ-{String(idx + 1).padStart(2, '0')}
-                              </td>
-                              <td className="p-2.5 font-bold text-blue-950 border-r border-slate-200">{title}</td>
-                              <td className="p-2.5 text-slate-700">{subtitle || 'Enterprise Cloud Node'}</td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </table>
+                {/* Live Node Editor Panel in Docs Mode */}
+                {selectedNode ? (
+                  <div className="mt-2 p-3 rounded-xl bg-slate-900 text-white border border-slate-700 space-y-2 shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-amber-400 flex items-center gap-1">
+                        <Edit3 className="w-3 h-3" />
+                        <span>Live Diagram &amp; Doc Node Editor</span>
+                      </span>
+                      <button
+                        onClick={() => setSelectedNodeId(null)}
+                        className="text-slate-400 hover:text-white text-xs cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] text-slate-400 block">Component Name / Title</label>
+                      <input
+                        type="text"
+                        value={
+                          editableOverrides[selectedNode.id]?.title ??
+                          cleanHtmlToPlainText(selectedNode.value).title
+                        }
+                        onChange={(e) => {
+                          const curSub =
+                            editableOverrides[selectedNode.id]?.subtitle ??
+                            cleanHtmlToPlainText(selectedNode.value).subtitle;
+                          setEditableOverrides((prev) => ({
+                            ...prev,
+                            [selectedNode.id]: { title: e.target.value, subtitle: curSub },
+                          }));
+                        }}
+                        className="w-full px-2 py-1 rounded bg-slate-950 border border-amber-500/50 text-xs text-amber-300 font-bold focus:outline-none"
+                      />
+                      <label className="text-[10px] text-slate-400 block">Technical Role / Specification</label>
+                      <input
+                        type="text"
+                        value={
+                          editableOverrides[selectedNode.id]?.subtitle ??
+                          cleanHtmlToPlainText(selectedNode.value).subtitle
+                        }
+                        onChange={(e) => {
+                          const curTitle =
+                            editableOverrides[selectedNode.id]?.title ??
+                            cleanHtmlToPlainText(selectedNode.value).title;
+                          setEditableOverrides((prev) => ({
+                            ...prev,
+                            [selectedNode.id]: { title: curTitle, subtitle: e.target.value },
+                          }));
+                        }}
+                        placeholder="Add role or protocol..."
+                        className="w-full px-2 py-1 rounded bg-slate-950 border border-slate-700 text-xs text-slate-200 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-auto pt-3 border-t border-slate-200 hidden md:block">
+                    <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 text-sky-950 text-xs space-y-1">
+                      <div className="font-bold flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+                        <span>Interactive Editable Diagram</span>
+                      </div>
+                      <p className="text-[11px] text-sky-900 leading-relaxed">
+                        Click any component box or icon on the diagram in Section 1 (or any row in Section 2) to customize its label &amp; role in real time!
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Main Google Docs Specification Page Canvas */}
+              <div className="flex-1 overflow-y-auto bg-slate-200/80 p-4 md:p-8 flex justify-center">
+                <div
+                  className="w-full max-w-[1040px] bg-white shadow-2xl rounded-xl border border-slate-300 p-6 md:p-10 space-y-8 text-slate-900"
+                  data-testid="live-browser-docs-canvas"
+                >
+                  {/* Document Header */}
+                  <div className="border-b border-slate-200 pb-5 flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs font-bold text-sky-600 uppercase tracking-wider mb-1.5">
+                        <FileText className="w-4 h-4" />
+                        <span>Google Docs Technical Architecture Specification &amp; Editable Blueprint</span>
+                      </div>
+                      <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">{diagramName}</h1>
+                      <p className="text-sm text-slate-500 mt-1">
+                        Blueprint ID: <span className="font-mono font-bold text-slate-700">{blueprintId}</span> •{' '}
+                        <span className="text-emerald-700 font-semibold">
+                          100% Editable Vector Diagram &amp; Specification Matrix
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* SECTION 1: INTERACTIVE EDITABLE ARCHITECTURE TOPOLOGY DIAGRAM */}
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <h2 className="text-lg font-bold text-slate-900">
+                          1. Master Architecture Topology Diagram (Interactive &amp; Editable)
+                        </h2>
+                        <p className="text-xs text-slate-500">
+                          Click any component box, icon, or enclave below to edit its title and role directly inside the specification.
+                        </p>
+                      </div>
+
+                      {/* Diagram Mode Switcher inside Google Doc */}
+                      <div className="inline-flex rounded-lg bg-slate-200 p-0.5 border border-slate-300">
+                        <button
+                          onClick={() => setDocsDiagramViewMode('decomposed-shapes')}
+                          data-testid="docs-diagram-decomposed-btn"
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                            docsDiagramViewMode === 'decomposed-shapes'
+                              ? 'bg-slate-900 text-amber-300 shadow-xs'
+                              : 'text-slate-700 hover:text-slate-900'
+                          }`}
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>Editable Decomposed Vector Diagram (177 Shapes)</span>
+                        </button>
+                        <button
+                          onClick={() => setDocsDiagramViewMode('interactive-twin')}
+                          data-testid="docs-diagram-twin-btn"
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                            docsDiagramViewMode === 'interactive-twin'
+                              ? 'bg-slate-900 text-amber-300 shadow-xs'
+                              : 'text-slate-700 hover:text-slate-900'
+                          }`}
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>1:1 Master Visual Twin</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Widescreen 16:9 Interactive Editable Diagram Container inside Google Doc */}
+                    <div
+                      className="w-full aspect-[16/9] rounded-xl border-2 border-slate-300 shadow-md overflow-hidden relative flex items-center justify-center"
+                      style={{
+                        backgroundColor:
+                          docsDiagramViewMode === 'interactive-twin'
+                            ? '#FFFFFF'
+                            : parsedTopology.isDarkDiagram
+                            ? `#${parsedTopology.diagramBgHex}`
+                            : '#FFFFFF',
+                      }}
+                      data-testid="docs-editable-diagram-viewport"
+                    >
+                      {docsDiagramViewMode === 'decomposed-shapes' ? (
+                        /* DECOMPOSED NATIVE VECTOR SHAPES & AUTHENTIC AZURE/GCP SVG ICONS LAYER */
+                        <div className="relative w-full h-full">
+                          {/* SVG Connector Layer */}
+                          <svg
+                            className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                            viewBox="0 0 100 100"
+                            preserveAspectRatio="none"
+                          >
+                            <defs>
+                              <marker
+                                id="docs-arrow-end"
+                                viewBox="0 0 10 10"
+                                refX="8"
+                                refY="5"
+                                markerWidth="4"
+                                markerHeight="4"
+                                orient="auto"
+                              >
+                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#2563EB" />
+                              </marker>
+                              <marker
+                                id="docs-arrow-start"
+                                viewBox="0 0 10 10"
+                                refX="2"
+                                refY="5"
+                                markerWidth="4"
+                                markerHeight="4"
+                                orient="auto"
+                              >
+                                <path d="M 10 1.5 L 0 5 L 10 8.5 z" fill="#2563EB" />
+                              </marker>
+                            </defs>
+                            {edges.map((edge, eIdx) => {
+                              const src = sortedVertices.find((v) => v.id === edge.source);
+                              const tgt = sortedVertices.find((v) => v.id === edge.target);
+
+                              let ptStart = src
+                                ? {
+                                    x: src.absX + src.width * parseFloat(edge.style.exitX ?? '0.5'),
+                                    y: src.absY + src.height * parseFloat(edge.style.exitY ?? '0.5'),
+                                  }
+                                : edge.sourcePoint;
+                              let ptEnd = tgt
+                                ? {
+                                    x: tgt.absX + tgt.width * parseFloat(edge.style.entryX ?? '0.5'),
+                                    y: tgt.absY + tgt.height * parseFloat(edge.style.entryY ?? '0.5'),
+                                  }
+                                : edge.targetPoint;
+
+                              if (!ptStart || !ptEnd) return null;
+
+                              const toPctX = (x: number) => ((x - parsedTopology.minX) / graphW) * 94 + 3;
+                              const toPctY = (y: number) => ((y - parsedTopology.minY) / graphH) * 90 + 5;
+
+                              const allPts = [ptStart, ...edge.waypoints, ptEnd];
+                              const pointsAttr = allPts.map((p) => `${toPctX(p.x)},${toPctY(p.y)}`).join(' ');
+                              const hasStart = edge.style.startArrow && edge.style.startArrow !== 'none';
+                              const hasEnd = !edge.style.endArrow || edge.style.endArrow !== 'none';
+
+                              return (
+                                <g key={edge.id || eIdx}>
+                                  <polyline
+                                    fill="none"
+                                    points={pointsAttr}
+                                    stroke={edge.style.strokeColor || '#2563EB'}
+                                    strokeWidth="0.22"
+                                    strokeDasharray={edge.style.dashed === '1' ? '0.7,0.4' : undefined}
+                                    markerStart={hasStart ? 'url(#docs-arrow-start)' : undefined}
+                                    markerEnd={hasEnd ? 'url(#docs-arrow-end)' : undefined}
+                                  />
+                                </g>
+                              );
+                            })}
+                          </svg>
+
+                          {/* Decomposed Shapes Layer */}
+                          <div className="relative w-full h-full">
+                            {sortedVertices.map((node) => {
+                              if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) {
+                                return null;
+                              }
+
+                              const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 94 + 3;
+                              const topPct = ((node.absY - parsedTopology.minY) / graphH) * 90 + 5;
+                              const widthPct = Math.max(1.4, (node.width / graphW) * 94);
+                              const heightPct = Math.max(1.8, (node.height / graphH) * 90);
+
+                              const parsedText = cleanHtmlToPlainText(node.value);
+                              const override = editableOverrides[node.id];
+                              const title = override ? override.title : parsedText.title;
+                              const subtitle = override ? override.subtitle : parsedText.subtitle;
+
+                              const isImageShape =
+                                node.style.shape === 'image' ||
+                                Boolean(node.imageDataUrl) ||
+                                node.extractedSvgs.length > 0;
+
+                              const hasFill =
+                                node.style.fillColor &&
+                                node.style.fillColor !== 'none' &&
+                                node.style.fillColor !== 'transparent' &&
+                                !(isImageShape && node.width <= 55 && node.height <= 55);
+                              const hasStroke =
+                                node.style.strokeColor &&
+                                node.style.strokeColor !== 'none' &&
+                                node.style.strokeColor !== 'transparent' &&
+                                !(isImageShape && node.width <= 55 && node.height <= 55);
+
+                              const isContainer =
+                                node.style.container === '1' ||
+                                parentIds.has(node.id) ||
+                                (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
+                                (node.width > 240 && node.height > 120 && !isImageShape);
+
+                              const isStandaloneIconWithBottomLabel =
+                                (node.style.verticalLabelPosition === 'bottom' ||
+                                  (isImageShape && node.width <= 90 && node.height <= 75) ||
+                                  (node.width <= 72 && node.height <= 72)) &&
+                                !isContainer;
+
+                              const isSelected = selectedNodeId === node.id;
+                              const titleHex = node.htmlTitleColor
+                                ? `#${node.htmlTitleColor}`
+                                : node.style.fontColor
+                                ? node.style.fontColor
+                                : parsedTopology.isDarkDiagram
+                                ? '#FFFFFF'
+                                : '#0F172A';
+
+                              const iconMarkupOrUrl = node.extractedSvgs[0] || node.imageDataUrl;
+
+                              return (
+                                <div
+                                  key={node.id}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedNodeId(node.id);
+                                  }}
+                                  style={{
+                                    left: `${leftPct}%`,
+                                    top: `${topPct}%`,
+                                    width: `${widthPct}%`,
+                                    height: `${heightPct}%`,
+                                    zIndex: isSelected ? 50 : node.depth * 5 + (isContainer ? 1 : 15),
+                                    borderRadius:
+                                      node.style.rounded === '1' ? '6px' : node.style.ellipse === '1' ? '9999px' : '2px',
+                                    backgroundColor: hasFill ? node.style.fillColor : 'transparent',
+                                    borderColor: isSelected
+                                      ? '#F59E0B'
+                                      : hasStroke
+                                      ? node.style.strokeColor
+                                      : 'transparent',
+                                    borderStyle: node.style.dashed === '1' ? 'dashed' : 'solid',
+                                    borderWidth: isSelected ? '2px' : hasStroke ? '1.2px' : '0px',
+                                  }}
+                                  className={`absolute transition-all cursor-pointer select-none flex ${
+                                    isContainer
+                                      ? 'flex-col justify-start items-start p-1 overflow-visible'
+                                      : isStandaloneIconWithBottomLabel
+                                      ? 'flex-col items-center justify-center overflow-visible'
+                                      : 'flex-row items-center justify-center px-1 gap-1'
+                                  }`}
+                                >
+                                  {iconMarkupOrUrl && (
+                                    <div
+                                      className={`${
+                                        isStandaloneIconWithBottomLabel ? 'w-full h-full' : 'w-4 h-4 shrink-0'
+                                      } flex items-center justify-center [&>svg]:w-full [&>svg]:h-full`}
+                                    >
+                                      {iconMarkupOrUrl.startsWith('<svg') ? (
+                                        <div
+                                          className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+                                          dangerouslySetInnerHTML={{ __html: iconMarkupOrUrl }}
+                                        />
+                                      ) : (
+                                        <img
+                                          src={iconMarkupOrUrl}
+                                          alt={title || 'icon'}
+                                          className="w-full h-full object-contain"
+                                        />
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {title && (
+                                    <div
+                                      style={{ color: titleHex }}
+                                      className={`${
+                                        isStandaloneIconWithBottomLabel
+                                          ? 'absolute top-full mt-0.5 left-1/2 -translate-x-1/2 text-center w-max max-w-[135px] whitespace-normal break-normal leading-[1.05] px-1 py-0.2 rounded bg-white/95 shadow-2xs text-[7.5px] font-bold z-30'
+                                          : isContainer
+                                          ? 'text-[8.5px] font-bold leading-[1.1] px-1 py-0.5 w-max max-w-[98%] whitespace-nowrap overflow-visible'
+                                          : 'text-[8px] font-bold leading-[1.05] text-center whitespace-normal break-normal line-clamp-2 max-w-full'
+                                      }`}
+                                    >
+                                      {title}
+                                      {subtitle && !isStandaloneIconWithBottomLabel && (
+                                        <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal break-normal line-clamp-2">
+                                          {subtitle}
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ) : (
+                        /* 1:1 MASTER VISUAL TWIN WITH INTERACTIVE VECTOR HOTSPOTS */
+                        <div className="relative w-full h-full flex items-center justify-center p-1">
+                          {pngPreviewUrl ? (
+                            <div className="relative w-full h-full flex items-center justify-center">
+                              <img
+                                src={pngPreviewUrl}
+                                alt={diagramName}
+                                className="w-full h-full object-contain select-none pointer-events-none"
+                              />
+                              <div className="absolute inset-0">
+                                {sortedVertices.map((node) => {
+                                  if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700) {
+                                    return null;
+                                  }
+                                  const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 94 + 3;
+                                  const topPct = ((node.absY - parsedTopology.minY) / graphH) * 90 + 5;
+                                  const widthPct = Math.max(1.8, (node.width / graphW) * 94);
+                                  const heightPct = Math.max(2.2, (node.height / graphH) * 90);
+                                  const isSelected = selectedNodeId === node.id;
+                                  const override = editableOverrides[node.id];
+
+                                  return (
+                                    <div
+                                      key={node.id}
+                                      onClick={() => setSelectedNodeId(node.id)}
+                                      style={{
+                                        left: `${leftPct}%`,
+                                        top: `${topPct}%`,
+                                        width: `${widthPct}%`,
+                                        height: `${heightPct}%`,
+                                      }}
+                                      className={`absolute rounded transition-all cursor-pointer ${
+                                        isSelected
+                                          ? 'ring-2 ring-amber-500 bg-amber-500/15 z-30 shadow-md'
+                                          : 'hover:ring-2 hover:ring-sky-500/80 hover:bg-sky-500/10 z-10'
+                                      }`}
+                                    >
+                                      {override && (
+                                        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded bg-amber-500 text-slate-950 font-bold text-[9px] whitespace-nowrap shadow-sm">
+                                          {override.title}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="py-12 text-xs text-slate-400">Loading high-resolution architecture visual...</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* SECTION 2: INLINE-EDITABLE COMPONENT INVENTORY & TECHNICAL SPECIFICATION MATRIX */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-bold text-slate-900">
+                        2. Component Inventory &amp; Technical Specification Matrix ({sortedVertices.length} Editable Objects)
+                      </h2>
+                      <span className="text-xs text-sky-700 font-semibold">
+                        Click any row or type inline to edit diagram &amp; specification simultaneously
+                      </span>
+                    </div>
+                    <table className="w-full border-collapse text-xs border border-slate-300">
+                      <thead>
+                        <tr className="bg-slate-900 text-white">
+                          <th className="p-2.5 text-left border border-slate-700 w-24">Object ID</th>
+                          <th className="p-2.5 text-left border border-slate-700 w-72">Component Name (Editable)</th>
+                          <th className="p-2.5 text-left border border-slate-700">Technical Role &amp; Specification (Editable)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sortedVertices
+                          .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
+                          .map((node, idx) => {
+                            const parsed = cleanHtmlToPlainText(node.value);
+                            const override = editableOverrides[node.id];
+                            const titleVal = override ? override.title : parsed.title;
+                            const subVal = override ? override.subtitle : parsed.subtitle;
+                            const isSelected = selectedNodeId === node.id;
+
+                            return (
+                              <tr
+                                key={node.id}
+                                onClick={() => setSelectedNodeId(node.id)}
+                                className={`border-b border-slate-200 transition cursor-pointer ${
+                                  isSelected ? 'bg-amber-50 ring-1 ring-amber-400' : 'hover:bg-slate-50'
+                                }`}
+                              >
+                                <td className="p-2.5 font-mono font-bold text-slate-900 border-r border-slate-200">
+                                  OBJ-{String(idx + 1).padStart(2, '0')}
+                                </td>
+                                <td className="p-1.5 border-r border-slate-200">
+                                  <input
+                                    type="text"
+                                    value={titleVal}
+                                    onChange={(e) => {
+                                      setEditableOverrides((prev) => ({
+                                        ...prev,
+                                        [node.id]: { title: e.target.value, subtitle: subVal },
+                                      }));
+                                    }}
+                                    className="w-full px-2 py-1 rounded font-bold text-blue-950 bg-transparent hover:bg-white focus:bg-white focus:ring-1 focus:ring-sky-500 focus:outline-none"
+                                  />
+                                </td>
+                                <td className="p-1.5">
+                                  <input
+                                    type="text"
+                                    value={subVal}
+                                    placeholder="Enterprise Cloud Node"
+                                    onChange={(e) => {
+                                      setEditableOverrides((prev) => ({
+                                        ...prev,
+                                        [node.id]: { title: titleVal, subtitle: e.target.value },
+                                      }));
+                                    }}
+                                    className="w-full px-2 py-1 rounded text-slate-700 bg-transparent hover:bg-white focus:bg-white focus:ring-1 focus:ring-sky-500 focus:outline-none"
+                                  />
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>

@@ -51,44 +51,104 @@ function dataUrlToUint8Array(dataUrl: string): Uint8Array | null {
     const base64Index = dataUrl.indexOf(';base64,');
     if (base64Index === -1) return null;
     const base64 = dataUrl.substring(base64Index + 8);
-    const binaryString = window.atob(base64);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
+    if (typeof Buffer !== 'undefined') {
+      return new Uint8Array(Buffer.from(base64, 'base64'));
     }
-    return bytes;
+    if (typeof window !== 'undefined' && typeof window.atob === 'function') {
+      const binaryString = window.atob(base64);
+      const len = binaryString.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      return bytes;
+    }
+    return null;
   } catch (e) {
     console.warn('Failed to convert image dataUrl for docx:', e);
     return null;
   }
 }
 
+async function resolveMasterImageBytes(
+  masterImageSrc?: string,
+  blueprintId?: string,
+  xmlContent?: string
+): Promise<Uint8Array | null> {
+  let targetSrc = masterImageSrc || null;
+  const idLower = (blueprintId || '').toLowerCase();
+  if (!targetSrc || targetSrc.includes('azure-landing-zone.png')) {
+    if (idLower.includes('9745') || idLower.includes('5965') || idLower.includes('azure')) {
+      targetSrc = '/blueprints/azure_application_landing_zone.png';
+    }
+  }
+
+  if (targetSrc) {
+    if (targetSrc.startsWith('data:image/')) {
+      const bytes = dataUrlToUint8Array(targetSrc);
+      if (bytes) return bytes;
+    } else if (typeof window !== 'undefined') {
+      try {
+        const res = await fetch(targetSrc);
+        if (res.ok) {
+          const buf = await res.arrayBuffer();
+          return new Uint8Array(buf);
+        }
+      } catch {
+        // fallback below
+      }
+    } else if (typeof Buffer !== 'undefined') {
+      try {
+        const nodeDynamicImport = new Function('m', 'return import(m)');
+        const fs = await nodeDynamicImport('fs');
+        const path = await nodeDynamicImport('path');
+        const cleanRel = targetSrc.replace(/^\//, '');
+        const fullPath = path.join(process.cwd(), 'public', cleanRel);
+        if (fs.existsSync(fullPath)) {
+          return new Uint8Array(fs.readFileSync(fullPath));
+        }
+      } catch {
+        // fallback below
+      }
+    }
+  }
+
+  if (xmlContent) {
+    try {
+      const pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
+      if (pngDataUrl) {
+        return dataUrlToUint8Array(pngDataUrl);
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return null;
+}
+
 export async function exportDrawioToEditableDocx(
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
   blueprintId: string = 'VIS-MASTER',
-  options?: { returnBlob?: boolean }
+  options?: {
+    returnBlob?: boolean;
+    masterImageSrc?: string;
+    editableOverrides?: Record<string, { title: string; subtitle: string }>;
+  }
 ): Promise<Blob | void> {
   const { cells } = parseDrawioXmlForPptx(xmlContent);
+  const overrides = options?.editableOverrides || {};
   const vertices = cells.filter((c) => c.vertex && stripHtmlForDocx(c.value).title.length > 0);
   const edges = cells.filter((c) => c.edge);
 
   const cellTitleMap = new Map<string, string>();
   vertices.forEach((v) => {
-    cellTitleMap.set(v.id, stripHtmlForDocx(v.value).title);
+    const ov = overrides[v.id];
+    cellTitleMap.set(v.id, ov?.title || stripHtmlForDocx(v.value).title);
   });
 
-  // Rasterize high-res PNG for embedding inside Google Docs / Word
-  let imageBytes: Uint8Array | null = null;
-  try {
-    const pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2, transparent: false });
-    if (pngDataUrl) {
-      imageBytes = dataUrlToUint8Array(pngDataUrl);
-    }
-  } catch (err) {
-    console.warn('Docx diagram image embed skipped:', err);
-  }
+  // Rasterize or load high-res PNG for embedding inside Google Docs / Word
+  const imageBytes = await resolveMasterImageBytes(options?.masterImageSrc, blueprintId, xmlContent);
 
   const children: any[] = [
     new Paragraph({
@@ -203,7 +263,10 @@ export async function exportDrawioToEditableDocx(
   ];
 
   vertices.forEach((v, idx) => {
-    const { title, details } = stripHtmlForDocx(v.value);
+    const raw = stripHtmlForDocx(v.value);
+    const ov = overrides[v.id];
+    const title = ov?.title || raw.title;
+    const details = ov?.subtitle || raw.details;
     const isContainer = v.style.container === '1' || v.width * v.height > 90000;
     const objId = `OBJ-${String(idx + 1).padStart(2, '0')}`;
 
