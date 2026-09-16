@@ -123,7 +123,7 @@ async function runPendingGapVerificationSuite() {
 
   // 11. Offline & PWA Manifest Cache Engine
   console.log('\n📌 PILLAR 11: Offline PWA Manifest & Service Worker Cache Pre-Cache');
-  assert(PWA_OFFLINE_CACHE_ENTRIES.includes('/workspace') && PWA_OFFLINE_CACHE_ENTRIES.includes('/canonical'), 'PWA cache manifest contains core offline routes');
+  assert(PWA_OFFLINE_CACHE_ENTRIES.includes('/studio') && PWA_OFFLINE_CACHE_ENTRIES.includes('/canonical'), 'PWA cache manifest contains core offline routes');
 
   // 12. Disaster Recovery & RTO/RPO Simulator
   console.log('\n📌 PILLAR 12: Disaster Recovery RTO / RPO Target Compliance');

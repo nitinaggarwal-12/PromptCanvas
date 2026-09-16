@@ -238,22 +238,30 @@ export async function renderInlineSvgToPngDataUrl(
   if (!svgOrDataUrl) return null;
 
   if (typeof window === 'undefined') {
+    const cleanSvg = normalizeSvgDimensions(svgOrDataUrl.trim(), widthPx, heightPx);
     try {
-      const { createCanvas, loadImage } = await import('canvas');
-      let dataUriToLoad = svgOrDataUrl.trim();
-      if (!dataUriToLoad.startsWith('data:image/png') && !dataUriToLoad.startsWith('data:image/jpeg')) {
-        const cleanSvg = normalizeSvgDimensions(dataUriToLoad, widthPx, heightPx);
-        dataUriToLoad = `data:image/svg+xml;base64,${Buffer.from(cleanSvg, 'utf-8').toString('base64')}`;
+      const sharpMod = await import('sharp');
+      const sharpFn = sharpMod.default || sharpMod;
+      const svgBuf = Buffer.from(cleanSvg, 'utf-8');
+      const pngBuf = await sharpFn(svgBuf).resize(widthPx, heightPx).png().toBuffer();
+      return `data:image/png;base64,${pngBuf.toString('base64')}`;
+    } catch {
+      try {
+        const { createCanvas, loadImage } = await import('canvas');
+        let dataUriToLoad = svgOrDataUrl.trim();
+        if (!dataUriToLoad.startsWith('data:image/png') && !dataUriToLoad.startsWith('data:image/jpeg')) {
+          dataUriToLoad = `data:image/svg+xml;base64,${Buffer.from(cleanSvg, 'utf-8').toString('base64')}`;
+        }
+        const img = await loadImage(dataUriToLoad);
+        const canvas = createCanvas(widthPx, heightPx);
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, widthPx, heightPx);
+        ctx.drawImage(img, 0, 0, widthPx, heightPx);
+        return canvas.toDataURL('image/png');
+      } catch (err) {
+        console.warn('Node SVG rasterization notice:', err);
+        return null;
       }
-      const img = await loadImage(dataUriToLoad);
-      const canvas = createCanvas(widthPx, heightPx);
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, widthPx, heightPx);
-      ctx.drawImage(img, 0, 0, widthPx, heightPx);
-      return canvas.toDataURL('image/png');
-    } catch (err) {
-      console.warn('Node canvas SVG rasterization notice:', err);
-      return null;
     }
   }
 
