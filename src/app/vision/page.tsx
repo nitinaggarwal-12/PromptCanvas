@@ -74,6 +74,7 @@ import {
 } from '@/lib/visionImageVault';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
+import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
 import { AppHeader } from '@/components/AppHeader';
 
 const SAMPLE_BLUEPRINTS = PRECOMPILED_SAMPLE_BLUEPRINTS;
@@ -253,6 +254,7 @@ function VisionPageContent() {
   const [historySearchQuery, setHistorySearchQuery] = useState<string>('');
   const [isExportingPptx, setIsExportingPptx] = useState<boolean>(false);
   const [isExportingDocx, setIsExportingDocx] = useState<boolean>(false);
+  const [googleWorkspaceModalMode, setGoogleWorkspaceModalMode] = useState<'slides' | 'docs' | null>(null);
   const [dbHistoricalDiagrams, setDbHistoricalDiagrams] = useState<Array<{
     id: string;
     title: string;
@@ -1461,35 +1463,59 @@ function VisionPageContent() {
             <span className="hidden lg:inline">.drawio</span>
           </button>
 
-          <button
-            onClick={handleExportEditablePptx}
-            disabled={!decompiledXml || isDecompiling || isExportingPptx}
-            data-testid="vision-export-pptx-btn"
-            className="px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-            title="Download 100% Native Editable PowerPoint (.pptx) & Google Slides vector shapes"
-          >
-            {isExportingPptx ? (
-              <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
-            ) : (
+          {/* Google Slides: Direct Browser Studio / Cloud Open + Optional .pptx Download */}
+          <div className="flex items-center rounded-md border border-amber-500/40 bg-amber-500/15 overflow-hidden shadow-2xs">
+            <button
+              onClick={() => setGoogleWorkspaceModalMode('slides')}
+              disabled={!decompiledXml || isDecompiling}
+              data-testid="vision-open-google-slides-btn"
+              className="px-2.5 py-1 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Open directly in Google Slides in browser (Zero Local Download Required) — Interactive Slide Studio & 1-Click Cloud Open"
+            >
               <Presentation className="w-3 h-3 text-amber-400" />
-            )}
-            <span className="hidden md:inline">PPTX (Editable Slides)</span>
-          </button>
+              <span className="hidden md:inline">Open in Google Slides ↗</span>
+            </button>
+            <button
+              onClick={handleExportEditablePptx}
+              disabled={!decompiledXml || isDecompiling || isExportingPptx}
+              data-testid="vision-export-pptx-btn"
+              className="px-1.5 py-1 border-l border-amber-500/30 hover:bg-amber-500/30 text-amber-300 transition cursor-pointer disabled:opacity-50"
+              title="Download .pptx file locally"
+            >
+              {isExportingPptx ? (
+                <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
+              ) : (
+                <Download className="w-3 h-3 text-amber-400" />
+              )}
+            </button>
+          </div>
 
-          <button
-            onClick={handleExportEditableDocx}
-            disabled={!decompiledXml || isDecompiling || isExportingDocx}
-            data-testid="vision-export-docx-btn"
-            className="px-2.5 py-1 rounded-md bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
-            title="Download 100% Native Editable Word (.docx) & Google Docs architecture specification"
-          >
-            {isExportingDocx ? (
-              <Loader2 className="w-3 h-3 text-sky-400 animate-spin" />
-            ) : (
+          {/* Google Docs: Direct Browser Studio / Cloud Open + Optional .docx Download */}
+          <div className="flex items-center rounded-md border border-sky-500/40 bg-sky-500/15 overflow-hidden shadow-2xs">
+            <button
+              onClick={() => setGoogleWorkspaceModalMode('docs')}
+              disabled={!decompiledXml || isDecompiling}
+              data-testid="vision-open-google-docs-btn"
+              className="px-2.5 py-1 hover:bg-sky-500/30 text-sky-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              title="Open directly in Google Docs in browser (Zero Local Download Required) — Editable Specification & 1-Click Cloud Open"
+            >
               <FileText className="w-3 h-3 text-sky-400" />
-            )}
-            <span className="hidden xl:inline">DOCX (Google Docs)</span>
-          </button>
+              <span className="hidden xl:inline">Open in Google Docs ↗</span>
+            </button>
+            <button
+              onClick={handleExportEditableDocx}
+              disabled={!decompiledXml || isDecompiling || isExportingDocx}
+              data-testid="vision-export-docx-btn"
+              className="px-1.5 py-1 border-l border-sky-500/30 hover:bg-sky-500/30 text-sky-300 transition cursor-pointer disabled:opacity-50"
+              title="Download .docx file locally"
+            >
+              {isExportingDocx ? (
+                <Loader2 className="w-3 h-3 text-sky-400 animate-spin" />
+              ) : (
+                <Download className="w-3 h-3 text-sky-400" />
+              )}
+            </button>
+          </div>
 
           <button
             onClick={handleOpenInStudio}
@@ -2906,6 +2932,17 @@ function VisionPageContent() {
               </div>
             </div>
           </div>
+        )}
+        {googleWorkspaceModalMode && (
+          <GoogleWorkspaceDirectOpenModal
+            isOpen={Boolean(googleWorkspaceModalMode)}
+            onClose={() => setGoogleWorkspaceModalMode(null)}
+            mode={googleWorkspaceModalMode}
+            xmlContent={decompiledXml}
+            diagramName={selectedImageName || 'Architecture Blueprint'}
+            blueprintId={formatDisplayBlueprintId(selectedBlueprintId)}
+            masterImageSrc={selectedImageSrc || undefined}
+          />
         )}
       </main>
       </div>

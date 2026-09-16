@@ -5,6 +5,7 @@ import { Download, X, FileCode, Image, FileText, Presentation, Check, Loader2, S
 import { exportDiagramPng } from '../lib/export/diagramRaster';
 import { exportDrawioToEditablePptx } from '../lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '../lib/export/editableDocxCompiler';
+import GoogleWorkspaceDirectOpenModal from './GoogleWorkspaceDirectOpenModal';
 import { useTheme } from '../lib/themeContext';
 
 interface ExportDiagramModalProps {
@@ -32,6 +33,7 @@ export function ExportDiagramModal({
   const [loadingType, setLoadingType] = useState<string | null>(null);
   const [downloadSuccess, setDownloadSuccess] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [googleWorkspaceMode, setGoogleWorkspaceMode] = useState<'slides' | 'docs' | null>(null);
 
   if (!isOpen) return null;
 
@@ -574,9 +576,9 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
             </div>
           </div>
 
-          {/* Option 6: Google Slides 16:9 Executive Board Deck (.pptx) */}
+          {/* Option 6: Google Slides 16:9 Executive Board Deck (Open in Browser Studio / Cloud OR Download) */}
           <div
-            onClick={handleExportPptx}
+            onClick={() => setGoogleWorkspaceMode('slides')}
             className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg ${
               isLight
                 ? 'bg-amber-50/70 border-amber-300 hover:border-amber-500 hover:bg-amber-50 hover:shadow-amber-100 shadow-amber-500/5'
@@ -589,32 +591,33 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
               }`}>
                 <Presentation className="w-5 h-5" />
               </div>
-              {downloadSuccess === 'pptx' ? (
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <Check className="w-4 h-4" /> Downloaded Deck
-                </span>
-              ) : loadingType === 'pptx' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-amber-600 dark:text-amber-400" />
-              ) : (
-                <Sparkles className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
-              )}
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={handleExportPptx}
+                  className="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-700 dark:text-amber-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                  title="Download .pptx file locally"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>.pptx</span>
+                </button>
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
                   isLight ? 'bg-amber-100 text-amber-950 border-amber-300' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                }`}>100% Editable Vector Shapes</span>
+                }`}>Open Directly in Browser • Zero Download</span>
               </div>
               <h4 className={`font-extrabold text-sm transition-colors ${
                 isLight ? 'text-slate-900 group-hover:text-amber-800' : 'text-white group-hover:text-amber-200'
-              }`}>📊 Google Slides &amp; PowerPoint (.pptx)</h4>
-              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>100% native editable vector shapes, containers, text boxes &amp; connectors for Google Slides / PPTX.</p>
+              }`}>📊 Open in Google Slides Studio ↗</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Open populated 3-slide editable vector deck directly in browser or 1-click push to Google Drive.</p>
             </div>
           </div>
 
-          {/* Option 6b: Google Docs & Microsoft Word Editable Specification (.docx) */}
+          {/* Option 6b: Google Docs & Microsoft Word Editable Specification (Open in Browser Studio / Cloud OR Download) */}
           <div
-            onClick={handleExportDocx}
+            onClick={() => setGoogleWorkspaceMode('docs')}
             className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg ${
               isLight
                 ? 'bg-blue-50/70 border-blue-300 hover:border-blue-500 hover:bg-blue-50 hover:shadow-blue-100 shadow-blue-500/5'
@@ -627,26 +630,27 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
               }`}>
                 <FileText className="w-5 h-5" />
               </div>
-              {downloadSuccess === 'docx' ? (
-                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <Check className="w-4 h-4" /> Downloaded .docx
-                </span>
-              ) : loadingType === 'docx' ? (
-                <Loader2 className="w-4 h-4 animate-spin text-blue-600 dark:text-blue-400" />
-              ) : (
-                <Download className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
-              )}
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={handleExportDocx}
+                  className="px-2.5 py-1 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/40 text-blue-700 dark:text-blue-300 text-[11px] font-bold flex items-center gap-1 cursor-pointer"
+                  title="Download .docx file locally"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>.docx</span>
+                </button>
+              </div>
             </div>
             <div>
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
                   isLight ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-                }`}>Google Docs &amp; Word Ready</span>
+                }`}>Open Directly in Browser • Zero Download</span>
               </div>
               <h4 className={`font-extrabold text-sm transition-colors ${
                 isLight ? 'text-slate-900 group-hover:text-blue-800' : 'text-white group-hover:text-blue-200'
-              }`}>📝 Google Docs &amp; Word Spec (.docx)</h4>
-              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>100% editable architecture specification document with component inventory &amp; data flow tables.</p>
+              }`}>📝 Open in Google Docs Studio ↗</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Open populated architecture spec with editable tables directly in browser or 1-click push to Google Docs.</p>
             </div>
           </div>
 
@@ -707,6 +711,16 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
           </button>
         </div>
 
+        {googleWorkspaceMode && (
+          <GoogleWorkspaceDirectOpenModal
+            isOpen={Boolean(googleWorkspaceMode)}
+            onClose={() => setGoogleWorkspaceMode(null)}
+            mode={googleWorkspaceMode}
+            xmlContent={xmlContent}
+            diagramName={diagramName}
+            blueprintId="VIS-EXPORT"
+          />
+        )}
       </div>
     </div>
   );

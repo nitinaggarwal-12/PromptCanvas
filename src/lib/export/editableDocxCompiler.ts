@@ -67,8 +67,9 @@ function dataUrlToUint8Array(dataUrl: string): Uint8Array | null {
 export async function exportDrawioToEditableDocx(
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
-  blueprintId: string = 'VIS-MASTER'
-): Promise<void> {
+  blueprintId: string = 'VIS-MASTER',
+  options?: { returnBlob?: boolean }
+): Promise<Blob | void> {
   const { cells } = parseDrawioXmlForPptx(xmlContent);
   const vertices = cells.filter((c) => c.vertex && stripHtmlForDocx(c.value).title.length > 0);
   const edges = cells.filter((c) => c.edge);
@@ -374,6 +375,10 @@ export async function exportDrawioToEditableDocx(
   });
 
   const blob = await Packer.toBlob(doc);
+  if (options?.returnBlob) {
+    return blob;
+  }
+
   const safeName = diagramName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

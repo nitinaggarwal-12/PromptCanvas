@@ -219,8 +219,9 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
 export async function exportDrawioToEditablePptx(
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
-  blueprintId: string = 'VIS-MASTER'
-): Promise<void> {
+  blueprintId: string = 'VIS-MASTER',
+  options?: { returnBlob?: boolean }
+): Promise<Blob | void> {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
   pptx.author = 'PromptCanvas Vision Decompiler';
@@ -623,6 +624,11 @@ export async function exportDrawioToEditablePptx(
     fill: { color: 'FFFFFF' },
     fontFace: 'Arial',
   });
+
+  if (options?.returnBlob) {
+    const blob = (await pptx.write({ outputType: 'blob' })) as Blob;
+    return blob;
+  }
 
   const safeName = diagramName.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
   await pptx.writeFile({ fileName: `${safeName || 'architecture'}_editable_slides.pptx` });
