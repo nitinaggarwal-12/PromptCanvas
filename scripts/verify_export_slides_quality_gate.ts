@@ -61,9 +61,9 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
-  if (!modalCode.includes('docsDiagramViewMode') || !modalCode.includes('launchAssistantModal')) {
+  if (!modalCode.includes('docsDiagramViewMode') || !modalCode.includes('externalGoogleTabUrl')) {
     console.error(
-      '❌ EXPORT GATE FAILED: GoogleWorkspaceDirectOpenModal.tsx must support interactive decomposed diagram view mode in Google Docs Studio and Guided Launch Assistant Modal.'
+      '❌ EXPORT GATE FAILED: GoogleWorkspaceDirectOpenModal.tsx must support interactive decomposed diagram view mode in Google Docs Studio and direct external Google tab launcher (docs.google.com/viewer).'
     );
     process.exit(1);
   }

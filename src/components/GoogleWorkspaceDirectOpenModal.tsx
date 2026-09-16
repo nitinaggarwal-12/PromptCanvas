@@ -20,6 +20,7 @@ import {
   Globe,
   Eye,
   Check,
+  ExternalLink,
 } from 'lucide-react';
 import {
   parseDrawioXmlForPptx,
@@ -635,43 +636,33 @@ export default function GoogleWorkspaceDirectOpenModal({
             </button>
           </div>
 
-          {/* Direct Cloud Launch Buttons */}
+          {/* Direct External Google Tab Launch Buttons */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Button 1: 1-Click Direct Google Drive API Creation / Cloud Viewer */}
-            <button
-              onClick={handleDirectGoogleDriveOpen}
-              disabled={isUploadingToGoogleDrive}
-              data-testid="direct-google-drive-open-btn"
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold shadow-lg transition-all cursor-pointer ${
-                activeMode === 'slides'
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950'
-                  : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white'
-              }`}
-            >
-              {isUploadingToGoogleDrive ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <CloudUpload className="w-4 h-4" />
-              )}
-              <span>
-                {activeMode === 'slides'
-                  ? '1-Click Create & Open in Google Slides ↗'
-                  : '1-Click Create & Open in Google Docs ↗'}
-              </span>
-            </button>
-
-            {/* Button 2: Google Cloud Viewer (Public HTTPS .pptx/.docx Preview Tab) */}
+            {/* Primary Button: Open Populated Deck/Doc in Separate External Google Tab (docs.google.com/viewer) */}
             <button
               onClick={handleOpenGoogleCloudViewer}
               disabled={isOpeningCloudViewer}
               data-testid="open-google-cloud-viewer-btn"
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition-all cursor-pointer"
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold shadow-lg transition-all cursor-pointer ${
+                activeMode === 'slides'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950'
+                  : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white'
+              }`}
+              title={`Open populated ${activeMode === 'slides' ? '3-Slide Presentation (.pptx)' : 'Architecture Specification (.docx)'} in a separate external Google tab (docs.google.com)`}
             >
-              {isOpeningCloudViewer ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4 text-sky-400" />}
-              <span>Open Populated in Cloud Viewer ↗</span>
+              {isOpeningCloudViewer ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ExternalLink className="w-4 h-4" />
+              )}
+              <span>
+                {activeMode === 'slides'
+                  ? 'Open in Google Slides Tab ↗'
+                  : 'Open in Google Docs Tab ↗'}
+              </span>
             </button>
 
-            {/* Button 3: Direct Download .pptx / .docx */}
+            {/* Secondary Button: Direct Download .pptx / .docx */}
             <button
               onClick={handleDirectDownloadFile}
               disabled={isDownloadingDeck}
@@ -681,31 +672,6 @@ export default function GoogleWorkspaceDirectOpenModal({
             >
               {isDownloadingDeck ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               <span>Download .{activeMode === 'slides' ? 'pptx' : 'docx'}</span>
-            </button>
-
-            {/* Button 4: Auto-Copy & Open Guided Google Tab */}
-            <button
-              onClick={handleCopyAndLaunchNewTab}
-              disabled={isCopyingAndLaunching}
-              data-testid="copy-and-launch-new-tab-btn"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
-              title="Copies rich diagram & editable table to clipboard and opens guided Google launch assistant"
-            >
-              <Copy className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Copy &amp; {activeMode === 'slides' ? 'slides.new' : 'docs.new'}</span>
-            </button>
-
-            {/* OAuth Config Toggle */}
-            <button
-              onClick={() => setShowAuthConfig(!showAuthConfig)}
-              className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                showAuthConfig || googleAccessToken
-                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
-                  : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:text-white'
-              }`}
-              title="Configure Google Drive OAuth Token / Client ID for instant 1-click cloud file creation"
-            >
-              <KeyRound className="w-4 h-4" />
             </button>
 
             {/* Fullscreen Toggle */}

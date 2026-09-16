@@ -2,8 +2,7 @@
 
 import React, { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Presentation, FileText, Download, RefreshCw, Sparkles, Globe, Layers, ExternalLink, Edit3 } from 'lucide-react';
-import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
+import { Presentation, FileText, Download, RefreshCw, Sparkles, ExternalLink } from 'lucide-react';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
@@ -18,9 +17,8 @@ function CloudViewerContent() {
   const defaultPublicPptxUrl = 'https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.pptx';
   const rawUrl = rawUrlParam || defaultPublicPptxUrl;
 
-  const [engine, setEngine] = useState<'microsoft' | 'google'>('google');
+  const [engine] = useState<'microsoft' | 'google'>('google');
   const [iframeKey, setIframeKey] = useState<number>(0);
-  const [studioModalMode, setStudioModalMode] = useState<'slides' | 'docs' | null>(null);
   const [xmlContent, setXmlContent] = useState<string>('');
   const [isLaunchingTab, setIsLaunchingTab] = useState<'slides' | 'docs' | null>(null);
 
@@ -36,7 +34,7 @@ function CloudViewerContent() {
   }, [blueprintId]);
 
   /**
-   * Opens a separate external browser tab on docs.google.com (`https://docs.google.com/viewer?url=...`)
+   * Directly opens a separate external browser tab on docs.google.com (`https://docs.google.com/viewer?url=...`)
    * where Google renders the .pptx or .docx and shows Google's native "Open with Google Slides / Docs" bar.
    */
   const handleLaunchExternalGoogleTab = async (targetFormat: 'slides' | 'docs') => {
@@ -47,14 +45,12 @@ function CloudViewerContent() {
           ? window.location.origin
           : 'https://promptcanvas.up.railway.app';
 
-      // If we already have a clean public .pptx URL and user clicked Google Slides, open immediately in separate Google tab
       if (targetFormat === 'slides' && rawUrl && rawUrl.endsWith('.pptx') && !rawUrl.includes('localhost')) {
         const googleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}`;
         window.open(googleTabUrl, '_blank');
         return;
       }
 
-      // Otherwise compile the .pptx or .docx and sync to public Cloud Bridge so Google's external tab can load it
       let base64Data = '';
       if (targetFormat === 'slides') {
         base64Data = (await exportDrawioToEditablePptx(xmlContent, title, blueprintId, {
@@ -100,12 +96,6 @@ function CloudViewerContent() {
   const googleEmbedUrl = rawUrl
     ? `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}&embedded=true`
     : '';
-  const bustUrl = rawUrl ? (rawUrl.includes('?') ? `${rawUrl}&cb=${iframeKey}` : `${rawUrl}?cb=${iframeKey}`) : '';
-  const msOfficeEmbedUrl = bustUrl
-    ? `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(bustUrl)}`
-    : '';
-
-  const activeEmbedUrl = engine === 'google' ? googleEmbedUrl : msOfficeEmbedUrl;
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-[#090D16] text-slate-100 flex flex-col">
@@ -130,54 +120,13 @@ function CloudViewerContent() {
           </div>
         </div>
 
-        {/* Center Engine Switcher */}
-        <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 shrink-0">
-          <button
-            onClick={() => {
-              setEngine('google');
-              setIframeKey((k) => k + 1);
-            }}
-            data-testid="viewer-google-engine-btn"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              engine === 'google'
-                ? 'bg-sky-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>Google Cloud Viewer</span>
-          </button>
-          <button
-            onClick={() => {
-              setEngine('microsoft');
-              setIframeKey((k) => k + 1);
-            }}
-            data-testid="viewer-microsoft-engine-btn"
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-              engine === 'microsoft'
-                ? 'bg-amber-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>PowerPoint Web Viewer</span>
-          </button>
-          <button
-            onClick={() => setIframeKey((k) => k + 1)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
-            title="Reload Cloud Viewer Iframe"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        {/* Right Action Controls: Open in Separate Google Slides Tab, Google Docs Tab, or Customize Studio */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Right Action Controls: ONLY Direct External Google Slides Tab, Google Docs Tab & Download */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={() => handleLaunchExternalGoogleTab('slides')}
             disabled={isLaunchingTab === 'slides'}
             data-testid="viewer-open-with-google-slides-btn"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 shadow-md transition-all cursor-pointer disabled:opacity-60"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 shadow-md transition-all cursor-pointer disabled:opacity-60"
             title="Open populated 3-Slide Deck (.pptx) in a separate external Google tab (docs.google.com)"
           >
             <Presentation className="w-3.5 h-3.5" />
@@ -189,7 +138,7 @@ function CloudViewerContent() {
             onClick={() => handleLaunchExternalGoogleTab('docs')}
             disabled={isLaunchingTab === 'docs'}
             data-testid="viewer-open-with-google-docs-btn"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md transition-all cursor-pointer disabled:opacity-60"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md transition-all cursor-pointer disabled:opacity-60"
             title="Open populated Architecture Specification (.docx) in a separate external Google tab (docs.google.com)"
           >
             <FileText className="w-3.5 h-3.5" />
@@ -198,13 +147,11 @@ function CloudViewerContent() {
           </button>
 
           <button
-            onClick={() => setStudioModalMode('slides')}
-            data-testid="viewer-customize-studio-btn"
-            className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
-            title="Customize Interactive Decomposed Diagram & Node Labels in Studio"
+            onClick={() => setIframeKey((k) => k + 1)}
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition-all cursor-pointer"
+            title="Reload Cloud Viewer Iframe"
           >
-            <Edit3 className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden lg:inline">Interactive Studio</span>
+            <RefreshCw className="w-3.5 h-3.5" />
           </button>
 
           {rawUrl && (
@@ -212,10 +159,10 @@ function CloudViewerContent() {
               href={rawUrl}
               download
               data-testid="viewer-download-pptx-btn"
-              className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden xl:inline">.pptx</span>
+              <span className="hidden xl:inline">Download .pptx</span>
             </a>
           )}
         </div>
@@ -223,10 +170,10 @@ function CloudViewerContent() {
 
       {/* Main Embedded Presentation Viewport */}
       <main className="flex-1 w-full h-[calc(100vh-3.5rem)] relative bg-[#0B111E]">
-        {activeEmbedUrl ? (
+        {googleEmbedUrl ? (
           <iframe
             key={`${engine}-${iframeKey}`}
-            src={activeEmbedUrl}
+            src={googleEmbedUrl}
             className="w-full h-full border-0"
             allowFullScreen
             title={`${title} - Cloud Presentation Viewer`}
@@ -237,19 +184,6 @@ function CloudViewerContent() {
           </div>
         )}
       </main>
-
-      {/* Interactive Editable Google Slides & Google Docs Studio Modal */}
-      {studioModalMode && (
-        <GoogleWorkspaceDirectOpenModal
-          isOpen={Boolean(studioModalMode)}
-          onClose={() => setStudioModalMode(null)}
-          mode={studioModalMode}
-          xmlContent={xmlContent}
-          diagramName={title}
-          blueprintId={blueprintId}
-          masterImageSrc="/blueprints/azure_application_landing_zone.png"
-        />
-      )}
     </div>
   );
 }
