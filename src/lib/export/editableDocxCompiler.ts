@@ -132,10 +132,11 @@ export async function exportDrawioToEditableDocx(
   blueprintId: string = 'VIS-MASTER',
   options?: {
     returnBlob?: boolean;
+    returnBase64?: boolean;
     masterImageSrc?: string;
     editableOverrides?: Record<string, { title: string; subtitle: string }>;
   }
-): Promise<Blob | void> {
+): Promise<Blob | string | void> {
   const { cells } = parseDrawioXmlForPptx(xmlContent);
   const overrides = options?.editableOverrides || {};
   const vertices = cells.filter((c) => c.vertex && stripHtmlForDocx(c.value).title.length > 0);
@@ -436,6 +437,10 @@ export async function exportDrawioToEditableDocx(
       },
     ],
   });
+
+  if (options?.returnBase64) {
+    return await Packer.toBase64String(doc);
+  }
 
   const blob = await Packer.toBlob(doc);
   if (options?.returnBlob) {

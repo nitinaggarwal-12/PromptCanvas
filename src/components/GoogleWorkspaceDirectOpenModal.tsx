@@ -381,13 +381,13 @@ export default function GoogleWorkspaceDirectOpenModal({
         });
         window.open(googleWebViewLink, '_blank');
       } else {
-        const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
+        const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
         setStatusMessage({
           type: 'success',
-          text: `✨ Opened populated ${activeMode === 'slides' ? 'Presentation' : 'Document'} in Cloud Presentation Viewer!`,
-          url: viewerUrl,
+          text: `✨ Opened populated ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
+          url: externalGoogleTabUrl,
         });
-        window.open(viewerUrl, '_blank');
+        window.open(externalGoogleTabUrl, '_blank');
       }
     } catch (err: any) {
       setStatusMessage({
@@ -400,13 +400,13 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 2: Open Populated Deck in Google Cloud Viewer (`/viewer?url=...`)
+   * Method 2: Open Populated Deck in Separate External Google Tab (`https://docs.google.com/viewer?url=...`)
    */
   const handleOpenGoogleCloudViewer = async () => {
     setIsOpeningCloudViewer(true);
     setStatusMessage({
       type: 'info',
-      text: `Compiling 1:1 Master & Editable Vector Deck and syncing to public HTTPS Cloud Bridge...`,
+      text: `Compiling 1:1 Master & Editable Vector ${activeMode === 'slides' ? 'Deck (.pptx)' : 'Specification (.docx)'} and launching separate Google tab...`,
     });
 
     try {
@@ -431,13 +431,13 @@ export default function GoogleWorkspaceDirectOpenModal({
         activeMode === 'slides' ? 'pptx' : 'docx'
       );
 
-      const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
+      const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
       setStatusMessage({
         type: 'success',
-        text: `🌐 Opened populated ${activeMode === 'slides' ? 'Slide Deck' : 'Specification'} in Cloud Presentation Viewer!`,
-        url: viewerUrl,
+        text: `🌐 Opened populated ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
+        url: externalGoogleTabUrl,
       });
-      window.open(viewerUrl, '_blank');
+      window.open(externalGoogleTabUrl, '_blank');
     } catch (err: any) {
       setStatusMessage({
         type: 'error',

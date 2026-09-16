@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getVault, loadBridgeFileFromDisk, saveBridgeFileToDisk, CloudBridgeEntry } from '../route';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
 import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
+import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 
 const BRIDGE_FILE_HEADERS: Record<string, string> = {
   'Access-Control-Allow-Origin': '*',
@@ -14,44 +15,74 @@ const BRIDGE_FILE_HEADERS: Record<string, string> = {
   'Timing-Allow-Origin': '*',
 };
 
-const SELF_HEAL_CUTOFF_TS = 1789580000000;
-
 async function resolveOrHealEntryByFilename(filename: string): Promise<CloudBridgeEntry | null> {
   if (!filename) return null;
+  const isDocx = filename.toLowerCase().endsWith('.docx');
+  const requestedFormat: 'pptx' | 'docx' = isDocx ? 'docx' : 'pptx';
   const cleanId = filename.replace(/\.(pptx|docx)$/i, '');
   const vault = getVault();
   let entry = vault.get(cleanId) || vault.get(filename) || loadBridgeFileFromDisk(cleanId);
+
+  // If entry exists but has the wrong format (e.g. pptx cached under a .docx filename), force re-heal
+  if (entry && entry.format !== requestedFormat) {
+    entry = null;
+  }
 
   const isAzureVis9745 =
     cleanId.toLowerCase().includes('vis9745') ||
     cleanId.toLowerCase().includes('vis_9745') ||
     cleanId.toLowerCase().includes('azure');
 
-  // Self-heal if missing OR if it's an older pre-fix VIS-9745 PPTX
-  if ((!entry || (isAzureVis9745 && entry.createdAt < SELF_HEAL_CUTOFF_TS)) && isAzureVis9745) {
+  // Self-heal on demand if missing for VIS-9745 / Azure Application Landing Zone
+  if (!entry && isAzureVis9745) {
     try {
       const xmlContent = generateAzureLandingZoneArchitectureXml();
-      const base64Data = (await exportDrawioToEditablePptx(
-        xmlContent,
-        'Microsoft Azure Application Landing Zone',
-        'VIS-9745',
-        {
-          returnBase64: true,
-          masterImageSrc: '/blueprints/azure_application_landing_zone.png',
-        }
-      )) as string;
+      if (requestedFormat === 'docx') {
+        const base64Data = (await exportDrawioToEditableDocx(
+          xmlContent,
+          'Microsoft Azure Application Landing Zone',
+          'VIS-9745',
+          {
+            returnBase64: true,
+            masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+          }
+        )) as string;
 
-      if (base64Data && typeof base64Data === 'string') {
-        const healedEntry: CloudBridgeEntry = {
-          id: 'VIS-9745',
-          title: 'Microsoft Azure Application Landing Zone',
-          format: 'pptx',
-          buffer: Buffer.from(base64Data, 'base64'),
-          createdAt: Date.now(),
-        };
-        vault.set(cleanId, healedEntry);
-        saveBridgeFileToDisk(cleanId, 'pptx', healedEntry.title, healedEntry.buffer);
-        return healedEntry;
+        if (base64Data && typeof base64Data === 'string') {
+          const healedEntry: CloudBridgeEntry = {
+            id: cleanId,
+            title: 'Microsoft Azure Application Landing Zone',
+            format: 'docx',
+            buffer: Buffer.from(base64Data, 'base64'),
+            createdAt: Date.now(),
+          };
+          vault.set(cleanId, healedEntry);
+          saveBridgeFileToDisk(cleanId, 'docx', healedEntry.title, healedEntry.buffer);
+          return healedEntry;
+        }
+      } else {
+        const base64Data = (await exportDrawioToEditablePptx(
+          xmlContent,
+          'Microsoft Azure Application Landing Zone',
+          'VIS-9745',
+          {
+            returnBase64: true,
+            masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+          }
+        )) as string;
+
+        if (base64Data && typeof base64Data === 'string') {
+          const healedEntry: CloudBridgeEntry = {
+            id: cleanId,
+            title: 'Microsoft Azure Application Landing Zone',
+            format: 'pptx',
+            buffer: Buffer.from(base64Data, 'base64'),
+            createdAt: Date.now(),
+          };
+          vault.set(cleanId, healedEntry);
+          saveBridgeFileToDisk(cleanId, 'pptx', healedEntry.title, healedEntry.buffer);
+          return healedEntry;
+        }
       }
     } catch (err) {
       console.error('Self-heal VIS-9745 cloud-bridge notice:', err);
@@ -75,10 +106,10 @@ export async function HEAD(
     return new NextResponse(null, { status: 404, headers: BRIDGE_FILE_HEADERS });
   }
 
-  const contentType =
-    entry.format === 'pptx'
-      ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  const isDocx = filename.toLowerCase().endsWith('.docx') || entry.format === 'docx';
+  const contentType = isDocx
+    ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    : 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 
   return new NextResponse(null, {
     status: 200,
@@ -105,10 +136,10 @@ export async function GET(
     });
   }
 
-  const contentType =
-    entry.format === 'pptx'
-      ? 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-      : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  const isDocx = filename.toLowerCase().endsWith('.docx') || entry.format === 'docx';
+  const contentType = isDocx
+    ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    : 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 
   const totalLen = entry.buffer.length;
   const rangeHeader = req.headers.get('range');

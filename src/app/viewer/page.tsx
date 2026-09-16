@@ -2,20 +2,27 @@
 
 import React, { useState, Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Presentation, FileText, Download, RefreshCw, Sparkles, Globe, Layers } from 'lucide-react';
+import { Presentation, FileText, Download, RefreshCw, Sparkles, Globe, Layers, ExternalLink, Edit3 } from 'lucide-react';
 import GoogleWorkspaceDirectOpenModal from '@/components/GoogleWorkspaceDirectOpenModal';
 import { generateAzureLandingZoneArchitectureXml } from '@/lib/masterBuilders/build_master_azure_landing_zone';
+import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
+import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 
 function CloudViewerContent() {
   const searchParams = useSearchParams();
-  const rawUrl = searchParams.get('url') || '';
+  const rawUrlParam = searchParams.get('url') || '';
   const title = searchParams.get('title') || 'Azure Application Landing Zone';
   const blueprintId = searchParams.get('id') || 'VIS-9745';
+
+  // Default to the live public Railway Cloud Bridge .pptx if no ?url= parameter is supplied
+  const defaultPublicPptxUrl = 'https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.pptx';
+  const rawUrl = rawUrlParam || defaultPublicPptxUrl;
 
   const [engine, setEngine] = useState<'microsoft' | 'google'>('google');
   const [iframeKey, setIframeKey] = useState<number>(0);
   const [studioModalMode, setStudioModalMode] = useState<'slides' | 'docs' | null>(null);
   const [xmlContent, setXmlContent] = useState<string>('');
+  const [isLaunchingTab, setIsLaunchingTab] = useState<'slides' | 'docs' | null>(null);
 
   useEffect(() => {
     let loadedXml = '';
@@ -27,6 +34,68 @@ function CloudViewerContent() {
     }
     setXmlContent(loadedXml);
   }, [blueprintId]);
+
+  /**
+   * Opens a separate external browser tab on docs.google.com (`https://docs.google.com/viewer?url=...`)
+   * where Google renders the .pptx or .docx and shows Google's native "Open with Google Slides / Docs" bar.
+   */
+  const handleLaunchExternalGoogleTab = async (targetFormat: 'slides' | 'docs') => {
+    setIsLaunchingTab(targetFormat);
+    try {
+      const origin =
+        typeof window !== 'undefined' && !window.location.origin.includes('localhost')
+          ? window.location.origin
+          : 'https://promptcanvas.up.railway.app';
+
+      // If we already have a clean public .pptx URL and user clicked Google Slides, open immediately in separate Google tab
+      if (targetFormat === 'slides' && rawUrl && rawUrl.endsWith('.pptx') && !rawUrl.includes('localhost')) {
+        const googleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}`;
+        window.open(googleTabUrl, '_blank');
+        return;
+      }
+
+      // Otherwise compile the .pptx or .docx and sync to public Cloud Bridge so Google's external tab can load it
+      let base64Data = '';
+      if (targetFormat === 'slides') {
+        base64Data = (await exportDrawioToEditablePptx(xmlContent, title, blueprintId, {
+          returnBase64: true,
+          masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+        })) as string;
+      } else {
+        base64Data = (await exportDrawioToEditableDocx(xmlContent, title, blueprintId, {
+          returnBase64: true,
+          masterImageSrc: '/blueprints/azure_application_landing_zone.png',
+        })) as string;
+      }
+
+      const res = await fetch(`${origin}/api/export/cloud-bridge`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: blueprintId,
+          title,
+          format: targetFormat === 'slides' ? 'pptx' : 'docx',
+          base64Data,
+        }),
+      });
+      const data = await res.json();
+      const publicFileUrl =
+        data.publicUrl ||
+        `${origin}/api/export/cloud-bridge/${blueprintId.toLowerCase()}_spec.${targetFormat === 'slides' ? 'pptx' : 'docx'}`;
+
+      const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicFileUrl)}`;
+      window.open(externalGoogleTabUrl, '_blank');
+    } catch (err) {
+      console.error('Failed to launch separate Google tab:', err);
+      const fallbackUrl =
+        targetFormat === 'slides'
+          ? `https://docs.google.com/viewer?url=${encodeURIComponent(defaultPublicPptxUrl)}`
+          : `https://docs.google.com/viewer?url=${encodeURIComponent('https://promptcanvas.up.railway.app/api/export/cloud-bridge/azure_landing_zone.docx')}`;
+      window.open(fallbackUrl, '_blank');
+    } finally {
+      setIsLaunchingTab(null);
+    }
+  };
 
   const googleEmbedUrl = rawUrl
     ? `https://docs.google.com/viewer?url=${encodeURIComponent(rawUrl)}&embedded=true`
@@ -102,24 +171,40 @@ function CloudViewerContent() {
           </button>
         </div>
 
-        {/* Right Action Controls: Open with Google Slides & Open with Google Docs */}
+        {/* Right Action Controls: Open in Separate Google Slides Tab, Google Docs Tab, or Customize Studio */}
         <div className="flex items-center gap-2 shrink-0">
           <button
-            onClick={() => setStudioModalMode('slides')}
+            onClick={() => handleLaunchExternalGoogleTab('slides')}
+            disabled={isLaunchingTab === 'slides'}
             data-testid="viewer-open-with-google-slides-btn"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 shadow-md transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 shadow-md transition-all cursor-pointer disabled:opacity-60"
+            title="Open populated 3-Slide Deck (.pptx) in a separate external Google tab (docs.google.com)"
           >
             <Presentation className="w-3.5 h-3.5" />
-            <span>Open with Google Slides</span>
+            <span>{isLaunchingTab === 'slides' ? 'Opening Google Tab...' : 'Open with Google Slides'}</span>
+            <ExternalLink className="w-3 h-3 ml-0.5" />
           </button>
 
           <button
-            onClick={() => setStudioModalMode('docs')}
+            onClick={() => handleLaunchExternalGoogleTab('docs')}
+            disabled={isLaunchingTab === 'docs'}
             data-testid="viewer-open-with-google-docs-btn"
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-md transition-all cursor-pointer disabled:opacity-60"
+            title="Open populated Architecture Specification (.docx) in a separate external Google tab (docs.google.com)"
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Open with Google Docs</span>
+            <span>{isLaunchingTab === 'docs' ? 'Opening Google Tab...' : 'Open with Google Docs'}</span>
+            <ExternalLink className="w-3 h-3 ml-0.5" />
+          </button>
+
+          <button
+            onClick={() => setStudioModalMode('slides')}
+            data-testid="viewer-customize-studio-btn"
+            className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all cursor-pointer"
+            title="Customize Interactive Decomposed Diagram & Node Labels in Studio"
+          >
+            <Edit3 className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden lg:inline">Interactive Studio</span>
           </button>
 
           {rawUrl && (
@@ -127,10 +212,10 @@ function CloudViewerContent() {
               href={rawUrl}
               download
               data-testid="viewer-download-pptx-btn"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all"
+              className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all"
             >
               <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Download .pptx</span>
+              <span className="hidden xl:inline">.pptx</span>
             </a>
           )}
         </div>
