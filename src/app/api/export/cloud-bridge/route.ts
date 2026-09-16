@@ -25,7 +25,7 @@ export function getVault(): Map<string, CloudBridgeEntry> {
 }
 
 const BRIDGE_TMP_DIR = path.join(os.tmpdir(), 'promptcanvas_cloud_bridge');
-export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v3_editable_drawio_canvas';
+export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v4_editable_drawio_clean_ascii';
 
 export function saveBridgeFileToDisk(
   id: string,

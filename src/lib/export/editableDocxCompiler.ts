@@ -368,7 +368,7 @@ function buildNativeEditableDrawioCanvasForDocx(
               new Paragraph({
                 children: [
                   new TextRun({
-                    text: `🏛️ ENCLAVE ZONE ${groupIdx + 1}: ${group.title.toUpperCase()}`,
+                    text: `[ ENCLAVE ZONE ${groupIdx + 1} ]  ${group.title.toUpperCase()}`,
                     bold: true,
                     size: 20,
                     color: '38BDF8',
@@ -446,7 +446,7 @@ function buildNativeEditableDrawioCanvasForDocx(
             spacing: { after: 40 },
             children: [
               new TextRun({
-                text: `▣ ${objBadge}`,
+                text: `[ ${objBadge} ]`,
                 bold: true,
                 size: 16,
                 color: nodeStroke,
@@ -487,7 +487,7 @@ function buildNativeEditableDrawioCanvasForDocx(
           }),
         ];
 
-        // Append Outgoing Connectors (━━▶)
+        // Append Outgoing Connectors (-->)
         const outs = outgoingMap.get(node.id) || [];
         outs.forEach((flow) => {
           cardParagraphs.push(
@@ -495,7 +495,7 @@ function buildNativeEditableDrawioCanvasForDocx(
               spacing: { after: 30 },
               children: [
                 new TextRun({
-                  text: `━━▶ [${flow.label}] ━━▶ `,
+                  text: `--> [${flow.label}] --> `,
                   bold: true,
                   size: 15,
                   color: '0284C7',
@@ -522,7 +522,7 @@ function buildNativeEditableDrawioCanvasForDocx(
                 spacing: { after: 30 },
                 children: [
                   new TextRun({
-                    text: `◀━━ [${flow.label}] ◀━━ `,
+                    text: `<-- [${flow.label}] <-- `,
                     bold: true,
                     size: 15,
                     color: '4F46E5',
@@ -576,7 +576,7 @@ function buildNativeEditableDrawioCanvasForDocx(
           spacing: { before: 100, after: 100 },
           children: [
             new TextRun({
-              text: '⬇  ━━━  [ Inter-Enclave Architecture Flow • HTTPS / VNet Peering / Private Link ]  ━━━  ⬇',
+              text: '=== [ Inter-Enclave Architecture Flow • HTTPS / VNet Peering / Private Link ] ===',
               bold: true,
               size: 18,
               color: '0284C7',
@@ -678,9 +678,9 @@ export async function exportDrawioToEditableDocx(
                       link: drawioWebEditorUrl,
                       children: [
                         new TextRun({
-                          text: '✏️ Open & Edit Diagram Live in Draw.io (app.diagrams.net) ↗',
+                          text: '[ DRAW.IO LIVE EDITOR ]  Open & Edit Diagram Live in Draw.io (app.diagrams.net) ->',
                           bold: true,
-                          size: 20,
+                          size: 19,
                           color: '0284C7',
                           underline: {},
                           font: 'Arial',
@@ -719,9 +719,9 @@ export async function exportDrawioToEditableDocx(
                       link: promptCanvasStudioUrl,
                       children: [
                         new TextRun({
-                          text: '🎨 Open Interactive Diagram in PromptCanvas Studio ↗',
+                          text: '[ PROMPTCANVAS STUDIO ]  Open Interactive Diagram in PromptCanvas Studio ->',
                           bold: true,
-                          size: 20,
+                          size: 19,
                           color: '15803D',
                           underline: {},
                           font: 'Arial',
@@ -765,7 +765,7 @@ export async function exportDrawioToEditableDocx(
     new Paragraph({
       children: [
         new TextRun({
-          text: 'Click inside any enclave header, architecture card, service title, or connector arrow (━━▶) below to edit text, styling, or node specifications directly inside Google Docs or Microsoft Word:',
+          text: 'Click inside any enclave header, architecture card, service title, or connector arrow (-->) below to edit text, styling, or node specifications directly inside Google Docs or Microsoft Word:',
           size: 18,
           color: '475569',
           font: 'Arial',
