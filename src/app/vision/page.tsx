@@ -191,11 +191,26 @@ function VisionPageContent() {
   const searchParams = useSearchParams();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Active Blueprint ID (Default: Google Multiagent AI System)
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('GCP-MULTIAGENT-01');
+  const initialParamId = searchParams.get('id');
+  const initialIsAzure = Boolean(
+    initialParamId &&
+      (initialParamId.includes('5965') ||
+        initialParamId.includes('9745') ||
+        initialParamId.toLowerCase().includes('azure'))
+  );
+  // Active Blueprint ID (Default: Google Multiagent AI System unless query id specifies Azure/custom)
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>(
+    initialParamId || 'GCP-MULTIAGENT-01'
+  );
   // Source image state
-  const [selectedImageSrc, setSelectedImageSrc] = useState<string>('/blueprints/GCP-MULTIAGENT-01_google_multiagent_ai_system.png');
-  const [selectedImageName, setSelectedImageName] = useState<string>('Google Multiagent AI System');
+  const [selectedImageSrc, setSelectedImageSrc] = useState<string>(
+    initialIsAzure
+      ? '/blueprints/azure_application_landing_zone.png'
+      : '/blueprints/GCP-MULTIAGENT-01_google_multiagent_ai_system.png'
+  );
+  const [selectedImageName, setSelectedImageName] = useState<string>(
+    initialIsAzure ? 'Azure Application Landing Zone' : 'Google Multiagent AI System'
+  );
   const [isCustomUpload, setIsCustomUpload] = useState<boolean>(false);
   const [savedSource, setSavedSource] = useState<'cache' | 'precompiled' | 'live'>('precompiled');
   const [customBlueprints, setCustomBlueprints] = useState<SavedVisionBlueprint[]>([]);

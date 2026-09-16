@@ -231,14 +231,16 @@ export default function GoogleWorkspaceDirectOpenModal({
   const uploadToCloudBridgeAndGetPublicUrl = async (
     base64Data: string,
     format: 'pptx' | 'docx',
-    activeToken?: string
+    activeToken?: string,
+    customBridgeId?: string
   ): Promise<{ publicUrl: string; googleWebViewLink?: string | null }> => {
-    const bridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
+    const bridgeId = customBridgeId || `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
     const payload = {
       id: blueprintId,
       title: diagramName,
       format,
       base64Data,
+      xmlContent,
       bridgeId,
       googleAccessToken: activeToken || undefined,
     };
@@ -306,6 +308,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
     try {
       let blob: Blob | string | void;
+      const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
       if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
@@ -314,6 +317,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
+          bridgeId: generatedBridgeId,
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
           editableOverrides,
         });
@@ -371,7 +375,8 @@ export default function GoogleWorkspaceDirectOpenModal({
       const { publicUrl, googleWebViewLink } = await uploadToCloudBridgeAndGetPublicUrl(
         base64Data,
         activeMode === 'slides' ? 'pptx' : 'docx',
-        activeToken
+        activeToken,
+        generatedBridgeId
       );
 
       if (googleWebViewLink) {
@@ -412,6 +417,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
     try {
       let blob: Blob | string | void;
+      const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
       if (activeMode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
@@ -420,6 +426,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
+          bridgeId: generatedBridgeId,
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
           editableOverrides,
         });
@@ -429,7 +436,9 @@ export default function GoogleWorkspaceDirectOpenModal({
       const base64Data = await blobToBase64(blob);
       const { publicUrl } = await uploadToCloudBridgeAndGetPublicUrl(
         base64Data,
-        activeMode === 'slides' ? 'pptx' : 'docx'
+        activeMode === 'slides' ? 'pptx' : 'docx',
+        undefined,
+        generatedBridgeId
       );
 
       const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;

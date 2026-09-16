@@ -52,6 +52,7 @@ function CloudViewerContent() {
       }
 
       let base64Data = '';
+      const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
       if (targetFormat === 'slides') {
         base64Data = (await exportDrawioToEditablePptx(xmlContent, title, blueprintId, {
           returnBase64: true,
@@ -60,6 +61,7 @@ function CloudViewerContent() {
       } else {
         base64Data = (await exportDrawioToEditableDocx(xmlContent, title, blueprintId, {
           returnBase64: true,
+          bridgeId: generatedBridgeId,
           masterImageSrc: '/blueprints/azure_application_landing_zone.png',
         })) as string;
       }
@@ -70,8 +72,10 @@ function CloudViewerContent() {
         body: JSON.stringify({
           id: blueprintId,
           title,
+          bridgeId: generatedBridgeId,
           format: targetFormat === 'slides' ? 'pptx' : 'docx',
           base64Data,
+          xmlContent,
         }),
       });
       const data = await res.json();

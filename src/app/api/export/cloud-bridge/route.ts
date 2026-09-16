@@ -6,9 +6,10 @@ import os from 'os';
 export interface CloudBridgeEntry {
   id: string;
   title: string;
-  format: 'pptx' | 'docx';
+  format: 'pptx' | 'docx' | 'drawio';
   buffer: Buffer;
   createdAt: number;
+  version?: string;
 }
 
 declare global {
@@ -24,39 +25,50 @@ export function getVault(): Map<string, CloudBridgeEntry> {
 }
 
 const BRIDGE_TMP_DIR = path.join(os.tmpdir(), 'promptcanvas_cloud_bridge');
+export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v3_editable_drawio_canvas';
 
-export function saveBridgeFileToDisk(id: string, format: 'pptx' | 'docx', title: string, buffer: Buffer) {
+export function saveBridgeFileToDisk(
+  id: string,
+  format: 'pptx' | 'docx' | 'drawio',
+  title: string,
+  buffer: Buffer,
+  version: string = CURRENT_BRIDGE_SCHEMA_VERSION
+) {
   try {
     if (!fs.existsSync(BRIDGE_TMP_DIR)) {
       fs.mkdirSync(BRIDGE_TMP_DIR, { recursive: true });
     }
     const filePath = path.join(BRIDGE_TMP_DIR, `${id}.${format}`);
-    const metaPath = path.join(BRIDGE_TMP_DIR, `${id}.json`);
+    const metaPath = path.join(BRIDGE_TMP_DIR, `${id}.${format}.json`);
     fs.writeFileSync(filePath, buffer);
     fs.writeFileSync(
       metaPath,
-      JSON.stringify({ id, title, format, createdAt: Date.now(), size: buffer.length })
+      JSON.stringify({ id, title, format, version, createdAt: Date.now(), size: buffer.length })
     );
   } catch (err) {
     console.warn('Could not write cloud bridge file to disk tmp:', err);
   }
 }
 
-export function loadBridgeFileFromDisk(id: string): CloudBridgeEntry | null {
+export function loadBridgeFileFromDisk(id: string, requestedFormat?: 'pptx' | 'docx' | 'drawio'): CloudBridgeEntry | null {
   try {
-    const cleanId = id.replace(/\.(pptx|docx)$/i, '');
-    const metaPath = path.join(BRIDGE_TMP_DIR, `${cleanId}.json`);
+    const cleanId = id.replace(/\.(pptx|docx|drawio)$/i, '');
+    const fmt = requestedFormat || (id.endsWith('.docx') ? 'docx' : id.endsWith('.drawio') ? 'drawio' : 'pptx');
+    const metaPathNew = path.join(BRIDGE_TMP_DIR, `${cleanId}.${fmt}.json`);
+    const metaPathLegacy = path.join(BRIDGE_TMP_DIR, `${cleanId}.json`);
+    const metaPath = fs.existsSync(metaPathNew) ? metaPathNew : metaPathLegacy;
     if (!fs.existsSync(metaPath)) return null;
     const meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-    const filePath = path.join(BRIDGE_TMP_DIR, `${cleanId}.${meta.format}`);
+    const filePath = path.join(BRIDGE_TMP_DIR, `${cleanId}.${meta.format || fmt}`);
     if (!fs.existsSync(filePath)) return null;
     const buffer = fs.readFileSync(filePath);
     return {
       id: cleanId,
       title: meta.title || 'Architecture Blueprint',
-      format: meta.format || 'pptx',
+      format: meta.format || fmt,
       buffer,
       createdAt: meta.createdAt || Date.now(),
+      version: meta.version,
     };
   } catch {
     return null;
@@ -107,16 +119,35 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const entryFormat: 'pptx' | 'docx' | 'drawio' =
+      format === 'docx' ? 'docx' : format === 'drawio' ? 'drawio' : 'pptx';
+
     const entry: CloudBridgeEntry = {
       id: bridgeId,
       title,
-      format: format === 'docx' ? 'docx' : 'pptx',
+      format: entryFormat,
       buffer,
       createdAt: now,
+      version: CURRENT_BRIDGE_SCHEMA_VERSION,
     };
 
+    vault.set(`${bridgeId}.${entryFormat}`, entry);
     vault.set(bridgeId, entry);
-    saveBridgeFileToDisk(bridgeId, entry.format, title, buffer);
+    saveBridgeFileToDisk(bridgeId, entry.format, title, buffer, CURRENT_BRIDGE_SCHEMA_VERSION);
+
+    if (body.xmlContent && typeof body.xmlContent === 'string') {
+      const drawioBuf = Buffer.from(body.xmlContent, 'utf-8');
+      const drawioEntry: CloudBridgeEntry = {
+        id: bridgeId,
+        title,
+        format: 'drawio',
+        buffer: drawioBuf,
+        createdAt: now,
+        version: CURRENT_BRIDGE_SCHEMA_VERSION,
+      };
+      vault.set(`${bridgeId}.drawio`, drawioEntry);
+      saveBridgeFileToDisk(bridgeId, 'drawio', title, drawioBuf, CURRENT_BRIDGE_SCHEMA_VERSION);
+    }
 
     const host = req.headers.get('host') || 'promptcanvas.up.railway.app';
     const proto = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
