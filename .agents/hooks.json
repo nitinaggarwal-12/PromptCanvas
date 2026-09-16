@@ -84,7 +84,11 @@
         "bus_routing_required": true,
         "ban_global_dark": true,
         "ban_external_http_icons": true,
-        "mandatory_screenshots": true
+        "mandatory_screenshots": true,
+        "require_export_slides_parity_gate": true,
+        "require_style_image_base64_svg_extraction": true,
+        "require_cloud_bridge_head_content_length": true,
+        "ban_obsolete_workspace_route": true
       }
     },
     "scorex": {

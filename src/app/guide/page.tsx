@@ -781,10 +781,10 @@ export default function GuidePage() {
               <ThemeToggleBtn id="guide-theme-toggle-btn" />
 
               <Link
-                href="/workspace"
+                href="/studio"
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-[1.02]"
               >
-                <span>Launch Canvas</span>
+                <span>Launch Studio</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -1244,10 +1244,10 @@ export default function GuidePage() {
             </div>
 
             <Link
-              href="/workspace"
+              href="/studio"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs shadow-md shadow-teal-500/20 transition-all hover:scale-105 shrink-0"
             >
-              <span>Launch Canvas</span>
+              <span>Launch Studio</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

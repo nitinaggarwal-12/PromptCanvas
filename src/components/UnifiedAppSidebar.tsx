@@ -72,7 +72,6 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'create',
     label: 'Create',
     items: [
-      { id: 'design_canvas', name: 'Design Canvas', icon: Network, href: '/workspace' },
       { id: 'studio', name: 'Architecture Studio', icon: Layers, href: '/studio', badge: 'PRO' },
       { id: 'studio1', name: 'Prompt Lab', icon: Compass, href: '/studio1', badge: 'LAB' },
       { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
@@ -127,14 +126,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
     if (targetPath !== pathname) return false;
-
-    // /workspace hosts Settings and Audit as query tabs. Those are reached from
-    // their own entries, so Design Canvas must not stay lit on them. This
-    // preserves the behaviour of the old isCanvasActive check.
-    if (targetPath === '/workspace' && !targetQuery) {
-      const tab = searchParams.get('tab');
-      if (tab === 'settings' || tab === 'audit') return false;
-    }
 
     if (!targetQuery) {
       const hasSpecificMatch = ALL_NAV_ITEMS.some((other) => {
@@ -345,12 +336,16 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
             {/* SETTINGS */}
             <div className="pt-2">
-              <Link href="/workspace?tab=settings" className="block" title={!isSidebarOpen ? "Settings & AI Tier" : undefined}>
+              <button
+                onClick={() => setIsProfileModalOpen(true)}
+                className="w-full block text-left"
+                title={!isSidebarOpen ? "Settings & AI Tier" : undefined}
+              >
                 <div
                   className={`w-full flex items-center ${
                     isSidebarOpen ? 'justify-between' : 'justify-center'
                   } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    pathname.includes('tab=settings')
+                    isProfileModalOpen
                       ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                       : isLight
                       ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -358,11 +353,11 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                   }`}
                 >
                   <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
-                    <Settings className={`w-4 h-4 shrink-0 ${pathname.includes('tab=settings') ? 'text-white' : 'text-slate-400'}`} />
+                    <Settings className={`w-4 h-4 shrink-0 ${isProfileModalOpen ? 'text-white' : 'text-slate-400'}`} />
                     {isSidebarOpen && <span className="truncate">Settings &amp; AI Tier</span>}
                   </div>
                 </div>
-              </Link>
+              </button>
             </div>
 
             {/* TEST STATUS (ALWAYS AT BOTTOM) */}
@@ -555,14 +550,16 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
                 {/* Settings */}
                 <div className="pt-2">
-                  <Link
-                    href="/workspace?tab=settings"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block"
+                  <button
+                    onClick={() => {
+                      setIsMobileMenuOpen(false);
+                      setIsProfileModalOpen(true);
+                    }}
+                    className="w-full block text-left"
                   >
                     <div
                       className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold ${
-                        pathname.includes('tab=settings')
+                        isProfileModalOpen
                           ? 'bg-sky-600 text-white font-extrabold shadow-sm'
                           : isLight
                           ? 'text-slate-700 hover:bg-slate-100'
@@ -574,7 +571,7 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                         <span>Settings &amp; AI Tier</span>
                       </div>
                     </div>
-                  </Link>
+                  </button>
                 </div>
 
                 {/* Test Status */}

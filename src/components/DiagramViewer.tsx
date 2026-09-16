@@ -513,7 +513,7 @@ export default function DiagramViewer({
       >
         <div className="flex items-center gap-2 text-xs text-slate-400">
           <div className="w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-          <span>Loading Design Canvas...</span>
+          <span>Loading Architecture Studio...</span>
         </div>
       </div>
     );

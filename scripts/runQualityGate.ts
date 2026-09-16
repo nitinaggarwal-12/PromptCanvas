@@ -82,6 +82,16 @@ const steps: GateStep[] = [
         }
       }
     }
+  },
+  {
+    name: 'Export & Google Slides Studio Zero-Deformity Gate (1:1 Twin, style.image SVG & Cloud Bridge)',
+    category: 'EXPORT_SLIDES_PARITY',
+    command: 'tsx scripts/verify_export_slides_quality_gate.ts'
+  },
+  {
+    name: 'Navigation Badge Count & Obsolete Route Drift Gate',
+    category: 'NAVIGATION_INTEGRITY',
+    command: 'node scripts/verify_nav_badge_counts.mjs'
   }
 ];
 

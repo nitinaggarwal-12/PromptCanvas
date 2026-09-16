@@ -23,8 +23,9 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  const [activeTab, setActiveTab] = useState<'profile' | 'password' | 'logs'>('profile');
-  const [name, setName] = useState(user?.name || '');
+  const [activeTab, setActiveTab] = useState<'profile' | 'ai_tier' | 'password' | 'logs'>('ai_tier');
+  const activeUser = user || { id: 'guest', email: 'guest@promptcanvas.guest', name: 'Guest Explorer', is_guest: true };
+  const [name, setName] = useState(activeUser.name || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -35,10 +36,10 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
   const [logs, setLogs] = useState<UserLogItem[]>([]);
 
   useEffect(() => {
-    if (isOpen && user) {
-      setName(user.name || '');
+    if (isOpen && activeUser) {
+      setName(activeUser.name || '');
     }
-  }, [isOpen, user?.name]);
+  }, [isOpen, activeUser?.name]);
 
   const fetchUserLogs = async () => {
     setLogsLoading(true);
@@ -62,7 +63,7 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
     }
   }, [isOpen, activeTab]);
 
-  if (!isOpen || !user) return null;
+  if (!isOpen) return null;
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,7 +163,7 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
               isLight ? 'bg-white' : 'bg-[#0b101d]'
             }`}>
               <span className="font-black text-2xl text-teal-600 dark:text-teal-400">
-                {(user.name || user.email)[0].toUpperCase()}
+                {(activeUser.name || activeUser.email)[0].toUpperCase()}
               </span>
             </div>
           </div>
@@ -170,11 +171,11 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
             <h2 className={`text-2xl font-black tracking-tight ${
               isLight ? 'text-slate-900' : 'text-white'
             }`}>
-              {user.name || 'PromptCanvas User'}
+              {activeUser.name || 'PromptCanvas User'}
             </h2>
             <p className={`text-sm mt-0.5 ${
               isLight ? 'text-slate-600' : 'text-slate-300'
-            }`}>{user.email}</p>
+            }`}>{activeUser.email}</p>
           </div>
         </div>
 
@@ -184,6 +185,26 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
             ? 'bg-slate-100 border-slate-300'
             : 'bg-slate-900/90 border-slate-800'
         }`}>
+          <button
+            id="profile-tab-ai-tier"
+            type="button"
+            onClick={() => {
+              setActiveTab('ai_tier');
+              setError(null);
+              setSuccessMsg(null);
+            }}
+            className={`flex-1 py-3 text-xs md:text-sm font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              activeTab === 'ai_tier'
+                ? isLight
+                  ? 'bg-white text-teal-700 shadow-sm border border-slate-300'
+                  : 'bg-slate-800 text-teal-400 shadow-md border border-slate-700'
+                : isLight
+                  ? 'text-slate-600 hover:text-slate-900'
+                  : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <ShieldCheck className="w-4 h-4" /> AI Tier
+          </button>
           <button
             id="profile-tab-info"
             type="button"
@@ -261,10 +282,39 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
           </div>
         )}
 
+        {/* Tab 0: AI Tier & Enterprise Governance */}
+        {activeTab === 'ai_tier' && (
+          <div className="space-y-4">
+            <div className={`p-4 rounded-2xl border ${
+              isLight ? 'bg-teal-50 border-teal-200 text-slate-900' : 'bg-teal-950/30 border-teal-500/30 text-white'
+            }`}>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-teal-600 dark:text-teal-400">Active AI Model Tier</span>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-teal-500 text-slate-950">ENTERPRISE PRO</span>
+              </div>
+              <h3 className="text-base font-black">Gemini 3.1 Pro Vision &amp; Gemini 3.7 Flash</h3>
+              <p className={`text-xs mt-1 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
+                Full multimodal 1:1 visual twin decompilation, zero-collision Draw.io XML compilation, and automated Omni 1.1 forensic auditing active across Architecture Studio, Prompt Lab, and Image to Diagram.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className={`p-3.5 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'}`}>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block">Omni 1.1 Quality Gate</span>
+                <span className="text-sm font-black text-emerald-500 mt-0.5 block">✓ 100% Active (Zero Bypass)</span>
+              </div>
+              <div className={`p-3.5 rounded-xl border ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'}`}>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block">Slides &amp; Export Studio</span>
+                <span className="text-sm font-black text-sky-500 mt-0.5 block">✓ 1:1 Interactive Twin</span>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Tab 1: Profile Info */}
         {activeTab === 'profile' && (
           <form onSubmit={handleUpdateProfile} className="space-y-5">
-            {user.is_guest && (
+            {activeUser.is_guest && (
               <div className={`p-4 rounded-2xl border text-xs md:text-sm space-y-2 mb-4 ${
                 isLight
                   ? 'bg-amber-50 border-amber-300 text-amber-950 shadow-xs'
@@ -290,7 +340,7 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
                 <input
                   type="email"
                   disabled
-                  value={user.email}
+                  value={activeUser.email}
                   className={`w-full pl-12 pr-4 py-3.5 rounded-2xl border text-base cursor-not-allowed outline-none ${
                     isLight
                       ? 'bg-slate-100 border-slate-300 text-slate-600'

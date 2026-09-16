@@ -236,7 +236,7 @@ export function inspectConnectionPoolHealth(active: number, max: number = 20): C
 // ============================================================================
 export const PWA_OFFLINE_CACHE_ENTRIES = [
   '/',
-  '/workspace',
+  '/studio',
   '/canonical',
   '/docgen',
   '/guide',

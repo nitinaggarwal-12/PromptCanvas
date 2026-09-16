@@ -53,7 +53,7 @@ export async function GET(request: Request) {
 
     const reqHost = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'localhost:3000';
     const reqProto = request.headers.get('x-forwarded-proto') || 'https';
-    const redirectUrl = `${reqProto}://${reqHost}/workspace?setupPassword=true`;
+    const redirectUrl = `${reqProto}://${reqHost}/studio?setupPassword=true`;
 
     return NextResponse.redirect(redirectUrl);
   } catch (error: unknown) {

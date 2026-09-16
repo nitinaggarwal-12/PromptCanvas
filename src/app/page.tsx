@@ -95,9 +95,9 @@ export default function LandingPage() {
     e.preventDefault();
     try {
       const res = await fetch('/api/auth/guest', { method: 'POST' });
-      router.push('/workspace?new=true');
+      router.push('/studio');
     } catch {
-      router.push('/workspace?new=true');
+      router.push('/studio');
     }
   };
 
@@ -273,7 +273,7 @@ export default function LandingPage() {
                 <span className="px-2 py-0.5 rounded-full text-xs bg-teal-500/20 text-teal-300">Playbooks</span>
               </Link>
               <Link 
-                href="/workspace?tab=templates" 
+                href="/canonical" 
                 onClick={() => setIsMobileNavOpen(false)}
                 className="p-2 rounded-lg hover:bg-slate-800 text-teal-400 font-bold flex items-center justify-between"
               >
@@ -290,7 +290,7 @@ export default function LandingPage() {
             </nav>
             <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
               <Link
-                href="/workspace?new=true"
+                href="/studio"
                 onClick={() => setIsMobileNavOpen(false)}
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-950 font-black text-xs text-center shadow-md"
               >
@@ -338,7 +338,7 @@ export default function LandingPage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/workspace?tour=true"
+              href="/guide"
               className={`px-8 py-4 rounded-xl border font-semibold text-center transition-all flex items-center justify-center gap-2 ${
                 isLight
                   ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
@@ -574,7 +574,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-4">
             <Link
-              href="/workspace?tab=templates"
+              href="/canonical"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors underline underline-offset-4"
             >
               <span>View All 50 Production Blueprints in Templates Gallery →</span>
@@ -600,7 +600,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=5"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -625,7 +625,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=3"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -650,7 +650,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=1"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -675,7 +675,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=4"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-teal-600 dark:text-teal-400 hover:text-teal-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -700,7 +700,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=2"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -725,7 +725,7 @@ export default function LandingPage() {
               </p>
             </div>
             <Link
-              href="/workspace?modal=create&template=6"
+              href="/studio"
               className="inline-flex items-center gap-1.5 text-sm font-bold text-purple-600 dark:text-purple-400 hover:text-purple-500 transition-colors"
             >
               <span>Launch blueprint</span>
@@ -851,7 +851,7 @@ export default function LandingPage() {
         onSuccess={(loggedUser) => {
           setUser(loggedUser);
           setIsAuthOpen(false);
-          router.push('/workspace');
+          router.push('/studio');
         }}
       />
 

@@ -10,6 +10,7 @@
  */
 
 import PptxGenJS from 'pptxgenjs';
+import { XMLParser } from 'fast-xml-parser';
 import { exportDiagramPng } from './diagramRaster';
 
 export interface ParsedMxCell {
@@ -40,7 +41,10 @@ export interface ParsedMxCell {
 function parseStyleString(styleStr: string): Record<string, string> {
   const result: Record<string, string> = {};
   if (!styleStr) return result;
-  const parts = styleStr.split(';');
+  const protectedStr = styleStr
+    .replace(/data:([^;]+);base64,/g, 'data:$1__SEMI_BASE64__')
+    .replace(/data:([^;]+);utf8,/g, 'data:$1__SEMI_UTF8__');
+  const parts = protectedStr.split(';');
   for (const part of parts) {
     const trimmed = part.trim();
     if (!trimmed) continue;
@@ -49,7 +53,11 @@ function parseStyleString(styleStr: string): Record<string, string> {
       result[trimmed] = '1';
     } else {
       const k = trimmed.substring(0, eqIdx).trim();
-      const v = trimmed.substring(eqIdx + 1).trim();
+      const v = trimmed
+        .substring(eqIdx + 1)
+        .trim()
+        .replace(/__SEMI_BASE64__/g, ';base64,')
+        .replace(/__SEMI_UTF8__/g, ';utf8,');
       result[k] = v;
     }
   }
@@ -261,91 +269,187 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
   isDarkDiagram: boolean;
   diagramBgHex: string;
 } {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(xmlContent, 'text/xml');
-  const graphModel = doc.querySelector('mxGraphModel');
-  const modelBgAttr = graphModel?.getAttribute('background');
-
-  const rawCells = Array.from(doc.getElementsByTagName('mxCell'));
   const cellMap = new Map<string, ParsedMxCell>();
-  let detectedBgHex = modelBgAttr ? normalizeHexColor(modelBgAttr, 'F8FAFC') : '';
+  let detectedBgHex = '';
 
-  for (const el of rawCells) {
-    const id = el.getAttribute('id') || '';
-    if (id === '0' || id === '1') continue;
+  if (typeof DOMParser !== 'undefined') {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlContent, 'text/xml');
+    const graphModel = doc.querySelector('mxGraphModel');
+    const modelBgAttr = graphModel?.getAttribute('background');
+    if (modelBgAttr) detectedBgHex = normalizeHexColor(modelBgAttr, 'F8FAFC');
 
-    const value = el.getAttribute('value') || '';
-    const styleStr = el.getAttribute('style') || '';
-    const style = parseStyleString(styleStr);
-    const vertex = el.getAttribute('vertex') === '1';
-    const edge = el.getAttribute('edge') === '1';
-    const parent = el.getAttribute('parent') || '1';
-    const source = el.getAttribute('source') || undefined;
-    const target = el.getAttribute('target') || undefined;
+    const rawCells = Array.from(doc.getElementsByTagName('mxCell'));
+    for (const el of rawCells) {
+      const id = el.getAttribute('id') || '';
+      if (id === '0' || id === '1') continue;
 
-    let x = 0;
-    let y = 0;
-    let width = 0;
-    let height = 0;
-    let sourcePoint: { x: number; y: number } | undefined;
-    let targetPoint: { x: number; y: number } | undefined;
-    const waypoints: { x: number; y: number }[] = [];
+      const value = el.getAttribute('value') || '';
+      const styleStr = el.getAttribute('style') || '';
+      const style = parseStyleString(styleStr);
+      const vertex = el.getAttribute('vertex') === '1';
+      const edge = el.getAttribute('edge') === '1';
+      const parent = el.getAttribute('parent') || '1';
+      const source = el.getAttribute('source') || undefined;
+      const target = el.getAttribute('target') || undefined;
 
-    const geo = el.getElementsByTagName('mxGeometry')[0];
-    if (geo) {
-      x = parseFloat(geo.getAttribute('x') || '0');
-      y = parseFloat(geo.getAttribute('y') || '0');
-      width = parseFloat(geo.getAttribute('width') || '0');
-      height = parseFloat(geo.getAttribute('height') || '0');
+      let x = 0;
+      let y = 0;
+      let width = 0;
+      let height = 0;
+      let sourcePoint: { x: number; y: number } | undefined;
+      let targetPoint: { x: number; y: number } | undefined;
+      const waypoints: { x: number; y: number }[] = [];
 
-      const childPoints = Array.from(geo.getElementsByTagName('mxPoint'));
-      for (const pt of childPoints) {
-        const asAttr = pt.getAttribute('as');
-        const px = parseFloat(pt.getAttribute('x') || '0');
-        const py = parseFloat(pt.getAttribute('y') || '0');
-        if (asAttr === 'sourcePoint') {
-          sourcePoint = { x: px, y: py };
-        } else if (asAttr === 'targetPoint') {
-          targetPoint = { x: px, y: py };
-        } else if (!asAttr && !isNaN(px) && !isNaN(py)) {
-          waypoints.push({ x: px, y: py });
+      const geo = el.getElementsByTagName('mxGeometry')[0];
+      if (geo) {
+        x = parseFloat(geo.getAttribute('x') || '0');
+        y = parseFloat(geo.getAttribute('y') || '0');
+        width = parseFloat(geo.getAttribute('width') || '0');
+        height = parseFloat(geo.getAttribute('height') || '0');
+
+        const childPoints = Array.from(geo.getElementsByTagName('mxPoint'));
+        for (const pt of childPoints) {
+          const asAttr = pt.getAttribute('as');
+          const px = parseFloat(pt.getAttribute('x') || '0');
+          const py = parseFloat(pt.getAttribute('y') || '0');
+          if (asAttr === 'sourcePoint') {
+            sourcePoint = { x: px, y: py };
+          } else if (asAttr === 'targetPoint') {
+            targetPoint = { x: px, y: py };
+          } else if (!asAttr && !isNaN(px) && !isNaN(py)) {
+            waypoints.push({ x: px, y: py });
+          }
         }
       }
-    }
 
-    if (vertex && width >= 700 && height >= 400 && style.fillColor && style.fillColor !== 'none') {
-      const candidateHex = normalizeHexColor(style.fillColor, 'FFFFFF');
-      if (!detectedBgHex) {
-        detectedBgHex = candidateHex;
+      if (vertex && width >= 700 && height >= 400 && style.fillColor && style.fillColor !== 'none') {
+        const candidateHex = normalizeHexColor(style.fillColor, 'FFFFFF');
+        if (!detectedBgHex) {
+          detectedBgHex = candidateHex;
+        }
       }
+
+      const { svgs, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
+
+      cellMap.set(id, {
+        id,
+        value,
+        style,
+        vertex,
+        edge,
+        parent,
+        source,
+        target,
+        sourcePoint,
+        targetPoint,
+        x,
+        y,
+        width,
+        height,
+        absX: x,
+        absY: y,
+        depth: 0,
+        waypoints,
+        extractedSvgs: svgs,
+        imageDataUrl: style.image,
+        htmlTitleColor: titleColor,
+        htmlSubtitleColor: subtitleColor,
+      });
     }
+  } else {
+    // Node.js server / CLI quality gate parser using fast-xml-parser
+    const xmlParser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' });
+    const parsedObj = xmlParser.parse(xmlContent);
+    const diagramNode = parsedObj?.mxfile?.diagram || parsedObj?.diagram || parsedObj;
+    const graphModel = diagramNode?.mxGraphModel || parsedObj?.mxGraphModel || diagramNode;
+    const modelBgAttr = graphModel?.['@_background'];
+    if (modelBgAttr) detectedBgHex = normalizeHexColor(modelBgAttr, 'F8FAFC');
 
-    const { svgs, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
+    const rootNode = graphModel?.root || graphModel;
+    const rawCellsObj = rootNode?.mxCell || [];
+    const rawCells = Array.isArray(rawCellsObj) ? rawCellsObj : [rawCellsObj];
 
-    cellMap.set(id, {
-      id,
-      value,
-      style,
-      vertex,
-      edge,
-      parent,
-      source,
-      target,
-      sourcePoint,
-      targetPoint,
-      x,
-      y,
-      width,
-      height,
-      absX: x,
-      absY: y,
-      depth: 0,
-      waypoints,
-      extractedSvgs: svgs,
-      imageDataUrl: style.image,
-      htmlTitleColor: titleColor,
-      htmlSubtitleColor: subtitleColor,
-    });
+    for (const el of rawCells) {
+      if (!el) continue;
+      const id = String(el['@_id'] || '');
+      if (id === '0' || id === '1') continue;
+
+      const value = String(el['@_value'] || '');
+      const styleStr = String(el['@_style'] || '');
+      const style = parseStyleString(styleStr);
+      const vertex = String(el['@_vertex']) === '1';
+      const edge = String(el['@_edge']) === '1';
+      const parent = String(el['@_parent'] || '1');
+      const source = el['@_source'] ? String(el['@_source']) : undefined;
+      const target = el['@_target'] ? String(el['@_target']) : undefined;
+
+      let x = 0;
+      let y = 0;
+      let width = 0;
+      let height = 0;
+      let sourcePoint: { x: number; y: number } | undefined;
+      let targetPoint: { x: number; y: number } | undefined;
+      const waypoints: { x: number; y: number }[] = [];
+
+      const geo = el.mxGeometry;
+      if (geo) {
+        x = parseFloat(geo['@_x'] || '0');
+        y = parseFloat(geo['@_y'] || '0');
+        width = parseFloat(geo['@_width'] || '0');
+        height = parseFloat(geo['@_height'] || '0');
+
+        const ptsRaw = geo.mxPoint || (geo.Array?.mxPoint ? geo.Array.mxPoint : []);
+        const pts = Array.isArray(ptsRaw) ? ptsRaw : [ptsRaw];
+        for (const pt of pts) {
+          if (!pt) continue;
+          const asAttr = pt['@_as'];
+          const px = parseFloat(pt['@_x'] || '0');
+          const py = parseFloat(pt['@_y'] || '0');
+          if (asAttr === 'sourcePoint') {
+            sourcePoint = { x: px, y: py };
+          } else if (asAttr === 'targetPoint') {
+            targetPoint = { x: px, y: py };
+          } else if (!asAttr && !isNaN(px) && !isNaN(py)) {
+            waypoints.push({ x: px, y: py });
+          }
+        }
+      }
+
+      if (vertex && width >= 700 && height >= 400 && style.fillColor && style.fillColor !== 'none') {
+        const candidateHex = normalizeHexColor(style.fillColor, 'FFFFFF');
+        if (!detectedBgHex) {
+          detectedBgHex = candidateHex;
+        }
+      }
+
+      const { svgs, titleColor, subtitleColor } = extractHtmlColorsAndSvgs(value, style.image);
+
+      cellMap.set(id, {
+        id,
+        value,
+        style,
+        vertex,
+        edge,
+        parent,
+        source,
+        target,
+        sourcePoint,
+        targetPoint,
+        x,
+        y,
+        width,
+        height,
+        absX: x,
+        absY: y,
+        depth: 0,
+        waypoints,
+        extractedSvgs: svgs,
+        imageDataUrl: style.image,
+        htmlTitleColor: titleColor,
+        htmlSubtitleColor: subtitleColor,
+      });
+    }
   }
 
   let minX = Infinity;

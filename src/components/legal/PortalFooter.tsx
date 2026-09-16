@@ -15,7 +15,6 @@ export function PortalFooter() {
     pathname === '/' ||
     pathname === '/vision' ||
     pathname === '/studio' ||
-    pathname === '/workspace' ||
     pathname?.startsWith('/studio1') ||
     pathname === '/gcp';
 
