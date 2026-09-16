@@ -88,7 +88,11 @@
         "require_export_slides_parity_gate": true,
         "require_style_image_base64_svg_extraction": true,
         "require_cloud_bridge_head_content_length": true,
-        "ban_obsolete_workspace_route": true
+        "ban_obsolete_workspace_route": true,
+        "require_google_docs_editable_decomposed_diagram": true,
+        "require_viewer_open_with_google_slides_and_docs_buttons": true,
+        "require_guided_launch_assistant_and_docs_html_only_clipboard": true,
+        "require_viewer_default_google_engine_and_cache_buster": true
       }
     },
     "scorex": {

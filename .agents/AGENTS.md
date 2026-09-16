@@ -496,3 +496,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
     - `/workspace` is permanently retired and obsolete. All navigation links, sidebar items (`UnifiedAppSidebar.tsx`), header actions, library cards, and blueprint catalog links MUST route directly to `/studio` (Architecture Studio), `/studio1` (Prompt Lab), `/vision` (Image to Diagram), `/docgen` (Document Studio), or `/canonical` (Blueprint Catalog).
     - `src/app/workspace/page.tsx` must remain a lightweight immediate redirect to `/studio` (preserving query parameters) so no user or bookmarked URL ever lands on the retired `/workspace` UI.
 
+37. **Universal Cloud Studio Parity (Google Docs ⇄ Slides), Clipboard Multi-MIME Protocol & `/viewer` Top-Bar Law**:
+    - **100% Interactive Decomposed Diagram Parity in Google Docs Studio (`activeMode === 'docs'`)**:
+      - `GoogleWorkspaceDirectOpenModal.tsx` MUST NEVER degrade Google Docs Specification Studio (`activeMode === 'docs'`) into a static `<img>` while Google Slides Studio has an interactive vector canvas.
+      - Section 1 of Google Docs Studio MUST render the **100% Editable Decomposed Vector Diagram Canvas (177 Shapes & 89 Azure SVG Icons)** by default (`docsDiagramViewMode === 'decomposed-shapes'`), paired with the Left Interactive Sidebar (`Live Diagram & Doc Node Editor`) and Section 2 (**Inline-Editable 177-Row Specification Matrix Table**) synced bidirectionally in real time.
+      - Standalone icon labels (`width <= 90 && height <= 75`) must enforce `break-normal` and bottom-centered floating pill labels so words never break mid-word across lines.
+    - **Clipboard Multi-MIME Law for `docs.new` & Guided Launch Assistant Modal**:
+      - When copying to clipboard for Google Docs (`activeMode === 'docs'`), `ClipboardItem` MUST **omit `'image/png'`** and write **only `'text/html'` and `'text/plain'`**, embedding an **absolute public HTTPS image URL** (`https://promptcanvas.up.railway.app/blueprints/...`) inside the HTML `<img>` tag. Including `'image/png'` causes Chrome/Google Docs to paste only the raw image and discard the 177-row HTML specification table.
+      - Clicking `Copy & docs.new` or `Copy & slides.new` MUST display the **Guided Populated Google Launch Assistant Modal** (`launchAssistantModal`) explaining the exact 1-step paste (`⌘V`) or slide import workflow before launching external tabs.
+    - **Prominent Top-Bar Buttons & Default Google Engine on `/viewer`**:
+      - `/viewer` (`src/app/viewer/page.tsx`) MUST display prominent **`Open with Google Slides`** (`viewer-open-with-google-slides-btn`) and **`Open with Google Docs`** (`viewer-open-with-google-docs-btn`) buttons in the top header bar.
+      - `/viewer` MUST default `engine` to `'google'` (`Google Cloud Viewer`) so Slide 1 and Slide 2 render reliably without Microsoft PowerPoint Online CDN cache errors (`vis9745_*.pptx`), and append dynamic cache-busting query params (`&cb=${iframeKey}`) to Microsoft Office Online URLs.
+
+

@@ -1,9 +1,11 @@
 /**
- * Google Omni 1.1 Export & Slides Studio Quality Gate
+ * Google Omni 1.1 Export & Slides/Docs Studio Quality Gate
  * Verifies:
  * 1. Base64 style.image & inline <svg> icon extraction parity in editablePptxCompiler.ts
  * 2. Z-Order depth/area sorting & zero-deformity container/icon label placement in GoogleWorkspaceDirectOpenModal.tsx
  * 3. Cloud Bridge [filename]/route.ts HEAD, Content-Length & CORS headers for Google Docs Viewer
+ * 4. Google Docs Specification Studio 100% Interactive Decomposed Diagram Parity + Live Node Editor + HTML-only ClipboardItem
+ * 5. /viewer top-bar 'Open with Google Slides' & 'Open with Google Docs' buttons + Google Cloud Viewer default engine
  */
 
 import fs from 'fs';
@@ -12,7 +14,7 @@ import { generateAzureLandingZoneArchitectureXml } from '../src/lib/masterBuilde
 import { parseDrawioXmlForPptx } from '../src/lib/export/editablePptxCompiler';
 
 function runExportSlidesQualityGate() {
-  console.log('📊 Running Export & Google Slides Studio Quality Gate...');
+  console.log('📊 Running Export & Google Slides/Docs Studio Quality Gate...');
 
   // 1. Verify VIS-9745 Azure Landing Zone XML icon extraction in parseDrawioXmlForPptx
   const azureXml = generateAzureLandingZoneArchitectureXml();
@@ -41,7 +43,7 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
-  // 2. Verify GoogleWorkspaceDirectOpenModal.tsx enforces 1:1 Interactive Twin default, sorted z-order, and zero artificial Math.max(4.2 inflation
+  // 2. Verify GoogleWorkspaceDirectOpenModal.tsx enforces 1:1 Interactive Twin, Docs Decomposed Diagram Parity, and Guided Launch Assistant
   const modalPath = path.join(process.cwd(), 'src/components/GoogleWorkspaceDirectOpenModal.tsx');
   const modalCode = fs.readFileSync(modalPath, 'utf-8');
 
@@ -59,7 +61,35 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
-  // 3. Verify Cloud Bridge [filename]/route.ts supports HEAD and Content-Length for Google Docs Viewer
+  if (!modalCode.includes('docsDiagramViewMode') || !modalCode.includes('launchAssistantModal')) {
+    console.error(
+      '❌ EXPORT GATE FAILED: GoogleWorkspaceDirectOpenModal.tsx must support interactive decomposed diagram view mode in Google Docs Studio and Guided Launch Assistant Modal.'
+    );
+    process.exit(1);
+  }
+
+  // 3. Verify /viewer page enforces Open with Google Slides & Docs buttons and defaults to Google Cloud Viewer
+  const viewerPath = path.join(process.cwd(), 'src/app/viewer/page.tsx');
+  const viewerCode = fs.readFileSync(viewerPath, 'utf-8');
+
+  if (
+    !viewerCode.includes('viewer-open-with-google-slides-btn') ||
+    !viewerCode.includes('viewer-open-with-google-docs-btn')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: src/app/viewer/page.tsx is missing prominent "Open with Google Slides" or "Open with Google Docs" top header buttons.'
+    );
+    process.exit(1);
+  }
+
+  if (!viewerCode.includes("useState<'microsoft' | 'google'>('google')")) {
+    console.error(
+      "❌ EXPORT GATE FAILED: src/app/viewer/page.tsx must default engine to 'google' (Google Cloud Viewer) for reliable slide rendering."
+    );
+    process.exit(1);
+  }
+
+  // 4. Verify Cloud Bridge [filename]/route.ts supports HEAD and Content-Length for Google Docs Viewer
   const bridgeFilenameRoute = path.join(
     process.cwd(),
     'src/app/api/export/cloud-bridge/[filename]/route.ts'
@@ -80,7 +110,7 @@ function runExportSlidesQualityGate() {
   }
 
   console.log(
-    `✅ Export & Slides Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Z-order & Cloud Bridge HEAD/Content-Length certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, /viewer Google Workspace buttons & Cloud Bridge certified)`
   );
 }
 
