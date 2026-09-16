@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { Download, X, FileCode, Image, FileText, Presentation, Check, Loader2, Sparkles } from 'lucide-react';
-import PptxGenJS from 'pptxgenjs';
 import { exportDiagramPng } from '../lib/export/diagramRaster';
+import { exportDrawioToEditablePptx } from '../lib/export/editablePptxCompiler';
+import { exportDrawioToEditableDocx } from '../lib/export/editableDocxCompiler';
 import { useTheme } from '../lib/themeContext';
 
 interface ExportDiagramModalProps {
@@ -199,122 +200,35 @@ export function ExportDiagramModal({
     }
   };
 
-  // 4. Export PowerPoint Presentation (.pptx) with real high-res diagram slide & open browser slide preview
+  // 4. Export PowerPoint Presentation (.pptx) with 100% Native Editable Shapes & Google Slides Compatibility
   const handleExportPptx = async () => {
     setLoadingType('pptx');
     setErrorMessage(null);
     try {
-      const diagramItems = [
-        {
-          title: diagramName,
-          xml: xmlContent,
-        },
-      ];
-
-      const pptx = new PptxGenJS();
-      pptx.layout = 'LAYOUT_16x9';
-
-      const slide1 = pptx.addSlide();
-      slide1.background = { color: '070A13' };
-
-      slide1.addText('PROMPTCANVAS ENTERPRISE ARCHITECTURE DECK', {
-        x: 0.8,
-        y: 1.5,
-        w: 10,
-        h: 0.5,
-        fontSize: 14,
-        color: '14B8A6',
-        bold: true,
-        fontFace: 'Arial',
-      });
-
-      slide1.addText(diagramName, {
-        x: 0.8,
-        y: 2.2,
-        w: 11,
-        h: 1.2,
-        fontSize: 36,
-        color: 'FFFFFF',
-        bold: true,
-        fontFace: 'Arial',
-      });
-
-      slide1.addText(`Author: Maestro Cloud Architect  |  Date: ${new Date().toLocaleDateString()}  |  Compliance Score: ${auditScore}%`, {
-        x: 0.8,
-        y: 4.0,
-        w: 10,
-        h: 0.5,
-        fontSize: 14,
-        color: '94A3B8',
-        fontFace: 'Arial',
-      });
-
-      let firstPngUrl = '';
-      for (const item of diagramItems) {
-        const pngDataUrl = await exportDiagramPng(item.xml, { scale: 2, transparent: false });
-        firstPngUrl = pngDataUrl;
-        const slide2 = pptx.addSlide();
-        slide2.background = { color: '0B101D' };
-
-        slide2.addText(`Architecture Canvas Diagram: ${item.title}`, {
-          x: 0.3,
-          y: 0.15,
-          w: 12.0,
-          h: 0.35,
-          fontSize: 16,
-          color: '14B8A6',
-          bold: true,
-        });
-
-        slide2.addImage({
-          data: pngDataUrl,
-          x: 0.3,
-          y: 0.55,
-          w: 12.7,
-          h: 6.6,
-          sizing: { type: 'contain', w: 12.7, h: 6.6 },
-        });
-      }
-
-      await pptx.writeFile({ fileName: `${sanitizeFilename(diagramName)}_presentation.pptx` });
-
-      // Open interactive browser presentation preview tab by default
-      const pptWin = window.open('', '_blank');
-      if (pptWin && firstPngUrl) {
-        pptWin.document.write(`
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>${diagramName} - PPTX Slide Deck Preview</title>
-              <style>
-                body { background: #070A13; color: #FFFFFF; font-family: Arial, sans-serif; padding: 40px; display: flex; flex-direction: column; align-items: center; }
-                .slide { width: 100%; max-width: 1200px; background: #0B101D; border: 2px solid #14B8A6; border-radius: 16px; padding: 30px; margin-bottom: 30px; }
-                h2 { color: #14B8A6; font-size: 24px; margin-top: 0; }
-                img { width: 100%; border-radius: 12px; border: 1px solid #1E293B; }
-              </style>
-            </head>
-            <body>
-              <div class="slide">
-                <span style="color:#14B8A6; font-size:12px; font-weight:bold;">PROMPTCANVAS ENTERPRISE ARCHITECTURE DECK</span>
-                <h1 style="font-size:36px; margin: 15px 0;">${diagramName}</h1>
-                <p style="color:#94A3B8;">Compliance Score: ${auditScore}% | Exported: ${new Date().toLocaleDateString()}</p>
-              </div>
-              <div class="slide">
-                <h2>Architecture Canvas Diagram</h2>
-                <img src="${firstPngUrl}" alt="${diagramName}" />
-              </div>
-            </body>
-          </html>
-        `);
-        pptWin.document.close();
-      }
-
+      await exportDrawioToEditablePptx(xmlContent, diagramName);
       setDownloadSuccess('pptx');
       setTimeout(() => setDownloadSuccess(null), 2500);
     } catch (e: any) {
       console.error('PPTX export failed:', e);
       const msg = e instanceof Error ? e.message : 'Export service unreachable';
       setErrorMessage(`PPTX Export Failed: ${msg}`);
+    } finally {
+      setLoadingType(null);
+    }
+  };
+
+  // 4b. Export Word / Google Docs Specification (.docx) with 100% Editable Tables & Architecture Details
+  const handleExportDocx = async () => {
+    setLoadingType('docx');
+    setErrorMessage(null);
+    try {
+      await exportDrawioToEditableDocx(xmlContent, diagramName);
+      setDownloadSuccess('docx');
+      setTimeout(() => setDownloadSuccess(null), 2500);
+    } catch (e: any) {
+      console.error('DOCX export failed:', e);
+      const msg = e instanceof Error ? e.message : 'Export service unreachable';
+      setErrorMessage(`DOCX Export Failed: ${msg}`);
     } finally {
       setLoadingType(null);
     }
@@ -689,12 +603,50 @@ echo "✅ Provisioned Zero-Trust GCP Network Enclave for ${diagramName}!"
               <div className="flex items-center gap-1.5 mb-0.5">
                 <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
                   isLight ? 'bg-amber-100 text-amber-950 border-amber-300' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                }`}>Google Slides 16:9 Deck</span>
+                }`}>100% Editable Vector Shapes</span>
               </div>
               <h4 className={`font-extrabold text-sm transition-colors ${
                 isLight ? 'text-slate-900 group-hover:text-amber-800' : 'text-white group-hover:text-amber-200'
-              }`}>📊 Google Slides 16:9 Executive Board Deck (.pptx)</h4>
-              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Presentation deck featuring full-width diagram slide, business value, and technical breakdown.</p>
+              }`}>📊 Google Slides &amp; PowerPoint (.pptx)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>100% native editable vector shapes, containers, text boxes &amp; connectors for Google Slides / PPTX.</p>
+            </div>
+          </div>
+
+          {/* Option 6b: Google Docs & Microsoft Word Editable Specification (.docx) */}
+          <div
+            onClick={handleExportDocx}
+            className={`p-5 rounded-2xl border transition-all cursor-pointer group flex flex-col justify-between space-y-3 shadow-lg ${
+              isLight
+                ? 'bg-blue-50/70 border-blue-300 hover:border-blue-500 hover:bg-blue-50 hover:shadow-blue-100 shadow-blue-500/5'
+                : 'bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border-blue-500/30 hover:border-blue-400 hover:bg-slate-900 shadow-blue-500/5'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center ${
+                isLight ? 'bg-blue-100 border-blue-300 text-blue-800' : 'bg-blue-500/15 border-blue-500/30 text-blue-300'
+              }`}>
+                <FileText className="w-5 h-5" />
+              </div>
+              {downloadSuccess === 'docx' ? (
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <Check className="w-4 h-4" /> Downloaded .docx
+                </span>
+              ) : loadingType === 'docx' ? (
+                <Loader2 className="w-4 h-4 animate-spin text-blue-600 dark:text-blue-400" />
+              ) : (
+                <Download className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider border ${
+                  isLight ? 'bg-blue-100 text-blue-950 border-blue-300' : 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                }`}>Google Docs &amp; Word Ready</span>
+              </div>
+              <h4 className={`font-extrabold text-sm transition-colors ${
+                isLight ? 'text-slate-900 group-hover:text-blue-800' : 'text-white group-hover:text-blue-200'
+              }`}>📝 Google Docs &amp; Word Spec (.docx)</h4>
+              <p className={`text-xs mt-1 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>100% editable architecture specification document with component inventory &amp; data flow tables.</p>
             </div>
           </div>
 

@@ -124,6 +124,32 @@ export function isGeminiEnterpriseSlide(id?: string, title?: string, xml?: strin
 }
 
 /**
+ * Determines if a blueprint ID, title, or XML matches the Azure Application Landing Zone slide (VIS-5965).
+ */
+export function isAzureLandingZoneSlide(id?: string, title?: string, xml?: string): boolean {
+  const combined = `${id || ''} ${title || ''} ${xml || ''}`.toLowerCase();
+  return (
+    combined.includes('vis-5965') ||
+    combined.includes('application landing zone') ||
+    combined.includes('subscription vending provisioned resources') ||
+    combined.includes('platform landing zone subscription')
+  );
+}
+
+/**
+ * Determines if a blueprint ID, title, or XML matches the Agentic AI Architecture slide (bismart / VIS-AGENTIC-01).
+ */
+export function isAgenticAiArchitectureSlide(id?: string, title?: string, xml?: string): boolean {
+  const combined = `${id || ''} ${title || ''} ${xml || ''}`.toLowerCase();
+  return (
+    combined.includes('vis-agentic') ||
+    combined.includes('agentic ai architecture') ||
+    combined.includes('bismart') ||
+    combined.includes('reasoning core')
+  );
+}
+
+/**
  * Synchronous smart self-healing recovery for any blueprint's original uploaded image.
  */
 export function resolveIntactBlueprintImage(
@@ -132,7 +158,18 @@ export function resolveIntactBlueprintImage(
   title?: string,
   xml?: string
 ): string {
-  // 1. If currentImg is valid and non-empty (and not a broken truncated marker)
+  // 1. Self-heal known enterprise slides first if they match our master catalog
+  if (isAzureLandingZoneSlide(id, title, xml)) {
+    return '/blueprints/azure_application_landing_zone.svg';
+  }
+  if (isAgenticAiArchitectureSlide(id, title, xml)) {
+    return '/blueprints/agentic_ai_architecture.svg';
+  }
+  if (isGeminiEnterpriseSlide(id, title, xml)) {
+    return '/blueprints/gemini_enterprise_agent_platform.svg';
+  }
+
+  // 2. If currentImg is valid and non-empty (and not a broken truncated marker)
   if (
     currentImg &&
     currentImg.trim().length > 10 &&
@@ -141,7 +178,7 @@ export function resolveIntactBlueprintImage(
     return currentImg;
   }
 
-  // 2. Check dedicated localStorage/sessionStorage keys
+  // 3. Check dedicated localStorage/sessionStorage keys
   if (typeof window !== 'undefined' && id) {
     const dedicated =
       localStorage.getItem(`vision_img_${id}`) ||
@@ -152,7 +189,7 @@ export function resolveIntactBlueprintImage(
     }
   }
 
-  // 3. Check embedded data-source-image attribute inside XML
+  // 4. Check embedded data-source-image attribute inside XML
   if (xml) {
     const match = xml.match(/data-source-image="([^"]+)"/);
     if (match && match[1] && match[1].length > 10 && !match[1].includes('[truncated_for_storage]')) {
@@ -164,11 +201,6 @@ export function resolveIntactBlueprintImage(
     }
   }
 
-  // 4. Self-heal Gemini Enterprise Agent Platform uploads (VIS-1787, VIS-3093, etc.)
-  if (isGeminiEnterpriseSlide(id, title, xml)) {
-    return '/blueprints/gemini_enterprise_agent_platform.svg';
-  }
-
   // 5. Fallback for Google Multiagent AI System
   if ((id && id.toLowerCase().includes('multiagent')) || (title && title.toLowerCase().includes('multiagent'))) {
     return '/blueprints/GCP-MULTIAGENT-01_google_multiagent_ai_system.png';
@@ -176,3 +208,4 @@ export function resolveIntactBlueprintImage(
 
   return currentImg || '';
 }
+

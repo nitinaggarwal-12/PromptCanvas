@@ -5,7 +5,9 @@
 
 import { generateGoogleMultiagentArchitectureXml } from './masterBuilders/build_master_google_multiagent_ai_system';
 import { generateGeminiEnterpriseArchitectureXml } from './masterBuilders/build_master_gemini_enterprise_agent_platform';
-import { resolveIntactBlueprintImage, saveImageToVault } from './visionImageVault';
+import { generateAzureLandingZoneArchitectureXml } from './masterBuilders/build_master_azure_landing_zone';
+import { generateAgenticAiArchitectureXml } from './masterBuilders/build_master_agentic_ai_architecture';
+import { resolveIntactBlueprintImage, saveImageToVault, isAzureLandingZoneSlide, isAgenticAiArchitectureSlide } from './visionImageVault';
 import { enrichDrawioXmlWithVectorIcons } from './vectorIcons/visionIconEnricher';
 
 export interface SavedVisionBlueprint {
@@ -82,6 +84,52 @@ export function getSelfHealedGeminiEnterpriseBlueprint(id: string): SavedVisionB
   };
 }
 
+export function getSelfHealedAzureLandingZoneBlueprint(id: string = 'VIS-5965'): SavedVisionBlueprint {
+  const cleanId = id.toUpperCase();
+  const xml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+  return {
+    id: cleanId,
+    title: 'Azure Application Landing Zone (VIS-5965)',
+    category: 'Enterprise Cloud Landing Zone',
+    imageSrc: '/blueprints/azure_application_landing_zone.svg',
+    xml,
+    extractedZones: [
+      'Platform Landing Zone Subscription (Hub VNet 10.0.0.0/16)',
+      'Subscription Vending Provisioned Resources (GitOps CI/CD)',
+      'Application Landing Zone Subscription (Spoke VNet 10.10.0.0/16)',
+      'Ingress WAF, AKS Private Cluster, OpenAI & Private Endpoints'
+    ],
+    componentCount: 42,
+    summaryText: 'Complete 42-Node Enterprise Azure Application & Platform Landing Zone Architecture with Hub-Spoke VNet Peering, Subscription Vending, 9 Subnets, AKS Private Cluster, Azure OpenAI Private Link, and SQL Managed Instance.',
+    isCustom: true,
+    timestamp: 1789517559000,
+    source: 'cache'
+  };
+}
+
+export function getSelfHealedAgenticAiBlueprint(id: string = 'VIS-AGENTIC-01'): SavedVisionBlueprint {
+  const cleanId = id.toUpperCase();
+  const xml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
+  return {
+    id: cleanId,
+    title: 'Agentic AI Architecture (bismart)',
+    category: 'Agentic Cognitive Core',
+    imageSrc: '/blueprints/agentic_ai_architecture.svg',
+    xml,
+    extractedZones: [
+      '1. Perception & Multimodal Input Layer',
+      '2. Agentic Cognitive Core (Reasoning Brain, Memory & Planning)',
+      '3. Action & Tool Execution Layer (MCP, Sandbox & Multi-Agent)',
+      '4. Closed-Loop Continuous Feedback & Self-Reflection Channel'
+    ],
+    componentCount: 24,
+    summaryText: 'High-Contrast Neon-Cyan Glassmorphic Agentic AI Architecture (bismart) featuring Autonomous LLM Reasoning Brain, Short/Long-Term Episodic & Procedural Memory, DAG Task Decomposition, MCP Tool Execution, and Symmetrical Closed-Loop Reflection.',
+    isCustom: true,
+    timestamp: 1789517740000,
+    source: 'cache'
+  };
+}
+
 function migrateLegacyVisionStorage(): void {
   if (typeof window === 'undefined') return;
   try {
@@ -114,17 +162,41 @@ function migrateLegacyVisionStorage(): void {
       }
     }
 
-    // Ensure VIS-3093 and VIS-1787 (user's uploaded Gemini Enterprise Agent Platform slides) are present & healed unless explicitly deleted
+    // Ensure VIS-3093, VIS-1787, VIS-5965, and VIS-AGENTIC-01 are present & healed unless explicitly deleted
     const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
     const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
-    for (const defaultVisId of ['VIS-3093', 'VIS-1787']) {
-      if (!deletedIds.includes(defaultVisId) && !currentList.some(c => c.id.toUpperCase() === defaultVisId)) {
-        const healed = getSelfHealedGeminiEnterpriseBlueprint(defaultVisId);
-        currentList.push(healed);
-        try {
-          localStorage.setItem(`${STORAGE_PREFIX}${defaultVisId}`, JSON.stringify(healed));
-        } catch {}
-        migratedAny = true;
+
+    const defaultMasters: { id: string; builder: () => SavedVisionBlueprint }[] = [
+      { id: 'VIS-5965', builder: () => getSelfHealedAzureLandingZoneBlueprint('VIS-5965') },
+      { id: 'VIS-AGENTIC-01', builder: () => getSelfHealedAgenticAiBlueprint('VIS-AGENTIC-01') },
+      { id: 'VIS-3093', builder: () => getSelfHealedGeminiEnterpriseBlueprint('VIS-3093') },
+      { id: 'VIS-1787', builder: () => getSelfHealedGeminiEnterpriseBlueprint('VIS-1787') }
+    ];
+
+    for (const entry of defaultMasters) {
+      if (!deletedIds.includes(entry.id)) {
+        const existingIdx = currentList.findIndex(c => c.id.toUpperCase() === entry.id);
+        const healed = entry.builder();
+        if (existingIdx === -1) {
+          currentList.unshift(healed);
+          try {
+            localStorage.setItem(`${STORAGE_PREFIX}${entry.id}`, JSON.stringify(healed));
+          } catch {}
+          migratedAny = true;
+        } else {
+          // Ensure master XML for VIS-5965 and VIS-AGENTIC-01 stays synced with zero-collision master builder
+          const existing = currentList[existingIdx];
+          if (
+            (entry.id === 'VIS-5965' || entry.id === 'VIS-AGENTIC-01') &&
+            existing.xml !== healed.xml
+          ) {
+            currentList[existingIdx] = healed;
+            try {
+              localStorage.setItem(`${STORAGE_PREFIX}${entry.id}`, JSON.stringify(healed));
+            } catch {}
+            migratedAny = true;
+          }
+        }
       }
     }
 
@@ -280,6 +352,10 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
           (parsed.xml.includes('value="+ Gemini Enterprise') || parsed.xml.includes('x="1020"') || parsed.xml.includes('x="1068"'))
         ) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
+        } else if (isAzureLandingZoneSlide(id, parsed.title, parsed.xml)) {
+          healedXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+        } else if (isAgenticAiArchitectureSlide(id, parsed.title, parsed.xml)) {
+          healedXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
         }
         return {
           ...parsed,
@@ -306,6 +382,16 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
   // 4. Fallback for user's uploaded Gemini Enterprise Agent Platform slides (VIS-3093 & VIS-1787)
   if (id.toUpperCase() === 'VIS-3093' || id.toUpperCase() === 'VIS-1787') {
     return getSelfHealedGeminiEnterpriseBlueprint(id.toUpperCase());
+  }
+
+  // 5. Fallback for Azure Application Landing Zone (VIS-5965)
+  if (id.toUpperCase() === 'VIS-5965' || isAzureLandingZoneSlide(id)) {
+    return getSelfHealedAzureLandingZoneBlueprint(id.toUpperCase());
+  }
+
+  // 6. Fallback for Agentic AI Architecture (VIS-AGENTIC-01 / bismart)
+  if (id.toUpperCase() === 'VIS-AGENTIC-01' || isAgenticAiArchitectureSlide(id)) {
+    return getSelfHealedAgenticAiBlueprint(id.toUpperCase());
   }
 
   return null;

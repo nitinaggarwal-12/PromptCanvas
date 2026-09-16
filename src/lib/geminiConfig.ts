@@ -45,6 +45,7 @@ export function getGenConfig(kind: GenConfigKind) {
           thinkingBudget: 100, // Minimal thinking budget for mechanical repair calls
         },
         temperature: 0.1,
+        maxOutputTokens: 65536,
       };
     case 'audit':
       return {
@@ -52,6 +53,7 @@ export function getGenConfig(kind: GenConfigKind) {
           thinkingBudget: 1000, // Deep thinking budget for Gemini 3.1 Pro architectural critic
         },
         temperature: 0.2,
+        maxOutputTokens: 32768,
       };
     case 'vision':
       return {
@@ -59,6 +61,7 @@ export function getGenConfig(kind: GenConfigKind) {
           thinkingBudget: 500, // Thinking budget for spatial bounding box estimation and OCR alignment
         },
         temperature: 0.1,
+        maxOutputTokens: 65536, // CRITICAL: Prevent 8192 token truncation on dense 45+ node enterprise architecture diagrams
       };
     case 'generate':
       return {
@@ -66,12 +69,14 @@ export function getGenConfig(kind: GenConfigKind) {
           thinkingBudget: 500, // Modest thinking budget for creative generation calls
         },
         temperature: 0.3,
+        maxOutputTokens: 65536,
       };
     case 'edit':
     case 'narrative':
     default:
       return {
         temperature: 0.5,
+        maxOutputTokens: 32768,
       };
   }
 }

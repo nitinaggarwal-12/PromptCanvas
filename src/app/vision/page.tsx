@@ -39,7 +39,11 @@ import {
   BookmarkPlus,
   ClipboardPaste,
   Tag,
-  Edit3
+  Edit3,
+  Plus,
+  Presentation,
+  FileText,
+  History
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
@@ -68,9 +72,34 @@ import {
   getImageFromVault,
   saveImageToVault
 } from '@/lib/visionImageVault';
+import { exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
+import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { AppHeader } from '@/components/AppHeader';
 
 const SAMPLE_BLUEPRINTS = PRECOMPILED_SAMPLE_BLUEPRINTS;
+
+const BLANK_CANVAS_STARTER_XML = `<mxfile host="embed.diagrams.net" modified="2026-09-16T00:00:00.000Z" agent="PromptCanvas Vision Studio" version="24.0.0">
+  <diagram id="new-blank-canvas" name="New Architecture Canvas">
+    <mxGraphModel dx="1600" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="960" background="#F8FAFC" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="starter-banner" value="NEW ARCHITECTURE CANVAS  •  Upload / Paste an Image on the Left or Draw Directly Here" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0D9488;strokeWidth=2;fontColor=#5EEAD4;fontSize=13;fontStyle=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="1200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="starter-tier-1" value="Ingress &amp; API Gateway Tier" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0284C7;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#0369A1;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="130" width="360" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="starter-tier-2" value="Core Compute &amp; Agentic Runtime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#6D28D9;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="620" y="130" width="360" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="starter-tier-3" value="Data Lakehouse &amp; Vector Memory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0D9488;strokeWidth=2;verticalAlign=top;align=left;spacingLeft=14;spacingTop=10;fontSize=12;fontStyle=1;fontColor=#0F766E;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="130" width="360" height="320" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
 
 /**
  * Generates a short, memorable, searchable Unique Blueprint ID (e.g. VIS-GEMINI-4829 or VIS-4829)
@@ -101,6 +130,7 @@ function generateShortVisionBlueprintId(titleHint?: string): string {
  */
 function formatDisplayBlueprintId(id: string): string {
   if (!id) return 'VIS-0001';
+  if (id.toUpperCase() === 'NEW-CANVAS') return 'NEW-CANVAS';
   if (id.startsWith('VIS-') || id.startsWith('GCP-')) return id.toUpperCase();
   // Convert legacy custom_..._1789486723313 or web_... into a clean VIS-XXXX code
   const numMatch = id.match(/(\d{4,6})$/);
@@ -217,6 +247,53 @@ function VisionPageContent() {
   const [librarySearchQuery, setLibrarySearchQuery] = useState<string>('');
   const [libraryTabFilter, setLibraryTabFilter] = useState<'all' | 'custom' | 'master'>('all');
   const [isSavingToDb, setIsSavingToDb] = useState<boolean>(false);
+
+  // Historical Saved Diagrams Dropdown & Editable PPTX/DOCX Export States
+  const [showHistoryDropdown, setShowHistoryDropdown] = useState<boolean>(false);
+  const [historySearchQuery, setHistorySearchQuery] = useState<string>('');
+  const [isExportingPptx, setIsExportingPptx] = useState<boolean>(false);
+  const [isExportingDocx, setIsExportingDocx] = useState<boolean>(false);
+  const [dbHistoricalDiagrams, setDbHistoricalDiagrams] = useState<Array<{
+    id: string;
+    title: string;
+    category: string;
+    imageSrc: string;
+    desc: string;
+    componentCount: number;
+    extractedZones: string[];
+    isCustom: boolean;
+    timestamp: number;
+    xml?: string;
+    sourceLabel?: string;
+  }>>([]);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/diagrams')
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (!active || !data) return;
+        const list = Array.isArray(data) ? data : data.diagrams || [];
+        const mapped = list.map((d: any) => ({
+          id: d.id,
+          title: d.name || 'Saved Architecture Diagram',
+          category: d.architecture_type === 'vision_decompiled' ? 'Saved Vision Blueprint' : 'Database Architecture',
+          imageSrc: resolveIntactBlueprintImage(d.id, undefined, d.name, d.xml_content),
+          desc: d.comment || 'Persisted in Global Architecture Database',
+          componentCount: countDiagramNodes(d.xml_content || '') || 24,
+          extractedZones: ['Saved Architecture Tier'],
+          isCustom: true,
+          timestamp: d.updated_at ? new Date(d.updated_at).getTime() : Date.now(),
+          xml: d.xml_content,
+          sourceLabel: 'Database'
+        }));
+        setDbHistoricalDiagrams(mapped);
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // URL Addressable Object Selection State (?id=VIS-XXXX&obj=OBJ-XX-NAME)
   const [activeObjectSlug, setActiveObjectSlug] = useState<string | null>(null);
@@ -410,6 +487,24 @@ function VisionPageContent() {
 
   // Core Blueprint Loader: checks localStorage first, renders instantly with 0ms delay!
   const loadBlueprint = useCallback(async (id: string, forceRecompile = false, initialObjSlug?: string | null) => {
+    if (id.toUpperCase() === 'NEW-CANVAS') {
+      setSelectedBlueprintId('NEW-CANVAS');
+      setSelectedImageSrc('');
+      setSelectedImageName('New Architecture Canvas');
+      setIsCustomUpload(true);
+      setLeftPaneMode('single');
+      setActiveObjectSlug(null);
+      syncVisionUrl('NEW-CANVAS', null);
+      setDecompiledXml(BLANK_CANVAS_STARTER_XML);
+      setExtractedZones(['Ingress & API Gateway Tier', 'Core Compute & Agentic Runtime', 'Data Lakehouse & Vector Memory']);
+      setComponentCount(4);
+      setSummaryText('Blank 16:9 Enterprise Architecture Canvas. Upload or paste an architecture diagram image on the left to auto-decompile, or edit vector shapes directly on the right.');
+      setSavedSource('live');
+      setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
+      setIsDecompiling(false);
+      return;
+    }
+
     // 1. Check if user selected one of the certified sample blueprints
     const sample = SAMPLE_BLUEPRINTS.find(s => s.id === id || formatDisplayBlueprintId(s.id) === id.toUpperCase());
     if (sample) {
@@ -873,6 +968,53 @@ function VisionPageContent() {
     showToast('💾 Downloaded Draw.io XML diagram');
   };
 
+  // Open Blank Canvas (+ New button)
+  const handleOpenBlankNewCanvas = useCallback(() => {
+    setShowHistoryDropdown(false);
+    loadBlueprint('NEW-CANVAS', false);
+    showToast('✨ Opened Blank Architecture Canvas! Upload or paste an image on the left or draw directly on the right.');
+  }, [loadBlueprint]);
+
+  // Export 100% Native Editable PowerPoint (.pptx) & Google Slides
+  const handleExportEditablePptx = async () => {
+    if (!decompiledXml || isExportingPptx) return;
+    setIsExportingPptx(true);
+    try {
+      showToast('📊 Compiling 100% Editable Google Slides / PowerPoint (.pptx) vector shapes...');
+      await exportDrawioToEditablePptx(
+        decompiledXml,
+        selectedImageName || 'Architecture Blueprint',
+        formatDisplayBlueprintId(selectedBlueprintId)
+      );
+      showToast('🎉 Downloaded 100% Editable PowerPoint / Google Slides (.pptx)! Every box & connector is editable.');
+    } catch (err: any) {
+      console.error('Failed to export PPTX:', err);
+      showToast(`❌ PPTX export error: ${err?.message || 'Failed'}`);
+    } finally {
+      setIsExportingPptx(false);
+    }
+  };
+
+  // Export 100% Native Editable Word (.docx) & Google Docs Specification
+  const handleExportEditableDocx = async () => {
+    if (!decompiledXml || isExportingDocx) return;
+    setIsExportingDocx(true);
+    try {
+      showToast('📝 Compiling 100% Editable Word / Google Docs (.docx) architecture specification...');
+      await exportDrawioToEditableDocx(
+        decompiledXml,
+        selectedImageName || 'Architecture Blueprint',
+        formatDisplayBlueprintId(selectedBlueprintId)
+      );
+      showToast('🎉 Downloaded 100% Editable Word / Google Docs (.docx) specification & component tables!');
+    } catch (err: any) {
+      console.error('Failed to export DOCX:', err);
+      showToast(`❌ DOCX export error: ${err?.message || 'Failed'}`);
+    } finally {
+      setIsExportingDocx(false);
+    }
+  };
+
   // Open in Draw.io editor (diagrams.net)
   const handleOpenDrawio = () => {
     if (!decompiledXml) return;
@@ -901,36 +1043,88 @@ function VisionPageContent() {
     }
   };
 
-  // Unified list of all blueprints for the library modal
+  // Unified list of all blueprints for the library modal & historical dropdown
   const allLibraryBlueprints = useMemo(() => {
-    const masters = SAMPLE_BLUEPRINTS.map(s => ({
-      id: s.id,
-      title: s.title,
-      category: s.category,
-      imageSrc: s.image,
-      desc: s.desc,
-      componentCount: getBlueprintComponentCount(s.id),
-      extractedZones: s.defaultExtractedZones,
-      isCustom: false,
-      timestamp: 0,
-      xml: undefined as string | undefined
-    }));
+    const seenIds = new Set<string>();
+    const combined: Array<{
+      id: string;
+      title: string;
+      category: string;
+      imageSrc: string;
+      desc: string;
+      componentCount: number;
+      extractedZones: string[];
+      isCustom: boolean;
+      timestamp: number;
+      xml?: string;
+      sourceLabel: string;
+    }> = [];
 
-    const customs = customBlueprints.map(c => ({
-      id: c.id,
-      title: c.title,
-      category: c.category,
-      imageSrc: c.imageSrc,
-      desc: c.summaryText || 'Custom imported / decompiled architecture diagram',
-      componentCount: c.componentCount,
-      extractedZones: c.extractedZones,
-      isCustom: true,
-      timestamp: c.timestamp,
-      xml: c.xml
-    }));
+    for (const c of customBlueprints) {
+      const shortKey = formatDisplayBlueprintId(c.id).toUpperCase();
+      if (seenIds.has(shortKey)) continue;
+      seenIds.add(shortKey);
+      combined.push({
+        id: c.id,
+        title: c.title,
+        category: c.category,
+        imageSrc: c.imageSrc,
+        desc: c.summaryText || 'Custom imported / decompiled architecture diagram',
+        componentCount: c.componentCount,
+        extractedZones: c.extractedZones,
+        isCustom: true,
+        timestamp: c.timestamp,
+        xml: c.xml,
+        sourceLabel: 'Saved Vault'
+      });
+    }
 
-    return [...customs, ...masters];
-  }, [customBlueprints]);
+    for (const dbItem of dbHistoricalDiagrams) {
+      const shortKey = formatDisplayBlueprintId(dbItem.id).toUpperCase();
+      if (seenIds.has(shortKey)) continue;
+      seenIds.add(shortKey);
+      combined.push({
+        ...dbItem,
+        sourceLabel: 'Database'
+      });
+    }
+
+    for (const s of SAMPLE_BLUEPRINTS) {
+      const shortKey = formatDisplayBlueprintId(s.id).toUpperCase();
+      if (seenIds.has(shortKey)) continue;
+      seenIds.add(shortKey);
+      combined.push({
+        id: s.id,
+        title: s.title,
+        category: s.category,
+        imageSrc: s.image,
+        desc: s.desc,
+        componentCount: getBlueprintComponentCount(s.id),
+        extractedZones: s.defaultExtractedZones,
+        isCustom: false,
+        timestamp: 0,
+        xml: undefined,
+        sourceLabel: 'Master'
+      });
+    }
+
+    return combined;
+  }, [customBlueprints, dbHistoricalDiagrams]);
+
+  // Filtered list for the Saved History Dropdown
+  const filteredHistoryBlueprints = useMemo(() => {
+    if (!historySearchQuery.trim()) return allLibraryBlueprints;
+    const q = historySearchQuery.toLowerCase();
+    return allLibraryBlueprints.filter(bp => {
+      const displayId = formatDisplayBlueprintId(bp.id).toLowerCase();
+      return (
+        bp.id.toLowerCase().includes(q) ||
+        displayId.includes(q) ||
+        bp.title.toLowerCase().includes(q) ||
+        bp.category.toLowerCase().includes(q)
+      );
+    });
+  }, [allLibraryBlueprints, historySearchQuery]);
 
   // Filtered blueprints for the library modal
   const filteredLibraryBlueprints = useMemo(() => {
@@ -1261,10 +1455,40 @@ function VisionPageContent() {
             onClick={handleDownloadXml}
             disabled={!decompiledXml || isDecompiling}
             className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Download .drawio file"
+            title="Download raw .drawio XML file"
           >
             <Download className="w-3 h-3 text-slate-400" />
-            <span className="hidden lg:inline">Export</span>
+            <span className="hidden lg:inline">.drawio</span>
+          </button>
+
+          <button
+            onClick={handleExportEditablePptx}
+            disabled={!decompiledXml || isDecompiling || isExportingPptx}
+            data-testid="vision-export-pptx-btn"
+            className="px-2.5 py-1 rounded-md bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+            title="Download 100% Native Editable PowerPoint (.pptx) & Google Slides vector shapes"
+          >
+            {isExportingPptx ? (
+              <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
+            ) : (
+              <Presentation className="w-3 h-3 text-amber-400" />
+            )}
+            <span className="hidden md:inline">PPTX (Editable Slides)</span>
+          </button>
+
+          <button
+            onClick={handleExportEditableDocx}
+            disabled={!decompiledXml || isDecompiling || isExportingDocx}
+            data-testid="vision-export-docx-btn"
+            className="px-2.5 py-1 rounded-md bg-sky-500/20 hover:bg-sky-500/30 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 shadow-2xs"
+            title="Download 100% Native Editable Word (.docx) & Google Docs architecture specification"
+          >
+            {isExportingDocx ? (
+              <Loader2 className="w-3 h-3 text-sky-400 animate-spin" />
+            ) : (
+              <FileText className="w-3 h-3 text-sky-400" />
+            )}
+            <span className="hidden xl:inline">DOCX (Google Docs)</span>
           </button>
 
           <button
@@ -1296,10 +1520,124 @@ function VisionPageContent() {
         {/* CONSOLIDATED BLUEPRINT CONTROL BAR (Compact 32px height) */}
         <div
           id="consolidated-vision-control-bar"
-          className="px-2.5 py-1 rounded-lg border bg-white border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-1.5 flex-shrink-0"
+          className="px-2.5 py-1 rounded-lg border bg-white border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-1.5 flex-shrink-0 relative"
         >
-          {/* Left: Horizontal Blueprint Selector Chips Strip */}
+          {/* Left: +New Button, Saved History Dropdown & Horizontal Blueprint Selector Chips Strip */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-0.2 no-scrollbar flex-1 min-w-0">
+            {/* 1. +New Blank Canvas Button */}
+            <button
+              onClick={handleOpenBlankNewCanvas}
+              data-testid="vision-new-canvas-btn"
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-extrabold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 shadow-2xs ${
+                selectedBlueprintId === 'NEW-CANVAS'
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+              }`}
+              title="Open a clean Blank Architecture Canvas to upload/paste a new image or draw from scratch"
+            >
+              <Plus className="w-3 h-3 stroke-[2.5]" />
+              <span>New</span>
+            </button>
+
+            {/* 2. Historical Saved Diagrams Dropdown (Saved History ▾) */}
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setShowHistoryDropdown(prev => !prev)}
+                data-testid="vision-saved-history-dropdown-btn"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer shadow-2xs ${
+                  showHistoryDropdown
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
+                }`}
+                title="Choose from all historical saved diagrams (Database, Local Vault & Certified Masters)"
+              >
+                <History className="w-3 h-3 text-teal-600" />
+                <span>Saved History ({allLibraryBlueprints.length})</span>
+                <ChevronDown className={`w-3 h-3 transition-transform ${showHistoryDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {showHistoryDropdown && (
+                <div
+                  data-testid="vision-saved-history-menu"
+                  className="fixed left-4 top-24 w-[440px] max-w-[92vw] rounded-xl bg-white border border-slate-300 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2"
+                >
+                  {/* Dropdown Header & Search */}
+                  <div className="p-2.5 bg-slate-900 text-white flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <History className="w-3.5 h-3.5 text-teal-400" />
+                      <span className="text-xs font-bold">Historical Saved Diagrams ({allLibraryBlueprints.length})</span>
+                    </div>
+                    <button
+                      onClick={() => setShowHistoryDropdown(false)}
+                      className="text-slate-400 hover:text-white p-0.5 rounded cursor-pointer"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="p-2 border-b border-slate-200 bg-slate-50">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        value={historySearchQuery}
+                        onChange={(e) => setHistorySearchQuery(e.target.value)}
+                        placeholder="Filter by ID (e.g. VIS-5965), title, or category..."
+                        className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                    {filteredHistoryBlueprints.map((item) => {
+                      const shortId = formatDisplayBlueprintId(item.id);
+                      const isCurrent = selectedBlueprintId === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setShowHistoryDropdown(false);
+                            loadBlueprint(item.id, false);
+                          }}
+                          className={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2 transition cursor-pointer ${
+                            isCurrent ? 'bg-teal-50/90 border-l-4 border-teal-600' : 'hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-900 text-teal-300">
+                                {shortId}
+                              </span>
+                              <span className="text-xs font-bold text-slate-900 truncate">{item.title}</span>
+                            </div>
+                            <div className="text-[10.5px] text-slate-500 truncate mt-0.5">
+                              {item.category} • {item.componentCount} objects
+                            </div>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[9.5px] font-bold shrink-0 ${
+                            item.sourceLabel === 'Database'
+                              ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                              : item.sourceLabel === 'Saved Vault'
+                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                              : 'bg-teal-100 text-teal-800 border border-teal-200'
+                          }`}>
+                            {item.sourceLabel}
+                          </span>
+                        </button>
+                      );
+                    })}
+                    {filteredHistoryBlueprints.length === 0 && (
+                      <div className="p-6 text-center text-xs text-slate-500">
+                        No historical diagrams matched "{historySearchQuery}".
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <span className="text-slate-300 font-bold select-none">|</span>
+
             <span className="text-[10px] font-black uppercase tracking-wider px-0.5 text-slate-600 flex-shrink-0">
               Blueprints:
             </span>
@@ -1687,9 +2025,43 @@ function VisionPageContent() {
                         />
                       </div>
                     ) : (
-                      <div className="text-center text-slate-400 py-12">
-                        <ImageIcon className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                        <p className="text-xs">No image selected</p>
+                      <div
+                        data-testid="blank-canvas-dropzone"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-50 to-teal-50/30 border-2 border-dashed border-teal-300 hover:border-teal-500 rounded-xl transition cursor-pointer group"
+                      >
+                        <div className="w-14 h-14 rounded-2xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-600 mb-3 group-hover:scale-110 transition-transform shadow-sm">
+                          <Upload className="w-7 h-7" />
+                        </div>
+                        <h3 className="text-sm font-extrabold text-slate-900">
+                          New Blank Architecture Canvas Ready
+                        </h3>
+                        <p className="text-xs text-slate-600 max-w-md mt-1 leading-relaxed">
+                          Upload or paste any architecture slide, cloud diagram, or whiteboard photo here to auto-decompile into 100% editable vector Draw.io &amp; Google Slides format — or draw directly on the right canvas.
+                        </p>
+                        <div className="flex flex-wrap items-center justify-center gap-2 mt-4" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                          >
+                            <FolderUp className="w-3.5 h-3.5" />
+                            <span>Upload Image</span>
+                          </button>
+                          <button
+                            onClick={handlePasteFromClipboard}
+                            className="px-3.5 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                          >
+                            <ClipboardPaste className="w-3.5 h-3.5" />
+                            <span>Paste Clipboard (⌘V)</span>
+                          </button>
+                          <button
+                            onClick={() => setShowUrlModal(true)}
+                            className="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer transition"
+                          >
+                            <Globe className="w-3.5 h-3.5" />
+                            <span>Import Web URL</span>
+                          </button>
+                        </div>
                       </div>
                     );
                   })()}
