@@ -1464,17 +1464,6 @@ function VisionPageContent() {
           </div>
 
           <button
-            onClick={handleForceRecompile}
-            disabled={isDecompiling}
-            data-testid="vision-header-redecompile-btn"
-            className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Restore 100% 1:1 Master Architecture & purge any degraded cache (or re-run DeepMind Vision AI on custom uploads)"
-          >
-            <RefreshCw className={`w-3 h-3 text-teal-400 ${isDecompiling ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">{isDecompiling ? 'Decompiling...' : 'Re-Decompile'}</span>
-          </button>
-
-          <button
             onClick={handleSaveCurrentToGlobalLibrary}
             disabled={!decompiledXml || isDecompiling || isSavingToDb}
             className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
@@ -2211,17 +2200,6 @@ function VisionPageContent() {
 
               {/* Action Controls */}
               <div className="flex items-center gap-1">
-                <button
-                  onClick={handleForceRecompile}
-                  disabled={isDecompiling}
-                  data-testid="vision-panel-redecompile-btn"
-                  className="px-2 py-0.5 rounded-md bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs disabled:opacity-50"
-                  title="Restore 100% 1:1 Master Architecture (or re-run Vision AI on custom uploaded images)"
-                >
-                  <RefreshCw className={`w-2.5 h-2.5 text-teal-600 ${isDecompiling ? 'animate-spin' : ''}`} />
-                  <span>{isDecompiling ? 'Restoring...' : (!isCustomUpload ? '↺ Reset to Master' : 'Re-Decompile')}</span>
-                </button>
-
                 <button
                   onClick={handleCopyXml}
                   disabled={!decompiledXml || isDecompiling}
