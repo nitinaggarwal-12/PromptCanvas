@@ -22,7 +22,11 @@ import {
   Edit3,
   Globe,
 } from 'lucide-react';
-import { parseDrawioXmlForPptx, exportDrawioToEditablePptx } from '@/lib/export/editablePptxCompiler';
+import {
+  parseDrawioXmlForPptx,
+  exportDrawioToEditablePptx,
+  cleanHtmlToPlainText,
+} from '@/lib/export/editablePptxCompiler';
 import { exportDrawioToEditableDocx } from '@/lib/export/editableDocxCompiler';
 import { exportDiagramPng } from '@/lib/export/diagramRaster';
 
@@ -36,30 +40,6 @@ interface GoogleWorkspaceDirectOpenModalProps {
   masterImageSrc?: string;
 }
 
-function cleanCellText(html: string): { title: string; subtitle: string } {
-  if (!html) return { title: '', subtitle: '' };
-  const decoded = html
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ');
-  const noSvg = decoded.replace(/<svg[\s\S]*?<\/svg>/gi, '');
-  const lines = noSvg
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/div>/gi, '\n')
-    .replace(/<\/p>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean);
-  return {
-    title: lines[0] || '',
-    subtitle: lines.slice(1).join(' • ') || '',
-  };
-}
-
 function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -70,6 +50,42 @@ function blobToBase64(blob: Blob): Promise<string> {
     };
     reader.onerror = reject;
     reader.readAsDataURL(blob);
+  });
+}
+
+/**
+ * Converts any image URL (including .svg or image/svg+xml) into a genuine image/png Blob
+ * so navigator.clipboard.write(new ClipboardItem({ 'image/png': blob })) never fails.
+ */
+async function convertAnyImageUrlToPngBlob(url: string): Promise<Blob | null> {
+  if (typeof window === 'undefined' || !url) return null;
+  return new Promise((resolve) => {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || 1600;
+          canvas.height = img.naturalHeight || 900;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob((blob) => {
+              resolve(blob);
+            }, 'image/png');
+            return;
+          }
+        } catch (err) {
+          console.warn('Canvas conversion warning:', err);
+        }
+        resolve(null);
+      };
+      img.onerror = () => resolve(null);
+      img.src = url;
+    } catch {
+      resolve(null);
+    }
   });
 }
 
@@ -102,7 +118,17 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   // Interactive editable nodes state for Slide 1
   const parsedTopology = useMemo(() => {
-    if (!xmlContent) return { cells: [], minX: 0, minY: 0, maxX: 1485, maxY: 840 };
+    if (!xmlContent) {
+      return {
+        cells: [],
+        minX: 0,
+        minY: 0,
+        maxX: 1280,
+        maxY: 760,
+        isDarkDiagram: true,
+        diagramBgHex: '1A1C1E',
+      };
+    }
     return parseDrawioXmlForPptx(xmlContent);
   }, [xmlContent]);
 
@@ -160,7 +186,7 @@ export default function GoogleWorkspaceDirectOpenModal({
 
   if (!isOpen) return null;
 
-  const vertices = parsedTopology.cells.filter((c) => c.vertex);
+  const vertices = parsedTopology.cells.filter((c) => c.vertex && (c.width > 0 || c.height > 0));
   const edges = parsedTopology.cells.filter((c) => c.edge);
   const graphW = Math.max(800, parsedTopology.maxX - parsedTopology.minX);
   const graphH = Math.max(500, parsedTopology.maxY - parsedTopology.minY);
@@ -181,7 +207,7 @@ export default function GoogleWorkspaceDirectOpenModal({
     setIsUploadingToGoogleDrive(true);
     setStatusMessage({
       type: 'info',
-      text: `Compiling 100% editable ${mode === 'slides' ? 'vector slide shapes (.pptx)' : 'specification tables (.docx)'} in memory...`,
+      text: `Compiling 100% editable ${mode === 'slides' ? 'vector slide shapes, icons & arrows (.pptx)' : 'specification tables (.docx)'} in memory...`,
     });
 
     try {
@@ -197,12 +223,9 @@ export default function GoogleWorkspaceDirectOpenModal({
       }
 
       const base64Data = await blobToBase64(blob);
-
-      // Check if user has a Google Access Token or wants to trigger Google Identity OAuth Popup
       let activeToken = googleAccessToken.trim();
 
       if (!activeToken && googleClientId.trim() && typeof window !== 'undefined') {
-        // Dynamically load Google Identity Services script if needed
         setStatusMessage({
           type: 'info',
           text: 'Opening Google Sign-In popup to authorize 1-click Drive file creation...',
@@ -248,7 +271,7 @@ export default function GoogleWorkspaceDirectOpenModal({
         type: 'info',
         text: activeToken
           ? `Uploading directly to your Google Drive & converting into native ${mode === 'slides' ? 'Google Slides presentation' : 'Google Doc'}...`
-          : `Creating Cloud Bridge URL for browser viewer...`,
+          : `Streaming compiled ${mode === 'slides' ? '.pptx vector deck' : '.docx specification'} to Cloud Bridge...`,
       });
 
       const res = await fetch('/api/export/cloud-bridge', {
@@ -271,27 +294,24 @@ export default function GoogleWorkspaceDirectOpenModal({
       if (data.googleWebViewLink) {
         setStatusMessage({
           type: 'success',
-          text: `🎉 Created native ${mode === 'slides' ? 'Google Slides Presentation' : 'Google Doc'} with diagram already populated! Opening tab...`,
+          text: `🎉 Created native ${mode === 'slides' ? 'Google Slides Presentation' : 'Google Doc'} with diagram, icons & arrows already populated! Opening tab...`,
           url: data.googleWebViewLink,
         });
         window.open(data.googleWebViewLink, '_blank');
       } else {
-        // If no OAuth token was provided, open via Google Docs Cloud Viewer if public HTTPS, or open Auth helper
+        // Open populated deck in Google Cloud Viewer immediately!
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        if (!isLocalhost && data.googleViewerUrl) {
-          setStatusMessage({
-            type: 'success',
-            text: `✨ Opened populated ${mode === 'slides' ? 'Presentation' : 'Document'} in Google Cloud Viewer! Click "Open with Google ${mode === 'slides' ? 'Slides' : 'Docs'}" at the top of the viewer tab.`,
-            url: data.googleViewerUrl,
-          });
-          window.open(data.googleViewerUrl, '_blank');
-        } else {
-          setShowAuthConfig(true);
-          setStatusMessage({
-            type: 'info',
-            text: `To create a live editable file directly inside your personal Google Drive (${mode === 'slides' ? 'docs.google.com/presentation' : 'docs.google.com/document'}), paste a Google OAuth Access Token below, OR use the Live Browser Slide Studio right below!`,
-          });
-        }
+        const targetUrl = isLocalhost
+          ? `https://promptcanvas.up.railway.app/api/export/cloud-bridge?id=${data.bridgeId}&ext=.${mode === 'slides' ? 'pptx' : 'docx'}`
+          : data.publicUrl;
+        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(targetUrl)}&embedded=false`;
+
+        setStatusMessage({
+          type: 'success',
+          text: `✨ Opened populated ${mode === 'slides' ? 'Presentation' : 'Document'} in Google Cloud Viewer! Click "Open with Google ${mode === 'slides' ? 'Slides' : 'Docs'}" at the top center of the new tab.`,
+          url: viewerUrl,
+        });
+        window.open(viewerUrl, '_blank');
       }
     } catch (err: any) {
       setStatusMessage({
@@ -310,7 +330,7 @@ export default function GoogleWorkspaceDirectOpenModal({
     setIsOpeningCloudViewer(true);
     setStatusMessage({
       type: 'info',
-      text: `Generating temporary Cloud Bridge URL for populated ${mode === 'slides' ? '.pptx Slide Deck' : '.docx Document'}...`,
+      text: `Compiling vector shapes, icons & arrows and launching Google Cloud Viewer...`,
     });
 
     try {
@@ -344,7 +364,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(targetUrl)}&embedded=false`;
       setStatusMessage({
         type: 'success',
-        text: `🌐 Opened populated ${mode === 'slides' ? 'Slide Deck' : 'Specification'} in Google Cloud Viewer!`,
+        text: `🌐 Opened populated ${mode === 'slides' ? 'Slide Deck' : 'Specification'} in Google Cloud Viewer! Click "Open with Google ${mode === 'slides' ? 'Slides' : 'Docs'}" at the top center.`,
         url: viewerUrl,
       });
       window.open(viewerUrl, '_blank');
@@ -359,15 +379,15 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 3: Auto-Copy Populated Rich HTML + High-Res Image & Open slides.new / docs.new
+   * Method 3: Auto-Copy Populated Rich HTML + Guaranteed PNG Image & Open slides.new / docs.new
    */
   const handleCopyAndLaunchNewTab = async () => {
     setIsCopyingAndLaunching(true);
     try {
-      const displayNodes = vertices.filter((v) => cleanCellText(v.value).title.length > 0);
+      const displayNodes = vertices.filter((v) => cleanHtmlToPlainText(v.value).title.length > 0);
       const tableHtmlRows = displayNodes
         .map((n, idx) => {
-          const { title, subtitle } = cleanCellText(n.value);
+          const { title, subtitle } = cleanHtmlToPlainText(n.value);
           return `<tr>
             <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#0f172a;">OBJ-${String(idx + 1).padStart(2, '0')}</td>
             <td style="border:1px solid #cbd5e1;padding:8px;font-weight:bold;color:#1e3a8a;">${title}</td>
@@ -400,10 +420,12 @@ export default function GoogleWorkspaceDirectOpenModal({
         'text/plain': new Blob([`${diagramName} (${blueprintId}) - Architecture Specification`], { type: 'text/plain' }),
       };
 
-      if (pngPreviewUrl && mode === 'slides') {
-        const res = await fetch(pngPreviewUrl);
-        const imgBlob = await res.blob();
-        clipboardItems['image/png'] = imgBlob;
+      // Convert any SVG/PNG preview image to a genuine image/png Blob for ClipboardItem
+      if (pngPreviewUrl) {
+        const pngBlob = await convertAnyImageUrlToPngBlob(pngPreviewUrl);
+        if (pngBlob) {
+          clipboardItems['image/png'] = pngBlob;
+        }
       }
 
       await navigator.clipboard.write([new ClipboardItem(clipboardItems)]);
@@ -413,13 +435,13 @@ export default function GoogleWorkspaceDirectOpenModal({
 
       setStatusMessage({
         type: 'success',
-        text: `✅ Copied entire ${mode === 'slides' ? 'Architecture Diagram & Slide Spec' : 'Formatted Google Doc & Editable Tables'} to your clipboard and opened ${targetUrl}! Simply press ⌘V (or Ctrl+V) inside the new Google tab!`,
+        text: `✅ Copied high-resolution Architecture Diagram & Editable Table to clipboard and opened ${targetUrl}! Press ⌘V (or Ctrl+V) inside the new Google tab!`,
         url: targetUrl,
       });
     } catch (err: any) {
       setStatusMessage({
         type: 'error',
-        text: 'Clipboard copy warning: ' + (err?.message || 'Please allow clipboard permissions'),
+        text: 'Clipboard copy notice: ' + (err?.message || 'Please allow clipboard permissions'),
       });
     } finally {
       setIsCopyingAndLaunching(false);
@@ -464,14 +486,14 @@ export default function GoogleWorkspaceDirectOpenModal({
               <p className="text-xs text-slate-400">
                 Blueprint <span className="text-sky-400 font-mono font-semibold">{blueprintId}</span> •{' '}
                 <span className="text-slate-200 font-medium">{diagramName}</span> • Populated with{' '}
-                <span className="text-emerald-400 font-semibold">{vertices.length} editable vector objects</span>
+                <span className="text-emerald-400 font-semibold">{vertices.length} editable vector objects &amp; icons</span>
               </p>
             </div>
           </div>
 
           {/* Direct Cloud Launch Buttons */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Button 1: 1-Click Direct Google Drive API Creation */}
+            {/* Button 1: 1-Click Direct Google Drive API Creation / Cloud Viewer */}
             <button
               onClick={handleDirectGoogleDriveOpen}
               disabled={isUploadingToGoogleDrive}
@@ -514,7 +536,7 @@ export default function GoogleWorkspaceDirectOpenModal({
               title="Copies rich diagram & editable table to clipboard and launches Google tab"
             >
               <Copy className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Copy & Launch {mode === 'slides' ? 'slides.new' : 'docs.new'} (⌘V)</span>
+              <span>Copy &amp; Launch {mode === 'slides' ? 'slides.new' : 'docs.new'} (⌘V)</span>
             </button>
 
             {/* OAuth Config Toggle */}
@@ -553,7 +575,7 @@ export default function GoogleWorkspaceDirectOpenModal({
         {/* Status / Notification Banner */}
         {statusMessage && (
           <div
-            className={`px-6 py-3 flex items-center justify-between gap-4 border-b text-xs font-medium ${
+            className={`px-6 py-2.5 flex items-center justify-between gap-4 border-b text-xs font-medium ${
               statusMessage.type === 'success'
                 ? 'bg-emerald-950/70 border-emerald-500/40 text-emerald-200'
                 : statusMessage.type === 'error'
@@ -565,17 +587,6 @@ export default function GoogleWorkspaceDirectOpenModal({
               <Sparkles className="w-4 h-4 shrink-0" />
               <span>{statusMessage.text}</span>
             </div>
-            {statusMessage.url && (
-              <a
-                href={statusMessage.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold shrink-0 transition-all"
-              >
-                <span>Open Tab Now</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
           </div>
         )}
 
@@ -597,7 +608,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                 >
                   Google OAuth Playground ↗
                 </a>
-                ) to create & open native Google Slides / Docs directly in your personal Google Drive with 1 click.
+                ) to create &amp; open native Google Slides / Docs directly in your personal Google Drive with 1 click.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
@@ -614,7 +625,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                 }}
                 className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all cursor-pointer"
               >
-                Save & Launch Now
+                Save &amp; Launch Now
               </button>
             </div>
           </div>
@@ -634,7 +645,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   {
                     idx: 0,
                     title: 'Slide 1: Editable Vector Topology',
-                    subtitle: `${vertices.length} Native Vector Nodes`,
+                    subtitle: `${vertices.length} Native Vector Nodes & Icons`,
                     badge: '100% Editable Shapes',
                   },
                   {
@@ -680,7 +691,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                     </div>
                     <p className="text-[11px] text-amber-800 leading-relaxed">
                       Click any node on Slide 1 to edit its text inline right here in your browser, or click{' '}
-                      <strong>1-Click Create & Open in Google Slides</strong> above!
+                      <strong>Open Populated in Google Viewer ↗</strong> above!
                     </p>
                   </div>
                 </div>
@@ -696,7 +707,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                     </span>
                     <span className="text-xs font-semibold text-slate-600">
                       {activeSlideIndex === 0
-                        ? '100% Native Vector Shapes Canvas (Click any box to edit text)'
+                        ? '100% Native Vector Shapes, Icons & Arrows Canvas (Click any box to edit text)'
                         : activeSlideIndex === 1
                         ? 'Widescreen 16:9 Master High-Resolution Architecture'
                         : 'Editable Component Inventory & Specification Matrix'}
@@ -725,7 +736,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                   className="w-full max-w-[1080px] aspect-[16/9] bg-white rounded-xl shadow-2xl border border-slate-300 flex flex-col overflow-hidden relative"
                   data-testid="live-browser-slide-canvas"
                 >
-                  {/* Slide Top Header Banner (Matches PPTX Slide Header) */}
+                  {/* Slide Top Header Banner */}
                   <div className="h-12 bg-[#0F172A] px-6 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <span className="text-sky-400 font-bold text-sm tracking-wide uppercase">
@@ -743,68 +754,109 @@ export default function GoogleWorkspaceDirectOpenModal({
                     <span className="text-[11px] font-mono text-slate-400">16:9 WIDESCREEN SLIDE</span>
                   </div>
 
-                  {/* SLIDE 1 CONTENT: Interactive Editable Vector Topology */}
+                  {/* SLIDE 1 CONTENT: Interactive Editable Vector Topology with SVG Icons & Free-Floating Arrows */}
                   {activeSlideIndex === 0 && (
-                    <div className="flex-1 relative bg-[#0B111E] overflow-hidden p-4">
-                      {/* Render SVG connectors in background */}
+                    <div
+                      className="flex-1 relative overflow-hidden p-4"
+                      style={{
+                        backgroundColor: parsedTopology.isDarkDiagram
+                          ? `#${parsedTopology.diagramBgHex}`
+                          : '#F8FAFC',
+                      }}
+                    >
+                      {/* Render SVG connectors & free-floating arrows (including spectrum_line) */}
                       <svg
-                        className="absolute inset-0 w-full h-full pointer-events-none"
+                        className="absolute inset-0 w-full h-full pointer-events-none z-20"
                         viewBox={`${parsedTopology.minX - 20} ${parsedTopology.minY - 20} ${graphW + 40} ${graphH + 40}`}
                         preserveAspectRatio="xMidYMid meet"
                       >
                         <defs>
                           <marker
-                            id="slide-arrow"
+                            id="slide-arrow-end"
                             viewBox="0 0 10 10"
-                            refX="6"
+                            refX="7"
                             refY="5"
                             markerWidth="6"
                             markerHeight="6"
-                            orient="auto-start-reverse"
+                            orient="auto"
                           >
-                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#38BDF8" />
+                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#60A5FA" />
+                          </marker>
+                          <marker
+                            id="slide-arrow-start"
+                            viewBox="0 0 10 10"
+                            refX="3"
+                            refY="5"
+                            markerWidth="6"
+                            markerHeight="6"
+                            orient="auto"
+                          >
+                            <path d="M 10 1 L 0 5 L 10 9 z" fill="#60A5FA" />
                           </marker>
                         </defs>
                         {edges.map((edge, eIdx) => {
                           const src = vertices.find((v) => v.id === edge.source);
                           const tgt = vertices.find((v) => v.id === edge.target);
-                          if (!src || !tgt) return null;
-                          const x1 = src.absX + src.width / 2;
-                          const y1 = src.absY + src.height / 2;
-                          const x2 = tgt.absX + tgt.width / 2;
-                          const y2 = tgt.absY + tgt.height / 2;
+
+                          let ptStart = src
+                            ? { x: src.absX + src.width / 2, y: src.absY + src.height / 2 }
+                            : edge.sourcePoint;
+                          let ptEnd = tgt
+                            ? { x: tgt.absX + tgt.width / 2, y: tgt.absY + tgt.height / 2 }
+                            : edge.targetPoint;
+
+                          if (!ptStart || !ptEnd) return null;
+
+                          const allPts = [ptStart, ...edge.waypoints, ptEnd];
+                          const pointsAttr = allPts.map((p) => `${p.x},${p.y}`).join(' ');
+                          const hasStart = edge.style.startArrow && edge.style.startArrow !== 'none';
+                          const hasEnd = !edge.style.endArrow || edge.style.endArrow !== 'none';
+
                           return (
                             <g key={edge.id || eIdx}>
-                              <line
-                                x1={x1}
-                                y1={y1}
-                                x2={x2}
-                                y2={y2}
-                                stroke={edge.style.strokeColor || '#38BDF8'}
-                                strokeWidth="2.5"
+                              <polyline
+                                fill="none"
+                                points={pointsAttr}
+                                stroke={edge.style.strokeColor || '#60A5FA'}
+                                strokeWidth={edge.style.strokeWidth || '2.5'}
                                 strokeDasharray={edge.style.dashed === '1' ? '6,4' : undefined}
-                                markerEnd="url(#slide-arrow)"
+                                markerStart={hasStart ? 'url(#slide-arrow-start)' : undefined}
+                                markerEnd={hasEnd ? 'url(#slide-arrow-end)' : undefined}
                               />
                             </g>
                           );
                         })}
                       </svg>
 
-                      {/* Render Interactive Editable Vector Boxes */}
+                      {/* Render Interactive Editable Vector Boxes & Inline SVG Icons */}
                       <div className="relative w-full h-full">
                         {vertices.map((node) => {
-                          const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 92 + 4;
-                          const topPct = ((node.absY - parsedTopology.minY) / graphH) * 88 + 6;
-                          const widthPct = Math.max(8, (node.width / graphW) * 92);
-                          const heightPct = Math.max(7, (node.height / graphH) * 88);
+                          // Skip full-canvas background rectangle
+                          if (node.id === 'bg' && node.width >= 1000 && node.height >= 600) {
+                            return null;
+                          }
 
-                          const parsedText = cleanCellText(node.value);
+                          const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 94 + 3;
+                          const topPct = ((node.absY - parsedTopology.minY) / graphH) * 90 + 5;
+                          const widthPct = Math.max(6, (node.width / graphW) * 94);
+                          const heightPct = Math.max(4.5, (node.height / graphH) * 90);
+
+                          const parsedText = cleanHtmlToPlainText(node.value);
                           const override = editableOverrides[node.id];
                           const title = override ? override.title : parsedText.title;
                           const subtitle = override ? override.subtitle : parsedText.subtitle;
 
-                          if (!title && node.width * node.height > 250000) {
-                            // Large background container frame
+                          const hasFill =
+                            node.style.fillColor &&
+                            node.style.fillColor !== 'none' &&
+                            node.style.fillColor !== 'transparent';
+                          const hasStroke =
+                            node.style.strokeColor &&
+                            node.style.strokeColor !== 'none' &&
+                            node.style.strokeColor !== 'transparent';
+
+                          if (!title && !node.extractedSvgs.length && node.width * node.height > 150000) {
+                            // Container frame
                             return (
                               <div
                                 key={node.id}
@@ -813,13 +865,26 @@ export default function GoogleWorkspaceDirectOpenModal({
                                   top: `${topPct}%`,
                                   width: `${widthPct}%`,
                                   height: `${heightPct}%`,
+                                  backgroundColor: hasFill ? node.style.fillColor : 'transparent',
+                                  borderColor: hasStroke ? node.style.strokeColor : '#334155',
+                                  borderWidth: hasStroke ? `${Math.min(3, parseFloat(node.style.strokeWidth || '1.5'))}px` : '1px',
                                 }}
-                                className="absolute rounded-xl border border-sky-500/30 bg-slate-900/40 pointer-events-none"
+                                className="absolute rounded-xl border pointer-events-none"
                               />
                             );
                           }
 
                           const isSelected = selectedNodeId === node.id;
+                          const titleHex = node.htmlTitleColor
+                            ? `#${node.htmlTitleColor}`
+                            : parsedTopology.isDarkDiagram
+                            ? '#FFFFFF'
+                            : '#0F172A';
+                          const subHex = node.htmlSubtitleColor
+                            ? `#${node.htmlSubtitleColor}`
+                            : parsedTopology.isDarkDiagram
+                            ? '#CBD5E1'
+                            : '#475569';
 
                           return (
                             <div
@@ -830,15 +895,24 @@ export default function GoogleWorkspaceDirectOpenModal({
                                 top: `${topPct}%`,
                                 width: `${widthPct}%`,
                                 minHeight: `${heightPct}%`,
+                                backgroundColor: isSelected
+                                  ? '#0F172A'
+                                  : hasFill
+                                  ? node.style.fillColor
+                                  : 'transparent',
+                                borderColor: isSelected
+                                  ? '#F59E0B'
+                                  : hasStroke
+                                  ? node.style.strokeColor
+                                  : 'transparent',
+                                borderWidth: isSelected || hasStroke ? '1.5px' : '0px',
                               }}
-                              className={`absolute rounded-lg p-1.5 flex flex-col justify-center transition-all cursor-pointer select-none ${
-                                isSelected
-                                  ? 'bg-sky-950/95 border-2 border-amber-400 shadow-lg z-30 ring-2 ring-amber-400/30'
-                                  : 'bg-slate-900/90 hover:bg-slate-800/95 border border-sky-500/50 z-10'
+                              className={`absolute rounded-lg px-1.5 py-1 flex flex-col items-center justify-center transition-all cursor-pointer select-none ${
+                                isSelected ? 'shadow-lg z-30 ring-2 ring-amber-400/30' : 'hover:ring-1 hover:ring-sky-400/40 z-10'
                               }`}
                             >
                               {isSelected ? (
-                                <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
+                                <div className="space-y-1 w-full" onClick={(e) => e.stopPropagation()}>
                                   <input
                                     type="text"
                                     value={title}
@@ -864,16 +938,39 @@ export default function GoogleWorkspaceDirectOpenModal({
                                   />
                                 </div>
                               ) : (
-                                <>
-                                  <div className="text-[10px] font-bold text-sky-300 leading-tight text-center truncate px-1">
-                                    {title || 'Architecture Node'}
-                                  </div>
-                                  {subtitle && (
-                                    <div className="text-[8.5px] text-slate-300 leading-tight text-center truncate px-1 mt-0.5">
-                                      {subtitle}
-                                    </div>
+                                <div
+                                  className={`flex ${
+                                    node.style.verticalAlign === 'top' || node.height > node.width * 0.7
+                                      ? 'flex-col items-center'
+                                      : 'flex-row items-center gap-1.5'
+                                  } justify-center w-full`}
+                                >
+                                  {/* Render inline SVG icon if present */}
+                                  {node.extractedSvgs.length > 0 && (
+                                    <div
+                                      className="w-5 h-5 shrink-0 flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+                                      dangerouslySetInnerHTML={{ __html: node.extractedSvgs[0] }}
+                                    />
                                   )}
-                                </>
+                                  <div className="min-w-0 text-center">
+                                    {title && (
+                                      <div
+                                        style={{ color: titleHex }}
+                                        className="text-[10.5px] font-bold leading-tight truncate"
+                                      >
+                                        {title}
+                                      </div>
+                                    )}
+                                    {subtitle && (
+                                      <div
+                                        style={{ color: subHex }}
+                                        className="text-[8.5px] leading-tight truncate mt-0.5"
+                                      >
+                                        {subtitle}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
                               )}
                             </div>
                           );
@@ -906,23 +1003,23 @@ export default function GoogleWorkspaceDirectOpenModal({
                   {activeSlideIndex === 2 && (
                     <div className="flex-1 bg-white p-6 overflow-y-auto">
                       <h3 className="text-sm font-bold text-slate-900 mb-3">
-                        Architectural Component Specification & Topology Inventory
+                        Architectural Component Specification &amp; Topology Inventory
                       </h3>
                       <table className="w-full border-collapse text-xs">
                         <thead>
                           <tr className="bg-slate-900 text-white">
                             <th className="p-2.5 text-left border border-slate-800 w-24">Object ID</th>
                             <th className="p-2.5 text-left border border-slate-800 w-64">Component Name</th>
-                            <th className="p-2.5 text-left border border-slate-800">Architectural Role & Specification</th>
+                            <th className="p-2.5 text-left border border-slate-800">Architectural Role &amp; Specification</th>
                             <th className="p-2.5 text-left border border-slate-800 w-32">Classification</th>
                           </tr>
                         </thead>
                         <tbody>
                           {vertices
-                            .filter((v) => cleanCellText(v.value).title.length > 0)
+                            .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
                             .slice(0, 14)
                             .map((node, idx) => {
-                              const { title, subtitle } = cleanCellText(node.value);
+                              const { title, subtitle } = cleanHtmlToPlainText(node.value);
                               const isContainer = node.width * node.height > 90000;
                               return (
                                 <tr key={node.id} className="border-b border-slate-200 hover:bg-slate-50">
@@ -986,21 +1083,21 @@ export default function GoogleWorkspaceDirectOpenModal({
                 {/* Editable Component Table Section */}
                 <div className="space-y-3">
                   <h2 className="text-lg font-bold text-slate-900">
-                    2. Component Inventory & Technical Specification Matrix ({vertices.length} Objects)
+                    2. Component Inventory &amp; Technical Specification Matrix ({vertices.length} Objects)
                   </h2>
                   <table className="w-full border-collapse text-xs border border-slate-300">
                     <thead>
                       <tr className="bg-slate-900 text-white">
                         <th className="p-2.5 text-left border border-slate-700 w-24">Object ID</th>
                         <th className="p-2.5 text-left border border-slate-700 w-60">Component Name</th>
-                        <th className="p-2.5 text-left border border-slate-700">Technical Role & Specification</th>
+                        <th className="p-2.5 text-left border border-slate-700">Technical Role &amp; Specification</th>
                       </tr>
                     </thead>
                     <tbody>
                       {vertices
-                        .filter((v) => cleanCellText(v.value).title.length > 0)
+                        .filter((v) => cleanHtmlToPlainText(v.value).title.length > 0)
                         .map((node, idx) => {
-                          const { title, subtitle } = cleanCellText(node.value);
+                          const { title, subtitle } = cleanHtmlToPlainText(node.value);
                           return (
                             <tr key={node.id} className="border-b border-slate-200 hover:bg-slate-50">
                               <td className="p-2.5 font-mono font-bold text-slate-900 border-r border-slate-200">
