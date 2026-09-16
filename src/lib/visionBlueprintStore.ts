@@ -91,7 +91,7 @@ export function getSelfHealedAzureLandingZoneBlueprint(id: string = 'VIS-5965'):
     id: cleanId,
     title: 'Azure Application Landing Zone (VIS-5965)',
     category: 'Enterprise Cloud Landing Zone',
-    imageSrc: '/blueprints/azure_application_landing_zone.svg',
+    imageSrc: '/blueprints/azure_application_landing_zone.png',
     xml,
     extractedZones: [
       'Platform Landing Zone Subscription (Hub VNet 10.0.0.0/16)',
@@ -209,6 +209,37 @@ function migrateLegacyVisionStorage(): void {
         }
       }
     } catch {}
+
+    // Self-heal ANY custom uploaded Azure Landing Zone blueprints (e.g. VIS-9745, VIS-3297) that were previously overwritten with the old .svg or 3-column template
+    for (let i = 0; i < currentList.length; i++) {
+      const item = currentList[i];
+      if (isAzureLandingZoneSlide(item.id, item.title, item.xml)) {
+        let updated = false;
+        let newImg = item.imageSrc;
+        if (!newImg || newImg.endsWith('azure_application_landing_zone.svg')) {
+          newImg = '/blueprints/azure_application_landing_zone.png';
+          updated = true;
+        }
+        let newXml = item.xml;
+        if (!newXml || newXml.includes('AZURE ENTERPRISE-SCALE LANDING ZONE') || !newXml.includes('Workload resources (Spoke Virtual Network')) {
+          newXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+          updated = true;
+        }
+        if (updated) {
+          const healedItem: SavedVisionBlueprint = {
+            ...item,
+            imageSrc: newImg,
+            xml: newXml,
+            componentCount: countDiagramNodes(newXml) || 36
+          };
+          currentList[i] = healedItem;
+          try {
+            localStorage.setItem(`${STORAGE_PREFIX}${item.id}`, JSON.stringify(healedItem));
+          } catch {}
+          migratedAny = true;
+        }
+      }
+    }
 
     if (migratedAny) {
       try {
@@ -390,12 +421,16 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
         } else if (isAgenticAiArchitectureSlide(id, parsed.title, parsed.xml)) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
         }
+        let finalImg = intactImage;
+        if (isAzureLandingZoneSlide(id, parsed.title, parsed.xml) && (!finalImg || finalImg.endsWith('azure_application_landing_zone.svg'))) {
+          finalImg = '/blueprints/azure_application_landing_zone.png';
+        }
         const healedCount = countDiagramNodes(healedXml);
         return {
           ...parsed,
           xml: healedXml,
           componentCount: healedCount || parsed.componentCount,
-          imageSrc: intactImage,
+          imageSrc: finalImg,
           source: 'cache'
         };
       }

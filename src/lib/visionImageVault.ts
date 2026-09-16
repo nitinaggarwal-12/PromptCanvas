@@ -158,9 +158,19 @@ export function resolveIntactBlueprintImage(
   title?: string,
   xml?: string
 ): string {
-  // 1. Self-heal known enterprise slides first if they match our master catalog
+  // 1. Preserve valid user-uploaded raster images (data:image/png, jpeg, webp) without overwriting!
+  if (
+    currentImg &&
+    currentImg.trim().length > 50 &&
+    !currentImg.includes('[truncated_for_storage]') &&
+    !currentImg.endsWith('azure_application_landing_zone.svg')
+  ) {
+    return currentImg;
+  }
+
+  // 2. Self-heal known enterprise slides using authentic high-resolution ground-truth blueprints
   if (isAzureLandingZoneSlide(id, title, xml)) {
-    return '/blueprints/azure_application_landing_zone.svg';
+    return '/blueprints/azure_application_landing_zone.png';
   }
   if (isAgenticAiArchitectureSlide(id, title, xml)) {
     return '/blueprints/agentic_ai_architecture.svg';
@@ -169,7 +179,7 @@ export function resolveIntactBlueprintImage(
     return '/blueprints/gemini_enterprise_agent_platform.svg';
   }
 
-  // 2. If currentImg is valid and non-empty (and not a broken truncated marker)
+  // 3. Fallback if currentImg is any other non-empty string
   if (
     currentImg &&
     currentImg.trim().length > 10 &&
