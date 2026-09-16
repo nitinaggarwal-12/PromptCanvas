@@ -184,12 +184,9 @@ function migrateLegacyVisionStorage(): void {
           } catch {}
           migratedAny = true;
         } else {
-          // Ensure master XML for VIS-5965 and VIS-AGENTIC-01 stays synced with zero-collision master builder
+          // Ensure master XML for VIS-5965, VIS-AGENTIC-01, VIS-3093, and VIS-1787 stays synced with zero-collision master builder
           const existing = currentList[existingIdx];
-          if (
-            (entry.id === 'VIS-5965' || entry.id === 'VIS-AGENTIC-01') &&
-            existing.xml !== healed.xml
-          ) {
+          if (existing.xml !== healed.xml) {
             currentList[existingIdx] = healed;
             try {
               localStorage.setItem(`${STORAGE_PREFIX}${entry.id}`, JSON.stringify(healed));
@@ -199,6 +196,19 @@ function migrateLegacyVisionStorage(): void {
         }
       }
     }
+
+    // Also self-heal any truncated GCP-MULTIAGENT-01 cache (e.g. 20 or 22 nodes missing Model Armor / MCP clients)
+    try {
+      const gcpRaw = localStorage.getItem(`${STORAGE_PREFIX}GCP-MULTIAGENT-01`);
+      if (gcpRaw) {
+        const gcpParsed = JSON.parse(gcpRaw);
+        const xml = gcpParsed?.xml || '';
+        const nodeCount = (xml.match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
+        if (nodeCount < 30 || !xml.includes('Model Armor') || !xml.includes('MCP clients') || !xml.includes('ADK')) {
+          localStorage.removeItem(`${STORAGE_PREFIX}GCP-MULTIAGENT-01`);
+        }
+      }
+    } catch {}
 
     if (migratedAny) {
       try {
@@ -211,7 +221,7 @@ function migrateLegacyVisionStorage(): void {
 /**
  * Universal Master Blueprint Cache Invariant:
  * Dynamically validates ANY cached XML against ANY master blueprint definition.
- * Eliminates all hardcoded ID checks across the repository.
+ * Eliminates truncated LLM partial outputs from overriding certified master architectures.
  */
 export function isCachedArtifactValidForSample(
   sample: SampleBlueprintDef,
@@ -222,7 +232,24 @@ export function isCachedArtifactValidForSample(
   // 1. Structural Integrity Invariant: Must be a valid Draw.io mxfile document
   if (!xml.includes('<mxfile') || !xml.includes('<mxGraphModel')) return false;
 
-  // 2. Connectivity Invariant: If master blueprint has connectors, cache cannot be 0 edges
+  // 2. Node Completeness Invariant: Cached output cannot be a truncated 20-node LLM fragment of a 36+ node master
+  const cachedNodeCount = (xml.match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
+  let masterNodeCount = 0;
+  try {
+    masterNodeCount = (sample.getPrecompiledXml().match(/<mxCell[^>]+(?:vertex|edge)="1"/gi) || []).length;
+  } catch {}
+  if (masterNodeCount >= 20 && cachedNodeCount < masterNodeCount * 0.85) {
+    return false;
+  }
+
+  // 3. Specific Master Anchor Check for Google Multiagent AI System
+  if (sample.id === 'GCP-MULTIAGENT-01') {
+    if (!xml.includes('Model Armor') || !xml.includes('MCP clients') || !xml.includes('ADK')) {
+      return false;
+    }
+  }
+
+  // 4. Connectivity Invariant: If master blueprint has connectors, cache cannot be 0 edges
   const cachedEdgeCount = (xml.match(/<mxCell[^>]+edge="1"/gi) || []).length;
   let masterEdgeCount = 0;
   try {
@@ -233,7 +260,7 @@ export function isCachedArtifactValidForSample(
     return false;
   }
 
-  // 3. Semantic Vocabulary Invariant: Must share terminology with its own title and zones
+  // 5. Semantic Vocabulary Invariant: Must share terminology with its own title and zones
   const expectedTerms = [
     ...sample.title.toLowerCase().split(/\W+/).filter(w => w.length >= 4),
     ...sample.defaultExtractedZones.flatMap(z => z.toLowerCase().split(/\W+/).filter(w => w.length >= 4))
@@ -346,20 +373,28 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
         const intactImage = recoverIntactImageSrc(id, parsed.imageSrc, parsed.xml, parsed.title);
         let healedXml = parsed.xml;
         if (
-          (id.toUpperCase() === 'VIS-3093' ||
-            id.toUpperCase() === 'VIS-1787' ||
-            (parsed.title || '').toLowerCase().includes('gemini enterprise')) &&
-          (parsed.xml.includes('value="+ Gemini Enterprise') || parsed.xml.includes('x="1020"') || parsed.xml.includes('x="1068"'))
+          id.toUpperCase() === 'VIS-3093' ||
+          id.toUpperCase() === 'VIS-1787' ||
+          (parsed.title || '').toLowerCase().includes('gemini enterprise')
         ) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateGeminiEnterpriseArchitectureXml());
+        } else if (
+          id.toUpperCase() === 'GCP-MULTIAGENT-01' ||
+          (parsed.title || '').toLowerCase().includes('google multiagent')
+        ) {
+          if (countDiagramNodes(parsed.xml) < 30 || !parsed.xml.includes('Model Armor') || !parsed.xml.includes('MCP clients')) {
+            healedXml = enrichDrawioXmlWithVectorIcons(generateGoogleMultiagentArchitectureXml());
+          }
         } else if (isAzureLandingZoneSlide(id, parsed.title, parsed.xml)) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
         } else if (isAgenticAiArchitectureSlide(id, parsed.title, parsed.xml)) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
         }
+        const healedCount = countDiagramNodes(healedXml);
         return {
           ...parsed,
           xml: healedXml,
+          componentCount: healedCount || parsed.componentCount,
           imageSrc: intactImage,
           source: 'cache'
         };

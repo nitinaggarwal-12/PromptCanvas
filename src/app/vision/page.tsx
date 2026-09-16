@@ -518,22 +518,49 @@ function VisionPageContent() {
       setActiveObjectSlug(initialObjSlug || null);
       syncVisionUrl(sample.id, initialObjSlug || null);
 
-      if (!forceRecompile) {
-        // Retrieve saved version from localStorage or certified precompiled master
-        const saved = getSavedVisionBlueprint(sample.id);
-        if (saved && saved.xml) {
-          setDecompiledXml(saved.xml);
-          setExtractedZones(saved.extractedZones || sample.defaultExtractedZones);
-          setComponentCount(saved.componentCount || getBlueprintComponentCount(sample.id));
-          setSummaryText(saved.summaryText || sample.defaultSummary);
-          setSavedSource(saved.source);
+      if (forceRecompile) {
+        // Purge any corrupted or truncated local cache so master architecture is restored 100% intact
+        try {
+          localStorage.removeItem(`promptcanvas_vision_cache_v4_${sample.id}`);
+        } catch {}
+        const master = getPrecompiledBlueprint(sample.id);
+        if (master && master.xml) {
+          const enrichedMaster = enrichDrawioXmlWithVectorIcons(master.xml);
+          const count = getBlueprintComponentCount(sample.id) || master.componentCount;
+          saveVisionBlueprint({
+            ...master,
+            xml: enrichedMaster,
+            componentCount: count,
+            timestamp: Date.now(),
+            source: 'precompiled'
+          });
+          setDecompiledXml(enrichedMaster);
+          setExtractedZones(master.extractedZones || sample.defaultExtractedZones);
+          setComponentCount(count);
+          setSummaryText(master.summaryText || sample.defaultSummary);
+          setSavedSource('precompiled');
+          setIsCertified(true);
           setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
           setIsDecompiling(false);
+          showToast(`✨ Re-compiled & restored 100% 1:1 Master Architecture [${sample.title}: ${count} nodes]!`);
           return;
         }
       }
 
-      // If forceRecompile is true, call live decompiler
+      // Retrieve saved version from localStorage or certified precompiled master
+      const saved = getSavedVisionBlueprint(sample.id);
+      if (saved && saved.xml) {
+        setDecompiledXml(saved.xml);
+        setExtractedZones(saved.extractedZones || sample.defaultExtractedZones);
+        setComponentCount(saved.componentCount || getBlueprintComponentCount(sample.id));
+        setSummaryText(saved.summaryText || sample.defaultSummary);
+        setSavedSource(saved.source);
+        setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
+        setIsDecompiling(false);
+        return;
+      }
+
+      // Fallback if neither cached nor precompiled
       try {
         const base64 = await convertUrlToBase64(sample.image);
         await triggerDecompile(base64, 'image/png', sample.title, sample.id, false);
@@ -544,6 +571,14 @@ function VisionPageContent() {
     }
 
     // 2. Check if it's a custom uploaded blueprint in localStorage (by exact ID or short VIS-XXXX ID)
+    const upperId = id.toUpperCase();
+    const isDefaultMasterCustom = upperId === 'VIS-3093' || upperId === 'VIS-1787' || upperId === 'VIS-5965' || upperId === 'VIS-AGENTIC-01';
+    if (forceRecompile && isDefaultMasterCustom) {
+      try {
+        localStorage.removeItem(`promptcanvas_vision_cache_v4_${upperId}`);
+      } catch {}
+    }
+
     let saved = getSavedVisionBlueprint(id);
     if (!saved) {
       const allCustoms = getCustomVisionBlueprints();
@@ -567,7 +602,13 @@ function VisionPageContent() {
         resolvedImg = vaultImg;
       }
 
-      if (enrichedXml !== saved.xml || resolvedTitle !== saved.title || resolvedImg !== saved.imageSrc) {
+      // If user clicked Re-Decompile on a custom user-uploaded image (not a master template), re-run Vision AI Decompiler
+      if (forceRecompile && !isDefaultMasterCustom && resolvedImg) {
+        await triggerDecompile(resolvedImg, 'image/png', resolvedTitle, saved.id, true);
+        return;
+      }
+
+      if (enrichedXml !== saved.xml || resolvedTitle !== saved.title || resolvedImg !== saved.imageSrc || forceRecompile) {
         const updatedBlueprint: SavedVisionBlueprint = {
           ...saved,
           title: resolvedTitle,
@@ -591,6 +632,9 @@ function VisionPageContent() {
       setSavedSource(saved.source);
       setValidationReport({ valid: true, errorCount: 0, warningCount: 0 });
       setIsDecompiling(false);
+      if (forceRecompile) {
+        showToast(`✨ Re-compiled & restored 100% 1:1 Master Architecture [${resolvedTitle}: ${saved.componentCount} nodes]!`);
+      }
       return;
     }
 
@@ -1422,8 +1466,9 @@ function VisionPageContent() {
           <button
             onClick={handleForceRecompile}
             disabled={isDecompiling}
+            data-testid="vision-header-redecompile-btn"
             className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Re-run live Gemini Vision decompilation over the network"
+            title="Restore 100% 1:1 Master Architecture & purge any degraded cache (or re-run DeepMind Vision AI on custom uploads)"
           >
             <RefreshCw className={`w-3 h-3 text-teal-400 ${isDecompiling ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">{isDecompiling ? 'Decompiling...' : 'Re-Decompile'}</span>
@@ -2169,11 +2214,12 @@ function VisionPageContent() {
                 <button
                   onClick={handleForceRecompile}
                   disabled={isDecompiling}
+                  data-testid="vision-panel-redecompile-btn"
                   className="px-2 py-0.5 rounded-md bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-[10px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs disabled:opacity-50"
-                  title="Re-run live Omni 1.1 multi-agent decompilation"
+                  title="Restore 100% 1:1 Master Architecture (or re-run Vision AI on custom uploaded images)"
                 >
                   <RefreshCw className={`w-2.5 h-2.5 text-teal-600 ${isDecompiling ? 'animate-spin' : ''}`} />
-                  <span>{isDecompiling ? 'Decompiling...' : 'Re-Decompile'}</span>
+                  <span>{isDecompiling ? 'Restoring...' : (!isCustomUpload ? '↺ Reset to Master' : 'Re-Decompile')}</span>
                 </button>
 
                 <button

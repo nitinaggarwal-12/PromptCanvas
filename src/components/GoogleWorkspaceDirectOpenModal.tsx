@@ -766,32 +766,32 @@ export default function GoogleWorkspaceDirectOpenModal({
                     >
                       {/* Render SVG connectors & free-floating arrows (including spectrum_line) */}
                       <svg
-                        className="absolute inset-0 w-full h-full pointer-events-none z-20"
-                        viewBox={`${parsedTopology.minX - 20} ${parsedTopology.minY - 20} ${graphW + 40} ${graphH + 40}`}
-                        preserveAspectRatio="xMidYMid meet"
+                        className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
                       >
                         <defs>
                           <marker
                             id="slide-arrow-end"
                             viewBox="0 0 10 10"
-                            refX="7"
+                            refX="8"
                             refY="5"
-                            markerWidth="6"
-                            markerHeight="6"
+                            markerWidth="4.5"
+                            markerHeight="4.5"
                             orient="auto"
                           >
-                            <path d="M 0 1 L 10 5 L 0 9 z" fill="#60A5FA" />
+                            <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#60A5FA" />
                           </marker>
                           <marker
                             id="slide-arrow-start"
                             viewBox="0 0 10 10"
-                            refX="3"
+                            refX="2"
                             refY="5"
-                            markerWidth="6"
-                            markerHeight="6"
+                            markerWidth="4.5"
+                            markerHeight="4.5"
                             orient="auto"
                           >
-                            <path d="M 10 1 L 0 5 L 10 9 z" fill="#60A5FA" />
+                            <path d="M 10 1.5 L 0 5 L 10 8.5 z" fill="#60A5FA" />
                           </marker>
                         </defs>
                         {edges.map((edge, eIdx) => {
@@ -807,8 +807,11 @@ export default function GoogleWorkspaceDirectOpenModal({
 
                           if (!ptStart || !ptEnd) return null;
 
+                          const toPctX = (x: number) => ((x - parsedTopology.minX) / graphW) * 94 + 3;
+                          const toPctY = (y: number) => ((y - parsedTopology.minY) / graphH) * 90 + 5;
+
                           const allPts = [ptStart, ...edge.waypoints, ptEnd];
-                          const pointsAttr = allPts.map((p) => `${p.x},${p.y}`).join(' ');
+                          const pointsAttr = allPts.map((p) => `${toPctX(p.x)},${toPctY(p.y)}`).join(' ');
                           const hasStart = edge.style.startArrow && edge.style.startArrow !== 'none';
                           const hasEnd = !edge.style.endArrow || edge.style.endArrow !== 'none';
 
@@ -818,8 +821,8 @@ export default function GoogleWorkspaceDirectOpenModal({
                                 fill="none"
                                 points={pointsAttr}
                                 stroke={edge.style.strokeColor || '#60A5FA'}
-                                strokeWidth={edge.style.strokeWidth || '2.5'}
-                                strokeDasharray={edge.style.dashed === '1' ? '6,4' : undefined}
+                                strokeWidth="0.28"
+                                strokeDasharray={edge.style.dashed === '1' ? '0.8,0.5' : undefined}
                                 markerStart={hasStart ? 'url(#slide-arrow-start)' : undefined}
                                 markerEnd={hasEnd ? 'url(#slide-arrow-end)' : undefined}
                               />
@@ -836,10 +839,20 @@ export default function GoogleWorkspaceDirectOpenModal({
                             return null;
                           }
 
+                          const isSmallBadgeOrEllipse =
+                            (node.width <= 42 && node.height <= 42) ||
+                            node.style?.shape === 'ellipse' ||
+                            node.style?.ellipse === '1' ||
+                            node.style?.arcSize === '50';
+
                           const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 94 + 3;
                           const topPct = ((node.absY - parsedTopology.minY) / graphH) * 90 + 5;
-                          const widthPct = Math.max(6, (node.width / graphW) * 94);
-                          const heightPct = Math.max(4.5, (node.height / graphH) * 90);
+                          const widthPct = isSmallBadgeOrEllipse
+                            ? Math.max(1.8, (node.width / graphW) * 94)
+                            : Math.max(4.2, (node.width / graphW) * 94);
+                          const heightPct = isSmallBadgeOrEllipse
+                            ? Math.max(2.6, (node.height / graphH) * 90)
+                            : Math.max(3.5, (node.height / graphH) * 90);
 
                           const parsedText = cleanHtmlToPlainText(node.value);
                           const override = editableOverrides[node.id];
@@ -895,6 +908,7 @@ export default function GoogleWorkspaceDirectOpenModal({
                                 top: `${topPct}%`,
                                 width: `${widthPct}%`,
                                 minHeight: `${heightPct}%`,
+                                borderRadius: isSmallBadgeOrEllipse ? '9999px' : '8px',
                                 backgroundColor: isSelected
                                   ? '#0F172A'
                                   : hasFill
@@ -907,8 +921,12 @@ export default function GoogleWorkspaceDirectOpenModal({
                                   : 'transparent',
                                 borderWidth: isSelected || hasStroke ? '1.5px' : '0px',
                               }}
-                              className={`absolute rounded-lg px-1.5 py-1 flex flex-col items-center justify-center transition-all cursor-pointer select-none ${
-                                isSelected ? 'shadow-lg z-30 ring-2 ring-amber-400/30' : 'hover:ring-1 hover:ring-sky-400/40 z-10'
+                              className={`absolute px-1 py-0.5 flex flex-col items-center justify-center transition-all cursor-pointer select-none ${
+                                isSelected
+                                  ? 'shadow-lg z-30 ring-2 ring-amber-400/30'
+                                  : hasFill || isSmallBadgeOrEllipse
+                                  ? 'hover:ring-1 hover:ring-sky-400/40 z-20'
+                                  : 'hover:ring-1 hover:ring-sky-400/40 z-10'
                               }`}
                             >
                               {isSelected ? (
@@ -952,11 +970,15 @@ export default function GoogleWorkspaceDirectOpenModal({
                                       dangerouslySetInnerHTML={{ __html: node.extractedSvgs[0] }}
                                     />
                                   )}
-                                  <div className="min-w-0 text-center">
+                                  <div className="min-w-0 text-center w-full px-0.5">
                                     {title && (
                                       <div
                                         style={{ color: titleHex }}
-                                        className="text-[10.5px] font-bold leading-tight truncate"
+                                        className={`${
+                                          widthPct < 15
+                                            ? 'text-[8.5px] font-semibold leading-[1.15] whitespace-normal break-words line-clamp-2'
+                                            : 'text-[10.5px] font-bold leading-tight truncate'
+                                        }`}
                                       >
                                         {title}
                                       </div>
@@ -964,7 +986,11 @@ export default function GoogleWorkspaceDirectOpenModal({
                                     {subtitle && (
                                       <div
                                         style={{ color: subHex }}
-                                        className="text-[8.5px] leading-tight truncate mt-0.5"
+                                        className={`${
+                                          widthPct < 15
+                                            ? 'text-[7.5px] leading-[1.1] whitespace-normal break-words line-clamp-2 mt-0.5'
+                                            : 'text-[8.5px] leading-tight truncate mt-0.5'
+                                        }`}
                                       >
                                         {subtitle}
                                       </div>
