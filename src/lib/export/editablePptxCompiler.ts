@@ -238,16 +238,17 @@ export async function renderInlineSvgToPngDataUrl(
   if (!svgOrDataUrl) return null;
 
   if (typeof window === 'undefined') {
+    const nodeDynamicImport = new Function('m', 'return import(m)');
     const cleanSvg = normalizeSvgDimensions(svgOrDataUrl.trim(), widthPx, heightPx);
     try {
-      const sharpMod = await import('sharp');
+      const sharpMod = await nodeDynamicImport('sharp');
       const sharpFn = sharpMod.default || sharpMod;
       const svgBuf = Buffer.from(cleanSvg, 'utf-8');
       const pngBuf = await sharpFn(svgBuf).resize(widthPx, heightPx).png().toBuffer();
       return `data:image/png;base64,${pngBuf.toString('base64')}`;
     } catch {
       try {
-        const { createCanvas, loadImage } = await import('canvas');
+        const { createCanvas, loadImage } = await nodeDynamicImport('canvas');
         let dataUriToLoad = svgOrDataUrl.trim();
         if (!dataUriToLoad.startsWith('data:image/png') && !dataUriToLoad.startsWith('data:image/jpeg')) {
           dataUriToLoad = `data:image/svg+xml;base64,${Buffer.from(cleanSvg, 'utf-8').toString('base64')}`;
@@ -627,8 +628,9 @@ async function resolveImageSourceToDataUri(
 
   if (typeof Buffer !== 'undefined') {
     try {
-      const fs = await import('fs');
-      const path = await import('path');
+      const nodeDynamicImport = new Function('m', 'return import(m)');
+      const fs = await nodeDynamicImport('fs');
+      const path = await nodeDynamicImport('path');
       const cleanRel = targetSrc.replace(/^\//, '');
       const fullPath = path.join(process.cwd(), 'public', cleanRel);
       if (fs.existsSync(fullPath)) {
