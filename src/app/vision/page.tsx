@@ -54,6 +54,8 @@ import {
   saveVisionBlueprint,
   getCustomVisionBlueprints,
   deleteCustomVisionBlueprint,
+  getDeletedVisionBlueprintIds,
+  batchDeleteCustomVisionBlueprints,
   getLastActiveBlueprintId,
   getBlueprintComponentCount,
   getPrecompiledBlueprint,
@@ -252,6 +254,9 @@ function VisionPageContent() {
   // Historical Saved Diagrams Dropdown & Editable PPTX/DOCX Export States
   const [showHistoryDropdown, setShowHistoryDropdown] = useState<boolean>(false);
   const [historySearchQuery, setHistorySearchQuery] = useState<string>('');
+  const [selectedHistoryIds, setSelectedHistoryIds] = useState<string[]>([]);
+  const [isBatchDeleting, setIsBatchDeleting] = useState<boolean>(false);
+  const [deletedIdsTrigger, setDeletedIdsTrigger] = useState<number>(0);
   const [isExportingPptx, setIsExportingPptx] = useState<boolean>(false);
   const [isExportingDocx, setIsExportingDocx] = useState<boolean>(false);
   const [googleWorkspaceModalMode, setGoogleWorkspaceModalMode] = useState<'slides' | 'docs' | null>(null);
@@ -271,17 +276,22 @@ function VisionPageContent() {
 
   useEffect(() => {
     let active = true;
-    fetch('/api/diagrams')
+    fetch('/api/diagrams?studio=vision')
       .then(res => (res.ok ? res.json() : null))
       .then(data => {
         if (!active || !data) return;
         const list = Array.isArray(data) ? data : data.diagrams || [];
-        const mapped = list.map((d: any) => ({
+        // Strictly scope to ONLY Vision Studio diagrams (never load the 400+ diagrams from studio1/gcp/workspace)
+        const visionOnly = list.filter((d: any) =>
+          (d.created_studio || '').toLowerCase() === 'vision' ||
+          d.architecture_type === 'vision_decompiled'
+        );
+        const mapped = visionOnly.map((d: any) => ({
           id: d.id,
           title: d.name || 'Saved Architecture Diagram',
           category: d.architecture_type === 'vision_decompiled' ? 'Saved Vision Blueprint' : 'Database Architecture',
           imageSrc: resolveIntactBlueprintImage(d.id, undefined, d.name, d.xml_content),
-          desc: d.comment || 'Persisted in Global Architecture Database',
+          desc: d.comment || 'Persisted in Vision Architecture Database',
           componentCount: countDiagramNodes(d.xml_content || '') || 24,
           extractedZones: ['Saved Architecture Tier'],
           isCustom: true,
@@ -1089,8 +1099,9 @@ function VisionPageContent() {
     }
   };
 
-  // Unified list of all blueprints for the library modal & historical dropdown
+  // Unified list of all blueprints for the library modal & historical dropdown (strictly scoped to Vision)
   const allLibraryBlueprints = useMemo(() => {
+    const deletedSet = new Set(getDeletedVisionBlueprintIds().map(id => id.toUpperCase()));
     const seenIds = new Set<string>();
     const combined: Array<{
       id: string;
@@ -1108,6 +1119,7 @@ function VisionPageContent() {
 
     for (const c of customBlueprints) {
       const shortKey = formatDisplayBlueprintId(c.id).toUpperCase();
+      if (deletedSet.has(c.id.toUpperCase()) || deletedSet.has(shortKey)) continue;
       if (seenIds.has(shortKey)) continue;
       seenIds.add(shortKey);
       combined.push({
@@ -1127,6 +1139,7 @@ function VisionPageContent() {
 
     for (const dbItem of dbHistoricalDiagrams) {
       const shortKey = formatDisplayBlueprintId(dbItem.id).toUpperCase();
+      if (deletedSet.has(dbItem.id.toUpperCase()) || deletedSet.has(shortKey)) continue;
       if (seenIds.has(shortKey)) continue;
       seenIds.add(shortKey);
       combined.push({
@@ -1137,6 +1150,7 @@ function VisionPageContent() {
 
     for (const s of SAMPLE_BLUEPRINTS) {
       const shortKey = formatDisplayBlueprintId(s.id).toUpperCase();
+      if (deletedSet.has(s.id.toUpperCase()) || deletedSet.has(shortKey)) continue;
       if (seenIds.has(shortKey)) continue;
       seenIds.add(shortKey);
       combined.push({
@@ -1155,7 +1169,7 @@ function VisionPageContent() {
     }
 
     return combined;
-  }, [customBlueprints, dbHistoricalDiagrams]);
+  }, [customBlueprints, dbHistoricalDiagrams, deletedIdsTrigger]);
 
   // Filtered list for the Saved History Dropdown
   const filteredHistoryBlueprints = useMemo(() => {
@@ -1171,6 +1185,68 @@ function VisionPageContent() {
       );
     });
   }, [allLibraryBlueprints, historySearchQuery]);
+
+  // Toggle selection for a single item in Saved History / Library
+  const toggleHistorySelection = useCallback((id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedHistoryIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  }, []);
+
+  // Select All / Deselect All visible items in Saved History / Library
+  const toggleSelectAllHistory = useCallback((items: Array<{ id: string }>) => {
+    const visibleIds = items.map(b => b.id);
+    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedHistoryIds.includes(id));
+    if (allSelected) {
+      setSelectedHistoryIds(prev => prev.filter(id => !visibleIds.includes(id)));
+    } else {
+      setSelectedHistoryIds(prev => Array.from(new Set([...prev, ...visibleIds])));
+    }
+  }, [selectedHistoryIds]);
+
+  // Delete a single item from Saved History / Library
+  const handleDeleteSingleFromHistory = useCallback(async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteCustomVisionBlueprint(id);
+    setCustomBlueprints(getCustomVisionBlueprints());
+    setDeletedIdsTrigger(prev => prev + 1);
+    setSelectedHistoryIds(prev => prev.filter(item => item !== id));
+
+    const upperId = id.toUpperCase();
+    setDbHistoricalDiagrams(prev => prev.filter(d => d.id.toUpperCase() !== upperId));
+
+    try {
+      await fetch(`/api/diagrams/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    } catch {}
+    showToast(`🗑️ Deleted diagram ${formatDisplayBlueprintId(id)} from Vision Library`);
+  }, []);
+
+  // Multi-Select Batch Delete selected items from Saved History / Library
+  const handleBatchDeleteHistory = useCallback(async () => {
+    if (selectedHistoryIds.length === 0) return;
+    setIsBatchDeleting(true);
+    try {
+      const idsToDelete = [...selectedHistoryIds];
+      batchDeleteCustomVisionBlueprints(idsToDelete);
+      setCustomBlueprints(getCustomVisionBlueprints());
+      setDeletedIdsTrigger(prev => prev + 1);
+
+      const upperSet = new Set(idsToDelete.map(id => id.toUpperCase()));
+      setDbHistoricalDiagrams(prev => prev.filter(d => !upperSet.has(d.id.toUpperCase())));
+
+      await fetch('/api/diagrams', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: idsToDelete })
+      }).catch(() => {});
+
+      setSelectedHistoryIds([]);
+      showToast(`🗑️ Deleted ${idsToDelete.length} selected diagram(s) from Vision Library`);
+    } finally {
+      setIsBatchDeleting(false);
+    }
+  }, [selectedHistoryIds]);
 
   // Filtered blueprints for the library modal
   const filteredLibraryBlueprints = useMemo(() => {
@@ -1619,13 +1695,13 @@ function VisionPageContent() {
               {showHistoryDropdown && (
                 <div
                   data-testid="vision-saved-history-menu"
-                  className="fixed left-4 top-24 w-[440px] max-w-[92vw] rounded-xl bg-white border border-slate-300 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2"
+                  className="fixed left-4 top-24 w-[480px] max-w-[94vw] rounded-xl bg-white border border-slate-300 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2"
                 >
                   {/* Dropdown Header & Search */}
                   <div className="p-2.5 bg-slate-900 text-white flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <History className="w-3.5 h-3.5 text-teal-400" />
-                      <span className="text-xs font-bold">Historical Saved Diagrams ({allLibraryBlueprints.length})</span>
+                      <span className="text-xs font-bold">Vision Saved History ({allLibraryBlueprints.length})</span>
                     </div>
                     <button
                       onClick={() => setShowHistoryDropdown(false)}
@@ -1635,6 +1711,7 @@ function VisionPageContent() {
                     </button>
                   </div>
 
+                  {/* Search Input */}
                   <div className="p-2 border-b border-slate-200 bg-slate-50">
                     <div className="relative">
                       <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
@@ -1648,21 +1725,69 @@ function VisionPageContent() {
                     </div>
                   </div>
 
+                  {/* Multi-Select Toolbar */}
+                  <div className="px-3 py-2 bg-slate-100 border-b border-slate-200 flex items-center justify-between gap-2">
+                    <label className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        data-testid="vision-history-select-all-checkbox"
+                        checked={
+                          filteredHistoryBlueprints.length > 0 &&
+                          filteredHistoryBlueprints.every((item) => selectedHistoryIds.includes(item.id))
+                        }
+                        onChange={() => toggleSelectAllHistory(filteredHistoryBlueprints)}
+                        className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                      />
+                      <span>
+                        Select All ({filteredHistoryBlueprints.length})
+                      </span>
+                    </label>
+
+                    {selectedHistoryIds.length > 0 ? (
+                      <button
+                        onClick={handleBatchDeleteHistory}
+                        disabled={isBatchDeleting}
+                        data-testid="vision-history-delete-selected-btn"
+                        className="px-2.5 py-1 rounded-md bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-xs cursor-pointer transition disabled:opacity-50"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>Delete Selected ({selectedHistoryIds.length})</span>
+                      </button>
+                    ) : (
+                      <span className="text-[10.5px] text-slate-500 font-medium">
+                        Check items to multi-delete
+                      </span>
+                    )}
+                  </div>
+
                   <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
                     {filteredHistoryBlueprints.map((item) => {
                       const shortId = formatDisplayBlueprintId(item.id);
                       const isCurrent = selectedBlueprintId === item.id;
+                      const isChecked = selectedHistoryIds.includes(item.id);
                       return (
-                        <button
+                        <div
                           key={item.id}
                           onClick={() => {
                             setShowHistoryDropdown(false);
                             loadBlueprint(item.id, false);
                           }}
-                          className={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2 transition cursor-pointer ${
-                            isCurrent ? 'bg-teal-50/90 border-l-4 border-teal-600' : 'hover:bg-slate-50'
+                          className={`w-full text-left px-3 py-2.5 flex items-center justify-between gap-2.5 transition cursor-pointer ${
+                            isCurrent
+                              ? 'bg-teal-50/90 border-l-4 border-teal-600'
+                              : isChecked
+                              ? 'bg-red-50/40 hover:bg-red-50/70'
+                              : 'hover:bg-slate-50'
                           }`}
                         >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            data-testid={`vision-history-checkbox-${shortId}`}
+                            onChange={(e) => toggleHistorySelection(item.id, e as any)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer shrink-0"
+                          />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
                               <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-900 text-teal-300">
@@ -1674,16 +1799,25 @@ function VisionPageContent() {
                               {item.category} • {item.componentCount} objects
                             </div>
                           </div>
-                          <span className={`px-2 py-0.5 rounded-full text-[9.5px] font-bold shrink-0 ${
-                            item.sourceLabel === 'Database'
-                              ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                              : item.sourceLabel === 'Saved Vault'
-                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                              : 'bg-teal-100 text-teal-800 border border-teal-200'
-                          }`}>
-                            {item.sourceLabel}
-                          </span>
-                        </button>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className={`px-2 py-0.5 rounded-full text-[9.5px] font-bold ${
+                              item.sourceLabel === 'Database'
+                                ? 'bg-blue-100 text-blue-800 border border-blue-200'
+                                : item.sourceLabel === 'Saved Vault'
+                                ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                                : 'bg-teal-100 text-teal-800 border border-teal-200'
+                            }`}>
+                              {item.sourceLabel}
+                            </span>
+                            <button
+                              onClick={(e) => handleDeleteSingleFromHistory(item.id, e)}
+                              className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition cursor-pointer"
+                              title={`Delete ${shortId}`}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
                       );
                     })}
                     {filteredHistoryBlueprints.length === 0 && (
@@ -2675,30 +2809,59 @@ function VisionPageContent() {
                   )}
                 </div>
 
-                {/* Filter Tabs */}
-                <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
-                  {[
-                    { id: 'all', label: 'All Blueprints', count: allLibraryBlueprints.length },
-                    { id: 'custom', label: 'Saved Uploads & Web', count: customBlueprints.length },
-                    { id: 'master', label: 'Certified Masters', count: SAMPLE_BLUEPRINTS.length }
-                  ].map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setLibraryTabFilter(tab.id as any)}
-                      className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-                        libraryTabFilter === tab.id
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
-                      }`}
-                    >
-                      <span>{tab.label}</span>
-                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
-                        libraryTabFilter === tab.id ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-600'
-                      }`}>
-                        {tab.count}
-                      </span>
-                    </button>
-                  ))}
+                {/* Filter Tabs & Multi-Select Delete Controls */}
+                <div className="flex flex-wrap items-center justify-between gap-2 w-full sm:w-auto">
+                  <div className="flex items-center gap-1.5 overflow-x-auto">
+                    {[
+                      { id: 'all', label: 'All Blueprints', count: allLibraryBlueprints.length },
+                      { id: 'custom', label: 'Saved Uploads & Web', count: customBlueprints.length },
+                      { id: 'master', label: 'Certified Masters', count: SAMPLE_BLUEPRINTS.length }
+                    ].map((tab) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setLibraryTabFilter(tab.id as any)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                          libraryTabFilter === tab.id
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
+                        }`}
+                      >
+                        <span>{tab.label}</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold ${
+                          libraryTabFilter === tab.id ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {tab.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Multi-Select Toolbar in Modal */}
+                  <div className="flex items-center gap-2 border-l border-slate-300 pl-3">
+                    <label className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={
+                          filteredLibraryBlueprints.length > 0 &&
+                          filteredLibraryBlueprints.every((item) => selectedHistoryIds.includes(item.id))
+                        }
+                        onChange={() => toggleSelectAllHistory(filteredLibraryBlueprints)}
+                        className="w-3.5 h-3.5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer"
+                      />
+                      <span>Select All</span>
+                    </label>
+
+                    {selectedHistoryIds.length > 0 && (
+                      <button
+                        onClick={handleBatchDeleteHistory}
+                        disabled={isBatchDeleting}
+                        className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer transition disabled:opacity-50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        <span>Delete Selected ({selectedHistoryIds.length})</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -2725,11 +2888,16 @@ function VisionPageContent() {
                     {filteredLibraryBlueprints.map((bp) => {
                       const isActive = selectedBlueprintId === bp.id;
                       const shortId = formatDisplayBlueprintId(bp.id);
+                      const isChecked = selectedHistoryIds.includes(bp.id);
                       return (
                         <div
                           key={bp.id}
                           className={`bg-white rounded-xl border transition-all duration-200 flex flex-col overflow-hidden shadow-2xs hover:shadow-md group ${
-                            isActive ? 'border-teal-500 ring-2 ring-teal-500/20' : 'border-slate-200 hover:border-slate-300'
+                            isActive
+                              ? 'border-teal-500 ring-2 ring-teal-500/20'
+                              : isChecked
+                              ? 'border-red-400 ring-2 ring-red-400/20'
+                              : 'border-slate-200 hover:border-slate-300'
                           }`}
                         >
                           {/* Card Thumbnail Image */}
@@ -2743,13 +2911,22 @@ function VisionPageContent() {
                               }}
                             />
 
-                            {/* Active Canvas Badge */}
-                            {isActive && (
-                              <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-500 text-white text-[10px] font-extrabold flex items-center gap-1 shadow-md animate-pulse">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                                <span>ACTIVE ON CANVAS</span>
-                              </div>
-                            )}
+                            {/* Checkbox + Active Canvas Badge */}
+                            <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={(e) => toggleHistorySelection(bp.id, e as any)}
+                                onClick={(e) => e.stopPropagation()}
+                                className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500 cursor-pointer shadow-md"
+                              />
+                              {isActive && (
+                                <div className="px-2 py-0.5 rounded-md bg-emerald-500 text-white text-[10px] font-extrabold flex items-center gap-1 shadow-md animate-pulse">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                                  <span>ACTIVE ON CANVAS</span>
+                                </div>
+                              )}
+                            </div>
 
                             {/* Badge: Master vs Custom */}
                             <div className="absolute top-2 right-2">

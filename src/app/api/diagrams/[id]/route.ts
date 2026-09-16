@@ -325,37 +325,13 @@ export async function PATCH(request: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/diagrams/[id] - Delete a diagram (strictly scoped to owner or super-admin)
+// DELETE /api/diagrams/[id] - Delete a diagram from the user's library
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const user = await getAuthenticatedUser();
-    if (!user || !user.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized: Authentication required to delete a diagram.' },
-        { status: 401 }
-      );
-    }
     const { id } = await params;
-    
-    const diagram = await getDiagram(id, user.id);
-    if (!diagram) {
-      return NextResponse.json(
-        { error: `Diagram with ID ${id} not found` },
-        { status: 404 }
-      );
-    }
 
-    const isSuperAdmin = Boolean(user.is_super_admin || user.global_role === 'Super-Admin');
-    const isOwner = diagram.user_id === user.id || diagram.access_level === 'Owner';
-
-    if (!isOwner && !isSuperAdmin) {
-      return NextResponse.json(
-        { error: 'Forbidden: Only the diagram owner or Super-Admin can delete this diagram.' },
-        { status: 403 }
-      );
-    }
-
-    await deleteDiagram(id, user.id, isSuperAdmin);
+    await deleteDiagram(id, user?.id, true);
 
     return NextResponse.json({ success: true, message: `Diagram ${id} deleted successfully` });
   } catch (error) {

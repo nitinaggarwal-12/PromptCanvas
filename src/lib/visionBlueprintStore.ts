@@ -84,25 +84,26 @@ export function getSelfHealedGeminiEnterpriseBlueprint(id: string): SavedVisionB
   };
 }
 
-export function getSelfHealedAzureLandingZoneBlueprint(id: string = 'VIS-5965'): SavedVisionBlueprint {
+export function getSelfHealedAzureLandingZoneBlueprint(id: string = 'VIS-9745'): SavedVisionBlueprint {
   const cleanId = id.toUpperCase();
-  const xml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+  const xml = generateAzureLandingZoneArchitectureXml();
+  const measured = countDiagramNodes(xml);
   return {
     id: cleanId,
-    title: 'Azure Application Landing Zone (VIS-5965)',
+    title: cleanId === 'VIS-9745' ? 'Application landing zone subscription' : `Azure Application Landing Zone (${cleanId})`,
     category: 'Enterprise Cloud Landing Zone',
     imageSrc: '/blueprints/azure_application_landing_zone.png',
     xml,
     extractedZones: [
-      'Platform Landing Zone Subscription (Hub VNet 10.0.0.0/16)',
-      'Subscription Vending Provisioned Resources (GitOps CI/CD)',
-      'Application Landing Zone Subscription (Spoke VNet 10.10.0.0/16)',
-      'Ingress WAF, AKS Private Cluster, OpenAI & Private Endpoints'
+      'Application Landing Zone Subscription & Protected Ingress (WAF)',
+      'Workload Resources (Agentic Subnet, Private Endpoints, AI Foundry Hub)',
+      'Subscription Vending Provisioned Resources & Coding Assistant Tools',
+      'Platform Landing Zone / Connectivity Subscription (Hub VNet & Firewall)'
     ],
-    componentCount: 42,
-    summaryText: 'Complete 42-Node Enterprise Azure Application & Platform Landing Zone Architecture with Hub-Spoke VNet Peering, Subscription Vending, 9 Subnets, AKS Private Cluster, Azure OpenAI Private Link, and SQL Managed Instance.',
+    componentCount: measured || 135,
+    summaryText: 'Official Microsoft Azure Application Landing Zone Architecture with Agentic Subnet (Container Apps Environment), Private Endpoints Subnet, Azure AI Foundry Hub, Subscription Vending, and Connectivity Hub VNet.',
     isCustom: true,
-    timestamp: 1789517559000,
+    timestamp: 1789527917000,
     source: 'cache'
   };
 }
@@ -167,6 +168,7 @@ function migrateLegacyVisionStorage(): void {
     const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
 
     const defaultMasters: { id: string; builder: () => SavedVisionBlueprint }[] = [
+      { id: 'VIS-9745', builder: () => getSelfHealedAzureLandingZoneBlueprint('VIS-9745') },
       { id: 'VIS-5965', builder: () => getSelfHealedAzureLandingZoneBlueprint('VIS-5965') },
       { id: 'VIS-AGENTIC-01', builder: () => getSelfHealedAgenticAiBlueprint('VIS-AGENTIC-01') },
       { id: 'VIS-3093', builder: () => getSelfHealedGeminiEnterpriseBlueprint('VIS-3093') },
@@ -221,8 +223,8 @@ function migrateLegacyVisionStorage(): void {
           updated = true;
         }
         let newXml = item.xml;
-        if (!newXml || newXml.includes('AZURE ENTERPRISE-SCALE LANDING ZONE') || !newXml.includes('Workload resources (Spoke Virtual Network')) {
-          newXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+        if (!newXml || !newXml.includes('PromptCanvas Master Engine v6.1')) {
+          newXml = generateAzureLandingZoneArchitectureXml();
           updated = true;
         }
         if (updated) {
@@ -417,7 +419,7 @@ export function getSavedVisionBlueprint(id: string): SavedVisionBlueprint | null
             healedXml = enrichDrawioXmlWithVectorIcons(generateGoogleMultiagentArchitectureXml());
           }
         } else if (isAzureLandingZoneSlide(id, parsed.title, parsed.xml)) {
-          healedXml = enrichDrawioXmlWithVectorIcons(generateAzureLandingZoneArchitectureXml());
+          healedXml = generateAzureLandingZoneArchitectureXml();
         } else if (isAgenticAiArchitectureSlide(id, parsed.title, parsed.xml)) {
           healedXml = enrichDrawioXmlWithVectorIcons(generateAgenticAiArchitectureXml());
         }
@@ -589,6 +591,16 @@ export function getCustomVisionBlueprints(): SavedVisionBlueprint[] {
   return [];
 }
 
+export function getDeletedVisionBlueprintIds(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
+    return JSON.parse(localStorage.getItem(deletedKey) || '[]');
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Delete a custom blueprint from localStorage
  */
@@ -608,6 +620,33 @@ export function deleteCustomVisionBlueprint(id: string): void {
     localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
   } catch (err) {
     console.warn('[VisionBlueprintStore] Error deleting custom blueprint:', err);
+  }
+}
+
+/**
+ * Batch delete multiple custom/saved blueprints from localStorage
+ */
+export function batchDeleteCustomVisionBlueprints(ids: string[]): void {
+  if (typeof window === 'undefined' || !ids || ids.length === 0) return;
+
+  try {
+    const deletedKey = 'promptcanvas_vision_deleted_ids_v4';
+    const deletedIds: string[] = JSON.parse(localStorage.getItem(deletedKey) || '[]');
+    const upperSet = new Set(ids.map(id => id.toUpperCase()));
+
+    for (const id of ids) {
+      localStorage.removeItem(`${STORAGE_PREFIX}${id}`);
+      if (!deletedIds.includes(id.toUpperCase())) {
+        deletedIds.push(id.toUpperCase());
+      }
+    }
+    localStorage.setItem(deletedKey, JSON.stringify(deletedIds));
+
+    const existing = getCustomVisionBlueprints();
+    const updated = existing.filter(b => !upperSet.has(b.id.toUpperCase()));
+    localStorage.setItem(CUSTOM_LIST_KEY, JSON.stringify(updated));
+  } catch (err) {
+    console.warn('[VisionBlueprintStore] Error batch deleting custom blueprints:', err);
   }
 }
 

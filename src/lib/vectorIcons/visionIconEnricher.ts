@@ -189,13 +189,18 @@ function extractPlainText(escapedHtml: string): string {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>');
+    .replace(/&gt;/g, '>')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ');
 
-  const lines = decoded
-    .split(/<br\s*\/?>|<font\b|<\/div>\s*<div\b/i)
+  const textWithNewlines = decoded
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(div|p|h[1-6]|li|tr|td|font)>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ');
+
+  const lines = textWithNewlines
+    .split('\n')
     .map(seg =>
       seg
-        .replace(/<[^>]+>/g, ' ')
         .replace(/^[+\u2726\u2728\u2022*•-]+\s*/g, '')
         .replace(/\s+/g, ' ')
         .trim()
@@ -334,8 +339,8 @@ export function enrichDrawioXmlWithVectorIcons(xml: string): string {
 
   // Match every <mxCell ...> block (including self-closing or with child <mxGeometry>)
   return sanitizedXml.replace(/<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/gi, (fullMatch, attrs, innerContent = '') => {
-    // Only process vertex="1" cells
-    if (!/\bvertex="1"/i.test(attrs)) {
+    // Only process vertex="1" cells and skip cells that already have shape=image or image=data:image/
+    if (!/\bvertex="1"/i.test(attrs) || /\bshape=image\b/i.test(attrs) || attrs.includes('image=data:image/')) {
       return fullMatch;
     }
 

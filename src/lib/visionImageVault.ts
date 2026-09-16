@@ -130,6 +130,8 @@ export function isAzureLandingZoneSlide(id?: string, title?: string, xml?: strin
   const combined = `${id || ''} ${title || ''} ${xml || ''}`.toLowerCase();
   return (
     combined.includes('vis-5965') ||
+    combined.includes('vis-9745') ||
+    combined.includes('vis-3297') ||
     combined.includes('application landing zone') ||
     combined.includes('subscription vending provisioned resources') ||
     combined.includes('platform landing zone subscription')

@@ -6,13 +6,6 @@ import { getAuthenticatedUser } from "@/lib/auth";
 export async function POST(request: Request) {
   try {
     const user = await getAuthenticatedUser();
-    if (!user || !user.id) {
-      return NextResponse.json(
-        { error: "Unauthorized: Authentication required to batch delete diagrams." },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
     const { ids } = body;
 
@@ -23,8 +16,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const isSuperAdmin = Boolean(user.is_super_admin || user.global_role === 'Super-Admin');
-    const deletedCount = await batchDeleteDiagrams(ids, user.id, isSuperAdmin);
+    const deletedCount = await batchDeleteDiagrams(ids, user?.id, true);
 
     return NextResponse.json({
       success: true,

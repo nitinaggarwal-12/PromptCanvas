@@ -482,30 +482,70 @@ function Studio1Content() {
   const [copiedXml, setCopiedXml] = useState<boolean>(false);
   const [toastNotification, setToastNotification] = useState<string | null>(null);
 
-  // Saved Historical Canvases Drawer (Filtered to Studio 1)
+  // Saved Historical Canvases Drawer (Filtered strictly to Studio 1)
   const [showSavedDrawer, setShowSavedDrawer] = useState<boolean>(false);
   const [savedHistoryList, setSavedHistoryList] = useState<any[]>([]);
   const [loadingSavedHistory, setLoadingSavedHistory] = useState<boolean>(false);
   const [savedSearchQuery, setSavedSearchQuery] = useState<string>('');
+  const [selectedStudio1Ids, setSelectedStudio1Ids] = useState<string[]>([]);
+  const [isBatchDeletingStudio1, setIsBatchDeletingStudio1] = useState<boolean>(false);
 
   const openSavedHistoryDrawer = async () => {
     setShowSavedDrawer(true);
     setLoadingSavedHistory(true);
+    setSelectedStudio1Ids([]);
     try {
-      const res = await fetch('/api/diagrams');
+      const res = await fetch('/api/diagrams?studio=studio1');
       const data = await res.json();
       if (Array.isArray(data)) {
         const studio1Items = data.filter(d => 
           d.created_studio === 'studio1' ||
-          (d.architecture_type && d.architecture_type.includes('studio1')) ||
-          (d.name && d.name.toLowerCase().includes('studio 2'))
+          (d.architecture_type && d.architecture_type.includes('studio1'))
         );
-        setSavedHistoryList(studio1Items.length > 0 ? studio1Items : data.filter(d => d.created_studio === 'studio1'));
+        setSavedHistoryList(studio1Items);
       }
     } catch (e) {
       console.error('Failed to fetch Studio 1 history:', e);
     } finally {
       setLoadingSavedHistory(false);
+    }
+  };
+
+  const toggleStudio1Select = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSelectedStudio1Ids(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllStudio1 = (items: any[]) => {
+    const visibleIds = items.map(item => item.id);
+    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedStudio1Ids.includes(id));
+    if (allSelected) {
+      setSelectedStudio1Ids(prev => prev.filter(id => !visibleIds.includes(id)));
+    } else {
+      setSelectedStudio1Ids(prev => Array.from(new Set([...prev, ...visibleIds])));
+    }
+  };
+
+  const handleBatchDeleteStudio1 = async () => {
+    if (selectedStudio1Ids.length === 0) return;
+    setIsBatchDeletingStudio1(true);
+    try {
+      const idsToDelete = [...selectedStudio1Ids];
+      await fetch('/api/diagrams', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: idsToDelete })
+      });
+      const idSet = new Set(idsToDelete);
+      setSavedHistoryList(prev => prev.filter(item => !idSet.has(item.id)));
+      setSelectedStudio1Ids([]);
+      showToast(`Deleted ${idsToDelete.length} selected Studio 1 diagram(s).`);
+    } catch (e) {
+      console.error('Failed to batch delete Studio 1 diagrams:', e);
+    } finally {
+      setIsBatchDeletingStudio1(false);
     }
   };
 
@@ -540,10 +580,10 @@ function Studio1Content() {
 
   const handleDeleteSavedDiagram = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this diagram from history?')) return;
     try {
       await fetch(`/api/diagrams/${id}`, { method: 'DELETE' });
       setSavedHistoryList(prev => prev.filter(item => item.id !== id));
+      setSelectedStudio1Ids(prev => prev.filter(item => item !== id));
       showToast('Diagram deleted successfully.');
     } catch (e) {
       console.error('Failed to delete diagram:', e);
@@ -2950,7 +2990,7 @@ function Studio1Content() {
             </div>
 
             <div className={`p-3 border-b ${isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950 border-slate-800'}`}>
-              <div className="relative">
+              <div className="relative mb-2">
                 <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
@@ -2964,6 +3004,38 @@ function Studio1Content() {
                   }`}
                 />
               </div>
+
+              {/* Multi-Select Toolbar */}
+              {(() => {
+                const visibleList = savedHistoryList.filter(
+                  d =>
+                    (d.name || '').toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
+                    (d.architecture_type || '').toLowerCase().includes(savedSearchQuery.toLowerCase())
+                );
+                return (
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <label className="inline-flex items-center gap-1.5 text-xs font-bold cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={visibleList.length > 0 && visibleList.every(item => selectedStudio1Ids.includes(item.id))}
+                        onChange={() => toggleSelectAllStudio1(visibleList)}
+                        className="w-3.5 h-3.5 rounded border-slate-300 text-purple-600 focus:ring-purple-500 cursor-pointer"
+                      />
+                      <span>Select All ({visibleList.length})</span>
+                    </label>
+                    {selectedStudio1Ids.length > 0 && (
+                      <button
+                        onClick={handleBatchDeleteStudio1}
+                        disabled={isBatchDeletingStudio1}
+                        className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs cursor-pointer transition disabled:opacity-50"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>Delete Selected ({selectedStudio1Ids.length})</span>
+                      </button>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
@@ -2980,30 +3052,41 @@ function Studio1Content() {
               ) : (
                 savedHistoryList
                   .filter(d => (d.name || '').toLowerCase().includes(savedSearchQuery.toLowerCase()) || (d.architecture_type || '').toLowerCase().includes(savedSearchQuery.toLowerCase()))
-                  .map(d => (
-                    <div
-                      key={d.id}
-                      className={`p-3.5 rounded-xl border transition flex flex-col gap-2 group ${
-                        isLight
-                          ? 'bg-white hover:bg-purple-50/50 border-slate-200 hover:border-purple-400 shadow-xs'
-                          : 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-purple-500/60'
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h4 className={`text-xs font-black truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                            {d.name || 'Untitled Flowchart'}
-                          </h4>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono uppercase font-bold bg-purple-600/10 text-purple-600 dark:text-purple-400">
-                              {d.architecture_type || 'gcp_flowchart'}
-                            </span>
-                            <span className="text-[10px] text-slate-400 font-mono">
-                              {d.created_at ? new Date(d.created_at).toLocaleDateString() : 'Recent'}
-                            </span>
+                  .map(d => {
+                    const isChecked = selectedStudio1Ids.includes(d.id);
+                    return (
+                      <div
+                        key={d.id}
+                        className={`p-3.5 rounded-xl border transition flex flex-col gap-2 group ${
+                          isChecked
+                            ? 'bg-red-50/40 dark:bg-red-950/20 border-red-400'
+                            : isLight
+                            ? 'bg-white hover:bg-purple-50/50 border-slate-200 hover:border-purple-400 shadow-xs'
+                            : 'bg-slate-900/80 hover:bg-slate-850 border-slate-800 hover:border-purple-500/60'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => toggleStudio1Select(d.id, e as any)}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-3.5 h-3.5 mt-0.5 rounded border-slate-300 text-purple-600 focus:ring-purple-500 cursor-pointer shrink-0"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h4 className={`text-xs font-black truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                              {d.name || 'Untitled Flowchart'}
+                            </h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="text-[10px] px-1.5 py-0.5 rounded font-mono uppercase font-bold bg-purple-600/10 text-purple-600 dark:text-purple-400">
+                                {d.architecture_type || 'gcp_flowchart'}
+                              </span>
+                              <span className="text-[10px] text-slate-400 font-mono">
+                                {d.created_at ? new Date(d.created_at).toLocaleDateString() : 'Recent'}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
                       <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <button
@@ -3067,7 +3150,8 @@ function Studio1Content() {
                         </button>
                       </div>
                     </div>
-                  ))
+                  );
+                })
               )}
             </div>
 

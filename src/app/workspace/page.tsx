@@ -2036,11 +2036,14 @@ function WorkspaceContent() {
   async function fetchDiagrams() {
     setIsLoadingDiagrams(true);
     try {
-      const res = await fetch('/api/diagrams');
+      const res = await fetch('/api/diagrams?studio=workspace');
       if (!res.ok) throw new Error('Failed to fetch diagrams');
       const data = await res.json();
-      setDiagrams(data);
-      if (Array.isArray(data) && data.length === 0) {
+      const workspaceOnly = Array.isArray(data)
+        ? data.filter((d: any) => (d.created_studio || 'workspace').toLowerCase() === 'workspace')
+        : [];
+      setDiagrams(workspaceOnly);
+      if (workspaceOnly.length === 0) {
         // Auto-initialize default architecture canvas
         const defaultXml = getDefaultXmlForArchitecture('unified_system_view', 'Unified Cloud Architecture #101', 'Unified Cloud Architecture #101');
         const createRes = await fetch('/api/diagrams', {
@@ -2050,7 +2053,8 @@ function WorkspaceContent() {
             name: 'Unified Cloud Architecture #101',
             xml: defaultXml,
             comment: 'Default initialized canvas',
-            architectureType: 'unified_system_view'
+            architectureType: 'unified_system_view',
+            createdStudio: 'workspace'
           })
         });
         if (createRes.ok) {
@@ -2127,7 +2131,8 @@ function WorkspaceContent() {
               xml: defaultXml,
               comment: 'Synthesized Enterprise Canvas',
               architectureType: effectiveArchType,
-              isPrivate: newDiagramIsPrivate
+              isPrivate: newDiagramIsPrivate,
+              createdStudio: 'workspace'
             })
           });
           if (fallbackRes.ok) {
@@ -2154,7 +2159,8 @@ function WorkspaceContent() {
           xml: defaultXml,
           comment: 'Initial canvas created',
           architectureType: effectiveArchType,
-          isPrivate: newDiagramIsPrivate
+          isPrivate: newDiagramIsPrivate,
+          createdStudio: 'workspace'
         })
       });
       
