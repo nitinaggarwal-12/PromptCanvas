@@ -374,9 +374,9 @@ export function generateAzureLandingZoneArchitectureXml(): string {
   addBox(
     'udr_annotation',
     'User-Defined\nRoutes (UDR)\n(To Firewall)',
-    458,
+    470,
     424,
-    85,
+    105,
     36,
     'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Inter,Segoe UI,sans-serif;fontSize=8;fontColor=#374151;fontStyle=2;'
   );
@@ -588,14 +588,14 @@ export function generateAzureLandingZoneArchitectureXml(): string {
   );
 
   const peItems = [
-    { id: 'pe_sb', lbl: 'Azure\nService Bus', x: 594 },
-    { id: 'pe_eg', lbl: 'Azure Event\nGrid / Hubs', x: 646 },
+    { id: 'pe_sb', lbl: 'Azure\nService\nBus', x: 594 },
+    { id: 'pe_eg', lbl: 'Event Grid\n/ Hubs', x: 646 },
     { id: 'pe_cosmos', lbl: 'Azure\nCosmos DB', x: 698 },
     { id: 'pe_aihub', lbl: 'Azure AI\nHub', x: 750 },
     { id: 'pe_search', lbl: 'Azure AI\nSearch', x: 802 },
     { id: 'pe_aisvc', lbl: 'Azure AI\nServices', x: 854 },
     { id: 'pe_kv', lbl: 'Azure Key\nVault', x: 906 },
-    { id: 'pe_acr', lbl: 'Azure Container\nRegistry', x: 958 },
+    { id: 'pe_acr', lbl: 'Azure\nContainer\nRegistry', x: 958 },
   ];
   for (const pe of peItems) {
     addIcon(pe.id, pe.lbl, pe.x, 382, 26, 24, AZURE_RAW_SVGS.PRIVATE_ENDPOINT, 'fontSize=7;');
@@ -753,37 +753,43 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     addIcon(pc.id, pc.lbl, pc.x + 15, 264, 28, 26, pc.icon, 'fontSize=7;');
   }
 
-  // 8.3 Three State & Messaging Cards (y = 352..455)
+  // 8.3 Three State & Messaging Cards (y = 356..456)
   const stateCards = [
     {
       id: 'st_search_cosmos',
       hdr: 'Search\nState',
       lbl: 'Azure\nCosmos\nDB',
       icon: AZURE_RAW_SVGS.COSMOS_DB,
-      x: 1030,
+      x: 1040,
+      hdrX: 1030,
+      hdrW: 86,
     },
     {
       id: 'st_agent_cosmos',
       hdr: 'Agent State\nand History',
       lbl: 'Azure\nCosmos\nDB',
       icon: AZURE_RAW_SVGS.STORAGE,
-      x: 1104,
+      x: 1145,
+      hdrX: 1126,
+      hdrW: 104,
     },
     {
       id: 'st_comm_sb',
       hdr: 'Agent Communication\n(All agents + Orchestrator)',
       lbl: 'Standard\nAzure\nService\nBus',
       icon: AZURE_RAW_SVGS.SERVICE_BUS,
-      x: 1178,
+      x: 1265,
+      hdrX: 1232,
+      hdrW: 146,
     },
   ];
   for (const sc of stateCards) {
     addBox(
       `${sc.id}_hdr`,
       sc.hdr,
-      sc.x - 4,
-      350,
-      76,
+      sc.hdrX,
+      356,
+      sc.hdrW,
       26,
       'text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=bottom;fontFamily=Inter,Segoe UI,sans-serif;fontSize=7.5;fontColor=#374151;'
     );
@@ -791,12 +797,12 @@ export function generateAzureLandingZoneArchitectureXml(): string {
       `${sc.id}_card`,
       '',
       sc.x,
-      378,
+      384,
       66,
-      78,
+      72,
       'rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D1D5DB;strokeWidth=1;'
     );
-    addIcon(sc.id, sc.lbl, sc.x + 19, 382, 28, 26, sc.icon, 'fontSize=7;');
+    addIcon(sc.id, sc.lbl, sc.x + 19, 388, 28, 26, sc.icon, 'fontSize=7;');
   }
 
   // 8.4 App Service Environment Box (x = 1050, y = 468, w = 255, h = 148)
@@ -810,7 +816,16 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     'rounded=0;whiteSpace=wrap;html=1;fillColor=#F3F4F6;strokeColor=#D1D5DB;strokeWidth=1;'
   );
   addIcon('ase_mi', 'Managed\nIdentity', 1062, 472, 24, 22, AZURE_RAW_SVGS.MANAGED_IDENTITY, 'fontSize=7;');
-  addIcon('ase_hdr_icon', 'App Service\nEnvironment', 1158, 470, 30, 28, AZURE_RAW_SVGS.APP_SERVICE, 'fontSize=8;fontStyle=1;');
+  addIcon('ase_hdr_icon', '', 1122, 474, 24, 24, AZURE_RAW_SVGS.APP_SERVICE);
+  addBox(
+    'ase_hdr_lbl',
+    'App Service Environment',
+    1150,
+    474,
+    145,
+    24,
+    'text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontFamily=Inter,Segoe UI,sans-serif;fontSize=8.5;fontStyle=1;fontColor=#111827;'
+  );
 
   const zones = [
     { id: 'ase_z1', zone: 'Zone 1', x: 1062 },
@@ -822,17 +837,17 @@ export function generateAzureLandingZoneArchitectureXml(): string {
       `${zn.id}_card`,
       '',
       zn.x,
-      520,
+      518,
       70,
-      88,
+      94,
       'rounded=1;arcSize=12;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F59E0B;strokeWidth=1.5;'
     );
-    addIcon(zn.id, 'App Service\nInstance', zn.x + 21, 524, 28, 26, AZURE_RAW_SVGS.APP_SERVICE, 'fontSize=7;');
+    addIcon(zn.id, 'App Service\nInstance', zn.x + 23, 522, 24, 22, AZURE_RAW_SVGS.APP_SERVICE, 'fontSize=6.5;');
     addBox(
       `${zn.id}_lbl`,
       zn.zone,
       zn.x,
-      588,
+      593,
       70,
       16,
       'text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Inter,Segoe UI,sans-serif;fontSize=8;fontColor=#0078D4;fontStyle=1;'
@@ -903,20 +918,20 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     'text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontFamily=Inter,Segoe UI,sans-serif;fontSize=28;fontStyle=1;fontColor=#9CA3AF;'
   );
 
-  // 2x2 Governance Icons inside Subscription Vending
-  addIcon('vend_cost', 'Cost\nmanagement', 495, 648, 24, 22, AZURE_RAW_SVGS.COST_MGMT, 'fontSize=7;');
+  // 4 Governance Icons in a single horizontal row at y=668 inside Subscription Vending
+  addIcon('vend_cost', 'Cost\nmanagement', 470, 668, 24, 22, AZURE_RAW_SVGS.COST_MGMT, 'fontSize=7;');
   addIcon(
     'vend_defender',
-    'Defender for\nCloud enrollment',
-    580,
-    648,
+    'Defender for\nCloud',
+    524,
+    668,
     24,
     22,
     AZURE_RAW_SVGS.DEFENDER,
     'fontSize=7;'
   );
-  addIcon('vend_policy', 'Org policy\nassignments', 495, 694, 24, 22, AZURE_RAW_SVGS.POLICY, 'fontSize=7;');
-  addIcon('vend_rbac', 'Role\nassignments', 580, 694, 24, 22, AZURE_RAW_SVGS.RBAC, 'fontSize=7;');
+  addIcon('vend_policy', 'Org policy\nassignments', 578, 668, 24, 22, AZURE_RAW_SVGS.POLICY, 'fontSize=7;');
+  addIcon('vend_rbac', 'Role\nassignments', 632, 668, 24, 22, AZURE_RAW_SVGS.RBAC, 'fontSize=7;');
 
   // 9.2 Right White Container: Coding Assistant Tools Subnet (x = 815, y = 646, w = 365, h = 90)
   addBox(
@@ -1131,10 +1146,10 @@ export function generateAzureLandingZoneArchitectureXml(): string {
   );
 
   // Bottom row of 4 governance icons inside yellow box
-  addIcon('hub_rbac', 'Role\nassignments', 418, 948, 24, 22, AZURE_RAW_SVGS.RBAC, 'fontSize=7;');
-  addIcon('hub_policy', 'Policy\nassignments', 482, 948, 24, 22, AZURE_RAW_SVGS.POLICY, 'fontSize=7;');
-  addIcon('hub_nw', 'Network\nWatcher', 546, 948, 24, 22, AZURE_RAW_SVGS.NET_WATCHER, 'fontSize=7;');
-  addIcon('hub_def', 'Defender\nfor Cloud', 610, 948, 24, 22, AZURE_RAW_SVGS.DEFENDER, 'fontSize=7;');
+  addIcon('hub_rbac', 'Role\nassignments', 418, 934, 24, 22, AZURE_RAW_SVGS.RBAC, 'fontSize=7;');
+  addIcon('hub_policy', 'Policy\nassignments', 482, 934, 24, 22, AZURE_RAW_SVGS.POLICY, 'fontSize=7;');
+  addIcon('hub_nw', 'Network\nWatcher', 546, 934, 24, 22, AZURE_RAW_SVGS.NET_WATCHER, 'fontSize=7;');
+  addIcon('hub_def', 'Defender\nfor Cloud', 610, 934, 24, 22, AZURE_RAW_SVGS.DEFENDER, 'fontSize=7;');
 
   // ============================================================================
   // 11. INTER-SUBNET & CROSS-TIER CONNECTORS (PEERING, PRIVATE LINK, EGRESS)
@@ -1160,8 +1175,8 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     902,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#EA580C;strokeWidth=1.8;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;fontFamily=Inter,Segoe UI,sans-serif;fontSize=8.5;fontStyle=2;fontColor=#1F2937;labelBackgroundColor=#FFFFFF;',
     [
-      { x: 462, y: 760 },
-      { x: 375, y: 760 },
+      { x: 462, y: 768 },
+      { x: 375, y: 768 },
       { x: 375, y: 902 },
     ]
   );
@@ -1198,12 +1213,12 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     '',
     607,
     440,
-    1210,
+    1298,
     456,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B6EBA;strokeWidth=1.2;endArrow=none;',
     [
-      { x: 607, y: 472 },
-      { x: 1210, y: 472 },
+      { x: 607, y: 463 },
+      { x: 1298, y: 463 },
     ]
   );
   addCoordEdge(
@@ -1211,12 +1226,12 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     '',
     711,
     440,
-    1063,
+    1073,
     456,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B6EBA;strokeWidth=1.2;endArrow=none;',
     [
-      { x: 711, y: 466 },
-      { x: 1063, y: 466 },
+      { x: 711, y: 460 },
+      { x: 1073, y: 460 },
     ]
   );
   addCoordEdge(
@@ -1228,8 +1243,8 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     340,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B6EBA;strokeWidth=1.2;endArrow=none;',
     [
-      { x: 867, y: 346 },
-      { x: 1059, y: 346 },
+      { x: 867, y: 343 },
+      { x: 1059, y: 343 },
     ]
   );
   addCoordEdge(
@@ -1241,8 +1256,8 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     340,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B6EBA;strokeWidth=1.2;endArrow=none;',
     [
-      { x: 815, y: 350 },
-      { x: 1122, y: 350 },
+      { x: 815, y: 347 },
+      { x: 1122, y: 347 },
     ]
   );
   addCoordEdge(
@@ -1254,8 +1269,8 @@ export function generateAzureLandingZoneArchitectureXml(): string {
     340,
     'edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#3B6EBA;strokeWidth=1.2;endArrow=none;',
     [
-      { x: 919, y: 354 },
-      { x: 1248, y: 354 },
+      { x: 919, y: 351 },
+      { x: 1248, y: 351 },
     ]
   );
 

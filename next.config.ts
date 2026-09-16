@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com data: https://*",
               "img-src 'self' data: blob: https:",
               "frame-src 'self' blob: data: https://embed.diagrams.net https://app.diagrams.net https://viewer.diagrams.net https://*",
-              "frame-ancestors 'self' https://embed.diagrams.net https://app.diagrams.net",
+              "frame-ancestors 'self' https://embed.diagrams.net https://app.diagrams.net https://docs.google.com https://drive.google.com https://*.google.com https://*.googleusercontent.com",
               "child-src 'self' blob: data:",
               "worker-src 'self' blob: data:",
               "connect-src 'self' ws: wss: https://*.proxy.googlers.com https://generativelanguage.googleapis.com https://api.iconify.design https://raw.githubusercontent.com https://*"
@@ -54,7 +54,12 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/canvas',
-        destination: '/workspace',
+        destination: '/studio',
+        permanent: true,
+      },
+      {
+        source: '/workspace',
+        destination: '/studio',
         permanent: true,
       },
       {

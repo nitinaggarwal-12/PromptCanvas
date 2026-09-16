@@ -1041,7 +1041,8 @@ function VisionPageContent() {
       await exportDrawioToEditablePptx(
         decompiledXml,
         selectedImageName || 'Architecture Blueprint',
-        formatDisplayBlueprintId(selectedBlueprintId)
+        formatDisplayBlueprintId(selectedBlueprintId),
+        { masterImageSrc: selectedImageSrc || undefined }
       );
       showToast('🎉 Downloaded 100% Editable PowerPoint / Google Slides (.pptx)! Every box & connector is editable.');
     } catch (err: any) {

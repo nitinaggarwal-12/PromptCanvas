@@ -194,6 +194,38 @@ function isDarkColor(hex: string): boolean {
   return luminance < 0.52;
 }
 
+function normalizeSvgDimensions(svgStr: string, widthPx: number, heightPx: number): string {
+  let clean = svgStr.trim();
+  if (clean.startsWith('data:image/svg+xml')) {
+    const commaIdx = clean.indexOf(',');
+    if (commaIdx !== -1) {
+      const header = clean.slice(0, commaIdx);
+      const payload = clean.slice(commaIdx + 1);
+      if (header.includes('base64')) {
+        clean = typeof Buffer !== 'undefined'
+          ? Buffer.from(payload, 'base64').toString('utf-8')
+          : atob(payload);
+      } else {
+        try {
+          clean = decodeURIComponent(payload);
+        } catch {
+          clean = payload;
+        }
+      }
+    }
+  }
+  if (!clean.includes('xmlns=')) {
+    clean = clean.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+  }
+  clean = clean.replace(/<svg\b([^>]*)>/i, (_match, attrs) => {
+    const cleanedAttrs = attrs
+      .replace(/\s+width=["'][^"']*["']/gi, '')
+      .replace(/\s+height=["'][^"']*["']/gi, '');
+    return `<svg width="${widthPx}" height="${heightPx}"${cleanedAttrs}>`;
+  });
+  return clean;
+}
+
 /**
  * Renders an inline <svg> string OR data:image URL into a high-resolution transparent PNG data URL
  * so PowerPoint / Google Slides can display crisp vector icons on every card.
@@ -203,22 +235,37 @@ export async function renderInlineSvgToPngDataUrl(
   widthPx: number = 128,
   heightPx: number = 128
 ): Promise<string | null> {
-  if (typeof window === 'undefined' || !svgOrDataUrl) return null;
+  if (!svgOrDataUrl) return null;
+
+  if (typeof window === 'undefined') {
+    try {
+      const { createCanvas, loadImage } = await import('canvas');
+      let dataUriToLoad = svgOrDataUrl.trim();
+      if (!dataUriToLoad.startsWith('data:image/png') && !dataUriToLoad.startsWith('data:image/jpeg')) {
+        const cleanSvg = normalizeSvgDimensions(dataUriToLoad, widthPx, heightPx);
+        dataUriToLoad = `data:image/svg+xml;base64,${Buffer.from(cleanSvg, 'utf-8').toString('base64')}`;
+      }
+      const img = await loadImage(dataUriToLoad);
+      const canvas = createCanvas(widthPx, heightPx);
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, widthPx, heightPx);
+      ctx.drawImage(img, 0, 0, widthPx, heightPx);
+      return canvas.toDataURL('image/png');
+    } catch (err) {
+      console.warn('Node canvas SVG rasterization notice:', err);
+      return null;
+    }
+  }
+
   return new Promise((resolve) => {
     try {
       let url = '';
       let shouldRevoke = false;
 
-      if (svgOrDataUrl.startsWith('data:image/')) {
+      if (svgOrDataUrl.startsWith('data:image/png') || svgOrDataUrl.startsWith('data:image/jpeg')) {
         url = svgOrDataUrl;
       } else {
-        let cleanSvg = svgOrDataUrl.trim();
-        if (!cleanSvg.includes('xmlns=')) {
-          cleanSvg = cleanSvg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-        }
-        if (!/width=["']\d+/.test(cleanSvg)) {
-          cleanSvg = cleanSvg.replace('<svg', `<svg width="${widthPx}" height="${heightPx}"`);
-        }
+        const cleanSvg = normalizeSvgDimensions(svgOrDataUrl, widthPx, heightPx);
         const svgBlob = new Blob([cleanSvg], { type: 'image/svg+xml;charset=utf-8' });
         url = URL.createObjectURL(svgBlob);
         shouldRevoke = true;
@@ -399,8 +446,13 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
         width = parseFloat(geo['@_width'] || '0');
         height = parseFloat(geo['@_height'] || '0');
 
-        const ptsRaw = geo.mxPoint || (geo.Array?.mxPoint ? geo.Array.mxPoint : []);
-        const pts = Array.isArray(ptsRaw) ? ptsRaw : [ptsRaw];
+        const directPts = geo.mxPoint ? (Array.isArray(geo.mxPoint) ? geo.mxPoint : [geo.mxPoint]) : [];
+        const arrayPts = geo.Array?.mxPoint
+          ? Array.isArray(geo.Array.mxPoint)
+            ? geo.Array.mxPoint
+            : [geo.Array.mxPoint]
+          : [];
+        const pts = [...directPts, ...arrayPts];
         for (const pt of pts) {
           if (!pt) continue;
           const asAttr = pt['@_as'];
@@ -459,36 +511,42 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
 
   const cells: ParsedMxCell[] = [];
   for (const cell of cellMap.values()) {
-    let curX = cell.x;
-    let curY = cell.y;
+    let parentOffsetX = 0;
+    let parentOffsetY = 0;
     let depth = 0;
     let pId = cell.parent;
 
     while (pId && pId !== '1' && pId !== '0') {
       const parentCell = cellMap.get(pId);
       if (!parentCell) break;
-      curX += parentCell.x;
-      curY += parentCell.y;
+      parentOffsetX += parentCell.x;
+      parentOffsetY += parentCell.y;
       depth += 1;
       pId = parentCell.parent;
     }
 
-    cell.absX = curX;
-    cell.absY = curY;
+    cell.absX = cell.x + parentOffsetX;
+    cell.absY = cell.y + parentOffsetY;
     cell.depth = depth;
 
-    if (cell.sourcePoint && cell.parent !== '1' && cell.parent !== '0') {
-      const parentCell = cellMap.get(cell.parent);
-      if (parentCell) {
-        cell.sourcePoint.x += parentCell.absX;
-        cell.sourcePoint.y += parentCell.absY;
+    if (parentOffsetX !== 0 || parentOffsetY !== 0) {
+      if (cell.sourcePoint) {
+        cell.sourcePoint = {
+          x: cell.sourcePoint.x + parentOffsetX,
+          y: cell.sourcePoint.y + parentOffsetY,
+        };
       }
-    }
-    if (cell.targetPoint && cell.parent !== '1' && cell.parent !== '0') {
-      const parentCell = cellMap.get(cell.parent);
-      if (parentCell) {
-        cell.targetPoint.x += parentCell.absX;
-        cell.targetPoint.y += parentCell.absY;
+      if (cell.targetPoint) {
+        cell.targetPoint = {
+          x: cell.targetPoint.x + parentOffsetX,
+          y: cell.targetPoint.y + parentOffsetY,
+        };
+      }
+      if (cell.waypoints && cell.waypoints.length > 0) {
+        cell.waypoints = cell.waypoints.map((wp) => ({
+          x: wp.x + parentOffsetX,
+          y: wp.y + parentOffsetY,
+        }));
       }
     }
 
@@ -529,6 +587,99 @@ export function parseDrawioXmlForPptx(xmlContent: string): {
   return { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex: finalBgHex };
 }
 
+async function resolveImageSourceToDataUri(
+  src?: string | null,
+  blueprintId?: string
+): Promise<string | null> {
+  let targetSrc = src || null;
+  if (!targetSrc || targetSrc.includes('azure-landing-zone.png')) {
+    const idLower = (blueprintId || '').toLowerCase();
+    if (idLower.includes('9745') || idLower.includes('azure') || targetSrc?.includes('azure')) {
+      targetSrc = '/blueprints/azure_application_landing_zone.png';
+    }
+  }
+  if (!targetSrc) return null;
+  if (targetSrc.startsWith('data:image/')) return targetSrc;
+
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch(targetSrc);
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      return await new Promise<string | null>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(typeof reader.result === 'string' ? reader.result : null);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(blob);
+      });
+    } catch {
+      return null;
+    }
+  }
+
+  if (typeof Buffer !== 'undefined') {
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const cleanRel = targetSrc.replace(/^\//, '');
+      const fullPath = path.join(process.cwd(), 'public', cleanRel);
+      if (fs.existsSync(fullPath)) {
+        const buf = fs.readFileSync(fullPath);
+        const ext = path.extname(fullPath).toLowerCase() === '.jpg' ? 'jpeg' : 'png';
+        return `data:image/${ext};base64,${buf.toString('base64')}`;
+      }
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
+}
+
+function getImageDimensionsFromDataUri(dataUrl: string): { width: number; height: number } | null {
+  try {
+    const base64Idx = dataUrl.indexOf(';base64,');
+    if (base64Idx === -1) return null;
+    const b64 = dataUrl.substring(base64Idx + 8);
+    let bytes: Uint8Array;
+    if (typeof Buffer !== 'undefined') {
+      bytes = Buffer.from(b64, 'base64');
+    } else if (typeof atob !== 'undefined') {
+      const binStr = atob(b64.slice(0, 1024));
+      bytes = new Uint8Array(binStr.length);
+      for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+    } else {
+      return null;
+    }
+
+    // PNG signature: 89 50 4E 47
+    if (bytes.length >= 24 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47) {
+      const width = ((bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19]) >>> 0;
+      const height = ((bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23]) >>> 0;
+      if (width > 0 && height > 0) return { width, height };
+    }
+
+    // JPEG signature: FF D8
+    if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+      let offset = 2;
+      while (offset < bytes.length - 8) {
+        if (bytes[offset] !== 0xff) break;
+        const marker = bytes[offset + 1];
+        if (marker >= 0xc0 && marker <= 0xc2) {
+          const height = (bytes[offset + 5] << 8) | bytes[offset + 6];
+          const width = (bytes[offset + 7] << 8) | bytes[offset + 8];
+          if (width > 0 && height > 0) return { width, height };
+        }
+        const len = (bytes[offset + 2] << 8) | bytes[offset + 3];
+        offset += 2 + len;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 /**
  * Compiles Draw.io XML into a multi-slide PowerPoint (.pptx) deck:
  * - Slide 1: 100% 1:1 Master High-Resolution Widescreen Architecture Slide (Zero Deformity Guarantee)
@@ -539,8 +690,8 @@ export async function exportDrawioToEditablePptx(
   xmlContent: string,
   diagramName: string = 'Architecture Blueprint',
   blueprintId: string = 'VIS-MASTER',
-  options?: { returnBlob?: boolean; masterImageSrc?: string }
-): Promise<Blob | void> {
+  options?: { returnBlob?: boolean; returnBase64?: boolean; masterImageSrc?: string }
+): Promise<Blob | string | void> {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE'; // 13.333 x 7.5 inches widescreen 16:9
   pptx.author = 'PromptCanvas Vision Decompiler';
@@ -550,7 +701,7 @@ export async function exportDrawioToEditablePptx(
   const SLIDE_W = 13.333;
   const SLIDE_H = 7.5;
   const HEADER_H = 0.52;
-  const MARGIN_X = 0.28;
+  const MARGIN_X = 0.25;
   const MARGIN_Y = 0.14;
 
   const { cells, minX, minY, maxX, maxY, isDarkDiagram, diagramBgHex } = parseDrawioXmlForPptx(xmlContent);
@@ -561,13 +712,13 @@ export async function exportDrawioToEditablePptx(
   // SLIDE 1: 100% 1:1 HIGH-RESOLUTION MASTER ARCHITECTURE SLIDE (ZERO DEFORMITY)
   // ============================================================================
   try {
-    let pngDataUrl = options?.masterImageSrc || null;
-    if (!pngDataUrl || !pngDataUrl.startsWith('data:image/')) {
+    let pngDataUrl = await resolveImageSourceToDataUri(options?.masterImageSrc, blueprintId);
+    if (!pngDataUrl) {
       pngDataUrl = await exportDiagramPng(xmlContent, { scale: 2.5, transparent: false });
     }
     if (pngDataUrl) {
       const slide1Master = pptx.addSlide();
-      slide1Master.background = { color: isDarkDiagram ? '090D16' : 'FFFFFF' };
+      slide1Master.background = { color: isDarkDiagram ? '090D16' : 'F8FAFC' };
 
       slide1Master.addShape(pptx.ShapeType.rect, {
         x: 0,
@@ -595,13 +746,40 @@ export async function exportDrawioToEditablePptx(
         }
       );
 
+      const availW = SLIDE_W - 0.5;
+      const availH = SLIDE_H - HEADER_H - 0.22;
+      const dims = getImageDimensionsFromDataUri(pngDataUrl);
+      const imgAspect = dims ? dims.width / dims.height : graphW / graphH;
+      const boxAspect = availW / availH;
+
+      let finalW = availW;
+      let finalH = availH;
+      if (imgAspect > boxAspect) {
+        finalW = availW;
+        finalH = availW / imgAspect;
+      } else {
+        finalH = availH;
+        finalW = availH * imgAspect;
+      }
+      const finalX = 0.25 + (availW - finalW) / 2;
+      const finalY = HEADER_H + 0.11 + (availH - finalH) / 2;
+
+      // Crisp architectural showcase frame behind the 1:1 Master Image
+      slide1Master.addShape(pptx.ShapeType.rect, {
+        x: Number((finalX - 0.08).toFixed(3)),
+        y: Number((finalY - 0.06).toFixed(3)),
+        w: Number((finalW + 0.16).toFixed(3)),
+        h: Number((finalH + 0.12).toFixed(3)),
+        fill: { color: isDarkDiagram ? '0F172A' : 'FFFFFF' },
+        line: { color: isDarkDiagram ? '334155' : 'CBD5E1', width: 1 },
+      });
+
       slide1Master.addImage({
         data: pngDataUrl,
-        x: 0.35,
-        y: HEADER_H + 0.12,
-        w: SLIDE_W - 0.7,
-        h: SLIDE_H - HEADER_H - 0.24,
-        sizing: { type: 'contain', w: SLIDE_W - 0.7, h: SLIDE_H - HEADER_H - 0.24 },
+        x: Number(finalX.toFixed(3)),
+        y: Number(finalY.toFixed(3)),
+        w: Number(finalW.toFixed(3)),
+        h: Number(finalH.toFixed(3)),
       });
     }
   } catch (err) {
@@ -616,15 +794,14 @@ export async function exportDrawioToEditablePptx(
 
   const scaleX = availW / graphW;
   const scaleY = availH / graphH;
-  const scale = Math.min(scaleX, scaleY);
 
-  const offsetX = MARGIN_X + (availW - graphW * scale) / 2;
-  const offsetY = HEADER_H + MARGIN_Y + (availH - graphH * scale) / 2;
+  const offsetX = MARGIN_X;
+  const offsetY = HEADER_H + MARGIN_Y;
 
-  const toSlideX = (x: number) => Number((offsetX + (x - minX) * scale).toFixed(3));
-  const toSlideY = (y: number) => Number((offsetY + (y - minY) * scale).toFixed(3));
-  const toSlideW = (w: number) => Number(Math.max(0.08, w * scale).toFixed(3));
-  const toSlideH = (h: number) => Number(Math.max(0.08, h * scale).toFixed(3));
+  const toSlideX = (x: number) => Number((offsetX + (x - minX) * scaleX).toFixed(3));
+  const toSlideY = (y: number) => Number((offsetY + (y - minY) * scaleY).toFixed(3));
+  const toSlideW = (w: number) => Number(Math.max(0.08, w * scaleX).toFixed(3));
+  const toSlideH = (h: number) => Number(Math.max(0.08, h * scaleY).toFixed(3));
 
   const slide2 = pptx.addSlide();
   slide2.background = { color: isDarkDiagram ? diagramBgHex : 'FFFFFF' };
@@ -742,8 +919,8 @@ export async function exportDrawioToEditablePptx(
     }
 
     const rawFontSize = parseFloat(style.fontSize || '10');
-    const scaledTitleSize = Math.min(13, Math.max(6.5, Math.round(rawFontSize * Math.sqrt(scale) * 0.88)));
-    const scaledSubSize = Math.max(6, scaledTitleSize - 1);
+    const scaledTitleSize = Math.min(10, Math.max(6, Math.round(rawFontSize * Math.sqrt(scaleY) * 0.82)));
+    const scaledSubSize = Math.max(5.5, scaledTitleSize - 1);
 
     const isContainer =
       style.container === '1' ||
@@ -751,9 +928,24 @@ export async function exportDrawioToEditablePptx(
       (style.verticalAlign === 'top' && node.width * node.height > 18000) ||
       (node.width > 240 && node.height > 120 && !isImageShape);
 
+    const iconSource = node.extractedSvgs[0] || node.imageDataUrl;
+
     const isStandaloneIconWithBottomLabel =
-      (style.verticalLabelPosition === 'bottom' || (isImageShape && node.width <= 56 && node.height <= 56)) &&
-      !isContainer;
+      (!hasFill && !hasStroke && Boolean(iconSource)) ||
+      style.verticalLabelPosition === 'bottom' ||
+      (isImageShape && node.width <= 76 && node.height <= 76 && !isContainer);
+
+    const isVerticalCardWithIcon =
+      !isStandaloneIconWithBottomLabel &&
+      !isContainer &&
+      Boolean(iconSource) &&
+      (node.value.includes('flex-direction:column') || bh >= bw * 0.65);
+
+    const isHorizontalCardWithIcon =
+      !isStandaloneIconWithBottomLabel &&
+      !isContainer &&
+      Boolean(iconSource) &&
+      !isVerticalCardWithIcon;
 
     // 1. Draw the vector background shape if it has fill or border
     if (hasFill || hasStroke) {
@@ -775,36 +967,62 @@ export async function exportDrawioToEditablePptx(
     }
 
     // 2. Render vector icon if present (either inline SVG or style.image data URL)
-    const iconSource = node.extractedSvgs[0] || node.imageDataUrl;
+    let computedIconBottomY = by;
+    let computedIconRightX = bx;
+
     if (iconSource) {
       const iconDataUrl = await renderInlineSvgToPngDataUrl(iconSource, 128, 128);
       if (iconDataUrl) {
         if (isStandaloneIconWithBottomLabel) {
-          // Draw the icon cleanly filling its exact bounding box
-          slide2.addImage({
-            data: iconDataUrl,
-            x: bx,
-            y: by,
-            w: bw,
-            h: bh,
-          });
-        } else {
-          // Card with icon inside
-          const iconSize = Math.min(0.28, Math.max(0.16, Math.min(bw, bh) * 0.45));
-          const iconX = Number((bx + 0.05).toFixed(3));
-          const iconY = Number((by + (bh - iconSize) / 2).toFixed(3));
+          // XML width/height for standalone icons represent the icon box itself
+          const iconSq = Number(
+            Math.min(0.28, Math.max(0.14, Math.min(bw, bh))).toFixed(3)
+          );
+          const iconX = Number((bx + (bw - iconSq) / 2).toFixed(3));
+          const iconY = Number(by.toFixed(3));
+          computedIconBottomY = iconY + iconSq;
           slide2.addImage({
             data: iconDataUrl,
             x: iconX,
             y: iconY,
-            w: iconSize,
-            h: iconSize,
+            w: iconSq,
+            h: iconSq,
+          });
+        } else if (isVerticalCardWithIcon) {
+          // Vertical Card: Place icon at TOP-CENTER inside card
+          const iconSq = Number(
+            Math.min(0.24, Math.max(0.14, Math.min(bw * 0.45, bh * 0.38))).toFixed(3)
+          );
+          const iconX = Number((bx + (bw - iconSq) / 2).toFixed(3));
+          const iconY = Number((by + Math.min(0.05, bh * 0.08)).toFixed(3));
+          computedIconBottomY = iconY + iconSq;
+          slide2.addImage({
+            data: iconDataUrl,
+            x: iconX,
+            y: iconY,
+            w: iconSq,
+            h: iconSq,
+          });
+        } else if (isHorizontalCardWithIcon) {
+          // Horizontal Card: Place icon at LEFT-MIDDLE inside card
+          const iconSq = Number(
+            Math.min(0.22, Math.max(0.13, bh * 0.56)).toFixed(3)
+          );
+          const iconX = Number((bx + 0.04).toFixed(3));
+          const iconY = Number((by + (bh - iconSq) / 2).toFixed(3));
+          computedIconRightX = iconX + iconSq;
+          slide2.addImage({
+            data: iconDataUrl,
+            x: iconX,
+            y: iconY,
+            w: iconSq,
+            h: iconSq,
           });
         }
       }
     }
 
-    // 3. Add crisp editable text overlay with accurate position
+    // 3. Add crisp editable text overlay with accurate non-overlapping position
     if (title) {
       const textRuns: PptxGenJS.TextProps[] = [
         {
@@ -830,10 +1048,14 @@ export async function exportDrawioToEditablePptx(
       }
 
       if (isStandaloneIconWithBottomLabel) {
-        // Place label BELOW the icon so it never crams inside the 36x36 icon box
-        const lblW = Number(Math.max(bw + 0.55, 0.92).toFixed(3));
+        const lines = (title + (subtitle ? '\n' + subtitle : '')).split('\n');
+        const maxLineChars = Math.max(...lines.map((l) => l.trim().length), 4);
+        const charW = scaledTitleSize * 0.0072;
+        const estTextW = maxLineChars * charW + 0.12;
+        const maxAllowedW = maxLineChars >= 18 ? 1.38 : maxLineChars >= 10 ? 0.64 : 0.46;
+        const lblW = Number(Math.min(maxAllowedW, Math.max(bw + 0.14, estTextW)).toFixed(3));
         const lblX = Number((bx + bw / 2 - lblW / 2).toFixed(3));
-        const lblY = Number((by + bh + 0.015).toFixed(3));
+        const lblY = Number((computedIconBottomY + 0.008).toFixed(3));
         slide2.addText(textRuns, {
           x: lblX,
           y: lblY,
@@ -841,7 +1063,7 @@ export async function exportDrawioToEditablePptx(
           h: 0.28,
           align: 'center',
           valign: 'top',
-          margin: [1, 2, 1, 2],
+          margin: [0, 1, 0, 1],
           fontFace: 'Arial',
           wrap: true,
         });
@@ -858,16 +1080,56 @@ export async function exportDrawioToEditablePptx(
           fontFace: 'Arial',
           wrap: true,
         });
-      } else {
-        // Standard card or pill
+      } else if (isVerticalCardWithIcon) {
+        const txtY = Number((computedIconBottomY + 0.015).toFixed(3));
+        const txtH = Number(Math.max(0.16, by + bh - txtY - 0.015).toFixed(3));
         slide2.addText(textRuns, {
           x: bx,
-          y: by,
+          y: txtY,
           w: bw,
+          h: txtH,
+          align: 'center',
+          valign: 'top',
+          margin: [1, 2, 1, 2],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      } else if (isHorizontalCardWithIcon) {
+        const txtX = Number((computedIconRightX + 0.04).toFixed(3));
+        const txtW = Number(Math.max(0.18, bx + bw - txtX - 0.03).toFixed(3));
+        slide2.addText(textRuns, {
+          x: txtX,
+          y: by,
+          w: txtW,
+          h: bh,
+          align: 'left',
+          valign: 'middle',
+          margin: [1, 2, 1, 2],
+          fontFace: 'Arial',
+          wrap: true,
+        });
+      } else {
+        // Standard card, pill, or text-only label without icon
+        const isTextOnly = !hasFill && !hasStroke;
+        const lines = (title + (subtitle ? '\n' + subtitle : '')).split('\n');
+        const maxLineChars = Math.max(...lines.map((l) => l.trim().length), 4);
+        const minReqW = isTextOnly ? maxLineChars * (scaledTitleSize * 0.0072) + 0.1 : bw;
+        const finalW = isTextOnly && style.align !== 'left' && style.align !== 'right' ? Math.max(bw, minReqW) : bw;
+        const finalX = isTextOnly && finalW > bw ? Number((bx - (finalW - bw) / 2).toFixed(3)) : bx;
+        const textValign =
+          style.verticalAlign === 'bottom'
+            ? 'bottom'
+            : style.verticalAlign === 'top'
+              ? 'top'
+              : 'middle';
+        slide2.addText(textRuns, {
+          x: finalX,
+          y: by,
+          w: Number(finalW.toFixed(3)),
           h: bh,
           align: style.align === 'left' ? 'left' : style.align === 'right' ? 'right' : 'center',
-          valign: 'middle',
-          margin: [2, 4, 2, 4],
+          valign: textValign,
+          margin: isTextOnly ? [0, 1, 0, 1] : [2, 4, 2, 4],
           fontFace: 'Arial',
           wrap: true,
         });
@@ -886,23 +1148,28 @@ export async function exportDrawioToEditablePptx(
     let ptStart: { x: number; y: number } | undefined;
     let ptEnd: { x: number; y: number } | undefined;
 
+    let exitXVal = 0.5;
+    let exitYVal = 0.5;
+    let entryXVal = 0.5;
+    let entryYVal = 0.5;
+
     if (src) {
-      const exitX = parseFloat(edge.style.exitX ?? '0.5');
-      const exitY = parseFloat(edge.style.exitY ?? '0.5');
+      exitXVal = parseFloat(edge.style.exitX ?? '0.5');
+      exitYVal = parseFloat(edge.style.exitY ?? '0.5');
       ptStart = {
-        x: src.absX + src.width * exitX,
-        y: src.absY + src.height * exitY,
+        x: src.absX + src.width * exitXVal,
+        y: src.absY + src.height * exitYVal,
       };
     } else if (edge.sourcePoint) {
       ptStart = edge.sourcePoint;
     }
 
     if (tgt) {
-      const entryX = parseFloat(edge.style.entryX ?? '0.5');
-      const entryY = parseFloat(edge.style.entryY ?? '0.5');
+      entryXVal = parseFloat(edge.style.entryX ?? '0.5');
+      entryYVal = parseFloat(edge.style.entryY ?? '0.5');
       ptEnd = {
-        x: tgt.absX + tgt.width * entryX,
-        y: tgt.absY + tgt.height * entryY,
+        x: tgt.absX + tgt.width * entryXVal,
+        y: tgt.absY + tgt.height * entryYVal,
       };
     } else if (edge.targetPoint) {
       ptEnd = edge.targetPoint;
@@ -910,7 +1177,43 @@ export async function exportDrawioToEditablePptx(
 
     if (!ptStart || !ptEnd) continue;
 
-    const allPoints = [ptStart, ...edge.waypoints, ptEnd];
+    const rawPoints = [ptStart, ...edge.waypoints, ptEnd];
+    const allPoints: { x: number; y: number }[] = [];
+    for (let i = 0; i < rawPoints.length; i++) {
+      const curr = rawPoints[i];
+      if (allPoints.length === 0) {
+        allPoints.push(curr);
+        continue;
+      }
+      const prev = allPoints[allPoints.length - 1];
+      const dx = Math.abs(curr.x - prev.x);
+      const dy = Math.abs(curr.y - prev.y);
+      if (dx > 3 && dy > 3) {
+        const exitHoriz = Math.abs(exitXVal - 0.5) >= Math.abs(exitYVal - 0.5);
+        const entryHoriz = Math.abs(entryXVal - 0.5) >= Math.abs(entryYVal - 0.5);
+        if (i === 1 && rawPoints.length === 2) {
+          if (exitHoriz && !entryHoriz) {
+            allPoints.push({ x: curr.x, y: prev.y });
+          } else if (!exitHoriz && entryHoriz) {
+            allPoints.push({ x: prev.x, y: curr.y });
+          } else if (exitHoriz && entryHoriz) {
+            const midX = (prev.x + curr.x) / 2;
+            allPoints.push({ x: midX, y: prev.y });
+            allPoints.push({ x: midX, y: curr.y });
+          } else {
+            const midY = (prev.y + curr.y) / 2;
+            allPoints.push({ x: prev.x, y: midY });
+            allPoints.push({ x: curr.x, y: midY });
+          }
+        } else {
+          const midX = (prev.x + curr.x) / 2;
+          allPoints.push({ x: midX, y: prev.y });
+          allPoints.push({ x: midX, y: curr.y });
+        }
+      }
+      allPoints.push(curr);
+    }
+
     const strokeColor = normalizeHexColor(edge.style.strokeColor, isDarkDiagram ? '60A5FA' : '2563EB');
     const isDashed = edge.style.dashed === '1';
     const strokeWidth = Math.min(2.5, Math.max(1.0, parseFloat(edge.style.strokeWidth || '1.5')));
@@ -959,15 +1262,15 @@ export async function exportDrawioToEditablePptx(
       const pB = allPoints[midIdx];
       const midX = toSlideX((pA.x + pB.x) / 2);
       const midY = toSlideY((pA.y + pB.y) / 2);
-      const lblW = Math.max(0.85, Math.min(2.2, edgeLabel.length * 0.06 + 0.18));
-      const lblH = 0.2;
+      const lblW = Math.max(0.75, Math.min(1.8, edgeLabel.length * 0.05 + 0.14));
+      const lblH = 0.15;
 
       slide2.addShape(pptx.ShapeType.roundRect, {
         x: Number((midX - lblW / 2).toFixed(3)),
         y: Number((midY - lblH / 2).toFixed(3)),
-        w: lblW,
+        w: Number(lblW.toFixed(3)),
         h: lblH,
-        rectRadius: 0.06,
+        rectRadius: 0.05,
         fill: { color: isDarkDiagram ? '1E293B' : 'FFFFFF' },
         line: { color: strokeColor, width: 0.75 },
       });
@@ -975,9 +1278,9 @@ export async function exportDrawioToEditablePptx(
       slide2.addText(edgeLabel, {
         x: Number((midX - lblW / 2).toFixed(3)),
         y: Number((midY - lblH / 2).toFixed(3)),
-        w: lblW,
+        w: Number(lblW.toFixed(3)),
         h: lblH,
-        fontSize: 7,
+        fontSize: 6.5,
         bold: true,
         color: isDarkDiagram ? 'F8FAFC' : '0F172A',
         align: 'center',
@@ -1049,6 +1352,11 @@ export async function exportDrawioToEditablePptx(
     fill: { color: 'FFFFFF' },
     fontFace: 'Arial',
   });
+
+  if (options?.returnBase64) {
+    const b64 = (await pptx.write({ outputType: 'base64' })) as string;
+    return b64;
+  }
 
   if (options?.returnBlob) {
     const blob = (await pptx.write({ outputType: 'blob' })) as Blob;

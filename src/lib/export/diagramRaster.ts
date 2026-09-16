@@ -25,8 +25,8 @@ function getOrCreateIframe(): Promise<HTMLIFrameElement> {
   iframe.style.position = 'fixed';
   iframe.style.left = '-9999px';
   iframe.style.top = '-9999px';
-  iframe.style.width = '1px';
-  iframe.style.height = '1px';
+  iframe.style.width = '1600px';
+  iframe.style.height = '960px';
   iframe.style.border = 'none';
   iframe.style.visibility = 'hidden';
   iframe.src = EMBED_URL;

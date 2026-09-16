@@ -255,6 +255,8 @@ export default function GoogleWorkspaceDirectOpenModal({
       typeof window !== 'undefined' &&
       (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
+    const targetPublicUrl = `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`;
+
     if (isLocalhost) {
       try {
         const remoteRes = await fetch('https://promptcanvas.up.railway.app/api/export/cloud-bridge', {
@@ -263,20 +265,24 @@ export default function GoogleWorkspaceDirectOpenModal({
           body: JSON.stringify(payload),
         });
         if (remoteRes.ok) {
+          await fetch(targetPublicUrl, { method: 'HEAD' }).catch(() => {});
           return {
-            publicUrl: `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`,
+            publicUrl: targetPublicUrl,
           };
         }
       } catch (e) {
         console.warn('Remote Railway cloud-bridge sync notice:', e);
       }
+      await fetch(targetPublicUrl, { method: 'HEAD' }).catch(() => {});
       return {
-        publicUrl: `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`,
+        publicUrl: targetPublicUrl,
       };
     }
 
+    const finalPublicUrl = localData?.publicUrl || targetPublicUrl;
+    await fetch(finalPublicUrl, { method: 'HEAD' }).catch(() => {});
     return {
-      publicUrl: localData?.publicUrl || `https://promptcanvas.up.railway.app/api/export/cloud-bridge/${bridgeId}.${format}`,
+      publicUrl: finalPublicUrl,
     };
   };
 
@@ -291,17 +297,17 @@ export default function GoogleWorkspaceDirectOpenModal({
     });
 
     try {
-      let blob: Blob | void;
+      let blob: Blob | string | void;
       if (mode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
-          masterImageSrc: pngPreviewUrl || undefined,
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, { returnBlob: true });
       }
 
-      if (!blob) {
+      if (!blob || typeof blob === 'string') {
         throw new Error('Failed to compile in-memory document blob.');
       }
 
@@ -364,10 +370,10 @@ export default function GoogleWorkspaceDirectOpenModal({
         });
         window.open(googleWebViewLink, '_blank');
       } else {
-        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}&embedded=false`;
+        const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
         setStatusMessage({
           type: 'success',
-          text: `✨ Opened populated ${mode === 'slides' ? 'Presentation' : 'Document'} in Google Cloud Viewer! Click "Open with Google ${mode === 'slides' ? 'Slides' : 'Docs'}" at the top center of the new tab.`,
+          text: `✨ Opened populated ${mode === 'slides' ? 'Presentation' : 'Document'} in Cloud Presentation Viewer! Use the top switcher for Google Cloud Viewer or PowerPoint Web Viewer.`,
           url: viewerUrl,
         });
         window.open(viewerUrl, '_blank');
@@ -383,7 +389,7 @@ export default function GoogleWorkspaceDirectOpenModal({
   };
 
   /**
-   * Method 2: Open Populated Deck in Google Cloud Viewer (`https://docs.google.com/viewer?url=...`)
+   * Method 2: Open Populated Deck in Google Cloud Viewer (`/viewer?url=...`)
    */
   const handleOpenGoogleCloudViewer = async () => {
     setIsOpeningCloudViewer(true);
@@ -393,16 +399,16 @@ export default function GoogleWorkspaceDirectOpenModal({
     });
 
     try {
-      let blob: Blob | void;
+      let blob: Blob | string | void;
       if (mode === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
-          masterImageSrc: pngPreviewUrl || undefined,
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
         blob = await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId, { returnBlob: true });
       }
-      if (!blob) throw new Error('Failed to compile blob');
+      if (!blob || typeof blob === 'string') throw new Error('Failed to compile blob');
 
       const base64Data = await blobToBase64(blob);
       const { publicUrl } = await uploadToCloudBridgeAndGetPublicUrl(
@@ -410,10 +416,10 @@ export default function GoogleWorkspaceDirectOpenModal({
         mode === 'slides' ? 'pptx' : 'docx'
       );
 
-      const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}&embedded=false`;
+      const viewerUrl = `/viewer?url=${encodeURIComponent(publicUrl)}&title=${encodeURIComponent(diagramName)}&id=${encodeURIComponent(blueprintId)}`;
       setStatusMessage({
         type: 'success',
-        text: `🌐 Opened populated ${mode === 'slides' ? 'Slide Deck' : 'Specification'} in Google Cloud Viewer! Click "Open with Google ${mode === 'slides' ? 'Slides' : 'Docs'}" at the top center.`,
+        text: `🌐 Opened populated ${mode === 'slides' ? 'Slide Deck' : 'Specification'} in Cloud Presentation Viewer!`,
         url: viewerUrl,
       });
       window.open(viewerUrl, '_blank');
@@ -435,7 +441,7 @@ export default function GoogleWorkspaceDirectOpenModal({
     try {
       if (mode === 'slides') {
         await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
-          masterImageSrc: pngPreviewUrl || undefined,
+          masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
         });
       } else {
         await exportDrawioToEditableDocx(xmlContent, diagramName, blueprintId);
