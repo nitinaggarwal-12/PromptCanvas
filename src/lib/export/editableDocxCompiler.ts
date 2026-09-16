@@ -246,12 +246,17 @@ export async function exportDrawioToEditableDocx(
     })
   );
 
+  const colWidths1 = [1100, 2600, 2200, 3460];
+  const cellMargins = { top: 100, bottom: 100, left: 140, right: 140 };
+
   const componentRows: TableRow[] = [
     new TableRow({
       tableHeader: true,
       children: ['Object ID', 'Component / Enclave Name', 'Category / Role', 'Specifications & Attributes'].map(
-        (headerText) =>
+        (headerText, colIdx) =>
           new TableCell({
+            width: { size: colWidths1[colIdx], type: WidthType.DXA },
+            margins: cellMargins,
             shading: { fill: '0F172A' },
             children: [
               new Paragraph({
@@ -275,6 +280,8 @@ export async function exportDrawioToEditableDocx(
       new TableRow({
         children: [
           new TableCell({
+            width: { size: colWidths1[0], type: WidthType.DXA },
+            margins: cellMargins,
             children: [
               new Paragraph({
                 children: [new TextRun({ text: objId, bold: true, color: '0284C7', size: 18, font: 'Arial' })],
@@ -282,6 +289,8 @@ export async function exportDrawioToEditableDocx(
             ],
           }),
           new TableCell({
+            width: { size: colWidths1[1], type: WidthType.DXA },
+            margins: cellMargins,
             children: [
               new Paragraph({
                 children: [new TextRun({ text: title, bold: true, color: '0F172A', size: 18, font: 'Arial' })],
@@ -289,6 +298,8 @@ export async function exportDrawioToEditableDocx(
             ],
           }),
           new TableCell({
+            width: { size: colWidths1[2], type: WidthType.DXA },
+            margins: cellMargins,
             children: [
               new Paragraph({
                 children: [
@@ -303,9 +314,11 @@ export async function exportDrawioToEditableDocx(
             ],
           }),
           new TableCell({
+            width: { size: colWidths1[3], type: WidthType.DXA },
+            margins: cellMargins,
             children: [
               new Paragraph({
-                children: [new TextRun({ text: details, color: '334155', size: 18, font: 'Arial' })],
+                children: [new TextRun({ text: details || 'Enterprise Architecture Node', color: '334155', size: 18, font: 'Arial' })],
               }),
             ],
           }),
@@ -316,7 +329,8 @@ export async function exportDrawioToEditableDocx(
 
   children.push(
     new Table({
-      width: { size: 100, type: WidthType.PERCENTAGE },
+      width: { size: 9360, type: WidthType.DXA },
+      columnWidths: colWidths1,
       rows: componentRows,
       borders: {
         top: { style: BorderStyle.SINGLE, size: 1, color: 'CBD5E1' },
@@ -347,12 +361,15 @@ export async function exportDrawioToEditableDocx(
       })
     );
 
+    const colWidths2 = [1300, 2600, 2600, 2860];
     const edgeRows: TableRow[] = [
       new TableRow({
         tableHeader: true,
         children: ['Connector ID', 'Source Component', 'Target Component', 'Protocol / Label'].map(
-          (headerText) =>
+          (headerText, colIdx) =>
             new TableCell({
+              width: { size: colWidths2[colIdx], type: WidthType.DXA },
+              margins: cellMargins,
               shading: { fill: '0F172A' },
               children: [
                 new Paragraph({
@@ -373,6 +390,8 @@ export async function exportDrawioToEditableDocx(
         new TableRow({
           children: [
             new TableCell({
+              width: { size: colWidths2[0], type: WidthType.DXA },
+              margins: cellMargins,
               children: [
                 new Paragraph({
                   children: [
@@ -388,6 +407,8 @@ export async function exportDrawioToEditableDocx(
               ],
             }),
             new TableCell({
+              width: { size: colWidths2[1], type: WidthType.DXA },
+              margins: cellMargins,
               children: [
                 new Paragraph({
                   children: [new TextRun({ text: srcTitle, bold: true, color: '0F172A', size: 18, font: 'Arial' })],
@@ -395,6 +416,8 @@ export async function exportDrawioToEditableDocx(
               ],
             }),
             new TableCell({
+              width: { size: colWidths2[2], type: WidthType.DXA },
+              margins: cellMargins,
               children: [
                 new Paragraph({
                   children: [new TextRun({ text: tgtTitle, bold: true, color: '0F172A', size: 18, font: 'Arial' })],
@@ -402,6 +425,8 @@ export async function exportDrawioToEditableDocx(
               ],
             }),
             new TableCell({
+              width: { size: colWidths2[3], type: WidthType.DXA },
+              margins: cellMargins,
               children: [
                 new Paragraph({
                   children: [new TextRun({ text: label, color: '334155', size: 18, font: 'Arial' })],
@@ -415,7 +440,8 @@ export async function exportDrawioToEditableDocx(
 
     children.push(
       new Table({
-        width: { size: 100, type: WidthType.PERCENTAGE },
+        width: { size: 9360, type: WidthType.DXA },
+        columnWidths: colWidths2,
         rows: edgeRows,
         borders: {
           top: { style: BorderStyle.SINGLE, size: 1, color: 'CBD5E1' },
