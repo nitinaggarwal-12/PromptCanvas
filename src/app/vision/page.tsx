@@ -222,6 +222,7 @@ function VisionPageContent() {
 
   // Web URL Scanner & Left Gallery state
   const [showUploadDropdown, setShowUploadDropdown] = useState<boolean>(false);
+  const [showExportDropdown, setShowExportDropdown] = useState<boolean>(false);
   const [showReplaceDropdown, setShowReplaceDropdown] = useState<boolean>(false);
   const [showUrlModal, setShowUrlModal] = useState<boolean>(false);
   const [showPasteModal, setShowPasteModal] = useState<boolean>(false);
@@ -1438,44 +1439,24 @@ function VisionPageContent() {
               <Sparkles className="w-3.5 h-3.5" />
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xs font-bold text-white tracking-tight">
+              <span className="text-xs font-bold text-white tracking-tight whitespace-nowrap">
                 Vision AI Studio
               </span>
-              <span className="text-[9px] px-1 py-0.2 rounded bg-teal-500/20 text-teal-300 font-mono border border-teal-500/30">
+              <span className="text-[9px] px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono font-bold border border-teal-500/30 whitespace-nowrap">
                 DECOMPILER
               </span>
             </div>
           </Link>
-
-          <span className="text-slate-800 hidden sm:inline">|</span>
-
-          <div className="hidden md:flex items-center gap-1.5 text-[11px] text-slate-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Gemini 3.1 Pro Vision</span>
-          </div>
         </div>
 
-        {/* Global Quick Action Controllers */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          {/* Blueprint Library Modal Button */}
-          <button
-            onClick={() => setShowLibraryModal(true)}
-            className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
-            title="Open Blueprint Library (Saved Uploads & Certified Masters)"
-          >
-            <BookOpen className="w-3 h-3 text-teal-400" />
-            <span>Saved Library</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-mono font-bold border border-teal-500/30">
-              {allLibraryBlueprints.length}
-            </span>
-          </button>
-
-          {/* Upload Image Dropdown (Local + Web URL) */}
+        {/* Global Quick Action Controllers - Decluttered & Consolidated (4 Clean Controls) */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* 1. Upload Image Dropdown (Local + Clipboard + Web URL) */}
           <div className="relative">
             <button
               onClick={() => setShowUploadDropdown(prev => !prev)}
-              className="px-2.5 py-1 rounded-md bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
-              title="Upload image locally or from a web URL"
+              className="px-3 py-1 rounded-md bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+              title="Upload image locally, paste screenshot, or import from web URL"
             >
               <Upload className="w-3 h-3" />
               <span>Upload Image</span>
@@ -1539,101 +1520,148 @@ function VisionPageContent() {
             )}
           </div>
 
+          {/* 2. Save Current Diagram to Library */}
           <button
             onClick={handleSaveCurrentToGlobalLibrary}
             disabled={!decompiledXml || isDecompiling || isSavingToDb}
-            className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Save this decompiled diagram to Global Architecture Library (/library)"
+            className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap"
+            title="Save this decompiled diagram to Vision Saved Library"
           >
             {isSavingToDb ? (
               <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
             ) : (
               <BookmarkPlus className="w-3 h-3 text-amber-400" />
             )}
-            <span className="hidden xl:inline">Save to Library</span>
+            <span>Save to Library</span>
           </button>
 
-          <button
-            onClick={handleCopyXml}
-            disabled={!decompiledXml || isDecompiling}
-            className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Copy Draw.io XML"
-          >
-            {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
-            <span className="hidden md:inline">{copied ? 'Copied' : 'Copy XML'}</span>
-          </button>
-
-          <button
-            onClick={handleDownloadXml}
-            disabled={!decompiledXml || isDecompiling}
-            className="px-2.5 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer disabled:opacity-50"
-            title="Download raw .drawio XML file"
-          >
-            <Download className="w-3 h-3 text-slate-400" />
-            <span className="hidden lg:inline">.drawio</span>
-          </button>
-
-          {/* Google Slides: Direct Browser Studio / Cloud Open + Optional .pptx Download */}
-          <div className="flex items-center rounded-md border border-amber-500/40 bg-amber-500/15 overflow-hidden shadow-2xs">
+          {/* 3. Consolidated Export & Google Workspace Menu (Slides, Docs, .pptx, .docx, .drawio, XML) */}
+          <div className="relative">
             <button
-              onClick={() => setGoogleWorkspaceModalMode('slides')}
+              onClick={() => setShowExportDropdown(prev => !prev)}
               disabled={!decompiledXml || isDecompiling}
-              data-testid="vision-open-google-slides-btn"
-              className="px-2.5 py-1 hover:bg-amber-500/30 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-              title="Open directly in Google Slides in browser (Zero Local Download Required) — Interactive Slide Studio & 1-Click Cloud Open"
+              data-testid="vision-export-menu-btn"
+              className="px-3 py-1 rounded-md bg-slate-800 hover:bg-slate-700 border border-amber-500/40 text-amber-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50 whitespace-nowrap shadow-xs"
+              title="Export to Google Slides, Google Docs, PowerPoint (.pptx), Word (.docx), or Draw.io"
             >
               <Presentation className="w-3 h-3 text-amber-400" />
-              <span className="hidden md:inline">Open in Google Slides ↗</span>
+              <span>Export & Slides</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${showExportDropdown ? 'rotate-180' : ''}`} />
             </button>
-            <button
-              onClick={handleExportEditablePptx}
-              disabled={!decompiledXml || isDecompiling || isExportingPptx}
-              data-testid="vision-export-pptx-btn"
-              className="px-1.5 py-1 border-l border-amber-500/30 hover:bg-amber-500/30 text-amber-300 transition cursor-pointer disabled:opacity-50"
-              title="Download .pptx file locally"
-            >
-              {isExportingPptx ? (
-                <Loader2 className="w-3 h-3 text-amber-400 animate-spin" />
-              ) : (
-                <Download className="w-3 h-3 text-amber-400" />
-              )}
-            </button>
+
+            {showExportDropdown && (
+              <div
+                data-testid="vision-export-dropdown-menu"
+                className="absolute right-0 mt-1.5 w-72 rounded-xl bg-[#0F172A] border border-slate-700 shadow-2xl py-1.5 z-50 animate-in fade-in slide-in-from-top-1"
+                onMouseLeave={() => setShowExportDropdown(false)}
+              >
+                {/* Google Slides Studio */}
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    setGoogleWorkspaceModalMode('slides');
+                  }}
+                  data-testid="vision-open-google-slides-btn"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                >
+                  <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400 mt-0.5 border border-amber-500/30">
+                    <Presentation className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-amber-300 text-[11.5px] flex items-center justify-between">
+                      <span>Open in Google Slides ↗</span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">STUDIO</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400">Interactive 5-slide deck & 1-click cloud export</div>
+                  </div>
+                </button>
+
+                {/* Download .pptx */}
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    handleExportEditablePptx();
+                  }}
+                  disabled={isExportingPptx}
+                  data-testid="vision-export-pptx-btn"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11"
+                >
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-[11px] font-medium">Download PowerPoint (.pptx)</span>
+                </button>
+
+                <div className="h-px bg-slate-800 my-1" />
+
+                {/* Google Docs Studio */}
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    setGoogleWorkspaceModalMode('docs');
+                  }}
+                  data-testid="vision-open-google-docs-btn"
+                  className="w-full text-left px-3 py-2 text-xs flex items-start gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-200"
+                >
+                  <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400 mt-0.5 border border-sky-500/30">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-bold text-sky-300 text-[11.5px] flex items-center justify-between">
+                      <span>Open in Google Docs ↗</span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-sky-500/20 text-sky-300 font-mono">SPEC</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400">Architecture specification & object inventory</div>
+                  </div>
+                </button>
+
+                {/* Download .docx */}
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    handleExportEditableDocx();
+                  }}
+                  disabled={isExportingDocx}
+                  data-testid="vision-export-docx-btn"
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300 pl-11"
+                >
+                  <Download className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="text-[11px] font-medium">Download Word Doc (.docx)</span>
+                </button>
+
+                <div className="h-px bg-slate-800 my-1" />
+
+                {/* Download .drawio & Copy XML */}
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    handleDownloadXml();
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300"
+                >
+                  <Download className="w-3.5 h-3.5 text-teal-400 ml-1" />
+                  <span className="text-[11px] font-medium">Download Draw.io File (.drawio)</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setShowExportDropdown(false);
+                    handleCopyXml();
+                  }}
+                  className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-2.5 hover:bg-slate-800/80 transition cursor-pointer text-slate-300"
+                >
+                  <Copy className="w-3.5 h-3.5 text-slate-400 ml-1" />
+                  <span className="text-[11px] font-medium">Copy Raw Draw.io XML</span>
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Google Docs: Direct Browser Studio / Cloud Open + Optional .docx Download */}
-          <div className="flex items-center rounded-md border border-sky-500/40 bg-sky-500/15 overflow-hidden shadow-2xs">
-            <button
-              onClick={() => setGoogleWorkspaceModalMode('docs')}
-              disabled={!decompiledXml || isDecompiling}
-              data-testid="vision-open-google-docs-btn"
-              className="px-2.5 py-1 hover:bg-sky-500/30 text-sky-300 text-[11px] font-bold transition flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-              title="Open directly in Google Docs in browser (Zero Local Download Required) — Editable Specification & 1-Click Cloud Open"
-            >
-              <FileText className="w-3 h-3 text-sky-400" />
-              <span className="hidden xl:inline">Open in Google Docs ↗</span>
-            </button>
-            <button
-              onClick={handleExportEditableDocx}
-              disabled={!decompiledXml || isDecompiling || isExportingDocx}
-              data-testid="vision-export-docx-btn"
-              className="px-1.5 py-1 border-l border-sky-500/30 hover:bg-sky-500/30 text-sky-300 transition cursor-pointer disabled:opacity-50"
-              title="Download .docx file locally"
-            >
-              {isExportingDocx ? (
-                <Loader2 className="w-3 h-3 text-sky-400 animate-spin" />
-              ) : (
-                <Download className="w-3 h-3 text-sky-400" />
-              )}
-            </button>
-          </div>
-
+          {/* 4. Open in Studio Primary CTA */}
           <button
             onClick={handleOpenInStudio}
             disabled={!decompiledXml || isDecompiling}
-            className="px-3 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+            className="px-3.5 py-1 rounded-md bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
           >
             <Layers className="w-3 h-3" />
-            <span className="hidden sm:inline">Open in Studio</span>
+            <span>Open in Studio</span>
             <ArrowRight className="w-2.5 h-2.5" />
           </button>
         </div>
@@ -1653,18 +1681,18 @@ function VisionPageContent() {
 
       {/* Page Body Container - Edge-to-Edge Desktop Utilization (Zero Surrounding Empty Space) */}
       <main className="w-full max-w-none px-2.5 py-1.5 space-y-1.5 flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* CONSOLIDATED BLUEPRINT CONTROL BAR (Compact 32px height) */}
+        {/* CONSOLIDATED BLUEPRINT CONTROL BAR (Compact, Single-Row Uncluttered Bar) */}
         <div
           id="consolidated-vision-control-bar"
-          className="px-2.5 py-1 rounded-lg border bg-white border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-1.5 flex-shrink-0 relative"
+          className="px-3 py-1 rounded-lg border bg-white border-slate-200 shadow-2xs flex items-center justify-between gap-2 flex-shrink-0 relative"
         >
-          {/* Left: +New Button, Saved History Dropdown & Horizontal Blueprint Selector Chips Strip */}
-          <div className="flex items-center gap-1.5 overflow-x-auto py-0.2 no-scrollbar flex-1 min-w-0">
+          {/* Left: +New Button, Unified Saved Library Dropdown & Horizontal Blueprint Selector Chips */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 py-0.5">
             {/* 1. +New Blank Canvas Button */}
             <button
               onClick={handleOpenBlankNewCanvas}
               data-testid="vision-new-canvas-btn"
-              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-extrabold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 shadow-2xs ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-extrabold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 shadow-2xs ${
                 selectedBlueprintId === 'NEW-CANVAS'
                   ? 'bg-emerald-600 text-white border-emerald-600'
                   : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
@@ -1675,40 +1703,53 @@ function VisionPageContent() {
               <span>New</span>
             </button>
 
-            {/* 2. Historical Saved Diagrams Dropdown (Saved History ▾) */}
+            {/* 2. Unified Saved Library / History Dropdown (Single Source of Truth) */}
             <div className="relative flex-shrink-0">
               <button
                 onClick={() => setShowHistoryDropdown(prev => !prev)}
                 data-testid="vision-saved-history-dropdown-btn"
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer shadow-2xs ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer shadow-2xs ${
                   showHistoryDropdown
                     ? 'bg-slate-900 text-white border-slate-900'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
                 }`}
-                title="Choose from all historical saved diagrams (Database, Local Vault & Certified Masters)"
+                title="Open Vision Saved Library (Search, Multi-Select Delete & Visual Gallery)"
               >
-                <History className="w-3 h-3 text-teal-600" />
-                <span>Saved History ({allLibraryBlueprints.length})</span>
+                <BookOpen className="w-3 h-3 text-teal-600" />
+                <span>Saved Library ({allLibraryBlueprints.length})</span>
                 <ChevronDown className={`w-3 h-3 transition-transform ${showHistoryDropdown ? 'rotate-180' : ''}`} />
               </button>
 
               {showHistoryDropdown && (
                 <div
                   data-testid="vision-saved-history-menu"
-                  className="fixed left-4 top-24 w-[480px] max-w-[94vw] rounded-xl bg-white border border-slate-300 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2"
+                  className="fixed left-4 top-24 w-[500px] max-w-[94vw] rounded-xl bg-white border border-slate-300 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2"
                 >
-                  {/* Dropdown Header & Search */}
+                  {/* Dropdown Header & Visual Gallery Switcher */}
                   <div className="p-2.5 bg-slate-900 text-white flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
-                      <History className="w-3.5 h-3.5 text-teal-400" />
-                      <span className="text-xs font-bold">Vision Saved History ({allLibraryBlueprints.length})</span>
+                      <BookOpen className="w-3.5 h-3.5 text-teal-400" />
+                      <span className="text-xs font-bold">Vision Saved Library ({allLibraryBlueprints.length})</span>
                     </div>
-                    <button
-                      onClick={() => setShowHistoryDropdown(false)}
-                      className="text-slate-400 hover:text-white p-0.5 rounded cursor-pointer"
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setShowHistoryDropdown(false);
+                          setShowLibraryModal(true);
+                        }}
+                        className="px-2 py-0.5 rounded bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/30 text-[10.5px] font-bold flex items-center gap-1 transition cursor-pointer"
+                        title="Open Full-Screen Visual Card Gallery Modal"
+                      >
+                        <LayoutGrid className="w-3 h-3" />
+                        <span>Visual Gallery ➔</span>
+                      </button>
+                      <button
+                        onClick={() => setShowHistoryDropdown(false)}
+                        className="text-slate-400 hover:text-white p-0.5 rounded cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Search Input */}
@@ -1719,7 +1760,7 @@ function VisionPageContent() {
                         type="text"
                         value={historySearchQuery}
                         onChange={(e) => setHistorySearchQuery(e.target.value)}
-                        placeholder="Filter by ID (e.g. VIS-5965), title, or category..."
+                        placeholder="Filter by ID (e.g. VIS-9745), title, or category..."
                         className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-teal-500"
                       />
                     </div>
@@ -1832,16 +1873,13 @@ function VisionPageContent() {
 
             <span className="text-slate-300 font-bold select-none">|</span>
 
-            <span className="text-[10px] font-black uppercase tracking-wider px-0.5 text-slate-600 flex-shrink-0">
-              Blueprints:
-            </span>
             {SAMPLE_BLUEPRINTS.map((sample) => {
               const isSelected = !isCustomUpload && selectedBlueprintId === sample.id;
               return (
                 <button
                   key={sample.id}
                   onClick={() => handleSelectSample(sample)}
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
                     isSelected
                       ? 'bg-teal-600 text-white border-teal-600 shadow-2xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -1851,7 +1889,7 @@ function VisionPageContent() {
                   <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white animate-pulse' : 'bg-teal-500'}`} />
                   <span>{sample.title}</span>
                   <span
-                    className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
+                    className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold ${
                       isSelected ? 'bg-teal-700 text-white' : 'bg-slate-200 text-slate-700'
                     }`}
                   >
@@ -1870,7 +1908,7 @@ function VisionPageContent() {
                   key={cb.id}
                   data-testid={`blueprint-tab-${shortId}`}
                   onClick={() => loadBlueprint(cb.id, false)}
-                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold border transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
                     isSelected
                       ? 'bg-teal-600 text-white border-teal-600 shadow-2xs'
                       : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
@@ -1879,13 +1917,13 @@ function VisionPageContent() {
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white animate-pulse' : 'bg-amber-500'}`} />
                   <span
-                    className={`text-[9px] font-mono px-1 py-0.2 rounded font-bold ${
+                    className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold ${
                       isSelected ? 'bg-teal-700 text-white' : 'bg-amber-100 text-amber-800 border border-amber-200'
                     }`}
                   >
                     {shortId}
                   </span>
-                  <span className="truncate max-w-[140px]">{cb.title}</span>
+                  <span className="truncate max-w-[160px]">{cb.title}</span>
                   <button
                     onClick={(e) => handleDeleteCustom(cb.id, e)}
                     className="hover:text-red-400 p-0.5 rounded cursor-pointer ml-0.5"
@@ -1896,29 +1934,29 @@ function VisionPageContent() {
                 </div>
               );
             })}
-
-            {/* View All Library Button */}
-            <button
-              onClick={() => setShowLibraryModal(true)}
-              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10.5px] font-bold border border-teal-600/30 bg-teal-50 hover:bg-teal-100 text-teal-800 transition cursor-pointer flex-shrink-0 shadow-2xs"
-              title="Open Blueprint Library to view all master templates & saved diagrams"
-            >
-              <LayoutGrid className="w-2.5 h-2.5 text-teal-600" />
-              <span>Library ({allLibraryBlueprints.length})</span>
-            </button>
           </div>
 
-          {/* Right: Active Unique ID Badge, URL Object Badge, Rename Action & Telemetry Metadata */}
+          {/* Right: Single Consolidated Identity Pill (ID + Node Count + Copy URL + Rename) */}
           <div className="flex items-center gap-1.5 flex-shrink-0">
-            {/* Searchable & Copyable Unique Blueprint ID Pill */}
-            <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-mono font-bold border border-slate-700 shadow-2xs">
-              <Tag className="w-2.5 h-2.5 text-teal-400" />
-              <span className="text-slate-400">ID:</span>
+            {isDecompiling && (
+              <span className="text-[10px] px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold flex items-center gap-1">
+                <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
+                <span>Decompiling...</span>
+              </span>
+            )}
+
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900 text-white text-[10.5px] font-mono font-bold border border-slate-700 shadow-2xs">
+              <Tag className="w-3 h-3 text-teal-400" />
               <span className="text-teal-300 tracking-tight">{formatDisplayBlueprintId(selectedBlueprintId)}</span>
+              {componentCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded bg-slate-800 text-slate-300 text-[9.5px] font-sans border border-slate-700">
+                  {componentCount} nodes
+                </span>
+              )}
               {activeObject && (
                 <>
                   <span className="text-slate-600">/</span>
-                  <span className="text-amber-300 tracking-tight truncate max-w-[130px]" title={`Active Object URL ID: ${activeObject.urlSlug}`}>
+                  <span className="text-amber-300 tracking-tight truncate max-w-[110px]" title={`Active Object URL ID: ${activeObject.urlSlug}`}>
                     {activeObject.urlSlug}
                   </span>
                   <button
@@ -1933,6 +1971,7 @@ function VisionPageContent() {
                   </button>
                 </>
               )}
+              <div className="h-3 w-px bg-slate-700 mx-0.5" />
               <button
                 onClick={() => {
                   const shortId = formatDisplayBlueprintId(selectedBlueprintId);
@@ -1940,11 +1979,11 @@ function VisionPageContent() {
                   navigator.clipboard.writeText(shareUrl);
                   showToast(`🔗 Copied Direct URL [${shareUrl}] to clipboard!`);
                 }}
-                className="ml-0.5 px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-0.5 transition cursor-pointer"
-                title="Copy Direct Shareable URL (with Unique Blueprint & Object ID)"
+                className="px-1.5 py-0.2 rounded bg-blue-600/30 hover:bg-blue-600/50 text-blue-200 border border-blue-500/40 flex items-center gap-1 transition cursor-pointer"
+                title="Copy Direct Shareable URL"
               >
                 <Link2 className="w-2.5 h-2.5" />
-                <span className="hidden xl:inline text-[9.5px] font-sans font-bold">Copy URL</span>
+                <span className="text-[9.5px] font-sans font-bold">Copy URL</span>
               </button>
               <button
                 onClick={() => {
@@ -1952,44 +1991,13 @@ function VisionPageContent() {
                   setEditIdInput(formatDisplayBlueprintId(selectedBlueprintId));
                   setShowRenameModal(true);
                 }}
-                className="ml-0.5 px-1.5 py-0.2 rounded bg-teal-600/30 hover:bg-teal-600/50 text-teal-300 border border-teal-500/40 flex items-center gap-0.5 transition cursor-pointer"
-                title="Customize Unique ID & Blueprint Title"
+                className="px-1.5 py-0.2 rounded bg-teal-600/30 hover:bg-teal-600/50 text-teal-300 border border-teal-500/40 flex items-center gap-1 transition cursor-pointer"
+                title="Rename Blueprint or Customize ID"
               >
                 <Edit3 className="w-2.5 h-2.5" />
-                <span className="hidden xl:inline text-[9.5px] font-sans font-bold">Rename / ID</span>
+                <span className="text-[9.5px] font-sans font-bold">Rename</span>
               </button>
             </div>
-
-            {isDecompiling ? (
-              <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300 animate-pulse font-bold flex items-center gap-1">
-                <Loader2 className="w-2.5 h-2.5 animate-spin text-amber-600" />
-                <span>Decompiling...</span>
-              </span>
-            ) : savedSource === 'cache' ? (
-              <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold flex items-center gap-1">
-                <Check className="w-2.5 h-2.5 text-emerald-600" />
-                <span>Cached AST</span>
-              </span>
-            ) : savedSource === 'precompiled' ? (
-              <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-300 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-2.5 h-2.5 text-blue-600" />
-                <span>Precompiled Master</span>
-              </span>
-            ) : (
-              <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 border border-purple-300 font-bold flex items-center gap-1">
-                <Sparkles className="w-2.5 h-2.5 text-purple-600" />
-                <span>Gemini Live</span>
-              </span>
-            )}
-
-            <div className="hidden sm:flex items-center gap-1 text-[10px] font-mono font-bold text-slate-700 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded">
-              <span>Nodes:</span>
-              <span className="text-teal-700">{componentCount || '—'}</span>
-            </div>
-
-            <span className="hidden md:inline text-[9.5px] font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-800 font-bold border border-blue-200">
-              16:9
-            </span>
           </div>
         </div>
 
