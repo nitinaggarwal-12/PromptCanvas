@@ -79,3 +79,16 @@ All document previews and standalone viewers (`/viewer`, `/vision`, `/studio`) m
 ### B. Word / Google Docs (`editableDocxCompiler.ts`)
 - **Dual Node/Browser Buffer Compatibility**: Must support both `window.atob` and Node.js `Buffer.from(base64, 'base64')` fallback in `dataUrlToUint8Array` so server-side Cloud Bridge generation (`/api/export/cloud-bridge/[filename]`) never fails.
 - **Live Override Propagation**: Must accept `editableOverrides` (`Record<string, { label?: string; role?: string }>`) so live edits made in the Docs Studio are baked into the downloaded `.docx` file.
+- **Strict Ban on Node Information Tables in Word `.docx`**: Never include a multi-page Component Inventory or Specification Matrix table in the exported `.docx`. The document must render on `Page 1 / 1` Widescreen Landscape (`13.33" × 7.5"`, `pgSz orient="landscape"`).
+- **Zero-Corruption Transparent Label Law (`<a:noFill/>`)**:
+  - When Draw.io nodes specify `fillColor=none;strokeColor=none` (transparent text headers & icon bottom labels), `makeWpsShape()` MUST emit `<a:noFill/>` and `<a:ln><a:noFill/></a:ln>` with zero internal padding (`lIns="0" rIns="0" tIns="0" bIns="0"`). Never fall back to opaque white (`#FFFFFF`) fill or blue (`#0284C7`) borders on transparent text nodes.
+- **Google Docs Viewer `<wpg:wgp>` Image Restriction Law**:
+  - `docs.google.com/viewer` rejects any `<wpg:wgp>` group containing `r:embed` image relationships (`<a:blipFill>` or `<pic:pic>`) and renders a blank page.
+  - Therefore, standalone icon nodes (`hasSvg: true`) inside `<wpg:wgp>` MUST be compiled into pure OpenXML vector badges (`<a:prstGeom>` such as `roundRect`, `pentagon`, `diamond`, `hexagon`, `ellipse` with authentic service colors and 2–3 character white bold monograms via `getServiceBadgeInfo`), paired with separate transparent `<wps:wsp>` bottom label textboxes.
+- **Mandatory 4-Layer Back-to-Front Z-Order & Neighbor Clamping**:
+  1. **Layer 1**: Opaque containers, enclaves, and cards sorted strictly by area (`width * height` descending) so outer enclaves never cover inner cards.
+  2. **Layer 2**: Polyline and orthogonal connectors with `<a:tailEnd type="triangle"/>` arrowheads.
+  3. **Layer 3**: Color-coded vector service icon badges.
+  4. **Layer 4**: Topmost transparent text headers, single-line white pill shields (`height = 18px`, `fillHex = 'FFFFFF'`) for subnet headers crossed by vertical lines, and dynamically clamped bottom icon labels (`minNeighborDist - 4`) so adjacent labels on the same row never overlap horizontally.
+- **Railway Cloud Bridge Schema Version Coupling**: Whenever `editableDocxCompiler.ts` or `editablePptxCompiler.ts` is modified, `CURRENT_BRIDGE_SCHEMA_VERSION` in `src/app/api/export/cloud-bridge/route.ts` MUST be bumped so stale cached binaries on Railway disk storage are automatically invalidated and recompiled on demand.
+

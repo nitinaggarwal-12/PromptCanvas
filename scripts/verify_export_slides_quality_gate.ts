@@ -109,8 +109,52 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
+  // 5. Verify editableDocxCompiler.ts (Native Editable Word DrawingML Vector Diagram Engine)
+  const docxCompilerPath = path.join(process.cwd(), 'src/lib/export/editableDocxCompiler.ts');
+  const docxCode = fs.readFileSync(docxCompilerPath, 'utf-8');
+
+  // 5a. Ensure transparent labels emit <a:noFill/> and <a:ln><a:noFill/></a:ln> instead of opaque white/blue boxes
+  if (
+    !docxCode.includes("fillHex !== 'none'") ||
+    !docxCode.includes("strokeHex !== 'none'") ||
+    !docxCode.includes("new El('a:noFill', {})")
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: editableDocxCompiler.ts must explicitly emit a:noFill when fillHex/strokeHex is "none" to prevent corrupted white boxes on transparent headers.'
+    );
+    process.exit(1);
+  }
+
+  // 5b. Ensure zero <a:blipFill> or <pic:pic> inside <wpg:wgp> (which causes docs.google.com/viewer to render a blank page)
+  if (docxCode.includes('<a:blipFill') || docxCode.includes('<pic:pic')) {
+    console.error(
+      '❌ EXPORT GATE FAILED: editableDocxCompiler.ts must never emit <a:blipFill> or <pic:pic> inside <wpg:wgp> groups (unsupported by docs.google.com/viewer).'
+    );
+    process.exit(1);
+  }
+
+  // 5c. Ensure strict 4-Layer back-to-front Z-Ordering and neighbor-clamped bottom labels
+  if (
+    !docxCode.includes('getServiceBadgeInfo') ||
+    !docxCode.includes('minNeighborDist') ||
+    !docxCode.includes('opaqueVertices.sort((a, b) => b.width * b.height - a.width * a.height)')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: editableDocxCompiler.ts must enforce 4-layer Z-ordering (area-sorted containers -> edges -> vector service badges -> neighbor-clamped labels).'
+    );
+    process.exit(1);
+  }
+
+  // 5d. Ensure zero node information table in Word .docx
+  if (docxCode.includes('Component Inventory & Technical Specification Matrix')) {
+    console.error(
+      '❌ EXPORT GATE FAILED: editableDocxCompiler.ts must not include node information tables; it must produce a pure 1-page widescreen editable Word vector diagram.'
+    );
+    process.exit(1);
+  }
+
   console.log(
-    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, /viewer Google Workspace buttons & Cloud Bridge certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified)`
   );
 }
 

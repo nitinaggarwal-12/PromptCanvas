@@ -108,7 +108,9 @@
         "require_google_docs_editable_decomposed_diagram": true,
         "require_viewer_open_with_google_slides_and_docs_buttons": true,
         "require_guided_launch_assistant_and_docs_html_only_clipboard": true,
-        "require_viewer_default_google_engine_and_cache_buster": true
+        "require_viewer_default_google_engine_and_cache_buster": true,
+        "require_native_word_4layer_drawingml_no_corrupted_boxes": true,
+        "require_cloud_bridge_schema_version_bump": true
       }
     },
     "scorex": {
