@@ -25,7 +25,7 @@ export function getVault(): Map<string, CloudBridgeEntry> {
 }
 
 const BRIDGE_TMP_DIR = path.join(os.tmpdir(), 'promptcanvas_cloud_bridge');
-export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v6_native_word_4layer_vector_badges_no_corrupted_boxes';
+export const CURRENT_BRIDGE_SCHEMA_VERSION = 'v9_native_word_4layer_vector_badges_clamped_labels_no_corrupted_boxes';
 
 export function saveBridgeFileToDisk(
   id: string,
