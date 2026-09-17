@@ -783,6 +783,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactMultiFlowZeroTrustPlatformXml();
   } else if (id === 'unified_flowchart' || id.includes('flowchart') || id.includes('unified_flow')) {
     xml = getExactUnifiedFlowchartXml();
+  } else if (id === 'context_harness_loop_graph' || id === 'canonical_52' || id === '52' || id.includes('harness_loop')) {
+    const { generateTemplate52ContextHarnessLoopGraphXml } = require('./canonical/template52ContextHarnessLoopGraph');
+    xml = generateTemplate52ContextHarnessLoopGraphXml();
   } else if (id.startsWith('tech_') || id === 'serverless_gcp' || id === 'streaming_pipeline' || id === 'k8s_mesh' || id === 'data_lakehouse' || id === 'rag_gcp' || id === 'event_driven_aws' || id === 'multi_region_dr' || id === 'zero_trust' || id === 'hybrid_interconnect' || id === 'cicd_pipeline' || id === 'enterprise_devsecops_polyrepo') {
     xml = getTechnicalArchitectureXml(id);
   } else {

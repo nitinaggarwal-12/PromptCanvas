@@ -118,7 +118,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.includes('wbs') ||
       archType.includes('blueprint') ||
       archType === 'studio3' ||
-      archType.includes('studio3')
+      archType.includes('studio3') ||
+      archType === 'context_harness_loop_graph'
     )
   ) || (
     inputXml.includes('PromptCanvas') ||

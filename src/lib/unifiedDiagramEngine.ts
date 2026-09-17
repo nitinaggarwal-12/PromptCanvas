@@ -63,6 +63,16 @@ export async function executeUnifiedDiagramPipeline(
     cleanPrompt.startsWith('WBS') ||
     cleanPrompt.includes('Blueprint ID');
 
+  const promptLowerCheck = cleanPrompt.toLowerCase();
+  if (
+    (promptLowerCheck.includes('harness') && promptLowerCheck.includes('loop') && promptLowerCheck.includes('context')) ||
+    promptLowerCheck.includes('context + harness') ||
+    promptLowerCheck.includes('charlie hills') ||
+    effectiveArchType === 'context_harness_loop_graph'
+  ) {
+    effectiveArchType = 'context_harness_loop_graph';
+  }
+
   // If user started with a blank canvas or unseeded arch, but provided a real prompt, synthesize full architecture!
   const isBlankCanvasType = effectiveArchType === 'blank_canvas' || effectiveArchType === 'arch_blank_canvas';
   if (isBlankCanvasType && !isTrivialPrompt) {
@@ -125,12 +135,12 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  if (isTrivialPrompt) {
+  if (isTrivialPrompt || effectiveArchType === 'context_harness_loop_graph') {
     customResult = {
       xml: baseTemplateXml || '',
       reasoning: `Master Reference Architecture Blueprint for ${effectiveArchType}.`,
       businessUsecase: `Canonical enterprise architecture model for ${effectiveArchType}.`,
-      technicalUsecase: `Zero-collision calibrated widescreen 1400x800 2D layout.`
+      technicalUsecase: `Zero-collision calibrated widescreen 1600x1050 2D layout.`
     };
   } else if (isAestheticPrompt) {
     const polished = applyBlueprintVisualSystem(targetXml || baseTemplateXml || '', effectiveArchType);

@@ -97,6 +97,31 @@ export async function POST(request: Request) {
         }
       } else if (!architectureType || architectureType === 'blank_canvas' || architectureType === 'arch_blank_canvas') {
         const promptLower = prompt.toLowerCase();
+        const isContextHarnessLoopGraph =
+          (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
+          promptLower.includes('context + harness') ||
+          promptLower.includes('charlie hills');
+
+        if (isContextHarnessLoopGraph) {
+          const result = await executeUnifiedDiagramPipeline({
+            prompt,
+            diagramId,
+            architectureType: 'context_harness_loop_graph',
+            name: name || 'Context + Harness + Loop + Graph (AI Setup)',
+            existingXml,
+            isPrivate,
+            userId: user?.id || null,
+            phaseName,
+            domain,
+            abstractionLevel,
+            stackLayer,
+            layoutDirection,
+            salesStage,
+            lifecyclePhase
+          });
+          return NextResponse.json(result);
+        }
+
         const hasExplicitTemplateKeyword =
           /entity relationship diagram|\berd\b|sequence diagram|system context|c4 context|c4 container|data pipeline|zero trust/i.test(promptLower);
 

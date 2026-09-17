@@ -142,6 +142,7 @@ import { generateTemplate48BcdrCyberRecoveryResilienceXml } from "./template48Bc
 import { generateTemplate49HealthcareLifeSciencesPlatformXml } from "./template49HealthcareLifeSciencesPlatform";
 import { generateTemplate50SustainabilityEsgPlatformXml } from "./template50SustainabilityEsgPlatform";
 import { generateTemplate51GraphTheoryLearningRoadmapXml } from "./template51GraphTheoryLearningRoadmap";
+import { generateTemplate52ContextHarnessLoopGraphXml } from "./template52ContextHarnessLoopGraph";
 
 interface RawCanonicalTemplate {
   id: string;
@@ -780,6 +781,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: '/templates/graph_theory_learning_roadmap.png',
     keyComponents: ['Graph Intuition & Social Analogy', 'Essential Prerequisites', 'Visual Taxonomy', 'Modern Graph Science & Knowledge Graph', 'Key Graph Algorithms Workflow'],
     generateXml: generateTemplate51GraphTheoryLearningRoadmapXml
+  },
+  {
+    id: '52',
+    name: 'Context + Harness + Loop + Graph (AI Setup)',
+    family: 'Understand',
+    level: 'L1',
+    primaryPurpose: '4-part visual AI engineering framework illustrating Context ingestion, Harness tool/rule control, closed-loop self-correction, and Graph file mapping with actionable prompts',
+    examples: 'AI Agent Setup, Context Engineering, Agent Harness, Self-Healing Loop, Knowledge Graph Mapping, Charlie Hills AI Framework',
+    defaultDomain: 'AI Engineering & Autonomous Agent Setup',
+    previewImage: '/templates/context_harness_loop_graph.png',
+    keyComponents: ['01 Context (Loaded Context & Model Ingestion)', '02 Harness (CLAUDE.md Rules, Skills & Tool Calls)', '03 Loop (Check, Fix & Recheck Cycle with 3-Try Cap)', '04 Graph (File Relationship Mesh & MAP.md Index)'],
+    generateXml: generateTemplate52ContextHarnessLoopGraphXml
   }
 ];
 

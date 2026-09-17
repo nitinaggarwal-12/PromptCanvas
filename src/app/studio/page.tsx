@@ -492,6 +492,8 @@ function StudioMain() {
     setIsShareModalOpen(true);
   }, []);
 
+  const hasLoadedUrlBlueprintRef = useRef(false);
+
   // Hydrate State from URL Deep-Link parameters and localStorage on initial mount
   useEffect(() => {
     if (!searchParams) return;
@@ -539,9 +541,20 @@ function StudioMain() {
         setActiveView('diagram');
       }
     }
+    const blueprintParam = searchParams.get('blueprint') || searchParams.get('templateId');
+    const domainParam = searchParams.get('domain') || 'enterprise';
+    if (blueprintParam && !hasLoadedUrlBlueprintRef.current) {
+      const bp = CANONICAL_TEMPLATES.find(t => t.id === blueprintParam || t.id === blueprintParam.padStart(2, '0'));
+      if (bp) {
+        hasLoadedUrlBlueprintRef.current = true;
+        handleSelectBlueprint(bp, domainParam);
+      }
+    }
+
     if (vParam) {
       setActiveVersionTag(vParam);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   // Synchronize browser URL & LocalStorage
@@ -550,6 +563,7 @@ function StudioMain() {
 
     if (!isEditorMode) {
       const params = new URLSearchParams();
+      if (selectedBlueprintId && selectedBlueprintId !== '00') params.set('blueprint', selectedBlueprintId);
       if (activeView !== 'diagram') params.set('view', activeView);
       if (activeView === 'specs' && activeDocId) params.set('doc', activeDocId);
       const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
