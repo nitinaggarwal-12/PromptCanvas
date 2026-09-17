@@ -61,6 +61,7 @@ import { MajorVersionModal } from '@/components/studio/MajorVersionModal';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { AppHeader } from '@/components/AppHeader';
+import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -364,9 +365,39 @@ function StudioMain() {
   const handleConciergeSubmit = (queryText: string) => {
     if (!queryText.trim()) return;
     const qLower = queryText.toLowerCase();
-    const isInfographicOrHarness =
+    const isOpenKnowledge =
       qLower.includes('open knowledge format infographic') ||
-      (qLower.includes('knowledge') && qLower.includes('infographic')) ||
+      (qLower.includes('open knowledge') && qLower.includes('infographic'));
+
+    if (isOpenKnowledge) {
+      setConciergeInput('');
+      const okXml = generateOpenKnowledgeInfographicXml(selectedDomain, 'light');
+      setXml(okXml);
+      setSelectedBlueprintId('custom');
+      setAst(prev => ({
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          projectTitle: 'Open Knowledge Format Infographic (Formats + Schema + Validation + Graph)'
+        }
+      }));
+      const userMsg: StudioChatMessage = {
+        id: `c_user_${Date.now()}`,
+        sender: 'user',
+        text: queryText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      const aiMsg: StudioChatMessage = {
+        id: `c_ai_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: `Generated **Open Knowledge Format Infographic** (*Formats + Schema + Validation + Knowledge Graph*) using the 4-Tier Architectural Infographic engine.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setConciergeMessages(prev => [...prev, userMsg, aiMsg]);
+      return;
+    }
+
+    const isInfographicOrHarness =
       (qLower.includes('tiered') && qLower.includes('infographic')) ||
       (qLower.includes('ai agent') && qLower.includes('infographic')) ||
       (qLower.includes('harness') && qLower.includes('loop') && qLower.includes('context')) ||
@@ -658,9 +689,32 @@ function StudioMain() {
     setMessages(prev => [...prev, userMsg]);
     setPromptInput('');
 
-    const isInfographicOrHarnessPrompt =
+    const isOpenKnowledgePrompt =
       promptLower.includes('open knowledge format infographic') ||
-      (promptLower.includes('knowledge') && promptLower.includes('infographic')) ||
+      (promptLower.includes('open knowledge') && promptLower.includes('infographic'));
+
+    if (isOpenKnowledgePrompt) {
+      const okXml = generateOpenKnowledgeInfographicXml(selectedDomain, 'light');
+      setXml(okXml);
+      setSelectedBlueprintId('custom');
+      setAst(prev => ({
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          projectTitle: 'Open Knowledge Format Infographic (Formats + Schema + Validation + Graph)'
+        }
+      }));
+      const aiMsg: StudioChatMessage = {
+        id: `msg_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: `Generated **Open Knowledge Format Infographic** (*Formats + Schema + Validation + Knowledge Graph*) using the 4-Tier Architectural Infographic engine.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, aiMsg]);
+      return;
+    }
+
+    const isInfographicOrHarnessPrompt =
       (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
       (promptLower.includes('ai agent') && promptLower.includes('infographic')) ||
       (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
@@ -945,9 +999,11 @@ function StudioMain() {
     let newXml = generateGcpNativeArchitectureXml({ projectTitle: config.title, domain: config.domain }, newAst);
 
     const combinedInput = `${config.title || ''} ${config.description || ''}`.toLowerCase();
-    const isInfographicOrHarness =
+    const isOpenKnowledge =
       combinedInput.includes('open knowledge format infographic') ||
-      (combinedInput.includes('knowledge') && combinedInput.includes('infographic')) ||
+      (combinedInput.includes('open knowledge') && combinedInput.includes('infographic'));
+
+    const isInfographicOrHarness =
       (combinedInput.includes('tiered') && combinedInput.includes('infographic')) ||
       (combinedInput.includes('ai agent') && combinedInput.includes('infographic')) ||
       (combinedInput.includes('harness') && combinedInput.includes('loop') && combinedInput.includes('context')) ||
@@ -957,6 +1013,9 @@ function StudioMain() {
     if (config.customXml) {
       newXml = config.customXml;
       setSelectedBlueprintId('custom');
+    } else if (isOpenKnowledge) {
+      setSelectedBlueprintId('custom');
+      newXml = generateOpenKnowledgeInfographicXml(config.domain, 'light');
     } else if (isInfographicOrHarness) {
       const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
       if (bp52) {

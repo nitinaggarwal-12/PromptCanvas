@@ -97,12 +97,34 @@ export async function POST(request: Request) {
         }
       } else if (!architectureType || architectureType === 'blank_canvas' || architectureType === 'arch_blank_canvas') {
         const promptLower = prompt.toLowerCase();
+        const isOpenKnowledgeInfographic =
+          promptLower.includes('open knowledge format infographic') ||
+          (promptLower.includes('open knowledge') && promptLower.includes('infographic'));
+
+        if (isOpenKnowledgeInfographic) {
+          const result = await executeUnifiedDiagramPipeline({
+            prompt,
+            diagramId,
+            architectureType: 'open_knowledge_infographic',
+            name: name || 'Open Knowledge Format Infographic (Formats + Schema + Validation + Graph)',
+            existingXml,
+            isPrivate,
+            userId: user?.id || null,
+            phaseName,
+            domain,
+            abstractionLevel,
+            stackLayer,
+            layoutDirection,
+            salesStage,
+            lifecyclePhase
+          });
+          return NextResponse.json(result);
+        }
+
         const isContextHarnessLoopGraph =
           (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
           promptLower.includes('context + harness') ||
           promptLower.includes('charlie hills') ||
-          promptLower.includes('open knowledge format infographic') ||
-          (promptLower.includes('knowledge') && promptLower.includes('infographic')) ||
           (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
           (promptLower.includes('ai agent') && promptLower.includes('infographic'));
 

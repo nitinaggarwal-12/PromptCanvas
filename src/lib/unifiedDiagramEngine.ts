@@ -65,11 +65,15 @@ export async function executeUnifiedDiagramPipeline(
 
   const promptLowerCheck = cleanPrompt.toLowerCase();
   if (
+    promptLowerCheck.includes('open knowledge format infographic') ||
+    (promptLowerCheck.includes('open knowledge') && promptLowerCheck.includes('infographic')) ||
+    effectiveArchType === 'open_knowledge_infographic'
+  ) {
+    effectiveArchType = 'open_knowledge_infographic';
+  } else if (
     (promptLowerCheck.includes('harness') && promptLowerCheck.includes('loop') && promptLowerCheck.includes('context')) ||
     promptLowerCheck.includes('context + harness') ||
     promptLowerCheck.includes('charlie hills') ||
-    promptLowerCheck.includes('open knowledge format infographic') ||
-    (promptLowerCheck.includes('knowledge') && promptLowerCheck.includes('infographic')) ||
     (promptLowerCheck.includes('tiered') && promptLowerCheck.includes('infographic')) ||
     (promptLowerCheck.includes('ai agent') && promptLowerCheck.includes('infographic')) ||
     effectiveArchType === 'context_harness_loop_graph'
@@ -139,7 +143,7 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  if (isTrivialPrompt || effectiveArchType === 'context_harness_loop_graph') {
+  if (isTrivialPrompt || effectiveArchType === 'context_harness_loop_graph' || effectiveArchType === 'open_knowledge_infographic') {
     customResult = {
       xml: baseTemplateXml || '',
       reasoning: `Master Reference Architecture Blueprint for ${effectiveArchType}.`,

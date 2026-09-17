@@ -783,6 +783,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getExactMultiFlowZeroTrustPlatformXml();
   } else if (id === 'unified_flowchart' || id.includes('flowchart') || id.includes('unified_flow')) {
     xml = getExactUnifiedFlowchartXml();
+  } else if (id === 'open_knowledge_infographic' || id.includes('open_knowledge')) {
+    const { generateOpenKnowledgeInfographicXml } = require('./canonical/openKnowledgeInfographic');
+    xml = generateOpenKnowledgeInfographicXml();
   } else if (id === 'context_harness_loop_graph' || id === 'canonical_52' || id === '52' || id.includes('harness_loop')) {
     const { generateTemplate52ContextHarnessLoopGraphXml } = require('./canonical/template52ContextHarnessLoopGraph');
     xml = generateTemplate52ContextHarnessLoopGraphXml();
@@ -792,7 +795,8 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml(id || 'tech_serverless_gcp');
   }
 
-  const hasCustomUserPrompt = Boolean(userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
+  const isMasterInfographic = id === 'context_harness_loop_graph' || id === 'open_knowledge_infographic' || id === 'canonical_52' || id === '52';
+  const hasCustomUserPrompt = Boolean(!isMasterInfographic && userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor
   if (hasCustomUserPrompt) {
