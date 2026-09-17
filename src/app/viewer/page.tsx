@@ -124,7 +124,7 @@ function CloudViewerContent() {
           </div>
         </div>
 
-        {/* Right Action Controls: ONLY Direct External Google Slides Tab, Google Docs Tab & Download */}
+        {/* Right Action Controls: ONLY 2 Buttons Required on Top (Open with Google Slides, Open with Google Docs) */}
         <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={() => handleLaunchExternalGoogleTab('slides')}
@@ -149,26 +149,6 @@ function CloudViewerContent() {
             <span>{isLaunchingTab === 'docs' ? 'Opening Google Tab...' : 'Open with Google Docs'}</span>
             <ExternalLink className="w-3 h-3 ml-0.5" />
           </button>
-
-          <button
-            onClick={() => setIframeKey((k) => k + 1)}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 transition-all cursor-pointer"
-            title="Reload Cloud Viewer Iframe"
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-          </button>
-
-          {rawUrl && (
-            <a
-              href={rawUrl}
-              download
-              data-testid="viewer-download-pptx-btn"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden xl:inline">Download .pptx</span>
-            </a>
-          )}
         </div>
       </header>
 

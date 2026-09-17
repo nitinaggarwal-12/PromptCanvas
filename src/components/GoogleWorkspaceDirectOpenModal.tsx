@@ -408,17 +408,21 @@ export default function GoogleWorkspaceDirectOpenModal({
   /**
    * Method 2: Open Populated Deck in Separate External Google Tab (`https://docs.google.com/viewer?url=...`)
    */
-  const handleOpenGoogleCloudViewer = async () => {
+  const handleOpenGoogleCloudViewer = async (targetMode?: 'slides' | 'docs') => {
+    const modeToUse = targetMode || activeMode;
+    if (targetMode && targetMode !== activeMode) {
+      setActiveMode(targetMode);
+    }
     setIsOpeningCloudViewer(true);
     setStatusMessage({
       type: 'info',
-      text: `Compiling 1:1 Master & Editable Vector ${activeMode === 'slides' ? 'Deck (.pptx)' : 'Specification (.docx)'} and launching separate Google tab...`,
+      text: `Compiling 1:1 Master & Editable Vector ${modeToUse === 'slides' ? 'Deck (.pptx)' : 'Specification (.docx)'} and launching separate Google tab...`,
     });
 
     try {
       let blob: Blob | string | void;
       const generatedBridgeId = `${blueprintId.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
-      if (activeMode === 'slides') {
+      if (modeToUse === 'slides') {
         blob = await exportDrawioToEditablePptx(xmlContent, diagramName, blueprintId, {
           returnBlob: true,
           masterImageSrc: pngPreviewUrl || masterImageSrc || undefined,
@@ -436,7 +440,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       const base64Data = await blobToBase64(blob);
       const { publicUrl } = await uploadToCloudBridgeAndGetPublicUrl(
         base64Data,
-        activeMode === 'slides' ? 'pptx' : 'docx',
+        modeToUse === 'slides' ? 'pptx' : 'docx',
         undefined,
         generatedBridgeId
       );
@@ -444,7 +448,7 @@ export default function GoogleWorkspaceDirectOpenModal({
       const externalGoogleTabUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(publicUrl)}`;
       setStatusMessage({
         type: 'success',
-        text: `🌐 Opened populated ${activeMode === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
+        text: `🌐 Opened populated ${modeToUse === 'slides' ? 'Google Slides Presentation' : 'Google Docs Specification'} in a separate Google tab (docs.google.com)!`,
         url: externalGoogleTabUrl,
       });
       window.open(externalGoogleTabUrl, '_blank');
@@ -617,86 +621,53 @@ export default function GoogleWorkspaceDirectOpenModal({
             </div>
           </div>
 
-          {/* Center Switcher: Open with Google Slides vs Open with Google Docs */}
-          <div className="flex items-center gap-1.5 bg-slate-900/95 p-1 rounded-xl border border-slate-800">
+          {/* Right Action Controls: ONLY 2 Buttons Required on Top (Open with Google Slides, Open with Google Docs) */}
+          <div className="flex items-center gap-2.5 shrink-0">
             <button
-              onClick={() => setActiveMode('slides')}
-              data-testid="switch-to-google-slides-btn"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeMode === 'slides'
-                  ? 'bg-amber-500 text-slate-950 shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Presentation className="w-3.5 h-3.5" />
-              <span>Open with Google Slides</span>
-            </button>
-            <button
-              onClick={() => setActiveMode('docs')}
-              data-testid="switch-to-google-docs-btn"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeMode === 'docs'
-                  ? 'bg-sky-500 text-white shadow-md'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" />
-              <span>Open with Google Docs</span>
-            </button>
-          </div>
-
-          {/* Direct External Google Tab Launch Buttons */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Primary Button: Open Populated Deck/Doc in Separate External Google Tab (docs.google.com/viewer) */}
-            <button
-              onClick={handleOpenGoogleCloudViewer}
+              onClick={() => handleOpenGoogleCloudViewer('slides')}
               disabled={isOpeningCloudViewer}
-              data-testid="open-google-cloud-viewer-btn"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold shadow-lg transition-all cursor-pointer ${
+              data-testid="switch-to-google-slides-btn"
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-60 ${
                 activeMode === 'slides'
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950'
-                  : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white'
+                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 ring-2 ring-amber-400/50'
+                  : 'bg-slate-800/90 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30'
               }`}
-              title={`Open populated ${activeMode === 'slides' ? '3-Slide Presentation (.pptx)' : 'Architecture Specification (.docx)'} in a separate external Google tab (docs.google.com)`}
+              title="Open populated 3-Slide Deck (.pptx) in a separate external Google tab (docs.google.com)"
             >
-              {isOpeningCloudViewer ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+              {isOpeningCloudViewer && activeMode === 'slides' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
-                <ExternalLink className="w-4 h-4" />
+                <Presentation className="w-3.5 h-3.5" />
               )}
-              <span>
-                {activeMode === 'slides'
-                  ? 'Open in Google Slides Tab ↗'
-                  : 'Open in Google Docs Tab ↗'}
-              </span>
+              <span>Open with Google Slides</span>
+              <ExternalLink className="w-3 h-3 ml-0.5" />
             </button>
 
-            {/* Secondary Button: Direct Download .pptx / .docx */}
             <button
-              onClick={handleDirectDownloadFile}
-              disabled={isDownloadingDeck}
-              data-testid="direct-download-deck-btn"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800/90 hover:bg-slate-700 text-amber-300 border border-amber-500/30 transition-all cursor-pointer"
-              title="Download populated presentation/specification directly to your computer"
+              onClick={() => handleOpenGoogleCloudViewer('docs')}
+              disabled={isOpeningCloudViewer}
+              data-testid="switch-to-google-docs-btn"
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-60 ${
+                activeMode === 'docs'
+                  ? 'bg-gradient-to-r from-sky-500 to-blue-600 text-white ring-2 ring-sky-400/50'
+                  : 'bg-slate-800/90 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30'
+              }`}
+              title="Open populated Architecture Specification (.docx) in a separate external Google tab (docs.google.com)"
             >
-              {isDownloadingDeck ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-              <span>Download .{activeMode === 'slides' ? 'pptx' : 'docx'}</span>
-            </button>
-
-            {/* Fullscreen Toggle */}
-            <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="p-2 rounded-xl bg-slate-800/60 border border-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer"
-              title={isFullscreen ? 'Exit Fullscreen' : 'Present Fullscreen Slideshow'}
-            >
-              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              {isOpeningCloudViewer && activeMode === 'docs' ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <FileText className="w-3.5 h-3.5" />
+              )}
+              <span>Open with Google Docs</span>
+              <ExternalLink className="w-3 h-3 ml-0.5" />
             </button>
 
             {/* Close Modal */}
             <button
               onClick={onClose}
               data-testid="close-google-workspace-modal-btn"
-              className="p-2 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-slate-400 hover:text-rose-300 transition-all cursor-pointer"
+              className="p-2 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 border border-slate-700 hover:border-rose-500/40 text-slate-400 hover:text-rose-300 transition-all cursor-pointer ml-1"
             >
               <X className="w-4 h-4" />
             </button>

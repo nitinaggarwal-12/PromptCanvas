@@ -500,9 +500,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
     - **100% Interactive Decomposed Diagram Parity in Google Docs Studio (`activeMode === 'docs'`)**:
       - `GoogleWorkspaceDirectOpenModal.tsx` MUST NEVER degrade Google Docs Specification Studio (`activeMode === 'docs'`) into a static `<img>` while Google Slides Studio has an interactive vector canvas.
       - Section 1 of Google Docs Studio MUST render the **100% Editable Decomposed Vector Diagram Canvas (177 Shapes & 89 Azure SVG Icons)** by default (`docsDiagramViewMode === 'decomposed-shapes'`), paired with the Left Interactive Sidebar (`Live Diagram & Doc Node Editor`) and Section 2 (**Inline-Editable 177-Row Specification Matrix Table**) synced bidirectionally in real time.
-    - **Direct External Google Tab Launchers ONLY (`https://docs.google.com/viewer?url=...`)**:
-      - Remove all redundant/confusing cloud buttons (`slides.new`, `docs.new`, OAuth key drawers, Microsoft PowerPoint Web Viewer toggles).
-      - Keep **ONLY** the direct external Google tab launchers: **`Open with Google Slides ↗`** (`https://docs.google.com/viewer?url=...pptx`) and **`Open with Google Docs ↗`** (`https://docs.google.com/viewer?url=...docx`), which compile/sync to public HTTPS Cloud Bridge and open in a separate browser tab (`_blank`) on `docs.google.com`.
+    - **Strict 2-Button Top Bar Mandate (`Open with Google Slides` & `Open with Google Docs` ONLY)**:
+      - Remove all redundant/confusing cloud buttons (`slides.new`, `docs.new`, OAuth key drawers, Microsoft PowerPoint Web Viewer toggles, duplicate `Open in Google Slides Tab ↗` buttons, `Download .pptx/.docx` buttons, `Fullscreen`, and `Reload` buttons).
+      - Keep **ONLY** the 2 buttons required on top in both `GoogleWorkspaceDirectOpenModal.tsx` and `/viewer/page.tsx`: **`Open with Google Slides`** and **`Open with Google Docs`**, which immediately switch studio mode AND compile/sync to public HTTPS Cloud Bridge to open in a separate browser tab (`_blank`) on `docs.google.com` in 1 single click.
       - DOCX tables in `editableDocxCompiler.ts` must use explicit `WidthType.DXA` (`size: 9360` = 100% page width) so tables span edge-to-edge in Google Docs Viewer.
 
 38. **Mandatory Post-Fix Governance Triad Synchronization Law (`AGENTS.md` + `SKILL.md` + `hooks.json`)**:
