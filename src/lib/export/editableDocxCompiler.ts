@@ -145,25 +145,27 @@ function makeWpsShape(params: {
         y: String(Math.round(Math.max(0, yEmu))),
       }),
       new El('a:ext', {
-        cx: String(Math.round(Math.max(cxEmu, 36000))),
-        cy: String(Math.round(Math.max(cyEmu, 36000))),
+        cx: String(Math.round(Math.max(cxEmu, 14000))),
+        cy: String(Math.round(Math.max(cyEmu, 14000))),
       }),
     ]),
     new El('a:prstGeom', { prst: geom }, [new El('a:avLst', {})]),
   ];
 
-  if (fillHex && fillHex !== 'none') {
-    spPrChildren.push(new El('a:solidFill', {}, [new El('a:srgbClr', { val: fillHex })]));
+  if (fillHex && fillHex !== 'none' && fillHex !== 'transparent') {
+    spPrChildren.push(new El('a:solidFill', {}, [new El('a:srgbClr', { val: cleanHex(fillHex) })]));
   } else {
     spPrChildren.push(new El('a:noFill', {}));
   }
 
-  if (strokeHex && strokeHex !== 'none') {
-    const lnChildren: El[] = [new El('a:solidFill', {}, [new El('a:srgbClr', { val: strokeHex })])];
+  if (strokeHex && strokeHex !== 'none' && strokeHex !== 'transparent' && strokeWidthEmu > 0) {
+    const lnChildren: El[] = [new El('a:solidFill', {}, [new El('a:srgbClr', { val: cleanHex(strokeHex) })])];
     if (dashed) {
       lnChildren.push(new El('a:prstDash', { val: 'dash' }));
     }
     spPrChildren.push(new El('a:ln', { w: String(Math.round(strokeWidthEmu)) }, lnChildren));
+  } else {
+    spPrChildren.push(new El('a:ln', {}, [new El('a:noFill', {})]));
   }
 
   const wspChildren: any[] = [
@@ -175,17 +177,117 @@ function makeWpsShape(params: {
     wspChildren.push(new El('wps:txbx', {}, [new El('w:txbxContent', {}, paragraphs)]));
   }
 
+  const isZeroPad = fillHex === 'none' || fillHex === 'transparent';
   wspChildren.push(
     new El('wps:bodyPr', {
-      lIns: isContainer ? '45000' : '14000',
-      tIns: isContainer ? '30000' : '10000',
-      rIns: isContainer ? '45000' : '14000',
-      bIns: isContainer ? '30000' : '10000',
+      lIns: isZeroPad ? '0' : isContainer ? '36000' : '10000',
+      tIns: isZeroPad ? '0' : isContainer ? '24000' : '6000',
+      rIns: isZeroPad ? '0' : isContainer ? '36000' : '10000',
+      bIns: isZeroPad ? '0' : isContainer ? '24000' : '6000',
       anchor: isContainer ? 't' : 'ctr',
     })
   );
 
   return new El('wps:wsp', {}, wspChildren);
+}
+
+function getServiceBadgeInfo(text: string, id: string): {
+  fillHex: string;
+  badge: string;
+  geom: 'roundRect' | 'ellipse' | 'diamond' | 'hexagon' | 'pentagon';
+} {
+  const lower = `${id} ${text}`.toLowerCase();
+  if (lower.includes('nsg') || lower.includes('security group')) {
+    return { fillHex: '059669', badge: 'NSG', geom: 'pentagon' };
+  }
+  if (lower.includes('ddos')) {
+    return { fillHex: 'DC2626', badge: 'DOS', geom: 'pentagon' };
+  }
+  if (lower.includes('defender')) {
+    return { fillHex: 'DC2626', badge: 'DEF', geom: 'pentagon' };
+  }
+  if (lower.includes('firewall') || lower.includes('waf') || lower.includes('appgw') || lower.includes('application gateway')) {
+    return { fillHex: '16A34A', badge: 'WAF', geom: 'roundRect' };
+  }
+  if (lower.includes('bastion')) {
+    return { fillHex: 'EA580C', badge: 'BST', geom: 'roundRect' };
+  }
+  if (lower.includes('vpn')) {
+    return { fillHex: 'EA580C', badge: 'VPN', geom: 'diamond' };
+  }
+  if (lower.includes('expressroute')) {
+    return { fillHex: 'EA580C', badge: 'ER', geom: 'diamond' };
+  }
+  if (lower.includes('udr') || lower.includes('user-defined route') || lower.includes('route')) {
+    return { fillHex: 'EA580C', badge: 'UDR', geom: 'diamond' };
+  }
+  if (lower.includes('key vault') || lower.includes('kv')) {
+    return { fillHex: 'D97706', badge: 'KV', geom: 'roundRect' };
+  }
+  if (lower.includes('openai')) {
+    return { fillHex: '7C3AED', badge: 'OAI', geom: 'roundRect' };
+  }
+  if (lower.includes('search')) {
+    return { fillHex: '0284C7', badge: 'SRC', geom: 'roundRect' };
+  }
+  if (lower.includes('ai hub') || lower.includes('ai services') || lower.includes('semantic') || lower.includes('ai_')) {
+    return { fillHex: '9333EA', badge: 'AI', geom: 'roundRect' };
+  }
+  if (lower.includes('orchestrator') || lower.includes('orch')) {
+    return { fillHex: '4F46E5', badge: 'ORC', geom: 'hexagon' };
+  }
+  if (lower.includes('agent') || lower.includes('ag_')) {
+    return { fillHex: '6366F1', badge: 'AGT', geom: 'roundRect' };
+  }
+  if (lower.includes('cosmos') || lower.includes('sql') || lower.includes('storage') || lower.includes('acr') || lower.includes('registry')) {
+    return { fillHex: '0891B2', badge: 'DB', geom: 'roundRect' };
+  }
+  if (lower.includes('service bus') || lower.includes('event') || lower.includes('sb') || lower.includes('eg')) {
+    return { fillHex: 'EA580C', badge: 'BUS', geom: 'roundRect' };
+  }
+  if (lower.includes('dns') || lower.includes('resolver')) {
+    return { fillHex: '0284C7', badge: 'DNS', geom: 'diamond' };
+  }
+  if (lower.includes('private endpoint') || lower.includes('pe_') || lower.includes('endpoint')) {
+    return { fillHex: '0284C7', badge: 'PE', geom: 'diamond' };
+  }
+  if (lower.includes('compute') || lower.includes('instance')) {
+    return { fillHex: '2563EB', badge: 'VM', geom: 'hexagon' };
+  }
+  if (lower.includes('vnet') || lower.includes('virtual network') || lower.includes('spoke') || lower.includes('hub')) {
+    return { fillHex: '0284C7', badge: 'VN', geom: 'diamond' };
+  }
+  if (lower.includes('subnet')) {
+    return { fillHex: '0D9488', badge: 'SN', geom: 'roundRect' };
+  }
+  if (lower.includes('user') || lower.includes('actor')) {
+    return { fillHex: '2563EB', badge: 'USR', geom: 'ellipse' };
+  }
+  if (lower.includes('watcher')) {
+    return { fillHex: '7C3AED', badge: 'NW', geom: 'ellipse' };
+  }
+  if (lower.includes('log') || lower.includes('insight') || lower.includes('monitor')) {
+    return { fillHex: '4F46E5', badge: 'MON', geom: 'roundRect' };
+  }
+  if (lower.includes('cost')) {
+    return { fillHex: '16A34A', badge: 'CST', geom: 'roundRect' };
+  }
+  if (lower.includes('role') || lower.includes('rbac')) {
+    return { fillHex: '059669', badge: 'IAM', geom: 'ellipse' };
+  }
+  if (lower.includes('policy')) {
+    return { fillHex: '059669', badge: 'POL', geom: 'roundRect' };
+  }
+  if (lower.includes('management group') || lower.includes('management')) {
+    return { fillHex: '0284C7', badge: 'MG', geom: 'roundRect' };
+  }
+  if (lower.includes('apim') || lower.includes('api management')) {
+    return { fillHex: '7C3AED', badge: 'API', geom: 'roundRect' };
+  }
+  if (lower.includes('app service') || lower.includes('container') || lower.includes('jumpbox') || lower.includes('build') || lower.includes('code interpreter')) {
+    return { fillHex: '2563EB', badge: 'APP', geom: 'roundRect' };
+  }
+  return { fillHex: '0284C7', badge: 'AZ', geom: 'roundRect' };
 }
 
 function makeWpsLine(params: {
@@ -218,7 +320,7 @@ function makeWpsLine(params: {
   if (x2Emu < x1Emu) xfrmAttrs.flipH = '1';
   if (y2Emu < y1Emu) xfrmAttrs.flipV = '1';
 
-  const lnChildren: El[] = [new El('a:solidFill', {}, [new El('a:srgbClr', { val: strokeHex })])];
+  const lnChildren: El[] = [new El('a:solidFill', {}, [new El('a:srgbClr', { val: cleanHex(strokeHex) })])];
   if (dashed) {
     lnChildren.push(new El('a:prstDash', { val: 'dash' }));
   }
@@ -291,19 +393,6 @@ function buildNativeWordDrawingMlDiagram(
   const toW = (w: number) => w * scaleX;
   const toH = (h: number) => h * scaleY;
 
-  // Sort vertices by Z-order: containers first (largest area first), then service nodes
-  const sortedVertices = [...vertices].sort((a, b) => {
-    const aCont = a.style.container === '1' || a.width * a.height > 40000;
-    const bCont = b.style.container === '1' || b.width * b.height > 40000;
-    if (aCont && !bCont) return -1;
-    if (!aCont && bCont) return 1;
-    if (aCont && bCont) {
-      if (a.depth !== b.depth) return a.depth - b.depth;
-      return b.width * b.height - a.width * a.height;
-    }
-    return a.depth - b.depth;
-  });
-
   const groupShapes: El[] = [];
 
   // 0. Outer Canvas Background Board
@@ -321,90 +410,63 @@ function buildNativeWordDrawingMlDiagram(
     })
   );
 
-  const containerVertices = sortedVertices.filter(
-    (v) => v.style.container === '1' || v.width * v.height > 40000
-  );
-  const nodeVertices = sortedVertices.filter(
-    (v) => !(v.style.container === '1' || v.width * v.height > 40000)
-  );
+  // Separate vertices into 3 distinct visual layers:
+  // 1) Opaque Boxes / Enclaves / Cards (has fill or border) -> sorted by area DESCENDING
+  // 2) SVG / Icon Nodes (hasSvg or image style) -> rendered as sleek colored Azure vector tiles + separate bottom labels
+  // 3) Pure Transparent Text Labels (fill=none & stroke=none & !hasSvg) -> rendered on top with zero background/border
+  const opaqueVertices: ParsedMxCell[] = [];
+  const svgIconVertices: ParsedMxCell[] = [];
+  const transparentLabelVertices: ParsedMxCell[] = [];
 
-  // 1. Render Architectural Enclave Containers
-  for (const v of containerVertices) {
-    const ov = overrides[v.id];
-    const rawLines = stripHtmlLines(v.value).map(sanitizeXmlText).filter(Boolean);
-    const lines = ov
-      ? [sanitizeXmlText(ov.title), sanitizeXmlText(ov.subtitle)].filter(Boolean)
-      : rawLines;
-    const strokeHex = cleanHex(v.style.strokeColor || v.style.fillColor, '0284C7');
-    const fillHex = getTintHex(strokeHex, v.style.fillColor, true);
-    const dark = isDarkHex(fillHex);
-    const dashed = v.style.dashed === '1';
+  for (const v of vertices) {
+    const hasSvg = v.value.includes('<svg') || Boolean(v.style.image);
+    const hasFill = Boolean(v.style.fillColor && v.style.fillColor !== 'none' && v.style.fillColor !== 'transparent');
+    const hasStroke = Boolean(v.style.strokeColor && v.style.strokeColor !== 'none' && v.style.strokeColor !== 'transparent');
 
-    const paragraphs = lines.slice(0, 2).map((line, idx) =>
-      new Paragraph({
-        spacing: { after: 10 },
-        children: [
-          new TextRun({
-            text: line,
-            bold: idx === 0,
-            size: idx === 0 ? 15 : 13,
-            color: dark ? 'FFFFFF' : idx === 0 ? strokeHex : '475569',
-            font: 'Arial',
-          }),
-        ],
-      })
-    );
-
-    groupShapes.push(
-      makeWpsShape({
-        xEmu: toX(v.absX),
-        yEmu: toY(v.absY),
-        cxEmu: toW(v.width),
-        cyEmu: toH(v.height),
-        geom: v.style.rounded === '0' ? 'rect' : 'roundRect',
-        fillHex,
-        strokeHex,
-        strokeWidthEmu: 15875,
-        dashed,
-        paragraphs,
-        isContainer: true,
-      })
-    );
+    if (hasSvg && !hasFill && !hasStroke) {
+      svgIconVertices.push(v);
+    } else if (!hasFill && !hasStroke) {
+      transparentLabelVertices.push(v);
+    } else {
+      opaqueVertices.push(v);
+    }
   }
 
-  // 2. Render Service Node Vector Cards
-  for (const v of nodeVertices) {
+  // Sort opaque boxes strictly by area descending so larger enclaves/subnets never cover smaller inner cards
+  opaqueVertices.sort((a, b) => b.width * b.height - a.width * a.height);
+
+  // LAYER 1: Opaque Enclaves, Subnets, and Service Cards
+  for (const v of opaqueVertices) {
     const ov = overrides[v.id];
     const rawLines = stripHtmlLines(v.value).map(sanitizeXmlText).filter(Boolean);
     const lines = ov
       ? [sanitizeXmlText(ov.title), sanitizeXmlText(ov.subtitle)].filter(Boolean)
       : rawLines;
-    if (lines.length === 0 && v.width < 25) continue;
 
-    const strokeHex = cleanHex(v.style.strokeColor || v.style.fillColor, '0284C7');
-    const fillHex = getTintHex(strokeHex, v.style.fillColor, false);
-    const dark = isDarkHex(fillHex);
+    const hasFill = Boolean(v.style.fillColor && v.style.fillColor !== 'none' && v.style.fillColor !== 'transparent');
+    const hasStroke = Boolean(v.style.strokeColor && v.style.strokeColor !== 'none' && v.style.strokeColor !== 'transparent');
+
+    const fillHex = hasFill ? cleanHex(v.style.fillColor, 'FFFFFF') : 'none';
+    const strokeHex = hasStroke ? cleanHex(v.style.strokeColor, 'CBD5E1') : 'none';
+    const dark = fillHex !== 'none' && isDarkHex(fillHex);
     const dashed = v.style.dashed === '1';
 
-    const boxWEmu = toW(v.width);
-    const boxHEmu = toH(v.height);
-    const maxLineLen = Math.max(...lines.map((l) => l.length), 1);
-    let titlePtHalf = 14; // 7pt default
-    if (boxWEmu < 450000 || maxLineLen > 18) titlePtHalf = 11; // 5.5pt
-    else if (boxWEmu < 650000 || maxLineLen > 13) titlePtHalf = 12; // 6pt
-    else if (boxHEmu > 420000 && maxLineLen <= 12) titlePtHalf = 15; // 7.5pt
-    const subPtHalf = Math.max(titlePtHalf - 2, 10);
+    // Determine if this opaque box acts as a container for other vertices
+    const isContainer =
+      v.style.verticalAlign === 'top' ||
+      v.style.container === '1' ||
+      (v.width * v.height > 12000 && lines.length > 0 && v.height > 55);
 
     const paragraphs = lines.slice(0, 2).map((line, idx) =>
       new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 4 },
+        alignment: v.style.align === 'left' ? AlignmentType.LEFT : AlignmentType.CENTER,
+        spacing: { after: 2 },
         children: [
           new TextRun({
             text: line,
-            bold: idx === 0,
-            size: idx === 0 ? titlePtHalf : subPtHalf,
-            color: dark ? 'FFFFFF' : idx === 0 ? '0F172A' : '475569',
+            bold: idx === 0 || dark,
+            size: v.height <= 26 ? 11 : v.height <= 42 ? 13 : 14,
+            color: dark ? 'FFFFFF' : v.style.fontColor ? cleanHex(v.style.fontColor, '0F172A') : '0F172A',
             font: 'Arial',
           }),
         ],
@@ -425,15 +487,15 @@ function buildNativeWordDrawingMlDiagram(
               : 'roundRect',
         fillHex,
         strokeHex,
-        strokeWidthEmu: 12700,
+        strokeWidthEmu: hasStroke ? 12700 : 0,
         dashed,
         paragraphs,
-        isContainer: false,
+        isContainer,
       })
     );
   }
 
-  // 3. Render Polyline & Orthogonal Connectors on top so all arrows are crisp
+  // LAYER 2: Polyline & Orthogonal Connectors (drawn over containers, under icons/labels)
   for (const e of edges) {
     const strokeHex = cleanHex(e.style.strokeColor, '0284C7');
     const dashed = e.style.dashed === '1';
@@ -519,6 +581,208 @@ function buildNativeWordDrawingMlDiagram(
       );
     }
   }
+
+  // LAYER 3: Native Vector Service Icon Badges + Separate Unclipped Bottom Labels
+  const iconBottomLabels: El[] = [];
+
+  for (const v of svgIconVertices) {
+    const ov = overrides[v.id];
+    const rawLines = stripHtmlLines(v.value).map(sanitizeXmlText).filter(Boolean);
+    const lines = ov
+      ? [sanitizeXmlText(ov.title), sanitizeXmlText(ov.subtitle)].filter(Boolean)
+      : rawLines;
+
+    const badgeInfo = getServiceBadgeInfo(lines.join(' '), v.id);
+
+    // If vertex has text below it (e.g. 72x54 icon+label box), place 22x22 icon badge at top center
+    // If vertex is a pure icon badge (e.g. 18x18 NSG shield or 26x26 orch icon), use its exact box
+    const hasText = lines.length > 0;
+    const iconW = hasText ? 22 : Math.min(Math.max(v.width, 16), 26);
+    const iconH = hasText ? 22 : Math.min(Math.max(v.height, 16), 26);
+    const iconX = hasText ? v.absX + (v.width - iconW) / 2 : v.absX;
+    const iconY = hasText ? v.absY + 1 : v.absY;
+
+    const badgeParagraph = new Paragraph({
+      alignment: AlignmentType.CENTER,
+      spacing: { after: 0 },
+      children: [
+        new TextRun({
+          text: badgeInfo.badge,
+          bold: true,
+          size: iconH <= 18 ? 9 : 10, // 4.5pt or 5pt crisp white monogram
+          color: 'FFFFFF',
+          font: 'Arial',
+        }),
+      ],
+    });
+
+    groupShapes.push(
+      makeWpsShape({
+        xEmu: toX(iconX),
+        yEmu: toY(iconY),
+        cxEmu: toW(iconW),
+        cyEmu: toH(iconH),
+        geom: badgeInfo.geom,
+        fillHex: badgeInfo.fillHex,
+        strokeHex: 'FFFFFF',
+        strokeWidthEmu: 6350,
+        paragraphs: [badgeParagraph],
+        isContainer: false,
+      })
+    );
+
+    // Separate Unclipped Bottom Label Box (drawn in Layer 4 so it is never covered)
+    if (hasText) {
+      const fullText = lines.join(' ');
+      // Dynamically find nearest horizontal neighbor on the same row to prevent horizontal label overlap
+      const centerX = v.absX + v.width / 2;
+      const centerY = v.absY + v.height / 2;
+      const sameRowNeighbors = svgIconVertices.filter(
+        (o) =>
+          o.id !== v.id &&
+          Math.abs(o.absY + o.height / 2 - centerY) < 28 &&
+          Math.abs(o.absX + o.width / 2 - centerX) > 12
+      );
+      const minNeighborDist =
+        sameRowNeighbors.length > 0
+          ? Math.min(...sameRowNeighbors.map((o) => Math.abs(o.absX + o.width / 2 - centerX)))
+          : 115;
+
+      const maxAllowedW = Math.max(minNeighborDist - 4, 54);
+      let labelW = Math.min(
+        Math.max(v.width * 1.45, fullText.length > 22 ? 102 : 88),
+        maxAllowedW
+      );
+      let labelX = centerX - labelW / 2;
+      let labelY = v.absY + 23;
+
+      // Special corner adjustment for Spoke VNet icon so its label sits cleanly left of Managed Online Endpoint
+      if (v.id === 'mvnet_spoke_icon') {
+        labelW = 64;
+        labelX = v.absX - 14;
+        labelY = v.absY + 23;
+      }
+
+      const labelH = 42; // Generous height for 2-3 lines with zero vertical clipping
+      const fontSizeHalfPt = labelW <= 62 || fullText.length > 24 ? 8 : 9; // 4pt or 4.5pt crisp font
+
+      const labelParagraphs = lines.slice(0, 3).map((line, idx) =>
+        new Paragraph({
+          alignment: AlignmentType.CENTER,
+          spacing: { after: 0 },
+          children: [
+            new TextRun({
+              text: line,
+              bold: idx === 0,
+              size: idx === 0 ? fontSizeHalfPt : Math.max(fontSizeHalfPt - 1, 8),
+              color: '0F172A',
+              font: 'Arial',
+            }),
+          ],
+        })
+      );
+
+      iconBottomLabels.push(
+        makeWpsShape({
+          xEmu: toX(labelX),
+          yEmu: toY(labelY),
+          cxEmu: toW(labelW),
+          cyEmu: toH(labelH),
+          geom: 'rect',
+          fillHex: 'none',
+          strokeHex: 'none',
+          strokeWidthEmu: 0,
+          paragraphs: labelParagraphs,
+          isContainer: true, // top-aligned with 0 padding
+        })
+      );
+    }
+  }
+
+  // LAYER 4: Topmost Text Headers (e.g. Subnet titles, Workload resources, Orchestrator label) + Icon Bottom Labels
+  for (const v of transparentLabelVertices) {
+    const ov = overrides[v.id];
+    const rawLines = stripHtmlLines(v.value).map(sanitizeXmlText).filter(Boolean);
+    const lines = ov
+      ? [sanitizeXmlText(ov.title), sanitizeXmlText(ov.subtitle)].filter(Boolean)
+      : rawLines;
+    if (lines.length === 0) continue;
+
+    const fullText = lines.join(' ');
+    const isSubnetOrSectionHeader =
+      fullText.includes('Subnet') ||
+      fullText.includes('Networking') ||
+      fullText.includes('Monitoring') ||
+      fullText.includes('Management') ||
+      fullText.includes('Ingress') ||
+      fullText.includes('Integration');
+
+    // Render subnet headers as a single crisp line inside a white pill so they never wrap or clip vertically
+    const displayLines = isSubnetOrSectionHeader ? [fullText] : lines.slice(0, 2);
+
+    const labelW = isSubnetOrSectionHeader
+      ? Math.min(Math.max(fullText.length * 4.8 + 14, 96), 152)
+      : Math.max(v.width * 1.25, fullText.length * 5.0);
+    const labelH = isSubnetOrSectionHeader ? 18 : Math.max(v.height + 12, 28);
+    const labelX =
+      v.style.align === 'left'
+        ? v.absX
+        : v.style.align === 'right'
+          ? v.absX + v.width - labelW
+          : v.absX + v.width / 2 - labelW / 2;
+    const isCardTopHeader = v.id.includes('_hdr');
+    const labelY = isCardTopHeader ? v.absY - 4 : v.absY;
+
+    const fontHex = v.style.fontColor ? cleanHex(v.style.fontColor, '0F172A') : '0F172A';
+    const fontSizeHalfPt = isSubnetOrSectionHeader
+      ? fullText.length > 24
+        ? 9
+        : 10
+      : fullText.length > 28
+        ? 10
+        : v.height >= 22
+          ? 13
+          : 11;
+
+    const paragraphs = displayLines.map((line, idx) =>
+      new Paragraph({
+        alignment:
+          v.style.align === 'left'
+            ? AlignmentType.LEFT
+            : v.style.align === 'right'
+              ? AlignmentType.RIGHT
+              : AlignmentType.CENTER,
+        spacing: { after: 0 },
+        children: [
+          new TextRun({
+            text: line,
+            bold: true,
+            size: idx === 0 ? fontSizeHalfPt : Math.max(fontSizeHalfPt - 2, 9),
+            color: fontHex,
+            font: 'Arial',
+          }),
+        ],
+      })
+    );
+
+    // Subnet headers get a crisp white pill background with zero padding (`isContainer: true` + `fillHex: 'FFFFFF'`)
+    groupShapes.push(
+      makeWpsShape({
+        xEmu: toX(labelX),
+        yEmu: toY(labelY),
+        cxEmu: toW(labelW),
+        cyEmu: toH(labelH),
+        geom: isSubnetOrSectionHeader ? 'roundRect' : 'rect',
+        fillHex: isSubnetOrSectionHeader ? 'FFFFFF' : 'none',
+        strokeHex: 'none',
+        strokeWidthEmu: 0,
+        paragraphs,
+        isContainer: true,
+      })
+    );
+  }
+
+  groupShapes.push(...iconBottomLabels);
 
   return new El('w:r', {}, [
     new El('w:drawing', {}, [
