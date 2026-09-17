@@ -619,7 +619,7 @@ function ArchitectureLibraryContent() {
                 { id: 'all', label: '🌐 All Architecture', count: studioCounts.all, color: 'teal' },
                 { id: 'studio', label: '💎 Studio (Pro Multi-Diagram)', count: studioCounts.studio, color: 'indigo' },
                 { id: 'studio1', label: '🧪 Studio 1 (Lab & Single)', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'canonical', label: '📚 52 Canonical Blueprints', count: studioCounts.canonical, color: 'sky' },
+                { id: 'canonical', label: '📚 53 Canonical Blueprints', count: studioCounts.canonical, color: 'sky' },
                 { id: 'vision', label: '👁️ Vision Decompiler', count: studioCounts.vision, color: 'teal' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;

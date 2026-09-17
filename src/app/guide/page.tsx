@@ -100,7 +100,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 1,
         title: 'Architecture Studio Orientation',
         whereToClick: 'Architecture Studio / Blueprint Catalog',
-        description: 'PromptCanvas provides a streamlined architecture workspace. Access 52 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
+        description: 'PromptCanvas provides a streamlined architecture workspace. Access 53 blueprints in the Blueprint Catalog and 17 archetypes in Document Studio, directly from the sidebar.',
         validationChecklist: [
           'Left Studio is ready for prompt input or blueprint selection',
           'Canvas is set to high-DPI 1600px 16:9 desktop grid'

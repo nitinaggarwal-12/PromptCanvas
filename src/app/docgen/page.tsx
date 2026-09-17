@@ -2305,7 +2305,7 @@ function DocGenContent() {
                     Studio Generation Mode:
                   </span>
                   <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-800">
-                    {studioMode === 'diagrams' && '52 Canonical 16:9 Master Blueprints'}
+                    {studioMode === 'diagrams' && '53 Canonical 16:9 Master Blueprints'}
                     {studioMode === 'documents' && '17 Production-Ready Archetypes'}
                     {studioMode === 'both' && 'Unified Multi-Blueprint Specifications'}
                   </span>

@@ -134,7 +134,7 @@ Feel free to ask me about:
 
 1. **Dual-Sync Living Architecture**: Compiles high-contrast, certified Draw.io diagrams that stay 100% bidirectionally synchronized with 16 comprehensive Living Specifications (PRD, HLD, STRIDE Threat Model, Spanner DDL, BCDR Plan, and FinOps runbooks).
 2. **Multi-Persona AI Co-Pilot**: Simulate inputs from Product Managers, Lead Architects, CISOs, and FinOps engineers to refine both visual topology and technical specs simultaneously.
-3. **52 Canonical Certified Blueprints**: Pre-engineered Google Cloud reference topologies covering event streaming, multi-region lakehouses, Vertex AI RAG hubs, and Zero-Trust perimeters.
+3. **53 Canonical Certified Blueprints**: Pre-engineered Google Cloud reference topologies covering event streaming, multi-region lakehouses, Vertex AI RAG hubs, and Zero-Trust perimeters.
 4. **Draw.io Native Interop**: Fully compatible with diagrams.net. Download standard \`.drawio\` XML, export high-res diagrams, or open directly in the web editor.
 5. **Auditory Briefings**: Generate 2-minute executive audio briefings summarizing architecture tradeoffs and SLAs.
 
@@ -1121,7 +1121,7 @@ function StudioMain() {
           <button
             onClick={() => setIsCatalogOpen(true)}
             className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-100 transition shadow-xs cursor-pointer shrink-0"
-            title="Open 52 Canonical Architecture Blueprints Catalog"
+            title="Open 53 Canonical Architecture Blueprints Catalog"
           >
             <Layers className="w-3.5 h-3.5 text-blue-400 shrink-0" />
             <span className="font-mono font-bold text-white">#{selectedBlueprintId}</span>

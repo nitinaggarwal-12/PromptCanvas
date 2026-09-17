@@ -99,7 +99,7 @@ export function BlueprintCatalogModal({
               <div className="flex items-center gap-2.5">
                 <h2 className="font-bold text-base tracking-tight">Canonical Blueprint Catalog</h2>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
-                  52 Certified Blueprints
+                  {CANONICAL_TEMPLATES.length} Certified Blueprints
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
@@ -156,7 +156,7 @@ export function BlueprintCatalogModal({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search 52 blueprints, services, or keywords..."
+                placeholder={`Search ${CANONICAL_TEMPLATES.length} blueprints, services, or keywords...`}
                 className={`w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border outline-hidden transition ${
                   isDark
                     ? 'bg-slate-950/70 border-slate-800 text-slate-200 focus:border-blue-500 placeholder-slate-500'
