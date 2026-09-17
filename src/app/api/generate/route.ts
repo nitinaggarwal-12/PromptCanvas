@@ -125,7 +125,7 @@ export async function POST(request: Request) {
           (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
           promptLower.includes('context + harness') ||
           promptLower.includes('charlie hills') ||
-          (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
+          (promptLower.includes('tiered') && promptLower.includes('infographic') && !promptLower.includes('open knowledge')) ||
           (promptLower.includes('ai agent') && promptLower.includes('infographic'));
 
         if (isContextHarnessLoopGraph) {

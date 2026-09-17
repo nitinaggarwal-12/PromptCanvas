@@ -153,8 +153,38 @@ function runExportSlidesQualityGate() {
     process.exit(1);
   }
 
+  // 6. Anti-Static-Spoofing & Subject Domain Parity Gate (Rule 41)
+  const openKnowledgeGenPath = path.join(process.cwd(), 'src/lib/canonical/openKnowledgeInfographic.ts');
+  if (!fs.existsSync(openKnowledgeGenPath)) {
+    console.error(
+      '❌ EXPORT GATE FAILED: Missing src/lib/canonical/openKnowledgeInfographic.ts required for domain-specific Open Knowledge Format infographic synthesis.'
+    );
+    process.exit(1);
+  }
+  const openKnowledgeCode = fs.readFileSync(openKnowledgeGenPath, 'utf-8');
+  if (
+    openKnowledgeCode.toLowerCase().includes('charlie hills') ||
+    openKnowledgeCode.toLowerCase().includes('claude.md')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: openKnowledgeInfographic.ts contains leaked static strings from Charlie Hills / CLAUDE.md template.'
+    );
+    process.exit(1);
+  }
+  const routeCode = fs.readFileSync(path.join(process.cwd(), 'src/app/api/generate/route.ts'), 'utf-8');
+  const archTypesCode = fs.readFileSync(path.join(process.cwd(), 'src/lib/architectureTypes.ts'), 'utf-8');
+  if (
+    !routeCode.includes("architectureType: 'open_knowledge_infographic'") ||
+    !archTypesCode.includes('generateOpenKnowledgeInfographicXml()')
+  ) {
+    console.error(
+      '❌ EXPORT GATE FAILED: src/app/api/generate/route.ts and src/lib/architectureTypes.ts must route open_knowledge_infographic to generateOpenKnowledgeInfographicXml().'
+    );
+    process.exit(1);
+  }
+
   console.log(
-    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 certified)`
   );
 }
 

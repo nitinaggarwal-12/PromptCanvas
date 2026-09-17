@@ -110,7 +110,9 @@
         "require_guided_launch_assistant_and_docs_html_only_clipboard": true,
         "require_viewer_default_google_engine_and_cache_buster": true,
         "require_native_word_4layer_drawingml_no_corrupted_boxes": true,
-        "require_cloud_bridge_schema_version_bump": true
+        "require_cloud_bridge_schema_version_bump": true,
+        "ban_static_template_spoofing_on_new_topics": true,
+        "require_prompt_to_canvas_semantic_subject_parity": true
       }
     },
     "scorex": {
