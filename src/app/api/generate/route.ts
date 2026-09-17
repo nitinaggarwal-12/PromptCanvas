@@ -100,7 +100,11 @@ export async function POST(request: Request) {
         const isContextHarnessLoopGraph =
           (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
           promptLower.includes('context + harness') ||
-          promptLower.includes('charlie hills');
+          promptLower.includes('charlie hills') ||
+          promptLower.includes('open knowledge format infographic') ||
+          (promptLower.includes('knowledge') && promptLower.includes('infographic')) ||
+          (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
+          (promptLower.includes('ai agent') && promptLower.includes('infographic'));
 
         if (isContextHarnessLoopGraph) {
           const result = await executeUnifiedDiagramPipeline({

@@ -68,6 +68,10 @@ export async function executeUnifiedDiagramPipeline(
     (promptLowerCheck.includes('harness') && promptLowerCheck.includes('loop') && promptLowerCheck.includes('context')) ||
     promptLowerCheck.includes('context + harness') ||
     promptLowerCheck.includes('charlie hills') ||
+    promptLowerCheck.includes('open knowledge format infographic') ||
+    (promptLowerCheck.includes('knowledge') && promptLowerCheck.includes('infographic')) ||
+    (promptLowerCheck.includes('tiered') && promptLowerCheck.includes('infographic')) ||
+    (promptLowerCheck.includes('ai agent') && promptLowerCheck.includes('infographic')) ||
     effectiveArchType === 'context_harness_loop_graph'
   ) {
     effectiveArchType = 'context_harness_loop_graph';

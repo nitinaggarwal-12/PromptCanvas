@@ -363,6 +363,25 @@ function StudioMain() {
   // Handle Concierge Question Submit
   const handleConciergeSubmit = (queryText: string) => {
     if (!queryText.trim()) return;
+    const qLower = queryText.toLowerCase();
+    const isInfographicOrHarness =
+      qLower.includes('open knowledge format infographic') ||
+      (qLower.includes('knowledge') && qLower.includes('infographic')) ||
+      (qLower.includes('tiered') && qLower.includes('infographic')) ||
+      (qLower.includes('ai agent') && qLower.includes('infographic')) ||
+      (qLower.includes('harness') && qLower.includes('loop') && qLower.includes('context')) ||
+      qLower.includes('context + harness') ||
+      qLower.includes('charlie hills');
+
+    if (isInfographicOrHarness) {
+      const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
+      if (bp52) {
+        setConciergeInput('');
+        handleSelectBlueprint(bp52, selectedDomain);
+        return;
+      }
+    }
+
     const userMsg: StudioChatMessage = {
       id: `c_user_${Date.now()}`,
       sender: 'user',
@@ -627,6 +646,7 @@ function StudioMain() {
     }
 
     const cleanPrompt = promptText.replace(/^\[.*?\]\s*/, '');
+    const promptLower = cleanPrompt.toLowerCase();
 
     const userMsg: StudioChatMessage = {
       id: `msg_${Date.now()}`,
@@ -637,6 +657,23 @@ function StudioMain() {
 
     setMessages(prev => [...prev, userMsg]);
     setPromptInput('');
+
+    const isInfographicOrHarnessPrompt =
+      promptLower.includes('open knowledge format infographic') ||
+      (promptLower.includes('knowledge') && promptLower.includes('infographic')) ||
+      (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
+      (promptLower.includes('ai agent') && promptLower.includes('infographic')) ||
+      (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
+      promptLower.includes('context + harness') ||
+      promptLower.includes('charlie hills');
+
+    if (isInfographicOrHarnessPrompt) {
+      const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
+      if (bp52) {
+        handleSelectBlueprint(bp52, selectedDomain);
+        return;
+      }
+    }
 
     const intentResult = classifyChatIntent(cleanPrompt);
 
@@ -907,9 +944,25 @@ function StudioMain() {
 
     let newXml = generateGcpNativeArchitectureXml({ projectTitle: config.title, domain: config.domain }, newAst);
 
+    const combinedInput = `${config.title || ''} ${config.description || ''}`.toLowerCase();
+    const isInfographicOrHarness =
+      combinedInput.includes('open knowledge format infographic') ||
+      (combinedInput.includes('knowledge') && combinedInput.includes('infographic')) ||
+      (combinedInput.includes('tiered') && combinedInput.includes('infographic')) ||
+      (combinedInput.includes('ai agent') && combinedInput.includes('infographic')) ||
+      (combinedInput.includes('harness') && combinedInput.includes('loop') && combinedInput.includes('context')) ||
+      combinedInput.includes('context + harness') ||
+      combinedInput.includes('charlie hills');
+
     if (config.customXml) {
       newXml = config.customXml;
       setSelectedBlueprintId('custom');
+    } else if (isInfographicOrHarness) {
+      const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
+      if (bp52) {
+        setSelectedBlueprintId('52');
+        newXml = bp52.generateXml(config.domain, 'light');
+      }
     } else if (config.blueprintId !== 'blank' && config.blueprintId !== '00') {
       const bp = CANONICAL_TEMPLATES.find(t => t.id === config.blueprintId);
       if (bp) {
