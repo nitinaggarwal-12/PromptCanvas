@@ -1,7 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "name": "omni_guard",
-  "version": "2.4.0",
+  "version": "2.5.0",
+  "amendment_log": [
+    "v2.5.0 (2026-09-17): Rule 41 Anti-Static-Spoofing Law, Layout Archetype vs. Subject Domain Separation, Universal Dynamic Tiered Infographic Engine (dynamicTieredInfographic.ts), and 5-way SHA-256 Markdown/Skill Lockstep Synchronization across AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md, ~/.gemini/config/AGENTS.md, skills.md, and SKILL.md files."
+  ],
   "omni-governance-guard": {
     "PreToolUse": [
       {
@@ -41,6 +44,8 @@
         "GEMINI.md",
         ".agents/AGENTS.md",
         "CLAUDE.md",
+        "~/.gemini/config/AGENTS.md",
+        "skills.md",
         "docs/INTENT_ROUTER.md",
         ".agents/skills/universal-document-cloud-hub/SKILL.md",
         "~/.gemini/config/skills/universal-document-cloud-hub/SKILL.md",
