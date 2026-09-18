@@ -53,6 +53,177 @@ export function buildDynamicInfographicTiers(prompt: string): {
   const subjectTopic = cleanPrompt.length > 2 ? cleanPrompt : 'Enterprise Domain Architecture';
   const upperTopic = subjectTopic.toUpperCase();
 
+  // 0. AGENT AI SUB-DOMAIN: Agentic Skill Engineering (skills.md / SKILL.md) in Business Workflows
+  if (/skills?\.md|\bskill\b.*workflow|\bworkflow\b.*\bskill\b|skill engineering|agentic skill/i.test(pLower)) {
+    return {
+      headerTitle: `${upperTopic} — AGENTIC SKILL (SKILLS.MD) & BUSINESS WORKFLOW ARCHITECTURE`,
+      headerSubtitle: `Semantic Intent Triggering, Lazy Context Loading, Procedural Playbook DAG Execution, Harness Guardrails & Self-Healing Verification`,
+      footerText: `AGENTIC SKILL LIFECYCLE | 01 INTENT & LAZY LOAD • 02 PROCEDURAL PLAYBOOK DAG • 03 HARNESS & QUALITY GATE • 04 SKILL FLYWHEEL`,
+      tiers: [
+        {
+          num: '01',
+          title: 'SEMANTIC INTENT TRIGGER & LAZY CONTEXT LOADING',
+          subtitle: 'Zero-bloat skill discovery and just-in-time domain context injection into the agent window',
+          primaryColor: '#2563EB',
+          lightBg: '#EFF6FF',
+          borderColor: '#93C5FD',
+          cards: [
+            {
+              title: 'YAML Frontmatter Trigger Index',
+              badge: 'DISCOVERY',
+              bullets: [
+                'Lightweight metadata (`name`, `description`, `triggers`)',
+                'Matches business event (e.g. RFP arrival, invoice anomaly)',
+                'Keeps idle context window 95% free of unused instructions'
+              ]
+            },
+            {
+              title: 'Just-In-Time (Lazy) Skill Loader',
+              badge: 'CONTEXT LOAD',
+              bullets: [
+                'Loads full `SKILL.md` playbook only when triggered',
+                'Mounts required reference templates & JSON schemas',
+                'Injects domain-specific few-shot golden examples'
+              ]
+            },
+            {
+              title: 'Input Contract & Precondition Check',
+              badge: 'VALIDATION',
+              bullets: [
+                'Validates business payload against strict Zod/JSON schema',
+                'Verifies required API credentials & tenant permissions',
+                'Rejects incomplete requests with actionable missing-field prompts'
+              ]
+            }
+          ],
+          gateTitle: 'Preconditions Met?',
+          gatePassLabel: 'Skill Context Mounted',
+          bottomRuleText: 'Rule 01: Never stuff all business SOPs into the global system prompt—register lightweight triggers and lazy-load `SKILL.md` on demand.'
+        },
+        {
+          num: '02',
+          title: 'PROCEDURAL PLAYBOOK & DETERMINISTIC TOOL DAG',
+          subtitle: 'Step-by-step domain execution combining LLM reasoning with deterministic scripts and MCP APIs',
+          primaryColor: '#7C3AED',
+          lightBg: '#F5F3FF',
+          borderColor: '#C4B5FD',
+          cards: [
+            {
+              title: 'Deterministic Execution DAG',
+              badge: 'PLAYBOOK',
+              bullets: [
+                'Explicit ordered steps (Step 1: Extract -> Step 2: Reconcile)',
+                'Bans ad-hoc guessing via strict domain decision trees',
+                'Separates LLM synthesis steps from deterministic math/SQL'
+              ]
+            },
+            {
+              title: 'Bundled Helper Scripts (`scripts/`)',
+              badge: 'AUTOMATION',
+              bullets: [
+                'Offloads brittle regex/math/parsing to Python/TS scripts',
+                'Executes reproducible CLI commands inside sandbox',
+                'Guarantees 100% deterministic calculation accuracy'
+              ]
+            },
+            {
+              title: 'Enterprise MCP & API Connectors',
+              badge: 'INTEGRATION',
+              bullets: [
+                'Invokes typed ERP/CRM/Database tools via MCP protocol',
+                'Enforces idempotency keys on all state-mutating calls',
+                'Captures structured JSON audit trails per tool hop'
+              ]
+            }
+          ],
+          gateTitle: 'DAG Steps Complete?',
+          gatePassLabel: 'Draft Deliverable Ready',
+          bottomRuleText: 'Rule 02: Offload deterministic math, SQL queries, and schema transformations to bundled scripts (`scripts/`) rather than raw LLM token generation.'
+        },
+        {
+          num: '03',
+          title: 'HARNESS GUARDRAILS & CLOSED-LOOP VERIFICATION GATE',
+          subtitle: 'Automated pre/post-tool hooks and self-healing quality verification before business sign-off',
+          primaryColor: '#EA580C',
+          lightBg: '#FFF7ED',
+          borderColor: '#FDBA74',
+          cards: [
+            {
+              title: 'Lifecycle Harness (`hooks.json`)',
+              badge: 'HARNESS',
+              bullets: [
+                '`PreToolUse` blocks unauthorized PII/financial mutations',
+                '`PostToolUse` validates schema & compliance invariants',
+                '`Stop` hook blocks completion until verification passes'
+              ]
+            },
+            {
+              title: 'Automated Verification Script',
+              badge: 'QUALITY GATE',
+              bullets: [
+                'Runs dedicated skill verifier (`verify_skill_output.ts`)',
+                'Checks cross-field financial/regulatory reconciliation',
+                'Asserts zero hallucinated citations or ungrounded claims'
+              ]
+            },
+            {
+              title: 'Autonomous Self-Healing Loop',
+              badge: 'REMEDIATION',
+              bullets: [
+                'Feeds verification failure diffs back into the agent',
+                'Autonomously repairs schema/calculation defects (max 3x)',
+                'Escalates to Human-in-the-Loop (HITL) only if unresolved'
+              ]
+            }
+          ],
+          gateTitle: 'Passed Quality Gate?',
+          gatePassLabel: 'Certified Business Output',
+          bottomRuleText: 'Rule 03: Every business skill MUST include an executable verification command that the `Stop` hook runs before returning results.'
+        },
+        {
+          num: '04',
+          title: 'ENTERPRISE KNOWLEDGE FLYWHEEL & SKILL EVOLUTION',
+          subtitle: 'Continuous learning from human edits and lockstep governance synchronization',
+          primaryColor: '#059669',
+          lightBg: '#ECFDF5',
+          borderColor: '#6EE7B7',
+          cards: [
+            {
+              title: 'Business Deliverable Syndication',
+              badge: 'DELIVERY',
+              bullets: [
+                'Publishes certified artifact (PDF/Docx/Slide/ERP update)',
+                'Attaches cryptographic provenance & confidence scorecard',
+                'Notifies stakeholders via Slack/Teams/Email webhooks'
+              ]
+            },
+            {
+              title: 'Human-in-the-Loop Delta Capture',
+              badge: 'FEEDBACK',
+              bullets: [
+                'Diffs human reviewer edits against agent draft output',
+                'Extracts root-cause domain edge cases from human overrides',
+                'Appends new edge-case rules to `SKILL.md` (`amendment_log`)'
+              ]
+            },
+            {
+              title: 'Lockstep Governance Sync',
+              badge: 'GOVERNANCE',
+              bullets: [
+                'Synchronizes updated `SKILL.md` across repo & global hub',
+                'Updates regression eval dataset with newly solved cases',
+                'Maintains SHA-256 lockstep across all agent workers'
+              ]
+            }
+          ],
+          gateTitle: 'Synced to Skill Hub?',
+          gatePassLabel: 'Flywheel Upgraded',
+          bottomRuleText: 'Rule 04: Whenever a human corrects an agent output in production, capture the diff and codify the new invariant into `skills.md` / `SKILL.md`.'
+        }
+      ]
+    };
+  }
+
   // 1. AGENT AI SUB-DOMAIN: Teacher-Student Distillation, RLVR (GRPO) & Cascade Routing
   if (/distill|rlvr|grpo|teacher.*student|student.*teacher|slm\b/i.test(pLower)) {
     return {
