@@ -1,8 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "name": "omni_guard",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "amendment_log": [
+    "v2.6.0 (2026-09-18): Rule 42 Mandatory 6-Dimension Deep Domain Research Pre-Flight Law (src/lib/research/deepDomainResearcher.ts & POST /api/research-infographic), eliminating generic string interpolation across all dynamic diagram topics and enforcing live Gemini 2.5 6-Dimension Architectural Research Dossiers.",
     "v2.5.0 (2026-09-17): Rule 41 Anti-Static-Spoofing Law, Layout Archetype vs. Subject Domain Separation, Universal Dynamic Tiered Infographic Engine (dynamicTieredInfographic.ts), and 5-way SHA-256 Markdown/Skill Lockstep Synchronization across AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md, ~/.gemini/config/AGENTS.md, skills.md, and SKILL.md files."
   ],
   "omni-governance-guard": {

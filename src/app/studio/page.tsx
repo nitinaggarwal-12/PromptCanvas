@@ -413,30 +413,49 @@ function StudioMain() {
     }
 
     if (qLower.includes('infographic')) {
-      const dynXml = generateDynamicTieredInfographicXml(queryText);
-      setXml(dynXml);
-      setSelectedBlueprintId('custom');
-      setAst(prev => ({
-        ...prev,
-        metadata: {
-          ...prev.metadata,
-          projectTitle: `${queryText} — Tiered Infographic`
-        }
-      }));
+      setConciergeInput('');
       const userMsg: StudioChatMessage = {
         id: `c_user_${Date.now()}`,
         sender: 'user',
         text: queryText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
-      const aiMsg: StudioChatMessage = {
-        id: `c_ai_${Date.now() + 1}`,
-        sender: 'assistant',
-        text: `Synthesized bespoke **4-Tier Architectural Infographic** for **${queryText}** (*01 Ingestion • 02 Harness • 03 Validation • 04 Graph*).`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setConciergeMessages(prev => [...prev, userMsg, aiMsg]);
-      setConciergeInput('');
+      setConciergeMessages(prev => [...prev, userMsg]);
+      setIsHealing(true);
+
+      fetch('/api/research-infographic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: queryText })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const finalXml = data?.xml || generateDynamicTieredInfographicXml(queryText);
+          setXml(finalXml);
+          setSelectedBlueprintId('custom');
+          setAst(prev => ({
+            ...prev,
+            metadata: {
+              ...prev.metadata,
+              projectTitle: `${queryText} — 6-Dimension Researched Infographic`
+            }
+          }));
+          const aiMsg: StudioChatMessage = {
+            id: `c_ai_${Date.now() + 1}`,
+            sender: 'assistant',
+            text: data?.researchBriefMarkdown || `Synthesized bespoke **4-Tier Architectural Infographic** for **${queryText}**.`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          setConciergeMessages(prev => [...prev, aiMsg]);
+        })
+        .catch(() => {
+          const dynXml = generateDynamicTieredInfographicXml(queryText);
+          setXml(dynXml);
+          setSelectedBlueprintId('custom');
+        })
+        .finally(() => {
+          setIsHealing(false);
+        });
       return;
     }
 
@@ -755,23 +774,40 @@ function StudioMain() {
     }
 
     if (promptLower.includes('infographic')) {
-      const dynXml = generateDynamicTieredInfographicXml(cleanPrompt);
-      setXml(dynXml);
-      setSelectedBlueprintId('custom');
-      setAst(prev => ({
-        ...prev,
-        metadata: {
-          ...prev.metadata,
-          projectTitle: `${cleanPrompt} — Tiered Infographic`
-        }
-      }));
-      const aiMsg: StudioChatMessage = {
-        id: `msg_${Date.now() + 1}`,
-        sender: 'assistant',
-        text: `Synthesized bespoke **4-Tier Architectural Infographic** for **${cleanPrompt}** (*01 Ingestion • 02 Harness • 03 Validation • 04 Graph*).`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, aiMsg]);
+      setIsHealing(true);
+      fetch('/api/research-infographic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: cleanPrompt })
+      })
+        .then(res => res.json())
+        .then(data => {
+          const finalXml = data?.xml || generateDynamicTieredInfographicXml(cleanPrompt);
+          setXml(finalXml);
+          setSelectedBlueprintId('custom');
+          setAst(prev => ({
+            ...prev,
+            metadata: {
+              ...prev.metadata,
+              projectTitle: `${cleanPrompt} — 6-Dimension Researched Infographic`
+            }
+          }));
+          const aiMsg: StudioChatMessage = {
+            id: `msg_${Date.now() + 1}`,
+            sender: 'assistant',
+            text: data?.researchBriefMarkdown || `Synthesized bespoke **4-Tier Architectural Infographic** for **${cleanPrompt}**.`,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+          setMessages(prev => [...prev, aiMsg]);
+        })
+        .catch(() => {
+          const dynXml = generateDynamicTieredInfographicXml(cleanPrompt);
+          setXml(dynXml);
+          setSelectedBlueprintId('custom');
+        })
+        .finally(() => {
+          setIsHealing(false);
+        });
       return;
     }
 

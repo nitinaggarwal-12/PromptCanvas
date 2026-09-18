@@ -149,23 +149,17 @@ export async function POST(request: Request) {
         const isDynamicInfographic = promptLower.includes('infographic');
 
         if (isDynamicInfographic) {
-          const result = await executeUnifiedDiagramPipeline({
-            prompt,
-            diagramId,
+          const { researchAndCompileDomainInfographic } = await import('@/lib/research/deepDomainResearcher');
+          const researched = await researchAndCompileDomainInfographic(prompt);
+          return NextResponse.json({
+            xml: researched.xml,
+            name: name || `${prompt.slice(0, 60)} — 6-Dimension Researched Infographic`,
             architectureType: 'dynamic_tiered_infographic',
-            name: name || `${prompt.slice(0, 60)} — Tiered Infographic`,
-            existingXml,
-            isPrivate,
-            userId: user?.id || null,
-            phaseName,
-            domain,
-            abstractionLevel,
-            stackLayer,
-            layoutDirection,
-            salesStage,
-            lifecyclePhase
+            isLiveResearched: researched.isLiveResearched,
+            modelUsed: researched.modelUsed,
+            dossier: researched.dossier,
+            researchBriefMarkdown: researched.researchBriefMarkdown,
           });
-          return NextResponse.json(result);
         }
 
         const hasExplicitTemplateKeyword =

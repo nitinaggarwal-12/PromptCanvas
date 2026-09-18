@@ -539,3 +539,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
     - **Mandatory Omni Semantic Subject Parity Audit**:
       - Before presenting any prompt-generated diagram screenshot to the user, Omni MUST perform a **Semantic Prompt-to-Canvas Subject Parity Check**: Verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt (`Open Knowledge`, `Formats`, `Schema`, `RDF`, `JSON-LD`) and contain **ZERO** leaked hardcoded strings from unrelated templates (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`, `Drug X`).
 
+42. **Mandatory 6-Dimension Deep Domain Research Pre-Flight Law (`src/lib/research/deepDomainResearcher.ts` — Zero Generic Template Interpolation)**:
+    - **Elimination of the Pre-Flight Domain Research Blindspot**:
+      - Whenever a user requests an architectural diagram or infographic for ANY domain topic (whether Agentic AI, Subsea Fiber Optic DWDM, CRISPR Gene Editing, Semiconductor Lithography, or Autonomous Robotics), the system MUST NEVER fall back to lazy generic string interpolation (`"${subjectTopic} Data Sources"`, `"${subjectTopic} Policy Harness"`, `"${subjectTopic} Knowledge Graph"`).
+    - **Mandatory 6-Dimension Architectural Research Protocol**:
+      - Every dynamic topic MUST pass through `researchAndCompileDomainInfographic(prompt)` (`POST /api/research-infographic`), which executes a structured Gemini 2.5 deep domain research pre-flight pass across all **6 mandatory engineering dimensions** before compiling Draw.io XML (`renderInfographicSpecToXml(spec)`):
+        1. **Dimension 1 (Domain Ontology & True Lifecycle Spine)**: The authentic 4-stage physical/logical progression of the domain.
+        2. **Dimension 2 (Authentic Wire Protocols, RFCs, Equations & Payload Formats)**: Real RFC numbers, IEEE/ITU/ISO standards, mathematical loss functions, or binary/wire payload schemas.
+        3. **Dimension 3 (Control Plane vs. Data Plane vs. Governance Plane Separation)**: Strict separation of high-throughput data paths, orchestration/routing control planes, and deterministic safety/policy harnesses.
+        4. **Dimension 4 (Real-World Failure Modes & Quantitative Hard Decision Gates)**: Concrete quantitative thresholds (`OSNR >= 18.5 dB`, `PRM Step Score >= 0.85`, `Latency < 15ms`, etc.) and closed-loop remediation paths.
+        5. **Dimension 5 (Concrete Reference Engines, Open-Source Projects & Commercial SKUs)**: Authentic real-world engines, frameworks, and hardware/software SKUs.
+        6. **Dimension 6 (Visual Topology Mapping & Semantic Parity)**: Complete elimination of generic filler labels across all 4 tiers, bottom bars, and footer pills, paired with a structured **6-Dimension Architectural Research Dossier** surfaced directly in the Studio Co-Pilot panel.
+
+

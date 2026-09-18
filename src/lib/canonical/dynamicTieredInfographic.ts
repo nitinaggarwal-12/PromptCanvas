@@ -907,9 +907,14 @@ export function buildDynamicInfographicTiers(prompt: string): {
   };
 }
 
-export function generateDynamicTieredInfographicXml(prompt: string): string {
-  const spec = buildDynamicInfographicTiers(prompt);
+export interface InfographicSpec {
+  headerTitle: string;
+  headerSubtitle: string;
+  footerText: string;
+  tiers: TierSpec[];
+}
 
+export function renderInfographicSpecToXml(spec: InfographicSpec): string {
   const cells: string[] = [];
 
   // 1. Top Widescreen Header Banner
@@ -1053,3 +1058,8 @@ export function generateDynamicTieredInfographicXml(prompt: string): string {
   </diagram>
 </mxfile>`;
 }
+
+export function generateDynamicTieredInfographicXml(prompt: string): string {
+  return renderInfographicSpecToXml(buildDynamicInfographicTiers(prompt));
+}
+
