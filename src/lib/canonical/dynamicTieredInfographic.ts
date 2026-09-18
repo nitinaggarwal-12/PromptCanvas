@@ -2,14 +2,14 @@
  * Universal Dynamic 4-Tier Architectural Infographic Generator
  *
  * Implements Rule 41: Anti-Static-Spoofing & Layout Archetype vs. Subject Domain Separation Law.
- * When a user prompts for ANY new topic with the "Infographic" layout archetype
- * (e.g., "Healthcare FHIR Infographic", "Zero-Trust Security Infographic", "FinOps Cloud Cost Infographic"),
- * this engine synthesizes a complete 16:9 4-Tier Architectural Infographic:
- *   - Left vertical numbered spine (01..04) with color-coded tier headers
- *   - Dashed architectural enclaves per tier
- *   - 3-column domain cards per tier tailored to the user's subject matter
- *   - Right-rail validation / governance decision gates per tier
- *   - Bottom actionable rule / prompt bars per tier
+ * Features deep specialized domain synthesis for the 6 Frontier Agentic AI Sub-Domains:
+ *   1. Teacher-Student LLM Distillation, RLVR (GRPO) & Cascade Routing
+ *   2. Test-Time Compute Scaling, System-2 Search & Process Reward Models (PRM)
+ *   3. Multimodal VLM Computer-Use & Autonomous Browser/GUI Agents
+ *   4. Agentic Security: Dual-LLM Privilege Separation & Indirect Prompt Injection Defense
+ *   5. Durable Long-Horizon Agent Execution, Checkpointing & Time-Travel Replay
+ *   6. Agentic FinOps, Prefix KV-Caching & Speculative Decoding
+ * Plus universal domain synthesis for any arbitrary user topic.
  */
 
 function escapeXml(str: string): string {
@@ -36,7 +36,7 @@ export interface TierSpec {
 
 /**
  * Extracts a clean subject title and synthesizes 4 domain-specific architectural tiers
- * tailored to the user's prompt topic.
+ * tailored to the user's prompt topic, with deep domain presets for Agentic AI sub-disciplines.
  */
 export function buildDynamicInfographicTiers(prompt: string): {
   headerTitle: string;
@@ -44,6 +44,7 @@ export function buildDynamicInfographicTiers(prompt: string): {
   footerText: string;
   tiers: TierSpec[];
 } {
+  const pLower = prompt.toLowerCase();
   const cleanPrompt = prompt
     .replace(/\b(create|generate|build|draw|make|show|an?|the|diagram|infographic|tiered|architecture|for|of|about|on)\b/gi, ' ')
     .replace(/\s+/g, ' ')
@@ -52,6 +53,520 @@ export function buildDynamicInfographicTiers(prompt: string): {
   const subjectTopic = cleanPrompt.length > 2 ? cleanPrompt : 'Enterprise Domain Architecture';
   const upperTopic = subjectTopic.toUpperCase();
 
+  // 1. AGENT AI SUB-DOMAIN: Teacher-Student Distillation, RLVR (GRPO) & Cascade Routing
+  if (/distill|rlvr|grpo|teacher.*student|student.*teacher|slm\b/i.test(pLower)) {
+    return {
+      headerTitle: `${upperTopic} — TEACHER-STUDENT DISTILLATION & RLVR ARCHITECTURE`,
+      headerSubtitle: `Frontier Teacher Trajectory Synthesis, Verifiable Reward Filtering (RLVR/GRPO), SFT/DPO Distillation & Low-Latency Student Cascade`,
+      footerText: `AGENTIC AI DISTILLATION STACK | 01 CASCADE ROUTING • 02 TEACHER SYNTHESIS • 03 RLVR VERIFIABLE REWARDS • 04 STUDENT SERVING`,
+      tiers: [
+        {
+          num: '01',
+          title: 'SEMANTIC CASCADE ROUTER & INTENT TRIAGE',
+          subtitle: 'Dynamic confidence routing between fast Student SLMs and frontier Teacher LLMs',
+          primaryColor: '#2563EB',
+          lightBg: '#EFF6FF',
+          borderColor: '#93C5FD',
+          cards: [
+            {
+              title: 'Semantic Complexity Classifier',
+              badge: 'ROUTER',
+              bullets: [
+                'Sub-10ms embedding intent & difficulty scoring',
+                'Routes 80%+ routine queries to Student SLM',
+                'Escalates multi-hop reasoning to Frontier Teacher'
+              ]
+            },
+            {
+              title: 'Prefix KV-Cache & Prompt Store',
+              badge: 'CACHING',
+              bullets: [
+                'Shared system prompt & tool definition KV-cache',
+                'Deduplicates recurring context window prefixes',
+                'Cuts Time-To-First-Token (TTFT) by 65%'
+              ]
+            },
+            {
+              title: 'Hard-Negative Mining Sink',
+              badge: 'TELEMETRY',
+              bullets: [
+                'Captures low-confidence Student fallbacks',
+                'Logs user edits, retries & tool execution errors',
+                'Feeds hard prompts into Teacher synthesis queue'
+              ]
+            }
+          ],
+          gateTitle: 'Confidence >= 0.85?',
+          gatePassLabel: 'Fast Student Path',
+          bottomRuleText: 'Rule 01: Never invoke a 100B+ Teacher model for tasks a distilled 8B Student SLM solves with >= 0.85 verified confidence.'
+        },
+        {
+          num: '02',
+          title: 'FRONTIER TEACHER REASONING & TRAJECTORY SYNTHESIS',
+          subtitle: 'High-compute System-2 teacher generation of golden reasoning chains and tool trajectories',
+          primaryColor: '#7C3AED',
+          lightBg: '#F5F3FF',
+          borderColor: '#C4B5FD',
+          cards: [
+            {
+              title: 'Frontier Teacher Ensemble',
+              badge: 'TEACHER LLM',
+              bullets: [
+                'Gemini 2.5 Pro / Claude 3.7 Sonnet high-reasoning',
+                'Generates explicit Chain-of-Thought (CoT) traces',
+                'Synthesizes multi-step MCP tool invocation DAGs'
+              ]
+            },
+            {
+              title: 'Best-of-N Trajectory Rollouts',
+              badge: 'EXPLORATION',
+              bullets: [
+                'Samples N=8 diverse reasoning paths per prompt',
+                'Explores alternative code & SQL query formulations',
+                'Pairs positive winners with rejected contrast pairs'
+              ]
+            },
+            {
+              title: 'Synthetic Curriculum Expander',
+              badge: 'DATA GEN',
+              bullets: [
+                'Mutates edge-case constraints & schema variations',
+                'Balances domain coverage across rare failure modes',
+                'Strips teacher identity hallucinations & boilerplate'
+              ]
+            }
+          ],
+          gateTitle: 'Reasoning Complete?',
+          gatePassLabel: 'Candidate Trajectories',
+          bottomRuleText: 'Rule 02: Harvest full intermediate reasoning traces and tool call ASTs from the Teacher, not just final surface answers.'
+        },
+        {
+          num: '03',
+          title: 'VERIFIABLE REWARD FILTERING (RLVR / GRPO)',
+          subtitle: 'Execution-grounded deterministic verification filtering out hallucinated trajectories',
+          primaryColor: '#EA580C',
+          lightBg: '#FFF7ED',
+          borderColor: '#FDBA74',
+          cards: [
+            {
+              title: 'Deterministic Execution Sandbox',
+              badge: 'RLVR VERIFIER',
+              bullets: [
+                'Compiles generated code (`tsc --noEmit` / unit tests)',
+                'Executes SQL/GraphQL against schema sandboxes',
+                'Assigns binary verifiable reward (R = +1.0 or 0.0)'
+              ]
+            },
+            {
+              title: 'Group Relative Policy Optimization',
+              badge: 'GRPO ALIGNMENT',
+              bullets: [
+                'Computes group-normalized advantage across rollouts',
+                'Eliminates separate critic model memory overhead',
+                'Penalizes verbose CoT token bloat & formatting drift'
+              ]
+            },
+            {
+              title: 'SFT & DPO Dataset Curator',
+              badge: 'CURATION',
+              bullets: [
+                'Packs verified (Prompt, CoT, Tool AST) golden tuples',
+                'Constructs Direct Preference Optimization (DPO) pairs',
+                'Enforces strict contamination & PII redaction gates'
+              ]
+            }
+          ],
+          gateTitle: 'Passed Sandbox Tests?',
+          gatePassLabel: 'Verified Golden Set',
+          bottomRuleText: 'Rule 03: Never distill unverified Teacher outputs—every training trajectory must pass deterministic compiler or sandbox execution.'
+        },
+        {
+          num: '04',
+          title: 'DISTILLED STUDENT SLM SERVING & CONTINUOUS EVAL',
+          subtitle: 'High-throughput quantized Student deployment with online drift detection',
+          primaryColor: '#059669',
+          lightBg: '#ECFDF5',
+          borderColor: '#6EE7B7',
+          cards: [
+            {
+              title: 'Distilled Student SLM / VLM',
+              badge: 'STUDENT MODEL',
+              bullets: [
+                'Fine-tuned Gemini 2.5 Flash / Gemma 3 12B / LoRA',
+                'FP8 / AWQ quantization on vLLM / TensorRT-LLM',
+                '10x lower latency & 15x lower token cost vs Teacher'
+              ]
+            },
+            {
+              title: 'Speculative Decoding Engine',
+              badge: 'ACCELERATION',
+              bullets: [
+                'Draft-target speculative token verification',
+                '300+ tokens/sec streaming output throughput',
+                'Strict JSON Schema grammar-constrained decoding'
+              ]
+            },
+            {
+              title: 'Online Shadow Eval & Drift Loop',
+              badge: 'OBSERVABILITY',
+              bullets: [
+                'Async 5% shadow traffic re-scored by Teacher Judge',
+                'Monitors KL-divergence & domain accuracy regression',
+                'Triggers automated weekly LoRA distillation refresh'
+              ]
+            }
+          ],
+          gateTitle: 'Parity >= 98% Teacher?',
+          gatePassLabel: 'Live Student Production',
+          bottomRuleText: 'Rule 04: Continuously shadow-test the Student SLM against the Teacher on 5% live traffic to catch distribution drift early.'
+        }
+      ]
+    };
+  }
+
+  // 2. AGENT AI SUB-DOMAIN: Test-Time Compute Scaling, System-2 Search & Process Reward Models (PRM)
+  if (/test-time|system\s*2|mcts|process reward|prm\b|tree of thought|search.*reason/i.test(pLower)) {
+    return {
+      headerTitle: `${upperTopic} — TEST-TIME COMPUTE & SYSTEM-2 REASONING`,
+      headerSubtitle: `Adaptive Compute Allocation, Tree-of-Thoughts Search (MCTS), Process Reward Models (PRM) & Verifier Consensus`,
+      footerText: `TEST-TIME COMPUTE SCALING | 01 ADAPTIVE BUDGET • 02 TREE SEARCH (MCTS) • 03 PROCESS REWARD (PRM) • 04 CONSENSUS SYNTHESIS`,
+      tiers: [
+        {
+          num: '01',
+          title: 'ADAPTIVE COMPUTE BUDGET & DIFFICULTY ROUTER',
+          subtitle: 'Allocating inference thinking tokens dynamically based on task complexity',
+          primaryColor: '#2563EB',
+          lightBg: '#EFF6FF',
+          borderColor: '#93C5FD',
+          cards: [
+            {
+              title: 'Task Complexity Estimator',
+              badge: 'TRIAGE',
+              bullets: [
+                'Classifies query depth (System-1 fast vs System-2 deep)',
+                'Assigns thinking token budget (1K to 32K tokens)',
+                'Sets branching factor (B) and search depth (D)'
+              ]
+            },
+            {
+              title: 'Problem Decomposer & Planner',
+              badge: 'DECOMPOSITION',
+              bullets: [
+                'Breaks multi-constraint goal into verifiable sub-goals',
+                'Formulates explicit formal constraints & invariants',
+                'Initializes root state for tree search exploration'
+              ]
+            },
+            {
+              title: 'Context & Tool State Snapshot',
+              badge: 'STATE INIT',
+              bullets: [
+                'Captures immutable workspace & AST state snapshot',
+                'Prepares forkable sandbox environments for rollouts',
+                'Loads domain-specific verification rubrics'
+              ]
+            }
+          ],
+          gateTitle: 'Requires System-2 Search?',
+          gatePassLabel: 'Allocate Thinking Budget',
+          bottomRuleText: 'Rule 01: Scale inference-time compute dynamically—spend 80% of thinking tokens on the hardest 20% reasoning bottlenecks.'
+        },
+        {
+          num: '02',
+          title: 'PARALLEL TREE-OF-THOUGHTS & MCTS EXPLORATION',
+          subtitle: 'Branching search across alternative reasoning steps and hypothesis trees',
+          primaryColor: '#7C3AED',
+          lightBg: '#F5F3FF',
+          borderColor: '#C4B5FD',
+          cards: [
+            {
+              title: 'Monte Carlo Tree Search (MCTS)',
+              badge: 'SEARCH ENGINE',
+              bullets: [
+                'Balances Exploitation (UCB1) vs Exploration of steps',
+                'Expands parallel candidate reasoning branches',
+                'Backpropagates step value scores up the search tree'
+              ]
+            },
+            {
+              title: 'Self-Correction & Backtracking',
+              badge: 'REFLECTION',
+              bullets: [
+                'Detects dead-end contradictions & compiler errors',
+                'Prunes low-probability reasoning subtrees early',
+                'Backtracks to last verified intermediate checkpoint'
+              ]
+            },
+            {
+              title: 'Diverse Temperature Rollouts',
+              badge: 'SAMPLING',
+              bullets: [
+                'Executes parallel rollouts across varied temperatures',
+                'Combines symbolic tool execution with neural reasoning',
+                'Generates candidate solution proofs & code diffs'
+              ]
+            }
+          ],
+          gateTitle: 'Valid Branch Found?',
+          gatePassLabel: 'Candidate Step Tree',
+          bottomRuleText: 'Rule 02: Never rely on greedy single-path decoding for complex reasoning; explore parallel branches and backtrack on failure.'
+        },
+        {
+          num: '03',
+          title: 'PROCESS REWARD MODEL (PRM) STEP VERIFICATION',
+          subtitle: 'Fine-grained step-by-step mathematical and logical verification',
+          primaryColor: '#EA580C',
+          lightBg: '#FFF7ED',
+          borderColor: '#FDBA74',
+          cards: [
+            {
+              title: 'Process Reward Model (PRM)',
+              badge: 'STEP SCORER',
+              bullets: [
+                'Scores every intermediate step P(correct | step_i)',
+                'Pinpoints exact line where reasoning diverged',
+                'Outperforms Outcome Reward Models (ORM) on credit assignment'
+              ]
+            },
+            {
+              title: 'Formal & Symbolic Verifiers',
+              badge: 'HARD CHECK',
+              bullets: [
+                'Executes type-checkers, SMT solvers & unit test harnesses',
+                'Validates geometric AABB collision & schema invariants',
+                'Assigns zero score to any step violating hard constraints'
+              ]
+            },
+            {
+              title: 'Critique & Refinement Generator',
+              badge: 'CRITIC',
+              bullets: [
+                'Synthesizes targeted diagnostic feedback on failed steps',
+                'Feeds error trace back into MCTS expansion node',
+                'Iterates until step score exceeds threshold (0.95)'
+              ]
+            }
+          ],
+          gateTitle: 'All Steps Score >= 0.95?',
+          gatePassLabel: 'PRM Certified Path',
+          bottomRuleText: 'Rule 03: Verify intermediate reasoning steps with a Process Reward Model (PRM) rather',
+        },
+        {
+          num: '04',
+          title: 'MAJORITY VOTING, CONSENSUS & FINAL SYNTHESIS',
+          subtitle: 'Weighted ensemble aggregation and verifiable output delivery',
+          primaryColor: '#059669',
+          lightBg: '#ECFDF5',
+          borderColor: '#6EE7B7',
+          cards: [
+            {
+              title: 'PRM-Weighted Majority Voting',
+              badge: 'CONSENSUS',
+              bullets: [
+                'Clusters semantically equivalent final answers',
+                'Weights each trajectory by cumulative PRM step score',
+                'Selects highest-confidence consensus solution'
+              ]
+            },
+            {
+              title: 'Explanation & Proof Compiler',
+              badge: 'DELIVERY',
+              bullets: [
+                'Strips pruned search branches & dead-end traces',
+                'Synthesizes clean, auditable step-by-step proof',
+                'Attaches verifiable execution logs & test badges'
+              ]
+            },
+            {
+              title: 'Trajectory Memory Archival',
+              badge: 'FLYWHEEL',
+              bullets: [
+                'Stores solved System-2 trajectories in Episodic Memory',
+                'Feeds verified hard solutions into future RLVR training',
+                'Amortizes search cost across recurring problem classes'
+              ]
+            }
+          ],
+          gateTitle: 'Consensus Verified?',
+          gatePassLabel: 'System-2 Certified Output',
+          bottomRuleText: 'Rule 04: Archive verified System-2 search trajectories into episodic memory so future similar queries resolve in System-1 time.'
+        }
+      ]
+    };
+  }
+
+  // 3. AGENT AI SUB-DOMAIN: Multimodal VLM Computer-Use & Autonomous Browser/GUI Agents
+  if (/vlm\b|computer use|browser agent|gui agent|set-of-marks|multimodal.*agent|vision.*agent/i.test(pLower)) {
+    return {
+      headerTitle: `${upperTopic} — MULTIMODAL VLM & COMPUTER-USE AGENT ARCHITECTURE`,
+      headerSubtitle: `Visual Viewport Perception (Set-of-Marks), DOM/Accessibility Fusion, Sandboxed Coordinate Action Loop & Visual QA`,
+      footerText: `VLM COMPUTER-USE STACK | 01 VISUAL PERCEPTION • 02 SPATIAL GROUNDING • 03 SANDBOXED GUI ACTION • 04 VISUAL QA LOOP`,
+      tiers: [
+        {
+          num: '01',
+          title: 'MULTIMODAL VIEWPORT PERCEPTION & SOM TAGGING',
+          subtitle: 'High-resolution visual screenshot capture fused with live DOM & Accessibility trees',
+          primaryColor: '#2563EB',
+          lightBg: '#EFF6FF',
+          borderColor: '#93C5FD',
+          cards: [
+            {
+              title: '2x Retina Viewport Capture',
+              badge: 'VISION INPUT',
+              bullets: [
+                'Captures live headless Chrome / OS desktop framebuffer',
+                'Detects visual modals, canvas renders & SVG viewports',
+                'Handles dynamic animations via settling synchronization'
+              ]
+            },
+            {
+              title: 'Set-of-Marks (SoM) Overlay Engine',
+              badge: 'SOM TAGGING',
+              bullets: [
+                'Projects numbered bounding-box badges [1..N] onto UI elements',
+                'Maps visual badge IDs to exact DOM selectors & coordinates',
+                'Eliminates raw pixel coordinate hallucination in VLMs'
+              ]
+            },
+            {
+              title: 'DOM & AXTree Structural Fusion',
+              badge: 'HYBRID STATE',
+              bullets: [
+                'Extracts filtered Accessibility Tree (AXTree) hierarchy',
+                'Captures computed CSS visibility, z-index & bounding rects',
+                'Provides dual visual + semantic state to the VLM planner'
+              ]
+            }
+          ],
+          gateTitle: 'Viewport Settled & Tagged?',
+          gatePassLabel: 'Grounded Visual State',
+          bottomRuleText: 'Rule 01: Always fuse 2x Retina screenshots with Set-of-Marks (SoM) bounding tags so the VLM selects discrete element IDs, not guessed pixels.'
+        },
+        {
+          num: '02',
+          title: 'VLM SPATIAL GROUNDING & ACTION PLANNING',
+          subtitle: 'Multimodal reasoning over UI state transitions and step-by-step action synthesis',
+          primaryColor: '#7C3AED',
+          lightBg: '#F5F3FF',
+          borderColor: '#C4B5FD',
+          cards: [
+            {
+              title: 'Multimodal VLM Planner',
+              badge: 'GEMINI 2.5 PRO VLM',
+              bullets: [
+                'Reasons jointly over goal prompt, SoM screenshot & AXTree',
+                'Predicts expected visual state transition after action',
+                'Outputs structured action AST (`click(#42)`, `type(#15, text)`)'
+              ]
+            },
+            {
+              title: 'Obstacle & Modal Interceptor',
+              badge: 'RESILIENCE',
+              bullets: [
+                'Identifies cookie banners, auth walls & blocking overlays',
+                'Generates pre-requisite dismiss actions automatically',
+                'Prevents click interception by transparent z-index masks'
+              ]
+            },
+            {
+              title: 'Coordinate & Selector Resolver',
+              badge: 'GROUNDING',
+              bullets: [
+                'Translates SoM ID `[#42]` to center `(x, y)` and DOM node',
+                'Verifies target element is within viewport scroll bounds',
+                'Computes smooth scroll trajectory if target is off-screen'
+              ]
+            }
+          ],
+          gateTitle: 'Action Safe & Grounded?',
+          gatePassLabel: 'Verified Action AST',
+          bottomRuleText: 'Rule 02: Prefer direct DOM-level clicks (`el.click()`) over raw mouse coordinates whenever an overlay mask could intercept physical clicks.'
+        },
+        {
+          num: '03',
+          title: 'SANDBOXED BROWSER / OS EXECUTION HARNESS',
+          subtitle: 'Deterministic CDP / OS-level execution with settling delays and network guards',
+          primaryColor: '#EA580C',
+          lightBg: '#FFF7ED',
+          borderColor: '#FDBA74',
+          cards: [
+            {
+              title: 'Chrome DevTools Protocol (CDP)',
+              badge: 'EXECUTION',
+              bullets: [
+                'Dispatches hardware-synthesized mouse, keyboard & drag events',
+                'Intercepts network XHR/Fetch responses & console errors',
+                'Enforces isolated ephemeral browser profile sandboxing'
+              ]
+            },
+            {
+              title: '800ms Settling Synchronization',
+              badge: 'TIMING GUARD',
+              bullets: [
+                'Injects mandatory 800ms settling delay after state clicks',
+                'Waits for React hydration, CSS transitions & iframe renders',
+                'Uses Node-level timeouts across full page reloads'
+              ]
+            },
+            {
+              title: 'Privilege & Origin Perimeter',
+              badge: 'SECURITY',
+              bullets: [
+                'Blocks unauthorized external domain navigation & downloads',
+                'Requires explicit HITL confirmation for destructive submits',
+                'Logs full video/screenshot trajectory audit trail'
+              ]
+            }
+          ],
+          gateTitle: 'Action Executed Cleanly?',
+          gatePassLabel: 'Post-Action Frame Ready',
+          bottomRuleText: 'Rule 03: Always enforce an 800ms synchronization delay after UI interactions before capturing the verification screenshot.'
+        },
+        {
+          num: '04',
+          title: 'VISUAL REGRESSION & FORENSIC QA AUDITOR',
+          subtitle: 'Closed-loop multimodal diffing and autonomous self-healing remediation',
+          primaryColor: '#059669',
+          lightBg: '#ECFDF5',
+          borderColor: '#6EE7B7',
+          cards: [
+            {
+              title: 'Omni Multimodal Forensic Judge',
+              badge: 'VISUAL QA',
+              bullets: [
+                'Compares Before vs After screenshots for expected delta',
+                'Inspects live SVG/DOM bounding boxes for label collisions',
+                'Verifies zero blank canvases, broken images or error toasts'
+              ]
+            },
+            {
+              title: 'Pixelmatch & Layout Drift Gate',
+              badge: 'REGRESSION',
+              bullets: [
+                'Computes pixel-by-pixel structural similarity score',
+                'Asserts container aspect ratios (16:9 widescreen parity)',
+                'Flags any overlapping text or clipped header borders'
+              ]
+            },
+            {
+              title: 'Autonomous Self-Healing Loop',
+              badge: 'REMEDIATION',
+              bullets: [
+                'Automatically diagnoses root cause of visual defects',
+                'Adjusts CSS/XML layout coordinates and re-renders',
+                'Loops autonomously until 100% zero-defect certification'
+              ]
+            }
+          ],
+          gateTitle: 'Zero Visual Defects?',
+          gatePassLabel: 'Certified Visual Artifact',
+          bottomRuleText: 'Rule 04: Never certify a UI or diagram based solely on HTTP 200 status codes—physically inspect the rendered screenshot and DOM bounding boxes.'
+        }
+      ]
+    };
+  }
+
+  // 4. GENERIC / UNIVERSAL ENTERPRISE TOPIC (Default 4-Tier Synthesis for ANY other topic)
   return {
     headerTitle: `${upperTopic} — 4-TIER ARCHITECTURAL INFOGRAPHIC`,
     headerSubtitle: `End-to-End Ingestion, Governance Harness, Validation Loop & Knowledge Graph Topology for ${subjectTopic}`,
