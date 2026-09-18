@@ -120,7 +120,8 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType === 'studio3' ||
       archType.includes('studio3') ||
       archType === 'context_harness_loop_graph' ||
-      archType === 'open_knowledge_infographic'
+      archType === 'open_knowledge_infographic' ||
+      archType === 'dynamic_tiered_infographic'
     )
   ) || (
     inputXml.includes('PromptCanvas') ||

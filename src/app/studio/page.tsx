@@ -62,6 +62,7 @@ import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { AppHeader } from '@/components/AppHeader';
 import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
+import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -397,20 +398,46 @@ function StudioMain() {
       return;
     }
 
-    const isInfographicOrHarness =
-      (qLower.includes('tiered') && qLower.includes('infographic')) ||
-      (qLower.includes('ai agent') && qLower.includes('infographic')) ||
+    const isCharlieHillsHarness =
       (qLower.includes('harness') && qLower.includes('loop') && qLower.includes('context')) ||
       qLower.includes('context + harness') ||
       qLower.includes('charlie hills');
 
-    if (isInfographicOrHarness) {
+    if (isCharlieHillsHarness) {
       const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
       if (bp52) {
         setConciergeInput('');
         handleSelectBlueprint(bp52, selectedDomain);
         return;
       }
+    }
+
+    if (qLower.includes('infographic')) {
+      const dynXml = generateDynamicTieredInfographicXml(queryText);
+      setXml(dynXml);
+      setSelectedBlueprintId('custom');
+      setAst(prev => ({
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          projectTitle: `${queryText} — Tiered Infographic`
+        }
+      }));
+      const userMsg: StudioChatMessage = {
+        id: `c_user_${Date.now()}`,
+        sender: 'user',
+        text: queryText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      const aiMsg: StudioChatMessage = {
+        id: `c_ai_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: `Synthesized bespoke **4-Tier Architectural Infographic** for **${queryText}** (*01 Ingestion • 02 Harness • 03 Validation • 04 Graph*).`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setConciergeMessages(prev => [...prev, userMsg, aiMsg]);
+      setConciergeInput('');
+      return;
     }
 
     const userMsg: StudioChatMessage = {
@@ -714,19 +741,38 @@ function StudioMain() {
       return;
     }
 
-    const isInfographicOrHarnessPrompt =
-      (promptLower.includes('tiered') && promptLower.includes('infographic')) ||
-      (promptLower.includes('ai agent') && promptLower.includes('infographic')) ||
+    const isCharlieHillsPrompt =
       (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
       promptLower.includes('context + harness') ||
       promptLower.includes('charlie hills');
 
-    if (isInfographicOrHarnessPrompt) {
+    if (isCharlieHillsPrompt) {
       const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
       if (bp52) {
         handleSelectBlueprint(bp52, selectedDomain);
         return;
       }
+    }
+
+    if (promptLower.includes('infographic')) {
+      const dynXml = generateDynamicTieredInfographicXml(cleanPrompt);
+      setXml(dynXml);
+      setSelectedBlueprintId('custom');
+      setAst(prev => ({
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          projectTitle: `${cleanPrompt} — Tiered Infographic`
+        }
+      }));
+      const aiMsg: StudioChatMessage = {
+        id: `msg_${Date.now() + 1}`,
+        sender: 'assistant',
+        text: `Synthesized bespoke **4-Tier Architectural Infographic** for **${cleanPrompt}** (*01 Ingestion • 02 Harness • 03 Validation • 04 Graph*).`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMessages(prev => [...prev, aiMsg]);
+      return;
     }
 
     const intentResult = classifyChatIntent(cleanPrompt);
@@ -1003,9 +1049,7 @@ function StudioMain() {
       combinedInput.includes('open knowledge format infographic') ||
       (combinedInput.includes('open knowledge') && combinedInput.includes('infographic'));
 
-    const isInfographicOrHarness =
-      (combinedInput.includes('tiered') && combinedInput.includes('infographic')) ||
-      (combinedInput.includes('ai agent') && combinedInput.includes('infographic')) ||
+    const isCharlieHills =
       (combinedInput.includes('harness') && combinedInput.includes('loop') && combinedInput.includes('context')) ||
       combinedInput.includes('context + harness') ||
       combinedInput.includes('charlie hills');
@@ -1016,12 +1060,15 @@ function StudioMain() {
     } else if (isOpenKnowledge) {
       setSelectedBlueprintId('custom');
       newXml = generateOpenKnowledgeInfographicXml(config.domain, 'light');
-    } else if (isInfographicOrHarness) {
+    } else if (isCharlieHills) {
       const bp52 = CANONICAL_TEMPLATES.find(t => t.id === '52');
       if (bp52) {
         setSelectedBlueprintId('52');
         newXml = bp52.generateXml(config.domain, 'light');
       }
+    } else if (combinedInput.includes('infographic')) {
+      setSelectedBlueprintId('custom');
+      newXml = generateDynamicTieredInfographicXml(`${config.title || ''} ${config.description || ''}`);
     } else if (config.blueprintId !== 'blank' && config.blueprintId !== '00') {
       const bp = CANONICAL_TEMPLATES.find(t => t.id === config.blueprintId);
       if (bp) {

@@ -92,6 +92,11 @@ const steps: GateStep[] = [
     name: 'Navigation Badge Count & Obsolete Route Drift Gate',
     category: 'NAVIGATION_INTEGRITY',
     command: 'node scripts/verify_nav_badge_counts.mjs'
+  },
+  {
+    name: 'Universal Multi-Project Governance Doc & Skill Lockstep Sync Gate',
+    category: 'GOVERNANCE_SYNC',
+    command: 'node scripts/guards/gate_governance_doc_sync.mjs'
   }
 ];
 

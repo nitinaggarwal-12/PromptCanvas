@@ -94,3 +94,12 @@ module.exports = { evaluateGeneratedGraphXml };
 
 ## 3. Workflow Trigger
 Execute `evaluateGeneratedGraphXml()` during LLM prompt tuning, canonical template compilation, or Gemini SDK upgrades (`@google/genai`).
+
+---
+
+## 🛡️ Semantic Prompt-to-Canvas Subject Parity & Anti-Spoofing Eval Gate (Rule 41)
+
+- Every prompt evaluation suite must test arbitrary topic + layout archetype combinations (e.g., `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"Open Knowledge format Infographic"`).
+- Evals MUST assert:
+  1. **Zero Static Spoofing**: The rendered XML must never contain leaked static strings (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`) when the prompt asks for a different topic.
+  2. **100% Semantic Subject Parity**: The header title, tier subtitles, and node labels must explicitly incorporate the domain nouns from the user prompt.

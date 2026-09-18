@@ -238,4 +238,14 @@ For all Google Cloud Platform (GCP) architectures, diagrams, and components:
      - Call `getBoundingClientRect()` on edge label text elements and verify zero mathematical intersection with adjacent container headers or node cards.
      - Assert that line paths (`<path d="...">`) do not penetrate the inner bounding boxes of non-target child components.
 
+---
 
+## 🎯 Pillar 13: Anti-Static-Spoofing, Layout Archetype vs. Subject Domain Separation & Universal Dynamic Infographic Synthesis (`Rule 41`)
+
+1. **Strict Separation of Layout Archetype vs. Subject Domain**:
+   - Never confuse a **Visual Layout Archetype** (`Tiered Architectural Infographic`, `Infographic`, `Swimlane`, `Sequence Diagram`, `C4 Topology`) with a **Static Content Template** (`Charlie Hills / Context + Harness + Loop + Graph`, `NOVACURA Biopharma`).
+   - When a user prompt requests a layout archetype for a **new or arbitrary subject topic** (e.g., `"Open Knowledge format Infographic"`, `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"FinOps Cloud Cost Infographic"`), the prompt router and diagram generator MUST NEVER spoof or return a static template belonging to an unrelated subject domain (`Context + Harness + Loop + Graph` or `Charlie Hills`).
+2. **Universal Dynamic Tiered Infographic Engine (`src/lib/canonical/dynamicTieredInfographic.ts`)**:
+   - Any prompt containing `"infographic"` that is not an explicit named reference template MUST route to `generateDynamicTieredInfographicXml(prompt)`, which dynamically synthesizes a complete 16:9 4-Tier Architectural Infographic (`01 Ingestion` • `02 Harness` • `03 Validation` • `04 Graph` with numbered spine, dashed enclaves, decision gates, and bottom rule/prompt bars) customized 100% to the user's subject domain.
+3. **Mandatory Semantic Subject Parity Audit**:
+   - Before certifying any generated diagram, verify that the rendered canvas header title, tier subtitles, node labels, and footer pill explicitly contain the subject domain nouns from the user's prompt and contain **zero** leaked strings from unrelated templates (`Charlie Hills`, `CLAUDE.md`, `NOVACURA`).

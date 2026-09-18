@@ -786,6 +786,9 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
   } else if (id === 'open_knowledge_infographic' || id.includes('open_knowledge')) {
     const { generateOpenKnowledgeInfographicXml } = require('./canonical/openKnowledgeInfographic');
     xml = generateOpenKnowledgeInfographicXml();
+  } else if (id === 'dynamic_tiered_infographic' || id.includes('dynamic_infographic')) {
+    const { generateDynamicTieredInfographicXml } = require('./canonical/dynamicTieredInfographic');
+    xml = generateDynamicTieredInfographicXml(userPrompt || useCaseContext || 'Enterprise Domain Architecture');
   } else if (id === 'context_harness_loop_graph' || id === 'canonical_52' || id === '52' || id.includes('harness_loop')) {
     const { generateTemplate52ContextHarnessLoopGraphXml } = require('./canonical/template52ContextHarnessLoopGraph');
     xml = generateTemplate52ContextHarnessLoopGraphXml();
@@ -795,7 +798,7 @@ export function getDefaultXmlForArchitecture(archId?: string | null, useCaseCont
     xml = getTechnicalArchitectureXml(id || 'tech_serverless_gcp');
   }
 
-  const isMasterInfographic = id === 'context_harness_loop_graph' || id === 'open_knowledge_infographic' || id === 'canonical_52' || id === '52';
+  const isMasterInfographic = id === 'context_harness_loop_graph' || id === 'open_knowledge_infographic' || id === 'dynamic_tiered_infographic' || id === 'canonical_52' || id === '52';
   const hasCustomUserPrompt = Boolean(!isMasterInfographic && userPrompt && userPrompt.trim() !== '' && userPrompt.trim() !== getTemplateTitle(id));
 
   // If user provided a specific custom prompt to re-flavor the diagram, inject the flavor

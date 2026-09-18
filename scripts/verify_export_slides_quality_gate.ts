@@ -175,16 +175,35 @@ function runExportSlidesQualityGate() {
   const archTypesCode = fs.readFileSync(path.join(process.cwd(), 'src/lib/architectureTypes.ts'), 'utf-8');
   if (
     !routeCode.includes("architectureType: 'open_knowledge_infographic'") ||
-    !archTypesCode.includes('generateOpenKnowledgeInfographicXml()')
+    !routeCode.includes("architectureType: 'dynamic_tiered_infographic'") ||
+    !archTypesCode.includes('generateOpenKnowledgeInfographicXml()') ||
+    !archTypesCode.includes('generateDynamicTieredInfographicXml(')
   ) {
     console.error(
-      '❌ EXPORT GATE FAILED: src/app/api/generate/route.ts and src/lib/architectureTypes.ts must route open_knowledge_infographic to generateOpenKnowledgeInfographicXml().'
+      '❌ EXPORT GATE FAILED: route.ts and architectureTypes.ts must route both open_knowledge_infographic and dynamic_tiered_infographic.'
     );
     process.exit(1);
   }
 
+  const { generateDynamicTieredInfographicXml } = require('../src/lib/canonical/dynamicTieredInfographic');
+  const testPrompts = [
+    { prompt: 'Healthcare FHIR Interoperability Infographic', expectedToken: 'HEALTHCARE FHIR INTEROPERABILITY' },
+    { prompt: 'Zero-Trust Kubernetes Security Infographic', expectedToken: 'ZERO-TRUST KUBERNETES SECURITY' }
+  ];
+  for (const t of testPrompts) {
+    const xmlOut = generateDynamicTieredInfographicXml(t.prompt);
+    if (!xmlOut.includes('TIER 01') || !xmlOut.includes('TIER 04') || !xmlOut.includes(t.expectedToken)) {
+      console.error(`❌ EXPORT GATE FAILED: generateDynamicTieredInfographicXml("${t.prompt}") failed semantic subject parity check.`);
+      process.exit(1);
+    }
+    if (xmlOut.toLowerCase().includes('charlie hills') || xmlOut.toLowerCase().includes('claude.md')) {
+      console.error(`❌ EXPORT GATE FAILED: generateDynamicTieredInfographicXml("${t.prompt}") leaked Charlie Hills / CLAUDE.md strings!`);
+      process.exit(1);
+    }
+  }
+
   console.log(
-    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 certified)`
+    `✅ Export & Slides/Docs Studio Quality Gate PASSED! (${verticesWithIcons.length} Azure vector icons verified, Docs Editable Diagram Parity, Native Word 4-Layer DrawingML verified, /viewer Google Workspace buttons & Cloud Bridge certified, Anti-Static-Spoofing Rule 41 & Universal Dynamic Tiered Infographic Engine certified)`
   );
 }
 

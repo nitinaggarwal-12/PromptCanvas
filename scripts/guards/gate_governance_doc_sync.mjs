@@ -2,9 +2,10 @@
 /**
  * Gate: Mandatory Post-Fix Governance Document & Skill Synchronization
  * Asserts that:
- * 1. AGENTS.md, GEMINI.md, and .agents/AGENTS.md are 100% byte-for-byte identical.
+ * 1. AGENTS.md, GEMINI.md, .agents/AGENTS.md, and CLAUDE.md are 100% byte-for-byte identical.
  * 2. .agents/skills/universal-document-cloud-hub/SKILL.md and ~/.gemini/config/skills/universal-document-cloud-hub/SKILL.md are synchronized.
- * 3. .agents/hooks.json contains universal_post_fix_governance_doc_sync.enabled === true.
+ * 3. .agents/skills/diagram-generation-engine/SKILL.md and ~/.gemini/config/skills/diagram-generation-engine/SKILL.md are synchronized.
+ * 4. .agents/hooks.json and ~/.gemini/config/hooks.json are synchronized and contain universal_post_fix_governance_doc_sync.enabled === true.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,24 +23,30 @@ function sha256(filePath) {
 export function auditPromptCanvasGovernanceSync() {
   const mismatches = [];
 
-  // 1. Verify AGENTS.md === GEMINI.md === .agents/AGENTS.md
+  // 1. Verify AGENTS.md === GEMINI.md === .agents/AGENTS.md === CLAUDE.md
   const agentsPath = path.join(REPO_ROOT, 'AGENTS.md');
   const geminiPath = path.join(REPO_ROOT, 'GEMINI.md');
   const dotAgentsPath = path.join(REPO_ROOT, '.agents/AGENTS.md');
+  const claudePath = path.join(REPO_ROOT, 'CLAUDE.md');
 
   const hAgents = sha256(agentsPath);
   const hGemini = sha256(geminiPath);
   const hDotAgents = sha256(dotAgentsPath);
+  const hClaude = sha256(claudePath);
 
   if (!hAgents) mismatches.push('MISSING: AGENTS.md');
   if (!hGemini) mismatches.push('MISSING: GEMINI.md');
   if (!hDotAgents) mismatches.push('MISSING: .agents/AGENTS.md');
+  if (!hClaude) mismatches.push('MISSING: CLAUDE.md');
 
   if (hAgents && hGemini && hAgents !== hGemini) {
     mismatches.push('DRIFT: AGENTS.md and GEMINI.md are out of sync (must be byte-for-byte identical)');
   }
   if (hAgents && hDotAgents && hAgents !== hDotAgents) {
     mismatches.push('DRIFT: AGENTS.md and .agents/AGENTS.md are out of sync (must be byte-for-byte identical)');
+  }
+  if (hAgents && hClaude && hAgents !== hClaude) {
+    mismatches.push('DRIFT: AGENTS.md and CLAUDE.md are out of sync (must be byte-for-byte identical)');
   }
 
   // 2. Verify universal-document-cloud-hub SKILL.md synchronization
@@ -54,11 +61,30 @@ export function auditPromptCanvasGovernanceSync() {
     mismatches.push('DRIFT: .agents/skills/universal-document-cloud-hub/SKILL.md and ~/.gemini/config/skills/universal-document-cloud-hub/SKILL.md differ');
   }
 
-  // 3. Verify .agents/hooks.json has universal_post_fix_governance_doc_sync enabled
+  // 3. Verify diagram-generation-engine SKILL.md synchronization
+  const repoDiagSkillPath = path.join(REPO_ROOT, '.agents/skills/diagram-generation-engine/SKILL.md');
+  const globalDiagSkillPath = path.join(HOME_DIR, '.gemini/config/skills/diagram-generation-engine/SKILL.md');
+
+  const hRepoDiagSkill = sha256(repoDiagSkillPath);
+  const hGlobalDiagSkill = sha256(globalDiagSkillPath);
+
+  if (!hRepoDiagSkill) mismatches.push('MISSING: .agents/skills/diagram-generation-engine/SKILL.md');
+  if (hRepoDiagSkill && hGlobalDiagSkill && hRepoDiagSkill !== hGlobalDiagSkill) {
+    mismatches.push('DRIFT: .agents/skills/diagram-generation-engine/SKILL.md and ~/.gemini/config/skills/diagram-generation-engine/SKILL.md differ');
+  }
+
+  // 4. Verify .agents/hooks.json and ~/.gemini/config/hooks.json synchronization
   const hooksPath = path.join(REPO_ROOT, '.agents/hooks.json');
-  if (!fs.existsSync(hooksPath)) {
+  const globalHooksPath = path.join(HOME_DIR, '.gemini/config/hooks.json');
+  const hHooks = sha256(hooksPath);
+  const hGlobalHooks = sha256(globalHooksPath);
+
+  if (!hHooks) {
     mismatches.push('MISSING: .agents/hooks.json');
   } else {
+    if (hGlobalHooks && hHooks !== hGlobalHooks) {
+      mismatches.push('DRIFT: .agents/hooks.json and ~/.gemini/config/hooks.json differ');
+    }
     try {
       const hooksJson = JSON.parse(fs.readFileSync(hooksPath, 'utf-8'));
       if (!hooksJson.global_governance?.universal_post_fix_governance_doc_sync?.enabled) {
@@ -84,6 +110,6 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     }
     process.exit(1);
   } else {
-    console.log('✅ [PASS: GOVERNANCE_DOC_SYNC] All .md files (AGENTS.md, GEMINI.md), SKILL.md, and hooks.json are 100% synchronized in lockstep!');
+    console.log('✅ [PASS: GOVERNANCE_DOC_SYNC] All .md files (AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md), SKILL.md files, and hooks.json are 100% synchronized in lockstep!');
   }
 }

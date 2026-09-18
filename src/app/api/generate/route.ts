@@ -124,9 +124,7 @@ export async function POST(request: Request) {
         const isContextHarnessLoopGraph =
           (promptLower.includes('harness') && promptLower.includes('loop') && promptLower.includes('context')) ||
           promptLower.includes('context + harness') ||
-          promptLower.includes('charlie hills') ||
-          (promptLower.includes('tiered') && promptLower.includes('infographic') && !promptLower.includes('open knowledge')) ||
-          (promptLower.includes('ai agent') && promptLower.includes('infographic'));
+          promptLower.includes('charlie hills');
 
         if (isContextHarnessLoopGraph) {
           const result = await executeUnifiedDiagramPipeline({
@@ -134,6 +132,28 @@ export async function POST(request: Request) {
             diagramId,
             architectureType: 'context_harness_loop_graph',
             name: name || 'Context + Harness + Loop + Graph (AI Setup)',
+            existingXml,
+            isPrivate,
+            userId: user?.id || null,
+            phaseName,
+            domain,
+            abstractionLevel,
+            stackLayer,
+            layoutDirection,
+            salesStage,
+            lifecyclePhase
+          });
+          return NextResponse.json(result);
+        }
+
+        const isDynamicInfographic = promptLower.includes('infographic');
+
+        if (isDynamicInfographic) {
+          const result = await executeUnifiedDiagramPipeline({
+            prompt,
+            diagramId,
+            architectureType: 'dynamic_tiered_infographic',
+            name: name || `${prompt.slice(0, 60)} — Tiered Infographic`,
             existingXml,
             isPrivate,
             userId: user?.id || null,

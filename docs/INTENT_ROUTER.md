@@ -40,9 +40,13 @@ User Prompt
 
 ## 🔍 Router Stages
 
-### Stage 1: Explicit Signals & Trigger Phrases
-- If `architectureType` is explicitly provided in the request body (e.g., via workspace dropdown or disambiguation chip click), the router immediately selects that template backbone.
-- If the prompt matches known `TEMPLATE_TRIGGER_PHRASES` (e.g., `"entity relationship diagram"`, `"sequence diagram"`, `"unified system view"`), it routes deterministically to the matching template backbone.
+### Stage 1: Explicit Signals & Trigger Phrases (Content-Bound vs. Layout Archetypes)
+- **Stage 1A: Content-Bound Master Templates**:
+  - Triggered ONLY when the user explicitly requests a named static reference blueprint by its exact domain/author identity (e.g., `"Charlie Hills"`, `"Context + Harness + Loop + Graph"`, `"NOVACURA"`, `"Open Knowledge Format Infographic"`).
+  - Routes deterministically to the immutable canonical master XML (`template_52`, `open_knowledge_infographic`, etc.).
+- **Stage 1B: Dynamic Layout-Style Archetype Triggers (`Rule 41 Anti-Spoofing Law`)**:
+  - When a user prompt requests a **visual layout archetype** (e.g., `"infographic"`, `"tiered infographic"`, `"swimlane"`, `"sequence diagram"`, `"entity relationship diagram"`) paired with a **new or arbitrary subject domain** (e.g., `"Healthcare FHIR Infographic"`, `"Zero-Trust Security Infographic"`, `"FinOps Cloud Cost Infographic"`), the router MUST NEVER spoof or return a static content template from another topic (`Charlie Hills / CLAUDE.md`).
+  - Instead, it routes to the **Universal Dynamic Tiered Infographic Engine** (`dynamic_tiered_infographic` -> `generateDynamicTieredInfographicXml(prompt)`), which dynamically synthesizes the 4-tier infographic structure (`01 Ingestion` • `02 Harness` • `03 Validation` • `04 Graph`) populated 100% with the user's requested subject domain.
 
 ### Stage 2: Intent Classifier Module (`src/lib/router/intentClassifier.ts`)
 - Runs for untyped prompts when `LAYOUT_ENGINE_V2` is enabled.

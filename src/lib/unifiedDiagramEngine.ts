@@ -74,11 +74,14 @@ export async function executeUnifiedDiagramPipeline(
     (promptLowerCheck.includes('harness') && promptLowerCheck.includes('loop') && promptLowerCheck.includes('context')) ||
     promptLowerCheck.includes('context + harness') ||
     promptLowerCheck.includes('charlie hills') ||
-    (promptLowerCheck.includes('tiered') && promptLowerCheck.includes('infographic')) ||
-    (promptLowerCheck.includes('ai agent') && promptLowerCheck.includes('infographic')) ||
     effectiveArchType === 'context_harness_loop_graph'
   ) {
     effectiveArchType = 'context_harness_loop_graph';
+  } else if (
+    promptLowerCheck.includes('infographic') ||
+    effectiveArchType === 'dynamic_tiered_infographic'
+  ) {
+    effectiveArchType = 'dynamic_tiered_infographic';
   }
 
   // If user started with a blank canvas or unseeded arch, but provided a real prompt, synthesize full architecture!
@@ -143,7 +146,12 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  if (isTrivialPrompt || effectiveArchType === 'context_harness_loop_graph' || effectiveArchType === 'open_knowledge_infographic') {
+  if (
+    isTrivialPrompt ||
+    effectiveArchType === 'context_harness_loop_graph' ||
+    effectiveArchType === 'open_knowledge_infographic' ||
+    effectiveArchType === 'dynamic_tiered_infographic'
+  ) {
     customResult = {
       xml: baseTemplateXml || '',
       reasoning: `Master Reference Architecture Blueprint for ${effectiveArchType}.`,

@@ -40,11 +40,15 @@
         "AGENTS.md",
         "GEMINI.md",
         ".agents/AGENTS.md",
+        "CLAUDE.md",
+        "docs/INTENT_ROUTER.md",
         ".agents/skills/universal-document-cloud-hub/SKILL.md",
-        "~/.gemini/config/skills/universal-document-cloud-hub/SKILL.md"
+        "~/.gemini/config/skills/universal-document-cloud-hub/SKILL.md",
+        ".agents/skills/diagram-generation-engine/SKILL.md",
+        "~/.gemini/config/skills/diagram-generation-engine/SKILL.md"
       ],
       "detector": "scripts/guards/gate_governance_doc_sync.mjs",
-      "policy": "UNIVERSAL MULTI-PROJECT LAW: Across every project and workspace, whenever any bug fix, root-cause remediation, or new invariant is implemented, the agent MUST immediately update all relevant .md files (AGENTS.md, GEMINI.md, .agents/AGENTS.md), SKILL.md files, and hooks.json files in lockstep within the same turn so the defect can never recur in any project."
+      "policy": "UNIVERSAL MULTI-PROJECT LAW: Across every project and workspace, whenever any bug fix, root-cause remediation, or new invariant is implemented, the agent MUST immediately update all relevant .md files (AGENTS.md, GEMINI.md, .agents/AGENTS.md, CLAUDE.md, docs/INTENT_ROUTER.md), SKILL.md files, and hooks.json files in lockstep within the same turn so the defect can never recur in any project."
     },
     "dynamic_model_orchestration": {
       "orchestrator": "Google Omni 1.1",
