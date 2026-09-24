@@ -93,13 +93,19 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
       archType.includes('wbs') ||
       archType.includes('blueprint') ||
       archType === 'studio3' ||
-      archType.includes('studio3')
+      archType.includes('studio3') ||
+      archType === 'prompt_synthesized_v1' ||
+      archType === 'canonical_google_cloud_ref_v2'
     ) && archType !== 'custom' && archType !== 'gemini_custom')
   ) || (
     xmlInput && (
       xmlInput.includes('canonical') ||
       xmlInput.includes('NOVACURA') ||
       xmlInput.includes('template_0') ||
+      xmlInput.includes('Reference Architecture v2.0') ||
+      xmlInput.includes('id="hdr_num"') ||
+      xmlInput.includes('id="hdr_title"') ||
+      xmlInput.includes('id="t1_frame"') ||
       xmlInput.includes('studio3_diagram') ||
       xmlInput.includes('STUDIO 3') ||
       xmlInput.includes('02 — Capability Map') ||

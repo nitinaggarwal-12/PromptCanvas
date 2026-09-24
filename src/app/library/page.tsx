@@ -1343,8 +1343,8 @@ function ArchitectureLibraryContent() {
                 <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
                   <Layers className="w-5 h-5" />
                 </div>
-                <div>
-                  <h2 className="text-base font-black truncate max-w-xl text-white">
+                <div className="min-w-0">
+                  <h2 className="text-base font-black truncate max-w-2xl text-white">
                     {activeModalCanvas.name}
                   </h2>
                   <div className="flex items-center gap-2 text-xs text-slate-400">
@@ -1352,6 +1352,12 @@ function ArchitectureLibraryContent() {
                     <span>&bull;</span>
                     <span>{modalVersions.length} Version{modalVersions.length > 1 ? 's' : ''}</span>
                   </div>
+                  {(activeVersion?.prompt || activeModalCanvas.latest_prompt) && (
+                    <div className="mt-1.5 px-2.5 py-1 rounded-lg bg-teal-950/80 border border-teal-500/30 text-[11px] text-teal-200 font-medium max-w-3xl truncate" title={activeVersion?.prompt || activeModalCanvas.latest_prompt}>
+                      <span className="font-black text-teal-400 mr-1.5">💬 Generative Prompt:</span>
+                      &ldquo;{activeVersion?.prompt || activeModalCanvas.latest_prompt}&rdquo;
+                    </div>
+                  )}
                 </div>
               </div>
 

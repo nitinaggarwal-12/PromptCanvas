@@ -768,7 +768,30 @@ function Studio1Content() {
         if (data.project_title) setProjectTitle(data.project_title);
         if (data.project_name) setProjectName(data.project_name);
         if (data.use_case) setUseCaseName(data.use_case);
-        if (data.prompt) setProjectScopePrompt(data.prompt);
+        const fetchedPrompt = data.prompt || (data.versions && data.versions[0]?.prompt) || '';
+        if (fetchedPrompt) {
+          setProjectScopePrompt(fetchedPrompt);
+          setChatMessages([
+            {
+              id: 'msg_welcome',
+              sender: 'assistant',
+              text: 'Studio 1 Guided Matrix & Lifecycle Lab initialized with saved Library diagram.',
+              timestamp: 'System'
+            },
+            {
+              id: 'msg_loaded_prompt',
+              sender: 'user',
+              text: fetchedPrompt,
+              timestamp: 'Generative Prompt'
+            },
+            {
+              id: 'msg_loaded_ack',
+              sender: 'assistant',
+              text: `✅ Loaded **${data.name || 'Enterprise Architecture'}** synthesized directly from your generative prompt.`,
+              timestamp: 'Verified'
+            }
+          ]);
+        }
 
         const latestXml = data.xml_content || (data.versions && data.versions[0]?.xml_content);
         if (latestXml) {

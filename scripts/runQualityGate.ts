@@ -115,16 +115,22 @@ const steps: GateStep[] = [
       if (existsSync(dbPath)) {
         const db = new DatabaseSync(dbPath);
         const rows = db.prepare(`
-          SELECT d.id, d.name, v.xml_content
+          SELECT d.id, d.name, v.prompt, v.xml_content
           FROM diagrams d
           JOIN diagram_versions v ON v.diagram_id = d.id
           WHERE d.name GLOB '[0-9][0-9] •*'
-        `).all() as { id: string; name: string; xml_content: string }[];
-        const seenByPrefix = new Map<string, { name: string; hash: string; len: number }>();
+        `).all() as { id: string; name: string; prompt: string; xml_content: string }[];
+        const seenByPrefix = new Map<string, { name: string; prompt: string; xml: string; hash: string; len: number }>();
         for (const r of rows) {
           const prefix = r.name.slice(0, 4);
           const hash = crypto.createHash('sha256').update(r.xml_content || '').digest('hex').slice(0, 16);
-          seenByPrefix.set(prefix, { name: r.name, hash, len: (r.xml_content || '').length });
+          seenByPrefix.set(prefix, {
+            name: r.name,
+            prompt: r.prompt || '',
+            xml: r.xml_content || '',
+            hash,
+            len: (r.xml_content || '').length
+          });
         }
         const hashes = new Map<string, string>();
         for (const [prefix, info] of seenByPrefix.entries()) {
@@ -132,6 +138,23 @@ const steps: GateStep[] = [
             throw new Error(`Duplicate XML topology detected in Library between "${info.name}" and "${hashes.get(info.hash)}" (hash=${info.hash}, len=${info.len})`);
           }
           hashes.set(info.hash, info.name);
+
+          // 1. Assert zero static template spoofing (NOVACURA / Veeva / Pharmacovigilance / 17 Identity)
+          if (/NOVACURA|Veeva Vault|Pharmacovigilance|17 Identity & Access Flow/i.test(info.xml)) {
+            throw new Error(`Spoofed static template detected inside "${info.name}"! XML contains hardcoded NOVACURA/Veeva/17 Identity nodes unrelated to prompt.`);
+          }
+
+          // 2. Assert Semantic Prompt-to-Canvas Subject Parity (>= 80% of key technical terms in prompt exist in rendered XML)
+          const stopWords = new Set(['design', 'architect', 'build', 'evolve', 'canonical', 'blueprint', 'into', 'with', 'using', 'across', 'featuring', 'integrating', 'and', 'the', 'for', 'from']);
+          const promptTokens = (info.prompt.toLowerCase().match(/[a-z0-9-]{4,}/g) || [])
+            .filter((tok) => !stopWords.has(tok));
+          const uniqueTokens = Array.from(new Set(promptTokens));
+          const xmlLower = info.xml.toLowerCase();
+          const matchedTokens = uniqueTokens.filter((tok) => xmlLower.includes(tok));
+          const coverage = uniqueTokens.length > 0 ? matchedTokens.length / uniqueTokens.length : 1;
+          if (coverage < 0.8) {
+            throw new Error(`Semantic Prompt-to-Diagram Mismatch in "${info.name}": only ${(coverage * 100).toFixed(0)}% of prompt entities found in XML (required >= 80%).`);
+          }
         }
       }
     }

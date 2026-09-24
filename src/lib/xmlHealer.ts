@@ -121,7 +121,9 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
       archType.includes('studio3') ||
       archType === 'context_harness_loop_graph' ||
       archType === 'open_knowledge_infographic' ||
-      archType === 'dynamic_tiered_infographic'
+      archType === 'dynamic_tiered_infographic' ||
+      archType === 'prompt_synthesized_v1' ||
+      archType === 'canonical_google_cloud_ref_v2'
     )
   ) || (
     inputXml.includes('PromptCanvas') ||
@@ -129,6 +131,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('NOVACURA') ||
     inputXml.includes('template_') ||
     inputXml.includes('Template ') ||
+    inputXml.includes('Reference Architecture v2.0') ||
+    inputXml.includes('id="hdr_num"') ||
+    inputXml.includes('id="hdr_title"') ||
+    inputXml.includes('id="t1_frame"') ||
     inputXml.includes('TOTAL UNIFIED SYSTEM VIEW') ||
     inputXml.includes('unified_system_view') ||
     inputXml.includes('studio3_diagram') ||

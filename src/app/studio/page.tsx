@@ -64,6 +64,7 @@ import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { AppHeader } from '@/components/AppHeader';
 import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
 import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
+import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -650,30 +651,46 @@ function StudioMain() {
         // storage fallback
       }
 
-      // 2. If not in localStorage, fetch from /api/diagrams/:id so Library & Audit deep links load the exact diagram XML
-      if (!loadedFromLocal) {
-        fetch(`/api/diagrams/${encodeURIComponent(urlId)}`)
-          .then(res => (res.ok ? res.json() : null))
-          .then(data => {
-            if (!data) return;
-            const fetchedXml = data.xml_content || data.versions?.[0]?.xml_content || '';
-            const fetchedName = data.name || `Architecture ${urlId}`;
-            if (fetchedXml && fetchedXml.includes('<mxCell')) {
-              setXml(fetchedXml);
-              setSelectedBlueprintId('custom');
-              setAst(prev => ({
-                ...prev,
-                metadata: {
-                  ...prev.metadata,
-                  projectTitle: fetchedName,
-                  version: 'v1.0',
-                  lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-              }));
-            }
-          })
-          .catch(() => {});
-      }
+      // 2. Always fetch from /api/diagrams/:id so Library & Audit deep links load the latest DB diagram XML AND restore its Generative Prompt
+      fetch(`/api/diagrams/${encodeURIComponent(urlId)}`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(data => {
+          if (!data) return;
+          const fetchedXml = data.xml_content || data.versions?.[0]?.xml_content || '';
+          const fetchedName = data.name || `Architecture ${urlId}`;
+          const fetchedPrompt = data.prompt || data.versions?.[0]?.prompt || data.latest_prompt || '';
+          if (fetchedXml && fetchedXml.includes('<mxCell')) {
+            setXml(fetchedXml);
+            setSelectedBlueprintId('custom');
+            setAst(prev => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                projectTitle: fetchedName,
+                version: 'v1.0',
+                lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              }
+            }));
+          }
+          if (fetchedPrompt) {
+            setPromptInput(fetchedPrompt);
+            setMessages([
+              {
+                id: `msg_restored_user_${Date.now()}`,
+                sender: 'user',
+                text: fetchedPrompt,
+                timestamp: 'Original Prompt'
+              },
+              {
+                id: `msg_restored_ai_${Date.now() + 1}`,
+                sender: 'assistant',
+                text: `✅ Loaded **${fetchedName}** from Library.\n\n**Generative Prompt:** "${fetchedPrompt}"\n\nAll tiers, components, and connectors on the canvas are grounded directly in this prompt. You can continue evolving this topology below.`,
+                timestamp: 'Verified'
+              }
+            ]);
+          }
+        })
+        .catch(() => {});
     }
 
     if (viewParam === 'specs' || viewParam === 'diagram') {
@@ -1138,47 +1155,24 @@ function StudioMain() {
       }
     }
 
-    // Dynamically select domain-matched topology when user submits a generative design prompt
+    // Dynamically synthesize a 100% prompt-grounded 5-tier architecture when user submits a generative design prompt
     const isGenerativeDesignPrompt = /^(design|architect|build|create|deploy|synthesize|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
     let activeBaseXml = xml;
     if (isGenerativeDesignPrompt) {
-      let targetBpId = '';
-      if (lower.includes('rag') || lower.includes('vector') || lower.includes('agentic') || lower.includes('gemini')) {
-        targetBpId = '38';
-      } else if (lower.includes('payment') || lower.includes('settlement') || lower.includes('fraud') || lower.includes('pci')) {
-        targetBpId = '01';
-      } else if (lower.includes('clinical') || lower.includes('fhir') || lower.includes('medallion') || lower.includes('pipeline') || lower.includes('lakehouse')) {
-        targetBpId = '04';
-      } else if (lower.includes('zero-trust') || lower.includes('siem') || lower.includes('chronicle') || lower.includes('soar')) {
-        targetBpId = '18';
-      } else if (lower.includes('streaming') || lower.includes('dead-letter') || lower.includes('event-driven') || lower.includes('kafka')) {
-        targetBpId = '13';
-      } else if (lower.includes('multi-region') || lower.includes('disaster recovery') || lower.includes('gke') || lower.includes('anthos')) {
-        targetBpId = '17';
-      } else if (lower.includes('landing zone') || lower.includes('hub-spoke') || lower.includes('interconnect')) {
-        targetBpId = '15';
-      } else if (lower.includes('sequence') || lower.includes('oauth') || lower.includes('handshake')) {
-        targetBpId = '11';
-      } else if (lower.includes('erd') || lower.includes('schema') || lower.includes('entity')) {
-        targetBpId = '14';
-      } else {
-        targetBpId = '02';
-      }
-      const matchedBp = CANONICAL_TEMPLATES.find(t => t.id === targetBpId || t.id === targetBpId.padStart(2, '0'));
-      if (matchedBp) {
-        activeBaseXml = matchedBp.generateXml(
-          updated.metadata.projectTitle || cleanPrompt.slice(0, 70),
-          selectedDomain || 'Enterprise Cloud'
-        );
-        setSelectedBlueprintId(matchedBp.id);
-      }
+      activeBaseXml = synthesizePromptDrivenDiagramXml(
+        promptText,
+        updated.metadata.projectTitle || cleanPrompt.slice(0, 72),
+        selectedDomain || 'Enterprise Cloud'
+      );
     }
 
     // Check if the current active XML is actually the 6-Zone GCP Native Architecture
     const isSixZoneNativeCanvas = activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"');
     let baseUpdatedXml: string;
 
-    if (isSixZoneNativeCanvas) {
+    if (isGenerativeDesignPrompt) {
+      baseUpdatedXml = activeBaseXml;
+    } else if (isSixZoneNativeCanvas) {
       baseUpdatedXml = generateGcpNativeArchitectureXml(
         { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
         updated
