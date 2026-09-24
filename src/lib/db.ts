@@ -2595,15 +2595,10 @@ const DEEP_RESEARCH_XML = `
 
 export function isUserSuperAdmin(user?: User | null): boolean {
   if (!user) return false;
-  if (user.is_super_admin) return true;
+  if (Boolean(user.is_super_admin)) return true;
   if (user.global_role === 'Super-Admin') return true;
-  const rootEmail = process.env.ROOT_USER_EMAIL || 'nitinaggarwal12@gmail.com';
-  const userEmailLower = user.email.toLowerCase();
-  if (
-    userEmailLower === 'vibeandcode.ai@gmail.com' ||
-    userEmailLower === 'nitinaggarwal12@gmail.com' ||
-    (rootEmail && userEmailLower === rootEmail.trim().toLowerCase())
-  ) {
+  const rootEmail = process.env.ROOT_USER_EMAIL?.trim().toLowerCase();
+  if (rootEmail && user.email.toLowerCase() === rootEmail) {
     return true;
   }
   return false;
@@ -3229,4 +3224,176 @@ export async function getMediaAssetById(id: string): Promise<MediaAssetRecord | 
   }
 }
 
+export async function checkAndRecordDailyGeminiQuota(
+  userId: string,
+  maxDailyLimit: number = 50,
+  routeLabel: string = 'gemini'
+): Promise<{ allowed: boolean; used: number; limit: number }> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const countRes = await pool.query(
+      `SELECT COUNT(*)::int AS cnt FROM user_logs
+       WHERE user_id = $1 AND event_type = 'GEMINI_GENERATION'
+       AND created_at >= NOW() - INTERVAL '24 hours'`,
+      [userId]
+    );
+    const used = Number(countRes.rows[0]?.cnt || 0);
+    if (used >= maxDailyLimit) {
+      return { allowed: false, used, limit: maxDailyLimit };
+    }
+    await logUserEvent(userId, 'GEMINI_GENERATION', null, routeLabel);
+    return { allowed: true, used: used + 1, limit: maxDailyLimit };
+  } else {
+    const db = getSqliteDb();
+    const row = db
+      .prepare(
+        `SELECT COUNT(*) AS cnt FROM user_logs
+         WHERE user_id = ? AND event_type = 'GEMINI_GENERATION'
+         AND datetime(created_at) >= datetime('now', '-24 hours')`
+      )
+      .get(userId) as { cnt: number } | undefined;
+    const used = Number(row?.cnt || 0);
+    if (used >= maxDailyLimit) {
+      return { allowed: false, used, limit: maxDailyLimit };
+    }
+    await logUserEvent(userId, 'GEMINI_GENERATION', null, routeLabel);
+    return { allowed: true, used: used + 1, limit: maxDailyLimit };
+  }
+}
 
+export async function checkIpEventRateLimit(
+  ipAddress: string,
+  eventType: string,
+  maxEvents: number = 10,
+  windowMinutes: number = 60
+): Promise<{ allowed: boolean; count: number }> {
+  await ensureTablesExist();
+  const safeIp = ipAddress || '127.0.0.1';
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(
+      `SELECT COUNT(*)::int AS cnt FROM user_logs
+       WHERE ip_address = $1 AND event_type = $2
+       AND created_at >= NOW() - ($3 || ' minutes')::interval`,
+      [safeIp, eventType, String(windowMinutes)]
+    );
+    const count = Number(res.rows[0]?.cnt || 0);
+    return { allowed: count < maxEvents, count };
+  } else {
+    const db = getSqliteDb();
+    const row = db
+      .prepare(
+        `SELECT COUNT(*) AS cnt FROM user_logs
+         WHERE ip_address = ? AND event_type = ?
+         AND datetime(created_at) >= datetime('now', ?)`
+      )
+      .get(safeIp, eventType, `-${windowMinutes} minutes`) as { cnt: number } | undefined;
+    const count = Number(row?.cnt || 0);
+    return { allowed: count < maxEvents, count };
+  }
+}
+
+export async function exportUserAllData(userId: string) {
+  await ensureTablesExist();
+  const user = await getUserById(userId);
+  const diagrams = (await listDiagrams(userId)).filter((d) => d.user_id === userId);
+  const logs = await getUserLogs(userId, 200);
+  return {
+    exportedAt: new Date().toISOString(),
+    user: user
+      ? {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          global_role: user.global_role,
+          created_at: user.created_at,
+        }
+      : null,
+    diagramCount: diagrams.length,
+    diagrams,
+    activityLogs: logs,
+  };
+}
+
+export async function deleteUserAndAllData(userId: string): Promise<void> {
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      `DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE user_id = $1)`,
+      [userId]
+    );
+    await pool.query(`DELETE FROM diagrams WHERE user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM workspace_members WHERE user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM workspaces WHERE owner_id = $1`, [userId]);
+    await pool.query(`DELETE FROM sessions WHERE user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM user_logs WHERE user_id = $1`, [userId]);
+    await pool.query(`DELETE FROM users WHERE id = $1`, [userId]);
+  } else {
+    const db = getSqliteDb();
+    db.prepare(
+      `DELETE FROM diagram_versions WHERE diagram_id IN (SELECT id FROM diagrams WHERE user_id = ?)`
+    ).run(userId);
+    db.prepare(`DELETE FROM diagrams WHERE user_id = ?`).run(userId);
+    db.prepare(`DELETE FROM workspace_members WHERE user_id = ?`).run(userId);
+    db.prepare(`DELETE FROM workspaces WHERE owner_id = ?`).run(userId);
+    db.prepare(`DELETE FROM sessions WHERE user_id = ?`).run(userId);
+    db.prepare(`DELETE FROM user_logs WHERE user_id = ?`).run(userId);
+    db.prepare(`DELETE FROM users WHERE id = ?`).run(userId);
+  }
+}
+
+let geminiKeyColEnsured = false;
+async function ensureUserGeminiKeyColumn(): Promise<void> {
+  if (geminiKeyColEnsured) return;
+  await ensureTablesExist();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS gemini_api_key TEXT;`).catch(() => {});
+  } else {
+    const db = getSqliteDb();
+    try {
+      db.exec(`ALTER TABLE users ADD COLUMN gemini_api_key TEXT;`);
+    } catch {
+      // Column already exists
+    }
+  }
+  geminiKeyColEnsured = true;
+}
+
+export async function getUserGeminiApiKey(userId: string): Promise<string | null> {
+  if (!userId) return null;
+  await ensureUserGeminiKeyColumn();
+  if (isPostgres()) {
+    const pool = getPgPool();
+    const res = await pool.query(`SELECT gemini_api_key FROM users WHERE id = $1 LIMIT 1`, [userId]);
+    const val = res.rows[0]?.gemini_api_key;
+    return typeof val === 'string' && val.trim().length > 0 ? val.trim() : null;
+  } else {
+    const db = getSqliteDb();
+    const row = db.prepare(`SELECT gemini_api_key FROM users WHERE id = ? LIMIT 1`).get(userId) as
+      | { gemini_api_key?: string | null }
+      | undefined;
+    const val = row?.gemini_api_key;
+    return typeof val === 'string' && val.trim().length > 0 ? val.trim() : null;
+  }
+}
+
+export async function setUserGeminiApiKey(userId: string, apiKey: string | null): Promise<void> {
+  if (!userId) return;
+  await ensureUserGeminiKeyColumn();
+  const cleanKey = apiKey && apiKey.trim().length > 0 ? apiKey.trim() : null;
+  if (isPostgres()) {
+    const pool = getPgPool();
+    await pool.query(
+      `UPDATE users SET gemini_api_key = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`,
+      [cleanKey, userId]
+    );
+  } else {
+    const db = getSqliteDb();
+    db.prepare(
+      `UPDATE users SET gemini_api_key = ?, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now') WHERE id = ?`
+    ).run(cleanKey, userId);
+  }
+}

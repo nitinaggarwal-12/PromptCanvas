@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { decompileArchitectureImageWithDeepMind } from '@/lib/deepmindVisionDecompiler';
+import { createDiagram } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
+    const user = await getAuthenticatedUser();
     const body = await req.json();
     const { imageBase64, mimeType, projectName, useCaseName, userApiKey } = body;
 
@@ -13,16 +16,39 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const resolvedName = projectName || 'Decompiled Architecture';
+    const resolvedUseCase = useCaseName || 'DeepMind Multimodal Extraction';
+
     const result = await decompileArchitectureImageWithDeepMind({
       imageBase64,
       mimeType: mimeType || 'image/png',
-      projectName: projectName || 'Decompiled Architecture',
-      useCaseName: useCaseName || 'DeepMind Multimodal Extraction',
+      projectName: resolvedName,
+      useCaseName: resolvedUseCase,
       userApiKey,
     });
 
+    let persistedId: string | undefined;
+    try {
+      const saved = await createDiagram(
+        resolvedName,
+        result.xml,
+        `Vision Decompiled: ${result.summary}`,
+        resolvedUseCase,
+        result.summary,
+        resolvedUseCase,
+        'DeepMind Vision AST',
+        user?.id,
+        'conceptual_diagram'
+      );
+      persistedId = saved?.diagram?.id;
+    } catch (dbErr) {
+      console.warn('[/api/decompile-image] Could not persist diagram to DB:', dbErr);
+    }
+
     return NextResponse.json({
       success: true,
+      id: persistedId,
+      diagramId: persistedId,
       xml: result.xml,
       summary: result.summary,
       extractedZones: result.extractedZones,

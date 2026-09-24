@@ -1,15 +1,42 @@
-export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-3.1-pro-preview';
-export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-3.8-flash';
+export const GEMINI_PRO_MODEL_ID = process.env.GEMINI_PRO_MODEL_ID || 'gemini-2.5-pro';
+export const GEMINI_FLASH_MODEL_ID = process.env.GEMINI_FLASH_MODEL_ID || 'gemini-2.5-flash';
 export const GEMINI_FALLBACK_PRO_MODEL_ID = process.env.GEMINI_FALLBACK_PRO_MODEL_ID || 'gemini-2.5-pro';
 export const GEMINI_FALLBACK_FLASH_MODEL_ID = process.env.GEMINI_FALLBACK_FLASH_MODEL_ID || 'gemini-2.5-flash';
-export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_PRO_MODEL_ID;
+export const GEMINI_MODEL_ID = process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
+
+let activeRequestGeminiApiKey: string | null = null;
+
+/**
+ * Sets the active request's resolved Gemini API key (either the logged-in user's BYOK key
+ * tied to their userId, or the system default key in Guest mode).
+ */
+export function setActiveRequestGeminiApiKey(apiKey: string | null): void {
+  activeRequestGeminiApiKey = apiKey && apiKey.trim().length > 0 ? apiKey.trim() : null;
+}
+
+/**
+ * Returns the effective Gemini API key for the current operation:
+ * 1. Explicit key passed to the function (if non-empty)
+ * 2. Active logged-in user's saved BYOK key (set by enforceGeminiRouteGuard)
+ * 3. Default system key (process.env.GEMINI_API_KEY, always used in Guest mode)
+ */
+export function getEffectiveGeminiApiKey(explicitKey?: string | null): string {
+  if (explicitKey && explicitKey.trim().length > 0) {
+    return explicitKey.trim();
+  }
+  if (activeRequestGeminiApiKey) {
+    return activeRequestGeminiApiKey;
+  }
+  return process.env.GEMINI_API_KEY || '';
+}
 
 export type ModelTier = 'lite' | 'medium' | 'pro' | 'critic' | 'vision' | 'chat';
 
+
 /**
  * 🧠 Unified Gemini Model Routing Engine
- * - Tier 'pro', 'critic' & 'vision': Gemini 3.1 Pro Preview (Deep architectural reasoning & high-precision vision decompilation)
- * - Tier 'medium', 'lite' & 'chat': Gemini 3.8 Flash (Sub-second streaming autocomplete & intent routing)
+ * - Tier 'pro', 'critic' & 'vision': Gemini 2.5 Pro GA (Deep architectural reasoning & high-precision vision decompilation)
+ * - Tier 'medium', 'lite' & 'chat': Gemini 2.5 Flash GA (Sub-second streaming autocomplete & intent routing)
  */
 export function getGeminiModel(tier: ModelTier = 'pro'): string {
   if (tier === 'pro' || tier === 'critic' || tier === 'vision') {

@@ -3,9 +3,10 @@ import { z } from 'zod';
 import { ARCHITECTURE_TYPES } from '@/lib/architectureTypes';
 import { buildIntentClassificationPrompt } from '@/prompts/classifyIntent';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { GEMINI_FLASH_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 
 export const CLASSIFIER_TIMEOUT_MS = 2500;
-export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || 'gemini-3.7-flash';
+export const CLASSIFIER_MODEL_ID = process.env.INTENT_CLASSIFIER_MODEL || process.env.GEMINI_MODEL_ID || GEMINI_FLASH_MODEL_ID;
 
 export const IntentClassificationSchema = z.object({
   selectedType: z.string().nullable(),
@@ -20,7 +21,7 @@ export type IntentClassification = z.infer<typeof IntentClassificationSchema>;
 const validArchitectureIds = new Set(ARCHITECTURE_TYPES.map(t => t.id));
 
 async function executeSingleAttempt(prompt: string): Promise<IntentClassification | null> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getEffectiveGeminiApiKey();
   if (!apiKey) {
     console.warn('[IntentClassifier] GEMINI_API_KEY is missing, skipping classification');
     return null;

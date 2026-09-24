@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { checkDatabaseHealth, purgeExpiredGuestSessionsAndDiagrams } from '@/lib/db';
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { checkDatabaseHealth, isPostgres, purgeExpiredGuestSessionsAndDiagrams } from '@/lib/db';
+import { GEMINI_MODEL_ID, GEMINI_PRO_MODEL_ID, GEMINI_FLASH_MODEL_ID } from '@/lib/geminiConfig';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,6 +20,7 @@ export async function GET(request: Request) {
   }
 
   const dbHealth = await checkDatabaseHealth();
+  const dbMode = isPostgres() ? 'postgres' : 'sqlite';
   const hasGeminiKey = Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY.trim() !== '');
 
   const memoryUsage = process.memoryUsage();
@@ -40,11 +41,18 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
       uptimeSeconds: Math.floor(process.uptime()),
       responseTimeMs: Date.now() - startTime,
-      database: dbHealth,
+      dbMode,
+      layoutEngineV2: process.env.LAYOUT_ENGINE_V2 || 'true',
+      database: {
+        ...dbHealth,
+        mode: dbMode,
+      },
       maintenance: maintenanceStats || { status: 'idle', lastRun: new Date(lastAutoMaintenance).toISOString() },
       aiEngine: {
         configured: hasGeminiKey,
-        defaultModel: GEMINI_MODEL_ID || 'gemini-3.7-flash',
+        defaultModel: GEMINI_MODEL_ID,
+        proModel: GEMINI_PRO_MODEL_ID,
+        flashModel: GEMINI_FLASH_MODEL_ID,
         byokSupported: true
       },
       system: {

@@ -10,30 +10,30 @@ import { validateDrawioXml } from '../../src/lib/validate/validator';
 import { ensureTablesExist } from '../../src/lib/db';
 
 describe('Gemini Model Routing & Vision Decompilation Architecture', () => {
-  it('routes pro, critic, and vision tiers to Gemini 3.1 Pro Preview with Gemini 2.5 Pro fallback', () => {
-    expect(getGeminiModel('pro')).toBe('gemini-3.1-pro-preview');
-    expect(getGeminiModel('critic')).toBe('gemini-3.1-pro-preview');
-    expect(getGeminiModel('vision')).toBe('gemini-3.1-pro-preview');
+  it('routes pro, critic, and vision tiers to Gemini 2.5 Pro GA', () => {
+    expect(getGeminiModel('pro')).toBe('gemini-2.5-pro');
+    expect(getGeminiModel('critic')).toBe('gemini-2.5-pro');
+    expect(getGeminiModel('vision')).toBe('gemini-2.5-pro');
 
     expect(getGeminiFallbackModel('pro')).toBe('gemini-2.5-pro');
     expect(getGeminiFallbackModel('critic')).toBe('gemini-2.5-pro');
     expect(getGeminiFallbackModel('vision')).toBe('gemini-2.5-pro');
 
     const visionChain = getGeminiModelWithFallbacks('vision');
-    expect(visionChain).toEqual(['gemini-3.1-pro-preview', 'gemini-2.5-pro']);
+    expect(visionChain).toEqual(['gemini-2.5-pro']);
   });
 
-  it('routes chat, lite, and medium tiers to Gemini 3.8 Flash with Gemini 2.5 Flash fallback', () => {
-    expect(getGeminiModel('chat')).toBe('gemini-3.8-flash');
-    expect(getGeminiModel('lite')).toBe('gemini-3.8-flash');
-    expect(getGeminiModel('medium')).toBe('gemini-3.8-flash');
+  it('routes chat, lite, and medium tiers to Gemini 2.5 Flash GA', () => {
+    expect(getGeminiModel('chat')).toBe('gemini-2.5-flash');
+    expect(getGeminiModel('lite')).toBe('gemini-2.5-flash');
+    expect(getGeminiModel('medium')).toBe('gemini-2.5-flash');
 
     expect(getGeminiFallbackModel('chat')).toBe('gemini-2.5-flash');
     expect(getGeminiFallbackModel('lite')).toBe('gemini-2.5-flash');
     expect(getGeminiFallbackModel('medium')).toBe('gemini-2.5-flash');
 
     const chatChain = getGeminiModelWithFallbacks('chat');
-    expect(chatChain).toEqual(['gemini-3.8-flash', 'gemini-2.5-flash']);
+    expect(chatChain).toEqual(['gemini-2.5-flash']);
   });
 
   it('configures specialized thinking budgets and temperatures for vision, audit, and repair', () => {

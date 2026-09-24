@@ -836,167 +836,252 @@ function StudioMain() {
     }
 
     // Micro-Version Bump: v1.0 -> v1.1, v1.1 -> v1.2, or v2.0 -> v2.1
-    setTimeout(() => {
-      const newVersionTag = getNextMicroVersion(activeVersionTag);
-      
-      let canvasDiff = 'Updated component topology and connector routing in Draw.io XML.';
-      let specDiff = 'Reconciled DOC-01 through DOC-10 with updated parameters.';
+    const newVersionTag = getNextMicroVersion(activeVersionTag);
+    const updated: ArchitectureAst = {
+      ...ast,
+      metadata: { ...ast.metadata },
+      components: [...ast.components],
+      connections: [...ast.connections],
+    };
 
-      setAst(prevAst => {
-        const updated = { ...prevAst };
-        const lower = cleanPrompt.toLowerCase();
+    let canvasDiff = 'Updated component topology and connector routing in Draw.io XML.';
+    let specDiff = 'Reconciled DOC-01 through DOC-16 with updated parameters.';
+    const lower = cleanPrompt.toLowerCase();
 
-        if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
-          const newComps: AstComponent[] = [
-            {
-              id: 'comp_cdn',
-              name: 'Cloud CDN & Media Edge',
-              service: 'Cloud CDN',
-              tier: 'ingress',
-              region: 'global',
-              role: 'Global Anycast Edge Cache & HTTP/3 Ingress',
-              description: 'Low-latency static and dynamic media caching with sub-8ms p99 cache hits.',
-              sla: '99.99%',
-              protocols: ['HTTP/3', 'QUIC', 'TLS 1.3']
-            },
-            {
-              id: 'comp_token_vault',
-              name: 'Payment Token Vault',
-              service: 'Cloud Run',
-              tier: 'compute',
-              region: 'us-central1',
-              role: 'Confidential Computing Tokenization Enclave',
-              description: 'Hardware-isolated microservice for PCI-DSS Level 1 tokenization.',
-              sla: '99.999%',
-              protocols: ['gRPC mTLS', 'Cloud KMS API']
-            },
-            {
-              id: 'comp_event_bus',
-              name: 'Kafka Event Mesh Buffer',
-              service: 'Pub/Sub',
-              tier: 'data',
-              region: 'us-central1',
-              role: 'Asynchronous Financial Event Distribution Engine',
-              description: 'Partitioned event stream handling 250,000 tx/sec burst throughput.',
-              sla: '99.999%',
-              protocols: ['Kafka Protocol', 'Pub/Sub gRPC']
-            },
-            {
-              id: 'comp_doc_ai',
-              name: 'Document AI OCR Extractor',
-              service: 'Document AI',
-              tier: 'compute',
-              region: 'us-central1',
-              role: 'Multimodal Identity & Document Parsing',
-              description: 'Automated KYC extraction pipeline converting image payloads to structured JSON.',
-              sla: '99.9%',
-              protocols: ['HTTPS REST', 'gRPC']
-            }
-          ];
-
-          updated.components = [...updated.components, ...newComps];
-          canvasDiff = '+ Added Cloud CDN, Payment Token Vault, Kafka Event Mesh, and Document AI OCR Extractor (4 new nodes).';
-          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (API Protocols), and DOC-06 (Security Model).';
-        } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('engagement') || lower.includes('admission')) {
-          updated.metadata = {
-            ...updated.metadata,
-            domain: 'Healthcare & Life Sciences',
-            projectTitle: 'Emergency Patient Ingress & Care Mesh',
-            slaTarget: '99.999%',
-            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-          if (!updated.components.some(c => c.id === 'comp_patient_portal')) {
-            updated.components = [
-              ...updated.components,
-              {
-                id: 'comp_patient_portal',
-                name: 'Emergency Patient Ingress Portal',
-                service: 'Cloud Run',
-                tier: 'ingress',
-                region: 'us-central1',
-                role: 'High-Priority Emergency Admission Gateway',
-                description: 'Fast-track triage ingress with zero cold-starts and 99.999% SLA.',
-                sla: '99.999%',
-                protocols: ['HTTPS', 'FHIR API', 'TLS 1.3']
-              }
-            ];
-          }
-          canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
-          specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
-        } else if (detectedPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
-          updated.metadata = {
-            ...updated.metadata,
-            drRegions: ['europe-west1', 'us-east4'],
-            targetRpo: '< 1 Second (Zero Data Loss)',
-            targetRto: '< 15 Seconds (Automated Failover)',
-            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-          updated.components = updated.components.map(c => {
-            if (c.service.includes('Spanner') || c.id.includes('spanner')) {
-              return {
-                ...c,
-                role: 'Active-Active Multi-Region nam3 Leader with Witness in europe-west1',
-                description: 'Synchronous Paxos replication across us-central1 and europe-west1 with 99.999% SLA.'
-              };
-            }
-            return c;
-          });
-          canvasDiff = '⚡ Upgraded Cloud Spanner to Active-Active Multi-Region nam3 with Witness in europe-west1.';
-          specDiff = 'Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).';
-        } else if (detectedPersona === 'CISO / Security Architect' || lower.includes('security') || lower.includes('ciso') || lower.includes('hsm') || lower.includes('cmek') || lower.includes('vpc')) {
-          updated.metadata = {
-            ...updated.metadata,
-            compliance: ['PCI-DSS 4.0', 'HIPAA', 'SOC2 Type II', 'FedRAMP High', 'ISO 27001'],
-            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-          if (!updated.components.some(c => c.id === 'comp_hsm_cmek')) {
-            updated.components = [
-              ...updated.components,
-              {
-                id: 'comp_hsm_cmek',
-                name: 'Cloud KMS HSM CMEK Envelope',
-                service: 'Cloud Key Management Service',
-                tier: 'security',
-                region: 'global',
-                role: 'Hardware Security Module Key Hierarchy',
-                description: 'FIPS 140-2 Level 3 hardware security module keys protecting Spanner, BigQuery, and GCS buckets.',
-                sla: '99.999%',
-                protocols: ['Cloud KMS API', 'gRPC mTLS']
-              }
-            ];
-          }
-          canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
-          specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
-        } else if (detectedPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
-          updated.metadata = {
-            ...updated.metadata,
-            latencyBudgetMs: 35,
-            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          };
-          canvasDiff = '💰 Configured Cloud Run scale-to-zero off-peak policies & BigQuery BI Engine 50GB cache.';
-          specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
+    if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
+      const newComps: AstComponent[] = [
+        {
+          id: 'comp_cdn',
+          name: 'Cloud CDN & Media Edge',
+          service: 'Cloud CDN',
+          tier: 'ingress',
+          region: 'global',
+          role: 'Global Anycast Edge Cache & HTTP/3 Ingress',
+          description: 'Low-latency static and dynamic media caching with sub-8ms p99 cache hits.',
+          sla: '99.99%',
+          protocols: ['HTTP/3', 'QUIC', 'TLS 1.3']
+        },
+        {
+          id: 'comp_token_vault',
+          name: 'Payment Token Vault',
+          service: 'Cloud Run',
+          tier: 'compute',
+          region: 'us-central1',
+          role: 'Confidential Computing Tokenization Enclave',
+          description: 'Hardware-isolated microservice for PCI-DSS Level 1 tokenization.',
+          sla: '99.999%',
+          protocols: ['gRPC mTLS', 'Cloud KMS API']
+        },
+        {
+          id: 'comp_event_bus',
+          name: 'Kafka Event Mesh Buffer',
+          service: 'Pub/Sub',
+          tier: 'data',
+          region: 'us-central1',
+          role: 'Asynchronous Financial Event Distribution Engine',
+          description: 'Partitioned event stream handling 250,000 tx/sec burst throughput.',
+          sla: '99.999%',
+          protocols: ['Kafka Protocol', 'Pub/Sub gRPC']
+        },
+        {
+          id: 'comp_doc_ai',
+          name: 'Document AI OCR Extractor',
+          service: 'Document AI',
+          tier: 'compute',
+          region: 'us-central1',
+          role: 'Multimodal Identity & Document Parsing',
+          description: 'Automated KYC extraction pipeline converting image payloads to structured JSON.',
+          sla: '99.9%',
+          protocols: ['HTTPS REST', 'gRPC']
         }
+      ];
 
-        const updatedXml = generateGcpNativeArchitectureXml(
-          { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
-          updated
-        );
-        setXml(updatedXml);
+      updated.components = [...updated.components, ...newComps];
+      canvasDiff = '+ Added Cloud CDN, Payment Token Vault, Kafka Event Mesh, and Document AI OCR Extractor (4 new nodes).';
+      specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (API Protocols), and DOC-06 (Security Model).';
+    } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('engagement') || lower.includes('admission')) {
+      updated.metadata = {
+        ...updated.metadata,
+        domain: 'Healthcare & Life Sciences',
+        projectTitle: 'Emergency Patient Ingress & Care Mesh',
+        slaTarget: '99.999%',
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      if (!updated.components.some(c => c.id === 'comp_patient_portal')) {
+        updated.components = [
+          ...updated.components,
+          {
+            id: 'comp_patient_portal',
+            name: 'Emergency Patient Ingress Portal',
+            service: 'Cloud Run',
+            tier: 'ingress',
+            region: 'us-central1',
+            role: 'High-Priority Emergency Admission Gateway',
+            description: 'Fast-track triage ingress with zero cold-starts and 99.999% SLA.',
+            sla: '99.999%',
+            protocols: ['HTTPS', 'FHIR API', 'TLS 1.3']
+          }
+        ];
+      }
+      canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
+      specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
+    } else if (detectedPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
+      updated.metadata = {
+        ...updated.metadata,
+        drRegions: ['europe-west1', 'us-east4'],
+        targetRpo: '< 1 Second (Zero Data Loss)',
+        targetRto: '< 15 Seconds (Automated Failover)',
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      updated.components = updated.components.map(c => {
+        if (c.service.includes('Spanner') || c.id.includes('spanner')) {
+          return {
+            ...c,
+            role: 'Active-Active Multi-Region nam3 Leader with Witness in europe-west1',
+            description: 'Synchronous Paxos replication across us-central1 and europe-west1 with 99.999% SLA.'
+          };
+        }
+        return c;
+      });
+      canvasDiff = '⚡ Upgraded Cloud Spanner to Active-Active Multi-Region nam3 with Witness in europe-west1.';
+      specDiff = 'Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).';
+    } else if (detectedPersona === 'CISO / Security Architect' || lower.includes('security') || lower.includes('ciso') || lower.includes('hsm') || lower.includes('cmek') || lower.includes('vpc')) {
+      updated.metadata = {
+        ...updated.metadata,
+        compliance: ['PCI-DSS 4.0', 'HIPAA', 'SOC2 Type II', 'FedRAMP High', 'ISO 27001'],
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      if (!updated.components.some(c => c.id === 'comp_hsm_cmek')) {
+        updated.components = [
+          ...updated.components,
+          {
+            id: 'comp_hsm_cmek',
+            name: 'Cloud KMS HSM CMEK Envelope',
+            service: 'Cloud Key Management Service',
+            tier: 'security',
+            region: 'global',
+            role: 'Hardware Security Module Key Hierarchy',
+            description: 'FIPS 140-2 Level 3 hardware security module keys protecting Spanner, BigQuery, and GCS buckets.',
+            sla: '99.999%',
+            protocols: ['Cloud KMS API', 'gRPC mTLS']
+          }
+        ];
+      }
+      canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
+      specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
+    } else if (detectedPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
+      updated.metadata = {
+        ...updated.metadata,
+        latencyBudgetMs: 35,
+        lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      canvasDiff = '💰 Configured Cloud Run scale-to-zero off-peak policies & BigQuery BI Engine 50GB cache.';
+      specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
+    } else {
+      // Dynamic component synthesis for any custom prompt (e.g. "add web application firewall", "add load balancer", etc.)
+      const cleanedSubject = cleanPrompt
+        .replace(/^(please\s+)?(add|insert|include|deploy|create|attach|integrate|provision|enable)\s+(a\s+|an\s+|the\s+)?/i, '')
+        .trim();
+      const titleCaseSubject = (cleanedSubject || cleanPrompt)
+        .split(/\s+/)
+        .map(w => w.length <= 3 && /^(waf|lb|cdn|dns|hsm|kms|vpc|api|sql|gke|iam|dlp)$/i.test(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
 
+      const isWaf = lower.includes('waf') || lower.includes('firewall') || lower.includes('armor');
+      const isLb = lower.includes('load balancer') || lower.includes('load-balancer') || /\blb\b/.test(lower);
+      const isCache = lower.includes('redis') || lower.includes('cache') || lower.includes('memorystore');
+      const isQueue = lower.includes('kafka') || lower.includes('pubsub') || lower.includes('queue') || lower.includes('stream');
+      const isDb = lower.includes('database') || lower.includes('postgres') || lower.includes('alloydb') || lower.includes('sql');
+
+      const inferredService = isWaf
+        ? 'Cloud Armor L7 WAF'
+        : isLb
+        ? 'Global External HTTPS Load Balancer'
+        : isCache
+        ? 'Memorystore for Redis Cluster'
+        : isQueue
+        ? 'Cloud Pub/Sub Event Stream'
+        : isDb
+        ? 'AlloyDB for PostgreSQL'
+        : 'Google Cloud Managed Service';
+
+      const inferredTier: AstComponent['tier'] = isWaf
+        ? 'security'
+        : isLb
+        ? 'ingress'
+        : isCache || isDb || isQueue
+        ? 'data'
+        : 'compute';
+
+      const newCompId = `comp_user_${Date.now()}`;
+      const newComp: AstComponent = {
+        id: newCompId,
+        name: titleCaseSubject,
+        service: inferredService,
+        tier: inferredTier,
+        region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : 'us-central1',
+        role: isWaf
+          ? 'OWASP Top 10 L7 WAF & Adaptive DDoS Protection'
+          : isLb
+          ? 'Global Anycast L7 Load Balancing & SSL Offload'
+          : `Prompt-Synthesized ${titleCaseSubject}`,
+        description: `Provisioned via Studio Copilot ("${cleanPrompt}") with mTLS zero-trust enforcement and telemetry hooks.`,
+        sla: '99.99%',
+        protocols: isWaf || isLb ? ['HTTPS', 'TLS 1.3', 'HTTP/3'] : ['gRPC mTLS', 'HTTPS']
+      };
+
+      updated.components = [...updated.components, newComp];
+      updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      canvasDiff = `+ Added ${newComp.name} (${newComp.service}) into topology (${updated.components.length} Nodes total).`;
+      specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
+    }
+
+    const baseUpdatedXml = generateGcpNativeArchitectureXml(
+      { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
+      updated
+    );
+
+    // Immediately update AST and canvas with deterministic Zone 7 extension card
+    setAst(updated);
+    setXml(baseUpdatedXml);
+    setActiveVersionTag(newVersionTag);
+
+    // Also invoke POST /api/generate (Gemini API via BYOK or system key) for live AI diagram customization
+    setIsHealing(true);
+    fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: cleanPrompt,
+        currentXml: selectedBlueprintId === 'gcp_enterprise_6zone' ? baseUpdatedXml : xml,
+        architectureType: selectedBlueprintId || 'gcp_enterprise_6zone',
+        isIteration: true,
+      }),
+    })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        // Use Gemini-customized XML if valid and preserves our custom extension nodes (or for non-6zone templates)
+        const finalXml =
+          data?.xml &&
+          typeof data.xml === 'string' &&
+          data.xml.includes('<mxGraphModel') &&
+          (selectedBlueprintId !== 'gcp_enterprise_6zone' || data.xml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
+            ? data.xml
+            : baseUpdatedXml;
+
+        setXml(finalXml);
         const aiMsg: StudioChatMessage = {
           id: `msg_${Date.now() + 1}`,
           sender: 'assistant',
-          text: `[${detectedPersona} Persona Refinement]: Applied updates for "${cleanPrompt.slice(0, 75)}..."`,
+          text: `[${detectedPersona} Persona Refinement • Gemini API]: ${canvasDiff}`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           actionSummary: {
             versionTag: newVersionTag,
             canvasDiff,
-            specDiff
-          }
+            specDiff,
+          },
         };
-
         setMessages(prev => [...prev, aiMsg]);
-        setActiveVersionTag(newVersionTag);
 
         const newSnapshot: StudioVersionSnapshot = {
           id: `v_${Date.now()}`,
@@ -1005,14 +1090,39 @@ function StudioMain() {
           author: detectedPersona,
           actionSummary: `${detectedPersona}: ${cleanPrompt}`,
           ast: updated,
-          xml: updatedXml
+          xml: finalXml,
         };
-
         setVersions(prev => [...prev, newSnapshot]);
-        return updated;
+      })
+      .catch(() => {
+        const aiMsg: StudioChatMessage = {
+          id: `msg_${Date.now() + 1}`,
+          sender: 'assistant',
+          text: `[${detectedPersona} Persona Refinement]: ${canvasDiff}`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          actionSummary: {
+            versionTag: newVersionTag,
+            canvasDiff,
+            specDiff,
+          },
+        };
+        setMessages(prev => [...prev, aiMsg]);
+
+        const newSnapshot: StudioVersionSnapshot = {
+          id: `v_${Date.now()}`,
+          versionTag: newVersionTag,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          author: detectedPersona,
+          actionSummary: `${detectedPersona}: ${cleanPrompt}`,
+          ast: updated,
+          xml: baseUpdatedXml,
+        };
+        setVersions(prev => [...prev, newSnapshot]);
+      })
+      .finally(() => {
+        setIsHealing(false);
       });
-    }, 600);
-  }, [activeVersionTag, isEditorMode]);
+  }, [activeVersionTag, isEditorMode, ast, xml, selectedBlueprintId]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {

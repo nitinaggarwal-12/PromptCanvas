@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getVisitorCount, incrementVisitorCount, resetVisitorCount } from '@/lib/db';
+import { getVisitorCount, incrementVisitorCount, resetVisitorCount, isUserSuperAdmin } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -23,7 +24,7 @@ export async function GET() {
   } catch (error: unknown) {
     console.error('Failed to get visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to retrieve visitor count', count: 1500 },
+      { error: 'Failed to retrieve visitor count', count: null, success: false },
       { status: 500, headers: noCacheHeaders }
     );
   }
@@ -42,7 +43,7 @@ export async function POST() {
   } catch (error: unknown) {
     console.error('Failed to increment visitor count:', error);
     return NextResponse.json(
-      { error: 'Failed to increment visitor count', count: 1500 },
+      { error: 'Failed to increment visitor count', count: null, success: false },
       { status: 500, headers: noCacheHeaders }
     );
   }
@@ -50,6 +51,13 @@ export async function POST() {
 
 export async function PUT(req: Request) {
   try {
+    const user = await getAuthenticatedUser();
+    if (!user || !isUserSuperAdmin(user)) {
+      return NextResponse.json(
+        { error: 'Forbidden: Super-admin privileges required to reset visitor counter.' },
+        { status: 403, headers: noCacheHeaders }
+      );
+    }
     const body = await req.json().catch(() => ({}));
     const targetValue = typeof body.value === 'number' ? body.value : 0;
     const count = await resetVisitorCount(targetValue);

@@ -130,19 +130,33 @@ export function renderMarkdown(input: ComposeRenderInput): string {
   const archetypeInsertionMap = SECTION_DIAGRAM_INSERTION_MAP[archetype.id] || {};
 
   // 1. Executive Publication Header & Metadata Table
+  const detectedSecurityControls = model.components
+    .filter((c) => /armor|iap|kms|dlp|vpc|waf|firewall|auth|iam|tls|mtls/i.test(`${c.label} ${c.type || ''}`))
+    .map((c) => `${c.label} (${c.id})`);
+  const securityStatusLabel =
+    detectedSecurityControls.length > 0
+      ? `Model-Verified (${detectedSecurityControls.slice(0, 2).join(', ')})`
+      : 'Confirm Security Controls (TODO)';
+
+  const diagramSuiteCount = availableDiagramTypes.length;
+  const diagramSuiteLabel =
+    diagramSuiteCount > 0
+      ? `${diagramSuiteCount} Linked Diagram${diagramSuiteCount === 1 ? '' : 's'} in Workspace`
+      : 'Single-Diagram Model Extraction';
+
   lines.push(`# ${archetype.name}`);
   lines.push('');
   lines.push(`## ${systemTitle} — Executive System Specification & Architecture Baseline`);
   lines.push('');
   lines.push(`| Specification Parameter | Technical & Executive Attribution | Verification Status |`);
   lines.push(`| :--- | :--- | :---: |`);
-  lines.push(`| **Document Archetype** | **${archetype.name}** | **APPROVED BASELINE** |`);
+  lines.push(`| **Document Archetype** | **${archetype.name}** | **DERIVED BASELINE** |`);
   lines.push(`| **Target Architecture System** | **${systemTitle}** | **LIVE CANVAS MODEL** |`);
   lines.push(`| **Enterprise Domain & Scope** | ${domainName} | Active Operational Domain |`);
-  lines.push(`| **Architectural Subsystem Tiers** | ${model.tiers.length || 1} Logical Tiers (${model.components.length} Service Pods) | GxP & Enterprise Governed |`);
-  lines.push(`| **Integrated Service Interfaces** | ${model.flows.length} API & Event Exchange Contracts | VPC-SC Security Perimeter |`);
-  lines.push(`| **Use-Case Architecture Suite** | ${availableDiagramTypes.length || 21} Visual Architecture Diagrams Available | Linked System Repository |`);
-  lines.push(`| **Specification Date** | ${timestamp} | Continuous Verification |`);
+  lines.push(`| **Architectural Subsystem Tiers** | ${model.tiers.length || 1} Logical Tiers (${model.components.length} Service Pods) | Extracted from Graph AST |`);
+  lines.push(`| **Integrated Service Interfaces** | ${model.flows.length} API & Event Exchange Contracts | ${securityStatusLabel} |`);
+  lines.push(`| **Use-Case Architecture Suite** | ${diagramSuiteLabel} | Model Provenance Verified |`);
+  lines.push(`| **Specification Date** | ${timestamp} | Point-in-Time Snapshot |`);
   lines.push('');
   lines.push('### Section Provenance Breakdown');
   lines.push('');

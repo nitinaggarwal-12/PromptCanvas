@@ -669,7 +669,7 @@ export function getArchitectureMeta(archId?: string, promptText?: string, custom
     baseMeta.primaryActors = inferActorsFromPrompt(promptText);
     baseMeta.targetOutcomes = inferOutcomesFromPrompt(promptText);
   } else {
-    // Provide clean domain-neutral metadata defaults instead of hardcoded Merck NSCLC
+    // Provide clean domain-neutral metadata defaults instead of hardcoded clinical oncology
     baseMeta.useCase = getDomainNeutralUseCaseTitle(archId);
     baseMeta.businessUseCase = getDomainNeutralProblemStatement(archId);
     baseMeta.primaryActors = getDomainNeutralPrimaryActors(archId);
@@ -692,8 +692,8 @@ export function getArchitectureMeta(archId?: string, promptText?: string, custom
 export function extractCleanTopicFromPrompt(prompt: string): string {
   if (!prompt) return "ENTERPRISE ARCHITECTURE";
   const p = prompt.toLowerCase();
-  if (p.includes('keytruda') || p.includes('supply chain') || p.includes('demand forecasting')) {
-    return "Merck Keytruda Supply Chain Forecasting";
+  if (p.includes('supply chain') || p.includes('demand forecasting')) {
+    return "Biologics Cold-Chain & Supply Forecasting";
   }
   const clean = prompt
     .replace(/act as|chief|enterprise|architect|and|pharma|technology|lead|at|we|are|building|a|generative|ai|platform|to|automate|scientific|literature|mining|accelerate|design|build|create|system|architecture|diagram/gi, ' ')

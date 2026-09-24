@@ -26,22 +26,39 @@ export interface ExtractInput {
 export function extractSystemModel(input: ExtractInput): SystemModel {
   const { graph_json, xml, title, domain } = input;
 
-  // 1. If valid graph_json exists (v2 freeform / deterministic graph), normalize directly
+  // 1. If valid graph_json exists (v2 freeform / Studio1 semanticGraph / deterministic graph), normalize directly
   if (graph_json && typeof graph_json === 'object') {
-    const g = graph_json as Partial<ArchitectureGraph>;
-    if (Array.isArray(g.nodes) && Array.isArray(g.tiers)) {
-      const tiers = (g.tiers || []).map((t) => ({
-        id: t.id,
-        label: t.label,
-        kind: 'layer' as const,
-      }));
+    const g = graph_json as Partial<ArchitectureGraph> & { nodes?: any[]; tiers?: any[]; edges?: any[] };
+    if (Array.isArray(g.nodes)) {
+      const derivedTiersMap = new Map<string, { id: string; label: string; kind: 'layer' }>();
+      if (Array.isArray(g.tiers) && g.tiers.length > 0) {
+        for (const t of g.tiers) {
+          derivedTiersMap.set(t.id || t.label, {
+            id: t.id || t.label,
+            label: t.label || t.id,
+            kind: 'layer' as const,
+          });
+        }
+      } else {
+        for (const n of g.nodes) {
+          const tierName = n.tier || n.zone || 'Core Architecture';
+          if (!derivedTiersMap.has(tierName)) {
+            derivedTiersMap.set(tierName, {
+              id: tierName,
+              label: tierName,
+              kind: 'layer' as const,
+            });
+          }
+        }
+      }
+      const tiers = Array.from(derivedTiersMap.values());
 
-      const components = (g.nodes || []).map((n) => ({
+      const components = (g.nodes || []).map((n: any) => ({
         id: n.id,
         label: n.label,
-        subtitle: n.subtitle,
-        type: n.type,
-        tier: n.tier,
+        subtitle: n.subtitle || n.description,
+        type: n.type || n.kind,
+        tier: n.tier || n.zone || 'Core Architecture',
       }));
 
       const actors = (g.nodes || [])

@@ -639,10 +639,130 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   cells.push(createEdge("e16_gcs", "n_bigquery", "n_gcs", "⓰", "BigLake Sync", "#0D9488", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
   cells.push(createEdge("e17_evals", "n_gemini", "n_bigquery", "⓱", "Evals & Tracing", "#64748B", { dashed: 1, exitX: 0, exitY: 0.9, entryX: 0.5, entryY: 0, waypoints: [{ x: 1242.5, y: 400 }], labelPosition: "above", isDark }));
 
+  // DYNAMIC PROMPT-ADDED AST COMPONENTS (e.g. "Add Web Application Firewall", "Add Load Balancer", etc.)
+  const BASELINE_AST_IDS = new Set([
+    "comp_armor",
+    "comp_glb",
+    "comp_gke",
+    "comp_vertex",
+    "comp_spanner_leader",
+    "comp_bigquery",
+    "comp_spanner_dr",
+    "comp_gcs_backup",
+    "comp_patient_portal",
+    "comp_hsm_cmek",
+    "comp_cdn",
+    "comp_token_vault",
+    "comp_kafka_mirror",
+    "comp_event_bus",
+    "comp_doc_ai",
+  ]);
+
+  const customAstNodes = (ast?.components || []).filter((c) => !BASELINE_AST_IDS.has(c.id));
+  const totalPageHeight = customAstNodes.length > 0 ? 1140 : 980;
+
+  if (customAstNodes.length > 0) {
+    const z7Bg = isDark ? "#0C1928" : "#F0F9FF";
+    const z7Stroke = isDark ? "#0284C7" : "#38BDF8";
+    cells.push(
+      createZoneBox(
+        "z7_custom",
+        `7. PROMPT-SYNTHESIZED ARCHITECTURE EXTENSIONS (${customAstNodes.length} ADDED)`,
+        "Gemini Live Topology Augmentation • VPC Peered",
+        40,
+        915,
+        1600,
+        175,
+        z7Bg,
+        z7Stroke,
+        isDark
+      )
+    );
+
+    customAstNodes.forEach((comp, idx) => {
+      const colIdx = idx % 6;
+      const xPos = 56 + colIdx * 265;
+      const yPos = 960;
+      const nodeId = `n_custom_${comp.id}`;
+      const lowerName = `${comp.name} ${comp.service}`.toLowerCase();
+      const iconKey: keyof typeof GCP_OFFICIAL_ICONS =
+        lowerName.includes("waf") || lowerName.includes("firewall") || lowerName.includes("armor")
+          ? "cloud_armor"
+          : lowerName.includes("load") || lowerName.includes("lb") || lowerName.includes("balancer")
+          ? "cloud_load_balancing"
+          : lowerName.includes("spanner")
+          ? "cloud_spanner"
+          : lowerName.includes("bigquery")
+          ? "bigquery"
+          : lowerName.includes("redis") || lowerName.includes("cache")
+          ? "memorystore"
+          : lowerName.includes("pubsub") || lowerName.includes("queue") || lowerName.includes("event")
+          ? "pubsub"
+          : lowerName.includes("ai") || lowerName.includes("vertex") || lowerName.includes("gemini")
+          ? "vertex_ai"
+          : "cloud_run";
+
+      const badgeColor =
+        comp.tier === "security" || comp.tier === "ingress"
+          ? "#DC2626"
+          : comp.tier === "data"
+          ? "#059669"
+          : "#2563EB";
+
+      cells.push(
+        createNodeCard(
+          nodeId,
+          comp.name,
+          `${comp.service} • ${comp.role || "Live Extension"}`,
+          `${comp.sla || "99.99% SLA"} • ${(comp.protocols || ["HTTPS/mTLS"])[0]}`,
+          comp.tier.toUpperCase(),
+          iconKey,
+          xPos,
+          yPos,
+          248,
+          110,
+          badgeColor,
+          [comp.description || `Added via Studio Prompt: ${comp.name}`],
+          isDark
+        )
+      );
+
+      // Connect upstream tier node to this custom component with orthogonal waypoint
+      const upstreamId =
+        comp.tier === "ingress" || comp.tier === "security"
+          ? "n_armor"
+          : comp.tier === "data"
+          ? "n_spanner"
+          : "n_gke";
+      cells.push(
+        createEdge(
+          `e_custom_${comp.id}`,
+          upstreamId,
+          nodeId,
+          `+${idx + 1}`,
+          comp.protocols?.[0] || "mTLS / HTTPS",
+          badgeColor,
+          {
+            dashed: 1,
+            exitX: 0.5,
+            exitY: 1,
+            entryX: 0.5,
+            entryY: 0,
+            waypoints: [
+              { x: xPos + 124, y: 905 },
+            ],
+            labelPosition: "above",
+            isDark,
+          }
+        )
+      );
+    });
+  }
+
   return (
     `<mxfile host="embed.diagrams.net">` +
     `<diagram id="spatial_gcp_reference_arch" name="${encodeXml(title)}">` +
-    `<mxGraphModel dx="1680" dy="980" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="980" background="${canvasBg}">` +
+    `<mxGraphModel dx="1680" dy="${totalPageHeight}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1680" pageHeight="${totalPageHeight}" background="${canvasBg}">` +
     `<root>` +
     `<mxCell id="0"/>` +
     `<mxCell id="1" parent="0"/>` +

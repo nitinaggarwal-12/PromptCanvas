@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { getGeminiModelWithFallbacks, getGenConfig } from './geminiConfig';
+import { getGeminiModelWithFallbacks, getGenConfig, getEffectiveGeminiApiKey } from './geminiConfig';
 import { generateGCPFunctionalFlowchart } from './gcpFunctionalFlowchart';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { validateDrawioXml } from './validate/validator';
@@ -164,7 +164,7 @@ export async function decompileArchitectureImageWithDeepMind(params: {
     };
   }
 
-  const apiKey = userApiKey || process.env.GEMINI_API_KEY;
+  const apiKey = getEffectiveGeminiApiKey(userApiKey);
 
   if (!apiKey) {
     const xml = enrichDrawioXmlWithVectorIcons(

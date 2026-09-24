@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { parseXmlNodesAndEdges } from '@/lib/graph/xmlNodesParser';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
@@ -206,7 +207,10 @@ export async function POST(request: NextRequest) {
       .map(n => `- From: ${n.source || 'Unknown'} -> To: ${n.target || 'Unknown'} (Label: ${n.label || 'Connection'})`)
       .join('\n');
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/chat' });
+    if (!guard.allowed) return guard.errorResponse!;
+
+    const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
 
     // Fallback deterministic response if no API key
     if (!apiKey) {

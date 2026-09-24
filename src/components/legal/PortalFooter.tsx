@@ -36,7 +36,7 @@ export function PortalFooter() {
           </div>
           <span className="text-slate-600 hidden sm:inline">•</span>
           <p className="text-xs text-slate-500">
-            © 2026 PromptCanvas. All rights reserved. Powered by Google Cloud & Vertex AI.
+            © 2026 PromptCanvas. All rights reserved. Powered by Google Gemini & Cloud Architecture Engine.
           </p>
         </div>
 

@@ -1058,214 +1058,281 @@ export default function GoogleWorkspaceDirectOpenModal({
                         </div>
                       ) : (
                         /* DECOMPOSED NATIVE VECTOR SHAPES & AUTHENTIC AZURE/GCP SVG ICONS LAYER */
-                        <div className="relative w-full h-full">
-                          {/* SVG Connector Layer */}
-                          <svg
-                            className="absolute inset-0 w-full h-full pointer-events-none z-10"
-                            viewBox="0 0 100 100"
-                            preserveAspectRatio="none"
-                          >
-                            <defs>
-                              <marker
-                                id="slide-arrow-end"
-                                viewBox="0 0 10 10"
-                                refX="8"
-                                refY="5"
-                                markerWidth="4"
-                                markerHeight="4"
-                                orient="auto"
+                        (() => {
+                          // Lock diagram aspect ratio inside the 16:9 slide frame so portrait/square topologies
+                          // (e.g. GCP-MULTIAGENT-01 at 1020x1140) are never squashed vertically.
+                          const slideAspect = 16 / 9;
+                          const diagramAspect = Math.max(0.25, Math.min(4, graphW / Math.max(1, graphH)));
+                          const maxStageW = 94;
+                          const maxStageH = 92;
+                          const stageWidthPct =
+                            diagramAspect >= slideAspect
+                              ? maxStageW
+                              : Math.min(maxStageW, maxStageH * (diagramAspect / slideAspect));
+                          const stageHeightPct =
+                            diagramAspect >= slideAspect
+                              ? Math.min(maxStageH, maxStageW * (slideAspect / diagramAspect))
+                              : maxStageH;
+                          const stageOffsetX = (100 - stageWidthPct) / 2;
+                          const stageOffsetY = (100 - stageHeightPct) / 2;
+
+                          const toPctX = (x: number) =>
+                            ((x - parsedTopology.minX) / graphW) * stageWidthPct + stageOffsetX;
+                          const toPctY = (y: number) =>
+                            ((y - parsedTopology.minY) / graphH) * stageHeightPct + stageOffsetY;
+
+                          return (
+                            <div className="relative w-full h-full">
+                              {/* SVG Connector Layer */}
+                              <svg
+                                className="absolute inset-0 w-full h-full pointer-events-none z-10"
+                                viewBox="0 0 100 100"
+                                preserveAspectRatio="none"
                               >
-                                <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#2563EB" />
-                              </marker>
-                              <marker
-                                id="slide-arrow-start"
-                                viewBox="0 0 10 10"
-                                refX="2"
-                                refY="5"
-                                markerWidth="4"
-                                markerHeight="4"
-                                orient="auto"
-                              >
-                                <path d="M 10 1.5 L 0 5 L 10 8.5 z" fill="#2563EB" />
-                              </marker>
-                            </defs>
-                            {edges.map((edge, eIdx) => {
-                              const src = sortedVertices.find((v) => v.id === edge.source);
-                              const tgt = sortedVertices.find((v) => v.id === edge.target);
+                                <defs>
+                                  <marker
+                                    id="slide-arrow-end"
+                                    viewBox="0 0 10 10"
+                                    refX="8"
+                                    refY="5"
+                                    markerWidth="4"
+                                    markerHeight="4"
+                                    orient="auto"
+                                  >
+                                    <path d="M 0 1.5 L 10 5 L 0 8.5 z" fill="#2563EB" />
+                                  </marker>
+                                  <marker
+                                    id="slide-arrow-start"
+                                    viewBox="0 0 10 10"
+                                    refX="2"
+                                    refY="5"
+                                    markerWidth="4"
+                                    markerHeight="4"
+                                    orient="auto"
+                                  >
+                                    <path d="M 10 1.5 L 0 5 L 10 8.5 z" fill="#2563EB" />
+                                  </marker>
+                                </defs>
+                                {edges.map((edge, eIdx) => {
+                                  const src = sortedVertices.find((v) => v.id === edge.source);
+                                  const tgt = sortedVertices.find((v) => v.id === edge.target);
 
-                              let ptStart = src
-                                ? {
-                                    x: src.absX + src.width * parseFloat(edge.style.exitX ?? '0.5'),
-                                    y: src.absY + src.height * parseFloat(edge.style.exitY ?? '0.5'),
+                                  const exitX = parseFloat(edge.style.exitX ?? '0.5');
+                                  const exitY = parseFloat(edge.style.exitY ?? '0.5');
+                                  const entryX = parseFloat(edge.style.entryX ?? '0.5');
+                                  const entryY = parseFloat(edge.style.entryY ?? '0.5');
+
+                                  const ptStart = src
+                                    ? {
+                                        x: src.absX + src.width * exitX,
+                                        y: src.absY + src.height * exitY,
+                                      }
+                                    : edge.sourcePoint;
+                                  const ptEnd = tgt
+                                    ? {
+                                        x: tgt.absX + tgt.width * entryX,
+                                        y: tgt.absY + tgt.height * entryY,
+                                      }
+                                    : edge.targetPoint;
+
+                                  if (!ptStart || !ptEnd) return null;
+
+                                  // Generate orthogonal 90-degree elbow waypoints when none are explicitly stored
+                                  let routedWaypoints = [...edge.waypoints];
+                                  if (
+                                    routedWaypoints.length === 0 &&
+                                    Math.abs(ptStart.x - ptEnd.x) > 4 &&
+                                    Math.abs(ptStart.y - ptEnd.y) > 4
+                                  ) {
+                                    const isHorizontalExit = exitX === 0 || exitX === 1 || Math.abs(ptEnd.x - ptStart.x) >= Math.abs(ptEnd.y - ptStart.y);
+                                    if (isHorizontalExit) {
+                                      const midX = (ptStart.x + ptEnd.x) / 2;
+                                      routedWaypoints = [
+                                        { x: midX, y: ptStart.y },
+                                        { x: midX, y: ptEnd.y },
+                                      ];
+                                    } else {
+                                      const midY = (ptStart.y + ptEnd.y) / 2;
+                                      routedWaypoints = [
+                                        { x: ptStart.x, y: midY },
+                                        { x: ptEnd.x, y: midY },
+                                      ];
+                                    }
                                   }
-                                : edge.sourcePoint;
-                              let ptEnd = tgt
-                                ? {
-                                    x: tgt.absX + tgt.width * parseFloat(edge.style.entryX ?? '0.5'),
-                                    y: tgt.absY + tgt.height * parseFloat(edge.style.entryY ?? '0.5'),
+
+                                  const allPts = [ptStart, ...routedWaypoints, ptEnd];
+                                  const pointsAttr = allPts.map((p) => `${toPctX(p.x)},${toPctY(p.y)}`).join(' ');
+                                  const hasStart = edge.style.startArrow && edge.style.startArrow !== 'none';
+                                  const hasEnd = !edge.style.endArrow || edge.style.endArrow !== 'none';
+
+                                  return (
+                                    <g key={edge.id || eIdx}>
+                                      <polyline
+                                        fill="none"
+                                        points={pointsAttr}
+                                        stroke={edge.style.strokeColor || '#2563EB'}
+                                        strokeWidth="0.22"
+                                        strokeDasharray={edge.style.dashed === '1' ? '0.7,0.4' : undefined}
+                                        markerStart={hasStart ? 'url(#slide-arrow-start)' : undefined}
+                                        markerEnd={hasEnd ? 'url(#slide-arrow-end)' : undefined}
+                                      />
+                                    </g>
+                                  );
+                                })}
+                              </svg>
+
+                              {/* Decomposed Shapes Layer (Sorted by Depth & Area so Containers Never Cover Children) */}
+                              <div className="relative w-full h-full">
+                                {sortedVertices.map((node) => {
+                                  if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) {
+                                    return null;
                                   }
-                                : edge.targetPoint;
 
-                              if (!ptStart || !ptEnd) return null;
+                                  const leftPct = toPctX(node.absX);
+                                  const topPct = toPctY(node.absY);
+                                  const widthPct = Math.max(1.2, (node.width / graphW) * stageWidthPct);
+                                  const heightPct = Math.max(1.5, (node.height / graphH) * stageHeightPct);
 
-                              const toPctX = (x: number) => ((x - parsedTopology.minX) / graphW) * 94 + 3;
-                              const toPctY = (y: number) => ((y - parsedTopology.minY) / graphH) * 90 + 5;
+                                  const parsedText = cleanHtmlToPlainText(node.value);
+                                  const override = editableOverrides[node.id];
+                                  const title = override ? override.title : parsedText.title;
+                                  const subtitle = override ? override.subtitle : parsedText.subtitle;
 
-                              const allPts = [ptStart, ...edge.waypoints, ptEnd];
-                              const pointsAttr = allPts.map((p) => `${toPctX(p.x)},${toPctY(p.y)}`).join(' ');
-                              const hasStart = edge.style.startArrow && edge.style.startArrow !== 'none';
-                              const hasEnd = !edge.style.endArrow || edge.style.endArrow !== 'none';
+                                  // Extract inline <img src="data:image/..."> from HTML value if not already extracted
+                                  let htmlImgSrc = '';
+                                  if (!node.extractedSvgs[0] && !node.imageDataUrl && node.value) {
+                                    const decodedVal = node.value
+                                      .replace(/&quot;/g, '"')
+                                      .replace(/&apos;/g, "'")
+                                      .replace(/&lt;/g, '<')
+                                      .replace(/&gt;/g, '>')
+                                      .replace(/&amp;/g, '&');
+                                    const imgMatch = decodedVal.match(/<img[^>]+src=["']([^"']+)["']/i);
+                                    if (imgMatch && imgMatch[1]) {
+                                      htmlImgSrc = imgMatch[1];
+                                    }
+                                  }
 
-                              return (
-                                <g key={edge.id || eIdx}>
-                                  <polyline
-                                    fill="none"
-                                    points={pointsAttr}
-                                    stroke={edge.style.strokeColor || '#2563EB'}
-                                    strokeWidth="0.22"
-                                    strokeDasharray={edge.style.dashed === '1' ? '0.7,0.4' : undefined}
-                                    markerStart={hasStart ? 'url(#slide-arrow-start)' : undefined}
-                                    markerEnd={hasEnd ? 'url(#slide-arrow-end)' : undefined}
-                                  />
-                                </g>
-                              );
-                            })}
-                          </svg>
+                                  const iconMarkupOrUrl = node.extractedSvgs[0] || node.imageDataUrl || htmlImgSrc;
 
-                          {/* Decomposed Shapes Layer (Sorted by Depth & Area so Containers Never Cover Children) */}
-                          <div className="relative w-full h-full">
-                            {sortedVertices.map((node, zIdx) => {
-                              if ((node.id === 'bg' || node.id.includes('bg')) && node.width >= 700 && node.height >= 400) {
-                                return null;
-                              }
+                                  const isImageShape =
+                                    node.style.shape === 'image' ||
+                                    Boolean(node.imageDataUrl) ||
+                                    node.extractedSvgs.length > 0 ||
+                                    Boolean(htmlImgSrc);
 
-                              const leftPct = ((node.absX - parsedTopology.minX) / graphW) * 94 + 3;
-                              const topPct = ((node.absY - parsedTopology.minY) / graphH) * 90 + 5;
-                              const widthPct = Math.max(1.4, (node.width / graphW) * 94);
-                              const heightPct = Math.max(1.8, (node.height / graphH) * 90);
+                                  const hasFill =
+                                    node.style.fillColor &&
+                                    node.style.fillColor !== 'none' &&
+                                    node.style.fillColor !== 'transparent' &&
+                                    !(isImageShape && node.width <= 55 && node.height <= 55);
+                                  const hasStroke =
+                                    node.style.strokeColor &&
+                                    node.style.strokeColor !== 'none' &&
+                                    node.style.strokeColor !== 'transparent' &&
+                                    !(isImageShape && node.width <= 55 && node.height <= 55);
 
-                              const parsedText = cleanHtmlToPlainText(node.value);
-                              const override = editableOverrides[node.id];
-                              const title = override ? override.title : parsedText.title;
-                              const subtitle = override ? override.subtitle : parsedText.subtitle;
+                                  const isContainer =
+                                    node.style.container === '1' ||
+                                    parentIds.has(node.id) ||
+                                    (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
+                                    (node.width > 240 && node.height > 120 && !isImageShape);
 
-                              const isImageShape =
-                                node.style.shape === 'image' ||
-                                Boolean(node.imageDataUrl) ||
-                                node.extractedSvgs.length > 0;
+                                  const isStandaloneIconWithBottomLabel =
+                                    (node.style.verticalLabelPosition === 'bottom' ||
+                                      (isImageShape && node.width <= 56 && node.height <= 56)) &&
+                                    !isContainer;
 
-                              const hasFill =
-                                node.style.fillColor &&
-                                node.style.fillColor !== 'none' &&
-                                node.style.fillColor !== 'transparent' &&
-                                !(isImageShape && node.width <= 55 && node.height <= 55);
-                              const hasStroke =
-                                node.style.strokeColor &&
-                                node.style.strokeColor !== 'none' &&
-                                node.style.strokeColor !== 'transparent' &&
-                                !(isImageShape && node.width <= 55 && node.height <= 55);
+                                  const isSelected = selectedNodeId === node.id;
+                                  const titleHex = node.htmlTitleColor
+                                    ? `#${node.htmlTitleColor}`
+                                    : node.style.fontColor
+                                    ? node.style.fontColor
+                                    : parsedTopology.isDarkDiagram
+                                    ? '#FFFFFF'
+                                    : '#0F172A';
 
-                              const isContainer =
-                                node.style.container === '1' ||
-                                parentIds.has(node.id) ||
-                                (node.style.verticalAlign === 'top' && node.width * node.height > 18000) ||
-                                (node.width > 240 && node.height > 120 && !isImageShape);
-
-                              const isStandaloneIconWithBottomLabel =
-                                (node.style.verticalLabelPosition === 'bottom' ||
-                                  (isImageShape && node.width <= 56 && node.height <= 56)) &&
-                                !isContainer;
-
-                              const isSelected = selectedNodeId === node.id;
-                              const titleHex = node.htmlTitleColor
-                                ? `#${node.htmlTitleColor}`
-                                : node.style.fontColor
-                                ? node.style.fontColor
-                                : parsedTopology.isDarkDiagram
-                                ? '#FFFFFF'
-                                : '#0F172A';
-
-                              const iconMarkupOrUrl = node.extractedSvgs[0] || node.imageDataUrl;
-
-                              return (
-                                <div
-                                  key={node.id}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedNodeId(node.id);
-                                  }}
-                                  style={{
-                                    left: `${leftPct}%`,
-                                    top: `${topPct}%`,
-                                    width: `${widthPct}%`,
-                                    height: `${heightPct}%`,
-                                    zIndex: isSelected ? 50 : node.depth * 5 + (isContainer ? 1 : 15),
-                                    borderRadius:
-                                      node.style.rounded === '1' ? '6px' : node.style.ellipse === '1' ? '9999px' : '2px',
-                                    backgroundColor: hasFill ? node.style.fillColor : 'transparent',
-                                    borderColor: isSelected
-                                      ? '#F59E0B'
-                                      : hasStroke
-                                      ? node.style.strokeColor
-                                      : 'transparent',
-                                    borderStyle: node.style.dashed === '1' ? 'dashed' : 'solid',
-                                    borderWidth: isSelected ? '2px' : hasStroke ? '1.2px' : '0px',
-                                  }}
-                                  className={`absolute transition-all cursor-pointer select-none flex ${
-                                    isContainer
-                                      ? 'flex-col justify-start items-start p-1'
-                                      : isStandaloneIconWithBottomLabel
-                                      ? 'flex-col items-center justify-center overflow-visible'
-                                      : 'flex-row items-center justify-center px-1 gap-1'
-                                  }`}
-                                >
-                                  {/* Render SVG Icon or Data URL */}
-                                  {iconMarkupOrUrl && (
+                                  return (
                                     <div
-                                      className={`${
-                                        isStandaloneIconWithBottomLabel ? 'w-full h-full' : 'w-4 h-4 shrink-0'
-                                      } flex items-center justify-center [&>svg]:w-full [&>svg]:h-full`}
-                                    >
-                                      {iconMarkupOrUrl.startsWith('<svg') ? (
-                                        <div
-                                          className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
-                                          dangerouslySetInnerHTML={{ __html: iconMarkupOrUrl }}
-                                        />
-                                      ) : (
-                                        <img
-                                          src={iconMarkupOrUrl}
-                                          alt={title || 'icon'}
-                                          className="w-full h-full object-contain"
-                                        />
-                                      )}
-                                    </div>
-                                  )}
-
-                                  {/* Render Label (Top of Container, Below Standalone Icon, or Inside Card) */}
-                                  {title && (
-                                    <div
-                                      style={{ color: titleHex }}
-                                      className={`${
-                                        isStandaloneIconWithBottomLabel
-                                          ? 'absolute top-full mt-0.5 left-1/2 -translate-x-1/2 text-center w-max max-w-[115px] whitespace-normal leading-[1.05] px-1 py-0.2 rounded bg-white/95 shadow-2xs text-[7.5px] font-bold z-30'
-                                          : isContainer
-                                          ? 'text-[8.5px] font-bold leading-[1.1] px-1 py-0.5 whitespace-normal break-words max-w-full'
-                                          : 'text-[8px] font-bold leading-[1.05] text-center whitespace-normal break-words line-clamp-2 max-w-full'
+                                      key={node.id}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedNodeId(node.id);
+                                      }}
+                                      style={{
+                                        left: `${leftPct}%`,
+                                        top: `${topPct}%`,
+                                        width: `${widthPct}%`,
+                                        height: `${heightPct}%`,
+                                        zIndex: isSelected ? 50 : node.depth * 5 + (isContainer ? 1 : 15),
+                                        borderRadius:
+                                          node.style.rounded === '1' ? '6px' : node.style.ellipse === '1' ? '9999px' : '2px',
+                                        backgroundColor: hasFill ? node.style.fillColor : 'transparent',
+                                        borderColor: isSelected
+                                          ? '#F59E0B'
+                                          : hasStroke
+                                          ? node.style.strokeColor
+                                          : 'transparent',
+                                        borderStyle: node.style.dashed === '1' ? 'dashed' : 'solid',
+                                        borderWidth: isSelected ? '2px' : hasStroke ? '1.2px' : '0px',
+                                      }}
+                                      className={`absolute transition-all cursor-pointer select-none flex ${
+                                        isContainer
+                                          ? 'flex-col justify-start items-start p-1'
+                                          : isStandaloneIconWithBottomLabel
+                                          ? 'flex-col items-center justify-center overflow-visible'
+                                          : 'flex-row items-center justify-center px-1 gap-1'
                                       }`}
                                     >
-                                      {title}
-                                      {subtitle && !isStandaloneIconWithBottomLabel && (
-                                        <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal line-clamp-2">
-                                          {subtitle}
-                                        </span>
+                                      {/* Render SVG Icon or Data URL */}
+                                      {iconMarkupOrUrl && (
+                                        <div
+                                          className={`${
+                                            isStandaloneIconWithBottomLabel ? 'w-full h-full' : 'w-4 h-4 shrink-0'
+                                          } flex items-center justify-center [&>svg]:w-full [&>svg]:h-full`}
+                                        >
+                                          {iconMarkupOrUrl.startsWith('<svg') ? (
+                                            <div
+                                              className="w-full h-full flex items-center justify-center [&>svg]:w-full [&>svg]:h-full"
+                                              dangerouslySetInnerHTML={{ __html: iconMarkupOrUrl }}
+                                            />
+                                          ) : (
+                                            <img
+                                              src={iconMarkupOrUrl}
+                                              alt={title || 'icon'}
+                                              className="w-full h-full object-contain"
+                                            />
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {/* Render Label (Top of Container, Below Standalone Icon, or Inside Card) */}
+                                      {title && (
+                                        <div
+                                          style={{ color: titleHex }}
+                                          className={`${
+                                            isStandaloneIconWithBottomLabel
+                                              ? 'absolute top-full mt-0.5 left-1/2 -translate-x-1/2 text-center w-max max-w-[115px] whitespace-normal leading-[1.05] px-1 py-0.2 rounded bg-white/95 shadow-2xs text-[7.5px] font-bold z-30'
+                                              : isContainer
+                                              ? 'text-[8.5px] font-bold leading-[1.1] px-1 py-0.5 whitespace-normal break-words max-w-full'
+                                              : 'text-[8px] font-bold leading-[1.05] text-center whitespace-normal break-words line-clamp-2 max-w-full'
+                                          }`}
+                                        >
+                                          {title}
+                                          {subtitle && !isStandaloneIconWithBottomLabel && (
+                                            <span className="block text-[7px] font-normal opacity-85 leading-[1.05] whitespace-normal line-clamp-2">
+                                              {subtitle}
+                                            </span>
+                                          )}
+                                        </div>
                                       )}
                                     </div>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })()
                       )}
                     </div>
                   )}

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { getGeminiModel, getGenConfig } from '@/lib/geminiConfig';
+import { getGeminiModel, getGenConfig, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { normalizeStudio1Graph, renderStudio1GraphXml, Studio1SemanticGraph } from '@/lib/studio1HybridEngine';
@@ -237,7 +238,10 @@ export async function POST(request: Request) {
           generationSource: 'studio1-deterministic-intent-gate',
         });
     }
-    const apiKey = process.env.GEMINI_API_KEY;
+    const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/studio1/generate' });
+    if (!guard.allowed) return guard.errorResponse!;
+
+    const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
     if (!apiKey) return NextResponse.json({ success: false, error: 'Studio 1 requires GEMINI_API_KEY. No static template was returned.', generationSource: 'none' }, { status: 503 });
 
     const model = getGeminiModel('pro');

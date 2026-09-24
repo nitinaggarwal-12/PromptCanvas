@@ -31,6 +31,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import ByokHeaderButton from './ByokHeaderButton';
 
 /** Canonical geometry. Change it here and every route moves together. */
 export const APP_HEADER_HEIGHT_PX = 56;
@@ -164,7 +165,16 @@ export function AppHeader({
 
   // Raw mode: the page owns the internal layout, the shell owns the geometry.
   if (children) {
-    return <header className={shell}>{children}</header>;
+    return (
+      <header className={shell}>
+        <div className="flex items-center justify-between flex-1 min-w-0 gap-3">
+          {children}
+        </div>
+        <div className="flex items-center shrink-0 pl-2 border-l border-slate-800/80">
+          <ByokHeaderButton compact />
+        </div>
+      </header>
+    );
   }
 
   const identity = (
@@ -206,7 +216,10 @@ export function AppHeader({
         {meta}
       </div>
 
-      {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+      <div className="flex items-center gap-2 shrink-0">
+        <ByokHeaderButton compact />
+        {actions}
+      </div>
     </header>
   );
 }

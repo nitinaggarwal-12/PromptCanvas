@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { GEMINI_MODEL_ID, getGenConfig } from '../geminiConfig';
+import { GEMINI_FLASH_MODEL_ID, getGenConfig, getEffectiveGeminiApiKey } from '../geminiConfig';
 import { SystemModel } from './extract';
 import { buildInferredPrompt } from '../../prompts/compose/prompts';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
@@ -41,7 +41,7 @@ export async function fillInferredSections(
 
   if (sections.length === 0) return result;
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getEffectiveGeminiApiKey();
   if (!apiKey) {
     return result;
   }
@@ -50,7 +50,7 @@ export async function fillInferredSections(
     const ai = new GoogleGenAI({ apiKey });
     const prompt = buildInferredPrompt(model, sections);
     const config = getGenConfig('narrative');
-    const modelName = process.env.GEMINI_FLASH_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+    const modelName = GEMINI_FLASH_MODEL_ID;
 
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(() => reject(new Error('Gemini API timeout (20s limit)')), 20000)

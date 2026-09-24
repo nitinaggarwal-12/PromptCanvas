@@ -48,9 +48,6 @@ export function VisitorCounter({
         }
       } catch (err) {
         console.error('Failed to load visitor counter:', err);
-        if (isMounted && count === null) {
-          setCount(1500);
-        }
       } finally {
         if (isMounted) setIsLoaded(true);
       }
@@ -79,6 +76,10 @@ export function VisitorCounter({
       clearInterval(interval);
     };
   }, [autoIncrement]);
+
+  if (isLoaded && count === null) {
+    return null;
+  }
 
   return (
     <div

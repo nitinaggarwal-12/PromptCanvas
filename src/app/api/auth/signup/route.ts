@@ -1,9 +1,22 @@
 import { NextResponse } from 'next/server';
-import { createUser, getUserByEmail, createSession, logUserEvent, migrateGuestContent } from '@/lib/db';
+import { createUser, getUserByEmail, createSession, logUserEvent, migrateGuestContent, checkIpEventRateLimit } from '@/lib/db';
 import { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS, getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
+    const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
+    const ipAddress = rawIp.split(',')[0]?.trim() || '127.0.0.1';
+    const userAgent = request.headers.get('user-agent');
+
+    // Rate limit signup per IP (max 5 signups per 15 minutes)
+    const rateCheck = await checkIpEventRateLimit(ipAddress, 'SIGNUP', 5, 15);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { error: 'Too many account creation attempts from this network. Please wait 15 minutes and try again.' },
+        { status: 429 }
+      );
+    }
+
     const oldUser = await getAuthenticatedUser();
     const body = await request.json();
     const { email, password, name } = body;
@@ -12,17 +25,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 400 });
     }
 
-    if (!password || typeof password !== 'string' || password.length < 6) {
-      return NextResponse.json({ error: 'Password must be at least 6 characters long.' }, { status: 400 });
+    if (!password || typeof password !== 'string' || password.length < 10) {
+      return NextResponse.json({ error: 'Password must be at least 10 characters long.' }, { status: 400 });
     }
 
-    const existingUser = await getUserByEmail(email);
-    if (existingUser) {
-      return NextResponse.json({ error: 'An account with this email address already exists.' }, { status: 400 });
+    const normalizedEmail = email.trim().toLowerCase();
+    const rootEmail = process.env.ROOT_USER_EMAIL?.trim().toLowerCase();
+
+    // Prevent unverified takeover of ROOT_USER_EMAIL or email enumeration (B1 & D6)
+    const existingUser = await getUserByEmail(normalizedEmail);
+    if (existingUser || (rootEmail && normalizedEmail === rootEmail)) {
+      return NextResponse.json(
+        {
+          success: true,
+          requiresVerification: true,
+          message: 'Check your email or use magic-link verification to continue signing in to this account.',
+        },
+        { status: 200 }
+      );
     }
 
     const { hash, salt } = hashPassword(password);
-    const newUser = await createUser(email, hash, salt, name || null);
+    const newUser = await createUser(normalizedEmail, hash, salt, name || null);
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + SESSION_MAX_AGE_DAYS);
@@ -34,8 +58,6 @@ export async function POST(request: Request) {
       await migrateGuestContent(oldUser.id, newUser.id);
     }
 
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip');
-    const userAgent = request.headers.get('user-agent');
     await logUserEvent(newUser.id, 'SIGNUP', ipAddress, userAgent);
 
     return NextResponse.json({

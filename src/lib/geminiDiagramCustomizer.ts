@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { validateAndHealDrawioXml } from './xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import { injectUseCaseFlavor } from './diagramCleaner';
-import { GEMINI_MODEL_ID } from './geminiConfig';
+import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from './geminiConfig';
 import { generateContentWithRetry } from './geminiRetryHelper';
 import { toUserFacingMessage } from './ai/modelErrors';
 
@@ -21,7 +21,7 @@ export interface CustomizationResult {
 }
 
 function getAiClient(customKey?: string): GoogleGenAI {
-  const apiKey = customKey || process.env.GEMINI_API_KEY || '';
+  const apiKey = getEffectiveGeminiApiKey(customKey);
   return new GoogleGenAI({ apiKey });
 }
 
@@ -92,7 +92,7 @@ export async function customizeDiagramTemplateWithGemini(
   architectureType: string = 'conceptual_diagram',
   userApiKey?: string
 ): Promise<CustomizationResult> {
-  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID || 'gemini-3.7-flash';
+  const modelName = process.env.GEMINI_MODEL_ID || GEMINI_MODEL_ID;
 
   if (!templateXml || typeof templateXml !== 'string') {
     throw new Error('Template XML is empty or invalid');
@@ -119,7 +119,7 @@ export async function customizeDiagramTemplateWithGemini(
     };
   }
 
-  const apiKey = userApiKey || process.env.GEMINI_API_KEY;
+  const apiKey = getEffectiveGeminiApiKey(userApiKey);
   if (!apiKey) {
     console.log('[Gemini Customizer] No GEMINI_API_KEY present; applying deterministic template flavor injection.');
     const fallbackFlavored = injectUseCaseFlavor(templateXml, userPrompt);

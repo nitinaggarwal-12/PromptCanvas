@@ -63,6 +63,8 @@ export async function getAuthenticatedUser(): Promise<User | null> {
   }
 }
 
+export const getCurrentUser = getAuthenticatedUser;
+
 /**
  * Helper to set session cookie on Next.js Response / cookieStore.
  */

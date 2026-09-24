@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import ByokHeaderButton from '@/components/ByokHeaderButton';
 import { 
   Sparkles, 
   ArrowRight, 
@@ -180,6 +181,7 @@ export default function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <ByokHeaderButton compact />
             <ThemeToggleBtn id="landing-theme-toggle-btn" />
 
             {user ? (

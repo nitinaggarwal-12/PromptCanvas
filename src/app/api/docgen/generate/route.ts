@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { getEffectiveGeminiApiKey, GEMINI_PRO_MODEL_ID } from '@/lib/geminiConfig';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 export async function POST(req: NextRequest) {
   try {
+    const guard = await enforceGeminiRouteGuard(req, { endpoint: 'api/docgen/generate' });
+    if (!guard.allowed) return guard.errorResponse!;
+
     const body = await req.json();
     const {
       archetypeId,
@@ -18,13 +23,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'archetypeId and projectTitle are required' }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
     if (!apiKey) {
       return NextResponse.json({ error: 'GEMINI_API_KEY is not configured' }, { status: 500 });
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+    const model = GEMINI_PRO_MODEL_ID;
 
     const systemPrompt = `You are a Principal Enterprise Systems Architect and Chief Solutions Architect at a Fortune 50 enterprise.
 Your role is to author an authoritative, publication-ready, deeply technical, and structured ${archetypeId.toUpperCase()} (Enterprise Architecture Specification Document) tailored 100% to the user's specific project title and architectural scope prompt.

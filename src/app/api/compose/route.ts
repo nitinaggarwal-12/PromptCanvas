@@ -5,10 +5,18 @@ import { MAPPER_REGISTRY } from '../../../lib/compose/mappers';
 import { fillInferredSections } from '../../../lib/compose/infer';
 import { renderMarkdown } from '../../../lib/compose/renderMd';
 import { renderDocx } from '../../../lib/compose/renderDocx';
-import { getDiagramVersion, listDiagrams } from '@/lib/db';
+import { getDiagramVersion, getDiagram, listDiagrams } from '@/lib/db';
+import { getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
+    let user = null;
+    try {
+      user = await getAuthenticatedUser();
+    } catch {
+      // cookies() outside Next.js request context
+    }
+
     const body = await req.json();
     const {
       archetypeId,
@@ -32,11 +40,28 @@ export async function POST(req: NextRequest) {
     let titleToUse = title;
 
     if (Array.isArray(diagramVersionIds) && diagramVersionIds.length > 0) {
+      if (!user) {
+        return NextResponse.json(
+          { error: 'Authentication required to compose from saved diagram versions.' },
+          { status: 401 }
+        );
+      }
       try {
         for (const vid of diagramVersionIds) {
           const version = await getDiagramVersion(vid);
           if (version) {
-            titleToUse = titleToUse || `Diagram ${version.diagram_id} v${version.version_number}`;
+            const parentDiagram = await getDiagram(version.diagram_id);
+            if (
+              parentDiagram &&
+              parentDiagram.user_id &&
+              parentDiagram.user_id !== user.id
+            ) {
+              return NextResponse.json(
+                { error: 'Forbidden: You do not have access to this diagram version.' },
+                { status: 403 }
+              );
+            }
+            titleToUse = titleToUse || parentDiagram?.name || `Diagram ${version.diagram_id} v${version.version_number}`;
             if (version.graph_json) {
               try {
                 graphJsonToUse = typeof version.graph_json === 'string' ? JSON.parse(version.graph_json) : version.graph_json;
@@ -53,31 +78,41 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Load all diagrams present for this workspace / usecase from db
-    const diagramRepository: Record<string, { id: string; architecture_type: string; graph_json?: any; xml?: string; prompt?: string }> = {};
-    try {
-      const allDiagrams = await listDiagrams();
-      for (const diag of allDiagrams) {
-        const archType = diag.architecture_type || 'conceptual_diagram';
-        if (!diagramRepository[archType]) {
-          diagramRepository[archType] = {
-            id: diag.id,
-            architecture_type: archType,
-            graph_json: null,
-            xml: diag.xml_content,
-            prompt: diag.prompt || undefined,
-          };
-        }
-      }
-    } catch (dbErr) {
-      console.warn('[Compose API] DB repository lookup warning:', dbErr);
+    if (!xmlToUse && !graphJsonToUse) {
+      return NextResponse.json(
+        { error: 'Either diagram XML, graph_json, or a valid diagramVersionId is required to compose a specification.' },
+        { status: 400 }
+      );
     }
 
-    // 1. Extract SystemModel
+    // Load diagrams strictly scoped to the current user (if authenticated)
+    const diagramRepository: Record<string, { id: string; architecture_type: string; graph_json?: any; xml?: string; prompt?: string }> = {};
+    if (user?.id) {
+      try {
+        const userDiagrams = await listDiagrams(user.id);
+        for (const diag of userDiagrams) {
+          if (diag.user_id !== user.id) continue;
+          const archType = diag.architecture_type || 'conceptual_diagram';
+          if (!diagramRepository[archType]) {
+            diagramRepository[archType] = {
+              id: diag.id,
+              architecture_type: archType,
+              graph_json: null,
+              xml: diag.xml_content,
+              prompt: diag.prompt || undefined,
+            };
+          }
+        }
+      } catch (dbErr) {
+        console.warn('[Compose API] DB repository lookup warning:', dbErr);
+      }
+    }
+
+    // 1. Extract SystemModel from the explicit target diagram/version only
     const model = extractSystemModel({
-      graph_json: directGraphJson || Object.values(diagramRepository)[0]?.graph_json,
-      xml: directXml || Object.values(diagramRepository)[0]?.xml,
-      title: title || 'Enterprise Governed Architecture Platform',
+      graph_json: graphJsonToUse,
+      xml: xmlToUse,
+      title: titleToUse || 'System Architecture Specification',
       domain,
     });
 

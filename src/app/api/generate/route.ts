@@ -55,6 +55,21 @@ export async function POST(request: Request) {
       );
     }
 
+    const trimmedPrompt = prompt.trim();
+    const isOffTopic =
+      /\b(write (me )?a poem|haiku|limerick|sonnet|tell (me )?a joke|recipe for|horoscope|love letter|bedtime story)\b/i.test(trimmedPrompt) &&
+      !/\b(architecture|diagram|system|cloud|api|service|database|pipeline|network|gateway|agent|server|app|platform|workflow|gcp|aws|azure)\b/i.test(trimmedPrompt);
+
+    if (isOffTopic) {
+      return NextResponse.json(
+        {
+          error: 'I create system architecture diagrams and technical design specifications. Please describe a software system, cloud workload, or data pipeline (e.g., "Design a multi-region event streaming pipeline on GCP").',
+          offTopic: true,
+        },
+        { status: 422 }
+      );
+    }
+
     const isV2 = isLayoutEngineV2Enabled(body, request.url, request.headers);
 
     if (isV2) {

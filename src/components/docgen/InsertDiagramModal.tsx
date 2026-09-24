@@ -26,7 +26,7 @@ import {
   CanonicalTemplate,
 } from '@/lib/canonical/canonicalTemplates';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
-import { MERCK_GOOGLE_GE_ESCALATION_XML } from '@/lib/merckEscalationXmlClient';
+import { ENTERPRISE_GOOGLE_GE_ESCALATION_XML } from '@/lib/merckEscalationXmlClient';
 
 export interface InsertDiagramModalProps {
   isOpen: boolean;
@@ -47,11 +47,11 @@ const FLOWCHART_PRESETS = [
   {
     id: 'merck_ge_escalation',
     name: 'Integrated Partnership Escalation & Decision Points',
-    subtitle: 'Merck | Google | GE (Operational Break-Fix & Strategic Roadmap)',
+    subtitle: 'Enterprise | Google | GE (Operational Break-Fix & Strategic Roadmap)',
     tag: 'Operational Swimlane',
     icon: Workflow,
     color: 'from-teal-600 to-emerald-600',
-    getXml: () => MERCK_GOOGLE_GE_ESCALATION_XML,
+    getXml: () => ENTERPRISE_GOOGLE_GE_ESCALATION_XML,
   },
   {
     id: 'bpmn_orchestration',

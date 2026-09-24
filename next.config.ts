@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["node:sqlite"],
   devIndicators: false,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   async headers() {
     return [

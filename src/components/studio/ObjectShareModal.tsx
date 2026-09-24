@@ -52,7 +52,7 @@ export function ObjectShareModal({
     {
       id: 'c1',
       author: 'Dr. Sarah Jenkins',
-      role: 'Clinical Operations Lead (Merck)',
+      role: 'Clinical Operations Lead (NovaCura Pharma)',
       text: 'Verified 21 CFR Part 11 audit trails in DOC-07. Spanner mutation logs match GxP requirements.',
       time: '12m ago'
     },
@@ -180,7 +180,7 @@ export function ObjectShareModal({
             <label className="text-[11px] font-bold text-slate-700 flex items-center justify-between">
               <span>Collaboration Permissions:</span>
               <span className="text-[10px] font-mono text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
-                Merck GxP & GCP RBAC Active
+                Enterprise GxP & GCP RBAC Active
               </span>
             </label>
             <div className="grid grid-cols-3 gap-2">

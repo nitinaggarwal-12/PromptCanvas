@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 function getDomainContextualChips(
@@ -82,9 +84,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'userPrompt is required' }, { status: 400 });
     }
 
+    const guard = await enforceGeminiRouteGuard(req, { endpoint: 'api/docgen/copilot' });
+    if (!guard.allowed) return guard.errorResponse!;
+
     const fallbackChips = getDomainContextualChips(projectTitle, selectedDomain, archetypeId, userPrompt);
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey();
     if (!apiKey) {
       // Offline fallback heuristic parser for testing and development
       const lower = userPrompt.toLowerCase();
