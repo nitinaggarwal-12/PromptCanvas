@@ -73,32 +73,23 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Create',
     items: [
       { id: 'studio', name: 'Architecture Studio', icon: Layers, href: '/studio', badge: 'PRO' },
-      { id: 'studio1', name: 'Prompt Lab', icon: Compass, href: '/studio1', badge: 'LAB' },
-      { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
+      { id: 'vision', name: 'Image to Diagram', icon: Sparkles, href: '/vision', badge: 'AI', badgeColor: 'bg-teal-500/20 text-teal-400 border-teal-500/30' },
       { id: 'docgen', name: 'Document Studio', icon: FileText, href: '/docgen', badge: '17' },
     ],
   },
   {
     id: 'reference',
-    label: 'Reference',
+    label: 'Library',
     items: [
-      { id: 'canonical', name: 'Blueprint Catalog', icon: LayoutGrid, href: '/canonical', badge: '53' },
-      { id: 'library', name: 'My Architectures', icon: History, href: '/library' },
+      { id: 'canonical', name: 'Architecture Library', icon: LayoutGrid, href: '/library', badge: '53' },
     ],
   },
   {
     id: 'operate',
-    label: 'Operate',
+    label: 'Govern & Learn',
     items: [
-      { id: 'dashboard', name: 'Operations', icon: BarChart3, href: '/dashboard' },
-      { id: 'audit', name: 'Audit & Compliance', icon: ShieldCheck, href: '/audit' },
-    ],
-  },
-  {
-    id: 'learn',
-    label: 'Learn',
-    items: [
-      { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide', badge: 'NEW' },
+      { id: 'audit', name: 'Audit, FinOps & Health', icon: ShieldCheck, href: '/audit', badge: '100%', badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
+      { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide' },
     ],
   },
 ];
@@ -121,6 +112,15 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
 
   const isItemActive = (href: string) => {
     const [targetPath, targetQuery] = href.split('?');
+    if (targetPath === '/studio' && (pathname === '/studio' || pathname === '/studio1' || pathname === '/gcp')) {
+      return true;
+    }
+    if (targetPath === '/library' && (pathname === '/library' || pathname.startsWith('/canonical'))) {
+      return true;
+    }
+    if (targetPath === '/audit' && (pathname === '/audit' || pathname === '/dashboard' || pathname === '/test-status')) {
+      return true;
+    }
     if (targetPath !== pathname) return false;
 
     if (!targetQuery) {
@@ -355,39 +355,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                 </div>
               </button>
             </div>
-
-            {/* TEST STATUS (ALWAYS AT BOTTOM) */}
-            <div className="pt-1">
-              <Link href="/test-status" className="block" title={!isSidebarOpen ? "Test Status (100%)" : "Enterprise Test Status & 9-Pillars Results"}>
-                <div
-                  className={`w-full flex items-center ${
-                    isSidebarOpen ? 'justify-between' : 'justify-center'
-                  } p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    pathname === '/test-status'
-                      ? 'bg-emerald-600 text-white font-extrabold shadow-sm'
-                      : isLight
-                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
-                  }`}
-                >
-                  <div className={`flex items-center ${isSidebarOpen ? 'gap-3 min-w-0' : 'justify-center'} shrink-0`}>
-                    <Activity className={`w-4 h-4 shrink-0 ${pathname === '/test-status' ? 'text-white' : 'text-emerald-500'}`} />
-                    {isSidebarOpen && <span className="truncate">Test Status</span>}
-                  </div>
-                  {isSidebarOpen && (
-                    <span
-                      className={`text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${
-                        pathname === '/test-status'
-                          ? 'bg-white/20 text-white'
-                          : 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
-                      }`}
-                    >
-                      100%
-                    </span>
-                  )}
-                </div>
-              </Link>
-            </div>
           </div>
         </div>
 
@@ -568,33 +535,6 @@ function UnifiedAppSidebarInner({ isCollapsed, onToggle, className = '' }: Unifi
                       </div>
                     </div>
                   </button>
-                </div>
-
-                {/* Test Status */}
-                <div className="pt-1">
-                  <Link
-                    href="/test-status"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block"
-                  >
-                    <div
-                      className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold ${
-                        pathname === '/test-status'
-                          ? 'bg-emerald-600 text-white font-extrabold shadow-sm'
-                          : isLight
-                          ? 'text-slate-700 hover:bg-slate-100'
-                          : 'text-slate-300 hover:bg-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Activity className="w-4 h-4 text-emerald-500" />
-                        <span>Test Status</span>
-                      </div>
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                        100%
-                      </span>
-                    </div>
-                  </Link>
                 </div>
               </div>
             </div>

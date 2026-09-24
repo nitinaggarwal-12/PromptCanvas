@@ -68,6 +68,7 @@ import { ThemeToggleBtn } from '@/components/ThemeToggleBtn';
 import { useTheme } from '@/lib/themeContext';
 import UnifiedAppSidebar from '@/components/UnifiedAppSidebar';
 import { AppHeader } from '@/components/AppHeader';
+import { CANONICAL_TEMPLATES } from '@/lib/canonical/canonicalTemplates';
 
 interface DiagramVersionItem {
   id: string;
@@ -263,11 +264,30 @@ function ArchitectureLibraryContent() {
       const dbList = Array.isArray(apiData) ? apiData : [];
       const visionSavedItems = buildVisionSavedLibraryItems();
 
+      const canonicalFallbackItems: CanvasDiagramItem[] = CANONICAL_TEMPLATES.map((tpl) => ({
+        id: `bp_${tpl.id}`,
+        name: `#${tpl.id} • ${tpl.name}`,
+        architecture_type: `canonical_${tpl.id}`,
+        created_studio: 'canonical',
+        created_at: new Date(1789520000000).toISOString(),
+        updated_at: new Date(1789520000000).toISOString(),
+        version_count: 1,
+        latest_prompt: tpl.primaryPurpose || tpl.examples,
+        xml_content: tpl.generateXml('biopharma', 'light'),
+      }));
+
       const existingIds = new Set(dbList.map(d => d.id.toUpperCase()));
       const merged = [
         ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
         ...dbList,
       ];
+      const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
+      for (const c of canonicalFallbackItems) {
+        if (!mergedIds.has(c.id.toUpperCase())) {
+          merged.push(c);
+          mergedIds.add(c.id.toUpperCase());
+        }
+      }
       setDiagrams(merged);
     } catch (err) {
       console.error('Error fetching library canvases:', err);
@@ -661,6 +681,15 @@ function ArchitectureLibraryContent() {
             <ThemeToggleBtn id="library-theme-toggle-btn" />
 
             <Link
+              href="/canonical"
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shrink-0"
+              title="Open Full-Width 53 Blueprint Catalog View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5 text-sky-400" />
+              <span>Full Catalog Cards (53)</span>
+            </Link>
+
+            <Link
               href="/studio"
               className="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all hover:scale-[1.02] flex items-center gap-1.5 shrink-0"
               title="Launch Multi-Diagram AI Studio"
@@ -694,7 +723,7 @@ function ArchitectureLibraryContent() {
                     Enterprise Architecture <span className="bg-gradient-to-r from-teal-500 via-sky-400 to-indigo-500 bg-clip-text text-transparent">Library</span>
                   </h1>
                   <p className={`text-[11px] leading-tight mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Browse, filter, and batch-manage architectures across all studios with instant vector rendering.
+                    Unified repository for Official Canonical Blueprints (53), My Custom &amp; Forked Topologies, Guided Lifecycle Matrix, and Vision Decompilations.
                   </p>
                 </div>
               </div>
@@ -707,18 +736,18 @@ function ArchitectureLibraryContent() {
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
+                  <span className="font-extrabold text-amber-600 dark:text-amber-400">{studioCounts.canonical}</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Canonical</span>
+                </div>
+                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
+                <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-indigo-600 dark:text-indigo-400">{studioCounts.studio}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Pro</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Custom/Forked</span>
                 </div>
                 <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
                 <div className="flex items-center gap-1.5">
                   <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{studioCounts.studio1}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Studio 1</span>
-                </div>
-                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-800" />
-                <div className="flex items-center gap-1.5">
-                  <span className="font-extrabold text-amber-600 dark:text-amber-400">{studioCounts.canonical}</span>
-                  <span className="text-[10px] text-slate-400 uppercase font-bold">Blueprints</span>
+                  <span className="text-[10px] text-slate-400 uppercase font-bold">Matrix Lab</span>
                 </div>
               </div>
             </div>
@@ -728,11 +757,11 @@ function ArchitectureLibraryContent() {
             {/* ========================================================================= */}
             <div className="flex flex-wrap items-center gap-2 border-b pb-4 border-slate-200 dark:border-slate-800">
               {[
-                { id: 'all', label: '🌐 All Architecture', count: studioCounts.all, color: 'teal' },
-                { id: 'studio', label: '💎 Studio (Pro Multi-Diagram)', count: studioCounts.studio, color: 'indigo' },
-                { id: 'studio1', label: '🧪 Studio 1 (Lab & Single)', count: studioCounts.studio1, color: 'emerald' },
-                { id: 'canonical', label: '📚 53 Canonical Blueprints', count: studioCounts.canonical, color: 'sky' },
-                { id: 'vision', label: '👁️ Vision Decompiler', count: studioCounts.vision, color: 'teal' }
+                { id: 'all', label: '🌐 All Architectures', count: studioCounts.all, color: 'teal' },
+                { id: 'canonical', label: '📚 Official Canonical (53)', count: studioCounts.canonical, color: 'sky' },
+                { id: 'studio', label: '💎 My Custom & Forked', count: studioCounts.studio, color: 'indigo' },
+                { id: 'studio1', label: '🧭 Guided Matrix & Lab', count: studioCounts.studio1, color: 'emerald' },
+                { id: 'vision', label: '👁️ Vision Decompiled', count: studioCounts.vision, color: 'teal' }
               ].map((tab) => {
                 const isActive = activeStudioTab === tab.id;
                 return (
