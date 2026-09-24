@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const name = body.name;
-    const xml = body.xml;
+    const xml = body.xml || body.xmlContent || body.xml_content;
     const comment = body.comment;
     const prompt = body.prompt;
     const aiReasoning = body.aiReasoning || body.ai_reasoning;

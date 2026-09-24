@@ -1138,8 +1138,44 @@ function StudioMain() {
       }
     }
 
+    // Dynamically select domain-matched topology when user submits a generative design prompt
+    const isGenerativeDesignPrompt = /^(design|architect|build|create|deploy|synthesize|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
+    let activeBaseXml = xml;
+    if (isGenerativeDesignPrompt) {
+      let targetBpId = '';
+      if (lower.includes('rag') || lower.includes('vector') || lower.includes('agentic') || lower.includes('gemini')) {
+        targetBpId = '38';
+      } else if (lower.includes('payment') || lower.includes('settlement') || lower.includes('fraud') || lower.includes('pci')) {
+        targetBpId = '01';
+      } else if (lower.includes('clinical') || lower.includes('fhir') || lower.includes('medallion') || lower.includes('pipeline') || lower.includes('lakehouse')) {
+        targetBpId = '04';
+      } else if (lower.includes('zero-trust') || lower.includes('siem') || lower.includes('chronicle') || lower.includes('soar')) {
+        targetBpId = '18';
+      } else if (lower.includes('streaming') || lower.includes('dead-letter') || lower.includes('event-driven') || lower.includes('kafka')) {
+        targetBpId = '13';
+      } else if (lower.includes('multi-region') || lower.includes('disaster recovery') || lower.includes('gke') || lower.includes('anthos')) {
+        targetBpId = '17';
+      } else if (lower.includes('landing zone') || lower.includes('hub-spoke') || lower.includes('interconnect')) {
+        targetBpId = '15';
+      } else if (lower.includes('sequence') || lower.includes('oauth') || lower.includes('handshake')) {
+        targetBpId = '11';
+      } else if (lower.includes('erd') || lower.includes('schema') || lower.includes('entity')) {
+        targetBpId = '14';
+      } else {
+        targetBpId = '02';
+      }
+      const matchedBp = CANONICAL_TEMPLATES.find(t => t.id === targetBpId || t.id === targetBpId.padStart(2, '0'));
+      if (matchedBp) {
+        activeBaseXml = matchedBp.generateXml(
+          updated.metadata.projectTitle || cleanPrompt.slice(0, 70),
+          selectedDomain || 'Enterprise Cloud'
+        );
+        setSelectedBlueprintId(matchedBp.id);
+      }
+    }
+
     // Check if the current active XML is actually the 6-Zone GCP Native Architecture
-    const isSixZoneNativeCanvas = xml.includes('id="z1_bg"') && xml.includes('id="z2_bg"');
+    const isSixZoneNativeCanvas = activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"');
     let baseUpdatedXml: string;
 
     if (isSixZoneNativeCanvas) {
@@ -1149,8 +1185,8 @@ function StudioMain() {
       );
     } else {
       // Surgically update the existing active XML diagram (e.g. Google Multiagent AI System, Vision decompilations, Canonical templates)
-      const customComps = updated.components.filter(c => c.id.startsWith('comp_user_'));
-      let mutatedXml = xml;
+      const customComps = updated.components.filter(c => c.id.startsWith('comp_user_') || c.id.startsWith('comp_'));
+      let mutatedXml = activeBaseXml;
 
       if (mutatedXml.includes('</root>')) {
         // Remove previous studio_ext / studio_edge / studio_conn / studio_group cells to re-render cleanly
