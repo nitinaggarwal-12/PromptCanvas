@@ -28,15 +28,24 @@ interface BlueprintCatalogModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectBlueprint: (blueprint: CanonicalTemplate, domainPresetId: string) => void;
+  onOpenInNewTab?: (blueprint: CanonicalTemplate, domainPresetId: string) => void;
   currentBlueprintId?: string;
   currentDomainPresetId?: string;
   theme?: 'light' | 'dark';
+}
+
+function getLevelFullLabel(level: string): string {
+  if (level === 'L1') return 'L1 Conceptual';
+  if (level === 'L2') return 'L2 Logical';
+  if (level === 'L3') return 'L3 Physical';
+  return level;
 }
 
 export function BlueprintCatalogModal({
   isOpen,
   onClose,
   onSelectBlueprint,
+  onOpenInNewTab,
   currentBlueprintId,
   currentDomainPresetId = 'biopharma',
   theme = 'light'
@@ -48,21 +57,53 @@ export function BlueprintCatalogModal({
 
   const isDark = theme === 'dark';
 
-  // Filter templates
+  const matchesQuery = (t: CanonicalTemplate, qRaw: string) => {
+    const q = qRaw.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      t.id.toLowerCase().includes(q) ||
+      t.name.toLowerCase().includes(q) ||
+      t.family.toLowerCase().includes(q) ||
+      t.primaryPurpose.toLowerCase().includes(q) ||
+      t.keyComponents.some((c) => c.toLowerCase().includes(q))
+    );
+  };
+
+  // Dynamic Facet Counts to enforce Zero-Dead-End Rule (hide 0-result facets)
+  const familyCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const fam of CANONICAL_FAMILIES) {
+      map[fam] = CANONICAL_TEMPLATES.filter((t) => {
+        const matchFam = fam === 'All' || t.family === fam;
+        const matchLvl = selectedLevel === 'All' || t.level === selectedLevel;
+        return matchFam && matchLvl && matchesQuery(t, searchQuery);
+      }).length;
+    }
+    return map;
+  }, [selectedLevel, searchQuery]);
+
+  const levelCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const lvl of ['All', 'L1', 'L2', 'L3']) {
+      map[lvl] = CANONICAL_TEMPLATES.filter((t) => {
+        const matchFam = selectedFamily === 'All' || t.family === selectedFamily;
+        const matchLvl = lvl === 'All' || t.level === lvl;
+        return matchFam && matchLvl && matchesQuery(t, searchQuery);
+      }).length;
+    }
+    return map;
+  }, [selectedFamily, searchQuery]);
+
+  // Filter templates with automatic fallback so 0-result dead-ends never occur on facet combinations
   const filteredTemplates = useMemo(() => {
-    return CANONICAL_TEMPLATES.filter((t) => {
+    const exact = CANONICAL_TEMPLATES.filter((t) => {
       const matchFamily = selectedFamily === 'All' || t.family === selectedFamily;
       const matchLevel = selectedLevel === 'All' || t.level === selectedLevel;
-      const q = searchQuery.toLowerCase().trim();
-      const matchQuery =
-        !q ||
-        t.id.toLowerCase().includes(q) ||
-        t.name.toLowerCase().includes(q) ||
-        t.family.toLowerCase().includes(q) ||
-        t.primaryPurpose.toLowerCase().includes(q) ||
-        t.keyComponents.some((c) => c.toLowerCase().includes(q));
-      return matchFamily && matchLevel && matchQuery;
+      return matchFamily && matchLevel && matchesQuery(t, searchQuery);
     });
+    if (exact.length > 0) return exact;
+    // Zero-Dead-End auto-recovery if a combination yields 0
+    return CANONICAL_TEMPLATES.filter((t) => matchesQuery(t, searchQuery));
   }, [searchQuery, selectedFamily, selectedLevel]);
 
   // Map each template to bound Living Spec docs
@@ -76,19 +117,26 @@ export function BlueprintCatalogModal({
   if (!isOpen) return null;
 
   return (
-    <div id="blueprint-catalog-modal" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4 sm:p-6 animate-in fade-in duration-150">
+    <div
+      id="blueprint-catalog-modal"
+      data-testid="blueprint-catalog-drawer"
+      className="fixed inset-0 z-[120] flex justify-end bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div
         id="blueprint-catalog-card"
-        className={`rounded-3xl border shadow-2xl flex flex-col w-full max-w-6xl max-h-[90vh] overflow-hidden transition-all ${
+        className={`h-full w-full max-w-5xl border-l shadow-2xl flex flex-col overflow-hidden transition-all ${
           isDark
             ? 'bg-[#0B111E] border-slate-800 text-slate-100'
             : 'bg-white border-slate-200 text-slate-900'
         }`}
       >
-        {/* Header */}
+        {/* Slide-Over Drawer Header */}
         <div
-          className={`px-6 py-5 border-b flex items-center justify-between shrink-0 ${
-            isDark ? 'border-slate-800/80 bg-slate-900/50' : 'border-slate-100 bg-slate-50/70'
+          className={`px-6 py-4 border-b flex flex-wrap items-center justify-between gap-4 shrink-0 ${
+            isDark ? 'border-slate-800/80 bg-slate-900/50' : 'border-slate-200 bg-slate-50'
           }`}
         >
           <div className="flex items-center gap-3.5">
@@ -96,29 +144,28 @@ export function BlueprintCatalogModal({
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
-                <h2 className="font-bold text-base tracking-tight">Canonical Blueprint Catalog</h2>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h2 className="font-bold text-base tracking-tight">Visual Blueprint Catalog Drawer</h2>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-blue-500/10 text-blue-600 border border-blue-500/20">
                   {CANONICAL_TEMPLATES.length} Certified Blueprints
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                Production Google Cloud architectures • 9 families • 16-Doc Living Spec synchronized
+                Zero-Dead-End Industry &amp; Level Filtering • 1-Click Switch or Open in New Tab
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Domain Flavor Selector */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-slate-400">Industry:</span>
+            {/* Industry Single-Tier Selector */}
+            <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 shadow-2xs">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Industry:</span>
               <select
+                aria-label="Select Industry Vertical"
                 value={selectedDomain}
                 onChange={(e) => setSelectedDomain(e.target.value)}
-                className={`text-xs font-medium rounded-xl px-2.5 py-1.5 border outline-hidden transition cursor-pointer ${
-                  isDark
-                    ? 'bg-slate-900 border-slate-700 text-slate-200 focus:border-blue-500'
-                    : 'bg-white border-slate-200 text-slate-700 focus:border-blue-500'
+                className={`text-xs font-bold outline-hidden transition cursor-pointer ${
+                  isDark ? 'bg-slate-900 text-slate-100' : 'bg-white text-slate-800'
                 }`}
               >
                 {DOMAIN_PRESETS.map((dp) => (
@@ -131,10 +178,11 @@ export function BlueprintCatalogModal({
 
             <button
               onClick={onClose}
-              className={`p-2 rounded-xl transition cursor-pointer ${
+              aria-label="Close Blueprint Catalog Drawer"
+              className={`p-2 rounded-xl border transition cursor-pointer ${
                 isDark
-                  ? 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'
-                  : 'hover:bg-slate-100 text-slate-400 hover:text-slate-700'
+                  ? 'border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200'
+                  : 'border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800'
               }`}
             >
               <X className="w-5 h-5" />
@@ -142,21 +190,21 @@ export function BlueprintCatalogModal({
           </div>
         </div>
 
-        {/* Toolbar / Search & Filters */}
+        {/* Toolbar / Search & Dynamic Facet Hiding Filters */}
         <div
           className={`px-6 py-3.5 border-b space-y-3 shrink-0 ${
-            isDark ? 'border-slate-800/80 bg-slate-900/30' : 'border-slate-100 bg-white'
+            isDark ? 'border-slate-800/80 bg-slate-900/30' : 'border-slate-200 bg-white'
           }`}
         >
-          <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
             {/* Search Input */}
-            <div className="relative w-full sm:w-80">
+            <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={`Search ${CANONICAL_TEMPLATES.length} blueprints, services, or keywords...`}
+                placeholder={`Search ${CANONICAL_TEMPLATES.length} Certified Blueprints...`}
                 className={`w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border outline-hidden transition ${
                   isDark
                     ? 'bg-slate-950/70 border-slate-800 text-slate-200 focus:border-blue-500 placeholder-slate-500'
@@ -165,34 +213,34 @@ export function BlueprintCatalogModal({
               />
             </div>
 
-            {/* Level Filter */}
-            <div className="flex items-center gap-1.5 self-start sm:self-auto">
-              <span className="text-[11px] font-semibold text-slate-400">Level:</span>
-              {(['All', 'L1', 'L2', 'L3'] as const).map((lvl) => (
-                <button
-                  key={lvl}
-                  onClick={() => setSelectedLevel(lvl)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
-                    selectedLevel === lvl
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : isDark
-                      ? 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {lvl === 'All' ? 'All Levels' : lvl}
-                </button>
-              ))}
+            {/* Level Filter with Dynamic Facet Hiding (0-result levels hidden) */}
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">Level:</span>
+              {(['All', 'L1', 'L2', 'L3'] as const)
+                .filter((lvl) => lvl === 'All' || (levelCounts[lvl] ?? 0) > 0)
+                .map((lvl) => (
+                  <button
+                    key={lvl}
+                    onClick={() => setSelectedLevel(lvl)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer flex items-center gap-1 ${
+                      selectedLevel === lvl
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : isDark
+                        ? 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    <span>{lvl === 'All' ? 'All Levels' : getLevelFullLabel(lvl)}</span>
+                    <span className="text-[10px] opacity-80 font-mono">({levelCounts[lvl] ?? 0})</span>
+                  </button>
+                ))}
             </div>
           </div>
 
-          {/* Family Category Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-            {CANONICAL_FAMILIES.map((fam) => {
-              const count =
-                fam === 'All'
-                  ? CANONICAL_TEMPLATES.length
-                  : CANONICAL_TEMPLATES.filter((t) => t.family === fam).length;
+          {/* Family Category Pills — Flex-Wrap + Dynamic Facet Hiding (Zero Clipping & Zero Dead-Ends) */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {CANONICAL_FAMILIES.filter((fam) => fam === 'All' || (familyCounts[fam] ?? 0) > 0).map((fam) => {
+              const count = familyCounts[fam] ?? 0;
               return (
                 <button
                   key={fam}
@@ -201,8 +249,8 @@ export function BlueprintCatalogModal({
                     selectedFamily === fam
                       ? 'bg-blue-600 text-white shadow-xs'
                       : isDark
-                      ? 'bg-slate-900 text-slate-400 hover:bg-slate-800 border border-slate-800'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200/60'
+                      ? 'bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/80'
                   }`}
                 >
                   <span>{fam}</span>
@@ -223,95 +271,114 @@ export function BlueprintCatalogModal({
           </div>
         </div>
 
-        {/* Catalog Grid View */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {/* Catalog 3-Column Visual Grid View */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50/40">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-              Showing {filteredTemplates.length} of {CANONICAL_TEMPLATES.length} Blueprints
+            <span className="text-xs font-mono font-bold text-slate-500 uppercase tracking-wider">
+              Showing {filteredTemplates.length} of {CANONICAL_TEMPLATES.length} Certified Blueprints
             </span>
-            <span className="text-[11px] text-slate-400">
-              Active Industry Flavor:{' '}
-              <strong className="text-blue-500 font-mono">
+            <span className="text-xs text-slate-500">
+              Industry Flavor:{' '}
+              <strong className="text-blue-600 font-mono">
                 {DOMAIN_PRESETS.find((d) => d.id === selectedDomain)?.name}
               </strong>
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredTemplates.map((template) => {
               const isCurrent = currentBlueprintId === template.id;
               const boundDocs = getBoundDocs(template.id);
+              const levelBadgeLabel = getLevelFullLabel(template.level);
 
               return (
                 <div
                   key={template.id}
-                  className={`p-4 rounded-2xl border transition-all flex flex-col justify-between group ${
+                  className={`p-4 rounded-2xl border transition-all flex flex-col justify-between group bg-white ${
                     isCurrent
-                      ? 'border-blue-500 ring-2 ring-blue-500/20 shadow-md'
-                      : isDark
-                      ? 'bg-slate-900/40 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/80'
-                      : 'bg-slate-50/50 border-slate-200 hover:border-slate-300 hover:bg-white hover:shadow-md'
+                      ? 'border-blue-600 ring-2 ring-blue-500/20 shadow-md'
+                      : 'border-slate-200 hover:border-blue-400 hover:shadow-lg'
                   }`}
                 >
-                  <div className="space-y-2.5">
-                    {/* Top Row: ID, Level, Family */}
-                    <div className="flex items-center justify-between">
+                  <div className="space-y-3">
+                    {/* Top Row: ID, Explicit Level Badge (L1 Conceptual / L2 Logical / L3 Physical), Family */}
+                    <div className="flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20">
+                        <span className="font-mono text-xs font-black px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200">
                           #{template.id}
                         </span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
-                          {template.level}
+                        <span
+                          className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md font-mono border ${
+                            template.level === 'L1'
+                              ? 'bg-purple-50 text-purple-700 border-purple-200'
+                              : template.level === 'L2'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}
+                        >
+                          {levelBadgeLabel}
                         </span>
-                        {isCurrent && (
-                          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded-md">
-                            <CheckCircle2 className="w-3 h-3" /> Active
-                          </span>
-                        )}
                       </div>
-                      <span className="text-[10.5px] font-medium text-slate-400 font-sans">
+                      <span className="text-[10.5px] font-semibold text-slate-400 truncate max-w-[120px]">
                         {template.family}
                       </span>
                     </div>
 
+                    {/* High-Res Schematic Preview Thumbnail */}
+                    <div
+                      onClick={() => {
+                        onSelectBlueprint(template, selectedDomain);
+                        onClose();
+                      }}
+                      className="w-full h-24 rounded-xl bg-gradient-to-br from-slate-50 via-blue-50/40 to-indigo-50/40 border border-slate-200/80 p-2.5 flex flex-col justify-between cursor-pointer group-hover:border-blue-300 transition overflow-hidden relative"
+                    >
+                      <div className="flex items-center justify-between gap-1.5">
+                        {(template.keyComponents || ['Ingress', 'Compute', 'Data']).slice(0, 3).map((node, idx) => (
+                          <div
+                            key={idx}
+                            className="flex-1 bg-white border border-blue-200 rounded-md px-1.5 py-1 shadow-2xs flex items-center gap-1 min-w-0"
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                idx === 0 ? 'bg-blue-600' : idx === 1 ? 'bg-indigo-600' : 'bg-emerald-600'
+                              }`}
+                            />
+                            <span className="text-[9px] font-mono font-bold text-slate-700 truncate">{node}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between px-2">
+                        <div className="h-0.5 flex-1 bg-blue-300" />
+                        <span className="text-[8px] font-mono font-bold text-blue-700 bg-white px-1.5 rounded border border-blue-200 mx-1">
+                          mTLS / Draw.io XML
+                        </span>
+                        <div className="h-0.5 flex-1 bg-emerald-300" />
+                      </div>
+                      <div className="flex items-center justify-between text-[9px] font-mono text-slate-500">
+                        <span>16:9 Vector Graph</span>
+                        <span className="text-blue-600 font-bold group-hover:underline">Preview &amp; Load →</span>
+                      </div>
+                    </div>
+
                     {/* Title */}
-                    <h3 className="font-bold text-sm leading-snug group-hover:text-blue-600 transition">
+                    <h3 className="font-bold text-sm text-slate-900 leading-snug group-hover:text-blue-600 transition">
                       {template.name}
                     </h3>
 
                     {/* Purpose Description */}
-                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                       {template.primaryPurpose}
                     </p>
 
-                    {/* Key Cloud Components */}
-                    {template.keyComponents && template.keyComponents.length > 0 && (
-                      <div className="flex flex-wrap gap-1 pt-1">
-                        {template.keyComponents.slice(0, 3).map((comp, idx) => (
-                          <span
-                            key={idx}
-                            className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60"
-                          >
-                            {comp}
-                          </span>
-                        ))}
-                        {template.keyComponents.length > 3 && (
-                          <span className="text-[9.5px] font-mono text-slate-400 self-center">
-                            +{template.keyComponents.length - 3} more
-                          </span>
-                        )}
-                      </div>
-                    )}
-
                     {/* Bound Living Specs */}
                     {boundDocs.length > 0 && (
-                      <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center gap-1.5 flex-wrap">
+                      <div className="pt-1.5 border-t border-slate-100 flex items-center gap-1.5 flex-wrap">
                         <FileText className="w-3 h-3 text-slate-400 shrink-0" />
-                        <span className="text-[10px] text-slate-400 font-semibold">Living Specs:</span>
+                        <span className="text-[10px] text-slate-400 font-semibold">Specs:</span>
                         {boundDocs.map((doc) => (
                           <span
                             key={doc.docId}
-                            className="text-[9.5px] font-mono font-bold px-1 py-0.2 rounded bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                            className="text-[9.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 border border-indigo-200"
                             title={doc.title}
                           >
                             {doc.docId}
@@ -321,22 +388,34 @@ export function BlueprintCatalogModal({
                     )}
                   </div>
 
-                  {/* Load Action Button */}
-                  <div className="pt-4 mt-2">
+                  {/* Action Buttons: Load in Current Canvas OR + New Tab */}
+                  <div className="pt-3 mt-2 flex items-center gap-2">
                     <button
                       onClick={() => {
                         onSelectBlueprint(template, selectedDomain);
                         onClose();
                       }}
-                      className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+                      className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                         isCurrent
                           ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-slate-100 hover:bg-blue-600 hover:text-white dark:bg-slate-800 dark:hover:bg-blue-600 text-slate-700 dark:text-slate-200 shadow-2xs'
+                          : 'bg-blue-600 hover:bg-blue-700 text-white shadow-xs'
                       }`}
                     >
-                      <span>{isCurrent ? 'Reload Blueprint' : 'Load into Canvas'}</span>
+                      <span>{isCurrent ? 'Reload Canvas' : 'Load in Canvas'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
+                    {onOpenInNewTab && (
+                      <button
+                        onClick={() => {
+                          onOpenInNewTab(template, selectedDomain);
+                          onClose();
+                        }}
+                        className="py-2 px-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer whitespace-nowrap"
+                        title="Open this blueprint in a new Studio tab"
+                      >
+                        + New Tab
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -344,21 +423,21 @@ export function BlueprintCatalogModal({
           </div>
         </div>
 
-        {/* Footer */}
+        {/* Drawer Footer */}
         <div
-          className={`px-6 py-3.5 border-t flex items-center justify-between text-xs text-slate-400 shrink-0 ${
-            isDark ? 'border-slate-800/80 bg-slate-900/50' : 'border-slate-100 bg-slate-50/70'
+          className={`px-6 py-3.5 border-t flex items-center justify-between text-xs text-slate-500 shrink-0 ${
+            isDark ? 'border-slate-800/80 bg-slate-900/50' : 'border-slate-200 bg-slate-50'
           }`}
         >
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>100% Vector SVG &amp; Offline Compatible • Zero CDN dependencies</span>
+            <span>100% Native Draw.io mxGraph XML • Zero Dead-End Catalog</span>
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+            className="px-4 py-1.5 rounded-xl border border-slate-300 font-semibold hover:bg-slate-100 text-slate-700 transition cursor-pointer"
           >
-            Close Catalog
+            Close Drawer
           </button>
         </div>
       </div>
