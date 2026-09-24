@@ -329,6 +329,7 @@ function StudioMain() {
     }
   ]);
   const [activeVersionTag, setActiveVersionTag] = useState('v1.0');
+  const latestPromptRequestIdRef = useRef<number>(0);
 
   // Canonical Blueprint Catalog State
   const [isCatalogOpen, setIsCatalogOpen] = useState(false);
@@ -674,6 +675,9 @@ function StudioMain() {
     setIsLeftDrawerCollapsed(true);
     setIsRightGovernanceOpen(false);
     setSelectedComponent(null);
+    setActiveVersionTag('v1.0');
+    setAst(createDefaultFintechAst());
+    setXml(generateGcpNativeArchitectureXml());
   }, [studioTabs.length]);
 
   const handleSelectTab = useCallback((tab: StudioTabItem) => {
@@ -1164,9 +1168,79 @@ function StudioMain() {
       connections: [...ast.connections],
     };
 
+    const prevCompCount = updated.components.length;
     let canvasDiff = 'Updated component topology and connector routing in Draw.io XML.';
     let specDiff = 'Reconciled DOC-01 through DOC-16 with updated parameters.';
     const lower = cleanPrompt.toLowerCase();
+
+    const synthesizeComponentFromPrompt = (rawPrompt: string, turnNumber: number): AstComponent => {
+      const cleanedSubject = rawPrompt
+        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|add|insert|include|attach|integrate|provision|enable|upgrade|configure|scale|secure)\s+(a\s+|an\s+|the\s+|new\s+)?/i, '')
+        .replace(/\.$/, '')
+        .trim();
+      const titleCaseSubject = (cleanedSubject || rawPrompt)
+        .split(/\s+/)
+        .slice(0, 5)
+        .map(w =>
+          w.length <= 4 && /^(waf|lb|cdn|dns|hsm|kms|vpc|api|sql|gke|iam|dlp|dr|rpo|rto|etl|rag|llm|sre|aks|eks)$/i.test(w)
+            ? w.toUpperCase()
+            : w.charAt(0).toUpperCase() + w.slice(1)
+        )
+        .join(' ');
+
+      const l = rawPrompt.toLowerCase();
+      const isWaf = l.includes('waf') || l.includes('firewall') || l.includes('armor') || l.includes('ddos');
+      const isLb = l.includes('load balancer') || l.includes('load-balancer') || /\blb\b/.test(l) || l.includes('apigee') || l.includes('gateway');
+      const isCache = l.includes('redis') || l.includes('cache') || l.includes('memorystore');
+      const isQueue = l.includes('kafka') || l.includes('pubsub') || l.includes('pub/sub') || l.includes('queue') || l.includes('stream') || l.includes('dataflow');
+      const isDb = l.includes('database') || l.includes('postgres') || l.includes('alloydb') || l.includes('sql') || l.includes('spanner') || l.includes('bigquery') || l.includes('lakehouse');
+      const isAi = l.includes('vertex') || l.includes('gemini') || l.includes('agent') || l.includes('rag') || l.includes('vector') || l.includes('ai');
+      const isSec = l.includes('kms') || l.includes('hsm') || l.includes('cmek') || l.includes('vpc') || l.includes('iam') || l.includes('security') || l.includes('zero-trust');
+
+      const inferredService = isWaf
+        ? 'Cloud Armor L7 WAF'
+        : isLb
+        ? l.includes('apigee')
+          ? 'Apigee X API Gateway'
+          : 'Global External HTTPS Load Balancer'
+        : isCache
+        ? 'Memorystore for Redis Cluster'
+        : isQueue
+        ? l.includes('dataflow')
+          ? 'Cloud Dataflow Streaming Engine'
+          : 'Cloud Pub/Sub Event Stream'
+        : isDb
+        ? l.includes('spanner')
+          ? 'Cloud Spanner Multi-Region (nam3)'
+          : l.includes('bigquery') || l.includes('lakehouse')
+          ? 'BigQuery Serverless Lakehouse'
+          : 'AlloyDB for PostgreSQL'
+        : isAi
+        ? 'Vertex AI & Gemini Agent Hub'
+        : isSec
+        ? 'Cloud KMS HSM & VPC-SC Enclave'
+        : 'Google Cloud Managed Service';
+
+      const inferredTier: AstComponent['tier'] = isWaf || isSec
+        ? 'security'
+        : isLb
+        ? 'ingress'
+        : isCache || isDb || isQueue
+        ? 'data'
+        : 'compute';
+
+      return {
+        id: `comp_user_${Date.now()}_${turnNumber}`,
+        name: titleCaseSubject,
+        service: inferredService,
+        tier: inferredTier,
+        region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : 'us-central1',
+        role: `Prompt #${turnNumber} Synthesized Node`,
+        description: `Provisioned via Studio Prompt #${turnNumber} ("${rawPrompt}") with mTLS zero-trust enforcement.`,
+        sla: '99.999%',
+        protocols: isWaf || isLb ? ['HTTPS', 'TLS 1.3', 'HTTP/3'] : ['gRPC mTLS', 'HTTPS']
+      };
+    };
 
     if (lower.includes('4 more') || lower.includes('4 component') || (lower.includes('cdn') && (lower.includes('vault') || lower.includes('kafka') || lower.includes('doc')))) {
       const newComps: AstComponent[] = [
@@ -1219,7 +1293,7 @@ function StudioMain() {
       updated.components = [...updated.components, ...newComps];
       canvasDiff = '+ Added Cloud CDN, Payment Token Vault, Kafka Event Mesh, and Document AI OCR Extractor (4 new nodes).';
       specDiff = 'Reconciled DOC-03 (System Architecture), DOC-04 (API Protocols), and DOC-06 (Security Model).';
-    } else if (detectedPersona === 'Product Manager' || lower.includes('patient') || lower.includes('engagement') || lower.includes('admission')) {
+    } else if (explicitPersona === 'Product Manager') {
       updated.metadata = {
         ...updated.metadata,
         domain: 'Healthcare & Life Sciences',
@@ -1245,7 +1319,7 @@ function StudioMain() {
       }
       canvasDiff = '+ Added Emergency Patient Ingress Portal (Cloud Run) with 99.999% SLA gateway.';
       specDiff = 'Reconciled DOC-01 (Product Vision), DOC-02 (Personas), and DOC-04 (Architecture Overview).';
-    } else if (detectedPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
+    } else if (explicitPersona === 'Lead Cloud Architect' || lower.includes('spanner') || lower.includes('multi-region') || lower.includes('dr') || lower.includes('rpo')) {
       updated.metadata = {
         ...updated.metadata,
         drRegions: ['europe-west1', 'us-east4'],
@@ -1265,7 +1339,7 @@ function StudioMain() {
       });
       canvasDiff = '⚡ Upgraded Cloud Spanner to Active-Active Multi-Region nam3 with Witness in europe-west1.';
       specDiff = 'Reconciled DOC-03 (System Architecture), DOC-05 (Infrastructure & DDL), and DOC-08 (Disaster Recovery).';
-    } else if (detectedPersona === 'CISO / Security Architect' || lower.includes('security') || lower.includes('ciso') || lower.includes('hsm') || lower.includes('cmek') || lower.includes('vpc')) {
+    } else if (explicitPersona === 'CISO / Security Architect') {
       updated.metadata = {
         ...updated.metadata,
         compliance: ['PCI-DSS 4.0', 'HIPAA', 'SOC2 Type II', 'FedRAMP High', 'ISO 27001'],
@@ -1289,7 +1363,7 @@ function StudioMain() {
       }
       canvasDiff = '🔒 Enforced Cloud KMS HSM CMEK envelope encryption and VPC-SC perimeter controls.';
       specDiff = 'Reconciled DOC-06 (Security & Threat Model) and DOC-10 (Compliance & Audit Matrix).';
-    } else if (detectedPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
+    } else if (explicitPersona === 'FinOps & SRE Lead' || lower.includes('finops') || lower.includes('cost') || lower.includes('autoscaling') || lower.includes('sre')) {
       updated.metadata = {
         ...updated.metadata,
         latencyBudgetMs: 35,
@@ -1305,79 +1379,27 @@ function StudioMain() {
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       canvasDiff = `🛡️ Grouped ingress & extension nodes into a Zero-Trust DMZ Enclave (${cleanPrompt}).`;
       specDiff = `Synchronized enclave boundary across DOC-03 (System Architecture) and DOC-06 (Security & Threat Model).`;
-    } else {
-      // Dynamic component synthesis for any custom prompt (e.g. "add web application firewall", "add load balancer", etc.)
-      const cleanedSubject = cleanPrompt
-        .replace(/^(please\s+)?(add|insert|include|deploy|create|attach|integrate|provision|enable)\s+(a\s+|an\s+|the\s+|new\s+)?/i, '')
-        .replace(/\.$/, '')
-        .trim();
-      const titleCaseSubject = (cleanedSubject || cleanPrompt)
-        .split(/\s+/)
-        .map(w => w.length <= 3 && /^(waf|lb|cdn|dns|hsm|kms|vpc|api|sql|gke|iam|dlp)$/i.test(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ');
+    }
 
-      const isWaf = lower.includes('waf') || lower.includes('firewall') || lower.includes('armor');
-      const isLb = lower.includes('load balancer') || lower.includes('load-balancer') || /\blb\b/.test(lower);
-      const isCache = lower.includes('redis') || lower.includes('cache') || lower.includes('memorystore');
-      const isQueue = lower.includes('kafka') || lower.includes('pubsub') || lower.includes('queue') || lower.includes('stream');
-      const isDb = lower.includes('database') || lower.includes('postgres') || lower.includes('alloydb') || lower.includes('sql');
-
-      const inferredService = isWaf
-        ? 'Cloud Armor L7 WAF'
-        : isLb
-        ? 'Global External HTTPS Load Balancer'
-        : isCache
-        ? 'Memorystore for Redis Cluster'
-        : isQueue
-        ? 'Cloud Pub/Sub Event Stream'
-        : isDb
-        ? 'AlloyDB for PostgreSQL'
-        : 'Google Cloud Managed Service';
-
-      const inferredTier: AstComponent['tier'] = isWaf
-        ? 'security'
-        : isLb
-        ? 'ingress'
-        : isCache || isDb || isQueue
-        ? 'data'
-        : 'compute';
-
-      const newCompId = `comp_user_${Date.now()}`;
-      const newComp: AstComponent = {
-        id: newCompId,
-        name: titleCaseSubject,
-        service: inferredService,
-        tier: inferredTier,
-        region: inferredTier === 'ingress' || inferredTier === 'security' ? 'global' : 'us-central1',
-        role: isWaf
-          ? 'OWASP Top 10 L7 WAF & Adaptive DDoS Protection'
-          : isLb
-          ? 'Global Anycast L7 Load Balancing & SSL Offload'
-          : `Prompt-Synthesized ${titleCaseSubject}`,
-        description: `Provisioned via Studio Copilot ("${cleanPrompt}") with mTLS zero-trust enforcement and telemetry hooks.`,
-        sla: '99.99%',
-        protocols: isWaf || isLb ? ['HTTPS', 'TLS 1.3', 'HTTP/3'] : ['gRPC mTLS', 'HTTPS']
-      };
-
+    // Guarantee that EVERY mutating prompt (Prompt 1 through Prompt 10+) appends a distinct component node
+    // so the diagram visibly and cumulatively grows across all 10+ sequential prompts within a project
+    const BASELINE_DEFAULT_IDS = new Set([
+      'comp_armor',
+      'comp_glb',
+      'comp_gke',
+      'comp_vertex',
+      'comp_spanner_leader',
+      'comp_bigquery',
+      'comp_spanner_dr',
+      'comp_gcs_backup'
+    ]);
+    if (updated.components.length === prevCompCount && !/^(connect|group)\b/i.test(cleanPrompt)) {
+      const currentTurnNumber = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).length + 1;
+      const newComp = synthesizeComponentFromPrompt(cleanPrompt, currentTurnNumber);
       updated.components = [...updated.components, newComp];
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      if (
-        !updated.metadata.projectTitle ||
-        updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
-        updated.metadata.projectTitle.startsWith('#00') ||
-        /^(design|architect|build|create|\[p[1-7]\])/i.test(promptText.trim())
-      ) {
-        const derivedTitle = promptText
-          .trim()
-          .replace(/^(please\s+)?(design|architect|build|create)\s+(a\s+|an\s+|the\s+)?/i, '')
-          .replace(/\.$/, '')
-          .slice(0, 76);
-        if (derivedTitle.length > 5) {
-          updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
-        }
-      }
       setIsSavedInLibrary(false);
-      canvasDiff = `+ Added ${newComp.name} (${newComp.service}) into topology (${updated.components.length} Nodes total).`;
+      canvasDiff = `+ Added P${currentTurnNumber}: ${newComp.name} (${newComp.service}) into project topology (${updated.components.length} Nodes total).`;
       specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
     }
 
@@ -1393,17 +1415,20 @@ function StudioMain() {
         .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize)\s+(a\s+|an\s+|the\s+)?/i, '')
         .replace(/\.$/, '')
         .slice(0, 78);
-      if (derivedTitle.length > 5) {
+      if (derivedTitle.length > 5 && versions.length <= 1) {
         updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
       }
     }
 
-    // Dynamically synthesize a 100% prompt-grounded Reference Architecture v2.0 diagram when user submits an architecture prompt
-    const isMicroEditCommand = /^(add\s+node|connect\b|group\b|remove\b|delete\b|rename\b)/i.test(promptText.trim());
-    const isGenerativeDesignPrompt =
-      !isMicroEditCommand &&
-      (/^(design|architect|build|create|deploy|synthesize|aws|gcp|google|azure|cloud|enterprise|sovereign|multi-region|zero-trust|real-time|serverless|hybrid|\[p[1-7]\]|\[vision\])/i.test(promptText.trim()) ||
-        /\b(architecture|bedrock|sagemaker|redshift|claude|vertex|spanner|bigquery|gke|eks|kubernetes|lakehouse|streaming|kafka|pub\/sub|secops|chronicle|fhir|hl7|sap|finops|landing\s+zone|rag|agentic)\b/i.test(promptText));
+    // Only replace the base diagram when explicitly requested on Prompt 1 (initial creation of bespoke non-default blueprint)
+    // Subsequent prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
+    const isInitialProjectTurn = versions.length <= 1 && activeVersionTag === 'v1.0';
+    const isExplicitFullResetPrompt = /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
+    const isBespokeInitialDesignPrompt =
+      isInitialProjectTurn &&
+      /\b(bedrock|sagemaker|redshift|claude|azure|eks|sap|hl7|fhir|chronicle)\b/i.test(promptText);
+
+    const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
     let activeBaseXml = xml;
     if (isGenerativeDesignPrompt) {
       const synthesizedTitle = updated.metadata.projectTitle && updated.metadata.projectTitle !== 'ABC'
@@ -1435,24 +1460,27 @@ function StudioMain() {
       }).catch(() => {});
     }
 
-    // Check if the current active XML is actually the 6-Zone GCP Native Architecture
-    const isSixZoneNativeCanvas = activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"');
+    // Check if the current active XML is the 6-Zone GCP Native Architecture
+    const isSixZoneNativeCanvas =
+      activeBaseXml.includes('id="spatial_gcp_reference_arch"') ||
+      (activeBaseXml.includes('id="z1"') && activeBaseXml.includes('id="z2"')) ||
+      (activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"'));
     let baseUpdatedXml: string;
 
-    if (isGenerativeDesignPrompt) {
-      baseUpdatedXml = activeBaseXml;
-    } else if (isSixZoneNativeCanvas) {
+    if (isSixZoneNativeCanvas && !isGenerativeDesignPrompt) {
+      // Regenerates the 6-Zone GCP Native Architecture + Zone 7 Cumulative Extensions Grid (P1..P10+ in 5-col multi-row grid)
       baseUpdatedXml = generateGcpNativeArchitectureXml(
         { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
         updated
       );
     } else {
-      // Surgically update the existing active XML diagram (e.g. Google Multiagent AI System, Vision decompilations, Canonical templates)
-      const customComps = updated.components.filter(c => c.id.startsWith('comp_user_') || c.id.startsWith('comp_'));
+      // Surgically update ANY active XML diagram (Canonical templates, Bespoke Reference Architectures, Vision decompilations)
+      // with cumulative multi-row grid geometry for Prompts 1..10+
+      const customComps = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id));
       let mutatedXml = activeBaseXml;
 
       if (mutatedXml.includes('</root>')) {
-        // Remove previous studio_ext / studio_edge / studio_conn / studio_group cells to re-render cleanly
+        // Remove previous studio_ext / studio_edge / studio_conn / studio_group cells to re-render all cumulative nodes cleanly
         mutatedXml = mutatedXml.replace(/<mxCell id="studio_(?:ext|edge|conn|group)_[\s\S]*?<\/mxCell>/g, '');
 
         let maxY = 720;
@@ -1462,9 +1490,12 @@ function StudioMain() {
           const bottom = parseInt(m[1], 10) + parseInt(m[2], 10);
           if (bottom > maxY && bottom < 1800) maxY = bottom;
         }
-        const extY = maxY + 36;
+        const extY = maxY + 38;
+        const numRows = Math.max(1, Math.ceil(customComps.length / 5));
+        const groupW = Math.max(320, Math.min(5, Math.max(1, customComps.length)) * 292 + 28);
+        const groupH = 38 + numRows * 82;
 
-        // Find a safe anchor node in the diagram (e.g. gcp_container, card_frontend, or first vertex)
+        // Find a safe anchor node in the diagram
         const anchorId = mutatedXml.includes('id="gcp_container"')
           ? 'gcp_container'
           : mutatedXml.includes('id="card_frontend"')
@@ -1473,43 +1504,44 @@ function StudioMain() {
 
         const injectedCells: string[] = [];
 
-        if (/^group\b/i.test(cleanPrompt) || mutatedXml.includes('studio_group_dmz')) {
-          const groupW = Math.max(320, Math.min(5, Math.max(1, customComps.length)) * 290 + 24);
+        if (customComps.length > 0 || /^group\b/i.test(cleanPrompt)) {
           injectedCells.push(
-            `<mxCell id="studio_group_dmz" value="ZERO-TRUST DMZ &amp; EXTENSION ENCLAVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=10;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="48" y="${extY - 26}" width="${groupW}" height="96" as="geometry"/></mxCell>`
+            `<mxCell id="studio_group_dmz" value="CUMULATIVE PROJECT EXTENSIONS (${customComps.length} NODES ADDED ACROSS PROMPTS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=10;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="48" y="${extY - 26}" width="${groupW}" height="${groupH}" as="geometry"/></mxCell>`
           );
         }
 
         customComps.forEach((comp, idx) => {
-          const xPos = 60 + (idx % 5) * 290;
-          const safeName = comp.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          const colIdx = idx % 5;
+          const rowIdx = Math.floor(idx / 5);
+          const xPos = 60 + colIdx * 292;
+          const yPos = extY + rowIdx * 82;
+          const safeName = `P${idx + 1}: ${comp.name}`.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
           const safeSvc = comp.service.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
           const labelHtml = `&lt;div style=&quot;padding:6px 10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;&quot;&gt;&lt;div style=&quot;font-size:11px;font-weight:800;color:#0F172A;&quot;&gt;${safeName}&lt;/div&gt;&lt;div style=&quot;font-size:9px;font-weight:600;color:#2563EB;margin-top:2px;&quot;&gt;${safeSvc} • ${comp.sla || '99.99%'}&lt;/div&gt;&lt;/div&gt;`;
           injectedCells.push(
-            `<mxCell id="studio_ext_${comp.id}" value="${labelHtml}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;shadow=0;arcSize=10;" vertex="1" parent="1"><mxGeometry x="${xPos}" y="${extY}" width="270" height="58" as="geometry"/></mxCell>`
+            `<mxCell id="studio_ext_${comp.id}" value="${labelHtml}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;shadow=0;arcSize=10;" vertex="1" parent="1"><mxGeometry x="${xPos}" y="${yPos}" width="272" height="62" as="geometry"/></mxCell>`
           );
 
-          if (anchorId !== '1') {
-            // Route cleanly via the open bottom/left corridor (x=22) so the line never cuts across any existing cards
+          if (rowIdx === 0 && anchorId !== '1') {
             injectedCells.push(
-              `<mxCell id="studio_edge_${comp.id}" value="${(comp.protocols || ['TLS 1.3'])[0]}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#1E40AF;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;exitX=0.5;exitY=0;entryX=0;entryY=0.85;" edge="1" parent="1" source="studio_ext_${comp.id}" target="${anchorId}"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${xPos + 135}" y="${extY - 12}"/><mxPoint x="22" y="${extY - 12}"/><mxPoint x="22" y="960"/></Array></mxGeometry></mxCell>`
+              `<mxCell id="studio_edge_${comp.id}" value="+${idx + 1} ${(comp.protocols || ['TLS 1.3'])[0]}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#1E40AF;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;exitX=0.5;exitY=0;entryX=0;entryY=0.85;" edge="1" parent="1" source="studio_ext_${comp.id}" target="${anchorId}"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${xPos + 136}" y="${extY - 12}"/><mxPoint x="22" y="${extY - 12}"/><mxPoint x="22" y="960"/></Array></mxGeometry></mxCell>`
             );
+          } else if (rowIdx > 0) {
+            const parentComp = customComps[(rowIdx - 1) * 5 + colIdx];
+            if (parentComp) {
+              injectedCells.push(
+                `<mxCell id="studio_edge_${comp.id}" value="+${idx + 1}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=#1E40AF;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="studio_ext_${parentComp.id}" target="studio_ext_${comp.id}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+              );
+            }
           }
         });
 
-        // If user clicked Connect and there are 2+ extension cards, connect them horizontally; or if 0 extension cards, add a clean TLS 1.3 badge edge
-        if (/^connect\b/i.test(cleanPrompt)) {
-          if (customComps.length >= 2) {
-            const cA = customComps[customComps.length - 2];
-            const cB = customComps[customComps.length - 1];
-            injectedCells.push(
-              `<mxCell id="studio_conn_${Date.now()}" value="TLS 1.3 / mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#FFFFFF;labelBorderColor=#6EE7B7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="studio_ext_${cA.id}" target="studio_ext_${cB.id}"><mxGeometry relative="1" as="geometry"/></mxCell>`
-            );
-          } else if (mutatedXml.includes('id="card_model_armor"') && mutatedXml.includes('id="card_ai_model"')) {
-            injectedCells.push(
-              `<mxCell id="studio_conn_${Date.now()}" value="TLS 1.3 / mTLS Verified" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#FFFFFF;labelBorderColor=#6EE7B7;exitX=1;exitY=0.65;entryX=0;entryY=0.65;" edge="1" parent="1" source="card_model_armor" target="card_ai_model"><mxGeometry relative="1" as="geometry"/></mxCell>`
-            );
-          }
+        if (/^connect\b/i.test(cleanPrompt) && customComps.length >= 2) {
+          const cA = customComps[customComps.length - 2];
+          const cB = customComps[customComps.length - 1];
+          injectedCells.push(
+            `<mxCell id="studio_conn_${Date.now()}" value="TLS 1.3 / mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#FFFFFF;labelBorderColor=#6EE7B7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="studio_ext_${cA.id}" target="studio_ext_${cB.id}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+          );
         }
 
         if (injectedCells.length > 0) {
@@ -1519,10 +1551,36 @@ function StudioMain() {
       baseUpdatedXml = mutatedXml;
     }
 
-    // Immediately update AST and canvas while keeping the active diagram topology intact
+    // Immediately and atomically update AST, Canvas XML, Active Version Tag, Chat History, and Version Snapshots
+    // so sequential prompts (Prompt 1 through Prompt 10+) never suffer from out-of-order async race conditions
+    const currentRequestId = ++latestPromptRequestIdRef.current;
     setAst(updated);
     setXml(baseUpdatedXml);
     setActiveVersionTag(newVersionTag);
+
+    const aiMsg: StudioChatMessage = {
+      id: `msg_${Date.now() + 1}`,
+      sender: 'assistant',
+      text: `[${detectedPersona} Persona Refinement • ${newVersionTag}]: ${canvasDiff}`,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      actionSummary: {
+        versionTag: newVersionTag,
+        canvasDiff,
+        specDiff,
+      },
+    };
+    setMessages(prev => [...prev, aiMsg]);
+
+    const newSnapshot: StudioVersionSnapshot = {
+      id: `v_${Date.now()}`,
+      versionTag: newVersionTag,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      author: detectedPersona,
+      actionSummary: `${detectedPersona}: ${cleanPrompt}`,
+      ast: updated,
+      xml: baseUpdatedXml,
+    };
+    setVersions(prev => [...prev, newSnapshot]);
 
     // Auto-persist newly generated/evolved prompt diagram to /api/diagrams so it is immediately visible in Architecture Library
     const isMatrix = /^\[p[1-7]\]|guided matrix/i.test(promptText.trim()) || /^\[p[1-7]\]|guided matrix/i.test(updated.metadata.projectTitle);
@@ -1544,7 +1602,8 @@ function StudioMain() {
       .then(() => setIsSavedInLibrary(true))
       .catch(() => {});
 
-    // Also invoke POST /api/generate (Gemini API via BYOK or system key) with existingXml so it customizes in-place
+    // Optional background Gemini refinement: strictly guarded by currentRequestId and cumulative node preservation
+    const allCustomIds = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).map(c => c.id);
     setIsHealing(true);
     fetch('/api/generate', {
       method: 'POST',
@@ -1559,73 +1618,36 @@ function StudioMain() {
     })
       .then(res => (res.ok ? res.json() : null))
       .then(data => {
-        // Never allow /api/generate to swap a custom or 6-zone diagram to an unrelated canonical template (e.g. Template #26)
+        if (latestPromptRequestIdRef.current !== currentRequestId) {
+          // A newer prompt (e.g. Prompt N+1..10) was already executed; ignore stale response!
+          return;
+        }
         const returnedXml = data?.xml;
+        const preservesAllCustomNodes =
+          typeof returnedXml === 'string' &&
+          allCustomIds.every(cid => returnedXml.includes(cid));
         const isSafeInPlaceEdit =
           returnedXml &&
           typeof returnedXml === 'string' &&
           returnedXml.includes('<mxGraphModel') &&
           !returnedXml.includes('serverless_eda_architecture') &&
+          preservesAllCustomNodes &&
           (isSixZoneNativeCanvas
-            ? returnedXml.includes('id="z1_bg"') && (returnedXml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
+            ? (returnedXml.includes('id="z1"') || returnedXml.includes('id="z1_bg"')) &&
+              (returnedXml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
             : (returnedXml.includes('studio_ext_') || returnedXml.includes('studio_conn_') || returnedXml.includes('studio_group_')));
 
-        const finalXml = isSafeInPlaceEdit ? returnedXml : baseUpdatedXml;
-
-        setXml(finalXml);
-        const aiMsg: StudioChatMessage = {
-          id: `msg_${Date.now() + 1}`,
-          sender: 'assistant',
-          text: `[${detectedPersona} Persona Refinement • Gemini API]: ${canvasDiff}`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          actionSummary: {
-            versionTag: newVersionTag,
-            canvasDiff,
-            specDiff,
-          },
-        };
-        setMessages(prev => [...prev, aiMsg]);
-
-        const newSnapshot: StudioVersionSnapshot = {
-          id: `v_${Date.now()}`,
-          versionTag: newVersionTag,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          author: detectedPersona,
-          actionSummary: `${detectedPersona}: ${cleanPrompt}`,
-          ast: updated,
-          xml: finalXml,
-        };
-        setVersions(prev => [...prev, newSnapshot]);
+        if (isSafeInPlaceEdit) {
+          setXml(returnedXml);
+        }
       })
-      .catch(() => {
-        const aiMsg: StudioChatMessage = {
-          id: `msg_${Date.now() + 1}`,
-          sender: 'assistant',
-          text: `[${detectedPersona} Persona Refinement]: ${canvasDiff}`,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          actionSummary: {
-            versionTag: newVersionTag,
-            canvasDiff,
-            specDiff,
-          },
-        };
-        setMessages(prev => [...prev, aiMsg]);
-
-        const newSnapshot: StudioVersionSnapshot = {
-          id: `v_${Date.now()}`,
-          versionTag: newVersionTag,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          author: detectedPersona,
-          actionSummary: `${detectedPersona}: ${cleanPrompt}`,
-          ast: updated,
-          xml: baseUpdatedXml,
-        };
-        setVersions(prev => [...prev, newSnapshot]);
-      })
+      .catch(() => {})
       .finally(() => {
-        setIsHealing(false);
+        if (latestPromptRequestIdRef.current === currentRequestId) {
+          setIsHealing(false);
+        }
       });
-  }, [activeVersionTag, isEditorMode, ast, xml, selectedBlueprintId]);
+  }, [activeVersionTag, isEditorMode, ast, xml, selectedBlueprintId, versions.length]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {

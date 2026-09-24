@@ -639,7 +639,7 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   cells.push(createEdge("e16_gcs", "n_bigquery", "n_gcs", "⓰", "BigLake Sync", "#0D9488", { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
   cells.push(createEdge("e17_evals", "n_gemini", "n_bigquery", "⓱", "Evals & Tracing", "#64748B", { dashed: 1, exitX: 0, exitY: 0.9, entryX: 0.5, entryY: 0, waypoints: [{ x: 1242.5, y: 400 }], labelPosition: "above", isDark }));
 
-  // DYNAMIC PROMPT-ADDED AST COMPONENTS (e.g. "Add Web Application Firewall", "Add Load Balancer", etc.)
+  // DYNAMIC PROMPT-ADDED AST COMPONENTS (Supports sequential Prompts 1..10+ with multi-row grid geometry)
   const BASELINE_AST_IDS = new Set([
     "comp_armor",
     "comp_glb",
@@ -649,17 +649,12 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     "comp_bigquery",
     "comp_spanner_dr",
     "comp_gcs_backup",
-    "comp_patient_portal",
-    "comp_hsm_cmek",
-    "comp_cdn",
-    "comp_token_vault",
-    "comp_kafka_mirror",
-    "comp_event_bus",
-    "comp_doc_ai",
   ]);
 
   const customAstNodes = (ast?.components || []).filter((c) => !BASELINE_AST_IDS.has(c.id));
-  const totalPageHeight = customAstNodes.length > 0 ? 1140 : 980;
+  const numRows = Math.ceil(customAstNodes.length / 5);
+  const z7Height = customAstNodes.length > 0 ? 58 + numRows * 148 : 0;
+  const totalPageHeight = customAstNodes.length > 0 ? 948 + z7Height : 980;
 
   if (customAstNodes.length > 0) {
     const z7Bg = isDark ? "#0C1928" : "#F0F9FF";
@@ -667,12 +662,12 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     cells.push(
       createZoneBox(
         "z7_custom",
-        `7. PROMPT-SYNTHESIZED ARCHITECTURE EXTENSIONS (${customAstNodes.length} ADDED)`,
-        "Gemini Live Topology Augmentation • VPC Peered",
+        `7. CUMULATIVE PROMPT-SYNTHESIZED EXTENSIONS (${customAstNodes.length} NODES ADDED ACROSS PROJECT PROMPTS)`,
+        "Multi-Turn Evolution • Zero-Collision Grid • VPC Peered",
         40,
-        915,
+        922,
         1600,
-        175,
+        z7Height,
         z7Bg,
         z7Stroke,
         isDark
@@ -680,9 +675,10 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
     );
 
     customAstNodes.forEach((comp, idx) => {
-      const colIdx = idx % 6;
-      const xPos = 56 + colIdx * 265;
-      const yPos = 960;
+      const colIdx = idx % 5;
+      const rowIdx = Math.floor(idx / 5);
+      const xPos = 56 + colIdx * 316;
+      const yPos = 968 + rowIdx * 148;
       const nodeId = `n_custom_${comp.id}`;
       const lowerName = `${comp.name} ${comp.service}`.toLowerCase();
       const iconKey: keyof typeof GCP_OFFICIAL_ICONS =
@@ -692,11 +688,11 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
           ? "cloud_load_balancing"
           : lowerName.includes("spanner")
           ? "cloud_spanner"
-          : lowerName.includes("bigquery")
+          : lowerName.includes("bigquery") || lowerName.includes("lakehouse")
           ? "bigquery"
           : lowerName.includes("redis") || lowerName.includes("cache")
           ? "memorystore"
-          : lowerName.includes("pubsub") || lowerName.includes("queue") || lowerName.includes("event")
+          : lowerName.includes("pubsub") || lowerName.includes("queue") || lowerName.includes("event") || lowerName.includes("kafka")
           ? "pubsub"
           : lowerName.includes("ai") || lowerName.includes("vertex") || lowerName.includes("gemini")
           ? "vertex_ai"
@@ -712,65 +708,97 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
       cells.push(
         createNodeCard(
           nodeId,
-          comp.name,
+          `P${idx + 1}: ${comp.name}`,
           `${comp.service} • ${comp.role || "Live Extension"}`,
           `${comp.sla || "99.99% SLA"} • ${(comp.protocols || ["HTTPS/mTLS"])[0]}`,
-          comp.tier.toUpperCase(),
+          `PROMPT #${idx + 1}`,
           iconKey,
           xPos,
           yPos,
-          248,
-          110,
+          264,
+          108,
           badgeColor,
-          [comp.description || `Added via Studio Prompt: ${comp.name}`],
+          [comp.description || `Added via Studio Prompt #${idx + 1}: ${comp.name}`],
           isDark
         )
       );
 
-      // Connect upstream tier node to this custom component via collision-free outer/inter-zone corridor
-      const isLeftCorridor = comp.tier === "ingress" || comp.tier === "security";
-      const upstreamId = isLeftCorridor
-        ? "n_armor"
-        : comp.tier === "data"
-        ? "n_spanner"
-        : "n_scc";
-      const corridorWaypoints = isLeftCorridor
-        ? [
-            { x: 22, y: 310 },
-            { x: 22, y: 904 },
-            { x: xPos + 124, y: 904 },
-          ]
-        : comp.tier === "data"
-        ? [
-            { x: 1656, y: 635 },
-            { x: 1656, y: 904 },
-            { x: xPos + 124, y: 904 },
-          ]
-        : [
-            { x: 1510, y: 845 },
-            { x: 1510, y: 904 },
-            { x: xPos + 124, y: 904 },
-          ];
-      cells.push(
-        createEdge(
-          `e_custom_${comp.id}`,
-          upstreamId,
-          nodeId,
-          `+${idx + 1}`,
-          comp.protocols?.[0] || "mTLS / HTTPS",
-          badgeColor,
-          {
-            dashed: 1,
-            exitX: isLeftCorridor ? 0 : comp.tier === "data" ? 1 : 0.5,
-            exitY: isLeftCorridor || comp.tier === "data" ? 0.5 : 1,
-            entryX: 0.5,
-            entryY: 0,
-            waypoints: corridorWaypoints,
-            labelPosition: "above",
-            isDark,
-          }
-        )
-      );
+      // Zero-header-crossing connector routing:
+      // - P1 (rowIdx === 0, colIdx === 0): exits n_vpcsc left edge via x=24 outer corridor into P1 left edge
+      // - P2..P5 (rowIdx === 0, colIdx > 0): chains horizontally from P(idx) right edge across the 52px column channel
+      // - P6..P10+ (rowIdx > 0): drops straight down from the node directly above in rowIdx - 1 across the 40px row channel
+      if (rowIdx === 0 && colIdx === 0) {
+        cells.push(
+          createEdge(
+            `e_custom_${comp.id}`,
+            "n_vpcsc",
+            nodeId,
+            `+${idx + 1}`,
+            comp.protocols?.[0] || "HTTPS",
+            badgeColor,
+            {
+              dashed: 1,
+              exitX: 0,
+              exitY: 0.5,
+              entryX: 0,
+              entryY: 0.5,
+              waypoints: [
+                { x: 24, y: 842 },
+                { x: 24, y: yPos + 54 },
+              ],
+              labelPosition: "above",
+              isDark,
+            }
+          )
+        );
+      } else if (rowIdx === 0) {
+        const prevComp = customAstNodes[idx - 1];
+        const prevNodeId = prevComp ? `n_custom_${prevComp.id}` : "n_vpcsc";
+        cells.push(
+          createEdge(
+            `e_custom_${comp.id}`,
+            prevNodeId,
+            nodeId,
+            `+${idx + 1}`,
+            "",
+            badgeColor,
+            {
+              dashed: 1,
+              exitX: 1,
+              exitY: 0.5,
+              entryX: 0,
+              entryY: 0.5,
+              directStraight: true,
+              labelPosition: "above",
+              isDark,
+            }
+          )
+        );
+      } else {
+        // Connect directly from the node above in rowIdx - 1 for clean vertical column chaining across 40px row gap
+        const parentRowComp = customAstNodes[(rowIdx - 1) * 5 + colIdx];
+        const parentNodeId = parentRowComp ? `n_custom_${parentRowComp.id}` : "n_scc";
+        cells.push(
+          createEdge(
+            `e_custom_${comp.id}`,
+            parentNodeId,
+            nodeId,
+            `+${idx + 1}`,
+            comp.protocols?.[0] || "mTLS",
+            badgeColor,
+            {
+              dashed: 1,
+              exitX: 0.5,
+              exitY: 1,
+              entryX: 0.5,
+              entryY: 0,
+              directStraight: true,
+              labelPosition: "right",
+              isDark,
+            }
+          )
+        );
+      }
     });
   }
 
