@@ -1885,7 +1885,7 @@ function Studio1Content() {
             <button
               type="button"
               onClick={handleOpenDrawioNewTab}
-              disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+              disabled={!activeDiagram?.xml}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
               title="Open in draw.io in new browser tab"
             >
@@ -1930,22 +1930,22 @@ function Studio1Content() {
               }`}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] font-black uppercase tracking-[0.14em]">
-                    {workspaceMode === 'reference' ? 'Reference architecture' : workspaceMode === 'create' ? 'New project' : 'Editable working copy'}
+                    {workspaceMode === 'reference' ? 'Reference architecture (Ready to Edit)' : workspaceMode === 'create' ? 'New project' : 'Editable working copy'}
                   </span>
                   <span className="rounded-full bg-white/70 dark:bg-slate-950/50 px-2 py-0.5 text-[9px] font-bold">
-                    {workspaceMode === 'reference' ? 'View only' : 'Editable'}
+                    {workspaceMode === 'reference' ? 'Auto-Fork on Edit' : 'Editable'}
                   </span>
                 </div>
                 <p className="mt-1 text-[10px] leading-relaxed opacity-80">
                   {workspaceMode === 'reference'
-                    ? 'These inputs describe the diagram on the right. Clone it to edit, or start a new project for a blank canvas.'
+                    ? 'Type any prompt or click Generate Architecture Draft below to automatically fork and customize this architecture.'
                     : workspaceMode === 'create'
                       ? 'Adjust the populated brief and controls. Generate when ready; no stale diagram is shown on the blank canvas.'
                       : 'Prompt edits, controls, versioning, and manual canvas changes apply to this copy.'}
                 </p>
               </div>
 
-              <fieldset disabled={workspaceMode === 'reference'} className="space-y-4">
+              <fieldset className="space-y-4">
               {/* 1. Project Name & 2. Use Case Name with Searchable Dropdown & Architecture Reload */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* 1. Project Name Dropdown */}
@@ -2579,9 +2579,9 @@ function Studio1Content() {
               )}
 
               {/* Viewport Canvas Frame with Zoom Scaling & Auto-Fit */}
-              <div className="p-2 md:p-3 flex-1 h-[calc(100vh-210px)] min-h-[780px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80 overflow-auto relative">
+              <div className="p-2 md:p-3 w-full aspect-[16/9] min-h-[520px] flex items-center justify-center bg-slate-100 dark:bg-slate-950/80 overflow-auto relative">
                 <div
-                  className="w-full h-full min-h-[760px] rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative transition-transform duration-150 origin-top-center flex flex-col"
+                  className="w-full h-full rounded-xl overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative transition-transform duration-150 origin-top-center flex flex-col"
                   style={{
                     transform: `scale(${zoomLevel})`,
                     transformOrigin: 'top center',
@@ -2655,7 +2655,7 @@ function Studio1Content() {
                   <button
                     type="button"
                     onClick={handleOpenDrawioInline}
-                    disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+                    disabled={!activeDiagram?.xml}
                     className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
@@ -2665,7 +2665,7 @@ function Studio1Content() {
                   <button
                     type="button"
                     onClick={handleOpenDrawioNewTab}
-                    disabled={workspaceMode === 'reference' || !hasGeneratedDiagram}
+                    disabled={!activeDiagram?.xml}
                     className="px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
