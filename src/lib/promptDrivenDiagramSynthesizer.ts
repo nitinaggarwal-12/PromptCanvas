@@ -97,7 +97,51 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   let templateRefLabel = 'Google Cloud Reference Architecture v2.0';
   let domainMutations: Array<[RegExp, string]> = [];
 
-  if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('opc-ua') || lower.includes('manufacturing') || lower.includes('supply chain')) {
+  if (lower.includes('bedrock') || lower.includes('sagemaker') || (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile'))) {
+    // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Claude)
+    baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
+    templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Claude)';
+    domainMutations = [
+      [/Google Cloud/gi, 'AWS Cloud'],
+      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; CLAUDE'],
+      [/ENTERPRISE RAG &amp; KNOWLEDGE INTELLIGENCE PLATFORM/gi, 'AWS CLOUD ARCHITECTURE ON AMAZON BEDROCK, SAGEMAKER, REDSHIFT &amp; CLAUDE'],
+      [/Cloud Armor/gi, 'AWS WAF Shield'],
+      [/Query Rewriting \/&lt;br\/&gt;Decomposition/gi, 'Bedrock Agents /&lt;br/&gt;Orchestrator'],
+      [/Model Gateway \/&lt;br\/&gt;LLM Router/gi, 'Amazon Bedrock&lt;br/&gt;FM Gateway'],
+      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Claude 3.7&lt;br/&gt;Sonnet'],
+      [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'SageMaker&lt;br/&gt;Endpoints'],
+      [/Embedding&lt;br\/&gt;Models/gi, 'Bedrock Titan&lt;br/&gt;Embeddings'],
+      [/Re-ranker \/&lt;br\/&gt;Relevance Layer/gi, 'SageMaker&lt;br/&gt;Reranker'],
+      [/Guardrails &amp; Safety/gi, 'Amazon Bedrock Guardrails &amp; Safety'],
+      [/\(Vertex AI Matching Engine\)/gi, '(OpenSearch Serverless Vector)'],
+      [/\(Cloud Search \/ Apigee Search\)/gi, '(Amazon Bedrock Knowledge Base)'],
+      [/\(Neo4j \/ AlloyDB Graph\)/gi, '(Amazon Neptune GraphRAG)'],
+      [/\(Data Catalog\)/gi, '(AWS Glue Catalog)'],
+      [/\(Cloud Memorystore\)/gi, '(Amazon ElastiCache)'],
+      [/\(Cloud Workflows\)/gi, '(AWS Step Functions)'],
+      [/\(Vertex AI\)/gi, '(Amazon SageMaker)'],
+      [/Google Drive/gi, 'Amazon WorkDocs'],
+      [/BigQuery/gi, 'Amazon Redshift'],
+      [/Cloud SQL/gi, 'Amazon RDS'],
+      [/AlloyDB/gi, 'Aurora pgvector'],
+      [/Spanner/gi, 'DynamoDB'],
+      [/Bigtable/gi, 'Neptune DB'],
+      [/Cloud Storage/gi, 'Amazon S3 Lake'],
+      [/Pub\/Sub/gi, 'Amazon Kinesis'],
+      [/Dataflow/gi, 'AWS Glue Spark'],
+      [/Dataplex/gi, 'Lake Formation'],
+      [/Data Catalog/gi, 'Glue Catalog'],
+      [/Private Service&lt;br\/&gt;Connect/gi, 'AWS PrivateLink&lt;br/&gt;Endpoints'],
+      [/Cloud NAT/gi, 'AWS NAT GW'],
+      [/CMEK \/ KMS/gi, 'AWS KMS HSM'],
+      [/Secret Manager/gi, 'Secrets Manager'],
+      [/Identity-Aware Proxy/gi, 'AWS IAM Identity Ctr'],
+      [/Logs, Metrics, Traces/gi, 'CloudWatch, X-Ray &amp; CloudTrail'],
+      [/Model Registry \/ Rollout/gi, 'SageMaker Model Registry'],
+      [/\(GKE \/ Cloud Run \/ Cloud Functions\)/gi, '(Amazon EKS / ECS Fargate / AWS Lambda)'],
+      [/\(Artifact Registry \/ Secret Manager \/ Config\)/gi, '(Amazon ECR / Secrets Manager / AppConfig)']
+    ];
+  } else if (lower.includes('sap') || lower.includes('s/4hana') || lower.includes('opc-ua') || lower.includes('manufacturing') || lower.includes('supply chain')) {
     // Saved Template 42: Modern Data Lakehouse, SAP Cortex & IoT Digital Twin
     baseXml = generateTemplate42ModernDataLakehouseDataMeshXml('manufacturing', 'light');
     templateRefLabel = 'Modified Saved Template #42 • Google Cloud SAP S/4HANA Cortex & IoT Digital Twin Reference Architecture';
