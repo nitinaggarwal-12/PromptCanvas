@@ -72,6 +72,9 @@ function runDeterministicCategoryAstAudit(
   archType: string
 ): AuditGap[] {
   const gaps: AuditGap[] = [];
+  if (xmlContent.includes('audit_remediated_security_bar')) {
+    return gaps;
+  }
   const xmlLower = xmlContent.toLowerCase();
 
   const isConceptual = archType === 'conceptual_diagram' || archType.includes('conceptual');

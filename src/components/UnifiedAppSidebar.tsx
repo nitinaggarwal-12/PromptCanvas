@@ -83,10 +83,6 @@ const NAV_GROUPS: NavGroup[] = [
     label: 'Reference',
     items: [
       { id: 'canonical', name: 'Blueprint Catalog', icon: LayoutGrid, href: '/canonical', badge: '53' },
-      // No badge here by design: measured at 256px rail width, 'Google Cloud
-      // Patterns' + an 'OFFICIAL' pill forces the label to ellipsise. The badge
-      // was the redundant half — 'Google' already signals the official source.
-      { id: 'gcp', name: 'Google Cloud Patterns', icon: Cloud, href: '/gcp' },
       { id: 'library', name: 'My Architectures', icon: History, href: '/library' },
     ],
   },
