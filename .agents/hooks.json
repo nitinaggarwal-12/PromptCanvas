@@ -122,7 +122,8 @@
         "require_native_word_4layer_drawingml_no_corrupted_boxes": true,
         "require_cloud_bridge_schema_version_bump": true,
         "ban_static_template_spoofing_on_new_topics": true,
-        "require_prompt_to_canvas_semantic_subject_parity": true
+        "require_prompt_to_canvas_semantic_subject_parity": true,
+        "require_library_persisted_xml_uniqueness_and_payload_parity": true
       }
     },
     "scorex": {

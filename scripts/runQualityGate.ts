@@ -97,6 +97,44 @@ const steps: GateStep[] = [
     name: 'Universal Multi-Project Governance Doc & Skill Lockstep Sync Gate',
     category: 'GOVERNANCE_SYNC',
     command: 'node scripts/guards/gate_governance_doc_sync.mjs'
+  },
+  {
+    name: 'Persisted Library Diagram XML Uniqueness & API Payload Contract Gate',
+    category: 'LIBRARY_XML_UNIQUENESS',
+    fn: () => {
+      // 1. Verify POST /api/diagrams accepts xml, xmlContent, and xml_content without dropping payload
+      const routePath = path.join(process.cwd(), 'src/app/api/diagrams/route.ts');
+      const routeSrc = readFileSync(routePath, 'utf8');
+      if (!routeSrc.includes('body.xmlContent') || !routeSrc.includes('body.xml_content')) {
+        throw new Error('POST /api/diagrams in src/app/api/diagrams/route.ts must accept body.xml || body.xmlContent || body.xml_content');
+      }
+      // 2. Verify persisted user batch diagrams in SQLite have 100% distinct XML topologies (zero identical fallback XMLs)
+      const { DatabaseSync } = require('node:sqlite');
+      const crypto = require('crypto');
+      const dbPath = process.env.DATABASE_PATH || '/Users/nitinagga/.gemini/jetski/dev.db';
+      if (existsSync(dbPath)) {
+        const db = new DatabaseSync(dbPath);
+        const rows = db.prepare(`
+          SELECT d.id, d.name, v.xml_content
+          FROM diagrams d
+          JOIN diagram_versions v ON v.diagram_id = d.id
+          WHERE d.name GLOB '[0-9][0-9] •*'
+        `).all() as { id: string; name: string; xml_content: string }[];
+        const seenByPrefix = new Map<string, { name: string; hash: string; len: number }>();
+        for (const r of rows) {
+          const prefix = r.name.slice(0, 4);
+          const hash = crypto.createHash('sha256').update(r.xml_content || '').digest('hex').slice(0, 16);
+          seenByPrefix.set(prefix, { name: r.name, hash, len: (r.xml_content || '').length });
+        }
+        const hashes = new Map<string, string>();
+        for (const [prefix, info] of seenByPrefix.entries()) {
+          if (hashes.has(info.hash)) {
+            throw new Error(`Duplicate XML topology detected in Library between "${info.name}" and "${hashes.get(info.hash)}" (hash=${info.hash}, len=${info.len})`);
+          }
+          hashes.set(info.hash, info.name);
+        }
+      }
+    }
   }
 ];
 
