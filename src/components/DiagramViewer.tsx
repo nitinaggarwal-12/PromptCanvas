@@ -473,6 +473,25 @@ export default function DiagramViewer({
             canvasContainer.scrollLeft = 0;
           }
           promoteGcpStencilIcons();
+          try {
+            const svg = document.querySelector('#diagram-container svg');
+            if (svg && typeof svg.getBBox === 'function') {
+              const bbox = svg.getBBox();
+              if (bbox && bbox.width > 20 && bbox.height > 20) {
+                const pad = 24;
+                const vx = Math.floor(bbox.x - pad);
+                const vy = Math.floor(bbox.y - pad);
+                const vw = Math.ceil(bbox.width + pad * 2);
+                const vh = Math.ceil(bbox.height + pad * 2);
+                svg.setAttribute('viewBox', vx + ' ' + vy + ' ' + vw + ' ' + vh);
+                svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+                svg.style.setProperty('width', '100%', 'important');
+                svg.style.setProperty('height', '100%', 'important');
+                svg.style.setProperty('max-width', '100%', 'important');
+                svg.style.setProperty('max-height', '100%', 'important');
+              }
+            }
+          } catch(e) {}
         }
 
         function loadViewerScript() {

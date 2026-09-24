@@ -170,7 +170,21 @@ export function AppHeader({
         <div className="flex items-center justify-between flex-1 min-w-0 gap-3">
           {children}
         </div>
-        <div className="flex items-center shrink-0 pl-2 border-l border-slate-800/80">
+        <div className="flex items-center gap-1.5 shrink-0 pl-2 border-l border-slate-800/80">
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            title="Refresh page & sync latest changes"
+            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer"
+          >
+            <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+              <path d="M16 16h5v5" />
+            </svg>
+            <span className="hidden xl:inline">Refresh</span>
+          </button>
           <ByokHeaderButton compact />
         </div>
       </header>
@@ -217,6 +231,20 @@ export function AppHeader({
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          title="Refresh page & sync latest changes"
+          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-[11px] font-semibold transition-colors cursor-pointer"
+        >
+          <svg className="w-3.5 h-3.5 text-sky-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+            <path d="M16 16h5v5" />
+          </svg>
+          <span className="hidden xl:inline">Refresh</span>
+        </button>
         <ByokHeaderButton compact />
         {actions}
       </div>

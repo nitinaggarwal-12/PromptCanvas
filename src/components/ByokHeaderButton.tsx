@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Key, CheckCircle2, ShieldCheck, Trash2, Sparkles, X, Eye, EyeOff, Lock, ExternalLink, UserCheck, AlertCircle } from 'lucide-react';
 
 interface ByokStatus {
@@ -170,43 +171,47 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
         </span>
       </button>
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4"
-          onClick={() => setIsOpen(false)}
-        >
+      {isOpen &&
+        typeof document !== 'undefined' &&
+        createPortal(
           <div
-            className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl overflow-hidden text-slate-100"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 overflow-y-auto"
+            onClick={() => setIsOpen(false)}
           >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-slate-950/60 border-b border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                  <Key className="w-4 h-4" />
+            <div
+              className="w-full max-w-lg my-auto rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl overflow-hidden text-slate-100 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 bg-slate-950/80 border-b border-slate-800">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                    <Key className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      Bring Your Own Key (BYOK)
+                      {isByokActive && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                          <CheckCircle2 className="w-3 h-3" /> Personal Key Active
+                        </span>
+                      )}
+                    </h3>
+                    <p className="text-[11px] text-slate-400">
+                      Bind your personal Gemini API key to your User ID for all AI model synthesis
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    Bring Your Own Key (BYOK)
-                    {isByokActive && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        <CheckCircle2 className="w-3 h-3" /> Personal Key Active
-                      </span>
-                    )}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
-                    Bind your personal Gemini API key to your User ID for all AI model synthesis
-                  </p>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close modal"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Close</span>
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
 
             {/* Modal Body */}
             <div className="p-6 space-y-5">
@@ -279,11 +284,21 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
                     <button
                       type="submit"
                       disabled={signingIn}
-                      className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors disabled:opacity-50"
+                      className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors disabled:opacity-50 cursor-pointer"
                     >
                       {signingIn ? 'Signing In...' : 'Sign In'}
                     </button>
                   </form>
+
+                  <div className="flex justify-end pt-2 border-t border-amber-500/20">
+                    <button
+                      type="button"
+                      onClick={() => setIsOpen(false)}
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <form onSubmit={handleSaveKey} className="space-y-4">
@@ -381,7 +396,8 @@ export default function ByokHeaderButton({ compact = false }: { compact?: boolea
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

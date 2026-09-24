@@ -158,6 +158,10 @@ export function validateAndHealDrawioXml(inputXml: string, archType?: string): X
     inputXml.includes('PromptCanvas-LayoutEngineV2') ||
     inputXml.includes('id="gemini_ent"') ||
     inputXml.includes('Gemini Enterprise Agent Platform') ||
+    inputXml.includes('google_multiagent_system_architecture') ||
+    inputXml.includes('Google Cloud Multiagent AI System') ||
+    inputXml.includes('azure_landing_zone') ||
+    inputXml.includes('agentic_ai_architecture') ||
     archType === 'vision_decompiled'
   );
 

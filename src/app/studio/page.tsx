@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import DiagramViewerRenderSafe from '@/components/DiagramViewerRenderSafe';
 import { generateGcpNativeArchitectureXml } from '@/lib/gcpNativeArchitecture';
+import { generateGoogleMultiagentArchitectureXml } from '@/lib/masterBuilders/build_master_google_multiagent_ai_system';
 import { createDefaultFintechAst, ArchitectureAst, AstComponent } from '@/lib/ast/architectureAst';
 import { generateAll10LivingSpecs, LivingSpecDocument } from '@/lib/spec/livingSpecsGenerator';
 import { ComponentInspectorDrawer } from '@/components/studio/ComponentInspectorDrawer';
@@ -606,8 +607,30 @@ function StudioMain() {
         const saved = localStorage.getItem(`promptcanvas_studio_${urlId}`);
         if (saved) {
           const parsed = JSON.parse(saved);
+          const projTitle = (parsed.projectTitle || parsed.ast?.metadata?.projectTitle || searchParams.get('project') || '').toLowerCase();
+          let restoredXml: string = parsed.xml || '';
+
+          // Self-heal if a Google Multiagent AI System session was overwritten by Template #26 or 6-Zone GCP
+          if (
+            (projTitle.includes('google multiagent') || urlId.includes('GCP-MULTIAGENT-01')) &&
+            (!restoredXml.includes('google_multiagent_system_architecture') ||
+              restoredXml.includes('serverless_eda_architecture') ||
+              restoredXml.includes('id="z1_bg"'))
+          ) {
+            restoredXml = generateGoogleMultiagentArchitectureXml();
+          }
+
           if (parsed.ast) setAst(parsed.ast);
-          if (parsed.xml) setXml(parsed.xml);
+          if (restoredXml) {
+            setXml(restoredXml);
+            const inferredBp =
+              parsed.selectedBlueprintId && parsed.selectedBlueprintId !== '00'
+                ? parsed.selectedBlueprintId
+                : restoredXml.includes('id="z1_bg"')
+                ? 'gcp_enterprise_6zone'
+                : 'custom';
+            setSelectedBlueprintId(inferredBp);
+          }
           if (parsed.versions) setVersions(parsed.versions);
           if (parsed.messages) setMessages(parsed.messages);
           if (parsed.activeVersionTag) setActiveVersionTag(parsed.activeVersionTag);
@@ -684,6 +707,7 @@ function StudioMain() {
       localStorage.setItem(`promptcanvas_studio_${sessionId}`, JSON.stringify({
         id: sessionId,
         projectTitle: ast.metadata.projectTitle,
+        selectedBlueprintId,
         activeVersionTag,
         activeView,
         activeDocId,
@@ -696,7 +720,7 @@ function StudioMain() {
     } catch {
       // storage safeguard
     }
-  }, [isEditorMode, sessionId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
+  }, [isEditorMode, sessionId, selectedBlueprintId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
 
   // Living Specs derived from AST
   const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast), [ast]);
@@ -977,10 +1001,19 @@ function StudioMain() {
       };
       canvasDiff = '💰 Configured Cloud Run scale-to-zero off-peak policies & BigQuery BI Engine 50GB cache.';
       specDiff = 'Reconciled DOC-07 (SRE & Observability Runbook) and DOC-09 (FinOps & Cost Optimization).';
+    } else if (/^connect\b/i.test(cleanPrompt)) {
+      updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      canvasDiff = `🔗 Connected topology endpoints (${cleanPrompt.replace(/^connect\s+/i, '')}) via orthogonal zero-trust corridor.`;
+      specDiff = `Synchronized TLS 1.3 / mTLS link protocol across DOC-04 (API & Integration Protocols) and DOC-06 (Security).`;
+    } else if (/^group\b/i.test(cleanPrompt)) {
+      updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      canvasDiff = `🛡️ Grouped ingress & extension nodes into a Zero-Trust DMZ Enclave (${cleanPrompt}).`;
+      specDiff = `Synchronized enclave boundary across DOC-03 (System Architecture) and DOC-06 (Security & Threat Model).`;
     } else {
       // Dynamic component synthesis for any custom prompt (e.g. "add web application firewall", "add load balancer", etc.)
       const cleanedSubject = cleanPrompt
-        .replace(/^(please\s+)?(add|insert|include|deploy|create|attach|integrate|provision|enable)\s+(a\s+|an\s+|the\s+)?/i, '')
+        .replace(/^(please\s+)?(add|insert|include|deploy|create|attach|integrate|provision|enable)\s+(a\s+|an\s+|the\s+|new\s+)?/i, '')
+        .replace(/\.$/, '')
         .trim();
       const titleCaseSubject = (cleanedSubject || cleanPrompt)
         .split(/\s+/)
@@ -1036,38 +1069,120 @@ function StudioMain() {
       specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
     }
 
-    const baseUpdatedXml = generateGcpNativeArchitectureXml(
-      { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
-      updated
-    );
+    // Check if the current active XML is actually the 6-Zone GCP Native Architecture
+    const isSixZoneNativeCanvas = xml.includes('id="z1_bg"') && xml.includes('id="z2_bg"');
+    let baseUpdatedXml: string;
 
-    // Immediately update AST and canvas with deterministic Zone 7 extension card
+    if (isSixZoneNativeCanvas) {
+      baseUpdatedXml = generateGcpNativeArchitectureXml(
+        { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
+        updated
+      );
+    } else {
+      // Surgically update the existing active XML diagram (e.g. Google Multiagent AI System, Vision decompilations, Canonical templates)
+      const customComps = updated.components.filter(c => c.id.startsWith('comp_user_'));
+      let mutatedXml = xml;
+
+      if (mutatedXml.includes('</root>')) {
+        // Remove previous studio_ext / studio_edge / studio_conn / studio_group cells to re-render cleanly
+        mutatedXml = mutatedXml.replace(/<mxCell id="studio_(?:ext|edge|conn|group)_[\s\S]*?<\/mxCell>/g, '');
+
+        let maxY = 720;
+        const geoRegex = /<mxGeometry\s+[^>]*?y="(\d+)"\s+[^>]*?height="(\d+)"/gi;
+        let m;
+        while ((m = geoRegex.exec(mutatedXml)) !== null) {
+          const bottom = parseInt(m[1], 10) + parseInt(m[2], 10);
+          if (bottom > maxY && bottom < 1800) maxY = bottom;
+        }
+        const extY = maxY + 36;
+
+        // Find a safe anchor node in the diagram (e.g. gcp_container, card_frontend, or first vertex)
+        const anchorId = mutatedXml.includes('id="gcp_container"')
+          ? 'gcp_container'
+          : mutatedXml.includes('id="card_frontend"')
+          ? 'card_frontend'
+          : '1';
+
+        const injectedCells: string[] = [];
+
+        if (/^group\b/i.test(cleanPrompt) || mutatedXml.includes('studio_group_dmz')) {
+          const groupW = Math.max(320, Math.min(5, Math.max(1, customComps.length)) * 290 + 24);
+          injectedCells.push(
+            `<mxCell id="studio_group_dmz" value="ZERO-TRUST DMZ &amp; EXTENSION ENCLAVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#0284C7;strokeWidth=1.5;dashed=1;dashPattern=6 4;verticalAlign=top;align=left;spacingLeft=12;spacingTop=6;fontSize=10;fontStyle=1;fontColor=#0369A1;" vertex="1" parent="1"><mxGeometry x="48" y="${extY - 26}" width="${groupW}" height="96" as="geometry"/></mxCell>`
+          );
+        }
+
+        customComps.forEach((comp, idx) => {
+          const xPos = 60 + (idx % 5) * 290;
+          const safeName = comp.name.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          const safeSvc = comp.service.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+          const labelHtml = `&lt;div style=&quot;padding:6px 10px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;&quot;&gt;&lt;div style=&quot;font-size:11px;font-weight:800;color:#0F172A;&quot;&gt;${safeName}&lt;/div&gt;&lt;div style=&quot;font-size:9px;font-weight:600;color:#2563EB;margin-top:2px;&quot;&gt;${safeSvc} • ${comp.sla || '99.99%'}&lt;/div&gt;&lt;/div&gt;`;
+          injectedCells.push(
+            `<mxCell id="studio_ext_${comp.id}" value="${labelHtml}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;shadow=0;arcSize=10;" vertex="1" parent="1"><mxGeometry x="${xPos}" y="${extY}" width="270" height="58" as="geometry"/></mxCell>`
+          );
+
+          if (anchorId !== '1') {
+            // Route cleanly via the open bottom/left corridor (x=22) so the line never cuts across any existing cards
+            injectedCells.push(
+              `<mxCell id="studio_edge_${comp.id}" value="${(comp.protocols || ['TLS 1.3'])[0]}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=1.8;dashed=1;dashPattern=6 4;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#1E40AF;labelBackgroundColor=#FFFFFF;labelBorderColor=#93C5FD;exitX=0.5;exitY=0;entryX=0;entryY=0.85;" edge="1" parent="1" source="studio_ext_${comp.id}" target="${anchorId}"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="${xPos + 135}" y="${extY - 12}"/><mxPoint x="22" y="${extY - 12}"/><mxPoint x="22" y="960"/></Array></mxGeometry></mxCell>`
+            );
+          }
+        });
+
+        // If user clicked Connect and there are 2+ extension cards, connect them horizontally; or if 0 extension cards, add a clean TLS 1.3 badge edge
+        if (/^connect\b/i.test(cleanPrompt)) {
+          if (customComps.length >= 2) {
+            const cA = customComps[customComps.length - 2];
+            const cB = customComps[customComps.length - 1];
+            injectedCells.push(
+              `<mxCell id="studio_conn_${Date.now()}" value="TLS 1.3 / mTLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#FFFFFF;labelBorderColor=#6EE7B7;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="studio_ext_${cA.id}" target="studio_ext_${cB.id}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+            );
+          } else if (mutatedXml.includes('id="card_model_armor"') && mutatedXml.includes('id="card_ai_model"')) {
+            injectedCells.push(
+              `<mxCell id="studio_conn_${Date.now()}" value="TLS 1.3 / mTLS Verified" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;endFill=1;fontSize=10;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#FFFFFF;labelBorderColor=#6EE7B7;exitX=1;exitY=0.65;entryX=0;entryY=0.65;" edge="1" parent="1" source="card_model_armor" target="card_ai_model"><mxGeometry relative="1" as="geometry"/></mxCell>`
+            );
+          }
+        }
+
+        if (injectedCells.length > 0) {
+          mutatedXml = mutatedXml.replace('</root>', `${injectedCells.join('\n')}\n</root>`);
+        }
+      }
+      baseUpdatedXml = mutatedXml;
+    }
+
+    // Immediately update AST and canvas while keeping the active diagram topology intact
     setAst(updated);
     setXml(baseUpdatedXml);
     setActiveVersionTag(newVersionTag);
 
-    // Also invoke POST /api/generate (Gemini API via BYOK or system key) for live AI diagram customization
+    // Also invoke POST /api/generate (Gemini API via BYOK or system key) with existingXml so it customizes in-place
     setIsHealing(true);
     fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: cleanPrompt,
-        currentXml: selectedBlueprintId === 'gcp_enterprise_6zone' ? baseUpdatedXml : xml,
-        architectureType: selectedBlueprintId || 'gcp_enterprise_6zone',
+        existingXml: baseUpdatedXml,
+        currentXml: baseUpdatedXml,
+        architectureType: isSixZoneNativeCanvas ? 'gcp_enterprise_6zone' : 'vision_decompiled',
         isIteration: true,
       }),
     })
       .then(res => (res.ok ? res.json() : null))
       .then(data => {
-        // Use Gemini-customized XML if valid and preserves our custom extension nodes (or for non-6zone templates)
-        const finalXml =
-          data?.xml &&
-          typeof data.xml === 'string' &&
-          data.xml.includes('<mxGraphModel') &&
-          (selectedBlueprintId !== 'gcp_enterprise_6zone' || data.xml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
-            ? data.xml
-            : baseUpdatedXml;
+        // Never allow /api/generate to swap a custom or 6-zone diagram to an unrelated canonical template (e.g. Template #26)
+        const returnedXml = data?.xml;
+        const isSafeInPlaceEdit =
+          returnedXml &&
+          typeof returnedXml === 'string' &&
+          returnedXml.includes('<mxGraphModel') &&
+          !returnedXml.includes('serverless_eda_architecture') &&
+          (isSixZoneNativeCanvas
+            ? returnedXml.includes('id="z1_bg"') && (returnedXml.includes('z7_custom') || !baseUpdatedXml.includes('z7_custom'))
+            : (returnedXml.includes('studio_ext_') || returnedXml.includes('studio_conn_') || returnedXml.includes('studio_group_')));
+
+        const finalXml = isSafeInPlaceEdit ? returnedXml : baseUpdatedXml;
 
         setXml(finalXml);
         const aiMsg: StudioChatMessage = {
@@ -2161,7 +2276,7 @@ function StudioMain() {
                   else handleZoomOut();
                 }
               }}
-              className="flex-1 min-h-0 p-4 md:p-6 flex items-center justify-center overflow-auto bg-slate-50/50"
+              className="flex-1 min-h-0 p-3 md:p-5 flex items-center justify-center overflow-auto bg-slate-50/50"
             >
               <div 
                 style={{
@@ -2173,10 +2288,12 @@ function StudioMain() {
                   const spanner = ast.components.find(c => c.service === 'Cloud Spanner') || ast.components[0];
                   setSelectedComponent(spanner);
                 }}
-                className="w-full max-w-[1440px] h-full max-h-[820px] min-h-[360px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
+                className="w-full max-w-[1440px] h-full min-h-[520px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
               >
                 <DiagramViewerRenderSafe 
+                  key={`studio_canvas_${selectedBlueprintId}_${activeVersionTag}_${xml.length}`}
                   xml={xml} 
+                  minHeight={0}
                   bgTheme="light"
                   useCaseName={ast.metadata.projectTitle}
                 />

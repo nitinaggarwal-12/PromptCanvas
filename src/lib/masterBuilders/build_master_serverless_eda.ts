@@ -8,8 +8,22 @@ function card(id: string, value: string, x: number, y: number, w: number, h: num
   return `<mxCell id="${id}" value="${value}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${stroke};strokeWidth=1.4;fontColor=${font};fontSize=13;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
 }
 
-function edge(id: string, source: string, target: string, value = '', color = '#2563EB', dashed = false, extra = ''): string {
-  return `<mxCell id="${id}" value="${value}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;strokeColor=${color};${dashed ? 'dashed=1;' : ''}fontSize=12;fontStyle=1;labelBackgroundColor=#FFFFFF;${extra}" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
+function edge(
+  id: string,
+  source: string,
+  target: string,
+  value = '',
+  color = '#2563EB',
+  dashed = false,
+  extra = 'exitX=1;exitY=0.5;entryX=0;entryY=0.5;',
+  waypoints?: Array<{ x: number; y: number }>,
+  offset?: { x: number; y: number }
+): string {
+  const pts = waypoints && waypoints.length > 0
+    ? `<Array as="points">${waypoints.map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join('')}</Array>`
+    : '';
+  const off = offset ? `<mxPoint x="${offset.x}" y="${offset.y}" as="offset"/>` : '';
+  return `<mxCell id="${id}" value="${value}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=${color};${dashed ? 'dashed=1;dashPattern=6 4;' : ''}fontSize=11;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;${extra}" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry">${pts}${off}</mxGeometry></mxCell>`;
 }
 
 export function buildServerlessEdaXml(): string {
@@ -21,7 +35,7 @@ export function buildServerlessEdaXml(): string {
         <mxCell id="1" parent="0"/>
 
         <mxCell id="bp26" value="26" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0B3B75;strokeColor=#0B3B75;fontColor=#FFFFFF;fontSize=30;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="20" y="18" width="64" height="64" as="geometry"/></mxCell>
-        <mxCell id="title" value="&lt;b&gt;GCP SERVERLESS EDA ARCHITECTURE&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px;color:#2563EB;font-weight:600;&quot;&gt;Real-time Event-Driven Architecture on Google Cloud with Gemini AI&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=27;fontColor=#0F2747;" vertex="1" parent="1"><mxGeometry x="100" y="12" width="720" height="76" as="geometry"/></mxCell>
+        <mxCell id="title" value="&lt;b&gt;GCP SERVERLESS EDA ARCHITECTURE&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:17px;color:#2563EB;font-weight:600;&quot;&gt;Real-time Event-Driven Architecture on Google Cloud with Gemini AI\u0026lt;/span\u0026gt;" style="text;html=1;align=left;verticalAlign=middle;fontSize=27;fontColor=#0F2747;" vertex="1" parent="1"><mxGeometry x="100" y="12" width="720" height="76" as="geometry"/></mxCell>
         <mxCell id="traits" value="☁ &lt;b&gt;Serverless&lt;/b&gt;     ⚡ &lt;b&gt;Real-time&lt;/b&gt;     ✦ &lt;b&gt;Gemini AI-powered&lt;/b&gt;     🛡 &lt;b&gt;Secure&lt;/b&gt;     $ &lt;b&gt;Cost-optimized&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9FB6D2;strokeWidth=1.4;fontColor=#22354C;fontSize=14;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="845" y="22" width="900" height="54" as="geometry"/></mxCell>
 
         <mxCell id="sources_bg" value="EVENT SOURCES" style="swimlane;html=1;rounded=1;startSize=38;horizontal=1;fillColor=#F7FAFE;swimlaneFillColor=#F7FAFE;strokeColor=#B9CBE0;fontColor=#17365D;fontStyle=1;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="20" y="105" width="190" height="520" as="geometry"/></mxCell>
@@ -59,23 +73,23 @@ export function buildServerlessEdaXml(): string {
         ${card('action_api', brandedLabel('Cloud Run', 'Webhooks / APIs'), 1410, 352, 310, 72, '#E3B46E', '#9A5A00')}
         ${card('alerts', brandedLabel('Notifications &amp; Alerts', 'Cloud Monitoring • Email / SMS / Slack', 'PagerDuty / Opsgenie'), 1410, 465, 310, 92, '#E6C794', '#82541B')}
 
-        ${edge('e_src_eventarc', 'src_apps', 'eventarc', '1', '#1F2937')}
-        ${edge('e_event_pub', 'eventarc', 'pubsub', '2', '#1F2937', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}
-        ${edge('e_pub_run', 'pubsub', 'run_business', '3')}
-        ${edge('e_pub_dlq', 'pubsub', 'dlq', '2a', '#DC2626', true, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}
-        ${edge('e_run_bt', 'run_business', 'bigtable', '4')}
-        ${edge('e_run_gcs', 'run_enrich', 'gcs')}
-        ${edge('e_run_bq', 'run_enrich', 'bigquery')}
-        ${edge('e_bt_gemini', 'bigtable', 'gemini', '5', '#7C3AED')}
-        ${edge('e_bq_gemini', 'bigquery', 'gemini', '', '#7C3AED')}
-        ${edge('e_gemini_action', 'gemini', 'action_tasks', '7', '#7C3AED')}
+        ${edge('e_src_eventarc', 'src_apps', 'eventarc', '1', '#1F2937', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.5;')}
+        ${edge('e_event_pub', 'eventarc', 'pubsub', '2', '#1F2937', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;', undefined, { x: 22, y: 0 })}
+        ${edge('e_pub_run', 'pubsub', 'run_business', '3', '#2563EB', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.5;', [{ x: 462, y: 333 }, { x: 462, y: 311 }])}
+        ${edge('e_pub_dlq', 'pubsub', 'dlq', '2a', '#DC2626', true, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;', undefined, { x: 24, y: 0 })}
+        ${edge('e_run_bt', 'run_business', 'bigtable', '4', '#2563EB', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.5;', [{ x: 798, y: 311 }, { x: 798, y: 210 }])}
+        ${edge('e_run_gcs', 'run_enrich', 'gcs', '', '#2563EB', false, 'exitX=1;exitY=0.35;entryX=0;entryY=0.5;', [{ x: 808, y: 388 }, { x: 808, y: 330 }])}
+        ${edge('e_run_bq', 'run_enrich', 'bigquery', '', '#2563EB', false, 'exitX=1;exitY=0.7;entryX=0;entryY=0.5;', [{ x: 808, y: 413 }, { x: 808, y: 479 }])}
+        ${edge('e_bt_gemini', 'bigtable', 'gemini', '5', '#7C3AED', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.32;')}
+        ${edge('e_bq_gemini', 'bigquery', 'gemini', '', '#7C3AED', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.78;', [{ x: 1068, y: 479 }, { x: 1068, y: 286 }])}
+        ${edge('e_gemini_action', 'gemini', 'action_tasks', '7', '#7C3AED', false, 'exitX=1;exitY=0.25;entryX=0;entryY=0.5;')}
         ${edge('e_tasks_fn', 'action_tasks', 'action_fn', '', '#D97706', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}
         ${edge('e_fn_api', 'action_fn', 'action_api', '', '#D97706', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}
         ${edge('e_api_alerts', 'action_api', 'alerts', '', '#D97706', false, 'exitX=0.5;exitY=1;entryX=0.5;entryY=0;')}
-        ${edge('e_retry', 'tasks_retry', 'run_enrich', '6 retry / async', '#6366F1', true)}
-        ${edge('e_iot', 'src_iot', 'eventarc', '', '#64748B')}
-        ${edge('e_ent', 'src_ent', 'pubsub', '', '#64748B')}
-        ${edge('e_ext', 'src_ext', 'pubsub', '', '#64748B')}
+        ${edge('e_retry', 'tasks_retry', 'run_enrich', '6 retry / async', '#6366F1', true, 'exitX=1;exitY=0.5;entryX=1;entryY=0.5;', [{ x: 762, y: 516 }, { x: 762, y: 399 }], { x: 0, y: 16 })}
+        ${edge('e_iot', 'src_iot', 'eventarc', '', '#64748B', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.78;', [{ x: 216, y: 300 }, { x: 216, y: 216 }])}
+        ${edge('e_ent', 'src_ent', 'pubsub', '', '#64748B', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.65;', [{ x: 216, y: 397 }, { x: 216, y: 345 }])}
+        ${edge('e_ext', 'src_ext', 'pubsub', '', '#64748B', false, 'exitX=1;exitY=0.5;entryX=0;entryY=0.85;', [{ x: 222, y: 494 }, { x: 222, y: 362 }])}
 
         <mxCell id="flow_band" value="&lt;b&gt;DATA FLOW (END-TO-END)&lt;/b&gt;&lt;br&gt;① Sources routed by Eventarc  →  ② events published to Pub/Sub  →  ③ Cloud Run services process  →  ④ persist to Bigtable / Storage / BigQuery  →  ⑤ Gemini + Vertex AI analyze  →  ⑥ long-running work via Cloud Tasks  →  ⑦ actions executed &amp; notifications sent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#B8C8DA;fontColor=#24364B;fontSize=12;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="185" y="648" width="1420" height="54" as="geometry"/></mxCell>
         ${card('security', '&lt;b&gt;Security &amp; Identity&lt;/b&gt;&lt;br&gt;Cloud IAM • Workload Identity&lt;br&gt;VPC-SC • CMEK', 185, 720, 250, 76, '#B8C8DA', '#26384E')}

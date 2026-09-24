@@ -727,13 +727,30 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
         )
       );
 
-      // Connect upstream tier node to this custom component with orthogonal waypoint
-      const upstreamId =
-        comp.tier === "ingress" || comp.tier === "security"
-          ? "n_armor"
-          : comp.tier === "data"
-          ? "n_spanner"
-          : "n_gke";
+      // Connect upstream tier node to this custom component via collision-free outer/inter-zone corridor
+      const isLeftCorridor = comp.tier === "ingress" || comp.tier === "security";
+      const upstreamId = isLeftCorridor
+        ? "n_armor"
+        : comp.tier === "data"
+        ? "n_spanner"
+        : "n_scc";
+      const corridorWaypoints = isLeftCorridor
+        ? [
+            { x: 22, y: 310 },
+            { x: 22, y: 904 },
+            { x: xPos + 124, y: 904 },
+          ]
+        : comp.tier === "data"
+        ? [
+            { x: 1656, y: 635 },
+            { x: 1656, y: 904 },
+            { x: xPos + 124, y: 904 },
+          ]
+        : [
+            { x: 1510, y: 845 },
+            { x: 1510, y: 904 },
+            { x: xPos + 124, y: 904 },
+          ];
       cells.push(
         createEdge(
           `e_custom_${comp.id}`,
@@ -744,13 +761,11 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
           badgeColor,
           {
             dashed: 1,
-            exitX: 0.5,
-            exitY: 1,
+            exitX: isLeftCorridor ? 0 : comp.tier === "data" ? 1 : 0.5,
+            exitY: isLeftCorridor || comp.tier === "data" ? 0.5 : 1,
             entryX: 0.5,
             entryY: 0,
-            waypoints: [
-              { x: xPos + 124, y: 905 },
-            ],
+            waypoints: corridorWaypoints,
             labelPosition: "above",
             isDark,
           }

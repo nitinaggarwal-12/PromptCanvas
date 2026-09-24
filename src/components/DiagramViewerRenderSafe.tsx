@@ -339,6 +339,26 @@ ${origin ? `<base href="${origin}/">` : ''}
         try {
           window.__viewer.graph.fit(12, false, 0, true, false, true);
         } catch(e) {}
+      } else if (!fitToWidth && !${allowFullScaleScroll ? 'true' : 'false'}) {
+        try {
+          var svg = root.querySelector('svg');
+          if (svg && typeof svg.getBBox === 'function') {
+            var bbox = svg.getBBox();
+            if (bbox && bbox.width > 20 && bbox.height > 20) {
+              var pad = 24;
+              var vx = Math.floor(bbox.x - pad);
+              var vy = Math.floor(bbox.y - pad);
+              var vw = Math.ceil(bbox.width + pad * 2);
+              var vh = Math.ceil(bbox.height + pad * 2);
+              svg.setAttribute('viewBox', vx + ' ' + vy + ' ' + vw + ' ' + vh);
+              svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+              svg.style.setProperty('width', '100%', 'important');
+              svg.style.setProperty('height', '100%', 'important');
+              svg.style.setProperty('max-width', '100%', 'important');
+              svg.style.setProperty('max-height', '100%', 'important');
+            }
+          }
+        } catch(e) {}
       }
     }
     suppressOversizedBlackOverlay();
@@ -432,7 +452,7 @@ ${origin ? `<base href="${origin}/">` : ''}
           key={`safe_iframe_${diagramId || 'd'}_${versionId || 'v'}_${aspectRatioId}_${bgTheme}_${sanitizedXml.length}_${sanitizedXml.slice(60, 120)}`}
           srcDoc={iframeHtml}
           className="w-full h-full flex-1 border-0 bg-transparent"
-          style={{ minHeight: allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px' }}
+          style={{ minHeight: minHeight !== undefined ? minHeight : allowFullScaleScroll ? '760px' : fitToWidth ? '100%' : '680px' }}
           title="PromptCanvas Draw.io Diagram Viewer"
           sandbox="allow-scripts allow-popups allow-forms"
         />

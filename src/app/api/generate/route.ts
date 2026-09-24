@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const diagramId = body.diagramId || body.diagram_id;
     const name = body.name;
     const architectureType = body.architectureType || body.architecture_type;
-    const existingXml = body.existingXml || body.existing_xml;
+    const existingXml = body.existingXml || body.existing_xml || body.currentXml || body.current_xml;
     const isPrivate = body.isPrivate ?? body.is_private;
     const phaseName = body.phaseName || body.phase_name;
     const domain = body.domain;

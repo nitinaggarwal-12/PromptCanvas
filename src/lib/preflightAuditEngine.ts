@@ -15,6 +15,10 @@ export function preflightVerifyAndHealXmlAcrossAll6Audits(
     xmlInput.includes('TOTAL UNIFIED SYSTEM VIEW') ||
     xmlInput.includes('id="gemini_ent"') ||
     xmlInput.includes('Gemini Enterprise Agent Platform') ||
+    xmlInput.includes('google_multiagent_system_architecture') ||
+    xmlInput.includes('Google Cloud Multiagent AI System') ||
+    xmlInput.includes('azure_landing_zone') ||
+    xmlInput.includes('agentic_ai_architecture') ||
     (archType !== undefined && archType !== null && (
       archType === 'vision_decompiled' ||
       archType === 'unified_system_view' ||

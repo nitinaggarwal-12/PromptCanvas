@@ -320,6 +320,10 @@ export function applyBlueprintVisualSystem(xml: string, architectureId?: string 
     xml.includes('id="exact_unified_system_view"') ||
     xml.includes('id="gemini_ent"') ||
     xml.includes('Gemini Enterprise Agent Platform') ||
+    xml.includes('google_multiagent_system_architecture') ||
+    xml.includes('Google Cloud Multiagent AI System') ||
+    xml.includes('azure_landing_zone') ||
+    xml.includes('agentic_ai_architecture') ||
     xml.includes('sw1_');
 
   if (isMasterOrStructured) {
