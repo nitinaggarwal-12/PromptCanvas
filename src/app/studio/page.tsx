@@ -1101,8 +1101,41 @@ function StudioMain() {
 
       updated.components = [...updated.components, newComp];
       updated.metadata.lastSyncTimestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if (
+        !updated.metadata.projectTitle ||
+        updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
+        updated.metadata.projectTitle.startsWith('#00') ||
+        /^(design|architect|build|create|\[p[1-7]\])/i.test(promptText.trim())
+      ) {
+        const derivedTitle = promptText
+          .trim()
+          .replace(/^(please\s+)?(design|architect|build|create)\s+(a\s+|an\s+|the\s+)?/i, '')
+          .replace(/\.$/, '')
+          .slice(0, 76);
+        if (derivedTitle.length > 5) {
+          updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
+        }
+      }
+      setIsSavedInLibrary(false);
       canvasDiff = `+ Added ${newComp.name} (${newComp.service}) into topology (${updated.components.length} Nodes total).`;
       specDiff = `Synchronized ${newComp.name} across DOC-03 (System Architecture), DOC-06 (Security), and DOC-10 (Compliance).`;
+    }
+
+    if (
+      !updated.metadata.projectTitle ||
+      updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
+      updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
+      updated.metadata.projectTitle.startsWith('#00') ||
+      /^(design|architect|build|create|deploy|synthesize|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim())
+    ) {
+      const derivedTitle = promptText
+        .trim()
+        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize)\s+(a\s+|an\s+|the\s+)?/i, '')
+        .replace(/\.$/, '')
+        .slice(0, 78);
+      if (derivedTitle.length > 5) {
+        updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
+      }
     }
 
     // Check if the current active XML is actually the 6-Zone GCP Native Architecture
@@ -1191,6 +1224,26 @@ function StudioMain() {
     setAst(updated);
     setXml(baseUpdatedXml);
     setActiveVersionTag(newVersionTag);
+
+    // Auto-persist newly generated/evolved prompt diagram to /api/diagrams so it is immediately visible in Architecture Library
+    const isMatrix = /^\[p[1-7]\]|guided matrix/i.test(promptText.trim()) || /^\[p[1-7]\]|guided matrix/i.test(updated.metadata.projectTitle);
+    const isVision = /^\[vision\]|vision decompil/i.test(promptText.trim()) || /^\[vision\]/i.test(updated.metadata.projectTitle);
+    fetch('/api/diagrams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: updated.metadata.projectTitle,
+        xml: baseUpdatedXml,
+        comment: `Synthesized via Studio Prompt (${newVersionTag})`,
+        prompt: promptText.trim(),
+        businessUsecase: updated.metadata.domain,
+        technicalUsecase: canvasDiff,
+        architectureType: isMatrix ? 'matrix_lifecycle_blueprint' : isVision ? 'vision_decompiled' : 'gcp_enterprise_reference',
+        createdStudio: isMatrix ? 'prompt_lab' : isVision ? 'vision' : 'studio',
+      }),
+    })
+      .then(() => setIsSavedInLibrary(true))
+      .catch(() => {});
 
     // Also invoke POST /api/generate (Gemini API via BYOK or system key) with existingXml so it customizes in-place
     setIsHealing(true);

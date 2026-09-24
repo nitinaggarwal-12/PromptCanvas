@@ -1428,6 +1428,23 @@ function Studio1Content() {
 
         if (data.candidateSet && Array.isArray(data.candidateSet.candidates)) {
           if (data.context) setGenerationContext(data.context);
+          const topCandidate = data.candidateSet.candidates[0];
+          if (topCandidate && topCandidate.xml) {
+            fetch('/api/diagrams', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: `${titleToUse} • ${topCandidate.name || 'Guided Matrix'}`,
+                xml: topCandidate.xml,
+                comment: `Synthesized in Guided Matrix & Lab (${proposedVersionTag})`,
+                prompt: promptToUse,
+                businessUsecase: derivedUseCase || titleToUse,
+                technicalUsecase: topCandidate.summary || 'Guided Matrix Lifecycle Architecture',
+                architectureType: 'matrix_lifecycle_blueprint',
+                createdStudio: 'prompt_lab',
+              }),
+            }).catch(() => {});
+          }
           setCandidateSelection({
             ...data.candidateSet,
             prompt: promptToUse,
@@ -1517,6 +1534,22 @@ function Studio1Content() {
         setDiagrams(updatedDiagrams);
         setHasGeneratedDiagram(true);
         setWorkspaceMode('working');
+
+        // Auto-persist generated Guided Matrix & Lab diagram to /api/diagrams so it appears in Architecture Library
+        fetch('/api/diagrams', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: `${titleToUse} • Guided Matrix (${data.context?.level && data.context.level !== 'auto' ? data.context.level : 'P3 System'})`,
+            xml: finalXml,
+            comment: `Synthesized in Guided Matrix & Lab (${proposedVersionTag})`,
+            prompt: promptToUse,
+            businessUsecase: derivedUseCase || titleToUse,
+            technicalUsecase: apiSummary || 'Guided Matrix Lifecycle Architecture',
+            architectureType: 'matrix_lifecycle_blueprint',
+            createdStudio: 'prompt_lab',
+          }),
+        }).catch(() => {});
 
         const analysis = analyzePromptChanges(promptToUse);
         const resolvedSummary = apiSummary || analysis.summary;

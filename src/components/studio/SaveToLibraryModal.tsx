@@ -57,6 +57,19 @@ export function SaveToLibraryModal({
   const [isSuccess, setIsSuccess] = useState(false);
   const [savedId, setSavedId] = useState<string>('');
 
+  React.useEffect(() => {
+    if (isOpen) {
+      if (initialProjectTitle) setTitle(initialProjectTitle);
+      if (initialDomain) setDomain(initialDomain);
+      const latestUserPrompt = [...messages].reverse().find(m => m.sender === 'user')?.text;
+      if (latestUserPrompt) {
+        setDescription(latestUserPrompt);
+      }
+      setIsSuccess(false);
+      setIsSaving(false);
+    }
+  }, [isOpen, initialProjectTitle, initialDomain, messages]);
+
   if (!isOpen) return null;
 
   const handleSave = async (goToLibraryAfter = false) => {
@@ -64,6 +77,7 @@ export function SaveToLibraryModal({
     setIsSaving(true);
 
     const newProjId = 'proj_' + Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
+    const latestUserPrompt = [...messages].reverse().find(m => m.sender === 'user')?.text || description || title;
 
     const blueprintPayload = {
       id: newProjId,
@@ -92,6 +106,7 @@ export function SaveToLibraryModal({
 
     // 1. Save to Database API
     try {
+      const isMatrixPrompt = /\[P[1-7]\]|Guided Matrix/i.test(title) || /\[P[1-7]\]|Guided Matrix/i.test(latestUserPrompt);
       await fetch('/api/diagrams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,11 +114,11 @@ export function SaveToLibraryModal({
           name: title,
           xml: xml,
           comment: `Saved from Studio Sandbox (${activeVersionTag})`,
-          prompt: messages[0]?.text || title,
+          prompt: latestUserPrompt,
           businessUsecase: domain,
           technicalUsecase: description,
-          architectureType: 'gcp_enterprise_reference',
-          createdStudio: 'studio'
+          architectureType: isMatrixPrompt ? 'matrix_lifecycle_blueprint' : 'gcp_enterprise_reference',
+          createdStudio: isMatrixPrompt ? 'prompt_lab' : 'studio'
         })
       });
     } catch (e) {

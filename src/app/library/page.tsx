@@ -205,6 +205,8 @@ function ArchitectureLibraryContent() {
     const items: CanvasDiagramItem[] = [];
     const seen = new Set<string>();
 
+    const BASELINE_REF_TIMESTAMP = '2026-08-15T12:00:00.000Z';
+
     // 1. Official Precompiled Sample Blueprints (e.g. GCP-MULTIAGENT-01: Google Multiagent AI System)
     for (const sample of PRECOMPILED_SAMPLE_BLUEPRINTS) {
       if (deletedSet.has(sample.id.toUpperCase())) continue;
@@ -214,18 +216,19 @@ function ArchitectureLibraryContent() {
         name: `${sample.title} (87 Objects)`,
         architecture_type: 'vision_gcp_multiagent',
         created_studio: 'vision',
-        created_at: new Date(1789529000000).toISOString(),
-        updated_at: new Date(1789529000000).toISOString(),
+        created_at: BASELINE_REF_TIMESTAMP,
+        updated_at: BASELINE_REF_TIMESTAMP,
         version_count: 1,
         latest_prompt: sample.desc,
         xml_content: sample.getPrecompiledXml(),
       });
     }
 
-    // 2. Custom & Certified Vision Blueprints (VIS-1787, VIS-3093, VIS-9745, VIS-AGENTIC-01, etc.)
+    // 2. Custom & Certified Vision Blueprints (VIS-1787, VIS-9745, VIS-AGENTIC-01, etc.)
+    seen.add('VIS-3093');
+    seen.add('VIS-5965');
     const presetVisionItems = [
       getSelfHealedGeminiEnterpriseBlueprint('VIS-1787'),
-      getSelfHealedGeminiEnterpriseBlueprint('VIS-3093'),
       getSelfHealedAzureLandingZoneBlueprint('VIS-9745'),
       getSelfHealedAgenticAiBlueprint('VIS-AGENTIC-01'),
       ...getCustomVisionBlueprints(),
@@ -235,15 +238,17 @@ function ArchitectureLibraryContent() {
       const upperId = v.id.toUpperCase();
       if (deletedSet.has(upperId) || seen.has(upperId)) continue;
       seen.add(upperId);
+      const isBuiltInPreset = ['VIS-1787', 'VIS-3093', 'VIS-9745', 'VIS-5965', 'VIS-AGENTIC-01'].includes(upperId);
+      const itemTs = !isBuiltInPreset && v.timestamp ? new Date(v.timestamp).toISOString() : BASELINE_REF_TIMESTAMP;
       items.push({
         id: v.id,
-        name: `${v.id} ${v.title}`,
+        name: v.title.startsWith(v.id) ? v.title : `${v.id} ${v.title}`,
         architecture_type: v.id.startsWith('VIS-1787') || v.id.startsWith('VIS-3093')
           ? 'vision_gemini_enterprise'
           : 'vision_decompiled',
         created_studio: 'vision',
-        created_at: new Date(v.timestamp || Date.now()).toISOString(),
-        updated_at: new Date(v.timestamp || Date.now()).toISOString(),
+        created_at: itemTs,
+        updated_at: itemTs,
         version_count: 1,
         latest_prompt: v.summaryText || v.desc || v.category,
         xml_content: v.xml,
@@ -261,7 +266,10 @@ function ArchitectureLibraryContent() {
         headers: { 'Cache-Control': 'no-cache' }
       });
       const apiData: CanvasDiagramItem[] = res.ok ? await res.json() : [];
-      const dbList = Array.isArray(apiData) ? apiData : [];
+      const dbList: CanvasDiagramItem[] = (Array.isArray(apiData) ? apiData : []).map((d: any) => ({
+        ...d,
+        latest_prompt: d.latest_prompt || d.prompt || d.technical_usecase || d.business_usecase || '',
+      }));
       const visionSavedItems = buildVisionSavedLibraryItems();
 
       const canonicalFallbackItems: CanvasDiagramItem[] = CANONICAL_TEMPLATES.map((tpl) => ({
@@ -269,8 +277,8 @@ function ArchitectureLibraryContent() {
         name: `#${tpl.id} • ${tpl.name}`,
         architecture_type: `canonical_${tpl.id}`,
         created_studio: 'canonical',
-        created_at: new Date(1789520000000).toISOString(),
-        updated_at: new Date(1789520000000).toISOString(),
+        created_at: '2026-08-10T12:00:00.000Z',
+        updated_at: '2026-08-10T12:00:00.000Z',
         version_count: 1,
         latest_prompt: tpl.primaryPurpose || tpl.examples,
         xml_content: tpl.generateXml('biopharma', 'light'),
@@ -278,8 +286,8 @@ function ArchitectureLibraryContent() {
 
       const existingIds = new Set(dbList.map(d => d.id.toUpperCase()));
       const merged = [
-        ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
         ...dbList,
+        ...visionSavedItems.filter(v => !existingIds.has(v.id.toUpperCase())),
       ];
       const mergedIds = new Set(merged.map(d => d.id.toUpperCase()));
       for (const c of canonicalFallbackItems) {

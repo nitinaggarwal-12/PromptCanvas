@@ -47,13 +47,13 @@ export function generateTemplate15NetworkTopologyXml(
     `<div style='font-size:11px;color:#64748B;margin-top:2px;'>Environment: Production &nbsp;|&nbsp; Region: us-central1 &nbsp;|&nbsp; Last Updated: May 8, 2025</div>`,
     94,
     12,
-    760,
+    640,
     54,
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
-  cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:28px;vertical-align:middle;text-align:center;"><span style="font-size:24px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:6px;"><div style="font-size:19px;font-weight:900;color:#0284C7;letter-spacing:0.8px;white-space:nowrap;">NOVACURA</div><div style="font-size:10px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  cell("hdr_brand", brandHtml, 740, 12, 380, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const netOverviewHtml = `<div style='font-size:9.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>NETWORK OVERVIEW</div><div style='font-size:7.5px;line-height:1.35;color:#0F172A;'>
     <b>Cloud Provider:</b> Google Cloud Platform (GCP)<br/>
