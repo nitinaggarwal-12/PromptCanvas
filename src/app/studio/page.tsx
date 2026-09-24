@@ -594,15 +594,26 @@ function StudioMain() {
   // Hydrate State from URL Deep-Link parameters and localStorage on initial mount
   useEffect(() => {
     if (!searchParams) return;
-    const urlId = searchParams.get('id');
+    const urlId = searchParams.get('id') || searchParams.get('diagram');
     const viewParam = searchParams.get('view');
     const docParam = searchParams.get('doc');
     const nodeParam = searchParams.get('node');
     const vParam = searchParams.get('v');
 
     if (urlId && urlId !== 'reference_showcase') {
+      // 1. Check if urlId is a Canonical Blueprint ID (e.g., bp_02, canonical_02, or 02)
+      const cleanBpMatch = urlId.replace(/^(bp_|canonical_)/i, '');
+      const matchedCanonical = CANONICAL_TEMPLATES.find(
+        t => t.id === cleanBpMatch || t.id === cleanBpMatch.padStart(2, '0')
+      );
+      if (matchedCanonical && (urlId.startsWith('bp_') || urlId.startsWith('canonical_') || /^\d{1,2}$/.test(urlId))) {
+        handleSelectBlueprint(matchedCanonical, searchParams.get('domain') || 'enterprise');
+        return;
+      }
+
       setSessionId(urlId);
       setIsEditorMode(true);
+      let loadedFromLocal = false;
       try {
         const saved = localStorage.getItem(`promptcanvas_studio_${urlId}`);
         if (saved) {
@@ -610,7 +621,6 @@ function StudioMain() {
           const projTitle = (parsed.projectTitle || parsed.ast?.metadata?.projectTitle || searchParams.get('project') || '').toLowerCase();
           let restoredXml: string = parsed.xml || '';
 
-          // Self-heal if a Google Multiagent AI System session was overwritten by Template #26 or 6-Zone GCP
           if (
             (projTitle.includes('google multiagent') || urlId.includes('GCP-MULTIAGENT-01')) &&
             (!restoredXml.includes('google_multiagent_system_architecture') ||
@@ -630,6 +640,7 @@ function StudioMain() {
                 ? 'gcp_enterprise_6zone'
                 : 'custom';
             setSelectedBlueprintId(inferredBp);
+            loadedFromLocal = true;
           }
           if (parsed.versions) setVersions(parsed.versions);
           if (parsed.messages) setMessages(parsed.messages);
@@ -637,6 +648,31 @@ function StudioMain() {
         }
       } catch {
         // storage fallback
+      }
+
+      // 2. If not in localStorage, fetch from /api/diagrams/:id so Library & Audit deep links load the exact diagram XML
+      if (!loadedFromLocal) {
+        fetch(`/api/diagrams/${encodeURIComponent(urlId)}`)
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => {
+            if (!data) return;
+            const fetchedXml = data.xml_content || data.versions?.[0]?.xml_content || '';
+            const fetchedName = data.name || `Architecture ${urlId}`;
+            if (fetchedXml && fetchedXml.includes('<mxCell')) {
+              setXml(fetchedXml);
+              setSelectedBlueprintId('custom');
+              setAst(prev => ({
+                ...prev,
+                metadata: {
+                  ...prev.metadata,
+                  projectTitle: fetchedName,
+                  version: 'v1.0',
+                  lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+              }));
+            }
+          })
+          .catch(() => {});
       }
     }
 
@@ -1502,7 +1538,7 @@ function StudioMain() {
                   selector next to it. Budget is freed by hiding the badge
                   below instead. */}
               <h1
-                className="font-bold text-sm text-white tracking-tight leading-none truncate max-w-[130px] sm:max-w-[180px] lg:max-w-[230px]"
+                className="hidden min-[1750px]:block font-bold text-sm text-white tracking-tight leading-none truncate max-w-[220px]"
                 title={ast.metadata.projectTitle}
               >
                 {ast.metadata.projectTitle}
@@ -2169,35 +2205,32 @@ function StudioMain() {
           <section className="flex-1 min-h-0 h-full bg-[#F1F5F9] flex flex-col relative overflow-hidden">
             
             {/* Inset Canvas Toolbar */}
-            <div className="px-6 py-2 border-b border-slate-200 bg-white flex items-center justify-between text-xs flex-shrink-0">
+            <div className="px-4 sm:px-6 py-2 border-b border-slate-200 bg-white flex items-center justify-between gap-2 text-xs flex-shrink-0 overflow-x-auto">
               
               {!isEditorMode ? (
                 // Showcase View Toolbar Notice
-                <div className="flex items-center gap-2.5">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-md">
-                    <Eye className="w-3.5 h-3.5 text-sky-600" />
-                    <span>Reference Topology (Read-Only Showcase)</span>
-                  </span>
-                  <span className="text-slate-600 text-[11px] hidden 2xl:inline">
-                    Explore Google Cloud reference patterns. Click any node to inspect SLAs &amp; Terraform HCL.
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded-md whitespace-nowrap shrink-0">
+                    <Eye className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                    <span>Reference Showcase (Read-Only)</span>
                   </span>
                 </div>
               ) : (
                 // Editor View Toolbar Controls
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-2 py-1 rounded-md text-slate-800 font-medium">
-                    <button onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')} className="px-1.5 hover:text-blue-600 font-bold cursor-pointer">+ Add Node</button>
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-2 py-1 rounded-md text-slate-800 font-medium whitespace-nowrap shrink-0">
+                    <button onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')} className="px-1.5 hover:text-blue-600 font-bold cursor-pointer whitespace-nowrap">+ Add Node</button>
                     <span className="text-slate-400">|</span>
-                    <button onClick={() => handleExecutePrompt('Connect Cloud Armor to Global Load Balancer with TLS 1.3.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer">Connect</button>
+                    <button onClick={() => handleExecutePrompt('Connect Cloud Armor to Global Load Balancer with TLS 1.3.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer whitespace-nowrap">Connect</button>
                     <span className="text-slate-400">|</span>
-                    <button onClick={() => handleExecutePrompt('Group ingress nodes into a DMZ zone.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer">Group</button>
+                    <button onClick={() => handleExecutePrompt('Group ingress nodes into a DMZ zone.')} className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer whitespace-nowrap">Group</button>
                   </div>
-                  <span className="text-slate-700 font-medium text-[11px]">Click on any node below to inspect Terraform HCL, SLAs & Security Posture</span>
+                  <span className="text-slate-600 font-medium text-[11px] hidden min-[1900px]:inline whitespace-nowrap">Click on any node below to inspect Terraform HCL, SLAs &amp; Security Posture</span>
                 </div>
               )}
 
-              <div className="flex items-center gap-3 text-slate-700">
-                <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-1.5 py-1 rounded-md text-[11px] shadow-2xs">
+              <div className="flex items-center gap-2 text-slate-700 shrink-0">
+                <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-1.5 py-1 rounded-md text-[11px] shadow-2xs whitespace-nowrap shrink-0">
                   <button 
                     onClick={handleZoomOut}
                     disabled={zoomLevel <= 0.5}
@@ -2226,7 +2259,7 @@ function StudioMain() {
                   
                   <button 
                     onClick={handleResetZoom}
-                    className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition cursor-pointer ${
+                    className={`px-1.5 py-0.5 rounded text-[11px] font-bold transition cursor-pointer whitespace-nowrap ${
                       zoomLevel === 1.0 
                         ? 'text-blue-600 hover:text-blue-700 hover:underline' 
                         : 'text-blue-600 hover:bg-blue-50'
@@ -2239,37 +2272,37 @@ function StudioMain() {
                 
                 <button 
                   onClick={handleOpenDiagramsNet}
-                  className="px-3 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
                   title="Open this diagram in diagrams.net to test or play around"
                 >
-                  <ExternalLink className="w-3 h-3 text-blue-600" />
+                  <ExternalLink className="w-3 h-3 text-blue-600 shrink-0" />
                   <span>Open in draw.io</span>
                 </button>
 
                 <Link
                   href="/studio1"
-                  className="px-3 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-300 text-indigo-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 border border-indigo-300 text-indigo-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                   title="Switch to 7-Dimension Guided Prompt Lab (60 Lifecycle Blueprints)"
                 >
-                  <Sparkles className="w-3 h-3 text-indigo-600" />
+                  <Sparkles className="w-3 h-3 text-indigo-600 shrink-0" />
                   <span>Guided Matrix (60)</span>
                 </Link>
 
                 <Link
                   href="/vision"
-                  className="px-3 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-800 text-[11px] font-bold transition shadow-xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                   title="Convert PNG Architecture Diagram into Draw.io XML using DeepMind Gemini Vision"
                 >
-                  <Sparkles className="w-3 h-3 text-teal-600" />
+                  <Sparkles className="w-3 h-3 text-teal-600 shrink-0" />
                   <span>Vision AI (PNG to Diagram)</span>
                 </Link>
 
                 {!isEditorMode && (
                   <button
                     onClick={() => setIsNewProjectModalOpen(true)}
-                    className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer"
+                    className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold transition shadow-xs flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
                   >
-                    <Plus className="w-3.5 h-3.5" />
+                    <Plus className="w-3.5 h-3.5 shrink-0" />
                     <span>+ New Canvas</span>
                   </button>
                 )}

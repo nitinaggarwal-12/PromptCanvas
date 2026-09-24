@@ -243,11 +243,17 @@ function AuditHubContent() {
         if (res.ok) {
           const data: GeneratedArtifact[] = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            // Deduplicate by name if duplicates exist
+            // Deduplicate case-insensitively by normalized prefix and filter out junk test rows
             const seen = new Set<string>();
             const deduped = data.filter((item) => {
-              if (seen.has(item.name)) return false;
-              seen.add(item.name);
+              const norm = (item.name || '').trim().toLowerCase();
+              const prefix = norm.slice(0, 32);
+              const promptNorm = (item.prompt || '').trim().toLowerCase();
+              if (!norm || norm.includes('roman arena') || norm.includes('gladiator') || promptNorm.includes('gladiator')) {
+                return false;
+              }
+              if (seen.has(prefix)) return false;
+              seen.add(prefix);
               return true;
             });
             setArtifacts(deduped.length > 0 ? deduped : data);
@@ -552,16 +558,16 @@ function AuditHubContent() {
             {/* Left: Breadcrumbs & Hub Badge */}
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-2 text-xs font-semibold">
-                <Link href="/" className="text-slate-400 hover:text-white transition-colors">
+                <Link href="/" className="text-slate-400 hover:text-white transition-colors whitespace-nowrap">
                   PromptCanvas
                 </Link>
                 <span className="text-slate-600">/</span>
-                <span className="font-bold text-teal-400 flex items-center gap-1.5 truncate">
+                <span className="font-bold text-teal-400 flex items-center gap-1.5 whitespace-nowrap">
                   <ShieldCheck className="w-4 h-4 text-teal-400 shrink-0" />
-                  <span>Security &amp; Architecture Audit Hub</span>
+                  <span>Audit, FinOps &amp; Health</span>
                 </span>
-                <span className="hidden md:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  {artifacts.length} Generated Artifact{artifacts.length === 1 ? '' : 's'}
+                <span className="hidden xl:inline-flex text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 whitespace-nowrap shrink-0">
+                  {artifacts.length} Artifact{artifacts.length === 1 ? '' : 's'}
                 </span>
               </div>
             </div>
@@ -598,7 +604,11 @@ function AuditHubContent() {
 
               {/* Open in Studio */}
               <Link
-                href={`/studio?diagram=${activeArtifact?.id || ''}`}
+                href={
+                  scopeTab === 'canonical'
+                    ? `/studio?blueprint=${encodeURIComponent(activeCanonicalTemplate.id)}`
+                    : `/studio?id=${encodeURIComponent(activeArtifact?.id || '')}`
+                }
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
               >
                 <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
@@ -687,19 +697,23 @@ function AuditHubContent() {
             {activeHubTab === 'finops' && (
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-[11px] font-bold uppercase text-slate-500">Est. Cloud Monthly Run-Rate</div>
-                  <div className="text-2xl font-black text-slate-900 mt-1">$2,840<span className="text-xs font-normal text-slate-500">/mo</span></div>
-                  <div className="text-[11px] text-emerald-600 font-semibold mt-1">↓ 18% via Serverless Scale-to-Zero</div>
+                  <div className="text-[11px] font-bold uppercase text-slate-500">Active Topology Est. Run-Rate</div>
+                  <div className="text-2xl font-black text-slate-900 mt-1">
+                    ${(((currentXml.match(/vertex="1"/g)?.length || 16) * 165) + ((currentXml.match(/edge="1"/g)?.length || 12) * 35)).toLocaleString()}<span className="text-xs font-normal text-slate-500">/mo</span>
+                  </div>
+                  <div className="text-[11px] text-emerald-600 font-semibold mt-1">
+                    {currentXml.match(/vertex="1"/g)?.length || 16} Nodes • {currentXml.match(/edge="1"/g)?.length || 12} Connectors
+                  </div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="text-[11px] font-bold uppercase text-slate-500">Gemini 2.5 Flash Routing</div>
-                  <div className="text-2xl font-black text-sky-600 mt-1">94.2%</div>
-                  <div className="text-[11px] text-slate-500 mt-1">Avg Latency: 1.4s • Fallback: 100% Ready</div>
+                  <div className="text-[11px] font-bold uppercase text-slate-500">Overall Audit Health Score</div>
+                  <div className="text-2xl font-black text-sky-600 mt-1">{overallScore}% ({scoreGrade.grade})</div>
+                  <div className="text-[11px] text-slate-500 mt-1">Domain: {selectedDomain.toUpperCase()}</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Catalog &amp; Saved Topologies</div>
-                  <div className="text-2xl font-black text-indigo-600 mt-1">{53 + artifacts.length}</div>
-                  <div className="text-[11px] text-slate-500 mt-1">53 Canonical + {artifacts.length} Custom/Vision</div>
+                  <div className="text-2xl font-black text-indigo-600 mt-1">{CANONICAL_TEMPLATES.length + artifacts.length}</div>
+                  <div className="text-[11px] text-slate-500 mt-1">{CANONICAL_TEMPLATES.length} Canonical + {artifacts.length} Custom/Vision</div>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
                   <div className="text-[11px] font-bold uppercase text-slate-500">Auto-Heal Geometry Pass Rate</div>
@@ -852,7 +866,7 @@ function AuditHubContent() {
                       }`}
                     >
                       <Sparkles className="w-3.5 h-3.5" />
-                      <span>50 Blueprints</span>
+                      <span>{CANONICAL_TEMPLATES.length} Blueprints</span>
                     </button>
                   </div>
 

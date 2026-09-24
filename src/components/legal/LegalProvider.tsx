@@ -44,13 +44,17 @@ export function LegalProvider({ children }: { children: React.ReactNode }) {
     try {
       const stored = localStorage.getItem('promptcanvas_cookie_consent');
       if (stored) {
-        setCookieConsent(JSON.parse(stored));
+        if (stored === 'accepted' || stored === 'true') {
+          setCookieConsent({ essential: true, analytics: true, telemetry: true, hasInteracted: true });
+        } else {
+          setCookieConsent(JSON.parse(stored));
+        }
         setShowBanner(false);
       } else {
         setShowBanner(true);
       }
     } catch {
-      setShowBanner(true);
+      setShowBanner(false);
     }
   }, []);
 

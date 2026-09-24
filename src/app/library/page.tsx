@@ -498,8 +498,16 @@ function ArchitectureLibraryContent() {
     ) {
       return 'vision';
     }
-    if (raw === 'studio' || raw === 'studio_pro' || raw === 'launch_studio') return 'studio';
-    return 'studio1';
+    const archLower = (d.architecture_type || '').toLowerCase();
+    if (
+      raw === 'prompt_lab' ||
+      /^p[1-7](_|$)/i.test(d.id) ||
+      /^p[1-7](_|$)/i.test(archLower) ||
+      archLower.startsWith('matrix_')
+    ) {
+      return 'studio1';
+    }
+    return 'studio';
   };
 
   // Studio Counts
@@ -985,35 +993,35 @@ function ArchitectureLibraryContent() {
                     // Studio Category & Badging
                     const studioCategory = getStudioCategory(diagram);
                     
+                    const cleanCanonicalId = diagram.id.replace(/^(bp_|canonical_)/i, '');
                     const studioBadgeConfigMap: Record<string, { label: string; style: string; btnStyle: string; actionLabel: string; route: string }> = {
                       studio: {
-                        label: 'Studio (Pro)',
+                        label: 'My Custom & Forked',
                         style: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/30',
                         btnStyle: 'bg-indigo-600 hover:bg-indigo-500 text-white',
                         actionLabel: 'Open in Studio',
-                        route: `/studio?diagram=${diagram.id}`
+                        route: `/studio?id=${encodeURIComponent(diagram.id)}`
                       },
                       studio1: {
-                        label: 'Studio 1 (Lab)',
+                        label: 'Guided Matrix',
                         style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
                         btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
-                        actionLabel: 'Open in Studio 1',
-                        route: `/studio1?diagram=${diagram.id}`
+                        actionLabel: 'Open in Matrix Lab',
+                        route: `/studio1?diagram=${encodeURIComponent(diagram.id)}`
                       },
-
                       canonical: {
                         label: 'Canonical Blueprint',
                         style: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30',
                         btnStyle: 'bg-sky-600 hover:bg-sky-500 text-white',
                         actionLabel: 'Open Blueprint',
-                        route: `/canonical`
+                        route: `/canonical/${encodeURIComponent(cleanCanonicalId)}`
                       },
                       vision: {
                         label: 'Vision Decompiler',
                         style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
                         btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
                         actionLabel: 'Open in Vision AI',
-                        route: `/vision?id=${diagram.id}`
+                        route: `/vision?id=${encodeURIComponent(diagram.id)}`
                       }
                     };
 
@@ -1170,7 +1178,11 @@ function ArchitectureLibraryContent() {
                               type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/studio?diagram=${diagram.id}`);
+                                if (studioCategory === 'canonical') {
+                                  router.push(`/studio?blueprint=${encodeURIComponent(cleanCanonicalId)}`);
+                                } else {
+                                  router.push(`/studio?id=${encodeURIComponent(diagram.id)}`);
+                                }
                               }}
                               className={`flex-1 py-1.5 px-2.5 rounded-lg border text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
                                 isLight ? 'bg-teal-50 hover:bg-teal-100 border-teal-200 text-teal-800' : 'bg-teal-950/50 hover:bg-teal-900 border-teal-800 text-teal-300'
