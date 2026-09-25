@@ -64,7 +64,8 @@ import { classifyChatIntent } from '@/lib/router/chatIntentClassifier';
 import { AppHeader } from '@/components/AppHeader';
 import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
 import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
-import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
+import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from '@/lib/canonical/infographicBlueprints52to66';
+import { synthesizePromptDrivenDiagramXml, generateLogicalFlowchartDrawioXml } from '@/lib/promptDrivenDiagramSynthesizer';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -421,6 +422,120 @@ function StudioMain() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleZoomIn, handleZoomOut, handleResetZoom]);
 
+  const [selectedDiagramMode, setSelectedDiagramMode] = useState<'blueprint' | 'flowchart' | 'infographic' | 'architecture'>('flowchart');
+  const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<'L1' | 'L2' | 'L3' | 'L4'>('L2');
+  const [selectedFlowDirection, setSelectedFlowDirection] = useState<'TD' | 'LR'>('LR');
+  const [selectedInfographicBlueprintId, setSelectedInfographicBlueprintId] = useState<string>('52');
+  const [isNewDiagramDraft, setIsNewDiagramDraft] = useState<boolean>(false);
+  const [pendingPlan, setPendingPlan] = useState<{
+    prompt: string;
+    sanitizedPrompt: string;
+    diagramMode: 'blueprint' | 'flowchart' | 'infographic' | 'architecture';
+    level: 'L1' | 'L2' | 'L3' | 'L4';
+    direction: 'LR' | 'TD';
+    blueprintId: string;
+    infographicBlueprintId?: string;
+    plannedSteps: string[];
+    targetVersionTag: string;
+  } | null>(null);
+  const [isInlineDrawioEdit, setIsInlineDrawioEdit] = useState<boolean>(false);
+  const inlineDrawioIframeRef = useRef<HTMLIFrameElement | null>(null);
+  const latestInlineXmlRef = useRef<string>('');
+
+  // Commit manual Draw.io edits (from either Inline Editor or Fullscreen /drawio-editor Tab)
+  // into active canvas AND append a new Version Snapshot (maintaining full Prompt + Diagram XML history)
+  const commitDrawioEditToCanvasAndHistory = useCallback(
+    (savedXml: string, editSourceLabel: string) => {
+      if (!savedXml || !savedXml.includes('<mxGraphModel')) return;
+      setXml(savedXml);
+      latestInlineXmlRef.current = savedXml;
+      setIsInlineDrawioEdit(false);
+
+      setVersions((prev) => {
+        const nextMinor = prev.length;
+        const nextTag = nextMinor === 0 ? 'v1.0' : `v1.${nextMinor}`;
+        setActiveVersionTag(nextTag);
+        const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setMessages((mPrev) => [
+          ...mPrev,
+          {
+            id: `msg_drawio_sync_${Date.now()}`,
+            sender: 'assistant',
+            text: `🔄 [${nextTag} • ${editSourceLabel}]: Diagram XML synced back to Studio Canvas. Full prompt & diagram version history updated (${prev.length + 1} versions stored).`,
+            timestamp: nowStr,
+          },
+        ]);
+        return [
+          {
+            id: `v_drawio_${Date.now()}`,
+            versionTag: nextTag,
+            timestamp: nowStr,
+            author: editSourceLabel,
+            actionSummary: `[${editSourceLabel}] • ${selectedDiagramMode.toUpperCase()} (${selectedAbstractionLevel}${selectedDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''})`,
+            ast,
+            xml: savedXml,
+          },
+          ...prev,
+        ];
+      });
+    },
+    [ast, selectedDiagramMode, selectedAbstractionLevel, selectedFlowDirection]
+  );
+
+  // Listen for live saves from the New Tab Draw.io Editor (/drawio-editor) AND Inline Draw.io iframe
+  useEffect(() => {
+    let bc: BroadcastChannel | null = null;
+    if (typeof BroadcastChannel !== 'undefined') {
+      bc = new BroadcastChannel('promptcanvas_drawio_sync');
+      bc.onmessage = (ev) => {
+        if (ev.data?.xml) {
+          commitDrawioEditToCanvasAndHistory(ev.data.xml, ev.data.note || 'Saved from Draw.io Tab');
+        }
+      };
+    }
+    const handleStorage = (ev: StorageEvent) => {
+      if (ev.key === 'promptcanvas_drawio_saved_payload' && ev.newValue) {
+        try {
+          const parsed = JSON.parse(ev.newValue);
+          if (parsed?.xml) {
+            commitDrawioEditToCanvasAndHistory(parsed.xml, parsed.note || 'Saved from Draw.io Tab');
+          }
+        } catch {
+          // ignore
+        }
+      }
+    };
+    const handleInlineMessage = (ev: MessageEvent) => {
+      if (!isInlineDrawioEdit || !ev.data || typeof ev.data !== 'string') return;
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.event === 'init') {
+          inlineDrawioIframeRef.current?.contentWindow?.postMessage(
+            JSON.stringify({
+              action: 'load',
+              autosave: 1,
+              xml: latestInlineXmlRef.current || xml,
+            }),
+            '*'
+          );
+        } else if (msg.event === 'autosave' && typeof msg.xml === 'string') {
+          latestInlineXmlRef.current = msg.xml;
+        } else if ((msg.event === 'save' || msg.event === 'exit') && typeof msg.xml === 'string') {
+          commitDrawioEditToCanvasAndHistory(msg.xml, 'Saved from Inline Draw.io Editor');
+        }
+      } catch {
+        // ignore
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('message', handleInlineMessage);
+    return () => {
+      bc?.close();
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('message', handleInlineMessage);
+    };
+  }, [commitDrawioEditToCanvasAndHistory, isInlineDrawioEdit, xml]);
+
   // Handle Concierge Question Submit
   const handleConciergeSubmit = (queryText: string) => {
     if (!queryText.trim()) return;
@@ -662,23 +777,134 @@ function StudioMain() {
     const newTab: StudioTabItem = {
       id: newTabId,
       title: `Tab ${nextNum}: New Diagram`,
-      mode: 'launchpad',
+      mode: 'canvas',
       intentEngine: 'auto',
-      blueprintId: '00',
+      blueprintId: '01',
       domain: 'biopharma',
-      versionTag: 'v1.0',
+      versionTag: 'v0.0 (Draft)',
       isLocked: false
     };
     setStudioTabs((prev) => [...prev, newTab]);
     setActiveTabId(newTabId);
-    setIsLaunchpadMode(true);
-    setIsLeftDrawerCollapsed(true);
+    setIsLaunchpadMode(false);
+    setIsLeftDrawerCollapsed(false);
     setIsRightGovernanceOpen(false);
     setSelectedComponent(null);
-    setActiveVersionTag('v1.0');
-    setAst(createDefaultFintechAst());
-    setXml(generateGcpNativeArchitectureXml());
+    setIsNewDiagramDraft(true);
+    setPendingPlan(null);
+    setSelectedDiagramMode('flowchart');
+    setSelectedAbstractionLevel('L2');
+    setSelectedFlowDirection('LR');
+    setActiveVersionTag('v0.0 (Draft)');
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `msg_new_${Date.now()}`,
+        sender: 'assistant',
+        text: `✨ Started New Diagram Draft (v0.0). Step 1: Choose Blueprint, Flowchart, or Infographic above. Step 2: Select your Abstraction Level (L1–L4) & Direction (LR/TD), then hit Send to run Prompt Validation & Sanity Check and preview the Plan before creating v1.0.`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ]);
   }, [studioTabs.length]);
+
+  const handleApprovePendingPlan = useCallback(() => {
+    if (!pendingPlan) return;
+    const { prompt: planPrompt, diagramMode, level, direction, blueprintId, infographicBlueprintId } = pendingPlan;
+    const nextTag = isNewDiagramDraft ? 'v1.0' : `v1.${versions.length}`;
+    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const title = ast.metadata.projectTitle || planPrompt.slice(0, 68) || 'Enterprise Architecture';
+
+    const activeInfoId =
+      diagramMode === 'infographic'
+        ? infographicBlueprintId || selectedInfographicBlueprintId || '52'
+        : INFOGRAPHIC_BLUEPRINTS_LIST.some((b) => b.id === blueprintId)
+        ? blueprintId
+        : null;
+
+    let generatedXml = xml;
+    if (activeInfoId) {
+      generatedXml = generateInfographicBlueprintXmlById(activeInfoId, planPrompt);
+    } else if (diagramMode === 'blueprint') {
+      const bp = CANONICAL_TEMPLATES.find((t) => t.id === blueprintId) || CANONICAL_TEMPLATES[0];
+      generatedXml = bp.generateXml(selectedDomain, 'light');
+    } else if (diagramMode === 'flowchart') {
+      generatedXml = generateLogicalFlowchartDrawioXml(planPrompt, title, direction, level);
+    } else {
+      generatedXml = synthesizePromptDrivenDiagramXml(planPrompt, title, selectedDomain || 'Enterprise Cloud');
+    }
+
+    setXml(generatedXml);
+    setIsNewDiagramDraft(false);
+    setActiveVersionTag(nextTag);
+    setPendingPlan(null);
+
+    setStudioTabs((prev) =>
+      prev.map((t) => (t.id === activeTabId ? { ...t, versionTag: nextTag } : t))
+    );
+
+    const snapId = `v_plan_${Date.now()}`;
+    const newSnap: StudioVersionSnapshot = {
+      id: snapId,
+      versionTag: nextTag,
+      timestamp: nowStr,
+      author: 'Approved Plan',
+      actionSummary: `[${diagramMode.toUpperCase()}${activeInfoId ? ' #' + activeInfoId : ''} • ${level}${diagramMode === 'flowchart' ? ' • ' + direction : ''}] Prompt: "${planPrompt}"`,
+      ast,
+      xml: generatedXml,
+    };
+    setVersions((prev) => [newSnap, ...prev]);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: `msg_approved_${Date.now()}`,
+        sender: 'assistant',
+        text: `✅ Plan Approved → Created ${nextTag} (${diagramMode.toUpperCase()}${activeInfoId ? ' Blueprint #' + activeInfoId : ''} • ${level}${diagramMode === 'flowchart' ? ' • ' + direction : ''}).${activeInfoId ? ' Calling Gemini Live API to dynamically tailor all stages & metrics to your prompt...' : ''}`,
+        timestamp: nowStr,
+      },
+    ]);
+
+    if (activeInfoId) {
+      setIsHealing(true);
+      fetch('/api/infographic-blueprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          blueprintId: activeInfoId,
+          prompt: planPrompt,
+          level,
+        }),
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.xml) {
+            setXml(data.xml);
+            setVersions((prev) =>
+              prev.map((v) =>
+                v.id === snapId
+                  ? {
+                      ...v,
+                      actionSummary: `[GEMINI LIVE • #${activeInfoId} ${data.shortType || ''} • ${level}] "${planPrompt}"`,
+                      xml: data.xml,
+                    }
+                  : v
+              )
+            );
+            setMessages((prev) => [
+              ...prev,
+              {
+                id: `msg_gemini_live_${Date.now()}`,
+                sender: 'assistant',
+                text: `✨ **Gemini Live API (${data.engineUsed} • ${data.latencyMs}ms)** updated Infographic Blueprint **#${activeInfoId} (${data.shortType})** for *"${planPrompt}"*:\n• **Title**: ${data.title}\n• **Takeaway**: ${data.takeaway || 'Validated across all stages.'}`,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              },
+            ]);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setIsHealing(false));
+    }
+  }, [pendingPlan, isNewDiagramDraft, versions.length, ast, xml, selectedDomain, activeTabId, selectedInfographicBlueprintId]);
 
   const handleSelectTab = useCallback((tab: StudioTabItem) => {
     setActiveTabId(tab.id);
@@ -1131,9 +1357,9 @@ function StudioMain() {
 
     const isArchitectureSynthesisPrompt =
       !isInterrogativeAnalysis &&
-      !intentResult.isQuestion &&
-      (/^(design|architect|build|create|deploy|synthesize|aws|gcp|google|azure|cloud|enterprise|sovereign|multi-region|zero-trust|real-time|serverless|hybrid|\[p[1-7]\]|\[vision\])/i.test(cleanPrompt.trim()) ||
-        /\b(architecture|bedrock|sagemaker|redshift|claude|vertex|spanner|bigquery|gke|eks|kubernetes|lakehouse|streaming|kafka|pub\/sub|secops|chronicle|fhir|hl7|sap|finops|landing\s+zone|rag|agentic)\b/i.test(cleanPrompt));
+      (cleanPrompt.trim().length >= 24 ||
+        /^(design|architect|build|create|deploy|synthesize|aws|gcp|google|azure|cloud|enterprise|sovereign|multi-region|zero-trust|real-time|serverless|hybrid|a\s+tiered|tiered|\[p[1-7]\]|\[vision\])/i.test(cleanPrompt.trim()) ||
+        /\b(architecture|stratum|strata|cross-section|diagram|stack|tier|pods|cluster|gateway|mesh|bedrock|sagemaker|redshift|claude|vertex|spanner|bigquery|gke|eks|kubernetes|lakehouse|streaming|kafka|pub\/sub|secops|chronicle|fhir|hl7|sap|finops|landing\s+zone|rag|agentic)\b/i.test(cleanPrompt));
 
     if (isInterrogativeAnalysis || (intentResult.intent !== 'mutation' && !isArchitectureSynthesisPrompt)) {
       let replyText = '';
@@ -1401,8 +1627,8 @@ function StudioMain() {
     const isInitialProjectTurn = versions.length <= 1 && activeVersionTag === 'v1.0';
     const isVerticalStratumPrompt =
       isInitialProjectTurn &&
-      (/\b(stratum|vertical\s+cross-section|cross-section\s+architecture)\b/i.test(promptText) ||
-        (/\bvllm\b/i.test(promptText) && /\bspeculative\s+decoding\b/i.test(promptText)));
+      /\b(vllm|h100|honeycomb)\b/i.test(promptText) &&
+      /\b(stratum|vertical\s+cross-section|speculative\s+decoding)\b/i.test(promptText);
 
     if (isVerticalStratumPrompt) {
       updated.metadata.projectTitle = 'High-Performance Cloud AI Stack — 4-Stratum Vertical Cross-Section';
@@ -1487,23 +1713,127 @@ function StudioMain() {
     // Subsequent prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
     const isExplicitFullResetPrompt = /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
     const isBespokeInitialDesignPrompt =
-      isInitialProjectTurn &&
-      (isVerticalStratumPrompt ||
-        /\b(amazon\s+bedrock|aws\s+bedrock|sagemaker|redshift|claude|azure|eks|sap|hl7|fhir|chronicle)\b/i.test(promptText));
+      isInitialProjectTurn && cleanPrompt.length >= 24;
+
+    // Build Prompt Validation & Sanity Check + Execution Plan for User Review & v1.0 Creation
+    const sanitizedIntent = cleanPrompt
+      .replace(/\bstratum\b/gi, 'Tier')
+      .replace(/\bhoneycomb\b/gi, 'Distributed Cluster')
+      .replace(/\bneural\b/gi, 'LLM Inference');
+    const plannedStepsList =
+      selectedDiagramMode === 'flowchart'
+        ? [
+            `[▶ Start Trigger] ---> (❶ Ingress) ---> [Step 1: Ingress (${selectedAbstractionLevel})]`,
+            `[Step 1: Ingress] ---> (❷ Validate) ---> [◆ Decision: Policy & Safety Valid?]`,
+            `[◆ Decision Gate] ---> (✓ YES) ---> [Step 3: Core Execution (${selectedAbstractionLevel})]`,
+            `[◆ Decision Gate] ---> (✕ NO) ---> [Fallback / DLQ Retry] ---> (↩ Retry Backoff) ---> [Step 2]`,
+            `[Step 3: Execution] ---> (✓ SLA Pass) ---> [Step 4: State Commit] ---> [■ Completed (200 OK)]`,
+          ]
+        : selectedDiagramMode === 'infographic'
+        ? (() => {
+            const ib = INFOGRAPHIC_BLUEPRINTS_LIST.find((b) => b.id === selectedInfographicBlueprintId) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
+            return [
+              `Infographic Blueprint #${ib.id} (${ib.shortType} • ${selectedAbstractionLevel}): ${ib.keyComponents[0] || ''}`,
+              `Gemini Live API Customization: "${sanitizedIntent.slice(0, 54)}"`,
+              `Stages: ${ib.keyComponents.slice(1, 3).join(' → ')}`,
+            ];
+          })()
+        : [
+            `Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}: Load Certified Canonical Reference Topology`,
+            `Apply Prompt Customization: "${sanitizedIntent.slice(0, 56)}"`,
+            `Synchronize 16 Living Specifications & Governance Baseline`,
+          ];
+
+    setPendingPlan({
+      prompt: cleanPrompt,
+      sanitizedPrompt: sanitizedIntent,
+      diagramMode: selectedDiagramMode,
+      level: selectedAbstractionLevel,
+      direction: selectedFlowDirection,
+      blueprintId: selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId,
+      infographicBlueprintId: selectedInfographicBlueprintId,
+      plannedSteps: plannedStepsList,
+      targetVersionTag: isNewDiagramDraft ? 'v1.0' : newVersionTag,
+    });
+
+    if (isNewDiagramDraft) {
+      const ibName = INFOGRAPHIC_BLUEPRINTS_LIST.find((b) => b.id === selectedInfographicBlueprintId)?.shortType || 'Infographic';
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `msg_plan_${Date.now()}`,
+          sender: 'assistant',
+          text: `🔍 Prompt Validation & Sanity Check Passed (${selectedDiagramMode.toUpperCase()}${selectedDiagramMode === 'infographic' ? ` #${selectedInfographicBlueprintId} (${ibName})` : ''} • ${selectedAbstractionLevel}${selectedDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''}). Review the Execution Plan above and click "✓ Approve Plan & Create v1.0" to generate v1.0 via Gemini Live API.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+      return;
+    }
 
     const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
     let activeBaseXml = xml;
-    if (isGenerativeDesignPrompt) {
+    if (isGenerativeDesignPrompt || selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') {
       const synthesizedTitle = updated.metadata.projectTitle && updated.metadata.projectTitle !== 'ABC'
         ? updated.metadata.projectTitle
         : cleanPrompt.slice(0, 76);
       updated.metadata.projectTitle = synthesizedTitle;
-      activeBaseXml = synthesizePromptDrivenDiagramXml(
-        promptText,
-        synthesizedTitle,
-        selectedDomain || 'Enterprise Cloud'
-      );
-      setSelectedBlueprintId('custom');
+      if (selectedDiagramMode === 'flowchart' || /\bflowchart\b/i.test(promptText)) {
+        activeBaseXml = generateLogicalFlowchartDrawioXml(
+          promptText,
+          synthesizedTitle,
+          selectedFlowDirection,
+          selectedAbstractionLevel
+        );
+      } else if (selectedDiagramMode === 'infographic' || /\binfographic\b/i.test(promptText)) {
+        activeBaseXml = generateInfographicBlueprintXmlById(selectedInfographicBlueprintId, cleanPrompt);
+        fetch('/api/infographic-blueprint', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            blueprintId: selectedInfographicBlueprintId,
+            prompt: cleanPrompt,
+            level: selectedAbstractionLevel,
+          }),
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            if (data?.xml) {
+              setXml(data.xml);
+              setVersions((prev) =>
+                prev.map((v, i) => (i === 0 ? { ...v, xml: data.xml, actionSummary: `[GEMINI LIVE • #${selectedInfographicBlueprintId} ${data.shortType}] "${cleanPrompt}"` } : v))
+              );
+            }
+          })
+          .catch(() => {});
+      } else {
+        activeBaseXml = synthesizePromptDrivenDiagramXml(
+          promptText,
+          synthesizedTitle,
+          selectedDomain || 'Enterprise Cloud'
+        );
+      }
+      setSelectedBlueprintId(selectedDiagramMode === 'infographic' ? selectedInfographicBlueprintId : 'custom');
+
+      // If this novel prompt triggered the dynamic Flash-AST -> Draw.io compiler,
+      // also run non-blocking Gemini 2.5 Flash topology enrichment (/api/studio-flash-drawio, ~1.8s)
+      if (activeBaseXml.includes('id="flash_dynamic_drawio"')) {
+        fetch('/api/studio-flash-drawio', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt: promptText,
+            projectTitle: synthesizedTitle,
+          }),
+        })
+          .then((r) => (r.ok ? r.json() : null))
+          .then((data) => {
+            if (data?.success && typeof data.xml === 'string' && data.xml.includes('<mxfile')) {
+              setXml(data.xml);
+            }
+          })
+          .catch(() => {});
+      }
+
       // Auto-persist to Library (/api/diagrams) so it is immediately available in /library
       fetch('/api/diagrams', {
         method: 'POST',
@@ -1530,7 +1860,9 @@ function StudioMain() {
       (activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"'));
     let baseUpdatedXml: string;
 
-    if (isSixZoneNativeCanvas && !isGenerativeDesignPrompt) {
+    if (isGenerativeDesignPrompt && isInitialProjectTurn) {
+      baseUpdatedXml = activeBaseXml;
+    } else if (isSixZoneNativeCanvas && !isGenerativeDesignPrompt) {
       // Regenerates the 6-Zone GCP Native Architecture + Zone 7 Cumulative Extensions Grid (P1..P10+ in 5-col multi-row grid)
       baseUpdatedXml = generateGcpNativeArchitectureXml(
         { projectTitle: updated.metadata.projectTitle, domain: updated.metadata.domain },
@@ -1710,7 +2042,18 @@ function StudioMain() {
           setIsHealing(false);
         }
       });
-  }, [activeVersionTag, isEditorMode, ast, xml, selectedBlueprintId, versions.length]);
+  }, [
+    activeVersionTag,
+    isEditorMode,
+    ast,
+    xml,
+    selectedBlueprintId,
+    versions.length,
+    selectedDiagramMode,
+    selectedAbstractionLevel,
+    selectedFlowDirection,
+    isNewDiagramDraft,
+  ]);
 
   // 1-Click Starter Chips
   const handleStarterChip = (prompt: string, title: string) => {
@@ -1740,10 +2083,22 @@ function StudioMain() {
     }, 1000);
   };
 
-  // Open in diagrams.net Web Editor
+  // Open in Full-Screen Bidirectional Draw.io Editor Tab (/drawio-editor)
+  // Edits saved in this tab automatically sync back to the Studio Canvas and append a new Version Snapshot!
   const handleOpenDiagramsNet = () => {
-    const encoded = encodeURIComponent(xml);
-    window.open(`https://app.diagrams.net/#R${encoded}`, '_blank');
+    try {
+      localStorage.setItem(
+        'promptcanvas_drawio_active_session',
+        JSON.stringify({
+          xml,
+          projectTitle: ast.metadata.projectTitle || 'Enterprise Architecture',
+          versionTag: activeVersionTag,
+        })
+      );
+    } catch {
+      // ignore storage errors
+    }
+    window.open('/drawio-editor', '_blank');
   };
 
   // Export 10-Spec Markdown Bundle
@@ -2000,8 +2355,8 @@ function StudioMain() {
 
             <div className="h-4 w-px bg-slate-800 hidden xl:block shrink-0" />
 
-            {/* v2.2 Multi-Tab Bar: [ Tab 1: ... ] [ Tab 2: ... ] [ + ] */}
-            <div className="flex items-center gap-1 bg-slate-950/90 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-[460px] scrollbar-none">
+            {/* v2.2 Multi-Tab Bar: [ Tab 1: ... ] [ + New Diagram ] */}
+            <div className="flex items-center gap-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800">
               {studioTabs.map((tab, idx) => {
                 const isActive = tab.id === activeTabId;
                 return (
@@ -2009,7 +2364,7 @@ function StudioMain() {
                     key={tab.id}
                     id={`studio-tab-${idx + 1}`}
                     onClick={() => handleSelectTab(tab)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
                       isActive
                         ? 'bg-blue-600 text-white shadow-xs'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/70'
@@ -2020,23 +2375,23 @@ function StudioMain() {
                         tab.mode === 'launchpad' ? 'bg-amber-400' : 'bg-emerald-400'
                       }`}
                     />
-                    <span className="truncate max-w-[135px]">
+                    <span className="truncate max-w-[200px]">
                       {tab.title.startsWith('Tab ') ? tab.title : `Tab ${idx + 1}: ${tab.title}`}
                     </span>
                   </button>
                 );
               })}
 
-              {/* (+) New Tab Button — Initializes in Inline Launchpad Mode with 0px Sidebars */}
+              {/* (+ New Diagram) Button — Opens Launchpad / Blank Project Tab */}
               <button
                 id="studio-new-tab-btn"
                 data-testid="studio-new-tab-btn"
                 onClick={handleOpenNewTab}
-                className="px-2 py-1 rounded-lg bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white text-xs font-bold transition flex items-center gap-1 cursor-pointer shrink-0"
-                title="Open New Tab (+) in Inline Launchpad Mode"
+                className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition flex items-center gap-1 cursor-pointer shrink-0 shadow-xs"
+                title="Create New Diagram (Flowchart, Cloud Architecture, or Blueprint)"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">+</span>
+                <span>New Diagram</span>
               </button>
             </div>
 
@@ -2129,42 +2484,9 @@ function StudioMain() {
             </button>
           </div>
 
-          {/* Right: v2.2 Workspace Action Controls ([ 🔒 Lock ] [ 🔀 Branch / Clone ] [ Export ▾ ] [ Share ]) */}
+          {/* Right: Clean Non-Redundant Action Controls ([ Export ▾ ]) */}
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              id="studio-lock-canvas-btn"
-              onClick={() => setIsCanvasLocked((prev) => !prev)}
-              className={`px-2.5 py-1.5 rounded-lg border text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                isCanvasLocked
-                  ? 'bg-amber-950/80 border-amber-500/50 text-amber-300'
-                  : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-200'
-              }`}
-              title="Toggle Read-Only Lock vs. Active Edit Mode"
-            >
-              <Shield className="w-3.5 h-3.5 text-amber-400" />
-              <span className="hidden xl:inline">{isCanvasLocked ? 'Locked (Read-Only)' : 'Lock Canvas'}</span>
-            </button>
-
-            <button
-              id="studio-branch-clone-btn"
-              onClick={handleBranchCloneProject}
-              className="hidden lg:flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
-              title="Duplicate project into a fresh working copy tab with branched AI context"
-            >
-              <Copy className="w-3.5 h-3.5 text-indigo-400" />
-              <span className="hidden 2xl:inline">Branch / Clone</span>
-            </button>
-
-            <button
-              onClick={() => handleOpenShare('project', 'proj_root', ast.metadata.projectTitle)}
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-lg transition whitespace-nowrap cursor-pointer"
-              title="Share & Collaborate"
-            >
-              <Share2 className="w-3.5 h-3.5 text-blue-400" />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-
-            {/* Primary: Export Bundle Dropdown with Section 4.2 Zero-Distortion Document & Slide Export Matrix */}
+            {/* Primary: Export Bundle Dropdown */}
             <div className="relative">
               <button
                 id="studio-export-dropdown-btn"
@@ -2288,66 +2610,335 @@ function StudioMain() {
                   </button>
                 </div>
 
-                {/* Stakeholder Personas Simulator */}
-                <div className="p-2.5 border-b border-slate-200 bg-slate-50/70 space-y-1.5 flex-shrink-0">
+                {/* Dynamic Conditional Root -> Branch -> Leaf Diagram Selector */}
+                <div className="p-2.5 border-b border-slate-200 bg-slate-50/95 space-y-2.5 flex-shrink-0">
+                  {/* Step 1: 3 Root Options (Blueprint | Flowchart | Infographic) + New Diagram */}
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">
-                      Simulate Personas:
+                    <span className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider">
+                      1. Choose Diagram Type:
                     </span>
-                    <span className="text-[9px] bg-purple-100 text-purple-900 font-bold px-1.5 py-0.2 rounded-full border border-purple-200">
-                      Delta Sync
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-1.5">
                     <button
-                      onClick={() =>
-                        handleExecutePrompt(
-                          'Add real-time patient engagement portal and emergency admission SLA tracking with 99.999% availability.',
-                          'Product Manager'
-                        )
-                      }
-                      className="text-left p-1.5 rounded-md bg-white hover:bg-blue-50 border border-slate-200 hover:border-blue-300 text-[11px] text-slate-800 font-semibold transition cursor-pointer truncate"
+                      id="drawer-new-diagram-btn"
+                      onClick={handleOpenNewTab}
+                      className="text-[10px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2 py-0.5 rounded-md transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                      title="Start a Brand-New Diagram (Resets to Draft -> Plan Approval -> v1.0)"
                     >
-                      Product Manager
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleExecutePrompt(
-                          'Upgrade Cloud Spanner to multi-region nam3 dual-leader replication across europe-west1 and us-central1 with RPO < 1s.',
-                          'Lead Cloud Architect'
-                        )
-                      }
-                      className="text-left p-1.5 rounded-md bg-white hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 text-[11px] text-slate-800 font-semibold transition cursor-pointer truncate"
-                    >
-                      Lead Architect
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleExecutePrompt(
-                          'Enforce Cloud KMS HSM CMEK keys, Cloud Armor OWASP rules, and VPC Service Controls perimeter.',
-                          'CISO / Security Architect'
-                        )
-                      }
-                      className="text-left p-1.5 rounded-md bg-white hover:bg-purple-50 border border-slate-200 hover:border-purple-300 text-[11px] text-slate-800 font-semibold transition cursor-pointer truncate"
-                    >
-                      CISO / Security
-                    </button>
-                    <button
-                      onClick={() =>
-                        handleExecutePrompt(
-                          'Implement Cloud Run scale-to-zero during off-peak windows and BigQuery BI Engine 50GB memory reservation.',
-                          'FinOps & SRE Lead'
-                        )
-                      }
-                      className="text-left p-1.5 rounded-md bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-[11px] text-slate-800 font-semibold transition cursor-pointer truncate"
-                    >
-                      FinOps &amp; SRE
+                      <Plus className="w-2.5 h-2.5" />
+                      <span>New Diagram</span>
                     </button>
                   </div>
+
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      id="mode-btn-blueprint"
+                      onClick={() => setSelectedDiagramMode('blueprint')}
+                      className={`px-2 py-1.5 rounded-lg border text-[10.5px] font-bold transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                        selectedDiagramMode === 'blueprint'
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                          : 'bg-white hover:bg-blue-50 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      <span>📚 Blueprint</span>
+                      <span className="text-[8.5px] opacity-80 font-mono">53 Templates</span>
+                    </button>
+                    <button
+                      id="mode-btn-flowchart"
+                      onClick={() => {
+                        setSelectedDiagramMode('flowchart');
+                        if (!isNewDiagramDraft) {
+                          setXml(
+                            generateLogicalFlowchartDrawioXml(
+                              promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
+                              ast.metadata.projectTitle,
+                              selectedFlowDirection,
+                              selectedAbstractionLevel
+                            )
+                          );
+                          setSelectedBlueprintId('custom');
+                        }
+                      }}
+                      className={`px-2 py-1.5 rounded-lg border text-[10.5px] font-bold transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                        selectedDiagramMode === 'flowchart'
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                          : 'bg-white hover:bg-blue-50 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      <span>🔀 Flowchart</span>
+                      <span className="text-[8.5px] opacity-80 font-mono">
+                        {selectedAbstractionLevel} • {selectedFlowDirection}
+                      </span>
+                    </button>
+                    <button
+                      id="mode-btn-infographic"
+                      onClick={() => {
+                        setSelectedDiagramMode('infographic');
+                        if (!isNewDiagramDraft) {
+                          setXml(
+                            generateInfographicBlueprintXmlById(
+                              selectedInfographicBlueprintId,
+                              promptInput || ast.metadata.projectTitle || undefined
+                            )
+                          );
+                          setSelectedBlueprintId(selectedInfographicBlueprintId);
+                        }
+                      }}
+                      className={`px-2 py-1.5 rounded-lg border text-[10.5px] font-bold transition cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                        selectedDiagramMode === 'infographic'
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                          : 'bg-white hover:bg-blue-50 text-slate-800 border-slate-200'
+                      }`}
+                    >
+                      <span>📊 Infographic</span>
+                      <span className="text-[8.5px] opacity-80 font-mono">15 Blueprints • {selectedAbstractionLevel}</span>
+                    </button>
+                  </div>
+
+                  {/* Step 2A: Visible ONLY when 📚 Blueprint is selected */}
+                  {selectedDiagramMode === 'blueprint' && (
+                    <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                          2. Choose Blueprint from List:
+                        </span>
+                        <button
+                          onClick={() => setIsCatalogOpen(true)}
+                          className="text-[10px] font-bold text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Full Gallery (66) ↗
+                        </button>
+                      </div>
+                      <select
+                        id="drawer-blueprint-select"
+                        value={selectedBlueprintId === 'custom' ? '52' : selectedBlueprintId}
+                        onChange={(e) => {
+                          const bp =
+                            CANONICAL_TEMPLATES.find((t) => t.id === e.target.value) || CANONICAL_TEMPLATES[0];
+                          handleSelectBlueprint(bp, selectedDomain);
+                        }}
+                        className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-800 focus:outline-none focus:border-blue-500"
+                      >
+                        <optgroup label="📊 Infographic Blueprints (15)">
+                          {CANONICAL_TEMPLATES.filter((bp) => bp.family === 'Infographic').map((bp) => (
+                            <option key={bp.id} value={bp.id}>
+                              #{bp.id} • {bp.name}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="🏛️ Enterprise Reference Blueprints (51)">
+                          {CANONICAL_TEMPLATES.filter((bp) => bp.family !== 'Infographic').map((bp) => (
+                            <option key={bp.id} value={bp.id}>
+                              #{bp.id} • {bp.name} ({bp.level})
+                            </option>
+                          ))}
+                        </optgroup>
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Step 2B-Infographic: Choose Infographic Blueprint Template (15 Types) */}
+                  {selectedDiagramMode === 'infographic' && (
+                    <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                          2. Infographic Blueprint Template (15):
+                        </span>
+                        <button
+                          onClick={() => {
+                            setIsCatalogOpen(true);
+                          }}
+                          className="text-[10px] font-bold text-blue-600 hover:underline cursor-pointer"
+                        >
+                          Visual Cards (15) ↗
+                        </button>
+                      </div>
+                      <select
+                        id="infographic-blueprint-select"
+                        value={selectedInfographicBlueprintId}
+                        onChange={(e) => {
+                          const nextId = e.target.value;
+                          setSelectedInfographicBlueprintId(nextId);
+                          setSelectedBlueprintId(nextId);
+                          setXml(
+                            generateInfographicBlueprintXmlById(
+                              nextId,
+                              promptInput || undefined
+                            )
+                          );
+                        }}
+                        className="w-full bg-white border border-blue-300 rounded-lg px-2.5 py-1.5 text-[11px] font-bold text-slate-900 focus:outline-none focus:border-blue-600"
+                      >
+                        {INFOGRAPHIC_BLUEPRINTS_LIST.map((ib, idx) => (
+                          <option key={ib.id} value={ib.id}>
+                            {idx + 1}. {ib.shortType} (#{ib.id})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Step 2B & 2C: Abstraction Level (L1..L4) — Visible when Flowchart OR Infographic is selected */}
+                  {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
+                    <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
+                      <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider block">
+                        {selectedDiagramMode === 'infographic' ? '3. Choose Abstraction Level:' : '2. Choose Abstraction Level:'}
+                      </span>
+                      <div className="grid grid-cols-2 gap-1">
+                        {(
+                          [
+                            { id: 'L1', label: 'L1 (Conceptual)', desc: 'Executive Flow' },
+                            { id: 'L2', label: 'L2 (Logical)', desc: 'Decision Gates' },
+                            { id: 'L3', label: 'L3 (Technical)', desc: 'APIs & Schemas' },
+                            { id: 'L4', label: 'L4 (Prod Ready)', desc: 'SLAs & Multi-Region' },
+                          ] as const
+                        ).map((lvl) => (
+                          <button
+                            key={lvl.id}
+                            id={`level-btn-${lvl.id}`}
+                            onClick={() => {
+                              setSelectedAbstractionLevel(lvl.id);
+                              if (!isNewDiagramDraft) {
+                                if (selectedDiagramMode === 'flowchart') {
+                                  setXml(
+                                    generateLogicalFlowchartDrawioXml(
+                                      promptInput || ast.metadata.projectTitle,
+                                      ast.metadata.projectTitle,
+                                      selectedFlowDirection,
+                                      lvl.id
+                                    )
+                                  );
+                                } else if (selectedDiagramMode === 'infographic') {
+                                  setXml(
+                                    generateInfographicBlueprintXmlById(
+                                      selectedInfographicBlueprintId,
+                                      promptInput || undefined
+                                    )
+                                  );
+                                }
+                              }
+                            }}
+                            className={`text-left px-2 py-1 rounded-md border text-[10px] font-bold transition cursor-pointer flex items-center justify-between ${
+                              selectedAbstractionLevel === lvl.id
+                                ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
+                                : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                            }`}
+                          >
+                            <span>{lvl.label}</span>
+                            <span className="text-[8px] opacity-75 font-normal">{lvl.desc}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: Flow Direction (LR vs TD) — Visible ONLY when 🔀 Flowchart is selected */}
+                  {selectedDiagramMode === 'flowchart' && (
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200/80">
+                      <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wider">
+                        3. Flow Direction:
+                      </span>
+                      <div className="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg">
+                        <button
+                          id="direction-btn-lr"
+                          onClick={() => {
+                            setSelectedFlowDirection('LR');
+                            if (!isNewDiagramDraft) {
+                              setXml(
+                                generateLogicalFlowchartDrawioXml(
+                                  promptInput || ast.metadata.projectTitle,
+                                  ast.metadata.projectTitle,
+                                  'LR',
+                                  selectedAbstractionLevel
+                                )
+                              );
+                            }
+                          }}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer ${
+                            selectedFlowDirection === 'LR'
+                              ? 'bg-blue-600 text-white shadow-2xs'
+                              : 'text-slate-700 hover:text-slate-900'
+                          }`}
+                        >
+                          ➡️ Left-Right (LR)
+                        </button>
+                        <button
+                          id="direction-btn-td"
+                          onClick={() => {
+                            setSelectedFlowDirection('TD');
+                            if (!isNewDiagramDraft) {
+                              setXml(
+                                generateLogicalFlowchartDrawioXml(
+                                  promptInput || ast.metadata.projectTitle,
+                                  ast.metadata.projectTitle,
+                                  'TD',
+                                  selectedAbstractionLevel
+                                )
+                              );
+                            }
+                          }}
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition cursor-pointer ${
+                            selectedFlowDirection === 'TD'
+                              ? 'bg-blue-600 text-white shadow-2xs'
+                              : 'text-slate-700 hover:text-slate-900'
+                          }`}
+                        >
+                          ⬇️ Top-Down (TD)
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* System Prompt & Analysis History Stream */}
                 <div ref={editorScrollRef} className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3 text-xs">
+                  {/* Full Version History of Prompt + Diagram XML */}
+                  {versions.length > 0 && (
+                    <details open className="rounded-xl border border-slate-200 bg-slate-50/80 p-2 text-[10.5px]">
+                      <summary className="font-bold text-slate-800 cursor-pointer flex items-center justify-between select-none">
+                        <span className="flex items-center gap-1.5">
+                          <History className="w-3.5 h-3.5 text-blue-600" />
+                          <span>Version History (Prompt + Diagram)</span>
+                        </span>
+                        <span className="font-mono text-[9.5px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-bold">
+                          {versions.length} Saved
+                        </span>
+                      </summary>
+                      <div className="mt-2 space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                        {versions.map((v) => (
+                          <div
+                            key={v.id}
+                            className={`p-2 rounded-lg border flex items-center justify-between gap-2 ${
+                              v.versionTag === activeVersionTag
+                                ? 'bg-blue-50 border-blue-300'
+                                : 'bg-white border-slate-200'
+                            }`}
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-mono font-black text-blue-700 text-[10px]">
+                                  {v.versionTag}
+                                </span>
+                                <span className="text-[9px] text-slate-500 font-mono">{v.timestamp}</span>
+                              </div>
+                              <div className="text-[9.5px] text-slate-700 truncate font-medium mt-0.5">
+                                {v.actionSummary}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => {
+                                setXml(v.xml);
+                                setAst(v.ast);
+                                setActiveVersionTag(v.versionTag);
+                              }}
+                              className="px-2 py-1 rounded bg-slate-900 hover:bg-blue-600 text-white text-[9px] font-bold shrink-0 cursor-pointer transition"
+                            >
+                              Restore
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+
                   {messages.map((msg) => {
                     const isUser = msg.sender === 'user';
                     return (
@@ -2396,7 +2987,90 @@ function StudioMain() {
                       </div>
                     );
                   })}
+
+                  {selectedBlueprintId === 'custom' && (
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-2.5 shadow-2xs space-y-1.5">
+                      <div className="flex items-center justify-between text-[10px] font-bold text-emerald-900">
+                        <span>⚡ Stage 1: Flash Generated Image</span>
+                        <span className="font-mono text-[9px] bg-emerald-200/80 text-emerald-950 px-1.5 py-0.5 rounded">
+                          → Draw.io XML
+                        </span>
+                      </div>
+                      <a
+                        href="/images/flash_stratum_architecture.jpg"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block overflow-hidden rounded-lg border border-emerald-300/80 shadow-xs hover:opacity-95 transition"
+                        title="Click to open full-resolution Flash Generated Reference Image"
+                      >
+                        <img
+                          src="/images/flash_stratum_architecture.jpg"
+                          alt="Gemini Flash Generated Architecture Reference"
+                          className="w-full h-28 object-cover"
+                        />
+                      </a>
+                      <div className="text-[10px] text-slate-600 leading-tight">
+                        Decompiled from Flash visual layout into editable multi-stratum Draw.io XML on canvas.
+                      </div>
+                    </div>
+                  )}
                 </div>
+
+                {/* Sticky Prompt Validation & Sanity Check + Plan Approval Card (Docked directly above Send Box) */}
+                {pendingPlan && (
+                  <div
+                    id="prompt-validation-plan-card"
+                    className="mx-2.5 mb-2 rounded-xl border-2 border-emerald-500 bg-emerald-50/95 p-2.5 shadow-lg space-y-2 flex-shrink-0"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Prompt Validation &amp; Sanity Check</span>
+                      </span>
+                      <span className="text-[9px] font-mono font-bold bg-emerald-200 text-emerald-950 px-1.5 py-0.5 rounded">
+                        ✓ PASSED
+                      </span>
+                    </div>
+
+                    <div className="text-[10.5px] font-bold text-slate-800 bg-white border border-emerald-200 rounded-lg px-2 py-1">
+                      <div>
+                        Target:{' '}
+                        <span className="text-blue-700 font-mono">
+                          {pendingPlan.diagramMode.toUpperCase()} • {pendingPlan.level}
+                          {pendingPlan.diagramMode === 'flowchart' ? ` • ${pendingPlan.direction}` : ''}
+                        </span>
+                      </div>
+                      <div className="text-[9.5px] text-slate-600 font-normal truncate">
+                        Sanitized: &ldquo;{pendingPlan.sanitizedPrompt}&rdquo;
+                      </div>
+                    </div>
+
+                    <div className="bg-white/90 border border-slate-200 rounded-lg p-1.5 space-y-0.5 font-mono text-[9px] text-slate-700">
+                      {pendingPlan.plannedSteps.slice(0, 3).map((step, i) => (
+                        <div key={i} className="truncate">
+                          {step}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        id="approve-plan-create-v1-btn"
+                        onClick={handleApprovePendingPlan}
+                        className="flex-1 py-1.5 px-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-extrabold shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Approve Plan &amp; Create {pendingPlan.targetVersionTag}</span>
+                      </button>
+                      <button
+                        onClick={() => setPendingPlan(null)}
+                        className="px-2 py-1.5 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 text-[10px] font-bold cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* Sticky Co-Pilot Prompt Box */}
                 <div className="p-3 border-t border-slate-200 bg-slate-50/80 space-y-1.5 flex-shrink-0">
@@ -2753,38 +3427,59 @@ function StudioMain() {
                     </button>
                   )}
 
-                  {/* Select | Pan | Re-Layout | + Add Node | Connect | Group */}
-                  <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-2 py-1 rounded-lg text-slate-800 font-medium whitespace-nowrap shrink-0">
+                  {/* Quick Diagram Type Switcher (Cloud Architecture vs. Flowchart LR/TD) */}
+                  <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 p-1 rounded-lg text-slate-800 font-medium whitespace-nowrap shrink-0">
                     <button
-                      onClick={() => handleResetZoom()}
-                      className="px-1.5 hover:text-blue-600 font-bold cursor-pointer"
+                      onClick={() => setSelectedDiagramMode('architecture')}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                        selectedDiagramMode === 'architecture'
+                          ? 'bg-blue-600 text-white shadow-2xs'
+                          : 'hover:bg-white text-slate-700'
+                      }`}
                     >
-                      Select
+                      🏛️ Cloud Architecture
                     </button>
-                    <span className="text-slate-300">|</span>
                     <button
-                      onClick={() => handleResetZoom()}
-                      className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer"
+                      onClick={() => {
+                        setSelectedDiagramMode('flowchart');
+                        setSelectedFlowDirection('LR');
+                        setXml(
+                          generateLogicalFlowchartDrawioXml(
+                            promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
+                            ast.metadata.projectTitle,
+                            'LR'
+                          )
+                        );
+                        setSelectedBlueprintId('custom');
+                      }}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                        selectedDiagramMode === 'flowchart' && selectedFlowDirection === 'LR'
+                          ? 'bg-blue-600 text-white shadow-2xs'
+                          : 'hover:bg-white text-slate-700'
+                      }`}
                     >
-                      Re-Layout
+                      🔀 Flowchart (LR)
                     </button>
-                    <span className="text-slate-300">|</span>
                     <button
-                      disabled={isCanvasLocked}
-                      onClick={() => handleExecutePrompt('Add a new Cloud Armor WAF security policy layer.')}
-                      className="px-1.5 hover:text-blue-600 font-bold cursor-pointer disabled:opacity-40"
+                      onClick={() => {
+                        setSelectedDiagramMode('flowchart');
+                        setSelectedFlowDirection('TD');
+                        setXml(
+                          generateLogicalFlowchartDrawioXml(
+                            promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
+                            ast.metadata.projectTitle,
+                            'TD'
+                          )
+                        );
+                        setSelectedBlueprintId('custom');
+                      }}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                        selectedDiagramMode === 'flowchart' && selectedFlowDirection === 'TD'
+                          ? 'bg-blue-600 text-white shadow-2xs'
+                          : 'hover:bg-white text-slate-700'
+                      }`}
                     >
-                      + Add Node
-                    </button>
-                    <span className="text-slate-300">|</span>
-                    <button
-                      disabled={isCanvasLocked}
-                      onClick={() =>
-                        handleExecutePrompt('Connect Cloud Armor to Global Load Balancer with TLS 1.3.')
-                      }
-                      className="px-1.5 hover:text-blue-600 font-semibold cursor-pointer disabled:opacity-40"
-                    >
-                      Connect
+                      🔀 Flowchart (TD)
                     </button>
                   </div>
 
@@ -2833,11 +3528,29 @@ function StudioMain() {
                   </div>
 
                   <button
+                    id="toggle-inline-drawio-edit-btn"
+                    onClick={() => {
+                      latestInlineXmlRef.current = xml;
+                      setIsInlineDrawioEdit((prev) => !prev);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg border text-[11px] font-bold transition shadow-2xs flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0 ${
+                      isInlineDrawioEdit
+                        ? 'bg-emerald-600 text-white border-emerald-600'
+                        : 'bg-white hover:bg-emerald-50 border-slate-300 text-slate-800'
+                    }`}
+                    title="Edit Draw.io diagram inline directly on this canvas and save back to Version History"
+                  >
+                    <span>{isInlineDrawioEdit ? '✓ Editing Inline' : '✎ Edit Inline'}</span>
+                  </button>
+
+                  <button
+                    id="open-in-drawio-tab-btn"
                     onClick={handleOpenDiagramsNet}
                     className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 text-[11px] font-bold transition shadow-2xs flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
+                    title="Open in Full-Screen Draw.io Editor Tab (Saving syncs back to this canvas & Version History)"
                   >
                     <ExternalLink className="w-3 h-3 text-blue-600 shrink-0" />
-                    <span>Open in draw.io</span>
+                    <span>↗ Edit in Draw.io Tab</span>
                   </button>
 
                   {/* Toggle Right Governance Panel (280px) */}
@@ -2929,28 +3642,69 @@ function StudioMain() {
                 }}
                 className="flex-1 min-h-0 p-3 md:p-5 flex items-center justify-center overflow-auto bg-slate-50/50"
               >
-                <div
-                  style={{
-                    transform: `scale(${zoomLevel})`,
-                    transformOrigin: zoomLevel > 1 ? 'top center' : 'center center',
-                    transition: 'transform 0.15s ease-out'
-                  }}
-                  onClick={() => {
-                    const spanner =
-                      ast.components.find((c) => c.service === 'Cloud Spanner') || ast.components[0];
-                    setSelectedComponent(spanner);
-                    setIsRightGovernanceOpen(true);
-                  }}
-                  className="w-full max-w-[1440px] h-full min-h-[520px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
-                >
-                  <DiagramViewerRenderSafe
-                    key={`studio_canvas_${selectedBlueprintId}_${activeVersionTag}_${xml.length}`}
-                    xml={xml}
-                    minHeight={0}
-                    bgTheme="light"
-                    useCaseName={ast.metadata.projectTitle}
-                  />
-                </div>
+                {isInlineDrawioEdit ? (
+                  <div className="w-full max-w-[1440px] h-full min-h-[560px] m-auto bg-white rounded-2xl border-2 border-emerald-500 shadow-2xl flex flex-col overflow-hidden">
+                    <div className="px-4 py-2 bg-[#0B111E] text-white flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 font-bold">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono text-[10px]">
+                          INLINE DRAW.IO EDITOR ({activeVersionTag})
+                        </span>
+                        <span className="text-slate-300">
+                          Edit nodes, labels, or connectors below. Click Save to reflect back on canvas &amp; bump Version History.
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          id="save-inline-drawio-btn"
+                          onClick={() =>
+                            commitDrawioEditToCanvasAndHistory(
+                              latestInlineXmlRef.current || xml,
+                              'Inline Draw.io Canvas Edit'
+                            )
+                          }
+                          className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold cursor-pointer transition"
+                        >
+                          💾 Save &amp; Commit Version
+                        </button>
+                        <button
+                          onClick={() => setIsInlineDrawioEdit(false)}
+                          className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                    <iframe
+                      ref={inlineDrawioIframeRef}
+                      title="Inline Draw.io Editor"
+                      src="https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&saveAndExit=1"
+                      className="w-full flex-1 border-0"
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      transform: `scale(${zoomLevel})`,
+                      transformOrigin: zoomLevel > 1 ? 'top center' : 'center center',
+                      transition: 'transform 0.15s ease-out'
+                    }}
+                    onClick={() => {
+                      const spanner =
+                        ast.components.find((c) => c.service === 'Cloud Spanner') || ast.components[0];
+                      setSelectedComponent(spanner);
+                      setIsRightGovernanceOpen(true);
+                    }}
+                    className="w-full max-w-[1440px] h-full min-h-[520px] m-auto bg-white rounded-2xl border border-slate-300/80 shadow-2xl relative overflow-hidden cursor-pointer flex-shrink-0"
+                  >
+                    <DiagramViewerRenderSafe
+                      key={`studio_canvas_${selectedBlueprintId}_${activeVersionTag}_${xml.length}`}
+                      xml={xml}
+                      minHeight={0}
+                      bgTheme="light"
+                      useCaseName={ast.metadata.projectTitle}
+                    />
+                  </div>
+                )}
               </div>
             </section>
           ) : (

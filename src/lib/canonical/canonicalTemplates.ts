@@ -1,9 +1,10 @@
 import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
+import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from './infographicBlueprints52to66';
 
 export interface CanonicalTemplate {
-  id: string; // e.g. "01", "02" ... "39"
+  id: string; // e.g. "01", "02" ... "66"
   name: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
+  family: 'Infographic' | 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   primaryPurpose: string;
   examples: string;
@@ -20,6 +21,7 @@ export interface CanonicalTemplate {
 
 export const CANONICAL_FAMILIES = [
   'All',
+  'Infographic',
   'Understand',
   'Process',
   'Structure',
@@ -147,7 +149,7 @@ import { generateTemplate52ContextHarnessLoopGraphXml } from "./template52Contex
 interface RawCanonicalTemplate {
   id: string;
   name: string;
-  family: 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
+  family: 'Infographic' | 'Understand' | 'Process' | 'Structure' | 'Flow' | 'Infrastructure' | 'Security & Governance' | 'Delivery & Operations' | 'Analysis & Planning' | 'Reference Architectures';
   level: 'L1' | 'L2' | 'L3';
   primaryPurpose: string;
   examples: string;
@@ -782,18 +784,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     keyComponents: ['Graph Intuition & Social Analogy', 'Essential Prerequisites', 'Visual Taxonomy', 'Modern Graph Science & Knowledge Graph', 'Key Graph Algorithms Workflow'],
     generateXml: generateTemplate51GraphTheoryLearningRoadmapXml
   },
-  {
-    id: '52',
-    name: 'Context + Harness + Loop + Graph (AI Setup)',
-    family: 'Understand',
-    level: 'L1',
-    primaryPurpose: '4-part visual AI engineering framework illustrating Context ingestion, Harness tool/rule control, closed-loop self-correction, and Graph file mapping with actionable prompts',
-    examples: 'AI Agent Setup, Context Engineering, Agent Harness, Self-Healing Loop, Knowledge Graph Mapping, Charlie Hills AI Framework',
-    defaultDomain: 'AI Engineering & Autonomous Agent Setup',
-    previewImage: '/templates/context_harness_loop_graph.png',
-    keyComponents: ['01 Context (Loaded Context & Model Ingestion)', '02 Harness (CLAUDE.md Rules, Skills & Tool Calls)', '03 Loop (Check, Fix & Recheck Cycle with 3-Try Cap)', '04 Graph (File Relationship Mesh & MAP.md Index)'],
-    generateXml: generateTemplate52ContextHarnessLoopGraphXml
-  }
+  ...INFOGRAPHIC_BLUEPRINTS_LIST.map((ib) => ({
+    id: ib.id,
+    name: `${ib.shortType} — ${ib.name.replace(/^Infographic:\s*[^()]+/i, '').replace(/[()]/g, '').trim() || ib.shortType}`,
+    family: 'Infographic' as const,
+    level: 'L1' as const,
+    primaryPurpose: ib.subtitle,
+    examples: `${ib.shortType}, Infographic Blueprint, Executive Brief, Visual Architecture`,
+    defaultDomain: ib.shortType,
+    previewImage: ib.previewImage,
+    keyComponents: ib.keyComponents,
+    generateXml: () => generateInfographicBlueprintXmlById(ib.id)
+  }))
 ];
 
 
