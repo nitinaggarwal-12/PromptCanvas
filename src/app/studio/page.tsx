@@ -1391,9 +1391,70 @@ function StudioMain() {
       'comp_spanner_leader',
       'comp_bigquery',
       'comp_spanner_dr',
-      'comp_gcs_backup'
+      'comp_gcs_backup',
+      'comp_stratum_s1',
+      'comp_stratum_s2',
+      'comp_stratum_s3',
+      'comp_stratum_s4',
     ]);
-    if (updated.components.length === prevCompCount && !/^(connect|group)\b/i.test(cleanPrompt)) {
+
+    const isInitialProjectTurn = versions.length <= 1 && activeVersionTag === 'v1.0';
+    const isVerticalStratumPrompt =
+      isInitialProjectTurn &&
+      (/\b(stratum|vertical\s+cross-section|cross-section\s+architecture)\b/i.test(promptText) ||
+        (/\bvllm\b/i.test(promptText) && /\bspeculative\s+decoding\b/i.test(promptText)));
+
+    if (isVerticalStratumPrompt) {
+      updated.metadata.projectTitle = 'High-Performance Cloud AI Stack — 4-Stratum Vertical Cross-Section';
+      updated.components = [
+        {
+          id: 'comp_stratum_s1',
+          name: 'Top Stratum: Multi-Modal Client Apps & API Mesh',
+          service: 'Floating Glass Landing Pads & Telemetry HUD',
+          tier: 'ingress',
+          region: 'global',
+          role: 'Top Stratum (Application Tier)',
+          description: 'Sleek floating glass landing pads for Multi-modal Client Apps, Global API Mesh, and Isometric UI Telemetry Wireframes.',
+          sla: '99.999%',
+          protocols: ['HTTP/3', 'QUIC', 'WebRTC', 'TLS 1.3']
+        },
+        {
+          id: 'comp_stratum_s2',
+          name: 'Second Stratum: vLLM & Speculative Decoding Pods',
+          service: 'Floating Hexagonal Pods + High-Speed Laser Bridges',
+          tier: 'compute',
+          region: 'us-central1',
+          role: 'Second Stratum (Inference & Routing Tier)',
+          description: 'Floating hexagonal pods running containerized vLLM inference and speculative decoding engines connected by 800G optical laser bridges.',
+          sla: '99.999%',
+          protocols: ['800G Optical Laser Bridge', 'gRPC', 'FP8 Tensor Stream']
+        },
+        {
+          id: 'comp_stratum_s3',
+          name: 'Third Stratum: Honeycomb Semantic Memory Cells',
+          service: 'Redis Prefix Cache, Vector DB & Document Store',
+          tier: 'data',
+          region: 'us-central1',
+          role: 'Third Stratum (Context & Memory Tier)',
+          description: 'Suspended honeycomb storage cells glowing with semantic memory caches (Redis KV Cache, HNSW/ScaNN Vector DBs, and Document Stores).',
+          sla: '99.999%',
+          protocols: ['RESP3', 'GPUDirect Storage', 'gRPC']
+        },
+        {
+          id: 'comp_stratum_s4',
+          name: 'Foundation Bedrock: Liquid-Cooled H100 GPU Monolith',
+          service: 'H100 SXM5 Server Racks & NVLink 4.0 Bedrock',
+          tier: 'compute',
+          region: 'us-central1',
+          role: 'Foundation Bedrock (Compute Cluster Tier)',
+          description: 'Dense subterranean monolith of liquid-cooled H100/GPU server racks anchored to heavy cloud infrastructure bedrock.',
+          sla: '99.999%',
+          protocols: ['NVLink 4.0 (900GB/s)', 'InfiniBand RDMA', 'PCIe Gen5']
+        }
+      ];
+      canvasDiff = '✨ Synthesized 4-Stratum Vertical Cross-Section (12 Pods across Top Stratum, Hexagonal vLLM + Laser Bridges, Honeycomb Memory & H100 Bedrock).';
+      specDiff = 'Synchronized 4-Stratum Cloud AI Stack across DOC-01 through DOC-16 in Slate Gray & Vibrant Emerald-Green aesthetic.';
+    } else if (updated.components.length === prevCompCount && !/^(connect|group)\b/i.test(cleanPrompt)) {
       const currentTurnNumber = updated.components.filter(c => !BASELINE_DEFAULT_IDS.has(c.id)).length + 1;
       const newComp = synthesizeComponentFromPrompt(cleanPrompt, currentTurnNumber);
       updated.components = [...updated.components, newComp];
@@ -1404,11 +1465,13 @@ function StudioMain() {
     }
 
     if (
-      !updated.metadata.projectTitle ||
-      updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
-      updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
-      updated.metadata.projectTitle.startsWith('#00') ||
-      /^(design|architect|build|create|deploy|synthesize|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim())
+      !isVerticalStratumPrompt &&
+      (!updated.metadata.projectTitle ||
+        updated.metadata.projectTitle === 'Global Cloud Payment & Settlement Mesh' ||
+        updated.metadata.projectTitle === 'Global Real-Time Payments Mesh & Settlement Engine' ||
+        updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
+        updated.metadata.projectTitle.startsWith('#00') ||
+        /^(design|architect|build|create|deploy|synthesize|a\s+tiered|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim()))
     ) {
       const derivedTitle = promptText
         .trim()
@@ -1422,11 +1485,11 @@ function StudioMain() {
 
     // Only replace the base diagram when explicitly requested on Prompt 1 (initial creation of bespoke non-default blueprint)
     // Subsequent prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
-    const isInitialProjectTurn = versions.length <= 1 && activeVersionTag === 'v1.0';
     const isExplicitFullResetPrompt = /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
     const isBespokeInitialDesignPrompt =
       isInitialProjectTurn &&
-      /\b(bedrock|sagemaker|redshift|claude|azure|eks|sap|hl7|fhir|chronicle)\b/i.test(promptText);
+      (isVerticalStratumPrompt ||
+        /\b(amazon\s+bedrock|aws\s+bedrock|sagemaker|redshift|claude|azure|eks|sap|hl7|fhir|chronicle)\b/i.test(promptText));
 
     const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
     let activeBaseXml = xml;
@@ -1450,10 +1513,10 @@ function StudioMain() {
           xml: activeBaseXml,
           comment: `Synthesized from Studio UI Prompt (${newVersionTag})`,
           prompt: promptText,
-          aiReasoning: `Modified Saved Reference Architecture v2.0 for: ${promptText}`,
+          aiReasoning: `Synthesized 4-Stratum / Reference Architecture for: ${promptText}`,
           businessUsecase: selectedDomain || 'Enterprise Cloud',
-          technicalUsecase: 'Modified Saved Reference Architecture v2.0',
-          architectureType: 'canonical_google_cloud_ref_v2',
+          technicalUsecase: '4-Stratum Vertical Cross-Section / Reference Architecture v2.0',
+          architectureType: isVerticalStratumPrompt ? 'vertical_stratum_cross_section' : 'canonical_google_cloud_ref_v2',
           createdStudio: 'studio',
           isPrivate: false
         })
