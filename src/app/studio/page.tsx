@@ -2648,7 +2648,7 @@ function StudioMain() {
                           ? '📊 Infographic'
                           : '🔀 Flowchart'}
                       </span>
-                      <span className="text-[10px] opacity-60 shrink-0">───►</span>
+                      <span className="text-[10px] opacity-60 shrink-0">──▼</span>
                       <span className="text-[10px] font-mono font-bold truncate px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-600 dark:text-blue-300">
                         {selectedDiagramMode === 'blueprint'
                           ? `#${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
@@ -2658,7 +2658,7 @@ function StudioMain() {
                       </span>
                     </div>
                     <span className="text-[9.5px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-600 shrink-0">
-                      Tree ▸
+                      Tree ▾
                     </span>
                   </button>
 
@@ -2673,7 +2673,7 @@ function StudioMain() {
                     <span>New</span>
                   </button>
 
-                  {/* UI/UX Best-Practice 3-Pane Cascading Flow Flyout (Linear / Figma / Raycast Miller Columns + Live Visual Preview) */}
+                  {/* Top-Down (TD) 3-Tier Vertical Flowchart Flyout (Root ▼ Branch ▼ Leaf Preview & Actions) */}
                   {isFlowTreeOpen && (
                     <div
                       id="lr-flow-tree-popover"
@@ -2689,203 +2689,177 @@ function StudioMain() {
                           setIsFlowTreeOpen(false);
                         }, 280);
                       }}
-                      className="fixed left-[294px] top-[94px] z-[999] bg-white/98 backdrop-blur-2xl border border-slate-200/90 ring-1 ring-slate-900/10 rounded-2xl shadow-[0_24px_60px_-12px_rgba(15,23,42,0.28)] overflow-hidden text-slate-900 w-[760px] max-w-[calc(100vw-310px)] animate-in fade-in zoom-in-95 duration-150"
+                      className="fixed left-[58px] top-[144px] z-[999] bg-white/98 backdrop-blur-2xl border border-slate-200/95 ring-1 ring-slate-900/10 rounded-2xl shadow-[0_24px_60px_-12px_rgba(15,23,42,0.32)] overflow-hidden text-slate-900 w-[360px] animate-in fade-in zoom-in-95 duration-150"
                     >
-                      {/* Top Interactive Breadcrumb Path & Instant Search Bar */}
-                      <div className="px-4 py-2.5 bg-slate-900 text-white flex items-center justify-between gap-3">
+                      {/* Top Header: TD Path & Search Filter */}
+                      <div className="px-3 py-2 bg-slate-900 text-white flex items-center justify-between gap-2">
                         <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] font-extrabold uppercase tracking-wider shrink-0">
-                            {selectedDiagramMode === 'blueprint'
-                              ? '📚 Blueprint'
-                              : selectedDiagramMode === 'infographic'
-                              ? '📊 Infographic'
-                              : '🔀 Flowchart'}
+                          <span className="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[9.5px] font-extrabold uppercase tracking-wider shrink-0">
+                            TD Flow Tree
                           </span>
-                          <svg className="w-4 h-3 text-slate-400 shrink-0" viewBox="0 0 16 12" fill="none">
-                            <path d="M1 6H14M14 6L10 2M14 6L10 10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-200 text-[10.5px] font-bold truncate max-w-[210px]">
-                            {selectedDiagramMode === 'blueprint'
-                              ? `#${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId} • ${
-                                  CANONICAL_TEMPLATES.find((t) => t.id === (selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId))?.name || 'Enterprise Topology'
-                                }`
-                              : selectedDiagramMode === 'infographic'
-                              ? `#${selectedInfographicBlueprintId} • ${
-                                  INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.shortType || 'Anatomy'
-                                }`
-                              : `${selectedAbstractionLevel} • ${selectedFlowDirection === 'LR' ? 'Left-to-Right' : 'Top-Down'}`}
-                          </span>
-                          <svg className="w-4 h-3 text-emerald-400 shrink-0" viewBox="0 0 16 12" fill="none">
-                            <path d="M1 6H14M14 6L10 2M14 6L10 10" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                          <span className="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] font-extrabold shrink-0">
-                            Leaf Ready
+                          <span className="text-[10px] text-slate-300 font-bold truncate">
+                            1. Root ▼ 2. Branch ▼ 3. Leaf
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-1.5 shrink-0">
                           <input
                             type="text"
                             value={flowTreeSearchQuery}
                             onChange={(e) => setFlowTreeSearchQuery(e.target.value)}
-                            placeholder="🔍 Filter templates..."
-                            className="w-[155px] bg-slate-800/90 border border-slate-700 rounded-lg px-2.5 py-1 text-[10.5px] text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
+                            placeholder="🔍 Filter..."
+                            className="w-[115px] bg-slate-800/90 border border-slate-700 rounded-md px-2 py-0.5 text-[10px] text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
                           />
                           <button
                             type="button"
                             onClick={() => setIsFlowTreeOpen(false)}
-                            className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded-lg hover:bg-slate-800 cursor-pointer text-xs font-bold"
-                            title="Close Flowchart Flyout"
+                            className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded-md hover:bg-slate-800 cursor-pointer text-xs font-bold"
+                            title="Close Top-Down Flowchart"
                           >
                             ✕
                           </button>
                         </div>
                       </div>
 
-                      {/* Seamless 3-Pane Cascading Miller Columns with SVG Node Connectors */}
-                      <div className="grid grid-cols-[160px_280px_320px] divide-x divide-slate-200/90 bg-white">
-                        {/* PANE 1: ROOT DIAGRAM FAMILY (Hover or Click to Cascade Rightward) */}
-                        <div className="p-3 bg-slate-50/70 flex flex-col justify-between">
-                          <div>
-                            <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-                              <span>1. Root Family</span>
-                              <span className="text-[8.5px] font-mono text-slate-400">Step 1</span>
-                            </div>
-                            <div className="space-y-1.5">
-                              {(
-                                [
-                                  { id: 'blueprint', icon: '📚', title: 'Blueprint', badge: '51', desc: 'Reference Cloud' },
-                                  { id: 'flowchart', icon: '🔀', title: 'Flowchart', badge: 'L1–L4', desc: 'Process & Gates' },
-                                  { id: 'infographic', icon: '📊', title: 'Infographic', badge: '15', desc: 'Executive Visuals' },
-                                ] as const
-                              ).map((mode) => {
-                                const isActive = selectedDiagramMode === mode.id;
-                                return (
-                                  <button
-                                    key={mode.id}
-                                    id={`mode-btn-${mode.id}`}
-                                    type="button"
-                                    onMouseEnter={() => setSelectedDiagramMode(mode.id)}
-                                    onClick={() => setSelectedDiagramMode(mode.id)}
-                                    className={`w-full px-2.5 py-2.5 rounded-xl border text-left transition cursor-pointer relative group ${
-                                      isActive
-                                        ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
-                                        : 'bg-white hover:bg-blue-50/60 text-slate-800 border-slate-200/90'
+                      {/* Top-Down (TD) Vertical Flowchart Stack */}
+                      <div className="p-3 space-y-1.5 bg-slate-50/60">
+                        {/* TIER 1 (TOP): 1. ROOT FAMILY */}
+                        <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
+                          <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                            <span>1. Root Family (Choose Diagram Type)</span>
+                            <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Tier 1</span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-1.5">
+                            {(
+                              [
+                                { id: 'blueprint', icon: '📚', title: 'Blueprint', badge: '51' },
+                                { id: 'flowchart', icon: '🔀', title: 'Flowchart', badge: 'L1–L4' },
+                                { id: 'infographic', icon: '📊', title: 'Infographic', badge: '15' },
+                              ] as const
+                            ).map((mode) => {
+                              const isActive = selectedDiagramMode === mode.id;
+                              return (
+                                <button
+                                  key={mode.id}
+                                  id={`mode-btn-${mode.id}`}
+                                  type="button"
+                                  onMouseEnter={() => setSelectedDiagramMode(mode.id)}
+                                  onClick={() => setSelectedDiagramMode(mode.id)}
+                                  className={`px-2 py-2 rounded-lg border text-center transition cursor-pointer relative flex flex-col items-center justify-center gap-0.5 ${
+                                    isActive
+                                      ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                                      : 'bg-slate-50/80 hover:bg-blue-50/70 text-slate-800 border-slate-200'
+                                  }`}
+                                >
+                                  <span className="text-[11px] font-extrabold flex items-center gap-1">
+                                    <span>{mode.icon}</span>
+                                    <span>{mode.title}</span>
+                                  </span>
+                                  <span
+                                    className={`text-[8.5px] font-mono px-1.5 py-0.2 rounded font-bold ${
+                                      isActive ? 'bg-blue-500 text-white' : 'bg-slate-200/80 text-slate-600'
                                     }`}
                                   >
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-[11.5px] font-extrabold flex items-center gap-1.5">
-                                        <span>{mode.icon}</span>
-                                        <span>{mode.title}</span>
-                                      </span>
-                                      <span
-                                        className={`text-[9px] font-mono px-1.5 py-0.2 rounded font-bold ${
-                                          isActive ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-600'
-                                        }`}
-                                      >
-                                        {mode.badge}
-                                      </span>
-                                    </div>
-                                    <div className={`text-[9.5px] mt-0.5 ${isActive ? 'text-slate-300' : 'text-slate-500'}`}>
-                                      {mode.desc}
-                                    </div>
-                                    {/* Active Right-Edge Node Port Indicator */}
-                                    {isActive && (
-                                      <span className="absolute -right-[7px] top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue-600 border-2 border-white shadow-xs" />
-                                    )}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-
-                          <div className="pt-2.5 border-t border-slate-200/80 text-[9.5px] text-slate-500 leading-snug">
-                            <span className="font-bold text-slate-700">Tip:</span> Hover any Root or Branch node to preview its Leaf on the right.
+                                    {mode.badge}
+                                  </span>
+                                  {isActive && (
+                                    <span className="absolute -bottom-[6px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-blue-600 border-2 border-white shadow-2xs" />
+                                  )}
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
 
-                        {/* PANE 2: UNIFIED BRANCH STREAM + INLINE SEGMENTED MODIFIERS (Zero Duplicate Select!) */}
-                        <div className="p-3 bg-white flex flex-col justify-between h-[315px]">
-                          {/* Top Inline Segmented Controls for L1-L4 & LR/TD */}
-                          <div className="mb-2 pb-2 border-b border-slate-100 space-y-1.5 shrink-0">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400">
-                                {selectedDiagramMode === 'blueprint'
-                                  ? '2. Select Reference Blueprint'
-                                  : selectedDiagramMode === 'infographic'
-                                  ? '2. Select Infographic (15)'
-                                  : '2. Abstraction & Orientation'}
+                        {/* VERTICAL TOP-DOWN CONNECTOR ARROW 1 (Tier 1 ▼ Tier 2) */}
+                        <div className="flex flex-col items-center justify-center py-0.5 select-none">
+                          <svg className="w-4 h-4 text-blue-600" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
+
+                        {/* TIER 2 (MIDDLE): 2. BRANCH & ABSTRACTION LEVEL */}
+                        <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400">
+                              {selectedDiagramMode === 'blueprint'
+                                ? '2. Select Reference Blueprint (51)'
+                                : selectedDiagramMode === 'infographic'
+                                ? '2. Select Infographic Template (15)'
+                                : '2. Abstraction Level & Flow Direction'}
+                            </span>
+                            {selectedDiagramMode !== 'flowchart' ? (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setIsFlowTreeOpen(false);
+                                  setIsCatalogOpen(true);
+                                }}
+                                className="text-[9.5px] font-bold text-blue-600 hover:underline cursor-pointer"
+                              >
+                                Full Gallery (66) ↗
+                              </button>
+                            ) : (
+                              <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-bold">
+                                Tier 2
                               </span>
-                              {selectedDiagramMode !== 'flowchart' && (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setIsFlowTreeOpen(false);
-                                    setIsCatalogOpen(true);
-                                  }}
-                                  className="text-[9.5px] font-bold text-blue-600 hover:underline cursor-pointer"
-                                >
-                                  Full Gallery (66) ↗
-                                </button>
-                              )}
-                            </div>
-
-                            {/* Segmented Pill Bar for Abstraction Level (L1..L4) + LR/TD */}
-                            {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
-                              <div className="flex items-center justify-between gap-1 bg-slate-100 p-1 rounded-lg">
-                                <div className="flex items-center gap-0.5">
-                                  {(['L1', 'L2', 'L3', 'L4'] as const).map((lvl) => (
-                                    <button
-                                      key={lvl}
-                                      id={`level-btn-${lvl}`}
-                                      type="button"
-                                      onClick={() => setSelectedAbstractionLevel(lvl)}
-                                      className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer ${
-                                        selectedAbstractionLevel === lvl
-                                          ? 'bg-slate-900 text-white shadow-2xs'
-                                          : 'text-slate-600 hover:text-slate-900'
-                                      }`}
-                                      title={`Abstraction Level ${lvl}`}
-                                    >
-                                      {lvl}
-                                    </button>
-                                  ))}
-                                </div>
-
-                                {selectedDiagramMode === 'flowchart' && (
-                                  <div className="flex items-center gap-0.5 border-l border-slate-300 pl-1">
-                                    <button
-                                      id="direction-btn-lr"
-                                      type="button"
-                                      onClick={() => setSelectedFlowDirection('LR')}
-                                      className={`px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
-                                        selectedFlowDirection === 'LR'
-                                          ? 'bg-blue-600 text-white shadow-2xs'
-                                          : 'text-slate-600 hover:text-slate-900'
-                                      }`}
-                                    >
-                                      ➡️ LR
-                                    </button>
-                                    <button
-                                      id="direction-btn-td"
-                                      type="button"
-                                      onClick={() => setSelectedFlowDirection('TD')}
-                                      className={`px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
-                                        selectedFlowDirection === 'TD'
-                                          ? 'bg-blue-600 text-white shadow-2xs'
-                                          : 'text-slate-600 hover:text-slate-900'
-                                      }`}
-                                    >
-                                      ⬇️ TD
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
                             )}
                           </div>
 
-                          {/* Clean Scrollable Node List (No redundant <select> box!) */}
-                          <div className="flex-1 min-h-0 overflow-y-auto space-y-1 pr-1">
+                          {/* Segmented Pill Bar for Abstraction Level (L1..L4) + LR/TD */}
+                          {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
+                            <div className="flex items-center justify-between gap-1 bg-slate-100 p-1 rounded-lg mb-2">
+                              <div className="flex items-center gap-0.5">
+                                {(['L1', 'L2', 'L3', 'L4'] as const).map((lvl) => (
+                                  <button
+                                    key={lvl}
+                                    id={`level-btn-${lvl}`}
+                                    type="button"
+                                    onClick={() => setSelectedAbstractionLevel(lvl)}
+                                    className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer ${
+                                      selectedAbstractionLevel === lvl
+                                        ? 'bg-slate-900 text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    {lvl}
+                                  </button>
+                                ))}
+                              </div>
+
+                              {selectedDiagramMode === 'flowchart' && (
+                                <div className="flex items-center gap-0.5 border-l border-slate-300 pl-1.5">
+                                  <button
+                                    id="direction-btn-lr"
+                                    type="button"
+                                    onClick={() => setSelectedFlowDirection('LR')}
+                                    className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
+                                      selectedFlowDirection === 'LR'
+                                        ? 'bg-blue-600 text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    ➡️ LR
+                                  </button>
+                                  <button
+                                    id="direction-btn-td"
+                                    type="button"
+                                    onClick={() => setSelectedFlowDirection('TD')}
+                                    className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
+                                      selectedFlowDirection === 'TD'
+                                        ? 'bg-blue-600 text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                  >
+                                    ⬇️ TD
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Compact Scrollable Branch List */}
+                          <div className="max-h-[135px] overflow-y-auto space-y-1 pr-1">
                             {selectedDiagramMode === 'infographic' &&
                               INFOGRAPHIC_BLUEPRINTS_LIST.filter((ib) =>
                                 !flowTreeSearchQuery.trim()
@@ -2910,7 +2884,7 @@ function StudioMain() {
                                     className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSelected
                                         ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
-                                        : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/80 font-semibold'
+                                        : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
                                     }`}
                                   >
                                     <span className="text-[10.5px] truncate">
@@ -2918,7 +2892,7 @@ function StudioMain() {
                                     </span>
                                     <span
                                       className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
-                                        isSelected ? 'bg-blue-700 text-blue-100' : 'bg-slate-100 text-slate-500'
+                                        isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
                                       }`}
                                     >
                                       #{ib.id}
@@ -2948,13 +2922,13 @@ function StudioMain() {
                                       className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
                                         isSelected
                                           ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
-                                          : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200/80 font-semibold'
+                                          : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
                                       }`}
                                     >
                                       <span className="text-[10.5px] truncate">{bp.name}</span>
                                       <span
                                         className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
-                                          isSelected ? 'bg-blue-700 text-blue-100' : 'bg-slate-100 text-slate-500'
+                                          isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
                                         }`}
                                       >
                                         #{bp.id}
@@ -2995,14 +2969,14 @@ function StudioMain() {
                                     type="button"
                                     onMouseEnter={() => setSelectedAbstractionLevel(item.id)}
                                     onClick={() => setSelectedAbstractionLevel(item.id)}
-                                    className={`w-full text-left p-2 rounded-xl border transition cursor-pointer ${
+                                    className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer ${
                                       isSelected
-                                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                                        : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-200'
+                                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                                        : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200'
                                     }`}
                                   >
                                     <div className="text-[10.5px] font-extrabold">{item.title}</div>
-                                    <div className={`text-[9px] mt-0.5 ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                                    <div className={`text-[9px] ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
                                       {item.desc}
                                     </div>
                                   </button>
@@ -3011,73 +2985,81 @@ function StudioMain() {
                           </div>
                         </div>
 
-                        {/* PANE 3: LIVE VISUAL LEAF INSPECTOR & 1-CLICK ACTION DOCK (Zero Clipping!) */}
-                        <div className="p-3 bg-gradient-to-b from-slate-50/90 to-emerald-50/40 flex flex-col justify-between h-[315px]">
-                          <div>
-                            <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center justify-between">
-                              <span>3. Leaf Preview & Actions</span>
-                              <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-600 text-white rounded font-mono">
-                                Click Leaf
-                              </span>
-                            </div>
+                        {/* VERTICAL TOP-DOWN CONNECTOR ARROW 2 (Tier 2 ▼ Tier 3 Leaf) */}
+                        <div className="flex flex-col items-center justify-center py-0.5 select-none">
+                          <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </div>
 
-                            {/* Live Visual Thumbnail Card of Selected Leaf */}
-                            <div className="rounded-xl border border-slate-200 bg-white p-2 shadow-2xs mb-2">
-                              <div className="relative h-[102px] w-full rounded-lg bg-slate-100 overflow-hidden border border-slate-200/80 flex items-center justify-center">
-                                {selectedDiagramMode === 'infographic' ? (
-                                  <img
-                                    src={`/templates/${selectedInfographicBlueprintId}.png`}
-                                    alt={`Infographic #${selectedInfographicBlueprintId}`}
-                                    className="w-full h-full object-cover object-top"
-                                  />
-                                ) : selectedDiagramMode === 'blueprint' ? (
-                                  <img
-                                    src={`/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`}
-                                    alt={`Blueprint #${selectedBlueprintId}`}
-                                    className="w-full h-full object-cover object-top"
-                                    onError={(e) => {
-                                      (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
-                                    }}
-                                  />
-                                ) : (
-                                  <div className="flex flex-col items-center justify-center text-center p-2 bg-gradient-to-br from-blue-50 to-indigo-50 w-full h-full">
-                                    <div className="flex items-center gap-1.5 text-blue-700 font-mono text-xs font-extrabold">
-                                      <span className="px-2 py-1 rounded bg-white border border-blue-200 shadow-2xs">Start</span>
-                                      <span>{selectedFlowDirection === 'LR' ? '───►' : '═══▼'}</span>
-                                      <span className="px-2 py-1 rounded bg-amber-50 border border-amber-300 text-amber-800 shadow-2xs">Gate ◇</span>
-                                      <span>{selectedFlowDirection === 'LR' ? '───►' : '═══▼'}</span>
-                                      <span className="px-2 py-1 rounded bg-emerald-50 border border-emerald-300 text-emerald-800 shadow-2xs">SLA ✓</span>
-                                    </div>
-                                    <span className="text-[9.5px] font-bold text-slate-600 mt-1.5">
-                                      {selectedAbstractionLevel} Logical Flowchart ({selectedFlowDirection})
-                                    </span>
-                                  </div>
-                                )}
-                                <span className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded bg-slate-900/85 text-white text-[8.5px] font-mono font-bold backdrop-blur-xs">
-                                  16:9 Vector XML
-                                </span>
+                        {/* TIER 3 (BOTTOM): 3. LEAF PREVIEW & 1-CLICK ACTION DOCK */}
+                        <div className="rounded-xl border-2 border-emerald-500/80 bg-gradient-to-b from-white to-emerald-50/40 p-2.5 shadow-xs">
+                          <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center justify-between">
+                            <span>3. Leaf Preview & Initiate Action</span>
+                            <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-600 text-white rounded font-mono">
+                              Click Leaf
+                            </span>
+                          </div>
+
+                          {/* Compact Horizontal Thumbnail + Metadata Row */}
+                          <div className="flex items-center gap-2.5 p-1.5 rounded-lg border border-slate-200 bg-white mb-2">
+                            <div className="relative w-[110px] h-[62px] rounded border border-slate-200 overflow-hidden bg-slate-100 shrink-0 flex items-center justify-center">
+                              {selectedDiagramMode === 'infographic' ? (
+                                <img
+                                  src={`/templates/${selectedInfographicBlueprintId}.png`}
+                                  alt={`Infographic #${selectedInfographicBlueprintId}`}
+                                  className="w-full h-full object-cover object-top"
+                                />
+                              ) : selectedDiagramMode === 'blueprint' ? (
+                                <img
+                                  src={`/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`}
+                                  alt={`Blueprint #${selectedBlueprintId}`}
+                                  className="w-full h-full object-cover object-top"
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
+                                  }}
+                                />
+                              ) : (
+                                <div className="flex items-center gap-1 text-[9px] font-mono font-extrabold text-blue-700 bg-blue-50/80 w-full h-full justify-center">
+                                  <span className="px-1 py-0.5 bg-white rounded border border-blue-200">In</span>
+                                  <span>{selectedFlowDirection === 'LR' ? '→' : '↓'}</span>
+                                  <span className="px-1 py-0.5 bg-amber-50 rounded border border-amber-300 text-amber-800">◇</span>
+                                  <span>{selectedFlowDirection === 'LR' ? '→' : '↓'}</span>
+                                  <span className="px-1 py-0.5 bg-emerald-50 rounded border border-emerald-300 text-emerald-800">✓</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-[11px] font-extrabold text-slate-900 truncate">
+                                {selectedDiagramMode === 'blueprint'
+                                  ? `📚 Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
+                                  : selectedDiagramMode === 'infographic'
+                                  ? `📊 #${selectedInfographicBlueprintId} • ${
+                                      INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.shortType || 'Infographic'
+                                    }`
+                                  : `🔀 Flowchart • ${selectedAbstractionLevel} (${selectedFlowDirection})`}
                               </div>
-                              <div className="mt-1.5 flex items-center justify-between gap-1">
-                                <span className="text-[10.5px] font-extrabold text-slate-900 truncate">
-                                  {selectedDiagramMode === 'blueprint'
-                                    ? `📚 Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
-                                    : selectedDiagramMode === 'infographic'
-                                    ? `📊 #${selectedInfographicBlueprintId} • ${
-                                        INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.shortType || 'Infographic'
-                                      }`
-                                    : `🔀 Flowchart • ${selectedAbstractionLevel} (${selectedFlowDirection})`}
+                              <div className="text-[9.5px] text-slate-500 truncate mt-0.5">
+                                {selectedDiagramMode === 'blueprint'
+                                  ? CANONICAL_TEMPLATES.find((t) => t.id === (selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId))?.name
+                                  : selectedDiagramMode === 'infographic'
+                                  ? `Abstraction Level ${selectedAbstractionLevel} • 16:9 Vector XML`
+                                  : `${selectedFlowDirection === 'LR' ? 'Left-to-Right' : 'Top-Down'} • Swimlanes & Decision Gates`}
+                              </div>
+                              <div className="mt-1 flex items-center gap-1">
+                                <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                                  16:9 Draw.io XML
                                 </span>
-                                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 shrink-0">
+                                <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
                                   {selectedAbstractionLevel}
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          {/* 3 Crisp Leaf Action Buttons (View, Edit, Create New) */}
+                          {/* 3 Clickable Leaf Action Buttons */}
                           <div className="space-y-1.5">
                             <div className="grid grid-cols-2 gap-1.5">
-                              {/* Leaf Action 1: VIEW DIAGRAM */}
                               <button
                                 id="leaf-action-view-btn"
                                 type="button"
@@ -3114,7 +3096,6 @@ function StudioMain() {
                                 <span>👁️ View Canvas</span>
                               </button>
 
-                              {/* Leaf Action 2: EDIT DIAGRAM */}
                               <button
                                 id="leaf-action-edit-btn"
                                 type="button"
@@ -3152,7 +3133,6 @@ function StudioMain() {
                               </button>
                             </div>
 
-                            {/* Leaf Action 3: CREATE NEW DIAGRAM */}
                             <button
                               id="leaf-action-create-new-btn"
                               type="button"
