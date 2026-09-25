@@ -354,8 +354,25 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
   const displayTitle =
     title && !title.includes('Global Real-Time Payments')
       ? title
-      : 'High-Performance Cloud AI Stack — 4-Stratum Vertical Cross-Section';
-  const shortPrompt = prompt.replace(/\s+/g, ' ').trim().slice(0, 140);
+      : 'High-Performance Cloud AI Stack — 4-Stratum Cross-Section & Observability Plane';
+  const shortPrompt = prompt.replace(/\s+/g, ' ').trim().slice(0, 110);
+
+  const renderIconSvg = (iconType: string, isBedrock: boolean) => {
+    const stroke = isBedrock ? '#34D399' : '#FFFFFF';
+    if (iconType === 'k8s') {
+      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><polygon points="12 2 20 7 20 17 12 22 4 17 4 7 12 2"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="20" y1="7" x2="14.6" y2="10.5"/><line x1="4" y1="7" x2="9.4" y2="10.5"/></svg>`;
+    }
+    if (iconType === 'mesh') {
+      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="8.7" y1="7.5" x2="10.5" y2="15.5"/><line x1="15.3" y1="7.5" x2="13.5" y2="15.5"/><line x1="9" y1="6" x2="15" y2="6"/></svg>`;
+    }
+    if (iconType === 'db') {
+      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>`;
+    }
+    if (iconType === 'gpu') {
+      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="5"/><line x1="15" y1="2" x2="15" y2="5"/><line x1="9" y1="19" x2="9" y2="22"/><line x1="15" y1="19" x2="15" y2="22"/><line x1="2" y1="9" x2="5" y2="9"/><line x1="2" y1="15" x2="5" y2="15"/><line x1="19" y1="9" x2="22" y2="9"/><line x1="19" y1="15" x2="22" y2="15"/></svg>`;
+    }
+    return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+  };
 
   const makeStratumContainer = (
     id: string,
@@ -372,22 +389,19 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
     const subColor = isBedrock ? '#6EE7B7' : '#047857';
     const badgeBg = isBedrock ? '#065F46' : '#ECFDF5';
     const badgeText = isBedrock ? '#34D399' : '#059669';
-    const badgeBorder = '#10B981';
 
-    // Compact left-aligned Stratum Header (width=368px, x=60..428) so vertical channels at x=455, x=840, x=1400 pass through 100% open space
     const headerHtml =
-      `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;gap:8px;width:368px;padding:2px 8px;">` +
-      `<span style="background:${badgeBg};color:${badgeText};border:1px solid ${badgeBorder};border-radius:4px;padding:1px 6px;font-size:9px;font-weight:900;letter-spacing:0.5px;white-space:nowrap;">${escHtml(stratumTag)}</span>` +
-      `<span style="font-size:11px;font-weight:900;color:${titleColor};letter-spacing:0.2px;white-space:nowrap;">${escHtml(stratumTitle)}</span>` +
-      `<span style="font-size:9.5px;font-weight:700;color:${subColor};white-space:nowrap;">• ${escHtml(stratumSub)}</span>` +
+      `<div style="font-family:Inter,-apple-system,sans-serif;display:inline-flex;align-items:center;gap:6px;background:${ isBedrock ? '#1E293B' : '#ECFDF5' };border:1px solid #10B981;border-radius:5px;padding:2px 8px;">` +
+      `<span style="background:${badgeBg};color:${badgeText};border:1px solid #10B981;border-radius:3px;padding:1px 5px;font-size:8px;font-weight:900;letter-spacing:0.4px;white-space:nowrap;">${escHtml(stratumTag)}</span>` +
+      `<span style="font-size:9.5px;font-weight:900;color:${titleColor};letter-spacing:0.2px;white-space:nowrap;">${escHtml(stratumTitle)}</span>` +
       `</div>`;
 
-    return `<mxCell id="${id}" value="${escAttr(headerHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${bgFill};strokeColor=${borderHex};strokeWidth=${isBedrock ? '2.5' : '2'};arcSize=6;verticalAlign=top;align=left;spacingTop=4;spacingLeft=6;shadow=0;" vertex="1" parent="1"><mxGeometry x="48" y="${y}" width="1584" height="${h}" as="geometry"/></mxCell>`;
+    return `<mxCell id="${id}" value="${escAttr(headerHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${bgFill};strokeColor=${borderHex};strokeWidth=${isBedrock ? '2.5' : '2'};arcSize=5;verticalAlign=top;align=left;spacingTop=4;spacingLeft=8;shadow=0;" vertex="1" parent="1"><mxGeometry x="48" y="${y}" width="1172" height="${h}" as="geometry"/></mxCell>`;
   };
 
   const makePodCard = (
     id: string,
-    glyph: string,
+    iconType: string,
     badge: string,
     cardTitle: string,
     subtitle: string,
@@ -406,32 +420,33 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
     const bulletHex = isDarkCard ? '#CBD5E1' : '#334155';
     const specBg = isDarkCard ? '#0F172A' : '#ECFDF5';
     const specText = isDarkCard ? '#6EE7B7' : '#065F46';
+    const iconBg = isDarkCard ? '#065F46' : '#10B981';
 
     const bulletHtml = bullets
       .map(
         (b) =>
-          `<div style="font-size:9px;color:${bulletHex};line-height:12.5px;margin-top:2px;">▸ ${escHtml(b)}</div>`
+          `<div style="font-size:8.2px;color:${bulletHex};line-height:12px;margin-top:2px;">▸ ${escHtml(b)}</div>`
       )
       .join('');
 
     const html =
-      `<div style="font-family:Inter,-apple-system,sans-serif;padding:7px 10px;width:${w - 20}px;box-sizing:border-box;">` +
+      `<div style="font-family:Inter,-apple-system,sans-serif;padding:6px 9px;width:${w - 16}px;box-sizing:border-box;">` +
       `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">` +
-      `<div style="display:flex;align-items:center;gap:6px;">` +
-      `<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:5px;background:#0F172A;color:#10B981;border:1px solid #10B981;font-size:11px;font-weight:900;">${escHtml(glyph)}</span>` +
-      `<span style="font-size:11.5px;font-weight:900;color:${titleHex};">${escHtml(cardTitle)}</span>` +
+      `<div style="display:flex;align-items:center;gap:5px;">` +
+      `<span style="display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:4px;background:${iconBg};border:1px solid #10B981;">${renderIconSvg(iconType, isDarkCard)}</span>` +
+      `<span style="font-size:10.5px;font-weight:900;color:${titleHex};">${escHtml(cardTitle)}</span>` +
       `</div>` +
-      `<span style="background:${specBg};color:${specText};border:1px solid #10B981;border-radius:4px;padding:1px 5px;font-size:8px;font-weight:800;">${escHtml(badge)}</span>` +
+      `<span style="background:${specBg};color:${specText};border:1px solid #10B981;border-radius:4px;padding:1px 4px;font-size:7px;font-weight:800;">${escHtml(badge)}</span>` +
       `</div>` +
-      `<div style="font-size:9.5px;font-weight:700;color:${subHex};margin-bottom:3px;">${escHtml(subtitle)}</div>` +
+      `<div style="font-size:8.5px;font-weight:700;color:${subHex};margin-bottom:2px;">${escHtml(subtitle)}</div>` +
       bulletHtml +
-      `<div style="margin-top:5px;padding-top:3px;border-top:1px dashed #10B981;display:flex;justify-content:space-between;font-size:8px;font-weight:800;color:${subHex};">` +
-      `<span>TELEMETRY: ${escHtml(telemetrySpec)}</span>` +
-      `<span>EMERALD MESH</span>` +
+      `<div style="margin-top:4px;padding-top:3px;border-top:1px dashed #10B981;display:flex;justify-content:space-between;font-size:7.5px;font-weight:800;color:${subHex};">` +
+      `<span>${escHtml(telemetrySpec)}</span>` +
+      `<span>K8s / CLOUD</span>` +
       `</div>` +
       `</div>`;
 
-    return `<mxCell id="${id}" value="${escAttr(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.8;arcSize=8;verticalAlign=top;align=left;shadow=0;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
+    return `<mxCell id="${id}" value="${escAttr(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${stroke};strokeWidth=1.8;arcSize=7;verticalAlign=top;align=left;shadow=0;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
   };
 
   const makeConnector = (
@@ -447,324 +462,384 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
       dashed?: boolean;
       color?: string;
       offsetY?: number;
+      isReturn?: boolean;
     }
   ) => {
     const stroke = opts.color || '#059669';
     const dashStyle = opts.dashed ? 'dashed=1;dashPattern=6 4;' : '';
+    const fontColor = opts.isReturn ? '#0369A1' : '#065F46';
+    const bgHex = opts.isReturn ? '#E0F2FE' : '#ECFDF5';
+    const borderHex = opts.isReturn ? '#0284C7' : '#10B981';
     const geoXml =
       typeof opts.offsetY === 'number'
         ? `<mxGeometry relative="1" as="geometry"><mxPoint y="${opts.offsetY}" as="offset"/></mxGeometry>`
         : `<mxGeometry relative="1" as="geometry"/>`;
-    return `<mxCell id="${id}" value="${escAttr(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${stroke};strokeWidth=2;${dashStyle}endArrow=block;endFill=1;fontSize=9;fontStyle=1;fontColor=#065F46;labelBackgroundColor=#ECFDF5;labelBorderColor=#10B981;exitX=${opts.exitX};exitY=${opts.exitY};entryX=${opts.entryX};entryY=${opts.entryY};" edge="1" parent="1" source="${source}" target="${target}">${geoXml}</mxCell>`;
+    return `<mxCell id="${id}" value="${escAttr(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${stroke};strokeWidth=2;${dashStyle}endArrow=block;endFill=1;fontSize=8;fontStyle=1;fontColor=${fontColor};labelBackgroundColor=${bgHex};labelBorderColor=${borderHex};exitX=${opts.exitX};exitY=${opts.exitY};entryX=${opts.entryX};entryY=${opts.entryY};" edge="1" parent="1" source="${source}" target="${target}">${geoXml}</mxCell>`;
   };
 
   const topBannerHtml =
-    `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;width:1548px;padding:8px 16px;">` +
+    `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;width:1556px;padding:6px 14px;">` +
     `<div>` +
     `<div style="display:flex;align-items:center;gap:10px;">` +
-    `<span style="background:#10B981;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:900;letter-spacing:0.8px;">4-STRATUM VERTICAL CROSS-SECTION</span>` +
-    `<span style="font-size:16px;font-weight:900;color:#F8FAFC;letter-spacing:0.3px;">${escHtml(displayTitle)}</span>` +
+    `<span style="background:#10B981;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">4-STRATUM VERTICAL CROSS-SECTION · RFC HARDENED</span>` +
+    `<span style="font-size:15px;font-weight:900;color:#F8FAFC;letter-spacing:0.2px;">${escHtml(displayTitle)}</span>` +
     `</div>` +
-    `<div style="font-size:10px;font-weight:600;color:#6EE7B7;margin-top:3px;">💬 Generative Prompt: "${escHtml(shortPrompt)}..." • Aesthetic: Slate Gray (#0F172A) &amp; Vibrant Emerald-Green (#10B981)</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#6EE7B7;margin-top:3px;">💬 RFC Architecture: ↩ SSE Token Stream (HTTP/2) • Decoupled Laser Bridge Coordinator • Cross-Cutting Observability Plane • Private VPC Subnet (10.240.0.0/16) • Prompt: "${escHtml(shortPrompt)}..."</div>` +
     `</div>` +
-    `<div style="display:flex;gap:10px;">` +
-    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 10px;font-size:9.5px;font-weight:800;">vLLM + Speculative Decoding: 3.4x Speedup</span>` +
-    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 10px;font-size:9.5px;font-weight:800;">Bedrock: Liquid-Cooled H100 SXM5</span>` +
+    `<div style="display:flex;gap:8px;">` +
+    `<span style="background:#1E293B;color:#38BDF8;border:1px solid #0284C7;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">↩ SSE Stream: HTTP/2 Chunked</span>` +
+    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">VPC RDMA: 10.240.0.0/16</span>` +
     `</div>` +
     `</div>`;
 
-  // 3-Column Layout with 144px Horizontal Open Channels (Card Width = 416px at x = 72, 632, 1192)
-  // 4-Stratum Vertical Pitch with 56px Open Inter-Stratum Channels:
-  // Stratum 1: y=90..256 (Cards y=126..244) -> 56px Channel (y=256..312)
-  // Stratum 2: y=312..480 (Cards y=348..468) -> 56px Channel (y=480..536)
-  // Stratum 3: y=536..704 (Cards y=572..692) -> 56px Channel (y=704..760)
-  // Stratum 4: y=760..936 (Cards y=798..922)
+  // Left/Center 4 Horizontal Strata (`x=48..1220`, `w=1172`): 3 Pods per Stratum (`w=304` at `x=64, 484, 904` -> `116px` horizontal gaps!)
+  // Right Cross-Cutting Vertical Observability & Evaluation Plane (`x=1324..1632`, `w=308`): `116px` horizontal channel (`x=1208..1324`)!
   const cells: string[] = [
     `<mxCell id="0"/>`,
     `<mxCell id="1" parent="0"/>`,
-    // Slate Gray & Vibrant Emerald Top Banner
     `<mxCell id="hdr_title" value="${escAttr(topBannerHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#10B981;strokeWidth=2;arcSize=6;verticalAlign=middle;align=left;" vertex="1" parent="1"><mxGeometry x="48" y="14" width="1584" height="60" as="geometry"/></mxCell>`,
 
-    // STRATUM 1: TOP STRATUM (APPLICATION TIER)
+    // =========================================================================
+    // STRATUM 1: TOP STRATUM (APPLICATION & INGRESS TIER)
+    // =========================================================================
     makeStratumContainer(
       'stratum_1_top',
-      'TOP STRATUM',
+      'STRATUM 01 · INGRESS',
       'APPLICATION TIER',
-      'Floating Glass Landing Pads',
+      'Glass Landing Pads & Envoy API Mesh',
       90,
       166
     ),
     makePodCard(
       's1_pad_clients',
-      '◈',
-      'GLASS LANDING PAD',
+      'k8s',
+      'GKE INGRESS PAD',
       'Multi-Modal Client Apps Pad',
       'Vision, Voice, Stream & Web Clients',
       [
-        'Sleek floating glass landing pad with HTTP/3 & WebRTC',
-        'Bi-directional multi-modal token & frame streaming',
+        'HTTP/3 QUIC ingress & WebRTC bi-directional streaming',
+        'Receives chunked SSE token streams (<18ms TTFT)',
       ],
-      'p99 Ingress < 4ms • TLS 1.3',
-      72,
+      'SLA: 99.99% • p99 Ingress < 4ms',
+      64,
       126,
-      416,
+      304,
       118
     ),
     makePodCard(
       's1_api_mesh',
-      '◈',
-      'API MESH GATEWAY',
+      'mesh',
+      'ENVOY API GATEWAY',
       'Global API Mesh & Edge Router',
       'Zero-Trust Envoy Service Mesh & Multiplexer',
       [
-        'Dynamic request routing & speculative stream framing',
+        'Dispatches prompts to Coordinator & multiplexes SSE',
         'mTLS SPIFFE identity & adaptive token rate-limiting',
       ],
-      '1.2M req/s • Zero-Trust Mesh',
-      632,
+      '1.2M req/s • SSE Multiplexer',
+      484,
       126,
-      416,
+      304,
       118
     ),
     makePodCard(
       's1_telemetry_hud',
-      '◈',
-      'UI WIREFRAME HUD',
-      'Floating UI Telemetry Wireframes',
-      'Real-Time Architectural Lighting & Telemetry',
+      'shield',
+      'SAFETY & GUARDRAILS',
+      'NeMo & Llama-Guard Policy Gate',
+      'Inline Prompt Injection & PII Redaction Filter',
       [
-        'Live TTFT (<8ms), tokens/sec & KV-cache occupancy HUD',
-        'Speculative decoding acceptance rate & GPU thermal trace',
+        'Sub-3ms synchronous input/output safety tripwires',
+        'Streams guardrail spans to Cross-Cutting Plane',
       ],
-      'OpenTelemetry 100Hz HUD',
-      1192,
+      'LATENCY: <2.8ms • Zero-PII Egress',
+      904,
       126,
-      416,
+      304,
       118
     ),
 
-    // STRATUM 2: SECOND STRATUM (INFERENCE & ROUTING TIER)
+    // =========================================================================
+    // STRATUM 2: SECOND STRATUM (DECOUPLED COORDINATOR IN COL 2 + vLLM PODS)
+    // =========================================================================
     makeStratumContainer(
       'stratum_2_inference',
-      'SECOND STRATUM',
+      'STRATUM 02 · INFERENCE',
       'INFERENCE & ROUTING TIER',
-      'Hexagonal Pods & Laser Bridges',
+      'Decoupled Laser Bridge Coordinator & vLLM K8s Pods',
       312,
       168
     ),
     makePodCard(
       's2_vllm_pod',
-      '⬡',
-      'HEXAGONAL POD A',
-      'Containerized vLLM Inference Pod',
-      'PagedAttention KV-Cache & Continuous Batching',
+      'k8s',
+      'GKE K8s POD · TARGET',
+      'Containerized vLLM Target Engine',
+      '70B/405B Target LLM · PagedAttention KV-Cache',
       [
-        'Zero-fragmentation PagedAttention tensor memory',
-        'FP8 / AWQ quantized high-throughput token generation',
+        'Verifies draft tokens in single pass & emits SSE stream',
+        'FP8 quantized continuous batching with zero fragmentation',
       ],
-      'TTFT 6.2ms • 4,800 tok/s',
-      72,
+      'TTFT: 14.2ms • 4,800 tok/s • SSE Emitter',
+      64,
       348,
-      416,
+      304,
       120
     ),
     makePodCard(
       's2_spec_decode_pod',
-      '⬡',
-      'HEXAGONAL POD B',
-      'Speculative Decoding Engine Pod',
-      'Draft-and-Verify Parallel Token Acceleration',
+      'mesh',
+      'CENTRAL ORCHESTRATOR',
+      'Laser Bridge Speculative Coordinator',
+      'Intermediary Draft-Verify Router & KV Disaggregator',
       [
-        'Lightweight draft model proposes 5-token lookahead',
-        'Single-pass target model verification (3.4x speedup)',
+        'Orchestrates 5-token lookahead draft vs. vLLM verification',
+        'Routes 800G optical KV-cache state between Target & Draft',
       ],
-      '88% Acceptance • 3.4x Speedup',
-      632,
+      'ORCHESTRATOR: 800G Optical Laser Bridge',
+      484,
       348,
-      416,
+      304,
       120
     ),
     makePodCard(
       's2_laser_router_pod',
-      '⬡',
-      'HEXAGONAL POD C',
-      'High-Speed Laser Bridge Coordinator',
-      'Optical Inter-Pod Routing & KV Disaggregation',
+      'k8s',
+      'GKE K8s POD · DRAFT',
+      'Speculative Decoding Draft Pod',
+      '8B Eagle/Medusa Lookahead Draft Engine',
       [
-        'Connects floating hexagonal pods via 800G laser bridges',
-        'Sub-microsecond prefill-to-decode KV-cache transfer',
+        'Generates 5 candidate lookahead tokens in <1.8ms',
+        'Returns speculative tree to Coordinator for verification',
       ],
-      '800G Optical Laser Bridge',
-      1192,
+      'ACCEPTANCE: 88% • 3.4x Decode Speedup',
+      904,
       348,
-      416,
+      304,
       120
     ),
 
+    // =========================================================================
     // STRATUM 3: THIRD STRATUM (CONTEXT & MEMORY TIER)
+    // =========================================================================
     makeStratumContainer(
       'stratum_3_memory',
-      'THIRD STRATUM',
+      'STRATUM 03 · MEMORY',
       'CONTEXT & MEMORY TIER',
-      'Honeycomb Storage Cells',
+      'Honeycomb Semantic Caches & Vector Cells',
       536,
       168
     ),
     makePodCard(
       's3_redis_cell',
-      '⬢',
-      'HONEYCOMB CELL 1',
+      'db',
+      'MEMORYSTORE REDIS',
       'Redis Semantic Memory Cache',
-      'Glowing In-Memory Prefix & Embedding Cache',
+      'Global Prefix KV-Cache & Embedding Hash Cell',
       [
-        'Sub-millisecond semantic cosine similarity cache hits',
-        'Shared multi-turn session state & PagedAttention offload',
+        'Sub-millisecond semantic cosine similarity prefix hits',
+        'Shared multi-turn session KV-cache offload for vLLM',
       ],
-      'p99 < 0.4ms • 94% Hit',
-      72,
+      'LATENCY: p99 < 0.4ms • 94.8% KV Hit',
+      64,
       572,
-      416,
+      304,
       120
     ),
     makePodCard(
       's3_vector_cell',
-      '⬢',
-      'HONEYCOMB CELL 2',
+      'db',
+      'VERTEX VECTOR SEARCH',
       'Vector DB Honeycomb Cluster',
       'Suspended High-Dimensional HNSW / ScaNN Index',
       [
         'Billion-scale 1536-dim embeddings with quantized recall',
-        'Real-time hybrid dense + sparse lexical RAG retrieval',
+        'Hybrid dense + sparse lexical RAG grounding for Coordinator',
       ],
-      'p99 < 2.1ms @ 10B Vectors',
-      632,
+      'LATENCY: p99 < 2.1ms @ 10B Vectors',
+      484,
       572,
-      416,
+      304,
       120
     ),
     makePodCard(
       's3_doc_cell',
-      '⬢',
-      'HONEYCOMB CELL 3',
+      'db',
+      'CLOUD SPANNER / GCS',
       'Distributed Document Store Cells',
-      'Multi-Modal Context Chunks & Knowledge Graph',
+      'Multi-Modal Context Chunks & Lineage Graph',
       [
         'ACID document & lineage store for grounded citations',
         'Zero-copy streaming hydration into vLLM context window',
       ],
-      'Multi-Modal Chunk Store',
-      1192,
+      'DURABILITY: 99.999% Multi-Region Store',
+      904,
       572,
-      416,
+      304,
       120
     ),
 
-    // STRATUM 4: FOUNDATION BEDROCK (COMPUTE CLUSTER TIER)
+    // =========================================================================
+    // STRATUM 4: FOUNDATION BEDROCK INSIDE PRIVATE VPC / RDMA SUBNET (10.240.0.0/16)
+    // =========================================================================
+    `<mxCell id="vpc_rdma_subnet_boundary" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#38BDF8;strokeWidth=2.2;dashed=1;dashPattern=8 4;arcSize=5;" vertex="1" parent="1"><mxGeometry x="40" y="752" width="1188" height="190" as="geometry"/></mxCell>`,
     makeStratumContainer(
       'stratum_4_bedrock',
-      'FOUNDATION BEDROCK',
-      'COMPUTE CLUSTER TIER',
-      'Liquid-Cooled H100 Monolith',
+      'STRATUM 04 · BEDROCK VPC',
+      'PRIVATE VPC SUBNET (10.240.0.0/16)',
+      'Liquid-Cooled H100 SXM5 & GPUDirect RDMA Monolith',
       760,
       176,
       true
     ),
     makePodCard(
       's4_h100_racks',
-      '⛰',
-      'SUBTERRANEAN MONOLITH',
-      'Liquid-Cooled H100 SXM5 GPU Racks',
-      'Dense 8x H100 80GB HBM3 Server Monolith',
+      'gpu',
+      'A3 MEGA · 8x H100 SXM5',
+      'Liquid-Cooled H100 SXM5 Racks',
+      'Dense 80GB HBM3 GPU Monolith (VPC 10.240.1.0/24)',
       [
         'Direct-to-chip closed-loop liquid cooling (PUE 1.06)',
-        '3.35 TB/s HBM3 memory bandwidth per H100 SXM5 GPU',
+        '3.35 TB/s HBM3 bandwidth per H100 SXM5 Tensor Core',
       ],
-      '32 PFLOPS FP8 • 42°C Loop',
-      72,
+      'COMPUTE: 32 PFLOPS FP8 • 42°C Loop',
+      64,
       798,
-      416,
+      304,
       124,
       true
     ),
     makePodCard(
       's4_nvlink_fabric',
-      '⛰',
-      'RDMA TENSOR FABRIC',
+      'gpu',
+      'GPUDIRECT RDMA SUBNET',
       'NVLink 4.0 & InfiniBand Fabric',
-      '900 GB/s GPU-to-GPU & 400G Quantum-2 RDMA',
+      'Cross-Stratum 900 GB/s NVLink & 3.2 Tbps Quantum-2',
       [
         'Non-blocking rail-optimized fat-tree GPU interconnect',
         'GPUDirect RDMA zero-CPU-overhead tensor collectives',
       ],
-      '900 GB/s NVLink • 3.2 Tbps',
-      632,
+      'FABRIC: 900 GB/s NVLink • 3.2 Tbps',
+      484,
       798,
-      416,
+      304,
       124,
       true
     ),
     makePodCard(
       's4_cloud_bedrock',
-      '⛰',
-      'INFRASTRUCTURE BEDROCK',
+      'gpu',
+      'BARE-METAL KMS ENCLAVE',
       'Heavy Cloud Infrastructure Bedrock',
-      'Subterranean Bare-Metal Hypervisor & HVDC Anchor',
+      'Hardware Root-of-Trust & Redundant HVDC Busbars',
       [
         'Hardware-rooted Nitro/Titan attestation & bare-metal scheduling',
-        'Redundant HVDC busbars & autonomous thermal failover',
+        'Private VPC Service Controls perimeter & autonomous failover',
       ],
-      '99.999% Tier-IV Bedrock',
-      1192,
+      'SLA: 99.999% Tier-IV VPC Bedrock',
+      904,
       798,
-      416,
+      304,
       124,
       true
     ),
 
-    // HORIZONTAL CONNECTORS across 144px Open Channels
-    makeConnector('e_s1_1', 's1_pad_clients', 's1_api_mesh', '❶a Glass Pad Ingress', {
+    // =========================================================================
+    // CROSS-CUTTING VERTICAL OBSERVABILITY, GUARDRAILS & EVALUATION PLANE (x=1324..1632)
+    // =========================================================================
+    `<mxCell id="obs_plane_container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#10B981;strokeWidth=2.5;arcSize=3;" vertex="1" parent="1"><mxGeometry x="1324" y="90" width="308" height="846" as="geometry"/></mxCell>`,
+    `<mxCell id="obs_plane_hdr" value="${escAttr(
+      `<div style="padding:4px 8px;font-family:Inter,-apple-system,sans-serif;text-align:center;">` +
+        `<div style="background:#10B981;color:#0F172A;font-size:8px;font-weight:900;padding:1.5px 6px;border-radius:4px;letter-spacing:0.6px;display:inline-block;margin-bottom:2px;">CROSS-CUTTING PLANE · ALL 4 STRATA</div>` +
+        `<div style="font-size:10px;font-weight:900;color:#F8FAFC;">Observability, Guardrails &amp; Evaluation HUD</div>` +
+        `</div>`
+    )}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#10B981;strokeWidth=1.2;arcSize=10;" vertex="1" parent="1"><mxGeometry x="1336" y="96" width="284" height="30" as="geometry"/></mxCell>`,
+
+    makePodCard(
+      'obs_1',
+      'shield',
+      'OTLP 100Hz HUD',
+      'Floating UI Telemetry Wireframe HUD',
+      'Live TTFT, Token Burn Rate & Guardrail Tripwires',
+      [
+        'Streams 100Hz OpenTelemetry spans & safety alerts',
+        'Real-time cost/token burn telemetry ($0.42/1M tok)',
+      ],
+      'p99 E2E: 18.4ms • Burn: $0.42/1M tok',
+      1336,
+      132,
+      284,
+      114,
+      true
+    ),
+    makePodCard(
+      'obs_2',
+      'mesh',
+      'DECODE TELEMETRY',
+      'vLLM & Speculative Decode Auditor',
+      'Draft Acceptance (88.4%) & KV-Cache Occupancy',
+      [
+        'Monitors PagedAttention KV-cache block utilization',
+        'Tracks draft-vs-target token verification speedup',
+      ],
+      'Speedup: 3.4x • KV Frag: 0.0%',
+      1336,
+      352,
+      284,
+      116,
+      true
+    ),
+    makePodCard(
+      'obs_3',
+      'db',
+      'RAG & CACHE EVAL',
+      'Semantic Drift & Recall@10 Probe',
+      'Redis Hit Ratio (94.8%) & HNSW Grounding Score',
+      [
+        'Continuous cosine drift detection & embedding freshness',
+        'Measures RAG faithfulness & citation lineage recall',
+      ],
+      'Recall@10: 99.1% • Drift: <0.02',
+      1336,
+      574,
+      284,
+      116,
+      true
+    ),
+    makePodCard(
+      'obs_4',
+      'gpu',
+      'DCGM GPU TELEMETRY',
+      'Thermal Throttling & NVLink Monitor',
+      'H100 SXM5 Junction Temp (42°C) & RDMA Saturation',
+      [
+        'Per-GPU DCGM thermal throttling & HVDC power draw',
+        'Monitors 900GB/s NVLink & 3.2Tbps RDMA congestion',
+      ],
+      'Thermal: 0 Throttles • PUE: 1.06',
+      1336,
+      798,
+      284,
+      122,
+      true
+    ),
+
+    // =========================================================================
+    // HORIZONTAL CONNECTORS (116px H-Gaps between Pods + 128px Channel to Observability Plane)
+    // =========================================================================
+    makeConnector('e_s1_1', 's1_pad_clients', 's1_api_mesh', '❶a HTTP/3 Ingress', {
       exitX: 1,
       exitY: 0.5,
       entryX: 0,
       entryY: 0.5,
     }),
-    makeConnector('e_s1_2', 's1_api_mesh', 's1_telemetry_hud', '❶b HUD Telemetry', {
+    makeConnector('e_s1_2', 's1_api_mesh', 's1_telemetry_hud', '❶b Policy Check', {
       exitX: 1,
       exitY: 0.5,
       entryX: 0,
       entryY: 0.5,
-      dashed: true,
     }),
-
-    // VERTICAL CROSS-SECTION CONNECTORS: STRATUM 1 -> STRATUM 2
-    // Left shaft at exitX=0.92 (x=455, right of the compact Stratum header text x=60..428!)
-    // Mid shaft at exitX=0.5 (x=840) and Right shaft at exitX=0.5 (x=1400)
-    // offsetY=-12 places every badge squarely inside the 56px open inter-stratum channel (y=256..312)!
-    makeConnector('e_v1_left', 's1_pad_clients', 's2_vllm_pod', '❷a Prompt Stream', {
-      exitX: 0.92,
-      exitY: 1,
-      entryX: 0.92,
-      entryY: 0,
-      offsetY: -12,
-    }),
-    makeConnector('e_v1_mid', 's1_api_mesh', 's2_spec_decode_pod', '❷b Speculative Route', {
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
-      offsetY: -12,
-    }),
-    makeConnector('e_v1_right', 's1_telemetry_hud', 's2_laser_router_pod', '❷c Wireframe Sync', {
-      exitX: 0.5,
-      exitY: 1,
-      entryX: 0.5,
-      entryY: 0,
-      dashed: true,
-      offsetY: -12,
-    }),
-
-    // HORIZONTAL LASER BRIDGES WITHIN STRATUM 2 (144px Open Channel)
-    makeConnector('e_laser_1', 's2_vllm_pod', 's2_spec_decode_pod', '⚡ Laser Bridge α', {
+    makeConnector('e_s1_obs', 's1_telemetry_hud', 'obs_1', 'OTLP 100Hz', {
       exitX: 1,
       exitY: 0.5,
       entryX: 0,
@@ -772,7 +847,23 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
       dashed: true,
       color: '#10B981',
     }),
-    makeConnector('e_laser_2', 's2_spec_decode_pod', 's2_laser_router_pod', '⚡ Laser Bridge β', {
+
+    // Stratum 2: Central Coordinator (s2_spec_decode_pod in Col 2) orchestrates vLLM Target (Col 1) and Draft Pod (Col 3)
+    makeConnector('e_laser_1', 's2_spec_decode_pod', 's2_vllm_pod', '⚡ Laser Bridge α (Verify)', {
+      exitX: 0,
+      exitY: 0.5,
+      entryX: 1,
+      entryY: 0.5,
+      color: '#10B981',
+    }),
+    makeConnector('e_laser_2', 's2_spec_decode_pod', 's2_laser_router_pod', '⚡ Laser Bridge β (Draft)', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      color: '#10B981',
+    }),
+    makeConnector('e_s2_obs', 's2_laser_router_pod', 'obs_2', 'KV & Draft Eval', {
       exitX: 1,
       exitY: 0.5,
       entryX: 0,
@@ -781,11 +872,91 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
       color: '#10B981',
     }),
 
-    // VERTICAL CROSS-SECTION CONNECTORS: STRATUM 2 -> STRATUM 3 (56px Open Channel y=480..536)
+    // Stratum 3 Horizontal Honeycomb Sync + Observability Tap
+    makeConnector('e_s3_1', 's3_redis_cell', 's3_vector_cell', 'Honeycomb Sync', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      dashed: true,
+    }),
+    makeConnector('e_s3_2', 's3_vector_cell', 's3_doc_cell', 'Chunk Lineage', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      dashed: true,
+    }),
+    makeConnector('e_s3_obs', 's3_doc_cell', 'obs_3', 'Recall@10 Audit', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      dashed: true,
+      color: '#10B981',
+    }),
+
+    // Stratum 4 Horizontal Bedrock Bus + Observability Tap
+    makeConnector('e_s4_1', 's4_h100_racks', 's4_nvlink_fabric', 'NVLink 4.0 Bus', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      color: '#10B981',
+    }),
+    makeConnector('e_s4_2', 's4_nvlink_fabric', 's4_cloud_bedrock', 'VPC RDMA Mesh', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      color: '#10B981',
+    }),
+    makeConnector('e_s4_obs', 's4_cloud_bedrock', 'obs_4', 'DCGM 42°C', {
+      exitX: 1,
+      exitY: 0.5,
+      entryX: 0,
+      entryY: 0.5,
+      dashed: true,
+      color: '#10B981',
+    }),
+
+    // =========================================================================
+    // VERTICAL CROSS-SECTION CONNECTORS + EXPLICIT UPWARD SSE TOKEN STREAM RETURN
+    // =========================================================================
+    // 1. Explicit Return Stream Edge (`s2_vllm_pod -> s1_pad_clients`) flowing UPWARD (`exitY=0, entryY=1`)
+    makeConnector('e_v1_sse_return', 's2_vllm_pod', 's1_pad_clients', '↩ SSE Token Stream (HTTP/2)', {
+      exitX: 0.96,
+      exitY: 0,
+      entryX: 0.96,
+      entryY: 1,
+      dashed: true,
+      color: '#0284C7',
+      offsetY: -12,
+      isReturn: true,
+    }),
+    // 2. Central Prompt Dispatch from Global API Mesh (Stratum 1 Col 2) down to Decoupled Coordinator (Stratum 2 Col 2)
+    makeConnector('e_v1_mid', 's1_api_mesh', 's2_spec_decode_pod', '❷ Prompt Dispatch', {
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
+      offsetY: -12,
+    }),
+    // 3. Guardrail Budget Sync to Draft Pod
+    makeConnector('e_v1_right', 's1_telemetry_hud', 's2_laser_router_pod', '❷b Guardrail Budget', {
+      exitX: 0.5,
+      exitY: 1,
+      entryX: 0.5,
+      entryY: 0,
+      dashed: true,
+      offsetY: -12,
+    }),
+
+    // Stratum 2 -> Stratum 3
     makeConnector('e_v2_left', 's2_vllm_pod', 's3_redis_cell', '❸a KV Prefix Lookup', {
-      exitX: 0.92,
+      exitX: 0.96,
       exitY: 1,
-      entryX: 0.92,
+      entryX: 0.96,
       entryY: 0,
       offsetY: -12,
     }),
@@ -804,27 +975,11 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
       offsetY: -12,
     }),
 
-    // HORIZONTAL HONEYCOMB SYNC WITHIN STRATUM 3 (144px Open Channel)
-    makeConnector('e_s3_1', 's3_redis_cell', 's3_vector_cell', 'Honeycomb Sync', {
-      exitX: 1,
-      exitY: 0.5,
-      entryX: 0,
-      entryY: 0.5,
-      dashed: true,
-    }),
-    makeConnector('e_s3_2', 's3_vector_cell', 's3_doc_cell', 'Chunk Lineage', {
-      exitX: 1,
-      exitY: 0.5,
-      entryX: 0,
-      entryY: 0.5,
-      dashed: true,
-    }),
-
-    // VERTICAL CROSS-SECTION CONNECTORS: STRATUM 3 -> STRATUM 4 (56px Open Channel y=704..760)
+    // Stratum 3 -> Stratum 4
     makeConnector('e_v3_left', 's3_redis_cell', 's4_h100_racks', '❹a GPUDirect DMA', {
-      exitX: 0.92,
+      exitX: 0.96,
       exitY: 1,
-      entryX: 0.92,
+      entryX: 0.96,
       entryY: 0,
       offsetY: -12,
     }),
@@ -835,28 +990,12 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
       entryY: 0,
       offsetY: -12,
     }),
-    makeConnector('e_v3_right', 's3_doc_cell', 's4_cloud_bedrock', '❹c Bare-Metal Anchor', {
+    makeConnector('e_v3_right', 's3_doc_cell', 's4_cloud_bedrock', '❹c VPC Bare-Metal', {
       exitX: 0.5,
       exitY: 1,
       entryX: 0.5,
       entryY: 0,
       offsetY: -12,
-    }),
-
-    // HORIZONTAL BEDROCK MONOLITH BUS WITHIN STRATUM 4 (144px Open Channel)
-    makeConnector('e_s4_1', 's4_h100_racks', 's4_nvlink_fabric', 'NVLink 4.0 Bus', {
-      exitX: 1,
-      exitY: 0.5,
-      entryX: 0,
-      entryY: 0.5,
-      color: '#10B981',
-    }),
-    makeConnector('e_s4_2', 's4_nvlink_fabric', 's4_cloud_bedrock', 'HVDC & Liquid Loop', {
-      exitX: 1,
-      exitY: 0.5,
-      entryX: 0,
-      entryY: 0.5,
-      color: '#10B981',
     }),
   ];
 
