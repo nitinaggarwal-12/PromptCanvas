@@ -166,20 +166,79 @@ function esc(s: string): string {
 export function generateInfographicBlueprintXmlById(
   id: string,
   customTitle?: string,
-  spec?: DynamicInfographicSpec
+  spec?: DynamicInfographicSpec,
+  level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
 ): string {
-  if (id === '52' && !spec && !customTitle) {
+  const cleanCustomTitle =
+    customTitle &&
+    !customTitle.includes('Global Real-Time Payments Mesh') &&
+    customTitle.trim() !== ''
+      ? customTitle.trim()
+      : undefined;
+
+  if (id === '52' && !spec && !cleanCustomTitle && level === 'L2') {
     return generateTemplate52ContextHarnessLoopGraphXml();
   }
 
+  const levelBadgeMap: Record<'L1' | 'L2' | 'L3' | 'L4', string> = {
+    L1: 'L1 • CONCEPTUAL EXECUTIVE VIEW',
+    L2: 'L2 • LOGICAL ARCHITECTURE VIEW',
+    L3: 'L3 • TECHNICAL IMPLEMENTATION VIEW',
+    L4: 'L4 • PRODUCTION DEPLOYMENT VIEW',
+  };
+  const activeLevelLabel = levelBadgeMap[level] || levelBadgeMap.L2;
+
   const meta = INFOGRAPHIC_BLUEPRINTS_LIST.find((m) => m.id === id) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
-  const title = esc(spec?.title || customTitle || meta.name.replace(/^Infographic:\s*/i, ''));
-  const subtitle = esc(spec?.subtitle || meta.subtitle);
+  const title = esc(spec?.title || cleanCustomTitle || `${meta.name.replace(/^Infographic:\s*/i, '')} [${level}]`);
+  const subtitle = esc(spec?.subtitle || `${meta.subtitle} (${activeLevelLabel})`);
   const takeaway = esc(
     spec?.takeaway ||
-      `KEY TAKEAWAY: Structured ${meta.shortType} blueprint engineered for high-contrast executive review and live Draw.io customization.`
+      `KEY TAKEAWAY (${activeLevelLabel}): Structured ${meta.shortType} blueprint engineered for high-contrast executive review and live Draw.io customization.`
   );
   const items = spec?.items && spec.items.length > 0 ? spec.items : null;
+
+  // 0. #55: BUBBLE CONCEPTUAL (Left Executive Assumptions vs Right 12 Color-Coded Shadow AI / Agent Bubbles)
+  if (id === '55') {
+    const leftAssumptions = items?.slice(0, 4) || [
+      { code: '01', title: '"We blocked ChatGPT at the firewall"', badge: 'ASSUMPTION 1', description: 'Leadership assumes network blocks stop unapproved AI usage across departments.' },
+      { code: '02', title: '"Only IT runs approved pilots"', badge: 'ASSUMPTION 2', description: 'Leadership believes AI adoption waits for formal security & architecture sign-off.' },
+      { code: '03', title: '"No corporate data leaves our VPC"', badge: 'ASSUMPTION 3', description: 'Leadership assumes spreadsheets, PDFs, and code stay strictly on-prem.' },
+      { code: '04', title: '"Our AI governance policy is enough"', badge: 'ASSUMPTION 4', description: 'Static PDF policies without runtime guardrails or sanctioned Vertex AI sandboxes.' }
+    ];
+    const bubbles = [
+      { label: 'Sales CRM&lt;br/&gt;Chrome Ext', x: 590, y: 185, w: 155, h: 105, fill: '#FEE2E2', stroke: '#DC2626' },
+      { label: 'Shadow&lt;br/&gt;Coding Bot', x: 775, y: 170, w: 165, h: 115, fill: '#FEF3C7', stroke: '#D97706' },
+      { label: 'Finance CSV&lt;br/&gt;Summarizer', x: 970, y: 185, w: 160, h: 105, fill: '#DBEAFE', stroke: '#2563EB' },
+      { label: 'Personal&lt;br/&gt;API Keys', x: 1160, y: 175, w: 155, h: 110, fill: '#F3E8FF', stroke: '#9333EA' },
+      { label: 'Meeting&lt;br/&gt;Note Taker', x: 575, y: 330, w: 165, h: 110, fill: '#DCFCE7', stroke: '#16A34A' },
+      { label: 'Unverified&lt;br/&gt;MCP Server', x: 770, y: 320, w: 175, h: 120, fill: '#FFEDD5', stroke: '#EA580C' },
+      { label: 'Legal PDF&lt;br/&gt;Cloud Upload', x: 975, y: 330, w: 165, h: 110, fill: '#FCE7F3', stroke: '#DB2777' },
+      { label: 'Support&lt;br/&gt;Auto-Draft', x: 1165, y: 325, w: 155, h: 110, fill: '#E0E7FF', stroke: '#4F46E5' },
+      { label: 'HR Resume&lt;br/&gt;Screener', x: 595, y: 475, w: 160, h: 105, fill: '#CCFBF1', stroke: '#0D9488' },
+      { label: 'Marketing&lt;br/&gt;Copy Agent', x: 785, y: 475, w: 165, h: 105, fill: '#FEF9C3', stroke: '#CA8A04' },
+      { label: 'Local LLM&lt;br/&gt;On Laptop', x: 980, y: 475, w: 160, h: 105, fill: '#FFE4E6', stroke: '#E11D48' },
+      { label: 'Slack Webhook&lt;br/&gt;Prompt Bot', x: 1165, y: 475, w: 155, h: 105, fill: '#F1F5F9', stroke: '#475569' }
+    ];
+    let leftXml = '';
+    leftAssumptions.forEach((a, idx) => {
+      const y = 185 + idx * 125;
+      leftXml += `<mxCell id="la_${idx}" value="&lt;div style='padding:10px;text-align:left;'&gt;&lt;div style='font-size:10px;font-weight:800;color:#475569;'&gt;${esc(a.badge)} (${level})&lt;/div&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${esc(a.title)}&lt;/div&gt;&lt;div style='font-size:11.5px;color:#334155;margin-top:4px;'&gt;${esc(a.description)}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="75" y="${y}" width="410" height="108" as="geometry"/></mxCell>`;
+    });
+    let bubbleXml = '';
+    bubbles.forEach((b, idx) => {
+      bubbleXml += `<mxCell id="bub_${idx}" value="&lt;div style='font-family:Inter,sans-serif;text-align:center;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;${b.label}&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9.5px;font-weight:800;color:${b.stroke};'&gt;UNSANCTIONED • ${level}&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=${b.fill};strokeColor=${b.stroke};strokeWidth=2.5;" vertex="1" parent="1"><mxGeometry x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" as="geometry"/></mxCell>`;
+    });
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_55" name="${title}"><mxGraphModel dx="1440" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="860" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;&lt;div style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.5px;'&gt;INFOGRAPHIC BLUEPRINT #55 • BUBBLE CONCEPTUAL • ${activeLevelLabel}&lt;/div&gt;&lt;div style='font-size:26px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="82" as="geometry"/></mxCell>
+      <mxCell id="zoneL" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="120" width="450" height="585" as="geometry"/></mxCell>
+      <mxCell id="hdrL" value="WHAT LEADERSHIP THINKS (4 ASSUMPTIONS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="75" y="135" width="410" height="36" as="geometry"/></mxCell>
+      <mxCell id="zoneR" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;dashed=1;" vertex="1" parent="1"><mxGeometry x="535" y="120" width="850" height="585" as="geometry"/></mxCell>
+      <mxCell id="hdrR" value="WHAT IS ACTUALLY RUNNING (12+ SHADOW AI &amp; AGENT BUBBLES)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2626;strokeColor=#991B1B;fontColor=#FFFFFF;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="565" y="135" width="790" height="36" as="geometry"/></mxCell>
+      ${leftXml}
+      ${bubbleXml}
+      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="55" y="725" width="1330" height="46" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
 
   // 1. #52: ANATOMY / DECONSTRUCTION (4 Horizontal Deconstruction Rows with Left Input -> Model -> Right Output + Prompt Bar)
   if (id === '52') {

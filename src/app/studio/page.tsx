@@ -422,7 +422,7 @@ function StudioMain() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleZoomIn, handleZoomOut, handleResetZoom]);
 
-  const [selectedDiagramMode, setSelectedDiagramMode] = useState<'blueprint' | 'flowchart' | 'infographic' | 'architecture'>('flowchart');
+  const [selectedDiagramMode, setSelectedDiagramMode] = useState<'blueprint' | 'flowchart' | 'infographic' | 'architecture'>('blueprint');
   const [selectedAbstractionLevel, setSelectedAbstractionLevel] = useState<'L1' | 'L2' | 'L3' | 'L4'>('L2');
   const [selectedFlowDirection, setSelectedFlowDirection] = useState<'TD' | 'LR'>('LR');
   const [selectedInfographicBlueprintId, setSelectedInfographicBlueprintId] = useState<string>('52');
@@ -2743,8 +2743,37 @@ function StudioMain() {
                                   key={mode.id}
                                   id={`mode-btn-${mode.id}`}
                                   type="button"
-                                  onMouseEnter={() => setSelectedDiagramMode(mode.id)}
-                                  onClick={() => setSelectedDiagramMode(mode.id)}
+                                  onClick={() => {
+                                    setSelectedDiagramMode(mode.id);
+                                    if (mode.id === 'blueprint') {
+                                      const bpId =
+                                        selectedBlueprintId === 'custom' || Number(selectedBlueprintId) >= 52
+                                          ? '01'
+                                          : selectedBlueprintId;
+                                      const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
+                                      handleSelectBlueprint(bp, selectedDomain);
+                                    } else if (mode.id === 'infographic') {
+                                      setXml(
+                                        generateInfographicBlueprintXmlById(
+                                          selectedInfographicBlueprintId,
+                                          promptInput.trim() || undefined,
+                                          undefined,
+                                          selectedAbstractionLevel
+                                        )
+                                      );
+                                      setSelectedBlueprintId(selectedInfographicBlueprintId);
+                                    } else {
+                                      setXml(
+                                        generateLogicalFlowchartDrawioXml(
+                                          promptInput.trim(),
+                                          promptInput.trim() || undefined,
+                                          selectedFlowDirection,
+                                          selectedAbstractionLevel
+                                        )
+                                      );
+                                      setSelectedBlueprintId('custom');
+                                    }
+                                  }}
                                   className={`px-2 py-2 rounded-lg border text-center transition cursor-pointer relative flex flex-col items-center justify-center gap-0.5 ${
                                     isActive
                                       ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
@@ -2815,7 +2844,28 @@ function StudioMain() {
                                     key={lvl}
                                     id={`level-btn-${lvl}`}
                                     type="button"
-                                    onClick={() => setSelectedAbstractionLevel(lvl)}
+                                    onClick={() => {
+                                      setSelectedAbstractionLevel(lvl);
+                                      if (selectedDiagramMode === 'infographic') {
+                                        setXml(
+                                          generateInfographicBlueprintXmlById(
+                                            selectedInfographicBlueprintId,
+                                            promptInput.trim() || undefined,
+                                            undefined,
+                                            lvl
+                                          )
+                                        );
+                                      } else if (selectedDiagramMode === 'flowchart') {
+                                        setXml(
+                                          generateLogicalFlowchartDrawioXml(
+                                            promptInput.trim(),
+                                            promptInput.trim() || undefined,
+                                            selectedFlowDirection,
+                                            lvl
+                                          )
+                                        );
+                                      }
+                                    }}
                                     className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer ${
                                       selectedAbstractionLevel === lvl
                                         ? 'bg-slate-900 text-white shadow-2xs'
@@ -2832,7 +2882,17 @@ function StudioMain() {
                                   <button
                                     id="direction-btn-lr"
                                     type="button"
-                                    onClick={() => setSelectedFlowDirection('LR')}
+                                    onClick={() => {
+                                      setSelectedFlowDirection('LR');
+                                      setXml(
+                                        generateLogicalFlowchartDrawioXml(
+                                          promptInput.trim(),
+                                          promptInput.trim() || undefined,
+                                          'LR',
+                                          selectedAbstractionLevel
+                                        )
+                                      );
+                                    }}
                                     className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
                                       selectedFlowDirection === 'LR'
                                         ? 'bg-blue-600 text-white shadow-2xs'
@@ -2844,7 +2904,17 @@ function StudioMain() {
                                   <button
                                     id="direction-btn-td"
                                     type="button"
-                                    onClick={() => setSelectedFlowDirection('TD')}
+                                    onClick={() => {
+                                      setSelectedFlowDirection('TD');
+                                      setXml(
+                                        generateLogicalFlowchartDrawioXml(
+                                          promptInput.trim(),
+                                          promptInput.trim() || undefined,
+                                          'TD',
+                                          selectedAbstractionLevel
+                                        )
+                                      );
+                                    }}
                                     className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
                                       selectedFlowDirection === 'TD'
                                         ? 'bg-blue-600 text-white shadow-2xs'
@@ -2873,13 +2943,17 @@ function StudioMain() {
                                   <button
                                     key={ib.id}
                                     type="button"
-                                    onMouseEnter={() => {
-                                      setSelectedInfographicBlueprintId(ib.id);
-                                      setSelectedBlueprintId(ib.id);
-                                    }}
                                     onClick={() => {
                                       setSelectedInfographicBlueprintId(ib.id);
                                       setSelectedBlueprintId(ib.id);
+                                      setXml(
+                                        generateInfographicBlueprintXmlById(
+                                          ib.id,
+                                          promptInput.trim() || undefined,
+                                          undefined,
+                                          selectedAbstractionLevel
+                                        )
+                                      );
                                     }}
                                     className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
                                       isSelected
@@ -2917,8 +2991,10 @@ function StudioMain() {
                                     <button
                                       key={bp.id}
                                       type="button"
-                                      onMouseEnter={() => setSelectedBlueprintId(bp.id)}
-                                      onClick={() => setSelectedBlueprintId(bp.id)}
+                                      onClick={() => {
+                                        setSelectedBlueprintId(bp.id);
+                                        handleSelectBlueprint(bp, selectedDomain);
+                                      }}
                                       className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
                                         isSelected
                                           ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
@@ -2967,8 +3043,18 @@ function StudioMain() {
                                   <button
                                     key={item.id}
                                     type="button"
-                                    onMouseEnter={() => setSelectedAbstractionLevel(item.id)}
-                                    onClick={() => setSelectedAbstractionLevel(item.id)}
+                                    onClick={() => {
+                                      setSelectedAbstractionLevel(item.id);
+                                      setXml(
+                                        generateLogicalFlowchartDrawioXml(
+                                          promptInput.trim(),
+                                          promptInput.trim() || undefined,
+                                          selectedFlowDirection,
+                                          item.id
+                                        )
+                                      );
+                                      setSelectedBlueprintId('custom');
+                                    }}
                                     className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer ${
                                       isSelected
                                         ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
@@ -2997,7 +3083,7 @@ function StudioMain() {
                           <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center justify-between">
                             <span>3. Leaf Preview & Initiate Action</span>
                             <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-600 text-white rounded font-mono">
-                              Click Leaf
+                              Synced Live ✓
                             </span>
                           </div>
 
@@ -3072,15 +3158,17 @@ function StudioMain() {
                                     setXml(
                                       generateInfographicBlueprintXmlById(
                                         selectedInfographicBlueprintId,
-                                        promptInput || ast.metadata.projectTitle || undefined
+                                        promptInput.trim() || undefined,
+                                        undefined,
+                                        selectedAbstractionLevel
                                       )
                                     );
                                     setSelectedBlueprintId(selectedInfographicBlueprintId);
                                   } else {
                                     setXml(
                                       generateLogicalFlowchartDrawioXml(
-                                        promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
-                                        ast.metadata.projectTitle,
+                                        promptInput.trim(),
+                                        promptInput.trim() || undefined,
                                         selectedFlowDirection,
                                         selectedAbstractionLevel
                                       )
@@ -3108,14 +3196,16 @@ function StudioMain() {
                                   } else if (selectedDiagramMode === 'infographic') {
                                     nextXml = generateInfographicBlueprintXmlById(
                                       selectedInfographicBlueprintId,
-                                      promptInput || ast.metadata.projectTitle || undefined
+                                      promptInput.trim() || undefined,
+                                      undefined,
+                                      selectedAbstractionLevel
                                     );
                                     setXml(nextXml);
                                     setSelectedBlueprintId(selectedInfographicBlueprintId);
                                   } else {
                                     nextXml = generateLogicalFlowchartDrawioXml(
-                                      promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
-                                      ast.metadata.projectTitle,
+                                      promptInput.trim(),
+                                      promptInput.trim() || undefined,
                                       selectedFlowDirection,
                                       selectedAbstractionLevel
                                     );
@@ -3695,17 +3785,25 @@ function StudioMain() {
                     </button>
                   )}
 
-                  {/* Quick Diagram Type Switcher (Cloud Architecture vs. Flowchart LR/TD) */}
+                  {/* Quick Diagram Type Switcher (Blueprint / Flowchart LR / Flowchart TD / Infographic) */}
                   <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 p-1 rounded-lg text-slate-800 font-medium whitespace-nowrap shrink-0">
                     <button
-                      onClick={() => setSelectedDiagramMode('architecture')}
+                      onClick={() => {
+                        setSelectedDiagramMode('blueprint');
+                        const bpId =
+                          selectedBlueprintId === 'custom' || Number(selectedBlueprintId) >= 52
+                            ? '01'
+                            : selectedBlueprintId;
+                        const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
+                        handleSelectBlueprint(bp, selectedDomain);
+                      }}
                       className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition cursor-pointer ${
-                        selectedDiagramMode === 'architecture'
+                        selectedDiagramMode === 'blueprint' || selectedDiagramMode === 'architecture'
                           ? 'bg-blue-600 text-white shadow-2xs'
                           : 'hover:bg-white text-slate-700'
                       }`}
                     >
-                      🏛️ Cloud Architecture
+                      📚 Blueprint
                     </button>
                     <button
                       onClick={() => {
@@ -3713,9 +3811,10 @@ function StudioMain() {
                         setSelectedFlowDirection('LR');
                         setXml(
                           generateLogicalFlowchartDrawioXml(
-                            promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
-                            ast.metadata.projectTitle,
-                            'LR'
+                            promptInput.trim(),
+                            promptInput.trim() || undefined,
+                            'LR',
+                            selectedAbstractionLevel
                           )
                         );
                         setSelectedBlueprintId('custom');
@@ -3734,9 +3833,10 @@ function StudioMain() {
                         setSelectedFlowDirection('TD');
                         setXml(
                           generateLogicalFlowchartDrawioXml(
-                            promptInput || ast.metadata.projectTitle || 'Enterprise Process Flowchart',
-                            ast.metadata.projectTitle,
-                            'TD'
+                            promptInput.trim(),
+                            promptInput.trim() || undefined,
+                            'TD',
+                            selectedAbstractionLevel
                           )
                         );
                         setSelectedBlueprintId('custom');
@@ -3748,6 +3848,27 @@ function StudioMain() {
                       }`}
                     >
                       🔀 Flowchart (TD)
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedDiagramMode('infographic');
+                        setXml(
+                          generateInfographicBlueprintXmlById(
+                            selectedInfographicBlueprintId,
+                            promptInput.trim() || undefined,
+                            undefined,
+                            selectedAbstractionLevel
+                          )
+                        );
+                        setSelectedBlueprintId(selectedInfographicBlueprintId);
+                      }}
+                      className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition cursor-pointer ${
+                        selectedDiagramMode === 'infographic'
+                          ? 'bg-blue-600 text-white shadow-2xs'
+                          : 'hover:bg-white text-slate-700'
+                      }`}
+                    >
+                      📊 Infographic
                     </button>
                   </div>
 

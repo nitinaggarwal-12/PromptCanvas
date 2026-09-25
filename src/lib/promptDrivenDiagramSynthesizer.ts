@@ -1023,16 +1023,22 @@ export function generateLogicalFlowchartDrawioXml(
   direction: 'LR' | 'TD' = 'LR',
   level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
 ): string {
-  const cleanTitle = (title || prompt || 'Enterprise Process & Decision Flowchart').slice(0, 76);
-  const clauses = prompt
-    .replace(/\n+/g, ' • ')
-    .split(/(?:•|->|-->|;|,|\band\b)/i)
-    .map((s) => s.trim())
-    .filter((s) => s.length >= 4);
+  const isDefaultDemoPrompt =
+    !prompt ||
+    prompt.trim() === '' ||
+    prompt.includes('Global Real-Time Payments Mesh') ||
+    prompt === 'Enterprise Process Flowchart';
 
   const levelMeta = {
     L1: {
       name: 'L1 (CONCEPTUAL)',
+      defaultTitle: 'L1 • Executive Conceptual Flow (4-Stage Value Stream)',
+      s1: '1. Business Trigger & Intake',
+      s2: '2. Governance & Policy Alignment',
+      g1: 'Business Case Approved?',
+      s3: '3. Core Value Stream Execution',
+      g2: 'KPI & Outcome Met?',
+      s4: '4. Stakeholder Value Delivery',
       sub1: 'Executive Business Trigger & Scope',
       sub2: 'Governance & Business Rule Alignment',
       sub3: 'Core Value Stream Execution',
@@ -1041,6 +1047,13 @@ export function generateLogicalFlowchartDrawioXml(
     },
     L2: {
       name: 'L2 (LOGICAL)',
+      defaultTitle: 'L2 • Logical Decision Flowchart (Swimlanes & Retry Loops)',
+      s1: '1. Client Request & Payload Ingest',
+      s2: '2. Schema, Auth & Policy Check',
+      g1: 'Policy & Safety Valid?',
+      s3: '3. Core Workflow Orchestration',
+      g2: 'SLA & Quality Gate Pass?',
+      s4: '4. State Commit & Event Bus',
       sub1: 'TLS 1.3 Payload Normalization',
       sub2: 'Zero-Trust Auth & Policy Guardrail',
       sub3: 'Deterministic Workflow Engine',
@@ -1049,6 +1062,13 @@ export function generateLogicalFlowchartDrawioXml(
     },
     L3: {
       name: 'L3 (TECHNICAL)',
+      defaultTitle: 'L3 • Technical API & Event Mesh (REST/gRPC & Pub/Sub CDC)',
+      s1: '1. Apigee X Ingress & mTLS Auth',
+      s2: '2. OPA Rego & Cloud DLP Filter',
+      g1: 'IAM & DLP Contract Pass?',
+      s3: '3. GKE Autopilot & Vertex Worker',
+      g2: 'p99 Latency & Schema OK?',
+      s4: '4. Spanner Commit & Pub/Sub CDC',
       sub1: 'Apigee X + gRPC/mTLS Protobuf Ingress',
       sub2: 'OPA Rego Policy + Cloud DLP Inspection',
       sub3: 'GKE Autopilot + Vertex Agent Execution',
@@ -1057,6 +1077,13 @@ export function generateLogicalFlowchartDrawioXml(
     },
     L4: {
       name: 'L4 (PROD DEPLOYMENT)',
+      defaultTitle: 'L4 • Production Multi-Region HA (VPC-SC & Spanner Quorum)',
+      s1: '1. Global Anycast LB & WAF Ingress',
+      s2: '2. Cloud KMS HSM & VPC-SC Check',
+      g1: 'Zero-Trust Attestation OK?',
+      s3: '3. Multi-Region GKE Active Mesh',
+      g2: 'Spanner nam3 Quorum Ack?',
+      s4: '4. Multi-Region Spanner Commit',
       sub1: 'Anycast LB (10.100.0.0/16) • p99 <8ms',
       sub2: 'Cloud KMS HSM (FIPS 140-3) + VPC-SC',
       sub3: 'Multi-Region GKE (us-central1 / ew1)',
@@ -1065,12 +1092,28 @@ export function generateLogicalFlowchartDrawioXml(
     },
   }[level];
 
-  const step1 = clauses[0]?.slice(0, 32) || '1. Client Request & Payload Ingestion';
-  const step2 = clauses[1]?.slice(0, 32) || '2. Schema, Auth & DLP Validation';
-  const gate1 = 'Policy & Safety Valid?';
-  const step3 = clauses[2]?.slice(0, 32) || '3. Core Orchestration & Execution';
-  const gate2 = 'SLA & Quality Gate Pass?';
-  const step4 = clauses[3]?.slice(0, 32) || '4. State Commit & Event Emission';
+  const cleanTitle = (
+    !isDefaultDemoPrompt && (title || prompt)
+      ? title && !title.includes('Global Real-Time Payments Mesh')
+        ? title
+        : prompt
+      : levelMeta.defaultTitle
+  ).slice(0, 76);
+
+  const clauses = isDefaultDemoPrompt
+    ? []
+    : prompt
+        .replace(/\n+/g, ' • ')
+        .split(/(?:•|->|-->|;|,|\band\b)/i)
+        .map((s) => s.trim())
+        .filter((s) => s.length >= 4);
+
+  const step1 = clauses[0]?.slice(0, 32) || levelMeta.s1;
+  const step2 = clauses[1]?.slice(0, 32) || levelMeta.s2;
+  const gate1 = levelMeta.g1;
+  const step3 = clauses[2]?.slice(0, 32) || levelMeta.s3;
+  const gate2 = levelMeta.g2;
+  const step4 = clauses[3]?.slice(0, 32) || levelMeta.s4;
   const fallbackNode = 'Quarantine / Retry Handler & Audit Log';
 
   const isTD = direction === 'TD';
