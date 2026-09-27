@@ -445,6 +445,7 @@ function StudioMain() {
     targetVersionTag: string;
   } | null>(null);
   const [isInlineDrawioEdit, setIsInlineDrawioEdit] = useState<boolean>(false);
+  const [isSideBySideCompare, setIsSideBySideCompare] = useState<boolean>(false);
   const inlineDrawioIframeRef = useRef<HTMLIFrameElement | null>(null);
   const latestInlineXmlRef = useRef<string>('');
 
@@ -4068,8 +4069,10 @@ function StudioMain() {
                       🔀 Flowchart (TD)
                     </button>
                     <button
+                      id="toolbar-mode-infographic-btn"
                       onClick={() => {
                         setSelectedDiagramMode('infographic');
+                        setIsSideBySideCompare(true);
                         setXml(
                           generateInfographicBlueprintXmlById(
                             selectedInfographicBlueprintId,
@@ -4136,13 +4139,13 @@ function StudioMain() {
                     </div>
                   )}
 
-                  {/* Section 3.1: Explicit [ 📚 Blueprints (53) ] Mid-Session Slide-Over Drawer Button */}
+                  {/* Section 3.1: Explicit [ 📚 Blueprints (75) ] Mid-Session Slide-Over Drawer Button */}
                   <button
                     id="canvas-toolbar-blueprints-btn"
                     data-testid="canvas-toolbar-blueprints-btn"
                     onClick={() => setIsCatalogOpen(true)}
                     className="px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-300 text-blue-800 text-xs font-extrabold transition shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
-                    title="Open Visual Blueprint Catalog Slide-Over Drawer (53 Certified Blueprints)"
+                    title="Open Visual Blueprint Catalog Slide-Over Drawer (75 Certified Blueprints)"
                   >
                     <Layers className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                     <span>📚 Blueprints ({CANONICAL_TEMPLATES.length})</span>
@@ -4150,6 +4153,23 @@ function StudioMain() {
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-700 shrink-0">
+                  {/* Side-by-Side (PNG + Draw.io XML) Toggle Button */}
+                  <button
+                    id="toggle-side-by-side-compare-btn"
+                    onClick={() => {
+                      setIsInlineDrawioEdit(false);
+                      setIsSideBySideCompare((prev) => !prev);
+                    }}
+                    className={`px-2.5 py-1 rounded-lg border text-[11px] font-extrabold transition shadow-2xs flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+                      isSideBySideCompare
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-800'
+                    }`}
+                    title="Compare Reference PNG Image and Editable Draw.io XML Vector Version Side-by-Side"
+                  >
+                    <span>{isSideBySideCompare ? '✓ PNG + XML Side-by-Side' : '🖼️ PNG + XML Side-by-Side'}</span>
+                  </button>
+
                   {/* Zoom Controls */}
                   <div className="flex items-center gap-1 bg-slate-100 border border-slate-300 px-1.5 py-1 rounded-lg text-[11px] shadow-2xs whitespace-nowrap shrink-0">
                     <button
@@ -4333,6 +4353,156 @@ function StudioMain() {
                       src="https://embed.diagrams.net/?embed=1&proto=json&spin=1&ui=kennedy&saveAndExit=1"
                       className="w-full flex-1 border-0"
                     />
+                  </div>
+                ) : isSideBySideCompare ? (
+                  <div
+                    id="studio-side-by-side-compare-viewport"
+                    className="w-full max-w-[1680px] h-full min-h-[560px] m-auto flex flex-col gap-3 overflow-hidden"
+                  >
+                    {/* Quick Infographic Blueprint Strip (#52 - #66) */}
+                    <div className="bg-white rounded-xl border border-slate-200 px-3 py-2 shadow-xs flex items-center justify-between gap-2 overflow-x-auto shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="px-2 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
+                          Side-by-Side Audit
+                        </span>
+                        <span className="text-xs font-extrabold text-slate-800">
+                          Infographic Blueprints (#52–#66):
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 overflow-x-auto py-0.5">
+                        {INFOGRAPHIC_BLUEPRINTS_LIST.map((info) => {
+                          const isActiveInfo =
+                            selectedDiagramMode === 'infographic'
+                              ? selectedInfographicBlueprintId === info.id
+                              : selectedBlueprintId === info.id;
+                          return (
+                            <button
+                              key={info.id}
+                              id={`sbs-infographic-pill-${info.id}`}
+                              type="button"
+                              onClick={() => {
+                                setSelectedDiagramMode('infographic');
+                                setSelectedInfographicBlueprintId(info.id);
+                                setSelectedBlueprintId(info.id);
+                                setXml(
+                                  generateInfographicBlueprintXmlById(
+                                    info.id,
+                                    promptInput.trim() || undefined,
+                                    undefined,
+                                    selectedAbstractionLevel
+                                  )
+                                );
+                              }}
+                              title={`${info.name} (${info.shortType})`}
+                              className={`px-2 py-1 rounded-lg text-[10.5px] font-mono font-extrabold transition cursor-pointer shrink-0 border ${
+                                isActiveInfo
+                                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                                  : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
+                              }`}
+                            >
+                              #{info.id}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setIsSideBySideCompare(false)}
+                        className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10.5px] font-bold shrink-0 cursor-pointer"
+                      >
+                        Single Canvas ✕
+                      </button>
+                    </div>
+
+                    {/* 50 / 50 Split Screen: Left = Reference PNG, Right = Editable Draw.io XML Vector Version */}
+                    <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+                      {/* LEFT COLUMN: Original Reference PNG Blueprint */}
+                      <div className="bg-white rounded-2xl border border-slate-300/90 shadow-xl flex flex-col overflow-hidden min-h-0">
+                        <div className="px-4 py-2.5 bg-slate-900 text-white flex items-center justify-between gap-2 shrink-0">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30 font-mono text-[10px] font-extrabold shrink-0">
+                              1. REFERENCE PNG
+                            </span>
+                            <span className="text-xs font-bold truncate">
+                              {selectedDiagramMode === 'infographic'
+                                ? INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.name ||
+                                  `Infographic #${selectedInfographicBlueprintId}`
+                                : `Blueprint #${selectedBlueprintId === 'custom' ? '52' : selectedBlueprintId}`}
+                            </span>
+                          </div>
+                          <a
+                            href={
+                              selectedDiagramMode === 'infographic' || Number(selectedBlueprintId) >= 52
+                                ? `/templates/${
+                                    selectedDiagramMode === 'infographic'
+                                      ? selectedInfographicBlueprintId
+                                      : selectedBlueprintId
+                                  }.png`
+                                : `/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`
+                            }
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10.5px] font-mono font-bold text-sky-300 hover:text-sky-200 shrink-0"
+                          >
+                            ↗ Open Raw PNG
+                          </a>
+                        </div>
+                        <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
+                          <img
+                            id="sbs-reference-png-img"
+                            src={
+                              selectedDiagramMode === 'infographic' || Number(selectedBlueprintId) >= 52
+                                ? `/templates/${
+                                    selectedDiagramMode === 'infographic'
+                                      ? selectedInfographicBlueprintId
+                                      : selectedBlueprintId
+                                  }.png`
+                                : `/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`
+                            }
+                            alt="Reference Infographic PNG"
+                            className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-contain rounded-xl border border-slate-200 bg-white shadow-md"
+                            onError={(e) => {
+                              (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* RIGHT COLUMN: Editable Draw.io XML Vector Version */}
+                      <div className="bg-white rounded-2xl border-2 border-indigo-500/80 shadow-xl flex flex-col overflow-hidden min-h-0">
+                        <div className="px-4 py-2.5 bg-[#0B111E] text-white flex items-center justify-between gap-2 shrink-0">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-mono text-[10px] font-extrabold shrink-0">
+                              2. DRAW.IO XML VECTOR ({selectedAbstractionLevel})
+                            </span>
+                            <span className="text-xs font-bold text-slate-200 truncate">
+                              100% Editable mxGraphModel • Google Cloud Branded
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                latestInlineXmlRef.current = xml;
+                                setIsInlineDrawioEdit(true);
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-extrabold cursor-pointer transition"
+                            >
+                              ✎ Edit XML Inline
+                            </button>
+                          </div>
+                        </div>
+                        <div className="flex-1 min-h-0 relative overflow-hidden bg-white">
+                          <DiagramViewerRenderSafe
+                            key={`sbs_canvas_${selectedBlueprintId}_${selectedInfographicBlueprintId}_${selectedAbstractionLevel}_${xml.length}`}
+                            xml={xml}
+                            minHeight={0}
+                            bgTheme="light"
+                            useCaseName={ast.metadata.projectTitle}
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div

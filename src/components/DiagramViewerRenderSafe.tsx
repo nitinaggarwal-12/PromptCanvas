@@ -168,7 +168,7 @@ ${origin ? `<base href="${origin}/">` : ''}
       ? `width: 100% !important; max-width: 100% !important; height: auto !important; min-height: auto !important; display: block !important; margin: 0 auto !important; background: transparent;`
       : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block !important; margin: 0 auto; background: transparent;`
-      : `width: 100%; height: 100%; min-height: 100%; display: flex; align-items: center; justify-content: center; background: transparent; margin: 0 auto !important;`}
+      : `width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: 100% !important; max-height: 100% !important; min-height: 0 !important; display: flex; align-items: center; justify-content: center; background: transparent; margin: 0 auto !important;`}
   }
   #diagram-container {
     margin-top: 0 !important;
@@ -182,14 +182,14 @@ ${origin ? `<base href="${origin}/">` : ''}
       ? `width: 100% !important; max-width: 100% !important; height: auto !important; max-height: none !important; margin: 0 auto !important; display: block !important; overflow: visible !important;`
       : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; margin: auto !important; display: block !important;`
-      : `width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
+      : `width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: 100% !important; max-height: 100% !important; min-height: 0 !important; margin: 0 auto !important; display: block !important; object-fit: contain !important; overflow: visible !important;`}
   }
   .mxgraph > div {
     ${fitToWidth
       ? `width: 100% !important; max-width: 100% !important; height: auto !important; max-height: none !important; display: block !important;`
       : allowFullScaleScroll
       ? `width: 1600px !important; min-width: 1600px !important; height: 1000px !important; min-height: 1000px !important; display: block;`
-      : `width: 100%; max-width: 100%; height: 100%; max-height: 100%; display: flex; align-items: center; justify-content: center;`}
+      : `width: 100% !important; max-width: 100% !important; min-width: 0 !important; height: 100% !important; max-height: 100% !important; min-height: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important;`}
   }
   .geEditor { background-color: transparent !important; }
 

@@ -61,9 +61,9 @@ export const INFOGRAPHIC_BLUEPRINTS_LIST: InfographicBlueprintMeta[] = [
     id: '55',
     shortType: 'Bubble Conceptual',
     name: 'Infographic: Bubble Conceptual (The AI Nobody Signed Off)',
-    subtitle: 'Contrasting What Leadership Thinks (4 statements) vs What Is Actually Running (16+ shadow AI bubbles).',
+    subtitle: 'Contrasting What Leadership Thinks (4 statements) vs What Is Actually Running (20+ shadow AI bubbles).',
     previewImage: '/templates/55.png',
-    keyComponents: ['What Leadership Thinks (Executive Persona & 3 Assumptions)', 'What Is Actually Running (16 Color-Coded Shadow AI Bubbles)']
+    keyComponents: ['What Leadership Thinks (Executive Persona & 4 Assumptions)', 'What Is Actually Running (20 Color-Coded Shadow AI Bubbles)']
   },
   {
     id: '56',
@@ -163,170 +163,6 @@ function esc(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
-function getLevelTechSpec(level: 'L1' | 'L2' | 'L3' | 'L4', idx: number): string {
-  const specs = {
-    L1: [
-      'Executive KPI: Business Value & Stakeholder Alignment',
-      'Strategic Governance: Board-Level Risk & Policy Sign-Off',
-      'Core Outcome: Cycle-Time Compression & 3.4x Target ROI',
-      'Delivery Milestone: Executive SLA 99.9% & Adoption Readiness',
-      'Portfolio Impact: Cross-Functional Operating Efficiency',
-      'Executive Summary: Zero Low-Level Infrastructure Noise',
-    ],
-    L2: [
-      'Logical Flow: Request Normalization → Schema & Policy Gate',
-      'Decision Gate: RBAC Auth + Safety Guardrail → Retry Loop',
-      'Orchestration: Deterministic State Machine & Context Store',
-      'State Contract: Transactional Commit + Domain Event Bus',
-      'Exception Path: Quarantine Queue + Exponential Backoff (Max 3)',
-      'Audit Trail: Immutable Compliance & Decision Ledger',
-    ],
-    L3: [
-      'API & Auth: Apigee X • gRPC/HTTP2 TLS 1.3 • OAuth2/OIDC JWT • 10k RPS',
-      'Guardrail & Schema: Cloud DLP PII Redaction • OPA Rego • Protobuf v3',
-      'Compute & L1 Cache: GKE Autopilot (HPA 3..50) • Memorystore Redis p99 <1.2ms',
-      'Persistence & CDC: Cloud Spanner Serializable ACID • Pub/Sub Avro CDC',
-      'Recovery & DLQ: Pub/Sub Dead-Letter Topic • Cloud Run Jittered Replay',
-      'Observability: OpenTelemetry W3C TraceContext • Cloud Trace p99 <45ms',
-    ],
-    L4: [
-      'Global Edge: Anycast ALB (34.102.0.0/16) • Cloud Armor WAF OWASP CRS 3.3',
-      'Primary Region: us-central1 (VPC 10.100.0.0/16) • VPC-SC • gVisor + Istio mTLS',
-      'Failover Region: us-east4 (Standby 10.101.0.0/16) • <3s Auto-Failover • RTO <5m',
-      'Quorum Storage: Spanner nam3 Multi-Region Leader/Witness • 99.999% SLA • RPO=0',
-      'Crypto & KMS: Cloud KMS Hardware HSM (FIPS 140-3 L3) • 30-Day CMEK Rotation',
-      'SecOps & SRE: Chronicle SIEM + PagerDuty Burn-Rate Alert • SOC2/ISO27001',
-    ],
-  }[level];
-  return specs[idx % specs.length];
-}
-
-function buildInfographicLevelDetailStrip(level: 'L1' | 'L2' | 'L3' | 'L4', yOffset = 838): string {
-  const stripConfigs: Record<
-    'L1' | 'L2' | 'L3' | 'L4',
-    { header: string; fill: string; stroke: string; badgeBg: string; nodes: { badge: string; title: string; desc: string }[] }
-  > = {
-    L1: {
-      header: 'L1 CONCEPTUAL EXECUTIVE SUMMARY • HIGH-LEVEL VALUE STREAM & BUSINESS KPIs (2 CORE PILLARS)',
-      fill: '#EFF6FF',
-      stroke: '#93C5FD',
-      badgeBg: '#1D4ED8',
-      nodes: [
-        {
-          badge: 'L1 • BUSINESS OUTCOME',
-          title: 'Executive Value & ROI Alignment',
-          desc: 'High-level conceptual view focused on 3.4x ROI, -65% cycle time, and stakeholder outcomes.',
-        },
-        {
-          badge: 'L1 • STRATEGIC GOVERNANCE',
-          title: 'Enterprise Policy & Continuity SLA',
-          desc: '99.9% business continuity SLA with zero low-level protocol or infrastructure clutter.',
-        },
-      ],
-    },
-    L2: {
-      header: 'L2 LOGICAL ARCHITECTURE • SWIMLANES, DECISION GATES & CLOSED-LOOP RETRY CONTRACTS (3 LOGICAL PILLARS)',
-      fill: '#F0FDF4',
-      stroke: '#86EFAC',
-      badgeBg: '#15803D',
-      nodes: [
-        {
-          badge: 'L2 • LOGICAL INGRESS & AUTH',
-          title: 'Payload Normalization & Policy Gate',
-          desc: 'Validates RBAC permissions, business rules, and safety guardrails before workflow execution.',
-        },
-        {
-          badge: 'L2 • STATE ORCHESTRATION',
-          title: 'Deterministic Workflow & Event Bus',
-          desc: 'Executes core logical state transitions and emits domain events upon SLA verification.',
-        },
-        {
-          badge: 'L2 • EXCEPTION & RETRY LOOP',
-          title: 'Quarantine Handler & Audit Ledger',
-          desc: 'Routes rejected or timed-out requests to exponential backoff retry (max 3) and audit log.',
-        },
-      ],
-    },
-    L3: {
-      header: 'L3 TECHNICAL IMPLEMENTATION • PROTOCOLS, REDIS L1 CACHE, SPANNER ACID & PUB/SUB CDC (4 TECHNICAL TIERS)',
-      fill: '#FEFCE8',
-      stroke: '#FDE047',
-      badgeBg: '#B45309',
-      nodes: [
-        {
-          badge: 'L3 • API GATEWAY & DLP',
-          title: 'Apigee X (gRPC/TLS 1.3) + Cloud DLP',
-          desc: 'OAuth2/OIDC JWT validation, 10k RPS quota, OPA Rego policy, and Protobuf v3 schema check.',
-        },
-        {
-          badge: 'L3 • COMPUTE & L1 CACHE',
-          title: 'GKE Autopilot + Memorystore Redis 7.2',
-          desc: 'HPA 3..50 pods with sub-millisecond Redis read-through cache (TTL 300s, p99 <1.2ms).',
-        },
-        {
-          badge: 'L3 • ACID DB & EVENT MESH',
-          title: 'Cloud Spanner + Pub/Sub CDC Stream',
-          desc: 'Serializable ACID transactions with exactly-once Avro/Protobuf change-data-capture fanout.',
-        },
-        {
-          badge: 'L3 • DLQ REPLAY & OTEL',
-          title: 'Cloud Run Replay + OpenTelemetry',
-          desc: 'Dead-letter topic quarantine, jittered 1s→32s replay worker, and W3C TraceContext spans.',
-        },
-      ],
-    },
-    L4: {
-      header: 'L4 PRODUCTION MULTI-REGION HA • ACTIVE-ACTIVE us-central1 ⇄ us-east4, VPC-SC, KMS HSM & SRE (5 PROD STRATA)',
-      fill: '#FAF5FF',
-      stroke: '#D8B4FE',
-      badgeBg: '#6D28D9',
-      nodes: [
-        {
-          badge: 'L4 • GLOBAL ANYCAST EDGE',
-          title: 'Anycast ALB (34.102.0.0/16) + WAF',
-          desc: 'Cloud Armor Enterprise OWASP CRS 3.3, L7 DDoS protection, and BeyondCorp mTLS IAP.',
-        },
-        {
-          badge: 'L4 • PRIMARY (us-central1)',
-          title: 'Active VPC 10.100.0.0/16 • Istio mTLS',
-          desc: 'GKE Autopilot gVisor sandbox pods + Vertex AI PSC (10.100.64.0/24) inside VPC-SC perimeter.',
-        },
-        {
-          badge: 'L4 • FAILOVER (us-east4)',
-          title: 'Standby VPC 10.101.0.0/16 • <3s Shift',
-          desc: '1s global health probes trigger automatic BGP/Anycast drain to warm standby pool (RTO <5m).',
-        },
-        {
-          badge: 'L4 • QUORUM & KMS HSM',
-          title: 'Spanner nam3 (RPO=0) + FIPS 140-3',
-          desc: 'TrueTime Paxos multi-region quorum (99.999% SLA) encrypted with 30-day KMS HSM CMEK.',
-        },
-        {
-          badge: 'L4 • SECOPS & SRE SLOs',
-          title: 'Chronicle SIEM + PagerDuty Burn Alert',
-          desc: 'Real-time SOC2/ISO27001 audit telemetry, DLQ circuit breaker, and p99 <42ms SLO gate.',
-        },
-      ],
-    },
-  };
-
-  const cfg = stripConfigs[level] || stripConfigs.L2;
-  const count = cfg.nodes.length;
-  const totalW = 1320;
-  const gap = 16;
-  const cardW = Math.floor((totalW - (count - 1) * gap) / count);
-  let xml = `<mxCell id="lvl_strip_zone_${level}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cfg.fill};strokeColor=${cfg.stroke};strokeWidth=2;dashed=1;" vertex="1" parent="1"><mxGeometry x="60" y="${yOffset}" width="${totalW}" height="148" as="geometry"/></mxCell>`;
-  xml += `<mxCell id="lvl_strip_hdr_${level}" value="${esc(cfg.header)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${cfg.badgeBg};strokeColor=${cfg.badgeBg};fontColor=#FFFFFF;fontStyle=1;fontSize=10.5;letterSpacing=0.5;" vertex="1" parent="1"><mxGeometry x="76" y="${yOffset + 10}" width="${totalW - 32}" height="26" as="geometry"/></mxCell>`;
-
-  cfg.nodes.forEach((n, idx) => {
-    const x = 76 + idx * (cardW - Math.ceil(32 / count) + gap);
-    const w = cardW - Math.ceil(32 / count);
-    xml += `<mxCell id="lvl_strip_node_${level}_${idx}" value="&lt;div style='padding:6px 8px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:8.5px;font-weight:900;color:${cfg.badgeBg};'&gt;${esc(n.badge)}&lt;/div&gt;&lt;div style='font-size:11px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${esc(n.title)}&lt;/div&gt;&lt;div style='font-size:9.5px;color:#334155;margin-top:3px;line-height:1.35;'&gt;${esc(n.desc)}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${cfg.stroke};strokeWidth=1.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${x}" y="${yOffset + 44}" width="${w}" height="94" as="geometry"/></mxCell>`;
-  });
-
-  return xml;
-}
-
 export function generateInfographicBlueprintXmlById(
   id: string,
   customTitle?: string,
@@ -340,510 +176,683 @@ export function generateInfographicBlueprintXmlById(
       ? customTitle.trim()
       : undefined;
 
-  const levelBadgeMap: Record<'L1' | 'L2' | 'L3' | 'L4', string> = {
-    L1: 'L1 • CONCEPTUAL EXECUTIVE VIEW',
-    L2: 'L2 • LOGICAL ARCHITECTURE VIEW',
-    L3: 'L3 • TECHNICAL IMPLEMENTATION VIEW',
-    L4: 'L4 • PRODUCTION DEPLOYMENT VIEW',
-  };
-  const activeLevelLabel = levelBadgeMap[level] || levelBadgeMap.L2;
-
   const meta = INFOGRAPHIC_BLUEPRINTS_LIST.find((m) => m.id === id) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
-  const title = esc(spec?.title ? `${spec.title} [${level}]` : cleanCustomTitle ? `${cleanCustomTitle} [${level}]` : `${meta.name.replace(/^Infographic:\s*/i, '')} [${level}]`);
-  const subtitle = esc(spec?.subtitle || `${meta.subtitle} (${activeLevelLabel})`);
-  const takeaway = esc(
-    spec?.takeaway ||
-      `KEY TAKEAWAY (${activeLevelLabel}): Structured ${meta.shortType} blueprint with ${level} technical depth engineered for live Draw.io customization.`
-  );
   const items = spec?.items && spec.items.length > 0 ? spec.items : null;
-  const levelStripXml = buildInfographicLevelDetailStrip(level, 836);
 
-  const gcpLogoBadge = `&lt;span style='display:inline-block;background:#EFF6FF;border:1px solid #BFDBFE;color:#1D4ED8;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:800;margin-right:6px;'&gt;☁ Google Cloud • Vertex AI • Gemini 2.5&lt;/span&gt;`;
-
-  // 1. #52: ANATOMY / DECONSTRUCTION (Exact 1:1 Vector Twin of 52.png + L1-L4 Level Strip)
+  // ============================================================================
+  // 1. #52: ANATOMY / DECONSTRUCTION (Exact 1:1 Vector Twin of 52.png)
+  // ============================================================================
   if (id === '52' && !items) {
-    const base52 = generateTemplate52ContextHarnessLoopGraphXml(
-      cleanCustomTitle ? `${cleanCustomTitle} [${level}]` : `Context • Harness • Loop • Graph [${level} • Google Cloud & Gemini Edition]`
-    );
-    return base52.replace('</root>', `${buildInfographicLevelDetailStrip(level, 965)}</root>`);
+    return generateTemplate52ContextHarnessLoopGraphXml(cleanCustomTitle);
   }
 
-  // 2. #53: WORKFLOW INFOGRAPHIC (3-Zone Claude Code + Codex Hybrid Workflow matching 53.png)
-  if (id === '53') {
-    const z1 = items?.[0] || { code: '01', title: 'ZONE 1: WRITE & BUILD (Claude Code + Gemini CLI)', badge: 'BUILDER ENGINE', description: 'Fast interactive scaffolding, multi-file edits, and repo-wide context navigation.' };
-    const z2 = items?.[1] || { code: '02', title: 'ZONE 2: SHARED REPO HANDOFF (.claude/ + Git Branch)', badge: 'ARTIFACT BRIDGE', description: 'Clean git worktree state, CLAUDE.md rules, and deterministic test harness handoff.' };
-    const z3 = items?.[2] || { code: '03', title: 'ZONE 3: ADVERSARIAL REVIEW & VERIFY (Codex + Vertex Eval)', badge: 'AUDITOR GATE', description: 'Deep static/reasoning audit, edge-case bug hunting, and security regression check.' };
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_53_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #53 • WORKFLOW COMPARISON • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:3px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      <mxCell id="z1" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;div style='background:#EA580C;color:#FFF;display:inline-block;padding:3px 10px;border-radius:999px;font-size:10.5px;font-weight:800;'&gt;${esc(z1.code || '01')} • ${esc(z1.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z1.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z1.description)}&lt;/div&gt;${getLevelTechSpec(level, 0)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="55" y="125" width="405" height="390" as="geometry"/></mxCell>
-      <mxCell id="z1_s1" value="1. Read CLAUDE.md + Repo Map (${level})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="80" y="290" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z1_s2" value="2. Scaffold Feature &amp; Multi-File Patch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="80" y="348" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z1_s3" value="3. Run Local Unit &amp; Type Checks (tsc)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="80" y="406" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z1_cmd" value="$ claude &quot;Implement feature &amp; run tests&quot;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FDBA74;fontFamily=monospace;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="80" y="460" width="355" height="36" as="geometry"/></mxCell>
+  // ============================================================================
+  // 2. #53: HOW TO USE CLAUDE CODE + CODEX (Exact 1:1 Vector Twin of 53.png)
+  // ============================================================================
+  if (id === '53' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'How to use Claude Code + Codex');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_53_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FAFCFF"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FAFCFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <!-- Header -->
+      <mxCell id="hdr53" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:38px;font-weight:900;color:#0F172A;letter-spacing:-0.5px;'&gt;How to use &lt;span style='color:#EA580C;'&gt;Claude Code&lt;/span&gt; + &lt;span style='color:#2563EB;'&gt;Codex&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:16px;color:#475569;margin-top:6px;font-weight:600;'&gt;Install the apps, add your tools, then check the result.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="22" width="1000" height="82" as="geometry"/></mxCell>
 
-      <mxCell id="z2" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;div style='background:#2563EB;color:#FFF;display:inline-block;padding:3px 10px;border-radius:999px;font-size:10.5px;font-weight:800;'&gt;${esc(z2.code || '02')} • ${esc(z2.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z2.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z2.description)}&lt;/div&gt;${getLevelTechSpec(level, 1)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="518" y="125" width="405" height="390" as="geometry"/></mxCell>
-      <mxCell id="z2_s1" value="Git Diff + Staged Worktree Snapshot" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="543" y="290" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z2_s2" value="Shared Rules: CLAUDE.md + AGENTS.md" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="543" y="348" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z2_s3" value="Cloud Build / Artifact Registry Sync" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="543" y="406" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z2_cmd" value="git diff origin/main...HEAD &gt; review.patch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#93C5FD;fontFamily=monospace;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="543" y="460" width="355" height="36" as="geometry"/></mxCell>
+      <!-- SECTION 01: INSTALL + START -->
+      <mxCell id="band53_1" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F4F8FF;strokeColor=#DBEAFE;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="35" y="118" width="1050" height="310" as="geometry"/></mxCell>
+      <mxCell id="b53_01" value="01" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#2563EB;fontColor=#FFFFFF;fontStyle=1;fontSize=16;" vertex="1" parent="1"><mxGeometry x="55" y="136" width="42" height="42" as="geometry"/></mxCell>
+      <mxCell id="t53_01" value="INSTALL + START" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=19;fontColor=#1E40AF;" vertex="1" parent="1"><mxGeometry x="108" y="139" width="260" height="36" as="geometry"/></mxCell>
+      <mxCell id="pill53_1" value="Codex leads. Claude Code advises." style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;fontStyle=1;fontSize=18;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="230" y="175" width="660" height="44" as="geometry"/></mxCell>
 
-      <mxCell id="z3" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;div style='background:#059669;color:#FFF;display:inline-block;padding:3px 10px;border-radius:999px;font-size:10.5px;font-weight:800;'&gt;${esc(z3.code || '03')} • ${esc(z3.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z3.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z3.description)}&lt;/div&gt;${getLevelTechSpec(level, 2)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="980" y="125" width="405" height="390" as="geometry"/></mxCell>
-      <mxCell id="z3_s1" value="1. Adversarial Logic &amp; Race-Condition Audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="1005" y="290" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z3_s2" value="2. Security Boundary &amp; IAM Policy Check" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="1005" y="348" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z3_s3" value="3. Approve PR or Return Fix List to Zone 1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#10B981;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="1005" y="406" width="355" height="44" as="geometry"/></mxCell>
-      <mxCell id="z3_cmd" value="$ codex review --base main --strict" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#6EE7B7;fontFamily=monospace;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="1005" y="460" width="355" height="36" as="geometry"/></mxCell>
+      <mxCell id="c53_codex" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:21px;font-weight:900;color:#1E3A8A;'&gt;⌘ Codex&lt;/div&gt;&lt;div style='font-size:14px;color:#334155;margin-top:8px;line-height:1.45;'&gt;1. Download Codex.&lt;br/&gt;2. Sign in with ChatGPT.&lt;/div&gt;&lt;div style='font-size:13px;color:#64748B;margin-top:8px;'&gt;Your main app for the work.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="70" y="238" width="300" height="165" as="geometry"/></mxCell>
+      <mxCell id="c53_proj" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#1D4ED8;'&gt;Open a project&lt;/div&gt;&lt;div style='font-size:14px;color:#334155;margin-top:8px;line-height:1.45;'&gt;3. Select your folder.&lt;br/&gt;4. Start a new task.&lt;/div&gt;&lt;div style='font-size:13px;color:#64748B;margin-top:8px;'&gt;Add your goal + files.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="420" y="238" width="280" height="165" as="geometry"/></mxCell>
+      <mxCell id="c53_claude" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#1E3A8A;'&gt;✻ Claude Code&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;line-height:1.4;'&gt;1. Install the Claude app.&lt;br/&gt;2. Sign in → Code tab.&lt;br/&gt;3. Select the same folder.&lt;/div&gt;&lt;div style='font-size:12.5px;color:#64748B;margin-top:6px;'&gt;Optional backup for advice.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="750" y="238" width="300" height="165" as="geometry"/></mxCell>
 
-      <mxCell id="e53_1" value="1. Push Diff" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="z1" target="z2"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e53_2" value="2. Audit Patch" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="z2" target="z3"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_1a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="c53_codex" target="c53_proj"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_1b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2;dashed=1;startArrow=block;endArrow=block;" edge="1" parent="1" source="c53_proj" target="c53_claude"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-      <mxCell id="loop_bar" value="&lt;div style='padding:10px 18px;text-align:center;'&gt;&lt;b style='color:#DC2626;font-size:13px;'&gt;↺ ADVERSARIAL SELF-CORRECTION LOOP (${level}):&lt;/b&gt; &lt;span style='font-size:12.5px;color:#0F172A;font-weight:600;'&gt;Codex / Vertex AI Eval flags subtle edge-case bugs ➔ feeds structured fix list back into Claude Code ➔ re-verifies until 0 P1/P2 defects remain.&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;dashed=1;" vertex="1" parent="1"><mxGeometry x="55" y="540" width="1330" height="52" as="geometry"/></mxCell>
+      <!-- SECTION 02: ADD YOUR TOOLS -->
+      <mxCell id="band53_2" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F8F7FF;strokeColor=#E0E7FF;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="35" y="450" width="1050" height="430" as="geometry"/></mxCell>
+      <mxCell id="b53_02" value="02" style="ellipse;whiteSpace=wrap;html=1;fillColor=#4F46E5;strokeColor=#4F46E5;fontColor=#FFFFFF;fontStyle=1;fontSize=16;" vertex="1" parent="1"><mxGeometry x="55" y="468" width="42" height="42" as="geometry"/></mxCell>
+      <mxCell id="t53_02" value="ADD YOUR TOOLS" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=19;fontColor=#1E40AF;" vertex="1" parent="1"><mxGeometry x="108" y="471" width="260" height="36" as="geometry"/></mxCell>
 
-      <mxCell id=" c1" value="&lt;b style='color:#EA580C;'&gt;WHY CLAUDE CODE + GEMINI BUILD:&lt;/b&gt;&lt;br/&gt;• Fast repo-wide file edits &amp; terminal loop&lt;br/&gt;• Great UX &amp; rapid feature velocity" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;align=left;spacingLeft=14;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="612" width="420" height="90" as="geometry"/></mxCell>
-      <mxCell id="c2" value="&lt;b style='color:#2563EB;'&gt;WHY SEPARATE BUILDER VS AUDITOR:&lt;/b&gt;&lt;br/&gt;• Eliminates single-model blind spots&lt;br/&gt;• Enforces deterministic CI/CD quality gates" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;align=left;spacingLeft=14;fontSize=12;" vertex="1" parent="1"><mxGeometry x="510" y="612" width="420" height="90" as="geometry"/></mxCell>
-      <mxCell id="c3" value="&lt;b style='color:#059669;'&gt;WHY CODEX + VERTEX EVAL REVIEW:&lt;/b&gt;&lt;br/&gt;• Deep multi-step code path verification&lt;br/&gt;• Catches race conditions &amp; missing guards" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;align=left;spacingLeft=14;fontSize=12;" vertex="1" parent="1"><mxGeometry x="965" y="612" width="420" height="90" as="geometry"/></mxCell>
+      <mxCell id="q53_app" value="Need to work inside another app?" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;fontStyle=1;fontSize=18;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="290" y="505" width="540" height="46" as="geometry"/></mxCell>
+      <mxCell id="e53_p2q" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="c53_proj" target="q53_app"><mxGeometry relative="1" as="geometry"/></mxCell>
 
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12.5;" vertex="1" parent="1"><mxGeometry x="55" y="722" width="1330" height="46" as="geometry"/></mxCell>
-      ${levelStripXml}
+      <mxCell id="c53_files" value="&lt;div style='padding:14px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#1E40AF;'&gt;Files + skills&lt;/div&gt;&lt;div style='font-size:14px;color:#334155;margin-top:10px;line-height:1.5;'&gt;1. Open your folder.&lt;br/&gt;2. Install a skill plugin.&lt;br/&gt;3. Start a new task.&lt;br/&gt;Use its saved steps.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="70" y="600" width="275" height="210" as="geometry"/></mxCell>
+
+      <mxCell id="q53_conn" value="Is there a suitable tool connection?" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;fontStyle=1;fontSize=17;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="450" y="595" width="590" height="44" as="geometry"/></mxCell>
+
+      <mxCell id="c53_mcp" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#1E40AF;'&gt;MCP / plugin&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;line-height:1.45;'&gt;1. Plugins → install.&lt;br/&gt;2. Connect your account.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:6px;'&gt;Manual MCP: Settings →&lt;br/&gt;MCP servers → Add server.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="385" y="685" width="310" height="160" as="geometry"/></mxCell>
+      <mxCell id="c53_cu" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#1E40AF;'&gt;Computer use&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;line-height:1.45;'&gt;1. Ask for computer use.&lt;br/&gt;2. Allow the app.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:6px;'&gt;3. Enable screen recording&lt;br/&gt;+ accessibility on Mac.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="740" y="685" width="310" height="160" as="geometry"/></mxCell>
+
+      <mxCell id="e53_q1_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_app" target="c53_files"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_q1_yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_app" target="q53_conn"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_q2_yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_conn" target="c53_mcp"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_q2_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_conn" target="c53_cu"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <!-- SECTION 03: CHECK IT -->
+      <mxCell id="band53_3" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F4F8FF;strokeColor=#DBEAFE;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="35" y="905" width="1050" height="390" as="geometry"/></mxCell>
+      <mxCell id="b53_03" value="03" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#2563EB;fontColor=#FFFFFF;fontStyle=1;fontSize=16;" vertex="1" parent="1"><mxGeometry x="55" y="925" width="42" height="42" as="geometry"/></mxCell>
+      <mxCell id="t53_03" value="CHECK IT" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=19;fontColor=#1E40AF;" vertex="1" parent="1"><mxGeometry x="108" y="928" width="260" height="36" as="geometry"/></mxCell>
+
+      <mxCell id="q53_brief" value="Does the result meet the brief?" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.5;fontStyle=1;fontSize=18;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="290" y="965" width="540" height="46" as="geometry"/></mxCell>
+      <mxCell id="e53_m2b" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="c53_mcp" target="q53_brief"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <mxCell id="c53_adv" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:19px;font-weight:900;color:#1E40AF;'&gt;Claude Code advises&lt;/div&gt;&lt;div style='font-size:14px;color:#475569;margin-top:8px;line-height:1.45;'&gt;Open the same project.&lt;br/&gt;Review what went wrong.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="70" y="1065" width="295" height="130" as="geometry"/></mxCell>
+      <mxCell id="c53_fix" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:19px;font-weight:900;color:#1E40AF;'&gt;Codex fixes + tests&lt;/div&gt;&lt;div style='font-size:14px;color:#475569;margin-top:8px;line-height:1.45;'&gt;Apply useful advice.&lt;br/&gt;Test the finished result.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="415" y="1065" width="295" height="130" as="geometry"/></mxCell>
+      <mxCell id="c53_dec" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:21px;font-weight:900;color:#FFFFFF;'&gt;You decide&lt;/div&gt;&lt;div style='font-size:14px;color:#CBD5E1;margin-top:8px;line-height:1.45;'&gt;Inspect the result.&lt;br/&gt;Approve when ready.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#0B132B;strokeColor=#0B132B;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="760" y="1065" width="295" height="130" as="geometry"/></mxCell>
+
+      <mxCell id="e53_b_no" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_brief" target="c53_adv"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_b_yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="q53_brief" target="c53_dec"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_af" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="c53_adv" target="c53_fix"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e53_recheck" value="RECHECK" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#1E40AF;strokeWidth=2;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.5;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=12;fontColor=#334155;" edge="1" parent="1" source="c53_fix" target="q53_brief"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="562" y="1245"/><mxPoint x="1070" y="1245"/><mxPoint x="1070" y="988"/></Array></mxGeometry></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 3. #54: EXECUTIVE CHEAT SHEET (2-Column 6-Panel Feature & Toggle Cheat Sheet matching 54.png)
-  if (id === '54') {
-    const cards = items?.slice(0, 6) || [
-      { code: '01', title: 'Reasoning Engine & Thinking Budget', badge: 'CORE ENGINE', description: 'Dynamic test-time compute scaling with configurable thinking token budgets for math, code, and planning.', metricOrScore: 'THINKING: ON' },
-      { code: '02', title: 'Native Computer Use & GUI Action Loop', badge: 'DESKTOP / BROWSER', description: 'Direct screen pixel grounding, DOM inspection, cursor click/type synthesis, and terminal command execution.', metricOrScore: 'GUI LOOP: ON' },
-      { code: '03', title: '2M+ Context Window & Repo Memory', badge: 'DEEP CONTEXT', description: 'Ingests full monorepos, multi-hour video/audio streams, and 1,500-page architecture PDFs in a single pass.', metricOrScore: '2M CTX: ON' },
-      { code: '04', title: 'Parallel MCP Tool & API Orchestration', badge: 'TOOL CALLING', description: 'Executes parallel function calls across BigQuery, AlloyDB, GitHub, and sandboxed GKE code runners.', metricOrScore: 'MCP: ACTIVE' },
-      { code: '05', title: 'VPC-SC Guardrails & IAM Policy Gate', badge: 'ZERO-TRUST', description: 'Enforces Google Cloud IAM, CMEK encryption, PII redaction, and Human-in-the-Loop approval checkpoints.', metricOrScore: 'VPC-SC: ON' },
-      { code: '06', title: 'Latency vs Cost Routing Tier', badge: 'FINOPS ROUTER', description: 'Routes fast sub-second tasks to Flash/Lite and deep multi-step architecture synthesis to Pro/Ultra.', metricOrScore: 'AUTO-ROUTE: ON' }
+  // ============================================================================
+  // 3. #54: GPT-6 ASTRA COMPUTER USE CHEAT SHEET (Exact 1:1 Vector Twin of 54.png)
+  // ============================================================================
+  if (id === '54' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'GPT-6 Astra Computer Use');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_54_${level}" name="${hTitle}"><mxGraphModel dx="1140" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1140" pageHeight="1340" background="#FAFCFF"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FAFCFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1140" height="1340" as="geometry"/></mxCell>
+      <!-- Header -->
+      <mxCell id="hdr54" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:42px;font-weight:900;color:#0F172A;letter-spacing:-0.8px;'&gt;GPT-6 Astra &lt;span style='color:#2563EB;'&gt;Computer Use&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:18px;color:#475569;margin-top:6px;font-weight:500;'&gt;Set it up on a Mac, then copy four prompts that do real work.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="35" y="20" width="1060" height="84" as="geometry"/></mxCell>
+
+      <!-- LEFT COLUMN: Start using it (Steps 01 - 07) -->
+      <mxCell id="col54_L" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="35" y="120" width="515" height="925" as="geometry"/></mxCell>
+      <mxCell id="hdr54_L" value="Start using it" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=24;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="58" y="138" width="320" height="36" as="geometry"/></mxCell>
+
+      <mxCell id="s54_1" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#DBEAFE;color:#2563EB;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;01&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Open Codex&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Choose GPT-6 Astra in a desktop task, if available.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="185" width="470" height="68" as="geometry"/></mxCell>
+
+      <mxCell id="s54_2" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#DBEAFE;color:#2563EB;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;02&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Install Computer Use&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Plugins → Computer Use; enable server and skill, then select Try now.&lt;/div&gt;&lt;div style='margin-left:38px;margin-top:8px;'&gt;&lt;span style='font-size:12px;font-weight:700;color:#334155;margin-right:12px;'&gt;Server ●&lt;/span&gt;&lt;span style='font-size:12px;font-weight:700;color:#334155;margin-right:12px;'&gt;Skill ●&lt;/span&gt;&lt;span style='background:#F3E8FF;color:#6B21A8;padding:3px 12px;border-radius:6px;font-size:12px;font-weight:700;'&gt;Try now&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="268" width="470" height="105" as="geometry"/></mxCell>
+
+      <mxCell id="s54_3" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#DBEAFE;color:#2563EB;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;03&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Grant Mac permissions&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Allow Screen Recording to see, and Accessibility to click and type.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="390" width="470" height="72" as="geometry"/></mxCell>
+
+      <mxCell id="s54_4" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#DBEAFE;color:#2563EB;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;04&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Connect Chrome&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Settings → Computer Use → Chrome; install the extension and confirm Manage.&lt;/div&gt;&lt;div style='margin-left:38px;margin-top:8px;'&gt;&lt;span style='background:#EFF6FF;color:#1E3A8A;padding:4px 40px 4px 12px;border-radius:6px;font-size:12px;font-weight:700;margin-right:8px;'&gt;Chrome&lt;/span&gt;&lt;span style='background:#F3E8FF;color:#6B21A8;padding:4px 14px;border-radius:6px;font-size:12px;font-weight:700;'&gt;Manage&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="478" width="470" height="110" as="geometry"/></mxCell>
+
+      <mxCell id="s54_5" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#EDE9FE;color:#6D28D9;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;05&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Point it at the work&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Mention @Chrome or an app, then describe the result you want.&lt;/div&gt;&lt;div style='margin-left:38px;margin-top:8px;background:#F8FAFC;border:1px solid #E2E8F0;padding:8px 12px;border-radius:8px;font-size:12.5px;color:#334155;'&gt;&lt;span style='background:#EDE9FE;color:#5B21B6;padding:2px 8px;border-radius:6px;font-weight:700;margin-right:6px;'&gt;@Chrome&lt;/span&gt; Compare these three suppliers.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="604" width="470" height="125" as="geometry"/></mxCell>
+
+      <mxCell id="s54_6" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#EDE9FE;color:#6D28D9;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;06&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Approve access&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Allow the relevant app or website when prompted.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="745" width="470" height="70" as="geometry"/></mxCell>
+
+      <mxCell id="s54_7" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;span style='background:#EDE9FE;color:#6D28D9;padding:3px 8px;border-radius:6px;font-weight:800;font-size:13px;margin-right:8px;'&gt;07&lt;/span&gt;&lt;b style='font-size:16px;color:#0F172A;'&gt;Sign in yourself&lt;/b&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-left:38px;margin-top:4px;'&gt;Complete the login, let it continue, then inspect the result.&lt;/div&gt;&lt;div style='font-size:12px;color:#94A3B8;margin-top:16px;'&gt;Availability depends on rollout and workspace settings.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="58" y="830" width="470" height="100" as="geometry"/></mxCell>
+
+      <!-- Bottom-Left: Try this prompt -->
+      <mxCell id="try54_hdr" value="Try this prompt" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=17;fontColor=#2563EB;" vertex="1" parent="1"><mxGeometry x="42" y="1062" width="240" height="28" as="geometry"/></mxCell>
+      <mxCell id="try54_box" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;font-size:14px;color:#334155;line-height:1.5;'&gt;Use &lt;b&gt;[app or page]&lt;/b&gt; to achieve &lt;b&gt;[result]&lt;/b&gt;.&lt;br/&gt;Use an available plugin for the work it supports, then Computer Use for remaining steps and visual checks. Preserve &lt;b&gt;[constraints]&lt;/b&gt;, check against &lt;b&gt;[success criteria]&lt;/b&gt;, and show me the result.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="35" y="1095" width="515" height="205" as="geometry"/></mxCell>
+      <mxCell id="try54_btn" value="↑" style="ellipse;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#2563EB;fontColor=#FFFFFF;fontStyle=1;fontSize=18;" vertex="1" parent="1"><mxGeometry x="495" y="1245" width="40" height="40" as="geometry"/></mxCell>
+
+      <!-- RIGHT COLUMN: Four jobs to start with -->
+      <mxCell id="hdr54_R" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;Four jobs to start with&lt;/div&gt;&lt;div style='font-size:13.5px;color:#64748B;margin-top:4px;'&gt;Example apps; available plugins vary by workspace.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="580" y="120" width="525" height="60" as="geometry"/></mxCell>
+
+      <mxCell id="ban54_R" value="&lt;div style='padding:12px 16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:800;color:#0F172A;'&gt;Plugin → Computer Use → Check&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:4px;'&gt;Use a plugin where one exists, then Computer Use for the remaining steps and visual checks.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#DBEAFE;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="580" y="190" width="525" height="92" as="geometry"/></mxCell>
+
+      <mxCell id="job54_1" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:800;color:#0F172A;'&gt;● &lt;span style='background:#0EA5E9;color:#FFF;padding:2px 6px;border-radius:4px;font-size:11px;margin-right:6px;'&gt;xero&lt;/span&gt; Accounts: match invoices&lt;/div&gt;&lt;div style='background:#F1F5F9;padding:12px;border-radius:8px;font-size:13.5px;color:#334155;margin-top:10px;line-height:1.45;'&gt;@Chrome Compare these invoices with my purchase-order list. Flag unmatched invoices, duplicate invoice numbers and total mismatches in a review table.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:8px;'&gt;Done when every invoice is matched or flagged for review.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="580" y="302" width="525" height="230" as="geometry"/></mxCell>
+
+      <mxCell id="job54_2" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:800;color:#0F172A;'&gt;● &lt;span style='background:#EA4335;color:#FFF;padding:2px 6px;border-radius:4px;font-size:11px;margin-right:6px;'&gt;M&lt;/span&gt; Sales: draft follow-ups&lt;/div&gt;&lt;div style='background:#F1F5F9;padding:12px;border-radius:8px;font-size:13.5px;color:#334155;margin-top:10px;line-height:1.45;'&gt;@Chrome Open the five Gmail threads I've tagged. Draft a follow-up for each in my usual tone, under 90 words. Leave them all unsent.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:8px;'&gt;Done when five drafts sit unsent, each under 90 words.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="580" y="552" width="525" height="230" as="geometry"/></mxCell>
+
+      <mxCell id="job54_3" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:800;color:#0F172A;'&gt;● &lt;span style='background:#16A34A;color:#FFF;padding:2px 6px;border-radius:4px;font-size:11px;margin-right:6px;'&gt;⊞&lt;/span&gt; Research: compare suppliers&lt;/div&gt;&lt;div style='background:#F1F5F9;padding:12px;border-radius:8px;font-size:13.5px;color:#334155;margin-top:10px;line-height:1.45;'&gt;@Chrome Open these three supplier pages. Build a table of price, lead time and returns policy. Note anything the page does not state.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:8px;'&gt;Done when every cell is filled or marked as not stated.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="580" y="802" width="525" height="230" as="geometry"/></mxCell>
+
+      <mxCell id="job54_4" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:800;color:#0F172A;'&gt;● &lt;span style='background:#7C3AED;color:#FFF;padding:2px 6px;border-radius:4px;font-size:11px;margin-right:6px;'&gt;Figma&lt;/span&gt; Design: update a deck&lt;/div&gt;&lt;div style='background:#F1F5F9;padding:12px;border-radius:8px;font-size:13.5px;color:#334155;margin-top:10px;line-height:1.45;'&gt;@Figma Open my deck template. Apply the copy in my brief to slides 3 to 7, keep my type styles, and show me each slide before you move on.&lt;/div&gt;&lt;div style='font-size:12px;color:#64748B;margin-top:8px;'&gt;Done when slides 3 to 7 have changed and the type styles are untouched.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="580" y="1052" width="525" height="248" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
+
+  // ============================================================================
+  // 4. #55: THE AI NOBODY SIGNED OFF (Exact 1:1 Vector Twin of 55.png)
+  // ============================================================================
+  if (id === '55' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'The AI Nobody Signed Off');
+    const rightBubbles = [
+      { label: 'A dashboard&lt;br/&gt;nobody owns', x: 425, y: 265, w: 165, h: 165, stroke: '#93C5FD', iconBg: '#DBEAFE', icon: '📊' },
+      { label: 'A fraud&lt;br/&gt;check', x: 605, y: 220, w: 110, h: 110, stroke: '#93C5FD', iconBg: '#DBEAFE', icon: '🛡' },
+      { label: 'A script on a&lt;br/&gt;laptop', x: 725, y: 200, w: 145, h: 145, stroke: '#FDBA74', iconBg: '#FFEDD5', icon: '💻' },
+      { label: 'An extension someone&lt;br/&gt;installed', x: 875, y: 270, w: 215, h: 215, stroke: '#FDBA74', iconBg: '#FFEDD5', icon: '🔌' },
+      { label: 'A lead scorer', x: 540, y: 385, width: 145, height: 145, x2: 540, y2: 385, w: 145, h: 145, stroke: '#86EFAC', iconBg: '#DCFCE7', icon: '🎯' },
+      { label: 'An SEO writer', x: 695, y: 350, w: 150, h: 150, stroke: '#93C5FD', iconBg: '#DBEAFE', icon: '🌐' },
+      { label: 'A site&lt;br/&gt;recommender', x: 390, y: 465, w: 170, h: 170, stroke: '#86EFAC', iconBg: '#DCFCE7', icon: '👍' },
+      { label: 'An interview&lt;br/&gt;booker', x: 665, y: 505, w: 150, h: 150, stroke: '#86EFAC', iconBg: '#DCFCE7', icon: '📅' },
+      { label: 'A ticket&lt;br/&gt;router', x: 825, y: 545, w: 120, h: 120, stroke: '#93C5FD', iconBg: '#DBEAFE', icon: '⇄' },
+      { label: 'A social&lt;br/&gt;scheduler', x: 955, y: 515, w: 135, h: 135, stroke: '#FDBA74', iconBg: '#FFEDD5', icon: '📢' },
+      { label: 'Auto-replies in&lt;br/&gt;support', x: 515, y: 590, w: 165, h: 165, stroke: '#D8B4FE', iconBg: '#F3E8FF', icon: '↩' },
+      { label: 'A code&lt;br/&gt;assistant', x: 380, y: 655, w: 140, h: 140, stroke: '#86EFAC', iconBg: '#DCFCE7', icon: '&lt;/&gt;' },
+      { label: 'A meeting&lt;br/&gt;notetaker', x: 705, y: 655, w: 140, h: 140, stroke: '#93C5FD', iconBg: '#DBEAFE', icon: '🎙' },
+      { label: 'A personal account,&lt;br/&gt;logged in', x: 875, y: 655, w: 210, h: 210, stroke: '#FCD34D', iconBg: '#FEF3C7', icon: '🔑' },
+      { label: 'AI inside the&lt;br/&gt;CRM', x: 435, y: 775, w: 155, h: 155, stroke: '#D8B4FE', iconBg: '#F3E8FF', icon: '⊞' },
+      { label: 'A CV screener', x: 595, y: 745, w: 155, h: 155, stroke: '#FCD34D', iconBg: '#FEF3C7', icon: '👤' },
+      { label: 'A website&lt;br/&gt;chatbot', x: 705, y: 875, w: 130, h: 130, stroke: '#FDBA74', iconBg: '#FFEDD5', icon: '💬' },
+      { label: 'A forecasting&lt;br/&gt;model', x: 850, y: 865, w: 160, h: 160, stroke: '#FDBA74', iconBg: '#FFEDD5', icon: '📈' },
+      { label: 'A trial nobody&lt;br/&gt;cancelled', x: 380, y: 940, w: 160, h: 160, stroke: '#86EFAC', iconBg: '#DCFCE7', icon: '🕒' },
+      { label: 'A refund&lt;br/&gt;approver', x: 575, y: 945, w: 145, h: 145, stroke: '#FCD34D', iconBg: '#FEF3C7', icon: '💳' },
+      { label: 'An image&lt;br/&gt;generator', x: 765, y: 995, w: 140, h: 140, stroke: '#FCD34D', iconBg: '#FEF3C7', icon: '🖼' },
+      { label: 'A translation&lt;br/&gt;tool', x: 910, y: 1015, w: 140, h: 140, stroke: '#FCD34D', iconBg: '#FEF3C7', icon: '文A' },
+      { label: 'A legal doc&lt;br/&gt;summariser', x: 475, y: 1075, w: 155, h: 155, stroke: '#D8B4FE', iconBg: '#F3E8FF', icon: '📄' },
+      { label: 'Something a&lt;br/&gt;contractor built', x: 640, y: 1100, w: 180, h: 180, stroke: '#D8B4FE', iconBg: '#F3E8FF', icon: '🏷' },
     ];
-    let cardsXml = '';
-    const strokes = ['#2563EB', '#059669', '#D97706', '#7C3AED', '#DC2626', '#0891B2'];
-    const fills = ['#EFF6FF', '#ECFDF5', '#FFFBEB', '#FAF5FF', '#FEF2F2', '#ECFEFF'];
-    cards.forEach((c, i) => {
-      const col = i % 2;
-      const row = Math.floor(i / 2);
-      const x = 55 + col * 675;
-      const y = 120 + row * 192;
-      const st = strokes[i % strokes.length];
-      const fl = fills[i % fills.length];
-      cardsXml += `
-        <mxCell id="cs54_${i}" value="&lt;div style='padding:12px 16px;text-align:left;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='background:${st};color:#FFF;padding:2px 10px;border-radius:999px;font-size:10.5px;font-weight:800;'&gt;${esc(c.code || `0${i + 1}`)} • ${esc(c.badge)} [${level}]&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;● ${esc(c.metricOrScore || 'ENABLED')}&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(c.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:5px;line-height:1.45;'&gt;${esc(c.description)}&lt;/div&gt;${getLevelTechSpec(level, i)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fl};strokeColor=${st};strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="655" height="174" as="geometry"/></mxCell>
-      `;
+    let bXml = '';
+    rightBubbles.forEach((b, i) => {
+      bXml += `<mxCell id="b55_${i}" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:inline-block;background:${b.iconBg};padding:5px 8px;border-radius:8px;font-size:13px;font-weight:800;color:#0F172A;margin-bottom:5px;'&gt;${b.icon}&lt;/div&gt;&lt;div style='font-size:12.5px;font-weight:800;color:#1E293B;line-height:1.25;'&gt;${b.label}&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${b.stroke};strokeWidth=2.5;" vertex="1" parent="1"><mxGeometry x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" as="geometry"/></mxCell>`;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_54_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #54 • EXECUTIVE CHEAT SHEET • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:3px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      ${cardsXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12.5;" vertex="1" parent="1"><mxGeometry x="55" y="715" width="1330" height="46" as="geometry"/></mxCell>
-      ${levelStripXml}
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_55_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FAFCFF"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FAFCFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr55" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:44px;font-weight:900;color:#0F172A;letter-spacing:-0.8px;'&gt;The AI Nobody &lt;span style='color:#60A5FA;'&gt;Signed Off&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:17px;color:#475569;margin-top:6px;font-weight:600;'&gt;Inside a company that thinks it has four tools&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="22" width="1000" height="86" as="geometry"/></mxCell>
+
+      <mxCell id="pil55_L" value="What Leadership Thinks" style="rounded=1;whiteSpace=wrap;html=1;arcSize=30;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=17;" vertex="1" parent="1"><mxGeometry x="60" y="135" width="280" height="44" as="geometry"/></mxCell>
+      <mxCell id="pil55_R" value="What Is Actually Running" style="rounded=1;whiteSpace=wrap;html=1;arcSize=30;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=17;" vertex="1" parent="1"><mxGeometry x="580" y="135" width="295" height="44" as="geometry"/></mxCell>
+
+      <!-- Left Leadership Persona & 4 Quotes -->
+      <mxCell id="sp55_1" value="&amp;ldquo;We use&lt;br/&gt;one AI tool.&amp;rdquo;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#FFFFFF;strokeColor=#1E293B;strokeWidth=2;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="180" y="235" width="185" height="125" as="geometry"/></mxCell>
+      <mxCell id="exec55" value="&lt;div style='text-align:center;padding:12px;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:46px;'&gt;👔&lt;/div&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;Executive Leadership&lt;/div&gt;&lt;div style='font-size:11.5px;color:#64748B;'&gt;Assumes 4 sanctioned tools&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="45" y="340" width="185" height="190" as="geometry"/></mxCell>
+
+      <mxCell id="q55_2" value="&amp;ldquo;IT approved&lt;br/&gt;it.&amp;rdquo;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=2.5;fontStyle=1;fontSize=15;fontColor=#1E293B;" vertex="1" parent="1"><mxGeometry x="75" y="675" width="150" height="150" as="geometry"/></mxCell>
+      <mxCell id="q55_3" value="&amp;ldquo;We have a&lt;br/&gt;policy.&amp;rdquo;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=2.5;fontStyle=1;fontSize=15;fontColor=#1E293B;" vertex="1" parent="1"><mxGeometry x="170" y="885" width="155" height="155" as="geometry"/></mxCell>
+      <mxCell id="q55_4" value="&amp;ldquo;It is just a&lt;br/&gt;chatbot.&amp;rdquo;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=2.5;fontStyle=1;fontSize=15;fontColor=#1E293B;" vertex="1" parent="1"><mxGeometry x="100" y="1090" width="155" height="155" as="geometry"/></mxCell>
+
+      ${bXml}
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 4. #55: BUBBLE CONCEPTUAL (Left Executive Assumptions vs Right 12 Color-Coded Shadow AI / Agent Bubbles)
-  if (id === '55') {
-    const leftAssumptions = items?.slice(0, 4) || [
-      { code: '01', title: '"We blocked ChatGPT at the firewall"', badge: 'ASSUMPTION 1', description: 'Leadership assumes network blocks stop unapproved AI usage across departments.' },
-      { code: '02', title: '"Only IT runs approved pilots"', badge: 'ASSUMPTION 2', description: 'Leadership believes AI adoption waits for formal security & architecture sign-off.' },
-      { code: '03', title: '"No corporate data leaves our VPC"', badge: 'ASSUMPTION 3', description: 'Leadership assumes spreadsheets, PDFs, and code stay strictly on-prem.' },
-      { code: '04', title: '"Our AI governance policy is enough"', badge: 'ASSUMPTION 4', description: 'Static PDF policies without runtime guardrails or sanctioned Vertex AI sandboxes.' }
-    ];
-    const bubbles = [
-      { label: 'Sales CRM&lt;br/&gt;Chrome Ext', x: 590, y: 185, w: 155, h: 105, fill: '#FEE2E2', stroke: '#DC2626' },
-      { label: 'Shadow&lt;br/&gt;Coding Bot', x: 775, y: 170, w: 165, h: 115, fill: '#FEF3C7', stroke: '#D97706' },
-      { label: 'Finance CSV&lt;br/&gt;Summarizer', x: 970, y: 185, w: 160, h: 105, fill: '#DBEAFE', stroke: '#2563EB' },
-      { label: 'Personal&lt;br/&gt;API Keys', x: 1160, y: 175, w: 155, h: 110, fill: '#F3E8FF', stroke: '#9333EA' },
-      { label: 'Meeting&lt;br/&gt;Note Taker', x: 575, y: 330, w: 165, h: 110, fill: '#DCFCE7', stroke: '#16A34A' },
-      { label: 'Unverified&lt;br/&gt;MCP Server', x: 770, y: 320, w: 175, h: 120, fill: '#FFEDD5', stroke: '#EA580C' },
-      { label: 'Legal PDF&lt;br/&gt;Cloud Upload', x: 975, y: 330, w: 165, h: 110, fill: '#FCE7F3', stroke: '#DB2777' },
-      { label: 'Support&lt;br/&gt;Auto-Draft', x: 1165, y: 325, w: 155, h: 110, fill: '#E0E7FF', stroke: '#4F46E5' },
-      { label: 'HR Resume&lt;br/&gt;Screener', x: 595, y: 475, w: 160, h: 105, fill: '#CCFBF1', stroke: '#0D9488' },
-      { label: 'Marketing&lt;br/&gt;Copy Agent', x: 785, y: 475, w: 165, h: 105, fill: '#FEF9C3', stroke: '#CA8A04' },
-      { label: 'Local LLM&lt;br/&gt;On Laptop', x: 980, y: 475, w: 160, h: 105, fill: '#FFE4E6', stroke: '#E11D48' },
-      { label: 'Slack Webhook&lt;br/&gt;Prompt Bot', x: 1165, y: 475, w: 155, h: 105, fill: '#F1F5F9', stroke: '#475569' }
-    ];
-    let leftXml = '';
-    leftAssumptions.forEach((a, idx) => {
-      const y = 185 + idx * 125;
-      leftXml += `<mxCell id="la_${idx}" value="&lt;div style='padding:8px;text-align:left;'&gt;&lt;div style='font-size:10px;font-weight:800;color:#475569;'&gt;${esc(a.badge)} (${level})&lt;/div&gt;&lt;div style='font-size:13.5px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${esc(a.title)}&lt;/div&gt;&lt;div style='font-size:11px;color:#334155;margin-top:3px;'&gt;${esc(a.description)}&lt;/div&gt;${getLevelTechSpec(level, idx)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="75" y="${y}" width="410" height="112" as="geometry"/></mxCell>`;
-    });
-    let bubbleXml = '';
-    bubbles.forEach((b, idx) => {
-      bubbleXml += `<mxCell id="bub_${idx}" value="&lt;div style='font-family:Inter,sans-serif;text-align:center;'&gt;&lt;b style='font-size:13px;color:#0F172A;'&gt;${b.label}&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:9.5px;font-weight:800;color:${b.stroke};'&gt;UNSANCTIONED • ${level}&lt;/span&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=${b.fill};strokeColor=${b.stroke};strokeWidth=2.5;" vertex="1" parent="1"><mxGeometry x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" as="geometry"/></mxCell>`;
-    });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_55_${level}" name="${title}"><mxGraphModel dx="1440" dy="1020" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="1020" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.5px;'&gt;INFOGRAPHIC BLUEPRINT #55 • BUBBLE CONCEPTUAL • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      <mxCell id="zoneL" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="120" width="450" height="585" as="geometry"/></mxCell>
-      <mxCell id="hdrL" value="WHAT LEADERSHIP THINKS (4 ASSUMPTIONS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="75" y="135" width="410" height="36" as="geometry"/></mxCell>
-      <mxCell id="zoneR" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=2;dashed=1;" vertex="1" parent="1"><mxGeometry x="535" y="120" width="850" height="585" as="geometry"/></mxCell>
-      <mxCell id="hdrR" value="WHAT IS ACTUALLY RUNNING (12+ SHADOW AI &amp; AGENT BUBBLES)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2626;strokeColor=#991B1B;fontColor=#FFFFFF;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="565" y="135" width="790" height="36" as="geometry"/></mxCell>
-      ${leftXml}
-      ${bubbleXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="725" width="1330" height="46" as="geometry"/></mxCell>
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 5. #52 Custom Dynamic Override when `items` are passed by AI synthesizer
-  if (id === '52') {
-    const rows = items?.slice(0, 4) || [];
-    let rowsXml = '';
-    const colors = ['#D97706', '#9333EA', '#16A34A', '#2563EB'];
-    rows.forEach((r, i) => {
-      const y = 115 + i * 175;
-      const col = colors[i % 4];
-      const techSpec = getLevelTechSpec(level, i);
-      rowsXml += `
-        <mxCell id="b_${i}" value="${esc(r.code || `0${i + 1}`)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${col};strokeWidth=2;fontStyle=1;fontSize=13;fontColor=${col};" vertex="1" parent="1"><mxGeometry x="36" y="${y + 10}" width="42" height="32" as="geometry"/></mxCell>
-        <mxCell id="row_${i}" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="96" y="${y}" width="1290" height="158" as="geometry"/></mxCell>
-        <mxCell id="rt_${i}" value="&lt;b style='font-size:17px;color:${col};'&gt;${esc(r.title)}&lt;/b&gt; &amp;nbsp;&lt;span style='font-size:12.5px;color:#334155;font-weight:600;'&gt;${esc(r.badge)} [${level}]&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="116" y="${y + 8}" width="700" height="26" as="geometry"/></mxCell>
-        <mxCell id="L_${i}" value="&lt;div style='padding:6px;text-align:left;'&gt;&lt;b style='font-size:11px;color:${col};'&gt;INPUT / SOURCE ANATOMY&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11.5px;color:#1E293B;'&gt;${esc(r.description)}&lt;/span&gt;${techSpec}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=${col};dashed=1;" vertex="1" parent="1"><mxGeometry x="116" y="${y + 38}" width="460" height="68" as="geometry"/></mxCell>
-        <mxCell id="M_${i}" value="GEMINI&lt;br/&gt;ENGINE&lt;br/&gt;${level}" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2;fontStyle=1;fontSize=10;fontColor=#9A3412;" vertex="1" parent="1"><mxGeometry x="660" y="${y + 42}" width="64" height="60" as="geometry"/></mxCell>
-        <mxCell id="R_${i}" value="&lt;div style='padding:6px;text-align:left;'&gt;&lt;b style='font-size:11px;color:#1D4ED8;'&gt;${esc(r.secondaryTitle || 'TARGET OUTPUT &amp; VERIFICATION')}&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11.5px;color:#1E293B;'&gt;${esc(r.secondaryDescription || r.description)}&lt;/span&gt;${techSpec}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;" vertex="1" parent="1"><mxGeometry x="808" y="${y + 38}" width="556" height="68" as="geometry"/></mxCell>
-        <mxCell id="eL_${i}" value="uses" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#64748B;strokeWidth=1.5;endArrow=block;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="L_${i}" target="M_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="eR_${i}" value="produces" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2563EB;strokeWidth=1.5;endArrow=block;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="M_${i}" target="R_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>
-        <mxCell id="P_${i}" value="&lt;div style='padding:4px 10px;text-align:left;font-size:11.5px;color:#334155;'&gt;&lt;b style='color:#0F172A;'&gt;ACTIONABLE PROMPT (${level}):&lt;/b&gt; ${esc(r.metricOrScore || `Execute ${r.title} verification and validate outputs.`)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#E2E8F0;" vertex="1" parent="1"><mxGeometry x="116" y="${y + 114}" width="1248" height="34" as="geometry"/></mxCell>
-      `;
-    });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_52_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#F8FAFC"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:left;padding:8px 16px;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="36" y="20" width="1350" height="76" as="geometry"/></mxCell>
-      ${rowsXml}
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 6. #56: SIDE-BY-SIDE COMPARISON (5 Head-to-Head OFF vs ON Toggle Rows matching 56.png)
-  if (id === '56') {
-    const leftHdr = esc(spec?.leftHeader || 'Raw Gemini API (DIY / Stateless • OFF)');
-    const rightHdr = esc(spec?.rightHeader || 'Vertex AI Agent Engine (Managed GCP • ON)');
-    const rows = items?.slice(0, 5) || [
-      { code: '01', badge: 'STATE PERSISTENCE', title: '01 Stateless Runs (MANUAL / EPHEMERAL)', description: 'Requires custom database pipelines and manual state tracking for every conversation thread.', secondaryTitle: '01 Persistent State (BUILT-IN / MANAGED)', secondaryDescription: 'Automatically tracks, persists, and manages conversation history and context windows securely.' },
-      { code: '02', badge: 'SECURITY &amp; SANDBOXING', title: '02 Local Execution (UNSANDBOXED)', description: 'Executing code from tool outputs runs directly on your host environment, risking security exposure.', secondaryTitle: '02 Sandbox Execution (SECURE VPC / ISOLATED)', secondaryDescription: 'Safely runs code and scripts inside isolated VPC GKE containers, blocked from accessing host resources.' },
-      { code: '03', badge: 'INFORMATION GROUNDING', title: '03 Raw Model Knowledge (STATIC)', description: 'Requires manual RAG pipelines, chunking, embedding, and vector databases to prevent hallucinations.', secondaryTitle: '03 Grounding Engine (NATIVE RAG &amp; SEARCH)', secondaryDescription: 'Direct, secure ingestion from BigQuery, AlloyDB, Google Search, and enterprise datastores out-of-the-box.' },
-      { code: '04', badge: 'GOVERNANCE &amp; CONTROL', title: '04 Custom Rails (HARDCODED CODE)', description: 'Needs custom code for safety filters, error-handling retry loops, and human-in-the-loop prompts.', secondaryTitle: '04 Managed Guardrails (PROGRAMMATIC POLICY)', secondaryDescription: 'Native safety filtering, programmatic organizational policy checks, and HITL approval workflows.' },
-      { code: '05', badge: 'INTEGRATION ECOSYSTEM', title: '05 Fragmented Glue (CUSTOM PIPELINES)', description: 'Heavy integration required to connect API calls to cloud services, databases, and enterprise access.', secondaryTitle: '05 First-Party Integrations (GOOGLE NATIVE)', secondaryDescription: 'Native, out-of-the-box IAM security, Cloud Pub/Sub, Cloud Logging, Workspace tools, and API gateway.' }
+  // ============================================================================
+  // 5. #56: SIDE-BY-SIDE COMPARISON (Exact 1:1 Vector Twin of 56.png)
+  // ============================================================================
+  if (id === '56' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Side-by-Side Comparison');
+    const rows = [
+      { code: '01', cat: 'STATE PERSISTENCE', lTitle: '01 Stateless Runs', lPill: 'MANUAL / EPHEMERAL', lDesc: 'Requires custom database pipelines and manual state tracking for every conversation thread.', rTitle: '01 Persistent State', rPill: 'BUILT-IN / MANAGED', rDesc: 'Automatically tracks, persists, and manages conversation history and context windows securely.' },
+      { code: '02', cat: 'SECURITY &amp; SANDBOXING', lTitle: '02 Local Execution', lPill: 'UNSANDBOXED', lDesc: 'Executing code from tool outputs runs directly on your host environment, risking security exposure.', rTitle: '02 Sandbox Execution', rPill: 'SECURE VPC / ISOLATED', rDesc: 'Safely runs code and scripts inside isolated VPC GKE containers, blocked from accessing host resources.' },
+      { code: '03', cat: 'INFORMATION GROUNDING', lTitle: '03 Raw Model Knowledge', lPill: 'STATIC / MANUALLY GROUNDED', lDesc: 'Requires manual RAG pipelines, chunking, embedding, and vector databases to prevent hallucinations.', rTitle: '03 Grounding Engine', rPill: 'NATIVE RAG &amp; SEARCH', rDesc: 'Direct, secure ingestion from BigQuery, AlloyDB, Google Search, and enterprise datastores out-of-the-box.' },
+      { code: '04', cat: 'GOVERNANCE &amp; CONTROL', lTitle: '04 Custom Rails', lPill: 'HARDCODED CODE', lDesc: 'Needs custom code for safety filters, error-handling retry loops, and human-in-the-loop prompts.', rTitle: '04 Managed Guardrails', rPill: 'PROGRAMMATIC POLICY', rDesc: 'Native safety filtering, programmatic organizational policy checks, and Human-in-the-Loop approval workflows.' },
+      { code: '05', cat: 'INTEGRATION ECOSYSTEM', lTitle: '05 Fragmented Glue', lPill: 'CUSTOM PIPELINES', lDesc: 'Heavy integration required to connect API calls to cloud services, databases, and enterprise access.', rTitle: '05 First-Party Integrations', rPill: 'GOOGLE NATIVE', rDesc: 'Native, out-of-the-box IAM security, Cloud Pub/Sub, Cloud Logging, Workspace tools, and API gateway.' }
     ];
     let cells = '';
     rows.forEach((r, idx) => {
-      const y = 160 + idx * 124;
-      const techSpec = getLevelTechSpec(level, idx);
+      const y = 248 + idx * 186;
       cells += `
-        <mxCell id="cat_${idx}" value="${esc(r.badge)} • ${level}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;fontStyle=1;fontSize=11;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="560" y="${y - 22}" width="320" height="24" as="geometry"/></mxCell>
-        <mxCell id="L_${idx}" value="&lt;div style='text-align:left;padding:6px;'&gt;&lt;div style='display:flex;justify-content:space-between;'&gt;&lt;b style='font-size:13.5px;color:#0F172A;'&gt;${esc(r.title)}&lt;/b&gt;&lt;span style='background:#94A3B8;color:#FFF;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;'&gt;○ OFF&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:11px;color:#475569;margin-top:4px;'&gt;${esc(r.description)}&lt;/div&gt;${techSpec}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="60" y="${y + 4}" width="580" height="94" as="geometry"/></mxCell>
-        <mxCell id="M_${idx}" value="${esc(r.code || `0${idx + 1}`)}" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;strokeWidth=2;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="696" y="${y + 28}" width="48" height="48" as="geometry"/></mxCell>
-        <mxCell id="R_${idx}" value="&lt;div style='text-align:left;padding:6px;'&gt;&lt;div style='display:flex;justify-content:space-between;'&gt;&lt;b style='font-size:13.5px;color:#0F766E;'&gt;${esc(r.secondaryTitle || r.title)}&lt;/b&gt;&lt;span style='background:#16A34A;color:#FFF;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;'&gt;● ON [${level}]&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:11px;color:#334155;margin-top:4px;'&gt;${esc(r.secondaryDescription || r.description)}&lt;/div&gt;${techSpec}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0D9488;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="800" y="${y + 4}" width="580" height="94" as="geometry"/></mxCell>
+        <mxCell id="cat56_${idx}" value="${r.cat}" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="380" y="${y - 28}" width="360" height="24" as="geometry"/></mxCell>
+        <mxCell id="L56_${idx}" value="&lt;div style='padding:12px 14px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:17px;font-weight:900;color:#0F172A;'&gt;${r.lTitle}&lt;/span&gt;&lt;span style='background:#94A3B8;color:#FFF;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:800;'&gt;○ OFF&lt;/span&gt;&lt;/div&gt;&lt;div style='display:inline-block;background:#334155;color:#FFF;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:800;margin-top:4px;'&gt;${r.lPill}&lt;/div&gt;&lt;div style='font-size:13px;color:#334155;margin-top:8px;line-height:1.4;'&gt;${r.lDesc}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="45" y="${y}" width="465" height="142" as="geometry"/></mxCell>
+        <mxCell id="M56_${idx}" value="${r.code}" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=2;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="536" y="${y + 46}" width="48" height="48" as="geometry"/></mxCell>
+        <mxCell id="R56_${idx}" value="&lt;div style='padding:12px 14px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:17px;font-weight:900;color:#0F172A;'&gt;${r.rTitle}&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:800;'&gt;● ON&lt;/span&gt;&lt;/div&gt;&lt;div style='display:inline-block;background:#0D9488;color:#FFF;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:800;margin-top:4px;'&gt;${r.rPill}&lt;/div&gt;&lt;div style='font-size:13px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;${r.rDesc}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0D9488;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="610" y="${y}" width="465" height="142" as="geometry"/></mxCell>
       `;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_56_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:4px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1320" height="68" as="geometry"/></mxCell>
-      <mxCell id="pilL" value="${leftHdr}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="190" y="96" width="340" height="34" as="geometry"/></mxCell>
-      <mxCell id="pilR" value="${rightHdr}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0D9488;strokeColor=#0F766E;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="910" y="96" width="360" height="34" as="geometry"/></mxCell>
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_56_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr56" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;font-weight:800;color:#475569;'&gt;☁ Google Cloud&lt;/div&gt;&lt;div style='font-size:40px;font-weight:900;color:#0F172A;margin-top:4px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:24px;font-weight:600;color:#1E293B;margin-top:4px;'&gt;Raw Gemini API vs. Vertex AI Agent Engine&lt;/div&gt;&lt;div style='font-size:14px;color:#475569;margin-top:6px;'&gt;Comparing stateless model inference with a fully managed, enterprise grade agent runtime&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="45" y="18" width="1030" height="135" as="geometry"/></mxCell>
+      <mxCell id="pil56_L" value="Raw Gemini API" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=17;" vertex="1" parent="1"><mxGeometry x="155" y="168" width="245" height="42" as="geometry"/></mxCell>
+      <mxCell id="pil56_R" value="Vertex AI Agent Engine" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#0D9488;strokeColor=#0F766E;fontColor=#FFFFFF;fontStyle=1;fontSize=17;" vertex="1" parent="1"><mxGeometry x="710" y="168" width="275" height="42" as="geometry"/></mxCell>
       ${cells}
-      ${levelStripXml}
+      <mxCell id="tk56" value="&lt;div style='padding:12px 18px;text-align:left;font-family:Inter,sans-serif;font-size:13.5px;color:#0F172A;'&gt;&lt;b&gt;TAKEAWAY:&lt;/b&gt; While the Raw Gemini API excels at rapid prototyping and stateless prompts, &lt;b style='color:#0D9488;'&gt;Vertex AI Agent Engine&lt;/b&gt; provides the mandatory sandboxing, persistent state, and native grounding required for production enterprise agents.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="45" y="1190" width="1030" height="72" as="geometry"/></mxCell>
+      <mxCell id="ftr56" value="GOOGLE CLOUD ENTERPRISE AI GUIDE • VERTEX AI AGENT ENGINE • REVISION 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 7. #57: FUNNEL CHART (5 Tapering Centered Trapezoid Stages with Volume Badges & Drop-Off Pills matching 57.png)
-  if (id === '57') {
-    const stages = items?.slice(0, 5) || [
-      { code: '01', title: 'RAW INGESTION', badge: '1M Tokens • 100% Volume', description: 'Unfiltered input: raw docs, logs, repositories, and workspace history.', metricOrScore: '▼ 75% DISCARDED' },
-      { code: '02', title: 'METADATA FILTER', badge: '250k Tokens • 25% Remaining', description: 'Heuristic, date, and keyword (BM25) search & filtering.', metricOrScore: '▼ 80% DISCARDED' },
-      { code: '03', title: 'BIGQUERY VECTOR SEARCH', badge: '50k Tokens • 5% Remaining', description: 'Embeddings, cosine similarity, & database/vector RAG retrieval.', metricOrScore: '▼ 80% DISCARDED' },
-      { code: '04', title: 'CROSS-ENCODER RE-RANKING', badge: '10k Tokens • 1% Remaining', description: 'Deep transformer scoring & cross-encoder relevancy evaluation.', metricOrScore: '▼ 80% DISCARDED' },
-      { code: '05', title: 'GEMINI IN-CONTEXT WINDOW', badge: '2k Tokens • 0.2% Remaining', description: 'High-value, exact-context chunks inserted into prompt/model context.', metricOrScore: 'OPTIMAL CONTEXT' }
+  // ============================================================================
+  // 6. #57: FUNNEL PIPELINE DIAGRAM (Exact 1:1 Vector Twin of 57.png)
+  // ============================================================================
+  if (id === '57' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Funnel Pipeline Diagram');
+    const stages = [
+      { code: '01', title: 'RAW INGESTION', vol: '1M Tokens • 100% Volume', desc: 'Unfiltered input: raw docs, logs, repositories, and workspace history.', chip: 'RAW DATA', drop: '▼ 75% DISCARDED', fill: '#3B82F6', txt: '#FFFFFF', w: 760, y: 215 },
+      { code: '02', title: 'METADATA FILTER', vol: '250k Tokens • 25% Remaining', desc: 'Heuristic, date, and keyword (BM25) search &amp; filtering.', chip: 'METADATA', drop: '▼ 80% DISCARDED', fill: '#EF4444', txt: '#FFFFFF', w: 650, y: 400 },
+      { code: '03', title: 'BIGQUERY VECTOR SEARCH', vol: '50k Tokens • 5% Remaining', desc: 'Embeddings, cosine similarity, &amp; database/vector RAG retrieval.', chip: 'VECTOR SEARCH', drop: '▼ 80% DISCARDED', fill: '#FACC15', txt: '#0F172A', w: 540, y: 585 },
+      { code: '04', title: 'CROSS-ENCODER RE-RANKING', vol: '10k Tokens • 1% Remaining', desc: 'Deep transformer scoring &amp; cross-encoder relevancy evaluation.', chip: 'RE-RANKED', drop: '▼ 80% DISCARDED', fill: '#22C55E', txt: '#FFFFFF', w: 430, y: 770 },
+      { code: '05', title: 'GEMINI IN-CONTEXT WINDOW', vol: '2k Tokens • 0.2% Remaining', desc: 'High-value, exact-context chunks inserted into prompt/model context.', chip: 'GEMINI 1.5 PRO', drop: 'OPTIMAL CONTEXT', fill: '#2563EB', txt: '#FFFFFF', w: 330, y: 955 }
     ];
-    const fills = ['#2563EB', '#DC2626', '#EAB308', '#16A34A', '#4F46E5'];
-    const widths = [1040, 880, 720, 560, 420];
-    let funnelXml = '';
+    let fXml = '';
     stages.forEach((s, i) => {
-      const w = widths[i];
-      const x = Math.round((1440 - w) / 2);
-      const y = 115 + i * 116;
-      const col = fills[i % fills.length];
-      const txtCol = i === 2 ? '#0F172A' : '#FFFFFF';
-      const techSpec = getLevelTechSpec(level, i);
-      funnelXml += `
-        <mxCell id="f_${i}" value="&lt;div style='text-align:center;padding:6px;'&gt;&lt;div style='font-size:15px;font-weight:900;color:${txtCol};'&gt;${esc(s.code || `0${i + 1}`)} | ${esc(s.title)} &amp;nbsp;&lt;span style='background:#FFFFFF;color:#0F172A;padding:2px 8px;border-radius:10px;font-size:10.5px;'&gt;${esc(s.badge)} [${level}]&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:11.5px;color:${txtCol};margin-top:3px;'&gt;${esc(s.description)}&lt;/div&gt;${techSpec}&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;direction=west;rounded=1;whiteSpace=wrap;html=1;fillColor=${col};strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="96" as="geometry"/></mxCell>
-        <mxCell id="drop_${i}" value="${esc(s.metricOrScore || '▼ FILTERED')}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B91C1C;strokeColor=#7F1D1D;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="${x + w + 24}" y="${y + 32}" width="140" height="30" as="geometry"/></mxCell>
+      const x = Math.round((1120 - s.w) / 2);
+      fXml += `
+        <mxCell id="f57_${i}" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;color:${s.txt};'&gt;&lt;div style='font-size:17px;font-weight:900;'&gt;${s.code} | ${s.title} &amp;nbsp;&lt;span style='background:#FFFFFF;color:#0F172A;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:800;'&gt;${s.vol}&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:12.5px;margin-top:6px;opacity:0.95;'&gt;${s.desc}&lt;/div&gt;&lt;div style='margin-top:8px;font-size:11px;'&gt;Tactile UI Chip: &lt;span style='background:rgba(255,255,255,0.25);border:1px solid ${s.txt};padding:2px 8px;border-radius:6px;font-weight:800;'&gt;${s.chip}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=${s.fill};strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="${x}" y="${s.y}" width="${s.w}" height="150" as="geometry"/></mxCell>
+        <mxCell id="d57_${i}" value="${s.drop}" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#DC2626;strokeColor=#991B1B;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="${x + s.w + 20}" y="${s.y + 115}" width="125" height="32" as="geometry"/></mxCell>
       `;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_57_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:4px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1320" height="72" as="geometry"/></mxCell>
-      ${funnelXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;strokeWidth=1.5;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="220" y="720" width="1000" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_57_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr57" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;font-size:15px;font-weight:800;color:#475569;padding:0 20px;'&gt;&lt;span&gt;☁ Google Cloud&lt;/span&gt;&lt;span style='color:#2563EB;'&gt;✦ + Gemini&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:42px;font-weight:900;color:#0F172A;margin-top:4px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:17px;color:#475569;margin-top:4px;'&gt;Context compression and progressive token refinement on Google Cloud&lt;/div&gt;&lt;div style='font-size:14px;font-weight:800;color:#0F172A;margin-top:12px;'&gt;TIERS&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="50" y="20" width="1020" height="175" as="geometry"/></mxCell>
+      <mxCell id="axL57" value="&lt;div style='writing-mode:vertical-rl;transform:rotate(180deg);font-family:Inter,sans-serif;font-size:13px;font-weight:800;color:#0F172A;letter-spacing:0.6px;white-space:nowrap;'&gt;Increasing Context Signal &amp;amp; Density  •  Filtering out irrelevant noise&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="45" y="240" width="48" height="840" as="geometry"/></mxCell>
+      <mxCell id="axR57" value="&lt;div style='writing-mode:vertical-rl;transform:rotate(180deg);font-family:Inter,sans-serif;font-size:13px;font-weight:800;color:#0F172A;letter-spacing:0.8px;white-space:nowrap;'&gt;PERCENTAGE DROP-OFFS&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="1030" y="240" width="44" height="840" as="geometry"/></mxCell>
+      ${fXml}
+      <mxCell id="tk57" value="&lt;div style='padding:12px 18px;text-align:center;font-family:Inter,sans-serif;font-size:13.5px;color:#0F172A;'&gt;&lt;b&gt;WHY IT MATTERS:&lt;/b&gt; Ingestion-level filtering avoids token bloat, reduces model prompt hallucination, and unlocks performant, sub-second Gemini responses.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="80" y="1165" width="960" height="68" as="geometry"/></mxCell>
+      <mxCell id="ftr57" value="GOOGLE CLOUD ARCHITECTURE GUIDE • GOOGLE CLOUD &amp; GEMINI • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 8. #58: PROCESS CHECKLIST (6 Stacked Numbered Checklist Rows with Status Pills & Green ON Toggles matching 58.png)
-  if (id === '58') {
-    const list = items?.slice(0, 6) || [
-      { code: '01', title: 'Define Mission & Scope', badge: 'DEFINED', description: 'Establish the exact tasks, constraints, and success boundaries.', metricOrScore: 'goal_check: SUCCESS | retry_limit: 3' },
-      { code: '02', title: 'Configure API Gateway & Ingress', badge: 'CONNECTED', description: 'Set up the Google Cloud API gateway and authenticate client requests.', metricOrScore: 'HTTPS_Ingress | Auth / Rate Limit' },
-      { code: '03', title: 'Establish Sandboxed GKE Cluster', badge: 'ISOLATED', description: 'Provision an isolated GKE cluster with gVisor sandbox runtimes for safe tool use.', metricOrScore: 'VPC Sandbox | gVisor Containers' },
-      { code: '04', title: 'Enable Memory & Persistent State', badge: 'PERSISTENT', description: 'Connect AlloyDB to log episodic memory and task session state securely.', metricOrScore: 'AlloyDB DB_adapter | Task Logs' },
-      { code: '05', title: 'Integrate HIL Validation Loop', badge: 'GATEWAY', description: 'Establish Human-in-the-Loop breakpoints for validation failures.', metricOrScore: 'HITL Breakpoint | Retry Loops' },
-      { code: '06', title: 'Deploy to Vertex AI Run', badge: 'DEPLOYED', description: 'Release the validated agent workflow into Vertex AI reasoning engines.', metricOrScore: 'live_agent_run | GCP PubSub' }
+  // ============================================================================
+  // 7. #58: PROCESS LIST / CHECKLIST (Exact 1:1 Vector Twin of 58.png)
+  // ============================================================================
+  if (id === '58' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Process List / Checklist');
+    const list = [
+      { code: '01', title: 'Define Mission &amp; Scope', badge: 'DEFINED', pillCol: '#22C55E', numCol: '#EF4444', desc: 'Establish the exact tasks, constraints, and success boundaries.', tag: 'goal_check: SUCCESS&lt;br/&gt;retry_limit: 3' },
+      { code: '02', title: 'Configure API Gateway &amp; Ingress', badge: 'CONNECTED', pillCol: '#3B82F6', numCol: '#F97316', desc: 'Set up the Google Cloud API gateway and authenticate client requests.', tag: 'HTTPS_Ingress&lt;br/&gt;Auth / Rate Limit' },
+      { code: '03', title: 'Establish Sandboxed GKE Cluster', badge: 'ISOLATED', pillCol: '#22C55E', numCol: '#EAB308', desc: 'Provision an isolated GKE cluster with gVisor sandbox runtimes for safe tool use.', tag: 'VPC Sandbox&lt;br/&gt;gVisor Containers' },
+      { code: '04', title: 'Enable Memory &amp; Persistent State', badge: 'PERSISTENT', pillCol: '#38BDF8', numCol: '#22C55E', desc: 'Connect AlloyDB to log episodic memory and task session state securely.', tag: 'AlloyDB DB_adapter&lt;br/&gt;Task Logs' },
+      { code: '05', title: 'Integrate HIL Validation Loop', badge: 'GATEWAY', pillCol: '#64748B', numCol: '#3B82F6', desc: 'Establish Human-in-the-Loop breakpoints for validation failures.', tag: 'HITL Breakpoint&lt;br/&gt;Retry Loops' },
+      { code: '06', title: 'Deploy to Vertex AI Run', badge: 'DEPLOYED', pillCol: '#16A34A', numCol: '#EF4444', desc: 'Release the validated agent workflow into Vertex AI reasoning engines.', tag: 'live_agent_run&lt;br/&gt;GCP PubSub' }
     ];
-    const badgeCols = ['#DC2626', '#EA580C', '#EAB308', '#16A34A', '#2563EB', '#DC2626'];
-    let listXml = '';
+    let lXml = '';
     list.forEach((it, i) => {
-      const y = 110 + i * 100;
-      const c = badgeCols[i % badgeCols.length];
-      const techSpec = getLevelTechSpec(level, i);
-      listXml += `
-        <mxCell id="num_${i}" value="${esc(it.code || `0${i + 1}`)}" style="ellipse;whiteSpace=wrap;html=1;fillColor=${c};strokeColor=#FFFFFF;strokeWidth=3;fontColor=#FFFFFF;fontStyle=1;fontSize=18;" vertex="1" parent="1"><mxGeometry x="90" y="${y + 12}" width="64" height="64" as="geometry"/></mxCell>
-        <mxCell id="row_${i}" value="&lt;div style='padding:8px 16px;text-align:left;display:flex;justify-content:space-between;align-items:center;'&gt;&lt;div&gt;&lt;div style='font-size:15px;font-weight:800;color:#0F172A;'&gt;${esc(it.code || `0${i + 1}`)} | ${esc(it.title)} &amp;nbsp;&lt;span style='background:#16A34A;color:#FFFFFF;padding:2px 10px;border-radius:999px;font-size:10px;'&gt;● ${esc(it.badge)} • ${level}&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:3px;'&gt;${esc(it.description)}&lt;/div&gt;${techSpec}&lt;/div&gt;&lt;div style='background:#E2E8F0;padding:6px 12px;border-radius:8px;font-family:monospace;font-size:11px;color:#0F172A;font-weight:700;'&gt;${esc(it.metricOrScore || 'STATUS: VERIFIED [ON]')}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#334155;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="174" y="${y}" width="1170" height="86" as="geometry"/></mxCell>
+      const y = 185 + i * 162;
+      lXml += `
+        <mxCell id="n58_${i}" value="${it.code}" style="ellipse;whiteSpace=wrap;html=1;fillColor=${it.numCol};strokeColor=#0F172A;strokeWidth=2;fontColor=#FFFFFF;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="60" y="${y + 22}" width="86" height="86" as="geometry"/></mxCell>
+        <mxCell id="r58_${i}" value="&lt;div style='padding:14px 20px;text-align:left;font-family:Inter,sans-serif;display:flex;justify-content:space-between;align-items:center;'&gt;&lt;div style='max-width:540px;'&gt;&lt;div style='font-size:21px;font-weight:900;color:#0F172A;'&gt;${it.code} | ${it.title}&lt;/div&gt;&lt;div style='font-size:14.5px;color:#334155;margin-top:8px;line-height:1.4;'&gt;${it.desc}&lt;/div&gt;&lt;/div&gt;&lt;div style='text-align:right;'&gt;&lt;div style='margin-bottom:8px;'&gt;&lt;span style='background:${it.pillCol};color:#FFFFFF;padding:4px 14px;border-radius:999px;font-size:12px;font-weight:800;margin-right:10px;'&gt;${it.badge}&lt;/span&gt;&lt;span style='background:#22C55E;color:#FFFFFF;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:900;'&gt;● ON&lt;/span&gt;&lt;/div&gt;&lt;div style='background:#E2E8F0;border:1px solid #CBD5E1;padding:6px 12px;border-radius:8px;font-family:monospace;font-size:12.5px;color:#0F172A;font-weight:700;text-align:left;display:inline-block;'&gt;${it.tag}&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="170" y="${y}" width="890" height="134" as="geometry"/></mxCell>
       `;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_58_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:left;padding:6px 16px;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="90" y="20" width="1254" height="74" as="geometry"/></mxCell>
-      ${listXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="90" y="720" width="1254" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_58_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr58" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:44px;font-weight:900;color:#0F172A;'&gt;${hTitle}&lt;/span&gt;&lt;span style='font-size:20px;font-weight:800;color:#2563EB;'&gt;☁ ✦&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:18px;color:#334155;margin-top:6px;line-height:1.4;'&gt;The step-by-step blueprint to deploy and run secure&lt;br/&gt;autonomous agent workloads on Google Cloud&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="24" width="1000" height="135" as="geometry"/></mxCell>
+      ${lXml}
+      <mxCell id="tk58" value="&lt;div style='padding:12px 18px;text-align:left;font-family:Inter,sans-serif;font-size:14.5px;color:#0F172A;'&gt;&lt;b&gt;TAKEAWAY:&lt;/b&gt; Always sandbox execution tasks and apply native state persistence before moving to Production.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="60" y="1175" width="1000" height="64" as="geometry"/></mxCell>
+      <mxCell id="ftr58" value="PROCESS LIST / CHECKLIST • GOOGLE CLOUD ENTERPRISE GUIDE • SEP 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 9. #59: TIMELINE ROADMAP (4 Quarterly Phases Q1-Q4 + Central Spine + 8 Milestones matching 59.png)
-  if (id === '59') {
-    const phases = items?.slice(0, 4) || [
-      { code: 'Q1', title: 'PHASE 1: FOUNDATION & RAG', badge: 'PILOT • WEEKS 1-6', description: 'Deploy Vertex AI Search, BigQuery vector store, and internal copilot with zero-trust IAM.', secondaryTitle: 'M1: Grounded RAG Live | M2: <1.2s p95 Latency', metricOrScore: 'GATE 1: 95% CITATION' },
-      { code: 'Q2', title: 'PHASE 2: SANDBOXED TOOL USE', badge: 'BETA • WEEKS 7-12', description: 'Connect MCP tools, AlloyDB session state, and isolated GKE gVisor code execution.', secondaryTitle: 'M3: Read/Write API Tools | M4: HITL Approval Gate', metricOrScore: 'GATE 2: 0 SANDBOX ESCAPES' },
-      { code: 'Q3', title: 'PHASE 3: MULTI-AGENT SWARM', badge: 'PROD • WEEKS 13-18', description: 'Launch Supervisor + Worker agents (SQL, Web, Code) coordinated via Cloud Pub/Sub.', secondaryTitle: 'M5: Supervisor Routing | M6: Auto-Retry Loop', metricOrScore: 'GATE 3: 88% TASK SUCCESS' },
-      { code: 'Q4', title: 'PHASE 4: AUTONOMOUS SCALE', badge: 'GLOBAL • WEEKS 19-24', description: 'Multi-region Cloud Run active-active failover, continuous eval harness, and FinOps routing.', secondaryTitle: 'M7: Multi-Region HA | M8: 40% Token Cost Drop', metricOrScore: 'GATE 4: 99.95% SLA' }
-    ];
-    const cols = ['#2563EB', '#059669', '#D97706', '#7C3AED'];
-    const fills = ['#EFF6FF', '#ECFDF5', '#FFFBEB', '#FAF5FF'];
-    let phaseXml = '';
-    phases.forEach((p, i) => {
-      const x = 55 + i * 338;
-      const col = cols[i % 4];
-      const fl = fills[i % 4];
-      phaseXml += `
-        <mxCell id="p59_node_${i}" value="${esc(p.code || `Q${i + 1}`)}" style="ellipse;whiteSpace=wrap;html=1;fillColor=${col};strokeColor=#FFFFFF;strokeWidth=3;fontColor=#FFFFFF;fontStyle=1;fontSize=16;" vertex="1" parent="1"><mxGeometry x="${x + 125}" y="125" width="64" height="64" as="geometry"/></mxCell>
-        <mxCell id="p59_card_${i}" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;div style='background:${col};color:#FFF;display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(p.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:15.5px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(p.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;line-height:1.45;'&gt;${esc(p.description)}&lt;/div&gt;${getLevelTechSpec(level, i)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fl};strokeColor=${col};strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${x}" y="210" width="314" height="295" as="geometry"/></mxCell>
-        <mxCell id="p59_ms_${i}" value="&lt;div style='padding:8px 10px;text-align:left;font-size:11.5px;color:#0F172A;'&gt;&lt;b style='color:${col};'&gt;MILESTONES (${level}):&lt;/b&gt;&lt;br/&gt;${esc(p.secondaryTitle || 'M1: Architecture Signed | M2: Prod Canary')}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${col};strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="${x}" y="525" width="314" height="90" as="geometry"/></mxCell>
-        <mxCell id="p59_gate_${i}" value="✓ ${esc(p.metricOrScore || 'STAGE GATE PASSED')}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=11.5;" vertex="1" parent="1"><mxGeometry x="${x}" y="630" width="314" height="40" as="geometry"/></mxCell>
-      `;
-      if (i > 0) {
-        phaseXml += `<mxCell id="p59_e_${i}" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=3;endArrow=block;" edge="1" parent="1" source="p59_node_${i - 1}" target="p59_node_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
+  // ============================================================================
+  // 8. #59: TIMELINE & ROADMAP (Exact 1:1 Vector Twin of 59.png — 4 Horizontal Phase Tracks Q1-Q4)
+  // ============================================================================
+  if (id === '59' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Timeline & Roadmap');
+    const tracks = [
+      {
+        q: 'Q1', phaseNum: 'PHASE 1', trackTitle: '01 | PHASE 1: DISCOVERY &amp; EVALUATION', rightTag: 'Q1 | Google Blue',
+        bandFill: '#DBEAFE', bandStroke: '#60A5FA', badgeFill: '#2563EB',
+        s1Num: '01', s1Pill: 'MAP ON', s1Title: '01 | Discover &amp; Map', s1Desc: '☑ Audit and map existing manual workflows, database schemas, and identify candidate agent targets.', s1Chip: 'Use-Case Mapping',
+        s2Num: '02', s2Pill: 'KPIs SET', s2Title: '02 | Baseline &amp; Evaluate', s2Desc: '☑ Establish baseline performance metrics, success criteria, security compliance, and initial ROI goals.', s2Chip: 'Success Metrics'
+      },
+      {
+        q: 'Q2', phaseNum: 'PHASE 2', trackTitle: '02 | PHASE 2: SECURE PROTOTYPING', rightTag: 'Q2 | Google Red',
+        bandFill: '#FEE2E2', bandStroke: '#F87171', badgeFill: '#DC2626',
+        s1Num: '03', s1Pill: 'DEVELOP', s1Title: '03 | Build Agent Core', s1Desc: '☑ Build core reasoning loops, define system prompts, and configure model temperature on Gemini 1.5.', s1Chip: 'Gemini Pro &amp; Flash',
+        s2Num: '04', s2Pill: 'ISOLATED', s2Title: '04 | Sandbox Environment', s2Desc: '☑ Deploy task execution in isolated VPC microVMs or GKE private sandbox clusters using gVisor.', s2Chip: 'Secure Runtime'
+      },
+      {
+        q: 'Q3', phaseNum: 'PHASE 3', trackTitle: '03 | PHASE 3: STATE &amp; GROUNDING', rightTag: 'Q3 | Google Yellow',
+        bandFill: '#FEF3C7', bandStroke: '#FBBF24', badgeFill: '#EAB308',
+        s1Num: '05', s1Pill: 'STATEFUL', s1Title: '05 | Persistent Memory', s1Desc: '☑ Wire up AlloyDB for PostgreSQL to persist conversation histories, session states, and episodic memory.', s1Chip: 'AlloyDB &amp; Memory',
+        s2Num: '06', s2Pill: 'RAG ACTIVE', s2Title: '06 | Enterprise Grounding', s2Desc: '☑ Integrate BigQuery and Vertex AI Search to verify outputs against real-time enterprise dataset results.', s2Chip: 'Vector DB Grounding'
+      },
+      {
+        q: 'Q4', phaseNum: 'PHASE 4', trackTitle: '04 | PHASE 4: GOVERNANCE &amp; DEPLOYMENT', rightTag: 'Q4 | Google Green',
+        bandFill: '#DCFCE7', bandStroke: '#4ADE80', badgeFill: '#16A34A',
+        s1Num: '07', s1Pill: 'VALIDATED', s1Title: '07 | Human-in-the-Loop', s1Desc: '☑ Incorporate strict policy filters, guardrails, and human check points for high-risk system actions.', s1Chip: 'Audit Checkpoints',
+        s2Num: '08', s2Pill: 'DEPLOYED', s2Title: '08 | Production Release', s2Desc: '☑ Continuous monitoring, automated self-healing validation, retry limits, and GCP cloud logging integration.', s2Chip: 'Monitoring &amp; Scaling'
       }
-    });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_59_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #59 • TIMELINE ROADMAP • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      ${phaseXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="55" y="695" width="1330" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 10. #60: CLOUD ARCHITECTURE TOPOLOGY (4-Zone GCP Cloud Run -> Vertex AI -> AlloyDB/BigQuery -> GKE gVisor matching 60.png)
-  if (id === '60') {
-    const z1 = items?.[0] || { code: '01', title: 'ZONE 1: CLIENT & CLOUD RUN INGRESS', badge: 'EDGE & AUTH', description: 'Cloud Armor WAF, Apigee API Gateway, Identity-Aware Proxy (IAP), and serverless Cloud Run ingress.' };
-    const z2 = items?.[1] || { code: '02', title: 'ZONE 2: VERTEX AI AGENT ENGINE', badge: 'ORCHESTRATION', description: 'Gemini 2.5 Pro planner, reasoning loop, Model Armor safety filters, and Cloud Pub/Sub event bus.' };
-    const z3 = items?.[2] || { code: '03', title: 'ZONE 3: ENTERPRISE MEMORY & RAG', badge: 'DATA & VECTOR', description: 'AlloyDB pgvector episodic state, BigQuery enterprise analytics, and Vertex AI Search grounding.' };
-    const z4 = items?.[3] || { code: '04', title: 'ZONE 4: SANDBOXED GKE gVISOR RUNTIME', badge: 'ISOLATED TOOLS', description: 'Ephemeral GKE pods with gVisor kernel isolation executing Python/SQL/API tools inside VPC-SC.' };
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_60_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #60 • CLOUD ARCHITECTURE TOPOLOGY • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      <mxCell id="z60_1" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(z1.code)} • ${esc(z1.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z1.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z1.description)}&lt;/div&gt;${getLevelTechSpec(level, 0)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="55" y="125" width="305" height="550" as="geometry"/></mxCell>
-      <mxCell id="z60_1a" value="Cloud Armor WAF + IAP" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="78" y="380" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_1b" value="Cloud Run API Gateway" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="78" y="460" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_1c" value="Cloud Trace &amp; OTel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#93C5FD;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="78" y="540" width="260" height="50" as="geometry"/></mxCell>
-
-      <mxCell id="z60_2" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;span style='background:#7C3AED;color:#FFF;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(z2.code)} • ${esc(z2.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z2.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z2.description)}&lt;/div&gt;${getLevelTechSpec(level, 1)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="395" y="125" width="310" height="550" as="geometry"/></mxCell>
-      <mxCell id="z60_2a" value="Gemini 2.5 Pro Planner" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="420" y="380" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_2b" value="Model Armor Policy Gate" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#7C3AED;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="420" y="460" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_2c" value="Cloud Pub/Sub Event Bus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#D8B4FE;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="420" y="540" width="260" height="50" as="geometry"/></mxCell>
-
-      <mxCell id="z60_3" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;span style='background:#059669;color:#FFF;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(z3.code)} • ${esc(z3.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z3.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z3.description)}&lt;/div&gt;${getLevelTechSpec(level, 2)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="740" y="125" width="310" height="550" as="geometry"/></mxCell>
-      <mxCell id="z60_3a" value="AlloyDB pgvector Memory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#059669;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="765" y="380" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_3b" value="BigQuery Vector Search" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#059669;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="765" y="460" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_3c" value="Cloud KMS CMEK Vault" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#6EE7B7;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="765" y="540" width="260" height="50" as="geometry"/></mxCell>
-
-      <mxCell id="z60_4" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;span style='background:#EA580C;color:#FFF;padding:3px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(z4.code)} • ${esc(z4.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:8px;'&gt;${esc(z4.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;'&gt;${esc(z4.description)}&lt;/div&gt;${getLevelTechSpec(level, 3)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="1085" y="125" width="300" height="550" as="geometry"/></mxCell>
-      <mxCell id="z60_4a" value="GKE Autopilot + gVisor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="1105" y="380" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_4b" value="MCP Tool Sandbox Pods" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EA580C;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="1105" y="460" width="260" height="60" as="geometry"/></mxCell>
-      <mxCell id="z60_4c" value="VPC Service Controls" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FDBA74;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="1105" y="540" width="260" height="50" as="geometry"/></mxCell>
-
-      <mxCell id="e60_1" value="mTLS" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="z60_1" target="z60_2"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e60_2" value="RAG" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="z60_2" target="z60_3"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e60_3" value="Exec" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="z60_3" target="z60_4"><mxGeometry relative="1" as="geometry"/></mxCell>
-
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="695" width="1330" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 11. #61: HIERARCHICAL TREE (Supervisor Root -> 3 Specialized Workers -> Unified Environment Layer matching 61.png)
-  if (id === '61') {
-    const rootItem = items?.[0] || { code: '01', title: 'SUPERVISOR AGENT', badge: 'ORCHESTRATOR • GOAL-DRIVEN', description: 'Analyzes high-level goals, decomposes tasks, coordinates specialized agents, and validates the final response.' };
-    const w1 = items?.[1] || { code: '02a', title: 'SQL DATA AGENT', badge: 'DATA ACCESS', description: 'Queries databases, joins datasets, and fetches structured schema information.' };
-    const w2 = items?.[2] || { code: '02b', title: 'WEB RESEARCHER AGENT', badge: 'BROWSER / SEARCH', description: 'Scrapes web pages, accesses APIs, and gathers real-time public information.' };
-    const w3 = items?.[3] || { code: '02c', title: 'CODE SYNTHESIS AGENT', badge: 'EXECUTION / WRITE', description: 'Writes, tests, and refactors code scripts to process fetched datasets.' };
-    const baseItem = items?.[4] || { code: '03', title: 'UNIFIED RESOURCE & ENVIRONMENT LAYER', badge: 'ISOLATED VPC • SECURE', description: 'Execution boundary for sandboxed workloads, database access (SQL connectors), gVisor runtime, & RAG vector knowledge base.' };
-
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_61_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:4px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1320" height="72" as="geometry"/></mxCell>
-      <mxCell id="sup" value="&lt;div style='padding:12px;text-align:left;color:#FFFFFF;'&gt;&lt;div style='font-size:11px;font-weight:800;opacity:0.9;'&gt;01 | SUPERVISION ZONE (${esc(rootItem.badge)} • ${level})&lt;/div&gt;&lt;div style='font-size:18px;font-weight:900;margin-top:4px;'&gt;${esc(rootItem.title)}&lt;/div&gt;&lt;div style='font-size:12px;margin-top:6px;line-height:1.4;'&gt;${esc(rootItem.description)}&lt;/div&gt;${getLevelTechSpec(level, 0)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1E3A8A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="480" y="116" width="480" height="150" as="geometry"/></mxCell>
-      <mxCell id="w1" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;'&gt;02a | ${esc(w1.title)}&lt;/div&gt;&lt;div style='display:inline-block;background:#16A34A;color:#FFF;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-top:4px;'&gt;${esc(w1.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:12px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;${esc(w1.description)}&lt;/div&gt;${getLevelTechSpec(level, 1)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="80" y="325" width="380" height="190" as="geometry"/></mxCell>
-      <mxCell id="w2" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;'&gt;02b | ${esc(w2.title)}&lt;/div&gt;&lt;div style='display:inline-block;background:#D97706;color:#FFF;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-top:4px;'&gt;${esc(w2.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:12px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;${esc(w2.description)}&lt;/div&gt;${getLevelTechSpec(level, 2)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="530" y="325" width="380" height="190" as="geometry"/></mxCell>
-      <mxCell id="w3" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;'&gt;02c | ${esc(w3.title)}&lt;/div&gt;&lt;div style='display:inline-block;background:#DC2626;color:#FFF;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-top:4px;'&gt;${esc(w3.badge)} [${level}]&lt;/div&gt;&lt;div style='font-size:12px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;${esc(w3.description)}&lt;/div&gt;${getLevelTechSpec(level, 3)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="980" y="325" width="380" height="190" as="geometry"/></mxCell>
-      <mxCell id="env" value="&lt;div style='padding:12px;text-align:center;color:#FFFFFF;'&gt;&lt;div style='font-size:18px;font-weight:900;'&gt;03 | ${esc(baseItem.title)} &amp;nbsp;&lt;span style='background:#0D9488;padding:2px 10px;border-radius:999px;font-size:11px;'&gt;${esc(baseItem.badge)} • ${level}&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:12.5px;color:#E2E8F0;margin-top:6px;'&gt;${esc(baseItem.description)}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="80" y="575" width="1280" height="110" as="geometry"/></mxCell>
-      <mxCell id="e1" value="Delegate &amp; Route (${level})" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="sup" target="w1"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="sup" target="w2"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="sup" target="w3"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="w2" target="env"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="80" y="715" width="1280" height="48" as="geometry"/></mxCell>
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 12. #62: 2x2 QUADRANT MATRIX (Business Impact vs Technical Complexity matching 62.png)
-  if (id === '62') {
-    const quads = items?.slice(0, 4) || [
-      { code: '01', title: 'QUICK WINS', badge: 'HIGH IMPACT • LOW COMPLEXITY', description: 'High ROI, fast implementation. Build first: Draft Email Responses, Document Translation, Meeting Summaries, Standard Ticket Routing.' },
-      { code: '02', title: 'STRATEGIC BETS', badge: 'HIGH IMPACT • HIGH COMPLEXITY', description: 'Complex but transformative. High long-term value: Workflow Orchestration, Autonomous Market Research, Full Code Generation.' },
-      { code: '03', title: 'LOW PRIORITY', badge: 'LOW IMPACT • LOW COMPLEXITY', description: 'Easy to deploy but low business return: Local File Organization, Internal Calendar Sync, Routine Database Polling.' },
-      { code: '04', title: 'HIGH RISK TRAPS', badge: 'LOW IMPACT • HIGH COMPLEXITY', description: 'Heavy engineering effort for minor ROI. Avoid or defer: Arbitrary Bulk Migration, Subjective HR Evaluation.' }
     ];
-    const qStyles = [
-      { x: 160, y: 120, fill: '#D1FAE5', stroke: '#059669' },
-      { x: 770, y: 120, fill: '#E0E7FF', stroke: '#4F46E5' },
-      { x: 160, y: 410, fill: '#FEF3C7', stroke: '#D97706' },
-      { x: 770, y: 410, fill: '#FEE2E2', stroke: '#DC2626' }
-    ];
-    let qXml = '';
-    quads.forEach((q, i) => {
-      const st = qStyles[i];
-      const techSpec = getLevelTechSpec(level, i);
-      qXml += `
-        <mxCell id="q_${i}" value="&lt;div style='padding:14px;text-align:left;'&gt;&lt;div style='font-size:19px;font-weight:900;color:#0F172A;'&gt;${esc(q.code || `0${i + 1}`)} | ${esc(q.title)}&lt;/div&gt;&lt;div style='display:inline-block;background:${st.stroke};color:#FFFFFF;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;margin-top:6px;'&gt;${esc(q.badge)} • ${level}&lt;/div&gt;&lt;div style='font-size:13px;color:#1E293B;margin-top:10px;line-height:1.5;'&gt;${esc(q.description)}&lt;/div&gt;${techSpec}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${st.fill};strokeColor=${st.stroke};strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="${st.x}" y="${st.y}" width="580" height="265" as="geometry"/></mxCell>
+    let tXml = '';
+    tracks.forEach((t, i) => {
+      const y = 210 + i * 232;
+      const qTxtCol = i === 2 ? '#0F172A' : '#FFFFFF';
+      tXml += `
+        <mxCell id="tr59_${i}" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=5;fillColor=${t.bandFill};strokeColor=${t.bandStroke};strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="45" y="${y}" width="1030" height="212" as="geometry"/></mxCell>
+        <mxCell id="th59_${i}_l" value="${t.trackTitle}" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15.5;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="60" y="${y + 8}" width="620" height="28" as="geometry"/></mxCell>
+        <mxCell id="th59_${i}_r" value="${t.rightTag}" style="text;html=1;align=right;verticalAlign=middle;fontStyle=1;fontSize=14.5;fontColor=${t.badgeFill};" vertex="1" parent="1"><mxGeometry x="780" y="${y + 8}" width="275" height="28" as="geometry"/></mxCell>
+        <mxCell id="qb59_${i}" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;color:${qTxtCol};'&gt;&lt;div style='font-size:13px;font-weight:800;'&gt;${t.phaseNum}&lt;/div&gt;&lt;div style='font-size:40px;font-weight:900;line-height:1.05;'&gt;${t.q}&lt;/div&gt;&lt;/div&gt;" style="shape=step;perimeter=stepPerimeter;fixedSize=1;size=20;rounded=1;whiteSpace=wrap;html=1;fillColor=${t.badgeFill};strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="60" y="${y + 52}" width="155" height="125" as="geometry"/></mxCell>
+
+        <mxCell id="c59_${i}_1" value="&lt;div style='padding:12px 14px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='background:${t.bandFill};border:1px solid ${t.bandStroke};color:#0F172A;padding:2px 10px;border-radius:999px;font-size:10.5px;font-weight:800;'&gt;${t.s1Pill}&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;ACTIVE ●&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${t.s1Title}&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:6px;line-height:1.38;'&gt;${t.s1Desc}&lt;/div&gt;&lt;div style='margin-top:8px;'&gt;&lt;span style='background:${t.bandFill};color:#0F172A;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;'&gt;☑ ${t.s1Chip}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="235" y="${y + 40}" width="385" height="158" as="geometry"/></mxCell>
+
+        <mxCell id="c59_${i}_2" value="&lt;div style='padding:12px 14px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='background:${t.badgeFill};color:${qTxtCol};padding:2px 8px;border-radius:999px;font-size:11px;font-weight:900;'&gt;${t.s2Num} • ${t.s2Pill}&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;ACTIVE ●&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${t.s2Title}&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:6px;line-height:1.38;'&gt;${t.s2Desc}&lt;/div&gt;&lt;div style='margin-top:8px;'&gt;&lt;span style='background:${t.bandFill};color:#0F172A;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;'&gt;☑ ${t.s2Chip}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="665" y="${y + 40}" width="390" height="158" as="geometry"/></mxCell>
+
+        <mxCell id="e59_${i}" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=${t.badgeFill};strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="c59_${i}_1" target="c59_${i}_2"><mxGeometry relative="1" as="geometry"/></mxCell>
       `;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-25T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_62_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:left;padding:6px 16px;'&gt;${gcpLogoBadge}&lt;div style='font-size:24px;font-weight:900;color:#0F172A;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="160" y="20" width="1190" height="74" as="geometry"/></mxCell>
-      <mxCell id="axY" value="HIGH  ◄───  BUSINESS IMPACT (Value &amp; ROI)  ───►  LOW" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=13;direction=north;" vertex="1" parent="1"><mxGeometry x="76" y="120" width="54" height="555" as="geometry"/></mxCell>
-      <mxCell id="axX" value="LOW  ◄──────  TECHNICAL COMPLEXITY (Time, Cost, Effort &amp; Friction)  ──────►  HIGH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="160" y="688" width="1190" height="36" as="geometry"/></mxCell>
-      ${qXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="160" y="732" width="1190" height="42" as="geometry"/></mxCell>
-      ${levelStripXml}
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_59_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr59" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:#334155;'&gt;&lt;span&gt;EDITORIAL NEWSLETTER INFOGRAPHIC&lt;/span&gt;&lt;span style='color:#2563EB;'&gt;☁ Google Cloud &amp;amp; Gemini ✦&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:48px;font-weight:900;color:#0F172A;margin-top:2px;letter-spacing:-0.8px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:18px;color:#475569;margin-top:4px;'&gt;The phased, quarterly blueprint for enterprise-grade Agentic AI on Google Cloud&lt;/div&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;margin-top:14px;'&gt;HORIZONTAL PHASE TRACKS&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="45" y="18" width="1030" height="180" as="geometry"/></mxCell>
+      ${tXml}
+      <mxCell id="goal59" value="&lt;div style='padding:12px 20px;text-align:left;font-family:Inter,sans-serif;font-size:15px;color:#0F172A;line-height:1.45;'&gt;&lt;b&gt;GOAL: Safely scale&lt;/b&gt; autonomous task automation, eliminate manual triage overhead, and provide secure, self-healing agent pipelines in sandbox isolation.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#F8FAFC;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="45" y="1150" width="1030" height="70" as="geometry"/></mxCell>
+      <mxCell id="ftr59" value="GOOGLE CLOUD AGENT ENGINE ROADMAP • Timeline &amp; Roadmap • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 13. #63: DECISION TREE / FLOWCHART (3-Tier Ingest -> Tool Check -> Execute with Rhombus Diamonds & YES/NO Pills matching 63.png)
-  if (id === '63') {
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_63_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #63 • DECISION TREE ROUTER • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      <mxCell id="t1_lbl" value="01 | INGEST &amp; CLASSIFY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="135" width="180" height="44" as="geometry"/></mxCell>
-      <mxCell id="n_in" value="&lt;b style='font-size:14px;'&gt;Incoming User Prompt&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:11px;color:#475569;'&gt;Cloud Run Ingress (${level})&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="275" y="125" width="250" height="68" as="geometry"/></mxCell>
-      <mxCell id="d_safe" value="Passes Model&lt;br/&gt;Armor Policy?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="610" y="115" width="190" height="90" as="geometry"/></mxCell>
-      <mxCell id="n_blk" value="&lt;b style='color:#DC2626;'&gt;✕ BLOCK &amp; LOG&lt;/b&gt;&lt;br/&gt;Return Policy Refusal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="920" y="125" width="250" height="68" as="geometry"/></mxCell>
+  // ============================================================================
+  // 9. #60: ARCHITECTURE & TOPOLOGY DIAGRAM (Exact 1:1 Vector Twin of 60.png)
+  // ============================================================================
+  if (id === '60' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Architecture & Topology Diagram');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_60_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr60" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;font-size:20px;font-weight:900;padding:0 15px;'&gt;&lt;span style='color:#2563EB;'&gt;☁&lt;/span&gt;&lt;span style='color:#2563EB;'&gt;☁ ✦&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:42px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:20px;font-weight:700;color:#1E293B;margin-top:6px;'&gt;Google Cloud enterprise agent topology and secure runtimes&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="45" y="20" width="1030" height="150" as="geometry"/></mxCell>
 
-      <mxCell id="t2_lbl" value="02 | TOOL &amp; RISK CHECK" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="305" width="180" height="44" as="geometry"/></mxCell>
-      <mxCell id="d_tool" value="Requires External&lt;br/&gt;Tool / RAG?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#E0E7FF;strokeColor=#4F46E5;strokeWidth=2;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="610" y="280" width="190" height="95" as="geometry"/></mxCell>
-      <mxCell id="n_fast" value="&lt;b style='color:#059669;'&gt;✓ DIRECT GEMINI FLASH&lt;/b&gt;&lt;br/&gt;Fast Sub-Second Response" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="275" y="293" width="250" height="68" as="geometry"/></mxCell>
-      <mxCell id="d_mut" value="Mutates Prod&lt;br/&gt;State / DB?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="920" y="280" width="190" height="95" as="geometry"/></mxCell>
+      <!-- 01 | VERTEX AI (Top-Left/Center) -->
+      <mxCell id="n60_1" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="255" y="235" width="420" height="240" as="geometry"/></mxCell>
+      <mxCell id="n60_1h" value="&lt;div style='display:flex;justify-content:space-between;align-items:center;padding:0 14px;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;b style='font-size:14px;'&gt;01 | VERTEX AI&lt;/b&gt;&lt;span style='background:#EFF6FF;color:#0F172A;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:800;'&gt;REASONING ENGINE&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#3B82F6;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="255" y="235" width="420" height="46" as="geometry"/></mxCell>
+      <mxCell id="n60_1b" value="&lt;div style='padding:12px 16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#0F172A;'&gt;Vertex AI Reasoning Engine&lt;br/&gt;Gemini 1.5 Pro &lt;span style='color:#3B82F6;'&gt;✦&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;'&gt;Handles model reasoning, goal planning, and intent parsing.&lt;/div&gt;&lt;div style='margin-top:12px;background:#F1F5F9;border:1px solid #CBD5E1;padding:8px 12px;border-radius:8px;font-family:monospace;font-size:12.5px;color:#0F172A;font-weight:700;'&gt;agent = aiplatform.ReasoningEngine(..)&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="260" y="285" width="410" height="180" as="geometry"/></mxCell>
 
-      <mxCell id="t3_lbl" value="03 | EXECUTE &amp; VERIFY" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="485" width="180" height="44" as="geometry"/></mxCell>
-      <mxCell id="n_rag" value="&lt;b style='color:#1D4ED8;'&gt;READ-ONLY RAG &amp; MCP&lt;/b&gt;&lt;br/&gt;BigQuery + AlloyDB Vector (${level})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="565" y="470" width="280" height="80" as="geometry"/></mxCell>
-      <mxCell id="n_hitl" value="&lt;b style='color:#D97706;'&gt;HUMAN-IN-THE-LOOP GATE&lt;/b&gt;&lt;br/&gt;Approve GKE Sandbox Write (${level})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="900" y="470" width="280" height="80" as="geometry"/></mxCell>
-      <mxCell id="n_out" value="&lt;b style='font-size:14px;color:#FFFFFF;'&gt;✓ VERIFIED GROUNDED RESPONSE + CITATIONS (${level})&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#059669;strokeColor=#047857;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="275" y="600" width="905" height="58" as="geometry"/></mxCell>
+      <!-- Secure Ingress + Cloud Load Balancing (Left) -->
+      <mxCell id="ing60" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:13px;font-weight:800;color:#0F172A;'&gt;Secure&lt;br/&gt;Ingress&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:18px;'&gt;User/API&lt;br/&gt;request&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="30" y="625" width="90" height="90" as="geometry"/></mxCell>
+      <mxCell id="clb60" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:24px;color:#3B82F6;'&gt;品&lt;/div&gt;&lt;div style='font-size:13px;font-weight:800;color:#0F172A;margin-top:4px;'&gt;Cloud Load&lt;br/&gt;Balancing&lt;/div&gt;&lt;div style='margin-top:6px;'&gt;&lt;span style='background:#3B82F6;color:#FFF;padding:2px 12px;border-radius:999px;font-size:11px;font-weight:800;'&gt;● ON&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="125" y="615" width="100" height="115" as="geometry"/></mxCell>
 
-      <mxCell id="e63_1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n_in" target="d_safe"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_2" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#DC2626;strokeWidth=2;endArrow=block;labelBackgroundColor=#FEE2E2;fontColor=#DC2626;fontStyle=1;" edge="1" parent="1" source="d_safe" target="n_blk"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_3" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;labelBackgroundColor=#DCFCE7;fontColor=#059669;fontStyle=1;" edge="1" parent="1" source="d_safe" target="d_tool"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_4" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;labelBackgroundColor=#DCFCE7;fontColor=#059669;fontStyle=1;" edge="1" parent="1" source="d_tool" target="n_fast"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_5" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#4F46E5;strokeWidth=2;endArrow=block;labelBackgroundColor=#E0E7FF;fontColor=#4F46E5;fontStyle=1;" edge="1" parent="1" source="d_tool" target="d_mut"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_6" value="NO (Read)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;labelBackgroundColor=#EFF6FF;fontColor=#2563EB;fontStyle=1;" edge="1" parent="1" source="d_mut" target="n_rag"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_7" value="YES (Write)" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#D97706;strokeWidth=2;endArrow=block;labelBackgroundColor=#FEF3C7;fontColor=#D97706;fontStyle=1;" edge="1" parent="1" source="d_mut" target="n_hitl"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_8" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n_fast" target="n_out"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_9" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n_rag" target="n_out"><mxGeometry relative="1" as="geometry"/></mxCell>
-      <mxCell id="e63_10" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#059669;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n_hitl" target="n_out"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <!-- 02 | CLOUD RUN (Middle-Left) -->
+      <mxCell id="n60_2" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="255" y="570" width="340" height="215" as="geometry"/></mxCell>
+      <mxCell id="n60_2h" value="&lt;div style='display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-family:Inter,sans-serif;color:#0F172A;'&gt;&lt;b style='font-size:14px;'&gt;02 | CLOUD RUN&lt;/b&gt;&lt;span style='background:#FFFFFF;color:#0F172A;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:800;'&gt;AGENT ORCHESTRATOR&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FACC15;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="255" y="570" width="340" height="46" as="geometry"/></mxCell>
+      <mxCell id="n60_2b" value="&lt;div style='padding:12px 16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#0F172A;'&gt;Cloud Run Orchestrator&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:6px;'&gt;API router &amp;amp; state dispatch loop.&lt;br/&gt;Receives HTTPS triggers.&lt;/div&gt;&lt;div style='margin-top:14px;display:flex;gap:10px;align-items:center;'&gt;&lt;span style='background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:8px;font-family:monospace;font-size:12px;font-weight:700;'&gt;POST /v1/agent/run&lt;/span&gt;&lt;span style='background:#DCFCE7;border:1px solid #16A34A;color:#15803D;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:900;'&gt;ACTIVE ●&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="260" y="620" width="330" height="155" as="geometry"/></mxCell>
 
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="695" width="1330" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
+      <!-- 04 | ALLOYDB (Middle-Right) -->
+      <mxCell id="n60_4" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="725" y="435" width="345" height="270" as="geometry"/></mxCell>
+      <mxCell id="n60_4h" value="&lt;div style='display:flex;justify-content:space-between;align-items:center;padding:0 12px;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;b style='font-size:14px;'&gt;04 | ALLOYDB&lt;/b&gt;&lt;span style='background:#FFFFFF;color:#0F172A;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:800;'&gt;STATE &amp;amp; KNOWLEDGE&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#22C55E;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="725" y="435" width="345" height="46" as="geometry"/></mxCell>
+      <mxCell id="n60_4b" value="&lt;div style='padding:12px 16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#0F172A;'&gt;AlloyDB Database&lt;/div&gt;&lt;div style='font-size:15px;color:#1E293B;font-weight:600;'&gt;(PostgreSQL with pgvector)&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;'&gt;Persistent state, episodic history, and BigQuery/vector grounding.&lt;/div&gt;&lt;div style='margin-top:14px;background:#F8FAFC;border:1px solid #CBD5E1;padding:10px 14px;border-radius:8px;font-size:13.5px;font-weight:700;color:#0F172A;'&gt;🗄 Session history &amp;amp; semantic RAG&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="730" y="485" width="335" height="210" as="geometry"/></mxCell>
+
+      <!-- 03 | GKE gVISOR SANDBOX (Bottom-Right) -->
+      <mxCell id="n60_3" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="620" y="770" width="450" height="380" as="geometry"/></mxCell>
+      <mxCell id="n60_3h" value="&lt;div style='display:flex;justify-content:space-between;align-items:center;padding:0 14px;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;b style='font-size:14px;'&gt;03 | GKE gVISOR SANDBOX&lt;/b&gt;&lt;span style='background:#FFFFFF;color:#0F172A;padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:800;'&gt;SECURE EXECUTION&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#EF4444;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="620" y="770" width="450" height="46" as="geometry"/></mxCell>
+      <mxCell id="n60_3b" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:20px;font-weight:900;color:#0F172A;line-height:1.25;'&gt;Google Kubernetes Engine (GKE)&lt;br/&gt;&amp;amp; gVisor Sandbox Cluster&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:8px;'&gt;VPC Private network environment for executing dangerous scripts and CLI tools safely.&lt;/div&gt;&lt;div style='margin-top:14px;background:#F1F5F9;border:1px solid #CBD5E1;padding:12px;border-radius:10px;'&gt;&lt;div style='font-size:13px;font-weight:800;color:#0F172A;margin-bottom:8px;'&gt;⬢ Execution Sandbox (No Host Access)&lt;/div&gt;&lt;div style='background:#FFFFFF;border:1px solid #94A3B8;padding:6px 12px;border-radius:6px;font-size:13px;font-weight:700;margin-bottom:6px;'&gt;gVisor Isolated Pod #1 (Python)&lt;/div&gt;&lt;div style='background:#FFFFFF;border:1px solid #94A3B8;padding:6px 12px;border-radius:6px;font-size:13px;font-weight:700;margin-bottom:6px;'&gt;gVisor Isolated Pod #2 (Bash/CLI)&lt;/div&gt;&lt;div style='background:#FFFFFF;border:1px solid #94A3B8;padding:5px 12px;border-radius:6px;font-size:12.5px;font-weight:700;display:inline-block;'&gt;Egress Blocked&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;" vertex="1" parent="1"><mxGeometry x="625" y="820" width="440" height="320" as="geometry"/></mxCell>
+
+      <!-- Connectors -->
+      <mxCell id="e60_in" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="ing60" target="clb60"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e60_clb" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="clb60" target="n60_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e60_12" value="Inference &amp;amp; Prompt loop" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;dashed=1;startArrow=block;endArrow=block;labelBackgroundColor=#FCFBF7;fontStyle=1;fontSize=12.5;" edge="1" parent="1" source="n60_2" target="n60_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e60_14" value="Grounding search" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;dashed=1;endArrow=block;labelBackgroundColor=#FCFBF7;fontStyle=1;fontSize=12.5;" edge="1" parent="1" source="n60_1" target="n60_4"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="897" y="355"/></Array></mxGeometry></mxCell>
+      <mxCell id="e60_24" value="Session state logs" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;dashed=1;startArrow=block;endArrow=block;labelBackgroundColor=#FCFBF7;fontStyle=1;fontSize=12.5;" edge="1" parent="1" source="n60_2" target="n60_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e60_23" value="Secure gRPC Exec  •  Results &amp;amp; logs" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;dashed=1;startArrow=block;endArrow=block;labelBackgroundColor=#FCFBF7;fontStyle=1;fontSize=12.5;" edge="1" parent="1" source="n60_2" target="n60_3"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="425" y="960"/></Array></mxGeometry></mxCell>
+
+      <mxCell id="ftr60" value="GOOGLE CLOUD ENTERPRISE AGENT TOPOLOGY • ARCHITECTURE &amp; TOPOLOGY DIAGRAM • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 14. #64: FEATURE MATRIX TABLE (5x4 Agentic Framework Comparison Table with Check/Cross Pills & Scores matching 64.png)
-  if (id === '64') {
-    const dims = [
-      { dim: '01 | State & Episodic Memory', c1: '✓ Managed AlloyDB', c2: '✓ Graph Checkpoints', c3: '○ Custom Store', c4: '✕ Stateless' },
-      { dim: '02 | VPC & gVisor Sandboxing', c1: '✓ Native VPC-SC', c2: '○ Bring Your Own', c3: '○ Container Only', c4: '✕ Host Process' },
-      { dim: '03 | BigQuery & Search Grounding', c1: '✓ 1-Click Native', c2: '✓ Tool Adapter', c3: '✓ Connector Lib', c4: '○ Manual RAG' },
-      { dim: '04 | Multi-Agent Supervision', c1: '✓ Agent Engine', c2: '✓ Cyclic Graphs', c3: '✓ Role Crews', c4: '✕ Single Loop' },
-      { dim: '05 | Production Readiness Score', c1: '★ 9.6 / 10 (ENTERPRISE)', c2: '8.8 / 10 (FLEXIBLE)', c3: '8.2 / 10 (RAPID)', c4: '5.5 / 10 (PROTOTYPE)' }
+  // ============================================================================
+  // 10. #61: HIERARCHICAL TREE DIAGRAM (Exact 1:1 Vector Twin of 61.png)
+  // ============================================================================
+  if (id === '61' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Hierarchical Tree Diagram');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_61_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr61" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;font-size:15px;font-weight:700;color:#334155;'&gt;&lt;span&gt;Editorial newsletter infographic&lt;/span&gt;&lt;span style='color:#2563EB;'&gt;☁ Google Cloud &amp;amp; Gemini&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:46px;font-weight:900;color:#0F172A;margin-top:4px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:18px;color:#334155;margin-top:4px;'&gt;Multi-agent supervisor delegation and worker execution on Google Cloud&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1010" height="145" as="geometry"/></mxCell>
+
+      <!-- 01 | SUPERVISION ZONE -->
+      <mxCell id="z61_1" value="01 | SUPERVISION ZONE" style="text;html=1;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="380" y="175" width="360" height="26" as="geometry"/></mxCell>
+      <mxCell id="sup61" value="&lt;div style='padding:16px;text-align:left;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:22px;font-weight:900;line-height:1.15;'&gt;SUPERVISOR&lt;br/&gt;AGENT&lt;/span&gt;&lt;span style='background:#93C5FD;color:#0F172A;padding:6px 12px;border-radius:999px;font-size:16px;font-weight:900;'&gt;01&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:14px;margin-top:12px;line-height:1.4;'&gt;Analyzes high-level goals, decomposes tasks, coordinates specialized agents, and validates the final response.&lt;/div&gt;&lt;div style='margin-top:14px;display:flex;gap:8px;'&gt;&lt;span style='background:#1E3A8A;padding:4px 10px;border-radius:6px;font-size:10.5px;font-weight:800;'&gt;ORCHESTRATOR&lt;/span&gt;&lt;span style='background:#1E3A8A;padding:4px 10px;border-radius:6px;font-size:10.5px;font-weight:800;'&gt;GOAL-DRIVEN&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#3B82F6;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="370" y="208" width="380" height="235" as="geometry"/></mxCell>
+
+      <!-- 02 | SPECIALIZED WORKER ZONE -->
+      <mxCell id="z61_2" value="02 | SPECIALIZED WORKER ZONE" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="55" y="510" width="320" height="26" as="geometry"/></mxCell>
+
+      <mxCell id="w61_1" value="&lt;div style='padding:14px;text-align:left;font-family:Inter,sans-serif;color:#0F172A;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:19px;font-weight:900;line-height:1.15;'&gt;SQL DATA&lt;br/&gt;AGENT&lt;/span&gt;&lt;span style='background:#FFFFFF;border:1.5px solid #0F172A;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:900;'&gt;02a&lt;/span&gt;&lt;/div&gt;&lt;div style='display:inline-block;background:#16A34A;color:#FFF;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800;margin-top:10px;'&gt;DATA ACCESS&lt;/div&gt;&lt;div style='font-size:13.5px;margin-top:10px;line-height:1.4;'&gt;Queries databases, joins datasets, and fetches structured schema information.&lt;br/&gt;• Direct BigQuery &amp;amp; SQL query&lt;br/&gt;• Retrieve relational tables&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#BBF7D0;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="545" width="315" height="265" as="geometry"/></mxCell>
+
+      <mxCell id="w61_2" value="&lt;div style='padding:14px;text-align:left;font-family:Inter,sans-serif;color:#0F172A;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:19px;font-weight:900;line-height:1.15;'&gt;WEB RESEARCHER&lt;br/&gt;AGENT&lt;/span&gt;&lt;span style='background:#FFFFFF;border:1.5px solid #0F172A;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:900;'&gt;02b&lt;/span&gt;&lt;/div&gt;&lt;div style='display:inline-block;background:#CA8A04;color:#FFF;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800;margin-top:10px;'&gt;BROWSER / SEARCH&lt;/div&gt;&lt;div style='font-size:13.5px;margin-top:10px;line-height:1.4;'&gt;Scrapes web pages, accesses APIs, and gathers real-time public information.&lt;br/&gt;• Google Search API calls&lt;br/&gt;• Parse web content&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FDE68A;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="402" y="545" width="315" height="265" as="geometry"/></mxCell>
+
+      <mxCell id="w61_3" value="&lt;div style='padding:14px;text-align:left;font-family:Inter,sans-serif;color:#0F172A;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:19px;font-weight:900;line-height:1.15;'&gt;CODE SYNTHESIS&lt;br/&gt;AGENT&lt;/span&gt;&lt;span style='background:#FFFFFF;border:1.5px solid #0F172A;padding:5px 10px;border-radius:999px;font-size:13px;font-weight:900;'&gt;02c&lt;/span&gt;&lt;/div&gt;&lt;div style='display:inline-block;background:#DC2626;color:#FFF;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800;margin-top:10px;'&gt;EXECUTION / WRITE&lt;/div&gt;&lt;div style='font-size:13.5px;margin-top:10px;line-height:1.4;'&gt;Writes, tests, and refactors code scripts to process fetched datasets.&lt;br/&gt;• Python/Node generation&lt;br/&gt;• Run test suite &amp;amp; debug&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FECACA;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="750" y="545" width="315" height="265" as="geometry"/></mxCell>
+
+      <!-- 03 | ENVIRONMENT & LAYER -->
+      <mxCell id="z61_3" value="03 | ENVIRONMENT &amp; LAYER" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="55" y="855" width="320" height="26" as="geometry"/></mxCell>
+      <mxCell id="env61" value="&lt;div style='padding:14px 20px;text-align:center;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;div style='font-size:21px;font-weight:900;'&gt;UNIFIED RESOURCE &amp;amp; ENVIRONMENT LAYER &amp;nbsp;&lt;span style='background:#334155;padding:3px 10px;border-radius:999px;font-size:14px;'&gt;03&lt;/span&gt;&lt;/div&gt;&lt;div style='margin-top:8px;display:flex;justify-content:center;gap:10px;'&gt;&lt;span style='background:#0284C7;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800;'&gt;ISOLATED VPC&lt;/span&gt;&lt;span style='background:#0D9488;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800;'&gt;SECURE&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:14px;color:#CBD5E1;margin-top:8px;'&gt;Execution boundary for sandboxed workloads, database access, &amp;amp; storage.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#0F172A;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="890" width="1010" height="130" as="geometry"/></mxCell>
+
+      <mxCell id="sub61_1" value="&lt;b&gt;Database Layer&lt;/b&gt;&lt;br/&gt;(SQL, database connectors)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="55" y="1030" width="315" height="65" as="geometry"/></mxCell>
+      <mxCell id="sub61_2" value="&lt;b&gt;Sandbox / Execution&lt;/b&gt;&lt;br/&gt;(gVisor &amp;amp; isolated runtime)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="402" y="1030" width="315" height="65" as="geometry"/></mxCell>
+      <mxCell id="sub61_3" value="&lt;b&gt;Knowledge Base&lt;/b&gt;&lt;br/&gt;(File storage, RAG vector)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="750" y="1030" width="315" height="65" as="geometry"/></mxCell>
+
+      <mxCell id="e61_1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="sup61" target="w61_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="lbl61_del" value="Delegate &amp;amp; Route" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;fontColor=#0F172A;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="415" y="456" width="132" height="28" as="geometry"/></mxCell>
+      <mxCell id="e61_2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="sup61" target="w61_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e61_3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="sup61" target="w61_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e61_4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="w61_1" target="env61"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e61_5" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="w61_2" target="env61"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e61_6" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2.5;endArrow=block;" edge="1" parent="1" source="w61_3" target="env61"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <mxCell id="tk61" value="&lt;div style='padding:12px 18px;text-align:center;font-family:Inter,sans-serif;font-size:14px;color:#0F172A;'&gt;&lt;b&gt;TAKEAWAY:&lt;/b&gt; Hierarchical delegation separates high-level task planning from specialized execution, improving accuracy and security across tools.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="1135" width="1010" height="68" as="geometry"/></mxCell>
+      <mxCell id="ftr61" value="GOOGLE CLOUD ENTERPRISE AGENT ARCHITECTURE • HIERARCHICAL TREE DIAGRAM • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
+
+  // ============================================================================
+  // 11. #62: 2x2 QUADRANT MATRIX (Exact 1:1 Vector Twin of 62.png)
+  // ============================================================================
+  if (id === '62' && !items) {
+    const hTitle = esc(cleanCustomTitle || '2x2 Quadrant Matrix');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_62_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr62" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;font-size:14px;font-weight:800;color:#334155;'&gt;&lt;span&gt;EDITORIAL NEWSLETTER TECHNICAL INFOGRAPHIC POSTER&lt;/span&gt;&lt;span style='color:#2563EB;'&gt;☁ Gemini&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:48px;font-weight:900;color:#0F172A;margin-top:4px;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:19px;color:#334155;margin-top:4px;'&gt;Mapping enterprise AI agent tasks across&lt;br/&gt;Business Impact vs Technical Complexity&lt;/div&gt;&lt;div style='font-size:15px;font-weight:900;color:#0F172A;margin-top:12px;'&gt;AXES &amp;amp; BOUNDARIES&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="65" y="20" width="995" height="190" as="geometry"/></mxCell>
+
+      <mxCell id="axY62" value="&lt;div style='writing-mode:vertical-rl;transform:rotate(180deg);font-family:Inter,sans-serif;font-size:13.5px;font-weight:800;color:#FFFFFF;letter-spacing:0.6px;white-space:nowrap;'&gt;LOW   ◄────────   BUSINESS IMPACT (Value, ROI &amp;amp; Output Quality)   ────────►   HIGH&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="60" y="230" width="48" height="860" as="geometry"/></mxCell>
+      <mxCell id="axX62" value="LOW   ◄────────────   TECHNICAL COMPLEXITY (Time, Cost, Effort &amp; Tech Friction)   ────────────►   HIGH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="130" y="1110" width="935" height="44" as="geometry"/></mxCell>
+
+      <!-- Q1: QUICK WINS -->
+      <mxCell id="q62_1" value="&lt;div style='padding:16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:23px;font-weight:900;color:#0F172A;'&gt;01 | QUICK WINS&lt;/span&gt;&lt;span style='background:#059669;color:#FFF;padding:5px 10px;border-radius:999px;font-size:14px;font-weight:900;'&gt;✓&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15px;color:#1E293B;margin-top:6px;'&gt;High ROI, fast implementation.&lt;br/&gt;Build first.&lt;/div&gt;&lt;div style='margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Draft Email Responses&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Document Translation&lt;/span&gt;&lt;span style='background:#0D9488;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Meeting Summaries&lt;/span&gt;&lt;span style='background:#2563EB;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Standard Ticket Routing&lt;/span&gt;&lt;span style='background:#22C55E;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Auto-tagging CRM Leads&lt;/span&gt;&lt;/div&gt;&lt;div style='margin-top:22px;display:flex;gap:8px;'&gt;&lt;span style='background:#3B82F6;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;HIGH IMPACT&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;LOW COMPLEXITY&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#D1FAE5;strokeColor=#059669;strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="130" y="230" width="450" height="420" as="geometry"/></mxCell>
+
+      <!-- Q2: STRATEGIC BETS -->
+      <mxCell id="q62_2" value="&lt;div style='padding:16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:23px;font-weight:900;color:#0F172A;'&gt;02 | STRATEGIC BETS&lt;/span&gt;&lt;span style='background:#312E81;color:#FFF;padding:5px 10px;border-radius:999px;font-size:14px;font-weight:900;'&gt;★&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15px;color:#1E293B;margin-top:6px;'&gt;Complex but transformative.&lt;br/&gt;High long-term value.&lt;/div&gt;&lt;div style='margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;'&gt;&lt;span style='background:#3730A3;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Workflow Orchestration&lt;/span&gt;&lt;span style='background:#2563EB;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Autonomous Market Research&lt;/span&gt;&lt;span style='background:#4F46E5;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Full Code Generation&lt;/span&gt;&lt;span style='background:#0D9488;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Dynamic Multi-Agent Collabs&lt;/span&gt;&lt;span style='background:#1E293B;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Predictive Operations&lt;/span&gt;&lt;/div&gt;&lt;div style='margin-top:22px;display:flex;gap:8px;'&gt;&lt;span style='background:#3B82F6;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;HIGH IMPACT&lt;/span&gt;&lt;span style='background:#F97316;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;HIGH COMPLEXITY&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#E0E7FF;strokeColor=#4F46E5;strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="615" y="230" width="450" height="420" as="geometry"/></mxCell>
+
+      <!-- Q3: LOW PRIORITY -->
+      <mxCell id="q62_3" value="&lt;div style='padding:16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:23px;font-weight:900;color:#0F172A;'&gt;03 | LOW PRIORITY&lt;/span&gt;&lt;span style='background:#A16207;color:#FFF;padding:5px 10px;border-radius:999px;font-size:14px;font-weight:900;'&gt;❚❚&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15px;color:#1E293B;margin-top:6px;'&gt;Easy to deploy but low business&lt;br/&gt;return.&lt;/div&gt;&lt;div style='margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Local File Organization&lt;/span&gt;&lt;span style='background:#475569;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Internal Calendar Sync&lt;/span&gt;&lt;span style='background:#64748B;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Holiday Greeting Drafts&lt;/span&gt;&lt;span style='background:#475569;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Routine Database Polling&lt;/span&gt;&lt;span style='background:#64748B;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Basic Post Formatting&lt;/span&gt;&lt;/div&gt;&lt;div style='margin-top:22px;display:flex;gap:8px;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;LOW IMPACT&lt;/span&gt;&lt;span style='background:#16A34A;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;LOW COMPLEXITY&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="130" y="670" width="450" height="420" as="geometry"/></mxCell>
+
+      <!-- Q4: HIGH RISK TRAPS -->
+      <mxCell id="q62_4" value="&lt;div style='padding:16px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:23px;font-weight:900;color:#0F172A;'&gt;04 | HIGH RISK TRAPS&lt;/span&gt;&lt;span style='background:#B91C1C;color:#FFF;padding:5px 10px;border-radius:999px;font-size:14px;font-weight:900;'&gt;▲&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:15px;color:#1E293B;margin-top:6px;'&gt;Heavy engineering effort for&lt;br/&gt;minor ROI. Avoid or defer.&lt;/div&gt;&lt;div style='margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;'&gt;&lt;span style='background:#B91C1C;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Legacy Code Refactoring&lt;/span&gt;&lt;span style='background:#F97316;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Creative Brand Strategy&lt;/span&gt;&lt;span style='background:#DC2626;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Arbitrary Bulk Migration&lt;/span&gt;&lt;span style='background:#EA580C;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Flexible Negotiation&lt;/span&gt;&lt;span style='background:#B91C1C;color:#FFF;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:800;'&gt;Subjective HR Evaluation&lt;/span&gt;&lt;/div&gt;&lt;div style='margin-top:22px;display:flex;gap:8px;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;LOW IMPACT&lt;/span&gt;&lt;span style='background:#F97316;color:#FFF;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;'&gt;HIGH COMPLEXITY&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FEE2E2;strokeColor=#DC2626;strokeWidth=2;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="615" y="670" width="450" height="420" as="geometry"/></mxCell>
+
+      <mxCell id="tk62" value="&lt;div style='padding:12px 18px;text-align:center;font-family:Inter,sans-serif;font-size:14px;color:#0F172A;'&gt;&lt;b&gt;PRIORITIZATION RULE:&lt;/b&gt; Start with &lt;b style='color:#059669;'&gt;01 | Quick Wins&lt;/b&gt; to build organizational momentum, invest selectively in &lt;b style='color:#4F46E5;'&gt;02 | Strategic Bets&lt;/b&gt;, and strictly avoid &lt;b style='color:#DC2626;'&gt;04 | High Risk Traps&lt;/b&gt;.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="130" y="1180" width="935" height="65" as="geometry"/></mxCell>
+      <mxCell id="ftr62" value="GOOGLE CLOUD ENTERPRISE AGENT PRIORITIZATION • 2x2 QUADRANT MATRIX • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
+
+  // ============================================================================
+  // 12. #63: DECISION TREE FLOWCHART (Exact 1:1 Vector Twin of 63.png)
+  // ============================================================================
+  if (id === '63' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Decision Tree Flowchart');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_63_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FAFCFF"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FAFCFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr63" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:46px;font-weight:900;color:#0F172A;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:20px;color:#475569;margin-top:6px;'&gt;Conditional branching logic and decision paths&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="24" width="1000" height="100" as="geometry"/></mxCell>
+
+      <!-- BAND 01 | INGEST -->
+      <mxCell id="b63_1" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F1F5F9;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="45" y="145" width="1030" height="295" as="geometry"/></mxCell>
+      <mxCell id="t63_1" value="01 | INGEST" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=21;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="70" y="160" width="220" height="34" as="geometry"/></mxCell>
+
+      <mxCell id="n63_rec" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;'&gt;⚙&lt;/div&gt;&lt;div style='font-size:16px;font-weight:800;color:#0F172A;'&gt;Receive Input&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;'&gt;Task / Objective&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="445" y="160" width="230" height="90" as="geometry"/></mxCell>
+      <mxCell id="n63_obj" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;'&gt;🔍&lt;/div&gt;&lt;div style='font-size:15px;font-weight:700;color:#0F172A;'&gt;Is the objective&lt;br/&gt;clearly defined?&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="455" y="290" width="210" height="90" as="geometry"/></mxCell>
+      <mxCell id="n63_clar" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;'&gt;💬&lt;/div&gt;&lt;div style='font-size:15px;font-weight:800;color:#0F172A;'&gt;01a | Request&lt;br/&gt;Clarification&lt;/div&gt;&lt;div style='font-size:12px;color:#475569;margin-top:4px;'&gt;Ask user for missing&lt;br/&gt;inputs or constraints&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="175" y="265" width="215" height="130" as="geometry"/></mxCell>
+
+      <mxCell id="e63_1a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_rec" target="n63_obj"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_1no" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#EA580C;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_obj" target="n63_clar"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <!-- BAND 02 | TOOL CHECK -->
+      <mxCell id="b63_2" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F1F5F9;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="45" y="460" width="1030" height="390" as="geometry"/></mxCell>
+      <mxCell id="t63_2" value="02 | TOOL CHECK" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=21;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="70" y="475" width="250" height="34" as="geometry"/></mxCell>
+
+      <mxCell id="n63_eval" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;font-size:16px;font-weight:800;color:#0F172A;'&gt;Evaluate Required&lt;br/&gt;Resources&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="445" y="475" width="230" height="70" as="geometry"/></mxCell>
+      <mxCell id="n63_ext" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;font-size:15px;font-weight:700;color:#0F172A;'&gt;Are external tools&lt;br/&gt;or APIs needed?&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="455" y="580" width="210" height="68" as="geometry"/></mxCell>
+
+      <mxCell id="n63_dir" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;font-weight:800;color:#0F172A;'&gt;Direct Execution&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:4px;'&gt;Process internally using&lt;br/&gt;standard reasoning&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="265" y="660" width="225" height="90" as="geometry"/></mxCell>
+      <mxCell id="n63_perm" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;font-size:15px;font-weight:700;color:#0F172A;'&gt;Are permissions&lt;br/&gt;and access valid?&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="625" y="655" width="205" height="68" as="geometry"/></mxCell>
+      <mxCell id="n63_esc" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;'&gt;🔒&lt;/div&gt;&lt;div style='font-size:15.5px;font-weight:800;color:#0F172A;'&gt;Escalate /&lt;br/&gt;Request Access&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:4px;'&gt;User approval or&lt;br/&gt;graceful fallback&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="885" y="625" width="180" height="130" as="geometry"/></mxCell>
+      <mxCell id="n63_inv" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;font-weight:800;color:#0F172A;'&gt;Invoke Tools&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:4px;'&gt;Call APIs, databases,&lt;br/&gt;or sandboxed skills&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="620" y="760" width="215" height="80" as="geometry"/></mxCell>
+
+      <mxCell id="e63_1yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#16A34A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_obj" target="n63_eval"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_2a" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_eval" target="n63_ext"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_2no" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#EA580C;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_ext" target="n63_dir"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_2yes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#16A34A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_ext" target="n63_perm"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_pno" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#EA580C;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_perm" target="n63_esc"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_pyes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#16A34A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_perm" target="n63_inv"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <!-- BAND 03 | EXECUTE -->
+      <mxCell id="b63_3" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#F1F5F9;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="45" y="875" width="1030" height="390" as="geometry"/></mxCell>
+      <mxCell id="t63_3" value="03 | EXECUTE" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=21;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="70" y="890" width="220" height="34" as="geometry"/></mxCell>
+
+      <mxCell id="n63_exec" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;font-size:16px;font-weight:800;color:#0F172A;'&gt;Execute Task &amp;amp;&lt;br/&gt;Generate Output&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="445" y="895" width="230" height="70" as="geometry"/></mxCell>
+      <mxCell id="n63_val" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;font-size:15px;font-weight:700;color:#0F172A;'&gt;Does outcome&lt;br/&gt;pass validation?&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="455" y="998" width="210" height="68" as="geometry"/></mxCell>
+      <mxCell id="n63_loop" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:16px;font-weight:800;color:#0F172A;'&gt;↻ Self-Correction Loop&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:4px;'&gt;Analyze failure, retry&lt;br/&gt;up to limit&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="155" y="965" width="230" height="95" as="geometry"/></mxCell>
+      <mxCell id="n63_err" value="&lt;div style='padding:8px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:800;color:#0F172A;'&gt;Error Escalation&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;'&gt;If exhausted&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="155" y="1095" width="230" height="60" as="geometry"/></mxCell>
+      <mxCell id="n63_fin" value="&lt;div style='padding:12px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;'&gt;Deliver Final Result&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:4px;'&gt;Complete objective and&lt;br/&gt;return outcome&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=12;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="445" y="1145" width="230" height="85" as="geometry"/></mxCell>
+
+      <mxCell id="e63_d2e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_dir" target="n63_exec"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_i2e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_inv" target="n63_exec"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_e2v" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_exec" target="n63_val"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_vno" value="NO" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#EA580C;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_val" target="n63_loop"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_vyes" value="YES" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#16A34A;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#16A34A;fontColor=#FFFFFF;fontStyle=1;fontSize=11;" edge="1" parent="1" source="n63_val" target="n63_fin"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e63_l2e" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="n63_loop" target="n63_exec"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="120" y="1012"/><mxPoint x="120" y="930"/></Array></mxGeometry></mxCell>
+      <mxCell id="e63_l2err" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2;endArrow=block;" edge="1" parent="1" source="n63_loop" target="n63_err"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      <mxCell id="ftr63" value="DECISION TREE FLOWCHART • SYSTEM LOGIC &amp; BRANCHING FRAMEWORK • REVISION 1.4 • 09/2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
+
+  // ============================================================================
+  // 13. #64: FEATURE MATRIX GRID (Exact 1:1 Vector Twin of 64.png)
+  // ============================================================================
+  if (id === '64' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'Feature Matrix Grid');
+    const rows = [
+      {
+        crit: 'Data Persistence', sub: '(System state, DB connectors, checkpointers)',
+        cols: [
+          { pill: '✓ NATIVE', pBg: '#86EFAC', pCol: '#065F46', t: 'Checkpoint DB integrations', s: 'Restarts &amp; time-travel' },
+          { pill: '✓ BUILT-IN', pBg: '#86EFAC', pCol: '#065F46', t: 'Bundled SQLite adapter', s: 'Ready-to-use persistence' },
+          { pill: '✓ DISTRIBUTED', pBg: '#86EFAC', pCol: '#065F46', t: 'State sync across nodes', s: 'Fault-tolerant backups' },
+          { pill: '✕ EXTERNAL', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Needs custom pipeline', s: 'No default state manager' }
+        ]
+      },
+      {
+        crit: 'System Isolation', sub: '(Secure execution boundaries &amp; sandboxing)',
+        cols: [
+          { pill: '✕ MANUAL', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'VPC &amp; container setup', s: 'Required user config' },
+          { pill: '✕ LIMITED', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Host OS dependency', s: 'OS-level execution only' },
+          { pill: '✓ SECURE', pBg: '#86EFAC', pCol: '#065F46', t: 'Docker / microVMs', s: 'Isolated runtime environments' },
+          { pill: '✕ NONE', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Raw unconstrained access', s: 'Executes on localhost' }
+        ]
+      },
+      {
+        crit: 'Human Intervention', sub: '(User interaction &amp; approval breakpoints)',
+        cols: [
+          { pill: '✓ NATIVE', pBg: '#86EFAC', pCol: '#065F46', t: 'Interrupts &amp; approvals', s: 'Flexible validation loop' },
+          { pill: '✓ SUPPORTED', pBg: '#86EFAC', pCol: '#065F46', t: 'Simple breakpoint hooks', s: 'Basic pause checkpoints' },
+          { pill: '✓ INTEGRATED', pBg: '#86EFAC', pCol: '#065F46', t: 'Feedback loop workflows', s: 'Structured intervention' },
+          { pill: '✕ LIMITED', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Hardcoded manual scripts', s: 'Fragile UX integrations' }
+        ]
+      },
+      {
+        crit: 'Session Memory', sub: '(Retrieval-augmented, stateful memory)',
+        cols: [
+          { pill: '✓ NATIVE', pBg: '#86EFAC', pCol: '#065F46', t: 'Long &amp; short-term DB', s: 'Flexible cognitive memory' },
+          { pill: '✓ BUILT-IN', pBg: '#86EFAC', pCol: '#065F46', t: 'Standard context cache', s: 'Basic memory buffers' },
+          { pill: '✓ DISTRIBUTED', pBg: '#86EFAC', pCol: '#065F46', t: 'Cluster semantic store', s: 'Shared memory pools' },
+          { pill: '✕ VOLATILE', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Runtime RAM memory', s: 'Lost upon termination' }
+        ]
+      },
+      {
+        crit: 'Orchestration Scale', sub: '(Multi-process task concurrency)',
+        cols: [
+          { pill: '✓ SCALABLE', pBg: '#86EFAC', pCol: '#065F46', t: 'Flexible process mesh', s: 'Multi-thread execution' },
+          { pill: '✕ MODERATE', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Sequential process focus', s: 'Single-thread execution' },
+          { pill: '✓ ADVANCED', pBg: '#86EFAC', pCol: '#065F46', t: 'Dynamic peer delegation', s: 'Infinite async workflows' },
+          { pill: '✕ BASIC', pBg: '#FCA5A5', pCol: '#7F1D1D', t: 'Single-loop execution', s: 'Simple inline tasks' }
+        ]
+      }
     ];
-    let gridXml = '';
-    dims.forEach((d, r) => {
-      const y = 185 + r * 92;
-      const isLast = r === 4;
-      gridXml += `
-        <mxCell id="m64_d_${r}" value="${d.dim} (${level})" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12.5;align=left;spacingLeft=14;" vertex="1" parent="1"><mxGeometry x="55" y="${y}" width="310" height="76" as="geometry"/></mxCell>
-        <mxCell id="m64_c1_${r}" value="${d.c1}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${isLast ? '#059669' : '#DCFCE7'};strokeColor=#059669;strokeWidth=2;fontColor=${isLast ? '#FFFFFF' : '#065F46'};fontStyle=1;fontSize=13;" vertex="1" parent="1"><mxGeometry x="380" y="${y}" width="240" height="76" as="geometry"/></mxCell>
-        <mxCell id="m64_c2_${r}" value="${d.c2}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=1.5;fontColor=#1E3A8A;fontStyle=1;fontSize=12.5;" vertex="1" parent="1"><mxGeometry x="635" y="${y}" width="240" height="76" as="geometry"/></mxCell>
-        <mxCell id="m64_c3_${r}" value="${d.c3}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;fontColor=#92400E;fontStyle=1;fontSize=12.5;" vertex="1" parent="1"><mxGeometry x="890" y="${y}" width="240" height="76" as="geometry"/></mxCell>
-        <mxCell id="m64_c4_${r}" value="${d.c4}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#DC2626;strokeWidth=1.5;fontColor=#991B1B;fontStyle=1;fontSize=12.5;" vertex="1" parent="1"><mxGeometry x="1145" y="${y}" width="240" height="76" as="geometry"/></mxCell>
-      `;
+    let gXml = '';
+    rows.forEach((r, ri) => {
+      const y = 260 + ri * 158;
+      gXml += `<mxCell id="c64_lbl_${ri}" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:17px;font-weight:900;color:#0F172A;'&gt;${r.crit}&lt;/div&gt;&lt;div style='font-size:12.5px;color:#334155;margin-top:4px;'&gt;${r.sub}&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="45" y="${y}" width="195" height="158" as="geometry"/></mxCell>`;
+      r.cols.forEach((c, ci) => {
+        const x = 240 + ci * 210;
+        gXml += `<mxCell id="c64_${ri}_${ci}" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:inline-block;background:${c.pBg};color:${c.pCol};padding:4px 14px;border-radius:999px;font-size:12px;font-weight:900;'&gt;${c.pill}&lt;/div&gt;&lt;div style='font-size:15px;font-weight:800;color:#0F172A;margin-top:10px;line-height:1.25;'&gt;${c.t}&lt;/div&gt;&lt;div style='font-size:12px;color:#475569;margin-top:6px;'&gt;${c.s}&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="210" height="158" as="geometry"/></mxCell>`;
+      });
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_64_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #64 • FEATURE MATRIX TABLE • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      <mxCell id="h0" value="EVALUATION DIMENSION" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#334155;strokeColor=#334155;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="125" width="310" height="46" as="geometry"/></mxCell>
-      <mxCell id="h1" value="★ VERTEX AI ADK (RECOMMENDED)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#059669;strokeColor=#047857;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="380" y="125" width="240" height="46" as="geometry"/></mxCell>
-      <mxCell id="h2" value="LANGGRAPH" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="635" y="125" width="240" height="46" as="geometry"/></mxCell>
-      <mxCell id="h3" value="CREWAI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D97706;strokeColor=#B45309;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="890" y="125" width="240" height="46" as="geometry"/></mxCell>
-      <mxCell id="h4" value="RAW PROMPT SCRIPT" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DC2626;strokeColor=#B91C1C;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="1145" y="125" width="240" height="46" as="geometry"/></mxCell>
-      ${gridXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="55" y="660" width="1330" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
-    </root></mxGraphModel></diagram></mxfile>`;
-  }
-
-  // 15. #65: LAYERED PYRAMID (4-Tier Stepped AI Capability Pyramid from Foundation to Autonomous Swarm matching 65.png)
-  if (id === '65') {
-    const tiers = items?.slice(0, 4) || [
-      { code: 'TIER 04', title: 'AUTONOMOUS MULTI-AGENT SWARMS', badge: 'APEX AUTONOMY', description: 'Self-correcting supervisor & worker agents coordinating complex cross-system workflows.', metricOrScore: 'HIGH ROI • AUTONOMOUS' },
-      { code: 'TIER 03', title: 'SANDBOXED TOOL USE & MCP EXECUTION', badge: 'ACTION LAYER', description: 'GKE gVisor sandboxes, read/write API tool calling, and Human-in-the-Loop approval gates.', metricOrScore: 'GOVERNED ACTIONS' },
-      { code: 'TIER 02', title: 'ENTERPRISE RAG & GROUNDED MEMORY', badge: 'KNOWLEDGE LAYER', description: 'BigQuery vector search, AlloyDB pgvector state, and Vertex AI Search citation grounding.', metricOrScore: 'ZERO HALLUCINATION' },
-      { code: 'TIER 01', title: 'FOUNDATION MODELS & CLOUD SECURITY BASE', badge: 'INFRASTRUCTURE BASE', description: 'Gemini 2.5 Pro/Flash, VPC Service Controls, Cloud KMS CMEK, and Model Armor guardrails.', metricOrScore: 'ZERO-TRUST BASE' }
+    const scores = [
+      { sc: 'Score: 4.2 / 5', sub: 'Best for Custom Workflows' },
+      { sc: 'Score: 3.8 / 5', sub: 'Best for Out-of-the-Box Setup' },
+      { sc: 'Score: 4.8 / 5', sub: 'Best for Scaled Operations' },
+      { sc: 'Score: 2.2 / 5', sub: 'Best for Local Prototypes' }
     ];
-    const widths = [520, 740, 960, 1180];
-    const fills = ['#7C3AED', '#059669', '#2563EB', '#0F172A'];
-    let pyrXml = '';
-    tiers.forEach((t, i) => {
-      const w = widths[i];
-      const x = Math.round((1440 - w) / 2);
-      const y = 125 + i * 135;
-      const col = fills[i % 4];
-      pyrXml += `
-        <mxCell id="pyr_${i}" value="&lt;div style='padding:10px;text-align:center;color:#FFFFFF;'&gt;&lt;div style='font-size:11px;font-weight:800;letter-spacing:1px;'&gt;${esc(t.code)} • ${esc(t.badge)} [${level}] — ${esc(t.metricOrScore || 'VERIFIED')}&lt;/div&gt;&lt;div style='font-size:18px;font-weight:900;margin-top:4px;'&gt;${esc(t.title)}&lt;/div&gt;&lt;div style='font-size:12px;opacity:0.92;margin-top:4px;'&gt;${esc(t.description)}&lt;/div&gt;&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;rounded=1;whiteSpace=wrap;html=1;fillColor=${col};strokeColor=#FFFFFF;strokeWidth=2.5;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="120" as="geometry"/></mxCell>
-      `;
+    scores.forEach((s, ci) => {
+      const x = 240 + ci * 210;
+      gXml += `<mxCell id="sc64_${ci}" value="&lt;div style='padding:10px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='display:inline-block;background:#1E3A8A;color:#FFFFFF;padding:6px 16px;border-radius:999px;font-size:15px;font-weight:900;'&gt;${s.sc}&lt;/div&gt;&lt;div style='font-size:13.5px;font-weight:800;color:#0F172A;margin-top:8px;'&gt;${s.sub}&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;" vertex="1" parent="1"><mxGeometry x="${x}" y="1050" width="210" height="120" as="geometry"/></mxCell>`;
     });
-    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_65_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-      <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.2px;'&gt;INFOGRAPHIC #65 • LAYERED CAPABILITY PYRAMID • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:25px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:2px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="20" width="1330" height="84" as="geometry"/></mxCell>
-      ${pyrXml}
-      <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;fontStyle=1;fontSize=12;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="130" y="685" width="1180" height="44" as="geometry"/></mxCell>
-      ${levelStripXml}
+
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_64_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FAFCFF"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FAFCFF;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr64" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:46px;font-weight:900;color:#0F172A;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:20px;color:#475569;margin-top:6px;'&gt;Multi-criteria evaluation and capability scoring&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="45" y="25" width="1035" height="110" as="geometry"/></mxCell>
+
+      <mxCell id="th64_0" value="ARCHITECTURAL&lt;br/&gt;CRITERIA" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#0F172A;strokeWidth=1.5;fontStyle=1;fontSize=14;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="45" y="175" width="195" height="85" as="geometry"/></mxCell>
+      <mxCell id="th64_1" value="&lt;b style='font-size:15px;'&gt;FRAMEWORK ALPHA&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:12px;color:#334155;'&gt;(Modular &amp;amp; Extensible)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="240" y="175" width="210" height="85" as="geometry"/></mxCell>
+      <mxCell id="th64_2" value="&lt;b style='font-size:15px;'&gt;FRAMEWORK BETA&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:12px;color:#334155;'&gt;(Monolithic &amp;amp; Built-in)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="450" y="175" width="210" height="85" as="geometry"/></mxCell>
+      <mxCell id="th64_3" value="&lt;b style='font-size:15px;'&gt;FRAMEWORK GAMMA&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:12px;color:#334155;'&gt;(Distributed &amp;amp; Mesh)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="660" y="175" width="210" height="85" as="geometry"/></mxCell>
+      <mxCell id="th64_4" value="&lt;b style='font-size:15px;'&gt;FRAMEWORK DELTA&lt;/b&gt;&lt;br/&gt;&lt;span style='font-size:12px;color:#334155;'&gt;(Lightweight &amp;amp; Minimal)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="870" y="175" width="210" height="85" as="geometry"/></mxCell>
+
+      <mxCell id="sc64_lbl" value="OVERALL&lt;br/&gt;SCORE &amp;amp; FIT" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;fontStyle=1;fontSize=16;fontColor=#0F172A;" vertex="1" parent="1"><mxGeometry x="45" y="1050" width="195" height="120" as="geometry"/></mxCell>
+      ${gXml}
+
+      <mxCell id="ev64" value="&lt;div style='padding:12px 18px;text-align:left;font-family:Inter,sans-serif;font-size:15px;color:#0F172A;'&gt;&lt;b&gt;EVALUATION:&lt;/b&gt; Modular &amp;amp; distributed options excel in state management, whereas &lt;b&gt;isolated sandboxing requires specific&lt;/b&gt; sandbox/VPC container support.&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#F8FAFC;strokeColor=#94A3B8;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="45" y="1195" width="1035" height="72" as="geometry"/></mxCell>
+      <mxCell id="ftr64" value="FEATURE MATRIX GRID • MULTI-CRITERIA EVALUATION &amp; CAPABILITY SCORING • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
     </root></mxGraphModel></diagram></mxfile>`;
   }
 
-  // 16. #66: CIRCULAR FEEDBACK LOOP (4-Stage Autonomous Agent Execution Cycle + Central Hub + FAIL/DEPLOY Paths matching 66.png)
-  const s1 = items?.[0] || { code: '01', title: 'OBSERVE & INGEST CONTEXT', badge: 'STAGE 1 • PERCEIVE', description: 'Load user goal, AlloyDB episodic memory, and BigQuery RAG context chunks.' };
-  const s2 = items?.[1] || { code: '02', title: 'REASON & DECOMPOSE PLAN', badge: 'STAGE 2 • THINK', description: 'Gemini 2.5 Pro formulates step-by-step DAG and selects governed MCP tools.' };
-  const s3 = items?.[2] || { code: '03', title: 'ACT IN SANDBOXED RUNTIME', badge: 'STAGE 3 • EXECUTE', description: 'Run code, SQL queries, and API mutations inside isolated GKE gVisor pods.' };
-  const s4 = items?.[3] || { code: '04', title: 'VERIFY & SELF-CORRECT', badge: 'STAGE 4 • EVALUATE', description: 'Run deterministic tests & Model Armor checks; retry on failure or ship output.' };
+  // ============================================================================
+  // 14. #65: AI CAPABILITY PYRAMID (Exact 1:1 Vector Twin of 65.png)
+  // ============================================================================
+  if (id === '65' && !items) {
+    const hTitle = esc(cleanCustomTitle || 'AI Capability Pyramid');
+    return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_65_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+      <mxCell id="hdr65" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:48px;font-weight:900;color:#0F172A;'&gt;${hTitle}&lt;/div&gt;&lt;div style='font-size:20px;color:#334155;margin-top:6px;'&gt;The evolution of Google Cloud agents from raw&lt;br/&gt;inference to fully autonomous systems&lt;/div&gt;&lt;div style='font-size:16px;font-weight:900;color:#0F172A;margin-top:16px;'&gt;TIERS&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="60" y="25" width="1000" height="175" as="geometry"/></mxCell>
 
-  return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_${id}_${level}" name="${title}"><mxGraphModel dx="1440" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1440" pageHeight="960" background="#FDFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
-    <mxCell id="hdr" value="&lt;div style='text-align:center;'&gt;${gcpLogoBadge}&lt;span style='font-size:11px;font-weight:800;color:#2563EB;letter-spacing:1.5px;text-transform:uppercase;'&gt;INFOGRAPHIC BLUEPRINT #${id} • ${esc(meta.shortType)} • ${activeLevelLabel}&lt;/span&gt;&lt;div style='font-size:24px;font-weight:900;color:#0F172A;margin-top:2px;'&gt;${title}&lt;/div&gt;&lt;div style='font-size:13px;color:#475569;margin-top:4px;'&gt;${subtitle}&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="60" y="20" width="1320" height="84" as="geometry"/></mxCell>
-    <mxCell id="hub" value="&lt;div style='text-align:center;color:#FFFFFF;padding:10px;'&gt;&lt;div style='font-size:11px;font-weight:800;color:#93C5FD;'&gt;VERTEX AI CORE&lt;/div&gt;&lt;div style='font-size:17px;font-weight:900;margin-top:4px;'&gt;AUTONOMOUS&lt;br/&gt;AGENT LOOP&lt;/div&gt;&lt;div style='font-size:10.5px;color:#A7F3D0;margin-top:4px;'&gt;Max 3 Retries • ${level}&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#2563EB;strokeWidth=4;" vertex="1" parent="1"><mxGeometry x="610" y="310" width="220" height="190" as="geometry"/></mxCell>
-    <mxCell id="c66_1" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(s1.code)} • ${esc(s1.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:15.5px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${esc(s1.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:4px;'&gt;${esc(s1.description)}&lt;/div&gt;${getLevelTechSpec(level, 0)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#2563EB;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="80" y="135" width="440" height="200" as="geometry"/></mxCell>
-    <mxCell id="c66_2" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;span style='background:#7C3AED;color:#FFF;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(s2.code)} • ${esc(s2.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:15.5px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${esc(s2.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:4px;'&gt;${esc(s2.description)}&lt;/div&gt;${getLevelTechSpec(level, 1)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#7C3AED;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="920" y="135" width="440" height="200" as="geometry"/></mxCell>
-    <mxCell id="c66_3" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;span style='background:#EA580C;color:#FFF;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(s3.code)} • ${esc(s3.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:15.5px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${esc(s3.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:4px;'&gt;${esc(s3.description)}&lt;/div&gt;${getLevelTechSpec(level, 2)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7ED;strokeColor=#EA580C;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="920" y="475" width="440" height="200" as="geometry"/></mxCell>
-    <mxCell id="c66_4" value="&lt;div style='padding:12px;text-align:left;'&gt;&lt;span style='background:#059669;color:#FFF;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:800;'&gt;${esc(s4.code)} • ${esc(s4.badge)} [${level}]&lt;/span&gt;&lt;div style='font-size:15.5px;font-weight:900;color:#0F172A;margin-top:6px;'&gt;${esc(s4.title)}&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:4px;'&gt;${esc(s4.description)}&lt;/div&gt;${getLevelTechSpec(level, 3)}&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#059669;strokeWidth=2.5;verticalAlign=top;" vertex="1" parent="1"><mxGeometry x="80" y="475" width="440" height="200" as="geometry"/></mxCell>
-    <mxCell id="e66_12" value="1. Context ➔ Plan" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#2563EB;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="c66_1" target="c66_2"><mxGeometry relative="1" as="geometry"/></mxCell>
-    <mxCell id="e66_23" value="2. Plan ➔ Execute" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#7C3AED;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="c66_2" target="c66_3"><mxGeometry relative="1" as="geometry"/></mxCell>
-    <mxCell id="e66_34" value="3. Output ➔ Verify" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#EA580C;strokeWidth=2.5;endArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;" edge="1" parent="1" source="c66_3" target="c66_4"><mxGeometry relative="1" as="geometry"/></mxCell>
-    <mxCell id="e66_41" value="4. FAIL ➔ Retry Loop" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#DC2626;strokeWidth=2.5;dashed=1;endArrow=block;labelBackgroundColor=#FEE2E2;fontColor=#DC2626;fontStyle=1;" edge="1" parent="1" source="c66_4" target="c66_1"><mxGeometry relative="1" as="geometry"/></mxCell>
-    <mxCell id="tk" value="${takeaway}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0F172A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="698" width="1320" height="44" as="geometry"/></mxCell>
-    ${levelStripXml}
+      <mxCell id="axL65" value="&lt;div style='writing-mode:vertical-rl;transform:rotate(180deg);font-family:Inter,sans-serif;font-size:13.5px;font-weight:800;color:#0F172A;letter-spacing:0.6px;white-space:nowrap;'&gt;RISING COMPLEXITY &amp;amp; VALUE   ────────►&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;" vertex="1" parent="1"><mxGeometry x="35" y="240" width="40" height="920" as="geometry"/></mxCell>
+      <mxCell id="axR65" value="&lt;div style='writing-mode:vertical-rl;transform:rotate(180deg);font-family:Inter,sans-serif;font-size:13.5px;font-weight:800;color:#0F172A;letter-spacing:0.6px;white-space:nowrap;'&gt;◄────────   DECREASING HUMAN INTERVENTION&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;" vertex="1" parent="1"><mxGeometry x="1045" y="240" width="40" height="920" as="geometry"/></mxCell>
+
+      <!-- Center Pyramid Tiers (04 Apex -> 01 Base) -->
+      <mxCell id="p65_4" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;color:#0F172A;padding-top:16px;'&gt;&lt;span style='background:#DCFCE7;border:2px solid #0F172A;padding:6px 12px;border-radius:999px;font-size:16px;font-weight:900;'&gt;04&lt;/span&gt;&lt;div style='font-size:16px;font-weight:900;margin-top:12px;'&gt;AUTONOMOUS&lt;br/&gt;AGENTS&lt;/div&gt;&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;size=90;rounded=0;whiteSpace=wrap;html=1;fillColor=#86EFAC;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="450" y="235" width="220" height="205" as="geometry"/></mxCell>
+      <mxCell id="p65_3" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;color:#0F172A;'&gt;&lt;span style='background:#FEF3C7;border:2px solid #0F172A;padding:6px 12px;border-radius:999px;font-size:16px;font-weight:900;'&gt;03&lt;/span&gt;&lt;div style='font-size:17px;font-weight:900;margin-top:10px;'&gt;MULTI-AGENT&lt;br/&gt;COLLABORATION&lt;/div&gt;&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;rounded=0;whiteSpace=wrap;html=1;fillColor=#FACC15;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="360" y="455" width="400" height="215" as="geometry"/></mxCell>
+      <mxCell id="p65_2" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;span style='background:#EF4444;border:2px solid #FFFFFF;padding:6px 12px;border-radius:999px;font-size:16px;font-weight:900;'&gt;02&lt;/span&gt;&lt;div style='font-size:17px;font-weight:900;margin-top:10px;color:#0F172A;'&gt;TOOL CALLING&lt;br/&gt;&amp;amp; WORKFLOWS&lt;/div&gt;&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;rounded=0;whiteSpace=wrap;html=1;fillColor=#F87171;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="250" y="685" width="620" height="215" as="geometry"/></mxCell>
+      <mxCell id="p65_1" value="&lt;div style='text-align:center;font-family:Inter,sans-serif;color:#FFFFFF;'&gt;&lt;span style='background:#3B82F6;border:2px solid #FFFFFF;padding:8px 14px;border-radius:999px;font-size:18px;font-weight:900;'&gt;01&lt;/span&gt;&lt;/div&gt;" style="shape=trapezoid;perimeter=trapezoidPerimeter;fixedSize=1;rounded=0;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#0F172A;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="95" y="915" width="930" height="215" as="geometry"/></mxCell>
+
+      <!-- Left Detail Cards (04 .. 01) -->
+      <mxCell id="l65_4" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:900;color:#0F172A;'&gt;04 | AUTONOMOUS AGENT&lt;/div&gt;&lt;div style='display:inline-block;background:#86EFAC;color:#065F46;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;margin-top:4px;'&gt;GOAL-DRIVEN&lt;/div&gt;&lt;div style='font-size:11.5px;color:#334155;margin-top:6px;line-height:1.35;'&gt;Operates on open-ended objectives, self-evaluates success, and automatically resolves errors.&lt;br/&gt;• Self-healing validation loops&lt;br/&gt;• Continuous 24/7 task resolution&lt;br/&gt;• Long-horizon goal planning&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="95" y="230" width="295" height="195" as="geometry"/></mxCell>
+
+      <mxCell id="l65_3" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:900;color:#0F172A;'&gt;03 | MULTI-AGENT COLLABORATION&lt;/div&gt;&lt;div style='display:inline-block;background:#FDE047;color:#854D0E;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;margin-top:4px;'&gt;COOPERATIVE&lt;/div&gt;&lt;div style='font-size:11.5px;color:#334155;margin-top:6px;line-height:1.35;'&gt;Orchestrating specialized teams passing tasks, debating solutions, and managing shared context.&lt;br/&gt;• Manager-worker dynamic routing&lt;br/&gt;• Shared state persistence &amp;amp; memory&lt;br/&gt;• Agent2Agent (A2A) handoffs&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="95" y="450" width="295" height="205" as="geometry"/></mxCell>
+
+      <mxCell id="l65_2" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:900;color:#0F172A;'&gt;02 | TOOL CALLING&lt;/div&gt;&lt;div style='display:inline-block;background:#F87171;color:#FFFFFF;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;margin-top:4px;'&gt;INTERACTIVE&lt;/div&gt;&lt;div style='font-size:11.5px;color:#334155;margin-top:6px;line-height:1.35;'&gt;Models interact natively with environments, executing code, using APIs, and navigating databases.&lt;br/&gt;• API integrations &amp;amp; Skill Plugins&lt;br/&gt;• Computer-use &amp;amp; sandboxed GKE&lt;br/&gt;• Model Context Protocol (MCP)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="95" y="680" width="295" height="200" as="geometry"/></mxCell>
+
+      <mxCell id="l65_1" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:15px;font-weight:900;color:#0F172A;'&gt;01 | BASE GEMINI&lt;/div&gt;&lt;div style='display:inline-block;background:#3B82F6;color:#FFFFFF;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;margin-top:4px;'&gt;RAW INFERENCE&lt;/div&gt;&lt;div style='font-size:11.5px;color:#334155;margin-top:6px;line-height:1.35;'&gt;Standard foundation model reasoning based entirely on input prompts, text generation, and in-context data.&lt;br/&gt;• Chain-of-thought (CoT) planning&lt;br/&gt;• Natural language understanding&lt;br/&gt;• Few-shot prompting&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="95" y="905" width="295" height="195" as="geometry"/></mxCell>
+
+      <!-- Right Capabilities Cards (04 .. 01) -->
+      <mxCell id="r65_4" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;'&gt;🚀 Capabilities:&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;line-height:1.4;'&gt;• Gemini Enterprise Agent Platform&lt;br/&gt;• Agent Engine&lt;br/&gt;• Autonomously schedules, executes, and heals&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="730" y="275" width="290" height="135" as="geometry"/></mxCell>
+
+      <mxCell id="r65_3" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;'&gt;🗄 Capabilities:&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;line-height:1.4;'&gt;• Multi-agent frameworks (LangGraph, CrewAI, AutoGen)&lt;br/&gt;• Collaborative routing&lt;br/&gt;• Agent communication protocols&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="745" y="495" width="275" height="145" as="geometry"/></mxCell>
+
+      <mxCell id="r65_2" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;'&gt;🔌 Capabilities:&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;line-height:1.4;'&gt;• Dynamic function calling&lt;br/&gt;• Sandboxed execution (microVMs)&lt;br/&gt;• DB &amp;amp; web search (Vertex AI Search)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="760" y="720" width="260" height="145" as="geometry"/></mxCell>
+
+      <mxCell id="r65_1" value="&lt;div style='padding:12px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:14px;font-weight:900;color:#0F172A;'&gt;⚙ Capabilities:&lt;/div&gt;&lt;div style='font-size:12px;color:#334155;margin-top:6px;line-height:1.4;'&gt;• Gemini foundation models&lt;br/&gt;• Real-time reasoning&lt;br/&gt;• Model evaluation&lt;br/&gt;• Standard multi-modal processing&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="775" y="935" width="245" height="150" as="geometry"/></mxCell>
+
+      <mxCell id="ftr65" value="GOOGLE CLOUD AGENT ARCHITECTURE GUIDE • VERTEX AI AGENT PATTERNS • GCP 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#0B132B;strokeColor=#0B132B;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
+    </root></mxGraphModel></diagram></mxfile>`;
+  }
+
+  // ============================================================================
+  // 15. #66: LOOP & CYCLE DIAGRAM (Exact 1:1 Vector Twin of 66.png)
+  // ============================================================================
+  const hTitle = esc(cleanCustomTitle || 'Loop & Cycle Diagram');
+  return `<mxfile host="embed.diagrams.net" modified="2026-09-27T00:00:00.000Z" agent="PromptCanvas"><diagram id="infographic_66_${level}" name="${hTitle}"><mxGraphModel dx="1120" dy="1340" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1120" pageHeight="1340" background="#FCFBF7"><root><mxCell id="0"/><mxCell id="1" parent="0"/>
+    <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=#FCFBF7;strokeColor=#E2E8F0;strokeWidth=1.5;" vertex="1" parent="1"><mxGeometry x="0" y="0" width="1120" height="1340" as="geometry"/></mxCell>
+    <mxCell id="hdr66" value="&lt;div style='text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='display:flex;justify-content:space-between;align-items:center;'&gt;&lt;span style='font-size:46px;font-weight:900;color:#0F172A;'&gt;${hTitle}&lt;/span&gt;&lt;span style='background:#FFFFFF;border:1px solid #E2E8F0;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:800;color:#334155;'&gt;☁ Google Cloud &amp;amp; Vertex AI&lt;/span&gt;&lt;/div&gt;&lt;div style='font-size:19px;color:#334155;margin-top:6px;'&gt;The autonomous self-healing agent loop and evaluation cycle&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="55" y="22" width="1010" height="120" as="geometry"/></mxCell>
+
+    <!-- Outer Colored Ring & Inner White Hub -->
+    <mxCell id="ring66_out" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#E0F2FE;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="150" y="175" width="780" height="780" as="geometry"/></mxCell>
+    <mxCell id="ring66_in" value="&lt;div style='font-family:Inter,sans-serif;font-size:20px;font-weight:700;color:#64748B;letter-spacing:1px;'&gt;AUTONOMOUS&lt;br/&gt;AGENT LOOP&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="355" y="380" width="370" height="370" as="geometry"/></mxCell>
+
+    <!-- 01 | MODEL GENERATION (Top-Left) -->
+    <mxCell id="c66_1" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:18px;font-weight:900;color:#0F172A;'&gt;✦ 01 | MODEL GENERATION&lt;/div&gt;&lt;div style='font-size:14.5px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;A &lt;b&gt;Google Gemini&lt;/b&gt; model generates candidate solutions, code, or tasks.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="205" width="380" height="140" as="geometry"/></mxCell>
+    <mxCell id="b66_1" value="01" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#FFFFFF;strokeWidth=3;fontColor=#FFFFFF;fontStyle=1;fontSize=18;" vertex="1" parent="1"><mxGeometry x="235" y="325" width="58" height="58" as="geometry"/></mxCell>
+
+    <!-- 02 | SANDBOXED TEST (Top-Right) -->
+    <mxCell id="c66_2" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:18px;font-weight:900;color:#0F172A;'&gt;🖥 02 | SANDBOXED TEST&lt;/div&gt;&lt;div style='font-size:14.5px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;The task is executed within an isolated, secure VPC Sandbox (GKE/gVisor).&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="680" y="205" width="385" height="140" as="geometry"/></mxCell>
+
+    <!-- 03 | EVALUATION GATE (Middle-Right) -->
+    <mxCell id="b66_3" value="03" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#FFFFFF;strokeWidth=3;fontColor=#FFFFFF;fontStyle=1;fontSize=18;" vertex="1" parent="1"><mxGeometry x="855" y="455" width="58" height="58" as="geometry"/></mxCell>
+    <mxCell id="c66_3" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:18px;font-weight:900;color:#0F172A;'&gt;🛡 03 | EVALUATION GATE&lt;/div&gt;&lt;div style='font-size:14.5px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;Tests, constraints, and criteria are automatically checked.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="715" y="505" width="350" height="135" as="geometry"/></mxCell>
+
+    <!-- DEPLOY ON + EXIT TO DEPLOY (Bottom-Right) -->
+    <mxCell id="pil66_dep" value="DEPLOY   ● ON" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#16A34A;strokeColor=#15803D;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="905" y="675" width="160" height="36" as="geometry"/></mxCell>
+    <mxCell id="c66_exit" value="&lt;div style='padding:14px;text-align:center;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:24px;'&gt;🚀&lt;/div&gt;&lt;div style='font-size:18px;font-weight:900;color:#0F172A;margin-top:4px;'&gt;EXIT TO DEPLOY&lt;/div&gt;&lt;div style='font-size:13.5px;color:#334155;margin-top:4px;line-height:1.35;'&gt;Release final task outputs to users or systems safely (Google Cloud deployment)&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="775" y="795" width="290" height="150" as="geometry"/></mxCell>
+
+    <!-- 04 | SELF-HEALING LOOP (Bottom-Left) + RETRY ACTIVE -->
+    <mxCell id="pil66_ret" value="RETRY   ● ACTIVE" style="rounded=1;whiteSpace=wrap;html=1;arcSize=50;fillColor=#DC2626;strokeColor=#991B1B;fontColor=#FFFFFF;fontStyle=1;fontSize=14;" vertex="1" parent="1"><mxGeometry x="470" y="810" width="190" height="36" as="geometry"/></mxCell>
+    <mxCell id="b66_4" value="↻" style="ellipse;whiteSpace=wrap;html=1;fillColor=#3B82F6;strokeColor=#FFFFFF;strokeWidth=3;fontColor=#FFFFFF;fontStyle=1;fontSize=24;" vertex="1" parent="1"><mxGeometry x="215" y="645" width="58" height="58" as="geometry"/></mxCell>
+    <mxCell id="c66_4" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:18px;font-weight:900;color:#0F172A;'&gt;04 | SELF-HEALING LOOP&lt;/div&gt;&lt;div style='font-size:14.5px;color:#1E293B;margin-top:8px;line-height:1.4;'&gt;Analyzes error and failure logs to formulate a new prompting and fix-it strategy.&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="55" y="695" width="370" height="145" as="geometry"/></mxCell>
+
+    <!-- Cycle Arrows -->
+    <mxCell id="e66_12" value="Orchestrate" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#0F172A;strokeWidth=3.5;endArrow=block;labelBackgroundColor=#E0F2FE;fontStyle=1;fontSize=15;" edge="1" parent="1" source="c66_1" target="c66_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e66_23" value="Execute" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#2563EB;strokeWidth=3.5;endArrow=block;labelBackgroundColor=#E0F2FE;fontStyle=1;fontSize=15;" edge="1" parent="1" source="c66_2" target="b66_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e66_pass" value="PASS" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#16A34A;strokeWidth=3.5;endArrow=block;labelBackgroundColor=#FFFFFF;labelBorderColor=#16A34A;fontStyle=1;fontSize=14;fontColor=#15803D;exitX=0.35;exitY=1;entryX=0.25;entryY=0;" edge="1" parent="1" source="c66_3" target="c66_exit"><mxGeometry relative="1" as="geometry"/></mxCell>
+    <mxCell id="e66_fail" value="FAIL" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#DC2626;strokeWidth=3.5;endArrow=block;labelBackgroundColor=#FCFBF7;fontStyle=1;fontSize=15;fontColor=#B91C1C;" edge="1" parent="1" source="c66_3" target="c66_4"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="640" y="780"/></Array></mxGeometry></mxCell>
+    <mxCell id="e66_retry" value="RETRY FEEDBACK PATH" style="edgeStyle=orthogonalEdgeStyle;curved=1;html=1;strokeColor=#0F172A;strokeWidth=3.5;endArrow=block;labelBackgroundColor=#E0F2FE;fontStyle=1;fontSize=14;" edge="1" parent="1" source="b66_4" target="b66_1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="205" y="510"/></Array></mxGeometry></mxCell>
+
+    <!-- Bottom 2 Columns: Continuous Safeguards & Key Artifacts -->
+    <mxCell id="bot66_L" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:21px;font-weight:900;color:#0F172A;margin-bottom:10px;'&gt;Continuous Safeguards&lt;/div&gt;&lt;div style='font-size:14px;color:#0F172A;margin-bottom:8px;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:2px 8px;border-radius:999px;font-weight:800;margin-right:8px;'&gt;1&lt;/span&gt;&lt;b&gt;Max Retry Limits&lt;/b&gt; to prevent runaway loops&lt;/div&gt;&lt;div style='font-size:14px;color:#0F172A;margin-bottom:8px;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:2px 8px;border-radius:999px;font-weight:800;margin-right:8px;'&gt;2&lt;/span&gt;&lt;b&gt;Secure Sandboxing&lt;/b&gt; via isolated containers&lt;/div&gt;&lt;div style='font-size:14px;color:#0F172A;'&gt;&lt;span style='background:#2563EB;color:#FFF;padding:2px 8px;border-radius:999px;font-weight:800;margin-right:8px;'&gt;3&lt;/span&gt;&lt;b&gt;Deterministic Validation&lt;/b&gt; against strict schemas&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;" vertex="1" parent="1"><mxGeometry x="55" y="980" width="490" height="190" as="geometry"/></mxCell>
+
+    <mxCell id="bot66_R" value="&lt;div style='padding:14px 18px;text-align:left;font-family:Inter,sans-serif;'&gt;&lt;div style='font-size:21px;font-weight:900;color:#0F172A;margin-bottom:10px;'&gt;Key Artifacts&lt;/div&gt;&lt;div style='background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:999px;font-size:13px;color:#0F172A;margin-bottom:8px;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:1px 7px;border-radius:999px;font-weight:800;margin-right:6px;'&gt;1&lt;/span&gt;&lt;b&gt;Failure &amp;amp; Error Logs:&lt;/b&gt; &amp;ldquo;Fed back into Gemini as context&amp;rdquo;&lt;/div&gt;&lt;div style='background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:999px;font-size:13px;color:#0F172A;margin-bottom:8px;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:1px 7px;border-radius:999px;font-weight:800;margin-right:6px;'&gt;2&lt;/span&gt;&lt;b&gt;Target Constraints:&lt;/b&gt; &amp;ldquo;Clear metrics defining task success&amp;rdquo;&lt;/div&gt;&lt;div style='background:#F1F5F9;border:1px solid #CBD5E1;padding:6px 12px;border-radius:999px;font-size:13px;color:#0F172A;'&gt;&lt;span style='background:#64748B;color:#FFF;padding:1px 7px;border-radius:999px;font-weight:800;margin-right:6px;'&gt;3&lt;/span&gt;&lt;b&gt;Human escalations:&lt;/b&gt; &amp;ldquo;Graceful handover if retries are exhausted&amp;rdquo;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;" vertex="1" parent="1"><mxGeometry x="570" y="980" width="495" height="190" as="geometry"/></mxCell>
+
+    <mxCell id="ftr66" value="GOOGLE CLOUD • GEMINI • ENTERPRISE AGENT REFERENCE ARCHITECTURE • REVISION 2.4 • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontColor=#FFFFFF;fontStyle=1;fontSize=12;letterSpacing=0.8;" vertex="1" parent="1"><mxGeometry x="0" y="1295" width="1120" height="45" as="geometry"/></mxCell>
   </root></mxGraphModel></diagram></mxfile>`;
 }

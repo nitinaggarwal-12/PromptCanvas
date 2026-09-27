@@ -56,6 +56,9 @@ export default function CanonicalTemplateDetailPage() {
   const [copiedUrl, setCopiedUrl] = useState<boolean>(false);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [isComposeOpen, setIsComposeOpen] = useState<boolean>(false);
+  const [isSideBySide, setIsSideBySide] = useState<boolean>(
+    searchParams.get('sbs') === '1' || (Number(templateId) >= 52 && Number(templateId) <= 66)
+  );
 
   useEffect(() => {
     if (domainParam) {
@@ -288,6 +291,20 @@ export default function CanonicalTemplateDetailPage() {
                   <span className="hidden xl:inline">Download</span>
                 </button>
 
+                {/* Side-by-Side PNG + XML Toggle */}
+                <button
+                  id="canonical-sbs-toggle-btn"
+                  onClick={() => setIsSideBySide(!isSideBySide)}
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                    isSideBySide
+                      ? 'bg-indigo-600 text-white'
+                      : 'hover:bg-slate-800 text-indigo-300'
+                  }`}
+                  title="Compare Reference PNG and Editable Draw.io XML Side-by-Side"
+                >
+                  <span>{isSideBySide ? '✓ PNG + XML' : '🖼️ PNG + XML'}</span>
+                </button>
+
                 {/* Fullscreen Toggle */}
                 <button
                   onClick={() => setIsFullScreen(!isFullScreen)}
@@ -339,15 +356,114 @@ export default function CanonicalTemplateDetailPage() {
         </div>
 
         {/* Viewport Frame */}
-        <div className="flex-1 w-full h-[calc(100vh-90px)] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex items-center justify-center p-2 md:p-6">
-          <DiagramViewerRenderSafe
-            xml={currentXml}
-            bgTheme={themeMode}
-            diagramId={`canonical_${activeTemplate.id}`}
-            diagramType={`canonical_${activeTemplate.id}`}
-            aspectRatioId="16:9"
-          />
-        </div>
+        {isSideBySide ? (
+          <div className="flex-1 w-full h-[calc(100vh-90px)] flex flex-col gap-3 overflow-hidden">
+            {/* Quick Infographic Blueprint Switcher (#52–#66) */}
+            <div className="bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm flex items-center justify-between gap-3 overflow-x-auto shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white font-mono text-[10px] font-extrabold uppercase tracking-wider">
+                  Side-by-Side Comparison
+                </span>
+                <span className="text-xs font-extrabold text-slate-800">
+                  Infographic Blueprints (#52–#66):
+                </span>
+              </div>
+              <div className="flex items-center gap-1 overflow-x-auto py-0.5">
+                {['52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66'].map((infId) => (
+                  <Link
+                    key={infId}
+                    href={`/canonical/${infId}?sbs=1`}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-extrabold transition shrink-0 border ${
+                      activeTemplate.id === infId
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
+                        : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    #{infId}
+                  </Link>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSideBySide(false)}
+                className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold shrink-0 cursor-pointer"
+              >
+                Single Canvas ✕
+              </button>
+            </div>
+
+            <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-4 overflow-hidden">
+            {/* LEFT: Reference PNG */}
+            <div className="rounded-3xl bg-white border border-slate-200 shadow-xl flex flex-col overflow-hidden min-h-0">
+              <div className="px-4 py-2.5 bg-slate-900 text-white flex items-center justify-between text-xs font-bold shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30 font-mono text-[10px]">
+                    1. REFERENCE PNG
+                  </span>
+                  <span className="truncate">
+                    #{activeTemplate.id} • {activeTemplate.name}
+                  </span>
+                </div>
+                <a
+                  href={Number(activeTemplate.id) >= 52 ? `/templates/${activeTemplate.id}.png` : `/images/${activeTemplate.id}.png`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[11px] font-mono text-sky-300 hover:underline shrink-0"
+                >
+                  ↗ Raw PNG
+                </a>
+              </div>
+              <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
+                <img
+                  src={Number(activeTemplate.id) >= 52 ? `/templates/${activeTemplate.id}.png` : `/images/${activeTemplate.id}.png`}
+                  alt={activeTemplate.name}
+                  className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] object-contain rounded-xl border border-slate-200 bg-white shadow-md"
+                />
+              </div>
+            </div>
+
+            {/* RIGHT: Editable Draw.io XML Vector Version */}
+            <div className="rounded-3xl bg-white border-2 border-indigo-500/80 shadow-xl flex flex-col overflow-hidden min-h-0">
+              <div className="px-4 py-2.5 bg-[#0B111E] text-white flex items-center justify-between text-xs font-bold shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-mono text-[10px]">
+                    2. DRAW.IO XML VECTOR VERSION
+                  </span>
+                  <span className="text-slate-300 truncate">
+                    100% Editable mxGraphModel • Google Cloud Branded
+                  </span>
+                </div>
+                <Link
+                  href={`/studio?mode=diagrams&blueprint=${activeTemplate.id}&domain=${selectedDomain}`}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10.5px] font-extrabold shrink-0"
+                >
+                  ✎ Edit in Studio
+                </Link>
+              </div>
+              <div className="flex-1 min-h-0 relative overflow-hidden p-2">
+                <DiagramViewerRenderSafe
+                  xml={currentXml}
+                  minHeight={0}
+                  bgTheme={themeMode}
+                  diagramId={`canonical_${activeTemplate.id}`}
+                  diagramType={`canonical_${activeTemplate.id}`}
+                  aspectRatioId="16:9"
+                />
+              </div>
+            </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 w-full h-[calc(100vh-90px)] rounded-3xl bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden flex items-center justify-center p-2 md:p-6">
+            <DiagramViewerRenderSafe
+              xml={currentXml}
+              bgTheme={themeMode}
+              diagramId={`canonical_${activeTemplate.id}`}
+              diagramType={`canonical_${activeTemplate.id}`}
+              aspectRatioId="16:9"
+            />
+          </div>
+        )}
       </main>
 
         {/* DOCUMENT GENERATION MODAL (BRD, PRD, SDD, FDD, TDD, THREAT MODEL) */}

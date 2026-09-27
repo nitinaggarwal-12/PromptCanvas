@@ -25,6 +25,9 @@ export function generateTemplate52ContextHarnessLoopGraphXml(
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="poster_bg" value="" style="rounded=1;whiteSpace=wrap;html=1;arcSize=2;fillColor=${canvasBg};strokeColor=${cardBorder};strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1600" height="1050" as="geometry" />
+        </mxCell>
 
         <!-- ==================== TOP HEADER & WATERMARK ==================== -->
         <mxCell id="header_title" value="&lt;div style=&quot;text-align:left;font-family:Inter,sans-serif;&quot;&gt;&lt;span style=&quot;font-size:32px;font-weight:800;color:${textPrimary};letter-spacing:-0.5px;&quot;&gt;Context &lt;span style=&quot;color:#94A3B8;font-weight:400;&quot;&gt;+&lt;/span&gt; Harness &lt;span style=&quot;color:#94A3B8;font-weight:400;&quot;&gt;+&lt;/span&gt; Loop &lt;span style=&quot;color:#94A3B8;font-weight:400;&quot;&gt;+&lt;/span&gt; &lt;span style=&quot;color:#EA580C;&quot;&gt;Graph&lt;/span&gt;&lt;/span&gt;&lt;br/&gt;&lt;span style=&quot;font-size:14px;color:${textMuted};font-weight:600;&quot;&gt;Four parts of your AI setup. &lt;b style=&quot;color:${textPrimary};&quot;&gt;What each one does, with a prompt to try.&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
