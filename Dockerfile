@@ -2,16 +2,16 @@ FROM node:24-bookworm-slim
 
 WORKDIR /app
 
-ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 COPY package.json package-lock.json ./
-RUN npm install --ignore-scripts --no-audit --no-fund
+RUN npm install --include=dev --ignore-scripts --no-audit --no-fund
 
 COPY . .
 
+ENV NODE_ENV=production
 RUN NODE_OPTIONS="--max-old-space-size=4096" npx next build
 
 EXPOSE 8080
