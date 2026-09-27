@@ -25,9 +25,11 @@ import { generateTemplate48BcdrCyberRecoveryResilienceXml } from './canonical/te
 import { generateTemplate49HealthcareLifeSciencesPlatformXml } from './canonical/template49HealthcareLifeSciencesPlatform';
 import { generateTemplate50SustainabilityEsgPlatformXml } from './canonical/template50SustainabilityEsgPlatform';
 import {
-  buildInstantDynamicTopologyFromPrompt,
-  compileFlashTopologyToDrawioXml,
-} from './flashToDrawioCompiler';
+  generateGoogleCloudL1ExecutiveFlowchartXml,
+  generateGoogleCloudL2LogicalFlowchartXml,
+  generateGoogleCloudL3OperationalFlowchartXml,
+  generateGoogleCloudL4AgenticFlowchartXml,
+} from './canonical/googleCloudFlowchartBlueprints';
 
 export interface SynthesizedNode {
   id: string;
@@ -266,8 +268,8 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/Vertex AI Agents/gi, 'Vertex AI Inline Fraud Scoring Engine (&lt;15ms P99 Latency)'],
       [/Cloud Spanner/gi, 'Cloud Spanner Multi-Region Externally Consistent ACID Ledger']
     ];
-  } else if (lower.includes('rag') || lower.includes('retrieval') || lower.includes('knowledge base')) {
-    // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform
+  } else {
+    // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform (Default for RAG / Agentic / General)
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
     templateRefLabel = 'Modified Saved Template #41 • Google Cloud Sovereign Agentic RAG, Gemini 2.5 Pro & ScaNN Vector Mesh';
     domainMutations = [
@@ -277,10 +279,6 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/Vector Search/gi, 'Vertex AI Vector Search (ScaNN) + BigQuery Vector Store'],
       [/Cloud KMS/gi, 'Cloud KMS CMEK FIPS 140-3 L3 Hardware Encryption']
     ];
-  } else {
-    // Dynamic Flash-AST -> Draw.io XML Compiler for ANY novel or custom architecture prompt (<15ms)
-    const dynamicSpec = buildInstantDynamicTopologyFromPrompt(prompt, title);
-    return compileFlashTopologyToDrawioXml(dynamicSpec, prompt);
   }
 
   // Apply domain mutations to the saved template XML
@@ -1020,7 +1018,7 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
 export function generateLogicalFlowchartDrawioXml(
   prompt: string,
   title?: string,
-  direction: 'LR' | 'TD' = 'LR',
+  _direction: 'LR' | 'TD' = 'LR',
   level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
 ): string {
   const isDefaultDemoPrompt =
@@ -1029,189 +1027,23 @@ export function generateLogicalFlowchartDrawioXml(
     prompt.includes('Global Real-Time Payments Mesh') ||
     prompt === 'Enterprise Process Flowchart';
 
-  const levelMeta = {
-    L1: {
-      name: 'L1 (CONCEPTUAL)',
-      defaultTitle: 'L1 • Executive Conceptual Flow (4-Stage Value Stream)',
-      s1: '1. Business Trigger & Intake',
-      s2: '2. Governance & Policy Alignment',
-      g1: 'Business Case Approved?',
-      s3: '3. Core Value Stream Execution',
-      g2: 'KPI & Outcome Met?',
-      s4: '4. Stakeholder Value Delivery',
-      sub1: 'Executive Business Trigger & Scope',
-      sub2: 'Governance & Business Rule Alignment',
-      sub3: 'Core Value Stream Execution',
-      sub4: 'Business Outcome & Stakeholder Delivery',
-      dlqSub: 'Executive Escalation & Review Queue',
-    },
-    L2: {
-      name: 'L2 (LOGICAL)',
-      defaultTitle: 'L2 • Logical Decision Flowchart (Swimlanes & Retry Loops)',
-      s1: '1. Client Request & Payload Ingest',
-      s2: '2. Schema, Auth & Policy Check',
-      g1: 'Policy & Safety Valid?',
-      s3: '3. Core Workflow Orchestration',
-      g2: 'SLA & Quality Gate Pass?',
-      s4: '4. State Commit & Event Bus',
-      sub1: 'TLS 1.3 Payload Normalization',
-      sub2: 'Zero-Trust Auth & Policy Guardrail',
-      sub3: 'Deterministic Workflow Engine',
-      sub4: 'ACID State Persist & Event Bus',
-      dlqSub: 'Exponential Backoff & Alerting',
-    },
-    L3: {
-      name: 'L3 (TECHNICAL)',
-      defaultTitle: 'L3 • Technical API & Event Mesh (REST/gRPC & Pub/Sub CDC)',
-      s1: '1. Apigee X Ingress & mTLS Auth',
-      s2: '2. OPA Rego & Cloud DLP Filter',
-      g1: 'IAM & DLP Contract Pass?',
-      s3: '3. GKE Autopilot & Vertex Worker',
-      g2: 'p99 Latency & Schema OK?',
-      s4: '4. Spanner Commit & Pub/Sub CDC',
-      sub1: 'Apigee X + gRPC/mTLS Protobuf Ingress',
-      sub2: 'OPA Rego Policy + Cloud DLP Inspection',
-      sub3: 'GKE Autopilot + Vertex Agent Execution',
-      sub4: 'Cloud Spanner Commit + Pub/Sub Topic',
-      dlqSub: 'Pub/Sub DLQ + Cloud Run Replay Worker',
-    },
-    L4: {
-      name: 'L4 (PROD DEPLOYMENT)',
-      defaultTitle: 'L4 • Production Multi-Region HA (VPC-SC & Spanner Quorum)',
-      s1: '1. Global Anycast LB & WAF Ingress',
-      s2: '2. Cloud KMS HSM & VPC-SC Check',
-      g1: 'Zero-Trust Attestation OK?',
-      s3: '3. Multi-Region GKE Active Mesh',
-      g2: 'Spanner nam3 Quorum Ack?',
-      s4: '4. Multi-Region Spanner Commit',
-      sub1: 'Anycast LB (10.100.0.0/16) • p99 <8ms',
-      sub2: 'Cloud KMS HSM (FIPS 140-3) + VPC-SC',
-      sub3: 'Multi-Region GKE (us-central1 / ew1)',
-      sub4: 'Spanner nam3 (99.999% SLA • RPO=0)',
-      dlqSub: 'Chronicle SIEM Alert + SRE PagerDuty',
-    },
-  }[level];
-
-  const cleanTitle = (
+  const customTitle =
     !isDefaultDemoPrompt && (title || prompt)
       ? title && !title.includes('Global Real-Time Payments Mesh')
-        ? title
-        : prompt
-      : levelMeta.defaultTitle
-  ).slice(0, 76);
+        ? title.trim()
+        : prompt.trim().slice(0, 86)
+      : undefined;
 
-  const clauses = isDefaultDemoPrompt
-    ? []
-    : prompt
-        .replace(/\n+/g, ' • ')
-        .split(/(?:•|->|-->|;|,|\band\b)/i)
-        .map((s) => s.trim())
-        .filter((s) => s.length >= 4);
-
-  const step1 = clauses[0]?.slice(0, 32) || levelMeta.s1;
-  const step2 = clauses[1]?.slice(0, 32) || levelMeta.s2;
-  const gate1 = levelMeta.g1;
-  const step3 = clauses[2]?.slice(0, 32) || levelMeta.s3;
-  const gate2 = levelMeta.g2;
-  const step4 = clauses[3]?.slice(0, 32) || levelMeta.s4;
-  const fallbackNode = 'Quarantine / Retry Handler & Audit Log';
-
-  const isTD = direction === 'TD';
-
-  // Coordinates for Left-to-Right (LR) vs Top-Down (TD)
-  const nodes = isTD
-    ? {
-        start: { x: 690, y: 96, w: 220, h: 52 },
-        s1: { x: 660, y: 188, w: 280, h: 74 },
-        s2: { x: 660, y: 304, w: 280, h: 74 },
-        g1: { x: 710, y: 420, w: 180, h: 96 },
-        s3: { x: 660, y: 564, w: 280, h: 74 },
-        g2: { x: 710, y: 684, w: 180, h: 96 },
-        s4: { x: 660, y: 824, w: 280, h: 74 },
-        end: { x: 690, y: 936, w: 220, h: 52 },
-        dlq: { x: 1080, y: 540, w: 280, h: 86 },
-      }
-    : {
-        start: { x: 52, y: 324, w: 152, h: 56 },
-        s1: { x: 254, y: 308, w: 206, h: 88 },
-        s2: { x: 510, y: 308, w: 206, h: 88 },
-        g1: { x: 768, y: 292, w: 172, h: 120 },
-        s3: { x: 992, y: 308, w: 206, h: 88 },
-        g2: { x: 1250, y: 292, w: 172, h: 120 },
-        s4: { x: 1060, y: 548, w: 210, h: 88 },
-        end: { x: 1330, y: 564, w: 184, h: 56 },
-        dlq: { x: 749, y: 548, w: 210, h: 88 },
-      };
-
-  const makeBox = (id: string, badge: string, label: string, sub: string, pos: { x: number; y: number; w: number; h: number }, fill = '#FFFFFF', border = '#2563EB') => {
-    const html =
-      `<div style="font-family:Inter,sans-serif;padding:4px 8px;text-align:left;">` +
-      `<div style="font-size:8px;font-weight:900;color:${border};letter-spacing:0.5px;">${escHtml(badge)}</div>` +
-      `<div style="font-size:10.5px;font-weight:900;color:#0F172A;margin-top:2px;line-height:13px;">${escHtml(label)}</div>` +
-      `<div style="font-size:8.5px;font-weight:600;color:#475569;margin-top:2px;">${escHtml(sub)}</div>` +
-      `</div>`;
-    return `<mxCell id="${id}" value="${escAttr(html)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${fill};strokeColor=${border};strokeWidth=2;arcSize=12;shadow=0;" vertex="1" parent="1"><mxGeometry x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" as="geometry"/></mxCell>`;
-  };
-
-  const makeGate = (id: string, label: string, pos: { x: number; y: number; w: number; h: number }) => {
-    const html = `<div style="font-family:Inter,sans-serif;font-size:9.5px;font-weight:900;color:#92400E;text-align:center;line-height:12px;padding:6px;">◆ DECISION<br/>${escHtml(label)}</div>`;
-    return `<mxCell id="${id}" value="${escAttr(html)}" style="shape=rhombus;perimeter=rhombusPerimeter;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=2.2;" vertex="1" parent="1"><mxGeometry x="${pos.x}" y="${pos.y}" width="${pos.w}" height="${pos.h}" as="geometry"/></mxCell>`;
-  };
-
-  const lrEdges = [
-    `<mxCell id="fce_1" value="Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#16A34A;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_start" target="fc_s1"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_2" value="❶ Payload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#2563EB;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s1" target="fc_s2"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_3" value="❷ Evaluate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#0284C7;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s2" target="fc_g1"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_4" value="✓ YES" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#059669;strokeWidth=2.2;fontStyle=1;fontSize=8.5;fontColor=#065F46;labelBackgroundColor=#ECFDF5;" edge="1" parent="1" source="fc_g1" target="fc_s3"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_5" value="✕ NO (Reject)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#991B1B;labelBackgroundColor=#FEF2F2;" edge="1" parent="1" source="fc_g1" target="fc_dlq"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_6" value="❸ Verify SLA" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#059669;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s3" target="fc_g2"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_7" value="✓ PASS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#059669;strokeWidth=2.2;fontStyle=1;fontSize=8.5;fontColor=#065F46;labelBackgroundColor=#ECFDF5;" edge="1" parent="1" source="fc_g2" target="fc_s4"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1336" y="485"/><mxPoint x="1165" y="485"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_8" value="✕ TIMEOUT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=1;entryX=1;entryY=0.35;strokeColor=#DC2626;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#991B1B;labelBackgroundColor=#FEF2F2;" edge="1" parent="1" source="fc_g2" target="fc_dlq"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1293" y="448"/><mxPoint x="1005" y="448"/><mxPoint x="1005" y="579"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_9" value="↩ Retry Backoff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=0.5;entryX=0.5;entryY=1;strokeColor=#D97706;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#92400E;labelBackgroundColor=#FEF3C7;" edge="1" parent="1" source="fc_dlq" target="fc_s2"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="613" y="592"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_10" value="❹ Done" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#1D4ED8;strokeWidth=2.2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s4" target="fc_end"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-  ];
-
-  const tdEdges = [
-    `<mxCell id="fce_1" value="Trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#16A34A;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_start" target="fc_s1"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_2" value="❶ Payload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#2563EB;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s1" target="fc_s2"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_3" value="❷ Evaluate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#0284C7;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s2" target="fc_g1"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_4" value="✓ YES (Valid)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#059669;strokeWidth=2.2;fontStyle=1;fontSize=8.5;fontColor=#065F46;labelBackgroundColor=#ECFDF5;" edge="1" parent="1" source="fc_g1" target="fc_s3"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_5" value="✕ NO (Reject)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;strokeColor=#DC2626;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#991B1B;labelBackgroundColor=#FEF2F2;" edge="1" parent="1" source="fc_g1" target="fc_dlq"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1220" y="452"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_6" value="❸ Verify SLA" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#059669;strokeWidth=2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s3" target="fc_g2"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_7" value="✓ PASS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#059669;strokeWidth=2.2;fontStyle=1;fontSize=8.5;fontColor=#065F46;labelBackgroundColor=#ECFDF5;" edge="1" parent="1" source="fc_g2" target="fc_s4"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-    `<mxCell id="fce_8" value="✕ TIMEOUT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;strokeColor=#DC2626;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#991B1B;labelBackgroundColor=#FEF2F2;" edge="1" parent="1" source="fc_g2" target="fc_dlq"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1220" y="732"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_9" value="↩ Retry Backoff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#D97706;strokeWidth=2;dashed=1;fontStyle=1;fontSize=8.5;fontColor=#92400E;labelBackgroundColor=#FEF3C7;" edge="1" parent="1" source="fc_dlq" target="fc_s2"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1420" y="583"/><mxPoint x="1420" y="337"/></Array></mxGeometry></mxCell>`,
-    `<mxCell id="fce_10" value="❹ Done" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#1D4ED8;strokeWidth=2.2;fontStyle=1;fontSize=8.5;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="fc_s4" target="fc_end"><mxGeometry relative="1" as="geometry"/></mxCell>`,
-  ];
-
-  const cells: string[] = [
-    `<mxCell id="0"/>`,
-    `<mxCell id="1" parent="0"/>`,
-    `<mxCell id="fc_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=2;arcSize=2;" vertex="1" parent="1"><mxGeometry x="24" y="16" width="1592" height="990" as="geometry"/></mxCell>`,
-    `<mxCell id="fc_hdr" value="${escAttr(
-      `<div style="font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:space-between;padding:4px 12px;width:1530px;">` +
-        `<div>` +
-        `<span style="background:#2563EB;color:#FFFFFF;font-size:9px;font-weight:900;padding:2px 8px;border-radius:4px;margin-right:8px;">🔀 FLOWCHART • ${levelMeta.name} • ${direction === 'TD' ? 'TOP-DOWN (TD)' : 'LEFT-TO-RIGHT (LR)'}</span>` +
-        `<span style="font-size:15px;font-weight:900;color:#FFFFFF;">${escHtml(cleanTitle)}</span>` +
-        `</div>` +
-        `<span style="background:#064E3B;color:#6EE7B7;border:1px solid #10B981;border-radius:999px;padding:2px 10px;font-size:9px;font-weight:800;">${levelMeta.name} • Decision Gates • Closed Retry Loop</span>` +
-        `</div>`
-    )}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#2563EB;strokeWidth=2;" vertex="1" parent="1"><mxGeometry x="44" y="28" width="1552" height="48" as="geometry"/></mxCell>`,
-
-    `<mxCell id="fc_start" value="▶ START TRIGGER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;strokeWidth=2.2;arcSize=50;fontSize=10.5;fontStyle=1;fontColor=#14532D;" vertex="1" parent="1"><mxGeometry x="${nodes.start.x}" y="${nodes.start.y}" width="${nodes.start.w}" height="${nodes.start.h}" as="geometry"/></mxCell>`,
-    makeBox('fc_s1', `STEP ❶ • INGRESS (${level})`, step1, levelMeta.sub1, nodes.s1, '#FFFFFF', '#2563EB'),
-    makeBox('fc_s2', `STEP ❷ • VALIDATION (${level})`, step2, levelMeta.sub2, nodes.s2, '#FFFFFF', '#0284C7'),
-    makeGate('fc_g1', gate1, nodes.g1),
-    makeBox('fc_s3', `STEP ❸ • EXECUTION (${level})`, step3, levelMeta.sub3, nodes.s3, '#FFFFFF', '#059669'),
-    makeGate('fc_g2', gate2, nodes.g2),
-    makeBox('fc_s4', `STEP ❹ • COMMIT & EMIT (${level})`, step4, levelMeta.sub4, nodes.s4, '#ECFDF5', '#059669'),
-    makeBox('fc_dlq', `FALLBACK • RETRY / DLQ (${level})`, fallbackNode, levelMeta.dlqSub, nodes.dlq, '#FEF2F2', '#DC2626'),
-    `<mxCell id="fc_end" value="■ COMPLETED (200 OK)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=2.2;arcSize=50;fontSize=10.5;fontStyle=1;fontColor=#1E3A8A;" vertex="1" parent="1"><mxGeometry x="${nodes.end.x}" y="${nodes.end.y}" width="${nodes.end.w}" height="${nodes.end.h}" as="geometry"/></mxCell>`,
-
-    ...(direction === 'TD' ? tdEdges : lrEdges),
-  ];
-
-  return `<mxfile host="embed.diagrams.net" modified="${new Date().toISOString()}" agent="PromptCanvas-FlowchartEngine" version="24.0.0"><diagram id="logical_flowchart_${direction.toLowerCase()}" name="Process Flowchart (${direction})"><mxGraphModel dx="1640" dy="1020" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1640" pageHeight="1020" background="#F8FAFC" math="0" shadow="0"><root>${cells.join('')}</root></mxGraphModel></diagram></mxfile>`;
+  if (level === 'L1') {
+    return generateGoogleCloudL1ExecutiveFlowchartXml(customTitle);
+  }
+  if (level === 'L2') {
+    return generateGoogleCloudL2LogicalFlowchartXml(customTitle);
+  }
+  if (level === 'L3') {
+    return generateGoogleCloudL3OperationalFlowchartXml(customTitle);
+  }
+  return generateGoogleCloudL4AgenticFlowchartXml(customTitle);
 }
 
 

@@ -65,6 +65,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { generateOpenKnowledgeInfographicXml } from '@/lib/canonical/openKnowledgeInfographic';
 import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTieredInfographic';
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from '@/lib/canonical/infographicBlueprints52to66';
+import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from '@/lib/canonical/flowDiagramBlueprints67to74';
 import { synthesizePromptDrivenDiagramXml, generateLogicalFlowchartDrawioXml } from '@/lib/promptDrivenDiagramSynthesizer';
 
 export interface StudioVersionSnapshot {
@@ -427,6 +428,8 @@ function StudioMain() {
   const [selectedFlowDirection, setSelectedFlowDirection] = useState<'TD' | 'LR'>('LR');
   const [selectedInfographicBlueprintId, setSelectedInfographicBlueprintId] = useState<string>('52');
   const [isFlowTreeOpen, setIsFlowTreeOpen] = useState<boolean>(false);
+  const [isFlowTreeTier2Open, setIsFlowTreeTier2Open] = useState<boolean>(false);
+  const [isFlowTreeTier3Open, setIsFlowTreeTier3Open] = useState<boolean>(false);
   const [flowTreeSearchQuery, setFlowTreeSearchQuery] = useState<string>('');
   const flowTreeCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isNewDiagramDraft, setIsNewDiagramDraft] = useState<boolean>(false);
@@ -826,7 +829,7 @@ function StudioMain() {
 
     let generatedXml = xml;
     if (activeInfoId) {
-      generatedXml = generateInfographicBlueprintXmlById(activeInfoId, planPrompt);
+      generatedXml = generateInfographicBlueprintXmlById(activeInfoId, planPrompt, undefined, level);
     } else if (diagramMode === 'blueprint') {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === blueprintId) || CANONICAL_TEMPLATES[0];
       generatedXml = bp.generateXml(selectedDomain, 'light');
@@ -1788,7 +1791,12 @@ function StudioMain() {
           selectedAbstractionLevel
         );
       } else if (selectedDiagramMode === 'infographic' || /\binfographic\b/i.test(promptText)) {
-        activeBaseXml = generateInfographicBlueprintXmlById(selectedInfographicBlueprintId, cleanPrompt);
+        activeBaseXml = generateInfographicBlueprintXmlById(
+          selectedInfographicBlueprintId,
+          cleanPrompt,
+          undefined,
+          selectedAbstractionLevel
+        );
         fetch('/api/infographic-blueprint', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -2586,10 +2594,10 @@ function StudioMain() {
               minWidth: isLaunchpadMode || isLeftDrawerCollapsed ? 0 : 320,
               maxWidth: isLaunchpadMode || isLeftDrawerCollapsed ? 0 : 320
             }}
-            className={`bg-white flex flex-col h-full min-h-0 overflow-hidden transition-all duration-200 z-20 ${
+            className={`bg-white flex flex-col h-full min-h-0 transition-all duration-200 ${
               isLaunchpadMode || isLeftDrawerCollapsed
-                ? 'w-0 border-r-0 opacity-0 pointer-events-none'
-                : 'w-[320px] border-r border-slate-200 shadow-sm opacity-100'
+                ? 'w-0 border-r-0 opacity-0 pointer-events-none overflow-hidden z-20'
+                : 'w-[320px] border-r border-slate-200 shadow-sm opacity-100 overflow-visible z-40'
             }`}
           >
             {!isLaunchpadMode && !isLeftDrawerCollapsed && (
@@ -2613,7 +2621,7 @@ function StudioMain() {
                   </button>
                 </div>
 
-                {/* Compact Single-Row Trigger + Hover-Over Left-to-Right (LR) Flowchart Tree */}
+                {/* Compact Single-Row Trigger + Progressive Hover Top-Down (TD) Flowchart Tree */}
                 <div
                   className="px-2.5 py-1.5 border-b border-slate-200 bg-slate-50/95 flex items-center justify-between gap-1.5 flex-shrink-0 relative"
                   onMouseEnter={() => {
@@ -2621,24 +2629,32 @@ function StudioMain() {
                       clearTimeout(flowTreeCloseTimerRef.current);
                       flowTreeCloseTimerRef.current = null;
                     }
-                    setIsFlowTreeOpen(true);
+                    if (!isFlowTreeOpen) {
+                      setIsFlowTreeOpen(true);
+                      setIsFlowTreeTier2Open(false);
+                      setIsFlowTreeTier3Open(false);
+                    }
                   }}
                   onMouseLeave={() => {
                     flowTreeCloseTimerRef.current = setTimeout(() => {
                       setIsFlowTreeOpen(false);
-                    }, 280);
+                      setIsFlowTreeTier2Open(false);
+                      setIsFlowTreeTier3Open(false);
+                    }, 320);
                   }}
                 >
                   <button
                     id="lr-flow-tree-trigger"
                     type="button"
-                    onClick={() => setIsFlowTreeOpen(true)}
+                    onClick={() => {
+                      setIsFlowTreeOpen(true);
+                    }}
                     className={`flex-1 min-w-0 px-2.5 py-1.5 rounded-lg border text-left transition cursor-pointer flex items-center justify-between gap-1.5 ${
                       isFlowTreeOpen
                         ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                         : 'bg-white hover:bg-blue-50/80 text-slate-800 border-slate-300 shadow-2xs'
                     }`}
-                    title="Hover or click to open Left-to-Right (LR) Diagram Flowchart Tree"
+                    title="Hover to progressively expand Top-Down (TD) Diagram Flowchart Tree"
                   >
                     <div className="flex items-center gap-1.5 min-w-0">
                       <span className="text-[11px] font-extrabold tracking-tight shrink-0">
@@ -2673,7 +2689,7 @@ function StudioMain() {
                     <span>New</span>
                   </button>
 
-                  {/* Top-Down (TD) 3-Tier Vertical Flowchart Flyout (Root ▼ Branch ▼ Leaf Preview & Actions) */}
+                  {/* Top-Down (TD) Progressive 3-Tier Vertical Flowchart Flyout (Root ▼ Branch ▼ Leaf Preview & Actions) */}
                   {isFlowTreeOpen && (
                     <div
                       id="lr-flow-tree-popover"
@@ -2687,32 +2703,40 @@ function StudioMain() {
                       onMouseLeave={() => {
                         flowTreeCloseTimerRef.current = setTimeout(() => {
                           setIsFlowTreeOpen(false);
-                        }, 280);
+                          setIsFlowTreeTier2Open(false);
+                          setIsFlowTreeTier3Open(false);
+                        }, 320);
                       }}
-                      className="fixed left-[58px] top-[144px] z-[999] bg-white/98 backdrop-blur-2xl border border-slate-200/95 ring-1 ring-slate-900/10 rounded-2xl shadow-[0_24px_60px_-12px_rgba(15,23,42,0.32)] overflow-hidden text-slate-900 w-[360px] animate-in fade-in zoom-in-95 duration-150"
+                      className="absolute left-2 top-full mt-1.5 z-[9999] bg-white/98 backdrop-blur-2xl border border-slate-200/95 ring-1 ring-slate-900/10 rounded-2xl shadow-[0_24px_60px_-12px_rgba(15,23,42,0.34)] overflow-x-hidden overflow-y-auto max-h-[calc(100vh-125px)] text-slate-900 w-[368px] animate-in fade-in zoom-in-95 duration-150"
                     >
                       {/* Top Header: TD Path & Search Filter */}
-                      <div className="px-3 py-2 bg-slate-900 text-white flex items-center justify-between gap-2">
+                      <div className="px-3 py-2 bg-slate-900 text-white flex items-center justify-between gap-2 sticky top-0 z-10">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <span className="px-1.5 py-0.5 rounded bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[9.5px] font-extrabold uppercase tracking-wider shrink-0">
                             TD Flow Tree
                           </span>
-                          <span className="text-[10px] text-slate-300 font-bold truncate">
-                            1. Root ▼ 2. Branch ▼ 3. Leaf
+                          <span className="text-[10px] text-slate-300 font-bold whitespace-nowrap">
+                            1. Root {isFlowTreeTier2Open ? '▼ 2. Branch' : '▸ Hover'} {isFlowTreeTier3Open ? '▼ 3. Leaf' : ''}
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 shrink-0">
-                          <input
-                            type="text"
-                            value={flowTreeSearchQuery}
-                            onChange={(e) => setFlowTreeSearchQuery(e.target.value)}
-                            placeholder="🔍 Filter..."
-                            className="w-[115px] bg-slate-800/90 border border-slate-700 rounded-md px-2 py-0.5 text-[10px] text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
-                          />
+                        <div className="flex items-center gap-1 shrink-0">
+                          {isFlowTreeTier2Open && selectedDiagramMode !== 'flowchart' && (
+                            <input
+                              type="text"
+                              value={flowTreeSearchQuery}
+                              onChange={(e) => setFlowTreeSearchQuery(e.target.value)}
+                              placeholder="🔍 Filter..."
+                              className="w-[82px] bg-slate-800/90 border border-slate-700 rounded-md px-1.5 py-0.5 text-[9.5px] text-white placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
+                            />
+                          )}
                           <button
                             type="button"
-                            onClick={() => setIsFlowTreeOpen(false)}
+                            onClick={() => {
+                              setIsFlowTreeOpen(false);
+                              setIsFlowTreeTier2Open(false);
+                              setIsFlowTreeTier3Open(false);
+                            }}
                             className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded-md hover:bg-slate-800 cursor-pointer text-xs font-bold"
                             title="Close Top-Down Flowchart"
                           >
@@ -2721,12 +2745,12 @@ function StudioMain() {
                         </div>
                       </div>
 
-                      {/* Top-Down (TD) Vertical Flowchart Stack */}
+                      {/* Top-Down (TD) Vertical Flowchart Stack with Progressive Hover Expansion */}
                       <div className="p-3 space-y-1.5 bg-slate-50/60">
                         {/* TIER 1 (TOP): 1. ROOT FAMILY */}
                         <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
                           <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                            <span>1. Root Family (Choose Diagram Type)</span>
+                            <span>1. Root Family (Hover or Click to Expand)</span>
                             <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Tier 1</span>
                           </div>
                           <div className="grid grid-cols-3 gap-1.5">
@@ -2737,45 +2761,52 @@ function StudioMain() {
                                 { id: 'infographic', icon: '📊', title: 'Infographic', badge: '15' },
                               ] as const
                             ).map((mode) => {
-                              const isActive = selectedDiagramMode === mode.id;
+                              const isActive = selectedDiagramMode === mode.id && isFlowTreeTier2Open;
+                              const activateRootMode = () => {
+                                const modeChanged = selectedDiagramMode !== mode.id;
+                                setSelectedDiagramMode(mode.id);
+                                setIsFlowTreeTier2Open(true);
+                                if (modeChanged) {
+                                  setIsFlowTreeTier3Open(false);
+                                }
+                                if (mode.id === 'blueprint') {
+                                  const bpId =
+                                    selectedBlueprintId === 'custom' || Number(selectedBlueprintId) >= 52
+                                      ? '01'
+                                      : selectedBlueprintId;
+                                  const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
+                                  handleSelectBlueprint(bp, selectedDomain);
+                                } else if (mode.id === 'infographic') {
+                                  setXml(
+                                    generateInfographicBlueprintXmlById(
+                                      selectedInfographicBlueprintId,
+                                      promptInput.trim() || undefined,
+                                      undefined,
+                                      selectedAbstractionLevel
+                                    )
+                                  );
+                                  setSelectedBlueprintId(selectedInfographicBlueprintId);
+                                } else {
+                                  setXml(
+                                    generateLogicalFlowchartDrawioXml(
+                                      promptInput.trim(),
+                                      promptInput.trim() || undefined,
+                                      selectedFlowDirection,
+                                      selectedAbstractionLevel
+                                    )
+                                  );
+                                  setSelectedBlueprintId('custom');
+                                }
+                              };
                               return (
                                 <button
                                   key={mode.id}
                                   id={`mode-btn-${mode.id}`}
                                   type="button"
-                                  onClick={() => {
-                                    setSelectedDiagramMode(mode.id);
-                                    if (mode.id === 'blueprint') {
-                                      const bpId =
-                                        selectedBlueprintId === 'custom' || Number(selectedBlueprintId) >= 52
-                                          ? '01'
-                                          : selectedBlueprintId;
-                                      const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
-                                      handleSelectBlueprint(bp, selectedDomain);
-                                    } else if (mode.id === 'infographic') {
-                                      setXml(
-                                        generateInfographicBlueprintXmlById(
-                                          selectedInfographicBlueprintId,
-                                          promptInput.trim() || undefined,
-                                          undefined,
-                                          selectedAbstractionLevel
-                                        )
-                                      );
-                                      setSelectedBlueprintId(selectedInfographicBlueprintId);
-                                    } else {
-                                      setXml(
-                                        generateLogicalFlowchartDrawioXml(
-                                          promptInput.trim(),
-                                          promptInput.trim() || undefined,
-                                          selectedFlowDirection,
-                                          selectedAbstractionLevel
-                                        )
-                                      );
-                                      setSelectedBlueprintId('custom');
-                                    }
-                                  }}
+                                  onMouseEnter={activateRootMode}
+                                  onClick={activateRootMode}
                                   className={`px-2 py-2 rounded-lg border text-center transition cursor-pointer relative flex flex-col items-center justify-center gap-0.5 ${
-                                    isActive
+                                    selectedDiagramMode === mode.id
                                       ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
                                       : 'bg-slate-50/80 hover:bg-blue-50/70 text-slate-800 border-slate-200'
                                   }`}
@@ -2786,7 +2817,7 @@ function StudioMain() {
                                   </span>
                                   <span
                                     className={`text-[8.5px] font-mono px-1.5 py-0.2 rounded font-bold ${
-                                      isActive ? 'bg-blue-500 text-white' : 'bg-slate-200/80 text-slate-600'
+                                      selectedDiagramMode === mode.id ? 'bg-blue-500 text-white' : 'bg-slate-200/80 text-slate-600'
                                     }`}
                                   >
                                     {mode.badge}
@@ -2798,154 +2829,197 @@ function StudioMain() {
                               );
                             })}
                           </div>
-                        </div>
-
-                        {/* VERTICAL TOP-DOWN CONNECTOR ARROW 1 (Tier 1 ▼ Tier 2) */}
-                        <div className="flex flex-col items-center justify-center py-0.5 select-none">
-                          <svg className="w-4 h-4 text-blue-600" viewBox="0 0 16 16" fill="none">
-                            <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-
-                        {/* TIER 2 (MIDDLE): 2. BRANCH & ABSTRACTION LEVEL */}
-                        <div className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs">
-                          <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400">
-                              {selectedDiagramMode === 'blueprint'
-                                ? '2. Select Reference Blueprint (51)'
-                                : selectedDiagramMode === 'infographic'
-                                ? '2. Select Infographic Template (15)'
-                                : '2. Abstraction Level & Flow Direction'}
-                            </span>
-                            {selectedDiagramMode !== 'flowchart' ? (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  setIsFlowTreeOpen(false);
-                                  setIsCatalogOpen(true);
-                                }}
-                                className="text-[9.5px] font-bold text-blue-600 hover:underline cursor-pointer"
-                              >
-                                Full Gallery (66) ↗
-                              </button>
-                            ) : (
-                              <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-bold">
-                                Tier 2
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Segmented Pill Bar for Abstraction Level (L1..L4) + LR/TD */}
-                          {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
-                            <div className="flex items-center justify-between gap-1 bg-slate-100 p-1 rounded-lg mb-2">
-                              <div className="flex items-center gap-0.5">
-                                {(['L1', 'L2', 'L3', 'L4'] as const).map((lvl) => (
-                                  <button
-                                    key={lvl}
-                                    id={`level-btn-${lvl}`}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedAbstractionLevel(lvl);
-                                      if (selectedDiagramMode === 'infographic') {
-                                        setXml(
-                                          generateInfographicBlueprintXmlById(
-                                            selectedInfographicBlueprintId,
-                                            promptInput.trim() || undefined,
-                                            undefined,
-                                            lvl
-                                          )
-                                        );
-                                      } else if (selectedDiagramMode === 'flowchart') {
-                                        setXml(
-                                          generateLogicalFlowchartDrawioXml(
-                                            promptInput.trim(),
-                                            promptInput.trim() || undefined,
-                                            selectedFlowDirection,
-                                            lvl
-                                          )
-                                        );
-                                      }
-                                    }}
-                                    className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer ${
-                                      selectedAbstractionLevel === lvl
-                                        ? 'bg-slate-900 text-white shadow-2xs'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                                  >
-                                    {lvl}
-                                  </button>
-                                ))}
-                              </div>
-
-                              {selectedDiagramMode === 'flowchart' && (
-                                <div className="flex items-center gap-0.5 border-l border-slate-300 pl-1.5">
-                                  <button
-                                    id="direction-btn-lr"
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedFlowDirection('LR');
-                                      setXml(
-                                        generateLogicalFlowchartDrawioXml(
-                                          promptInput.trim(),
-                                          promptInput.trim() || undefined,
-                                          'LR',
-                                          selectedAbstractionLevel
-                                        )
-                                      );
-                                    }}
-                                    className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
-                                      selectedFlowDirection === 'LR'
-                                        ? 'bg-blue-600 text-white shadow-2xs'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                                  >
-                                    ➡️ LR
-                                  </button>
-                                  <button
-                                    id="direction-btn-td"
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedFlowDirection('TD');
-                                      setXml(
-                                        generateLogicalFlowchartDrawioXml(
-                                          promptInput.trim(),
-                                          promptInput.trim() || undefined,
-                                          'TD',
-                                          selectedAbstractionLevel
-                                        )
-                                      );
-                                    }}
-                                    className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
-                                      selectedFlowDirection === 'TD'
-                                        ? 'bg-blue-600 text-white shadow-2xs'
-                                        : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                                  >
-                                    ⬇️ TD
-                                  </button>
-                                </div>
-                              )}
+                          {!isFlowTreeTier2Open && (
+                            <div
+                              id="flow-tree-tier1-hint"
+                              className="mt-2 pt-1.5 border-t border-dashed border-slate-200 text-center text-[9.5px] font-bold text-blue-600 flex items-center justify-center gap-1"
+                            >
+                              <span>Hover any Root Family above to expand Tier 2 Selection</span>
+                              <span>▾</span>
                             </div>
                           )}
+                        </div>
 
-                          {/* Compact Scrollable Branch List */}
-                          <div className="max-h-[135px] overflow-y-auto space-y-1 pr-1">
-                            {selectedDiagramMode === 'infographic' &&
-                              INFOGRAPHIC_BLUEPRINTS_LIST.filter((ib) =>
-                                !flowTreeSearchQuery.trim()
-                                  ? true
-                                  : `${ib.id} ${ib.shortType} ${ib.name}`
-                                      .toLowerCase()
-                                      .includes(flowTreeSearchQuery.toLowerCase())
-                              ).map((ib, idx) => {
-                                const isSelected = selectedInfographicBlueprintId === ib.id;
-                                return (
+                        {/* TIER 2 (MIDDLE): Progressive Expansion on Tier 1 Hover */}
+                        {isFlowTreeTier2Open && (
+                          <>
+                            {/* VERTICAL TOP-DOWN CONNECTOR ARROW 1 (Tier 1 ▼ Tier 2) */}
+                            <div className="flex flex-col items-center justify-center py-0.5 select-none animate-in fade-in duration-150">
+                              <svg className="w-4 h-4 text-blue-600" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </div>
+
+                            <div
+                              id="flow-tree-tier-2"
+                              className="rounded-xl border border-slate-200 bg-white p-2.5 shadow-2xs animate-in fade-in slide-in-from-top-1 duration-150"
+                            >
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-400">
+                                  {selectedDiagramMode === 'blueprint'
+                                    ? '2. Select Reference Blueprint (59)'
+                                    : selectedDiagramMode === 'infographic'
+                                    ? '2. Select Infographic Template (15)'
+                                    : '2. Abstraction Level & Saved Flow Blueprints (#67–#74)'}
+                                </span>
+                                {selectedDiagramMode !== 'flowchart' ? (
                                   <button
-                                    key={ib.id}
                                     type="button"
                                     onClick={() => {
+                                      setIsFlowTreeOpen(false);
+                                      setIsCatalogOpen(true);
+                                    }}
+                                    className="text-[9.5px] font-bold text-blue-600 hover:underline cursor-pointer"
+                                  >
+                                    Full Gallery (74) ↗
+                                  </button>
+                                ) : (
+                                  <span className="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 font-bold">
+                                    Tier 2 • #67–#74
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Segmented Pill Bar for Abstraction Level (L1..L4) + LR/TD */}
+                              {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
+                                <div className="flex items-center justify-between gap-1 bg-slate-100 p-1 rounded-lg mb-2">
+                                  <div className="flex items-center gap-0.5">
+                                    {(['L1', 'L2', 'L3', 'L4'] as const).map((lvl) => {
+                                      const selectLevel = () => {
+                                        setSelectedAbstractionLevel(lvl);
+                                        setIsFlowTreeTier3Open(true);
+                                        if (selectedDiagramMode === 'infographic') {
+                                          setXml(
+                                            generateInfographicBlueprintXmlById(
+                                              selectedInfographicBlueprintId,
+                                              promptInput.trim() || undefined,
+                                              undefined,
+                                              lvl
+                                            )
+                                          );
+                                        } else if (selectedDiagramMode === 'flowchart') {
+                                          setXml(
+                                            generateLogicalFlowchartDrawioXml(
+                                              promptInput.trim(),
+                                              promptInput.trim() || undefined,
+                                              selectedFlowDirection,
+                                              lvl
+                                            )
+                                          );
+                                        }
+                                      };
+                                      return (
+                                        <button
+                                          key={lvl}
+                                          id={`level-btn-${lvl}`}
+                                          type="button"
+                                          onMouseEnter={selectLevel}
+                                          onClick={selectLevel}
+                                          className={`px-2.5 py-0.5 rounded-md text-[10px] font-extrabold transition cursor-pointer ${
+                                            selectedAbstractionLevel === lvl
+                                              ? 'bg-slate-900 text-white shadow-2xs'
+                                              : 'text-slate-600 hover:text-slate-900'
+                                          }`}
+                                          title={`Switch to ${lvl} progressive technical detail`}
+                                        >
+                                          {lvl}
+                                        </button>
+                                      );
+                                    })}
+                                  </div>
+
+                                  {selectedDiagramMode === 'flowchart' && (
+                                    <div className="flex items-center gap-0.5 border-l border-slate-300 pl-1.5">
+                                      <button
+                                        id="direction-btn-lr"
+                                        type="button"
+                                        onMouseEnter={() => {
+                                          setSelectedFlowDirection('LR');
+                                          setIsFlowTreeTier3Open(true);
+                                          setXml(
+                                            generateLogicalFlowchartDrawioXml(
+                                              promptInput.trim(),
+                                              promptInput.trim() || undefined,
+                                              'LR',
+                                              selectedAbstractionLevel
+                                            )
+                                          );
+                                        }}
+                                        onClick={() => {
+                                          setSelectedFlowDirection('LR');
+                                          setIsFlowTreeTier3Open(true);
+                                          setXml(
+                                            generateLogicalFlowchartDrawioXml(
+                                              promptInput.trim(),
+                                              promptInput.trim() || undefined,
+                                              'LR',
+                                              selectedAbstractionLevel
+                                            )
+                                          );
+                                        }}
+                                        className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
+                                          selectedFlowDirection === 'LR'
+                                            ? 'bg-blue-600 text-white shadow-2xs'
+                                            : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                      >
+                                        ➡️ LR
+                                      </button>
+                                      <button
+                                        id="direction-btn-td"
+                                        type="button"
+                                        onMouseEnter={() => {
+                                          setSelectedFlowDirection('TD');
+                                          setIsFlowTreeTier3Open(true);
+                                          setXml(
+                                            generateLogicalFlowchartDrawioXml(
+                                              promptInput.trim(),
+                                              promptInput.trim() || undefined,
+                                              'TD',
+                                              selectedAbstractionLevel
+                                            )
+                                          );
+                                        }}
+                                        onClick={() => {
+                                          setSelectedFlowDirection('TD');
+                                          setIsFlowTreeTier3Open(true);
+                                          setXml(
+                                            generateLogicalFlowchartDrawioXml(
+                                              promptInput.trim(),
+                                              promptInput.trim() || undefined,
+                                              'TD',
+                                              selectedAbstractionLevel
+                                            )
+                                          );
+                                        }}
+                                        className={`px-2 py-0.5 rounded-md text-[9.5px] font-extrabold transition cursor-pointer ${
+                                          selectedFlowDirection === 'TD'
+                                            ? 'bg-blue-600 text-white shadow-2xs'
+                                            : 'text-slate-600 hover:text-slate-900'
+                                        }`}
+                                      >
+                                        ⬇️ TD
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Compact Scrollable Branch List */}
+                              <div className="max-h-[185px] overflow-y-auto space-y-1 pr-1">
+                                {selectedDiagramMode === 'infographic' &&
+                                  INFOGRAPHIC_BLUEPRINTS_LIST.filter((ib) =>
+                                    !flowTreeSearchQuery.trim()
+                                      ? true
+                                      : `${ib.id} ${ib.shortType} ${ib.name}`
+                                          .toLowerCase()
+                                          .includes(flowTreeSearchQuery.toLowerCase())
+                                  ).map((ib, idx) => {
+                                    const isSelected = selectedInfographicBlueprintId === ib.id;
+                                    const activateInfographicItem = () => {
                                       setSelectedInfographicBlueprintId(ib.id);
                                       setSelectedBlueprintId(ib.id);
+                                      setIsFlowTreeTier3Open(true);
                                       setXml(
                                         generateInfographicBlueprintXmlById(
                                           ib.id,
@@ -2954,293 +3028,437 @@ function StudioMain() {
                                           selectedAbstractionLevel
                                         )
                                       );
-                                    }}
-                                    className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
-                                      isSelected
-                                        ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
-                                        : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
-                                    }`}
-                                  >
-                                    <span className="text-[10.5px] truncate">
-                                      {idx + 1}. {ib.shortType}
-                                    </span>
-                                    <span
-                                      className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
-                                        isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
-                                      }`}
-                                    >
-                                      #{ib.id}
-                                    </span>
-                                  </button>
-                                );
-                              })}
-
-                            {selectedDiagramMode === 'blueprint' &&
-                              CANONICAL_TEMPLATES.filter((bp) => bp.family !== 'Infographic')
-                                .filter((bp) =>
-                                  !flowTreeSearchQuery.trim()
-                                    ? true
-                                    : `${bp.id} ${bp.name} ${bp.family}`
-                                        .toLowerCase()
-                                        .includes(flowTreeSearchQuery.toLowerCase())
-                                )
-                                .map((bp) => {
-                                  const activeBpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
-                                  const isSelected = activeBpId === bp.id;
-                                  return (
-                                    <button
-                                      key={bp.id}
-                                      type="button"
-                                      onClick={() => {
-                                        setSelectedBlueprintId(bp.id);
-                                        handleSelectBlueprint(bp, selectedDomain);
-                                      }}
-                                      className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
-                                        isSelected
-                                          ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
-                                          : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
-                                      }`}
-                                    >
-                                      <span className="text-[10.5px] truncate">{bp.name}</span>
-                                      <span
-                                        className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
-                                          isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
+                                    };
+                                    return (
+                                      <button
+                                        key={ib.id}
+                                        id={`infographic-tier2-${ib.id}`}
+                                        type="button"
+                                        onMouseEnter={activateInfographicItem}
+                                        onClick={activateInfographicItem}
+                                        className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
+                                          isSelected
+                                            ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
+                                            : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
                                         }`}
                                       >
-                                        #{bp.id}
-                                      </span>
-                                    </button>
-                                  );
-                                })}
+                                        <span className="text-[10.5px] truncate">
+                                          {idx + 1}. {ib.shortType}
+                                        </span>
+                                        <span
+                                          className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
+                                            isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
+                                          }`}
+                                        >
+                                          #{ib.id} • {selectedAbstractionLevel}
+                                        </span>
+                                      </button>
+                                    );
+                                  })}
 
-                            {selectedDiagramMode === 'flowchart' &&
-                              (
-                                [
-                                  {
-                                    id: 'L1',
-                                    title: 'L1 • Executive Conceptual Flow',
-                                    desc: '4-stage high-level value stream with primary milestones',
-                                  },
-                                  {
-                                    id: 'L2',
-                                    title: 'L2 • Logical Decision Flowchart',
-                                    desc: 'Swimlanes, diamond decision gates & SLA retry loops',
-                                  },
-                                  {
-                                    id: 'L3',
-                                    title: 'L3 • Technical API & Event Mesh',
-                                    desc: 'Synchronous REST/gRPC, Pub/Sub CDC & payload contracts',
-                                  },
-                                  {
-                                    id: 'L4',
-                                    title: 'L4 • Production Multi-Region HA',
-                                    desc: 'Zero-trust VPC-SC, Spanner nam3 quorum & failover paths',
-                                  },
-                                ] as const
-                              ).map((item) => {
-                                const isSelected = selectedAbstractionLevel === item.id;
-                                return (
-                                  <button
-                                    key={item.id}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedAbstractionLevel(item.id);
-                                      setXml(
-                                        generateLogicalFlowchartDrawioXml(
-                                          promptInput.trim(),
-                                          promptInput.trim() || undefined,
-                                          selectedFlowDirection,
-                                          item.id
-                                        )
+                                {selectedDiagramMode === 'blueprint' &&
+                                  CANONICAL_TEMPLATES.filter((bp) => bp.family !== 'Infographic')
+                                    .filter((bp) =>
+                                      !flowTreeSearchQuery.trim()
+                                        ? true
+                                        : `${bp.id} ${bp.name} ${bp.family}`
+                                            .toLowerCase()
+                                            .includes(flowTreeSearchQuery.toLowerCase())
+                                    )
+                                    .map((bp) => {
+                                      const activeBpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
+                                      const isSelected = activeBpId === bp.id;
+                                      return (
+                                        <button
+                                          key={bp.id}
+                                          id={`blueprint-tier2-${bp.id}`}
+                                          type="button"
+                                          onMouseEnter={() => {
+                                            setSelectedBlueprintId(bp.id);
+                                            setIsFlowTreeTier3Open(true);
+                                            handleSelectBlueprint(bp, selectedDomain);
+                                          }}
+                                          onClick={() => {
+                                            setSelectedBlueprintId(bp.id);
+                                            setIsFlowTreeTier3Open(true);
+                                            handleSelectBlueprint(bp, selectedDomain);
+                                          }}
+                                          className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
+                                            isSelected
+                                              ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
+                                              : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
+                                          }`}
+                                        >
+                                          <span className="text-[10.5px] truncate">{bp.name}</span>
+                                          <span
+                                            className={`text-[9px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
+                                              isSelected ? 'bg-blue-700 text-blue-100' : 'bg-white text-slate-500'
+                                            }`}
+                                          >
+                                            #{bp.id}
+                                          </span>
+                                        </button>
                                       );
-                                      setSelectedBlueprintId('custom');
-                                    }}
-                                    className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer ${
-                                      isSelected
-                                        ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                                        : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200'
-                                    }`}
-                                  >
-                                    <div className="text-[10.5px] font-extrabold">{item.title}</div>
-                                    <div className={`text-[9px] ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
-                                      {item.desc}
+                                    })}
+
+                                {selectedDiagramMode === 'flowchart' && (
+                                  <>
+                                    {(
+                                      [
+                                        {
+                                          id: 'L1',
+                                          title: 'L1 • Google Cloud Executive Value Stream',
+                                          desc: '3 Swimlanes • Gemini App • Apigee • Vertex AI & Cylinder Stores',
+                                          badge: '5 Nodes',
+                                        },
+                                        {
+                                          id: 'L2',
+                                          title: 'L2 • Google Cloud Policy Gate & ADK Mesh',
+                                          desc: '5 Swimlanes • ◇ Apigee Rhombus • SIEM • Redis & Pub/Sub DLQ',
+                                          badge: '10 Nodes',
+                                        },
+                                        {
+                                          id: 'L3',
+                                          title: 'L3 • Google Cloud 7-Layer Operational Flow',
+                                          desc: '7 Swimlanes • DNS/WAF/GSLB • KMS • Chunking/Embedding • BigQuery',
+                                          badge: '15 Nodes',
+                                        },
+                                        {
+                                          id: 'L4',
+                                          title: 'L4 • Google Cloud Agentic AI Mesh (#67)',
+                                          desc: '7 Swimlanes • 20 Product Icons • Agent Designer • ADK 2.0 • Deep Research',
+                                          badge: '20 Nodes',
+                                        },
+                                      ] as const
+                                    ).map((item) => {
+                                      const isSelected = selectedAbstractionLevel === item.id && selectedBlueprintId === 'custom';
+                                      const activateFlowchartLevel = () => {
+                                        setSelectedAbstractionLevel(item.id);
+                                        setIsFlowTreeTier3Open(true);
+                                        setXml(
+                                          generateLogicalFlowchartDrawioXml(
+                                            promptInput.trim(),
+                                            promptInput.trim() || undefined,
+                                            selectedFlowDirection,
+                                            item.id
+                                          )
+                                        );
+                                        setSelectedBlueprintId('custom');
+                                      };
+                                      return (
+                                        <button
+                                          key={item.id}
+                                          id={`flowchart-tier2-${item.id}`}
+                                          type="button"
+                                          onMouseEnter={activateFlowchartLevel}
+                                          onClick={activateFlowchartLevel}
+                                          className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer ${
+                                            isSelected
+                                              ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                                              : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200'
+                                          }`}
+                                        >
+                                          <div className="flex items-center justify-between gap-1">
+                                            <span className="text-[10.5px] font-extrabold">{item.title}</span>
+                                            <span
+                                              className={`text-[8.5px] font-mono px-1.5 py-0.2 rounded font-bold shrink-0 ${
+                                                isSelected ? 'bg-blue-700 text-blue-100' : 'bg-slate-200/80 text-slate-600'
+                                              }`}
+                                            >
+                                              {item.badge}
+                                            </span>
+                                          </div>
+                                          <div className={`text-[9px] ${isSelected ? 'text-blue-100' : 'text-slate-500'}`}>
+                                            {item.desc}
+                                          </div>
+                                        </button>
+                                      );
+                                    })}
+
+                                    <div className="pt-1 pb-0.5 px-1 text-[8.5px] font-extrabold uppercase tracking-wider text-slate-400">
+                                      Saved Flow Diagram Blueprints (#67–#74)
                                     </div>
-                                  </button>
-                                );
-                              })}
-                          </div>
-                        </div>
+                                    {FLOW_DIAGRAM_BLUEPRINTS_67_TO_74.map((fb) => {
+                                      const isSelected = selectedBlueprintId === fb.id;
+                                      const activateFlowBlueprint = () => {
+                                        setSelectedBlueprintId(fb.id);
+                                        setIsFlowTreeTier3Open(true);
+                                        setXml(generateFlowDiagramBlueprintXmlById(fb.id));
+                                      };
+                                      return (
+                                        <button
+                                          key={fb.id}
+                                          id={`flowchart-blueprint-${fb.id}`}
+                                          type="button"
+                                          onMouseEnter={activateFlowBlueprint}
+                                          onClick={activateFlowBlueprint}
+                                          className={`w-full text-left px-2.5 py-1.5 rounded-lg border transition cursor-pointer flex items-center justify-between gap-1.5 ${
+                                            isSelected
+                                              ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-2xs'
+                                              : 'bg-slate-50/70 hover:bg-blue-50/60 text-slate-800 border-slate-200/80 font-semibold'
+                                          }`}
+                                        >
+                                          <span className="text-[10px] truncate">{fb.shortType}</span>
+                                          <span
+                                            className={`text-[8.5px] font-mono px-1.5 py-0.2 rounded shrink-0 ${
+                                              isSelected
+                                                ? 'bg-blue-700 text-blue-100'
+                                                : fb.theme === 'dark'
+                                                ? 'bg-slate-800 text-slate-100'
+                                                : 'bg-white text-slate-500'
+                                            }`}
+                                          >
+                                            #{fb.id} • {fb.theme === 'dark' ? 'Dark' : 'Light'}
+                                          </span>
+                                        </button>
+                                      );
+                                    })}
+                                  </>
+                                )}
+                              </div>
 
-                        {/* VERTICAL TOP-DOWN CONNECTOR ARROW 2 (Tier 2 ▼ Tier 3 Leaf) */}
-                        <div className="flex flex-col items-center justify-center py-0.5 select-none">
-                          <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 16 16" fill="none">
-                            <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-
-                        {/* TIER 3 (BOTTOM): 3. LEAF PREVIEW & 1-CLICK ACTION DOCK */}
-                        <div className="rounded-xl border-2 border-emerald-500/80 bg-gradient-to-b from-white to-emerald-50/40 p-2.5 shadow-xs">
-                          <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center justify-between">
-                            <span>3. Leaf Preview & Initiate Action</span>
-                            <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-600 text-white rounded font-mono">
-                              Synced Live ✓
-                            </span>
-                          </div>
-
-                          {/* Compact Horizontal Thumbnail + Metadata Row */}
-                          <div className="flex items-center gap-2.5 p-1.5 rounded-lg border border-slate-200 bg-white mb-2">
-                            <div className="relative w-[110px] h-[62px] rounded border border-slate-200 overflow-hidden bg-slate-100 shrink-0 flex items-center justify-center">
-                              {selectedDiagramMode === 'infographic' ? (
-                                <img
-                                  src={`/templates/${selectedInfographicBlueprintId}.png`}
-                                  alt={`Infographic #${selectedInfographicBlueprintId}`}
-                                  className="w-full h-full object-cover object-top"
-                                />
-                              ) : selectedDiagramMode === 'blueprint' ? (
-                                <img
-                                  src={`/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`}
-                                  alt={`Blueprint #${selectedBlueprintId}`}
-                                  className="w-full h-full object-cover object-top"
-                                  onError={(e) => {
-                                    (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
-                                  }}
-                                />
-                              ) : (
-                                <div className="flex items-center gap-1 text-[9px] font-mono font-extrabold text-blue-700 bg-blue-50/80 w-full h-full justify-center">
-                                  <span className="px-1 py-0.5 bg-white rounded border border-blue-200">In</span>
-                                  <span>{selectedFlowDirection === 'LR' ? '→' : '↓'}</span>
-                                  <span className="px-1 py-0.5 bg-amber-50 rounded border border-amber-300 text-amber-800">◇</span>
-                                  <span>{selectedFlowDirection === 'LR' ? '→' : '↓'}</span>
-                                  <span className="px-1 py-0.5 bg-emerald-50 rounded border border-emerald-300 text-emerald-800">✓</span>
+                              {!isFlowTreeTier3Open && (
+                                <div
+                                  id="flow-tree-tier2-hint"
+                                  className="mt-2 pt-1.5 border-t border-dashed border-slate-200 text-center text-[9.5px] font-bold text-emerald-700 flex items-center justify-center gap-1"
+                                >
+                                  <span>Hover any option above to expand Tier 3 Leaf Preview</span>
+                                  <span>▾</span>
                                 </div>
                               )}
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <div className="text-[11px] font-extrabold text-slate-900 truncate">
-                                {selectedDiagramMode === 'blueprint'
-                                  ? `📚 Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
-                                  : selectedDiagramMode === 'infographic'
-                                  ? `📊 #${selectedInfographicBlueprintId} • ${
-                                      INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.shortType || 'Infographic'
-                                    }`
-                                  : `🔀 Flowchart • ${selectedAbstractionLevel} (${selectedFlowDirection})`}
-                              </div>
-                              <div className="text-[9.5px] text-slate-500 truncate mt-0.5">
-                                {selectedDiagramMode === 'blueprint'
-                                  ? CANONICAL_TEMPLATES.find((t) => t.id === (selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId))?.name
-                                  : selectedDiagramMode === 'infographic'
-                                  ? `Abstraction Level ${selectedAbstractionLevel} • 16:9 Vector XML`
-                                  : `${selectedFlowDirection === 'LR' ? 'Left-to-Right' : 'Top-Down'} • Swimlanes & Decision Gates`}
-                              </div>
-                              <div className="mt-1 flex items-center gap-1">
-                                <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
-                                  16:9 Draw.io XML
-                                </span>
-                                <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
-                                  {selectedAbstractionLevel}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                          </>
+                        )}
 
-                          {/* 3 Clickable Leaf Action Buttons */}
-                          <div className="space-y-1.5">
-                            <div className="grid grid-cols-2 gap-1.5">
-                              <button
-                                id="leaf-action-view-btn"
-                                type="button"
-                                onClick={() => {
-                                  if (selectedDiagramMode === 'blueprint') {
-                                    const bpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
-                                    const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
-                                    handleSelectBlueprint(bp, selectedDomain);
-                                  } else if (selectedDiagramMode === 'infographic') {
-                                    setXml(
-                                      generateInfographicBlueprintXmlById(
-                                        selectedInfographicBlueprintId,
-                                        promptInput.trim() || undefined,
-                                        undefined,
-                                        selectedAbstractionLevel
-                                      )
-                                    );
-                                    setSelectedBlueprintId(selectedInfographicBlueprintId);
-                                  } else {
-                                    setXml(
-                                      generateLogicalFlowchartDrawioXml(
-                                        promptInput.trim(),
-                                        promptInput.trim() || undefined,
-                                        selectedFlowDirection,
-                                        selectedAbstractionLevel
-                                      )
-                                    );
-                                    setSelectedBlueprintId('custom');
-                                  }
-                                  setIsNewDiagramDraft(false);
-                                  setIsInlineDrawioEdit(false);
-                                  setIsFlowTreeOpen(false);
-                                }}
-                                className="px-2.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-[10.5px] shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
-                              >
-                                <span>👁️ View Canvas</span>
-                              </button>
-
-                              <button
-                                id="leaf-action-edit-btn"
-                                type="button"
-                                onClick={() => {
-                                  let nextXml = xml;
-                                  if (selectedDiagramMode === 'blueprint') {
-                                    const bpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
-                                    const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
-                                    handleSelectBlueprint(bp, selectedDomain);
-                                  } else if (selectedDiagramMode === 'infographic') {
-                                    nextXml = generateInfographicBlueprintXmlById(
-                                      selectedInfographicBlueprintId,
-                                      promptInput.trim() || undefined,
-                                      undefined,
-                                      selectedAbstractionLevel
-                                    );
-                                    setXml(nextXml);
-                                    setSelectedBlueprintId(selectedInfographicBlueprintId);
-                                  } else {
-                                    nextXml = generateLogicalFlowchartDrawioXml(
-                                      promptInput.trim(),
-                                      promptInput.trim() || undefined,
-                                      selectedFlowDirection,
-                                      selectedAbstractionLevel
-                                    );
-                                    setXml(nextXml);
-                                    setSelectedBlueprintId('custom');
-                                  }
-                                  latestInlineXmlRef.current = nextXml;
-                                  setIsNewDiagramDraft(false);
-                                  setIsInlineDrawioEdit(true);
-                                  setIsFlowTreeOpen(false);
-                                }}
-                                className="px-2.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-[10.5px] shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
-                              >
-                                <span>✎ Edit Draw.io</span>
-                              </button>
+                        {/* TIER 3 (BOTTOM): Progressive Expansion on Tier 2 Hover */}
+                        {isFlowTreeTier2Open && isFlowTreeTier3Open && (
+                          <>
+                            {/* VERTICAL TOP-DOWN CONNECTOR ARROW 2 (Tier 2 ▼ Tier 3 Leaf) */}
+                            <div className="flex flex-col items-center justify-center py-0.5 select-none animate-in fade-in duration-150">
+                              <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 1V14M8 14L4 10M8 14L12 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
                             </div>
 
-                            <button
-                              id="leaf-action-create-new-btn"
-                              type="button"
-                              onClick={() => {
-                                handleOpenNewTab();
-                                setIsFlowTreeOpen(false);
-                                setTimeout(() => {
-                                  const el = document.getElementById('studio-copilot-prompt-input') as HTMLTextAreaElement | null;
-                                  if (el) el.focus();
-                                }, 120);
-                              }}
-                              className="w-full px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] shadow-xs transition cursor-pointer flex items-center justify-between"
+                            <div
+                              id="flow-tree-tier-3"
+                              className="rounded-xl border-2 border-emerald-500/80 bg-gradient-to-b from-white to-emerald-50/40 p-2.5 shadow-xs animate-in fade-in slide-in-from-top-1 duration-150"
                             >
-                              <span>➕ Create New Diagram from Leaf</span>
-                              <span className="text-[9px] font-mono bg-emerald-700/80 px-1.5 py-0.5 rounded">Draft → v1.0</span>
-                            </button>
-                          </div>
-                        </div>
+                              <div className="text-[9.5px] font-extrabold uppercase tracking-wider text-emerald-800 mb-1.5 flex items-center justify-between">
+                                <span>3. Leaf Preview & Initiate Action</span>
+                                <span className="text-[8.5px] px-1.5 py-0.2 bg-emerald-600 text-white rounded font-mono">
+                                  Synced Live ✓
+                                </span>
+                              </div>
+
+                              {/* Compact Horizontal Thumbnail + Progressive Technical Metadata Row */}
+                              <div className="flex items-center gap-2.5 p-1.5 rounded-lg border border-slate-200 bg-white mb-2">
+                                <div className="relative w-[116px] h-[66px] rounded border border-slate-200 overflow-hidden bg-slate-100 shrink-0 flex items-center justify-center">
+                                  {selectedDiagramMode === 'infographic' ? (
+                                    <img
+                                      src={`/templates/${selectedInfographicBlueprintId}.png`}
+                                      alt={`Infographic #${selectedInfographicBlueprintId}`}
+                                      className="w-full h-full object-cover object-top"
+                                    />
+                                  ) : selectedDiagramMode === 'blueprint' ? (
+                                    <img
+                                      src={`/images/${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}.png`}
+                                      alt={`Blueprint #${selectedBlueprintId}`}
+                                      className="w-full h-full object-cover object-top"
+                                      onError={(e) => {
+                                        (e.currentTarget as HTMLImageElement).src = '/templates/52.png';
+                                      }}
+                                    />
+                                  ) : selectedAbstractionLevel === 'L1' ? (
+                                    <div className="flex flex-col items-center justify-center gap-1 w-full h-full bg-blue-50/90 px-1.5 py-1 text-[8px] font-mono font-bold text-blue-900">
+                                      <div className="text-[7.5px] uppercase tracking-wider text-blue-600">L1 • 4 Linear Stages</div>
+                                      <div className="flex items-center gap-0.5">
+                                        <span className="px-1 py-0.5 bg-white rounded border border-blue-300">01</span>
+                                        <span>→</span>
+                                        <span className="px-1 py-0.5 bg-white rounded border border-indigo-300">02</span>
+                                        <span>→</span>
+                                        <span className="px-1 py-0.5 bg-white rounded border border-purple-300">03</span>
+                                        <span>→</span>
+                                        <span className="px-1 py-0.5 bg-emerald-100 rounded border border-emerald-400">04</span>
+                                      </div>
+                                    </div>
+                                  ) : selectedAbstractionLevel === 'L2' ? (
+                                    <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full bg-amber-50/80 px-1.5 py-1 text-[8px] font-mono font-bold text-slate-800">
+                                      <div className="text-[7.5px] uppercase tracking-wider text-amber-800">L2 • 2 Lanes + ◇ Gates</div>
+                                      <div className="flex items-center gap-0.5">
+                                        <span className="px-1 bg-white rounded border border-blue-300">In</span>
+                                        <span>→</span>
+                                        <span className="px-1 bg-amber-100 rounded border border-amber-400 text-amber-900">◇1</span>
+                                        <span>→</span>
+                                        <span className="px-1 bg-amber-100 rounded border border-amber-400 text-amber-900">◇2</span>
+                                        <span>→</span>
+                                        <span className="px-1 bg-emerald-100 rounded border border-emerald-400">✓</span>
+                                      </div>
+                                      <div className="text-[7px] text-rose-700 bg-rose-100/80 px-1 rounded">↻ DLQ Retry Loop</div>
+                                    </div>
+                                  ) : selectedAbstractionLevel === 'L3' ? (
+                                    <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full bg-indigo-50/90 px-1 py-1 text-[7.5px] font-mono font-bold text-indigo-950">
+                                      <div className="text-[7px] uppercase tracking-wider text-indigo-700">L3 • API + Redis + CDC</div>
+                                      <div className="flex items-center gap-0.5">
+                                        <span className="px-1 bg-white rounded border border-blue-300">GW</span>
+                                        <span>→</span>
+                                        <span className="px-1 bg-purple-100 rounded border border-purple-300">GKE</span>
+                                        <span>↔</span>
+                                        <span className="px-1 bg-emerald-100 rounded border border-emerald-400">Redis</span>
+                                      </div>
+                                      <div className="text-[7px] text-amber-800 bg-amber-100 px-1 rounded">Pub/Sub CDC → OTel</div>
+                                    </div>
+                                  ) : (
+                                    <div className="flex flex-col items-center justify-center gap-0.5 w-full h-full bg-slate-900 px-1 py-1 text-[7.5px] font-mono font-bold text-white">
+                                      <div className="text-[7px] uppercase tracking-wider text-emerald-300">L4 • Multi-Region HA</div>
+                                      <div className="flex items-center gap-0.5">
+                                        <span className="px-1 bg-blue-900 rounded border border-blue-400">us-c1</span>
+                                        <span>⇄</span>
+                                        <span className="px-1 bg-purple-900 rounded border border-purple-400">nam3</span>
+                                        <span>⇄</span>
+                                        <span className="px-1 bg-amber-900 rounded border border-amber-400">us-e4</span>
+                                      </div>
+                                      <div className="text-[7px] text-sky-300">VPC-SC • KMS HSM • &lt;3s RTO</div>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <div className="text-[11px] font-extrabold text-slate-900 truncate">
+                                    {selectedDiagramMode === 'blueprint'
+                                      ? `📚 Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}`
+                                      : selectedDiagramMode === 'infographic'
+                                      ? `📊 #${selectedInfographicBlueprintId} • ${
+                                          INFOGRAPHIC_BLUEPRINTS_LIST.find((i) => i.id === selectedInfographicBlueprintId)?.shortType || 'Infographic'
+                                        }`
+                                      : `🔀 Flowchart • ${selectedAbstractionLevel} (${selectedFlowDirection})`}
+                                  </div>
+                                  <div className="text-[9.5px] text-slate-500 truncate mt-0.5">
+                                    {selectedDiagramMode === 'blueprint'
+                                      ? CANONICAL_TEMPLATES.find((t) => t.id === (selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId))?.name
+                                      : selectedAbstractionLevel === 'L1'
+                                      ? 'L1 Executive: 4 Value Stages + 3 KPI/ROI Cards'
+                                      : selectedAbstractionLevel === 'L2'
+                                      ? 'L2 Logical: 2 Swimlanes, 2 ◇ Gates & Retry Loop'
+                                      : selectedAbstractionLevel === 'L3'
+                                      ? 'L3 Technical: 3 Tiers, Redis Cache, Spanner & CDC'
+                                      : 'L4 Production HA: 4 Strata, Multi-Region & KMS'}
+                                  </div>
+                                  <div className="mt-1 flex items-center gap-1">
+                                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
+                                      16:9 Draw.io XML
+                                    </span>
+                                    <span className="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800">
+                                      {selectedAbstractionLevel}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* 3 Clickable Leaf Action Buttons */}
+                              <div className="space-y-1.5">
+                                <div className="grid grid-cols-2 gap-1.5">
+                                  <button
+                                    id="leaf-action-view-btn"
+                                    type="button"
+                                    onClick={() => {
+                                      if (selectedDiagramMode === 'blueprint') {
+                                        const bpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
+                                        const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
+                                        handleSelectBlueprint(bp, selectedDomain);
+                                      } else if (selectedDiagramMode === 'infographic') {
+                                        setXml(
+                                          generateInfographicBlueprintXmlById(
+                                            selectedInfographicBlueprintId,
+                                            promptInput.trim() || undefined,
+                                            undefined,
+                                            selectedAbstractionLevel
+                                          )
+                                        );
+                                        setSelectedBlueprintId(selectedInfographicBlueprintId);
+                                      } else if (Number(selectedBlueprintId) >= 67 && Number(selectedBlueprintId) <= 74) {
+                                        setXml(generateFlowDiagramBlueprintXmlById(selectedBlueprintId));
+                                      } else {
+                                        setXml(
+                                          generateLogicalFlowchartDrawioXml(
+                                            promptInput.trim(),
+                                            promptInput.trim() || undefined,
+                                            selectedFlowDirection,
+                                            selectedAbstractionLevel
+                                          )
+                                        );
+                                        setSelectedBlueprintId('custom');
+                                      }
+                                      setIsNewDiagramDraft(false);
+                                      setIsInlineDrawioEdit(false);
+                                      setIsFlowTreeOpen(false);
+                                    }}
+                                    className="px-2.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-[10.5px] shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
+                                  >
+                                    <span>👁️ View Canvas</span>
+                                  </button>
+
+                                  <button
+                                    id="leaf-action-edit-btn"
+                                    type="button"
+                                    onClick={() => {
+                                      let nextXml = xml;
+                                      if (selectedDiagramMode === 'blueprint') {
+                                        const bpId = selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId;
+                                        const bp = CANONICAL_TEMPLATES.find((t) => t.id === bpId) || CANONICAL_TEMPLATES[0];
+                                        handleSelectBlueprint(bp, selectedDomain);
+                                      } else if (selectedDiagramMode === 'infographic') {
+                                        nextXml = generateInfographicBlueprintXmlById(
+                                          selectedInfographicBlueprintId,
+                                          promptInput.trim() || undefined,
+                                          undefined,
+                                          selectedAbstractionLevel
+                                        );
+                                        setXml(nextXml);
+                                        setSelectedBlueprintId(selectedInfographicBlueprintId);
+                                      } else if (Number(selectedBlueprintId) >= 67 && Number(selectedBlueprintId) <= 74) {
+                                        nextXml = generateFlowDiagramBlueprintXmlById(selectedBlueprintId);
+                                        setXml(nextXml);
+                                      } else {
+                                        nextXml = generateLogicalFlowchartDrawioXml(
+                                          promptInput.trim(),
+                                          promptInput.trim() || undefined,
+                                          selectedFlowDirection,
+                                          selectedAbstractionLevel
+                                        );
+                                        setXml(nextXml);
+                                        setSelectedBlueprintId('custom');
+                                      }
+                                      latestInlineXmlRef.current = nextXml;
+                                      setIsNewDiagramDraft(false);
+                                      setIsInlineDrawioEdit(true);
+                                      setIsFlowTreeOpen(false);
+                                    }}
+                                    className="px-2.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-[10.5px] shadow-xs transition cursor-pointer flex items-center justify-center gap-1"
+                                  >
+                                    <span>✎ Edit Draw.io</span>
+                                  </button>
+                                </div>
+
+                                <button
+                                  id="leaf-action-create-new-btn"
+                                  type="button"
+                                  onClick={() => {
+                                    handleOpenNewTab();
+                                    setIsFlowTreeOpen(false);
+                                    setTimeout(() => {
+                                      const el = document.getElementById('studio-copilot-prompt-input') as HTMLTextAreaElement | null;
+                                      if (el) el.focus();
+                                    }, 120);
+                                  }}
+                                  className="w-full px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-[11px] shadow-xs transition cursor-pointer flex items-center justify-between"
+                                >
+                                  <span>➕ Create New Diagram from Leaf</span>
+                                  <span className="text-[9px] font-mono bg-emerald-700/80 px-1.5 py-0.5 rounded">Draft → v1.0</span>
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}
@@ -3871,6 +4089,52 @@ function StudioMain() {
                       📊 Infographic
                     </button>
                   </div>
+
+                  {/* Quick L1 -> L2 -> L3 -> L4 Progressive Technical Detail Switcher */}
+                  {(selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') && (
+                    <div
+                      id="canvas-toolbar-level-switcher"
+                      className="flex items-center gap-0.5 bg-slate-100 border border-slate-300 p-1 rounded-lg text-slate-800 font-bold whitespace-nowrap shrink-0"
+                      title="Progressive Technical Detail Level (L1 Conceptual -> L2 Logical -> L3 Technical -> L4 Production HA)"
+                    >
+                      {(['L1', 'L2', 'L3', 'L4'] as const).map((lvl) => (
+                        <button
+                          key={lvl}
+                          id={`toolbar-level-btn-${lvl}`}
+                          type="button"
+                          onClick={() => {
+                            setSelectedAbstractionLevel(lvl);
+                            if (selectedDiagramMode === 'infographic') {
+                              setXml(
+                                generateInfographicBlueprintXmlById(
+                                  selectedInfographicBlueprintId,
+                                  promptInput.trim() || undefined,
+                                  undefined,
+                                  lvl
+                                )
+                              );
+                            } else {
+                              setXml(
+                                generateLogicalFlowchartDrawioXml(
+                                  promptInput.trim(),
+                                  promptInput.trim() || undefined,
+                                  selectedFlowDirection,
+                                  lvl
+                                )
+                              );
+                            }
+                          }}
+                          className={`px-2 py-0.5 rounded-md text-[10.5px] font-extrabold transition cursor-pointer ${
+                            selectedAbstractionLevel === lvl
+                              ? 'bg-slate-900 text-white shadow-2xs'
+                              : 'hover:bg-white text-slate-600'
+                          }`}
+                        >
+                          {lvl}
+                        </button>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Section 3.1: Explicit [ 📚 Blueprints (53) ] Mid-Session Slide-Over Drawer Button */}
                   <button

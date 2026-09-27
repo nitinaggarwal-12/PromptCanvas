@@ -45,11 +45,20 @@ function check(label, actual, badgeId, sidebar) {
 
 const sidebar = read('src/components/UnifiedAppSidebar.tsx');
 
-// Canonical templates: count `id:` keys in RAW_TEMPLATES (everything before the
-// derived CANONICAL_TEMPLATES export).
+// Canonical templates: count `id:` keys in RAW_TEMPLATES plus spread modules
+// (infographicBlueprints52to66.ts and flowDiagramBlueprints67to74.ts).
 const tpl = read('src/lib/canonical/canonicalTemplates.ts');
 const rawTemplates = tpl.slice(0, tpl.indexOf('export const CANONICAL_TEMPLATES'));
-const templateCount = (rawTemplates.match(/^\s*id:\s*['`]/gm) || []).length;
+const infoTpl = fs.existsSync('src/lib/canonical/infographicBlueprints52to66.ts')
+  ? read('src/lib/canonical/infographicBlueprints52to66.ts')
+  : '';
+const flowTpl = fs.existsSync('src/lib/canonical/flowDiagramBlueprints67to74.ts')
+  ? read('src/lib/canonical/flowDiagramBlueprints67to74.ts')
+  : '';
+const templateCount =
+  (rawTemplates.match(/^\s*id:\s*['`]/gm) || []).length +
+  (infoTpl.match(/^\s*id:\s*['`]/gm) || []).length +
+  (flowTpl.match(/^\s*"?id"?:\s*['"`]\d+['"`]/gm) || []).length;
 check('Blueprint Catalog', templateCount, 'canonical', sidebar);
 
 // Document archetypes: count `id:` keys inside DOC_ARCHETYPES_META.

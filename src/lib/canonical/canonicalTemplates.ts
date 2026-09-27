@@ -1,5 +1,6 @@
 import { CANONICAL_CONTRACTS, CanonicalContract } from './canonicalContracts';
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from './infographicBlueprints52to66';
+import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from './flowDiagramBlueprints67to74';
 
 export interface CanonicalTemplate {
   id: string; // e.g. "01", "02" ... "66"
@@ -795,6 +796,18 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     previewImage: ib.previewImage,
     keyComponents: ib.keyComponents,
     generateXml: () => generateInfographicBlueprintXmlById(ib.id)
+  })),
+  ...FLOW_DIAGRAM_BLUEPRINTS_67_TO_74.map((fb) => ({
+    id: fb.id,
+    name: fb.name,
+    family: 'Flow' as const,
+    level: fb.level,
+    primaryPurpose: fb.primaryPurpose,
+    examples: `${fb.shortType}, 7-Layer Google Cloud Operational Flowchart, Agentic AI Execution Flow`,
+    defaultDomain: 'Google Cloud Enterprise Agentic AI & Operational Flow',
+    previewImage: fb.previewImage,
+    keyComponents: fb.keyComponents,
+    generateXml: () => generateFlowDiagramBlueprintXmlById(fb.id)
   }))
 ];
 

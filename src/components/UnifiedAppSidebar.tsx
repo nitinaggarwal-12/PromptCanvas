@@ -81,7 +81,7 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'reference',
     label: 'Library',
     items: [
-      { id: 'canonical', name: 'Architecture Library', icon: LayoutGrid, href: '/library', badge: '53' },
+      { id: 'canonical', name: 'Architecture Library', icon: LayoutGrid, href: '/library', badge: '75' },
     ],
   },
   {

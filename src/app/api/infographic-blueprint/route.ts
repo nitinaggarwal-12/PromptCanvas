@@ -96,7 +96,8 @@ Do NOT use generic placeholder text. Use concrete technologies, metrics, SLAs, a
       engineUsed = 'deterministic-no-key';
     }
 
-    const xml = generateInfographicBlueprintXmlById(meta.id, userPrompt, dynamicSpec);
+    const normalizedLevel = (['L1', 'L2', 'L3', 'L4'].includes(level) ? level : 'L2') as 'L1' | 'L2' | 'L3' | 'L4';
+    const xml = generateInfographicBlueprintXmlById(meta.id, userPrompt, dynamicSpec, normalizedLevel);
 
     return NextResponse.json({
       success: true,
