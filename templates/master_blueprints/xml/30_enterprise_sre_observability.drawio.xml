@@ -1,9 +1,207 @@
-<mxfile host="app.diagrams.net" modified="2026-08-11T12:39:21.471Z" agent="PromptCanvas" version="21.0.0" type="device">
-  <diagram id="30_enterprise_sre_observability" name="30_enterprise_sre_observability">
-    <mxGraphModel dx="1400" dy="850" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF">
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_enterprise_sre_observability" name="Enterprise Site Reliability Engineering (SRE) &amp; Observability on Google Cloud Platform (P5-GOV-L-04)">
+    <!-- pc-catalog-id:enterprise_sre_observability -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-canvas-header-stripped -->
+<!-- pc-blueprint-visual-system-v2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="877" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
+
+        <!-- ==================== TOP TITLE BANNER ==================== -->
+        
+        
+
+
+        <!-- ==================== TOP: DEVSECOPS CI/CD PIPELINE (x = 30 .. 980) ==================== -->
+        <mxCell id="box_devsecops" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="12" width="950" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_devsecops_hdr" value="&lt;b style=&quot;font-size:10px;color:#0F172A;&quot;&gt; DevSecOps Continuous Delivery Pipeline (Code to Cloud Deploy)&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="45" y="17" width="400" height="16" as="geometry"/>
+        </mxCell>
+
+        <!-- 6 Pipeline Steps -->
+        <mxCell id="pipe_code" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt;&amp;lt;/&amp;gt; 1. Code&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="45" y="42" width="135" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipe_build" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt; 2. Build&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="195" y="42" width="135" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipe_test" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt; 3. Test&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="345" y="42" width="135" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipe_scan" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt; 4. SAST/DAST Scan&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="495" y="42" width="145" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipe_release" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt; 5. Release Tag&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="655" y="42" width="135" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="pipe_deploy" value="&lt;b style=&quot;font-size:9.5px;&quot;&gt; 6. Prod Deploy&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="805" y="42" width="155" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Pipeline Internal Connectors -->
+        <mxCell id="e_p1_2" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="pipe_code" target="pipe_build"/>
+        <mxCell id="e_p2_3" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="pipe_build" target="pipe_test"/>
+        <mxCell id="e_p3_4" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="pipe_test" target="pipe_scan"/>
+        <mxCell id="e_p4_5" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="pipe_scan" target="pipe_release"/>
+        <mxCell id="e_p5_6" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.2;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="pipe_release" target="pipe_deploy"/>
+
+
+        <!-- ==================== LEFT: MONITORED INFRASTRUCTURE RESOURCES ==================== -->
+        <!-- x = 30 .. 210 (width = 180) -->
+        <mxCell id="box_resources" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="30" y="102" width="180" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_resources_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt; MULTI-CLOUD &amp;amp; GCP RESOURCES&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#94A3B8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="102" width="180" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- 6 Resource Cards -->
+        <mxCell id="res_gke" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; GKE Enterprise&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Autopilot Clusters&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="152" width="156" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="res_gce" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; Compute Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;MIGs &amp;amp; Bare Metal VMs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="222" width="156" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="res_gae" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; Cloud Run / App Engine&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Serverless Microservices&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="292" width="156" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="res_pubsub" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; Cloud Pub/Sub&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Event Streams &amp;amp; Queues&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="362" width="156" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="res_db" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:30px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;22&quot; height=&quot;22&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; Cloud SQL / Spanner&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Transactional Databases&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="432" width="156" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="res_onprem" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; On-Premise / Edge&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Google Distributed Cloud&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="42" y="502" width="156" height="55" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== CENTER LEFT: INTEGRATED OBSERVABILITY PLATFORM ==================== -->
+        <!-- x = 230 .. 680 (width = 450) -->
+        <mxCell id="box_observability" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="230" y="102" width="450" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_observability_hdr" value="&lt;b style=&quot;font-size:9.5px;color:#FFFFFF;&quot;&gt; GOOGLE CLOUD OPERATIONS SUITE (OBSERVABILITY)&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#2563EB;strokeColor=#1D4ED8;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="230" y="102" width="450" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 1: Cloud Monitoring -->
+        <mxCell id="box_layer_mon" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#1E40AF;&quot;&gt; 1. Cloud Monitoring &amp;amp; SLI/SLO Management&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Global Uptime Probes &amp;amp; Synthetic Canary Transactions&lt;br&gt;• Real-time Service Level Indicator (SLI) telemetry &amp;amp; Error Budget burn&lt;br&gt;• Multi-Metric PromQL / MQL query correlation engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="152" width="420" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 2: Cloud Logging -->
+        <mxCell id="box_layer_log" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#1E40AF;&quot;&gt; 2. Cloud Logging &amp;amp; Real-Time Log Analytics&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Petabyte-scale centralized Log Router with BigQuery sync&lt;br&gt;• Automated Error Reporting grouping stack traces with deduplication&lt;br&gt;• Security Log Sinks for audit compliance (HIPAA / PCI / FedRAMP)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="262" width="420" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 3: Cloud Trace &amp; Profiler -->
+        <mxCell id="box_layer_trace" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#1E40AF;&quot;&gt; 3. Distributed Cloud Trace &amp;amp; Profiler&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• End-to-End latency breakdown across microservices&lt;br&gt;• Continuous in-production CPU / memory heap allocation profiling&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="372" width="420" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Layer 4: Gemini AI Root Cause Analysis -->
+        <mxCell id="box_layer_ai" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#047857;&quot;&gt; 4. Gemini AI Automated Root Cause Analysis (RCA)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Cross-log multi-hop correlation powered by Vertex AI&lt;br&gt;• Automated triage recommendation generation &amp;amp; blast radius isolation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#A7F3D0;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="245" y="467" width="420" height="85" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== CENTER RIGHT: INCIDENT MANAGEMENT WORKFLOW ==================== -->
+        <!-- x = 700 .. 980 (width = 280) -->
+        <mxCell id="box_incident_wf" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#EF4444;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="700" y="102" width="280" height="570" as="geometry"/>
+        </mxCell>
+        <mxCell id="lbl_incident_wf" value="&lt;b style=&quot;font-size:9.5px;color:#FFFFFF;&quot;&gt; INCIDENT RESPONSE WORKFLOW&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#EF4444;strokeColor=#DC2626;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="700" y="102" width="280" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- Trigger Card -->
+        <mxCell id="card_trigger" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt; 1. Alert Trigger Triggered&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;SLO burn-rate spike / Critical threshold&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="715" y="152" width="250" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Automated Notification Card -->
+        <mxCell id="card_notify" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:30px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23F25022%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%237FBA00%22%2F%3E%3Crect%20x%3D%226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2300A4EF%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23FFB900%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;22&quot; height=&quot;22&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; 2. On-Call Notification Dispatch&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;PagerDuty / Slack / MS Teams War Room&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="715" y="227" width="250" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Live Diagnosis Card -->
+        <mxCell id="card_analysis" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:30px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2224%22%20r%3D%2222%22%20fill%3D%22%231E293B%22%2F%3E%3Cpath%20fill%3D%22%2338BDF8%22%20d%3D%22M24%208c0%208.8-7.2%2016-16%2016%208.8%200%2016%207.2%2016%2016%200-8.8%207.2-16%2016-16-8.8%200-16-7.2-16-16z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;22&quot; height=&quot;22&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#1E40AF;&quot;&gt; 3. Live Triage &amp;amp; Trace Inspection&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Correlated dashboards &amp;amp; Gemini RCA advice&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="715" y="302" width="250" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Automated Mitigation Card -->
+        <mxCell id="card_mitigation" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#0F172A;&quot;&gt; 4. Automated Canary Rollback&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Cloud Deploy rollback / Traffic shedding&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="715" y="377" width="250" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Post-Mortem &amp; Feedback Card -->
+        <mxCell id="card_feedback_loop" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#166534;&quot;&gt; 5. Blameless Post-Mortem &amp;amp; Policy Loop&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Auto-generates action items for CI/CD gates&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#22C55E;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="715" y="452" width="250" height="65" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== RIGHT: DASHBOARDS &amp; SRE ARTIFACTS ==================== -->
+        <!-- x = 1000 .. 1560 (width = 560) -->
+        <mxCell id="box_dashboards_if" value="" style="rounded=1;arcSize=3;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="12" width="560" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="hdr_dashboards_if" value="&lt;b style=&quot;font-size:11px;color:#38BDF8;&quot;&gt; SRE WAR ROOM COMMAND CONSOLE &amp;amp; METRICS&lt;/b&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#475569;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="12" width="560" height="34" as="geometry"/>
+        </mxCell>
+
+        <!-- 4 Dark Operational Dashboard Mockup Cards -->
+        <mxCell id="dash_health" value="&lt;table style=&quot;width:100%;color:#FFFFFF;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#4ADE80;&quot;&gt; Global Cluster Fleet Health&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;GKE: 99.995% | Cloud SQL: 100% | Ingress: 0 errors&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="57" width="255" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash_slo" value="&lt;table style=&quot;width:100%;color:#FFFFFF;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#38BDF8;&quot;&gt; SLO &amp;amp; Error Budget Monitor&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;Remaining Budget: 88.4% | Burn Rate: 0.12x (Safe)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="57" width="255" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash_perf" value="&lt;table style=&quot;width:100%;color:#FFFFFF;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#FBBF24;&quot;&gt; Application Latency (p99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;p50: 8ms | p95: 16ms | p99: 42ms | RPS: 48,200&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="142" width="255" height="75" as="geometry"/>
+        </mxCell>
+        <mxCell id="dash_logs" value="&lt;table style=&quot;width:100%;color:#FFFFFF;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#A78BFA;&quot;&gt; Real-Time Error Stream Log&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;5xx Error Spike: 0.001% (Target &amp;lt; 0.01%)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="142" width="255" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Incident Command Console Mockup Card -->
+        <mxCell id="card_incident_command" value="&lt;table style=&quot;width:100%;border-collapse:collapse;font-size:9.5px;color:#FFFFFF;padding:4px;&quot;&gt;&lt;tr style=&quot;background:#1E293B;border-bottom:1px solid #334155;&quot;&gt;&lt;td style=&quot;padding:4px;font-size:9.5px;font-weight:bold;color:#F87171;&quot;&gt; Active War Room Console (Incident #INC-8921)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;padding:6px;font-size:9.5px;color:#CBD5E1;line-height:1.4;&quot;&gt;• &lt;b&gt;Severity:&lt;/b&gt; P1 High-Priority • &lt;b&gt;Status:&lt;/b&gt; Mitigated (Canary Rolled Back)&lt;br&gt;• &lt;b&gt;Incident Commander:&lt;/b&gt; Lead SRE On-Call (PagerDuty Escalation #1)&lt;br&gt;• &lt;b&gt;AI Hypothesis:&lt;/b&gt; Database connection pool exhaustion during rolling deploy.&lt;br&gt;• &lt;b&gt;Action Taken:&lt;/b&gt; Auto-scaled max pool size &amp;amp; rolled back artifact to v2.4.1.&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#020617;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=4;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="232" width="525" height="140" as="geometry"/>
+        </mxCell>
+
+        <!-- SRE Artifacts Box -->
+        <mxCell id="art_policies" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#38BDF8;&quot;&gt; Error Budget Policy&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;Freeze deploy gates on SLO burn&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="387" width="255" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="art_playbooks" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#38BDF8;&quot;&gt; Automated Playbooks&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;Runbooks &amp;amp; Cloud Workflows&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="387" width="255" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="art_templates" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#38BDF8;&quot;&gt; Blameless Post-Mortem&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;Root cause &amp;amp; remediation log&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1015" y="447" width="255" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="art_slislo" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#38BDF8;&quot;&gt; SLI / SLO Catalog&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#94A3B8;&quot;&gt;Formal enterprise availability SLAs&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=#334155;strokeWidth=1.2;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1285" y="447" width="255" height="50" as="geometry"/>
+        </mxCell>
+
+
+        <!-- Connectors between Columns -->
+        <mxCell id="e_res_obs" value="" style="edgeStyle=none;html=1;strokeColor=#0F172A;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="box_resources" target="box_observability"/>
+        <mxCell id="e_obs_inc" value="" style="edgeStyle=none;html=1;strokeColor=#DC2626;strokeWidth=1.5;endArrow=classic;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="box_observability" target="box_incident_wf"/>
+
+
+        <!-- ==================== BOTTOM FOOTER LEGEND ==================== -->
+        <mxCell id="box_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Enterprise SRE Mesh:&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Infrastructure Telemetry Stream&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Cloud Operations Suite&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Automated Incident Response&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;DevSecOps Closed-Loop Feedback&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Google Cloud Operations&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="687" width="1530" height="38" as="geometry"/>
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>

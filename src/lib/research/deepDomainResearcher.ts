@@ -3,8 +3,8 @@
  *
  * Eradicates the generic template string-interpolation blindspot (Rule 42).
  * Before generating a diagram for ANY brand-new domain or topic, this engine
- * invokes Gemini 2.5 (`gemini-2.5-flash`) to research and ground 6 mandatory
- * architectural dimensions:
+ * invokes Google Omni 1.1 + Gemini 3.1 Pro (`gemini-3.1-pro-preview` / `gemini-3.8-flash`)
+ * to research and ground 6 mandatory architectural dimensions:
  *   1. True Domain Ontology & Canonical 4-Stage Lifecycle Spine (01..04)
  *   2. Authentic Wire Protocols, RFCs, File Formats & Regulatory Standards
  *   3. Hot Data Plane vs. Control Plane vs. Governance Plane Separation
@@ -14,6 +14,12 @@
  */
 
 import { GoogleGenAI, Type } from '@google/genai';
+import {
+  getEffectiveGeminiApiKey,
+  getGeminiModelWithFallbacks,
+  GEMINI_PRO_MODEL_ID,
+  GEMINI_FLASH_MODEL_ID
+} from '../geminiConfig';
 import {
   InfographicSpec,
   TierSpec,
@@ -41,6 +47,60 @@ export interface DeepResearchInfographicResult {
   researchBriefMarkdown: string;
   modelUsed: string;
   isLiveResearched: boolean;
+  groundingSources?: string[];
+}
+
+/**
+ * Normalizes deprecated or legacy Google Cloud, Gemini, and DeepMind product/model names
+ * to their latest authoritative 2026 nomenclature so diagrams and documentation never emit stale SKUs.
+ */
+export function normalizeLatestGoogleAndCloudNomenclature(text: string): string {
+  if (!text) return text;
+  return text
+    .replace(/\bCloud DLP\b/gi, 'Sensitive Data Protection')
+    .replace(/\bStackdriver\b/gi, 'Cloud Monitoring & Logging')
+    .replace(/\bContainer Registry\b/gi, 'Artifact Registry')
+    .replace(/\bAnthos Service Mesh\b/gi, 'Cloud Service Mesh')
+    .replace(/\bDataplex (?:Data|Universal) Catalog\b/gi, 'Dataplex Catalog')
+    .replace(/\bGlobal HTTPS Load Balancer\b/gi, 'Global External Application LB')
+    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Pro\b/gi, 'Gemini 3.1 Pro')
+    .replace(/\bGemini\s+(?:1\.5|2\.0|3\.7)\s+Flash\b/gi, 'Gemini 3.8 Flash')
+    .replace(/\bgemini-3\.7-(?:pro|flash)[a-z0-9-]*\b/gi, 'gemini-3.8-flash')
+    .replace(/\bVeo\s+[12](?:\.0)?\b/gi, 'DeepMind Veo 3.1')
+    .replace(/\bLyria\s+[12](?:\.0)?\b/gi, 'DeepMind Lyria 3.5');
+}
+
+/**
+ * Executes a fast pre-flight Google Search Grounding query (`tools: [{ googleSearch: {} }]`)
+ * to retrieve the latest product release notes, capabilities, wire protocols, or bug-fix advisories
+ * before structured JSON schema compilation. Gracefully returns empty string when offline or unsupported.
+ */
+export async function fetchLiveGoogleSearchGroundingBrief(
+  ai: GoogleGenAI,
+  prompt: string,
+  modelId: string = GEMINI_FLASH_MODEL_ID
+): Promise<{ brief: string; sources: string[] }> {
+  if (process.env.ENABLE_LIVE_GOOGLE_SEARCH_GROUNDING === 'false') {
+    return { brief: '', sources: [] };
+  }
+  try {
+    const res = await ai.models.generateContent({
+      model: modelId,
+      contents: `Retrieve the latest 2026 technical facts, official product SKU names, wire protocols, architecture boundaries, and recent capability/bug-fix updates for: "${prompt}". Summarize in 5 concise bullet points.`,
+      config: {
+        temperature: 0.1,
+        tools: [{ googleSearch: {} }]
+      }
+    });
+    const brief = normalizeLatestGoogleAndCloudNomenclature(res.text || '');
+    const chunks = (res as any)?.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+    const sources: string[] = chunks
+      .map((c: any) => c?.web?.uri || c?.retrievedContext?.uri)
+      .filter(Boolean);
+    return { brief, sources: Array.from(new Set(sources)) };
+  } catch {
+    return { brief: '', sources: [] };
+  }
 }
 
 const TIER_PALETTE = [
@@ -54,8 +114,14 @@ export async function researchAndCompileDomainInfographic(
   prompt: string,
   customApiKey?: string
 ): Promise<DeepResearchInfographicResult> {
-  const apiKey = customApiKey || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
-  const modelName = 'gemini-2.5-flash';
+  const normalizedPrompt = normalizeLatestGoogleAndCloudNomenclature(prompt);
+  const apiKey = getEffectiveGeminiApiKey(customApiKey) || process.env.GOOGLE_API_KEY || '';
+  const candidateModels = Array.from(new Set([
+    ...getGeminiModelWithFallbacks('pro'),
+    GEMINI_FLASH_MODEL_ID,
+    ...getGeminiModelWithFallbacks('medium')
+  ]));
+  let modelName = GEMINI_PRO_MODEL_ID;
 
   if (!apiKey) {
     const fallbackSpec = buildDynamicInfographicTiers(prompt);
@@ -98,30 +164,23 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
    - gatePassLabel: Short certified output badge (max 22 chars).
    - bottomRuleText: Actionable standing engineering rule starting with "Rule 01:", "Rule 02:", "Rule 03:", or "Rule 04:" (max 115 chars).`;
 
-    const response = await ai.models.generateContent({
-      model: modelName,
-      contents: `Perform 6-Dimension Domain Architecture Research and compile a complete 4-Tier Architectural Infographic specification for:\n"${prompt}"`,
-      config: {
-        systemInstruction,
-        temperature: 0.25,
-        responseMimeType: 'application/json',
-        responseSchema: {
+    const requestSchema = {
+      type: Type.OBJECT,
+      properties: {
+        headerTitle: { type: Type.STRING },
+        headerSubtitle: { type: Type.STRING },
+        footerText: { type: Type.STRING },
+        dossier: {
           type: Type.OBJECT,
           properties: {
-            headerTitle: { type: Type.STRING },
-            headerSubtitle: { type: Type.STRING },
-            footerText: { type: Type.STRING },
-            dossier: {
+            domainTopic: { type: Type.STRING },
+            canonicalLifecycleSummary: { type: Type.STRING },
+            standardsAndProtocols: {
+              type: Type.ARRAY,
+              items: { type: Type.STRING }
+            },
+            planeSeparation: {
               type: Type.OBJECT,
-              properties: {
-                domainTopic: { type: Type.STRING },
-                canonicalLifecycleSummary: { type: Type.STRING },
-                standardsAndProtocols: {
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING }
-                },
-                planeSeparation: {
-                  type: Type.OBJECT,
                   properties: {
                     dataPlane: { type: Type.STRING },
                     controlPlane: { type: Type.STRING },
@@ -178,11 +237,40 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
             }
           },
           required: ['headerTitle', 'headerSubtitle', 'footerText', 'dossier', 'tiers']
-        }
-      }
-    });
+    };
 
-    const rawText = response.text || '';
+    const grounding = await fetchLiveGoogleSearchGroundingBrief(ai, normalizedPrompt);
+    const groundingContext = grounding.brief
+      ? `\n\nLIVE GOOGLE SEARCH GROUNDING BRIEF (2026 Latest Product/Feature/Bug-Fix Facts):\n${grounding.brief}`
+      : '';
+
+    let rawText = '';
+    let lastError: unknown = null;
+    for (const candidateModel of candidateModels) {
+      try {
+        modelName = candidateModel;
+        const response = await ai.models.generateContent({
+          model: candidateModel,
+          contents: `Perform 6-Dimension Domain Architecture Research and compile a complete 4-Tier Architectural Infographic specification for:\n"${normalizedPrompt}"${groundingContext}`,
+          config: {
+            systemInstruction,
+            temperature: 0.25,
+            responseMimeType: 'application/json',
+            responseSchema: requestSchema
+          }
+        });
+        rawText = response.text || '';
+        if (rawText) break;
+      } catch (err) {
+        lastError = err;
+        console.warn(`[DeepDomainResearcher] Model ${candidateModel} failed, trying next fallback...`);
+      }
+    }
+
+    if (!rawText && lastError) {
+      throw lastError;
+    }
+
     const parsed = JSON.parse(rawText);
 
     if (!Array.isArray(parsed.tiers) || parsed.tiers.length < 4) {
@@ -210,7 +298,7 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
     });
 
     const spec: InfographicSpec = {
-      headerTitle: String(parsed.headerTitle || prompt).toUpperCase(),
+      headerTitle: String(parsed.headerTitle || normalizedPrompt).toUpperCase(),
       headerSubtitle: String(parsed.headerSubtitle || ''),
       footerText: String(parsed.footerText || '').toUpperCase(),
       tiers: hydratedTiers
@@ -246,7 +334,8 @@ CRITICAL ANTI-GENERIC RULES (STRICT ZERO-PLACEHOLDER LAW):
       dossier,
       researchBriefMarkdown,
       modelUsed: modelName,
-      isLiveResearched: true
+      isLiveResearched: true,
+      groundingSources: grounding.sources
     };
   } catch (err) {
     console.warn('[DeepDomainResearcher] Live research fallback triggered:', err);

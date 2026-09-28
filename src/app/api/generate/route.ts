@@ -6,10 +6,14 @@ import { isLayoutEngineV2Enabled } from '@/lib/featureFlags';
 import { classifyIntent } from '@/lib/router/intentClassifier';
 import { runV2Pipeline, runV2EditPipeline } from '@/lib/pipeline/v2Pipeline';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { enforceGeminiRouteGuard, checkConversationalOrNonMutationIntent } from '@/lib/geminiRouteGuard';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from '@/lib/db';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
+  const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/generate' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   const user = await getAuthenticatedUser();
   const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
   const clientIp = rawIp.split(',')[0]?.trim() || '';
@@ -56,6 +60,16 @@ export async function POST(request: Request) {
     }
 
     const trimmedPrompt = prompt.trim();
+    const intentCheck = checkConversationalOrNonMutationIntent(trimmedPrompt);
+    if (intentCheck.isNonMutation) {
+      return NextResponse.json({
+        conversationalOnly: true,
+        mutationApplied: false,
+        replyMessage: intentCheck.replyMessage,
+        reasoning: intentCheck.replyMessage,
+      });
+    }
+
     const isOffTopic =
       /\b(write (me )?a poem|haiku|limerick|sonnet|tell (me )?a joke|recipe for|horoscope|love letter|bedtime story)\b/i.test(trimmedPrompt) &&
       !/\b(architecture|diagram|system|cloud|api|service|database|pipeline|network|gateway|agent|server|app|platform|workflow|gcp|aws|azure)\b/i.test(trimmedPrompt);

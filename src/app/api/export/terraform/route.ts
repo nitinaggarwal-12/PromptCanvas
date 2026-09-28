@@ -7,6 +7,7 @@ import { cookies } from 'next/headers';
 
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
 const TERRAFORM_GCP_SYSTEM_PROMPT = `
@@ -25,6 +26,9 @@ Ensure all generated HCL is valid, executable, and follows Google Cloud Provider
 `;
 
 export async function POST(request: Request) {
+  const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/export/terraform' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   const user = await getAuthenticatedUser();
   const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
   const clientIp = rawIp.split(',')[0]?.trim() || '';

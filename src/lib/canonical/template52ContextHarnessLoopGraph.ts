@@ -482,8 +482,14 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         </mxCell>
         <mxCell id="c04_rel_4" value="" style="endArrow=none;html=1;strokeColor=#93C5FD;strokeWidth=2;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="240" y="1096" as="sourcePoint" />
-            <mxPoint x="283" y="1132" as="targetPoint" />
+            <mxPoint x="220" y="1106" as="sourcePoint" />
+            <mxPoint x="285" y="1132" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="c04_rel_5" value="" style="endArrow=none;html=1;strokeColor=#93C5FD;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="348" y="1102" as="sourcePoint" />
+            <mxPoint x="336" y="1132" as="targetPoint" />
           </mxGeometry>
         </mxCell>
 

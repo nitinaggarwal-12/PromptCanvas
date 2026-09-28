@@ -227,7 +227,7 @@ export function generateGoogleCloudL4AgenticFlowchartXml(customTitle?: string): 
       <mxGeometry x="592" y="518" width="24" height="24" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[3b] Vertex AI Gemini 1.5 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[3b] Vertex AI Gemini 3.1 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="1020" y="506" width="360" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_3a_gemini" value="" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=none;imageAspect=1;aspect=fixed;image=${ICONS.vertexProStar};" vertex="1" parent="1">
@@ -575,7 +575,7 @@ export function generateGoogleCloudL3OperationalFlowchartXml(customTitle?: strin
       <mxGeometry x="96" y="518" width="24" height="24" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13.5px;color:#9D174D;'&gt;[3a] Vertex AI Gemini 1.5 Pro (Reasoning Engine)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#831843;'&gt;Cognitive Multi-Modal Reasoning &amp;bull; Dynamic Context Grounding &amp;bull; Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13.5px;color:#9D174D;'&gt;[3a] Vertex AI Gemini 3.1 Pro (Reasoning Engine)&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#831843;'&gt;Cognitive Multi-Modal Reasoning &amp;bull; Dynamic Context Grounding &amp;bull; Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="860" y="506" width="520" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_l3_3a" value="" style="shape=image;html=1;imageAspect=1;aspect=fixed;image=${ICONS.vertexProStar};" vertex="1" parent="1">
@@ -893,7 +893,7 @@ export function generateGoogleCloudL2LogicalFlowchartXml(customTitle?: string): 
       <mxGeometry x="592" y="518" width="24" height="24" as="geometry" />
     </mxCell>
 
-    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[3b] Vertex AI Gemini 1.5 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="node_3a_gemini" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[3b] Vertex AI Gemini 3.1 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="1020" y="506" width="360" height="88" as="geometry" />
     </mxCell>
     <mxCell id="icon_l2_3g" value="" style="shape=image;html=1;imageAspect=1;aspect=fixed;image=${ICONS.vertexProStar};" vertex="1" parent="1">
@@ -1048,7 +1048,7 @@ export function generateGoogleCloudL1ExecutiveFlowchartXml(customTitle?: string)
       <mxGeometry x="576" y="362" width="24" height="24" as="geometry" />
     </mxCell>
 
-    <mxCell id="n3g" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[2b] Vertex AI Gemini 1.5 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
+    <mxCell id="n3g" value="&lt;b style='font-size:13px;color:#9D174D;'&gt;[2b] Vertex AI Gemini 3.1 Pro&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:10.5px;color:#831843;'&gt;Multi-Modal Cognitive Engine&lt;br&gt;Chain-of-Thought Synthesis&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#FCE7F3;strokeColor=#DB2777;strokeWidth=2;align=center;verticalAlign=middle;shadow=1;spacingLeft=22;" vertex="1" parent="1">
       <mxGeometry x="1020" y="350" width="360" height="88" as="geometry" />
     </mxCell>
     <mxCell id="ic3g" value="" style="shape=image;html=1;imageAspect=1;aspect=fixed;image=${ICONS.vertexProStar};" vertex="1" parent="1">

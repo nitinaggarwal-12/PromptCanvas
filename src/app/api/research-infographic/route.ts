@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 import { researchAndCompileDomainInfographic } from '@/lib/research/deepDomainResearcher';
+import {
+    enforceGeminiRouteGuard,
+    checkConversationalOrNonMutationIntent
+} from '@/lib/geminiRouteGuard';
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
     try {
+        const guard = await enforceGeminiRouteGuard(req, { endpoint: 'api/research-infographic' });
+        if (!guard.allowed) return guard.errorResponse!;
+
         const body = await req.json();
         const prompt = typeof body?.prompt === 'string' ? body.prompt.trim() : '';
 
@@ -15,7 +22,16 @@ export async function POST(req: Request) {
             );
         }
 
-        const result = await researchAndCompileDomainInfographic(prompt);
+        const intentCheck = checkConversationalOrNonMutationIntent(prompt);
+        if (intentCheck.isNonMutation) {
+            return NextResponse.json({
+                conversationalOnly: true,
+                mutationApplied: false,
+                replyMessage: intentCheck.replyMessage,
+            });
+        }
+
+        const result = await researchAndCompileDomainInfographic(prompt, guard.effectiveApiKey);
 
         return NextResponse.json({
             xml: result.xml,
@@ -35,3 +51,4 @@ export async function POST(req: Request) {
         );
     }
 }
+

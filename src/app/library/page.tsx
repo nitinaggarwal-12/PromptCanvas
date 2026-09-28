@@ -1014,8 +1014,8 @@ function ArchitectureLibraryContent() {
                         label: 'Guided Matrix',
                         style: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/30',
                         btnStyle: 'bg-teal-600 hover:bg-teal-500 text-white',
-                        actionLabel: 'Open in Matrix Lab',
-                        route: `/studio1?diagram=${encodeURIComponent(diagram.id)}`
+                        actionLabel: 'Open in Studio',
+                        route: `/studio?id=${encodeURIComponent(diagram.id)}`
                       },
                       canonical: {
                         label: 'Canonical Blueprint',

@@ -1,0 +1,390 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_saas_multi_tenant" name="07 — C4 Container">
+    <!-- pc-catalog-id:saas_multi_tenant -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-canvas-header-stripped -->
+<!-- pc-blueprint-visual-system-v2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="945" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1560" pageHeight="879" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        
+        <mxCell id="internal_users_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#1E3A8A;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="20" y="12" width="200" height="582" as="geometry"/></mxCell>
+        <mxCell id="internal_users_hdr" value="&lt;b style='font-size:10.5px;color:#FFFFFF;'&gt;INTERNAL USERS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;shadow=0;spacing=2;verticalAlign=middle;arcSize=8;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="20" y="12" width="200" height="26" as="geometry"/></mxCell>
+        <mxCell id="user_pod_0" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Research Scientists&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Design studies, manage&lt;br/&gt;experiments &amp; data&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="42" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_1" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Clinical Operations&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Run trials, monitor sites,&lt;br/&gt;participants &amp; activities&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="110" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_2" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Regulatory Affairs Specialists&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Prepare submissions,&lt;br/&gt;track commitments&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="178" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_3" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Safety / PV Specialists&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Detect, evaluate &amp; report&lt;br/&gt;safety events&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="246" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_4" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:30px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23F25022%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%237FBA00%22%2F%3E%3Crect%20x%3D%226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2300A4EF%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23FFB900%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;22&quot; height=&quot;22&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Quality Teams&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Ensure quality, GxP compliance&lt;br/&gt;&amp; CAPA management&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="314" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_5" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Medical Affairs&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Medical inquiries, content&lt;br/&gt;&amp; stakeholder education&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="382" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_6" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Commercial Analytics&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Market insights, forecasting&lt;br/&gt;&amp; customer analytics&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="450" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="user_pod_7" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:26px;vertical-align:top;padding-top:2px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Platform Admins&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.15;margin-top:1px;&quot;&gt;Manage platform, users,&lt;br/&gt;security &amp; integrations&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#E2E8F0;fillColor=#F8FAFC;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="518" width="192" height="64" as="geometry"/></mxCell>
+        <mxCell id="plat_cont_frame" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#0284C7;strokeWidth=2;fillColor=#FFFFFF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="230" y="12" width="1080" height="582" as="geometry"/></mxCell>
+        <mxCell id="plat_hdr" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;&quot;&gt;
+    &lt;span style=&quot;font-size:17px;&quot;&gt;&lt;/span&gt;
+    &lt;span style=&quot;font-size:14px;font-weight:900;color:#0F2A4A;letter-spacing:1.5px;&quot;&gt;NOVACURA&lt;/span&gt;
+    &lt;span style=&quot;font-size:9.5px;font-weight:800;color:#0284C7;letter-spacing:1px;margin-left:4px;&quot;&gt;BIO-PHARMA PLATFORM&lt;/span&gt;
+  &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=9.5;verticalAlign=middle;align=center;spacing=4;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="240" y="16" width="1060" height="32" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_0" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;1&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;User Experience Portal&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Role-based web portal for users, dashboards, tasks and insights.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="250" y="54" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_1" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;2&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Workflow &amp; Case Management&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Manages business workflows, approvals, tasks, CAPA and case flows.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="596" y="54" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_2" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;3&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;R&amp;D &amp; Clinical App&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Study planning, protocol management, trial oversight &amp; data capture.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="942" y="54" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_3" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;4&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Regulatory Affairs App&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Submissions, eCTD / IDMP coordination &amp; authority correspondence.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="250" y="158" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_4" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;5&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Safety &amp; Pharmacovigilance App&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Case intake, signal detection, benefit-risk workflows &amp; reporting.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="596" y="158" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_5" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;6&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Quality &amp; Manufacturing App&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Quality events, batch &amp; release visibility, deviations &amp; change control.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="942" y="158" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_6" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;7&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Medical &amp; Commercial App&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Medical information, customer insights, forecasting &amp; field engagement.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="250" y="262" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_7" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;8&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Document &amp; Content Hub&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Controlled documents, versioning, collaboration &amp; knowledge content.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="596" y="262" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_8" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;9&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Data &amp; Analytics Platform&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Curated enterprises data, analytics, dashboards &amp; semantic model.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="942" y="262" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_9" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;10&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;AI Copilot &amp; Knowledge Services&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;Grounded copilots, semantic search, summarization &amp; workflow assistance.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="250" y="366" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_10" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;11&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Integration &amp; API Layer&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;APIs, events, orchestration, file exchange &amp; external connectivity.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="596" y="366" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_11" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:24px;vertical-align:top;padding-top:2px;&quot;&gt;
+          &lt;div style=&quot;width:20px;height:20px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;12&lt;/div&gt;
+        &lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;
+            &lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;
+            &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.15;&quot;&gt;Identity &amp; Access Service&lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:3px;&quot;&gt;SSO, RBAC, authentication &amp; authorization for apps and services.&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="942" y="366" width="334" height="96" as="geometry"/></mxCell>
+        <mxCell id="c4_cont_12" value="&lt;table style=&quot;width:100%;height:100%;text-align:center;&quot;&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;width:24px;vertical-align:middle;padding-left:12px;&quot;&gt;
+        &lt;div style=&quot;width:22px;height:22px;background:#0F2A4A;color:#FFFFFF;border-radius:4px;font-size:9.5px;font-weight:900;display:flex;align-items:center;justify-content:center;text-align:center;&quot;&gt;13&lt;/div&gt;
+      &lt;/td&gt;
+      &lt;td style=&quot;vertical-align:middle;padding-left:8px;text-align:left;&quot;&gt;
+        &lt;span style=&quot;font-size:11.5px;&quot;&gt;&lt;/span&gt; &lt;b style=&quot;font-size:9.5px;color:#0F2A4A;&quot;&gt;Audit, Monitoring &amp;amp; Compliance Service&lt;/b&gt;
+        &lt;span style=&quot;font-size:9.5px;color:#64748B;margin-left:10px;&quot;&gt;Audit logs, monitoring, alerts, compliance evidence &amp;amp; reporting across the platform.&lt;/span&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="250" y="480" width="1040" height="102" as="geometry"/></mxCell>
+        <mxCell id="ext_participants_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#0D9488;strokeWidth=1.5;fillColor=#FFFFFF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="1320" y="12" width="220" height="582" as="geometry"/></mxCell>
+        <mxCell id="ext_participants_hdr" value="&lt;b style='font-size:10.5px;color:#FFFFFF;'&gt;EXTERNAL PARTICIPANTS&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=0;fillColor=#0D9488;strokeColor=#0D9488;align=center;shadow=0;spacing=2;verticalAlign=middle;arcSize=8;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1320" y="12" width="220" height="26" as="geometry"/></mxCell>
+        <mxCell id="ext_pod_0" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:30px;vertical-align:top;padding-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.2;&quot;&gt;CRO / CDMO Partners&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:2px;&quot;&gt;Collaborate on studies, data&lt;br/&gt;management &amp; supply&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#CCFBF1;fillColor=#F0FDFA;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1328" y="44" width="204" height="98" as="geometry"/></mxCell>
+        <mxCell id="ext_pod_1" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:30px;vertical-align:top;padding-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.2;&quot;&gt;Investigators / Sites&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:2px;&quot;&gt;Submit clinical data,&lt;br/&gt;documents &amp; updates&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#CCFBF1;fillColor=#F0FDFA;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1328" y="152" width="204" height="98" as="geometry"/></mxCell>
+        <mxCell id="ext_pod_2" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:30px;vertical-align:top;padding-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.2;&quot;&gt;Regulatory Authorities&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:2px;&quot;&gt;Receive submissions,&lt;br/&gt;queries &amp; responses&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#CCFBF1;fillColor=#F0FDFA;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1328" y="260" width="204" height="98" as="geometry"/></mxCell>
+        <mxCell id="ext_pod_3" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:30px;vertical-align:top;padding-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.2;&quot;&gt;Patients / Patient Programs&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:2px;&quot;&gt;Access programs, support&lt;br/&gt;&amp; communications&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#CCFBF1;fillColor=#F0FDFA;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1328" y="368" width="204" height="98" as="geometry"/></mxCell>
+        <mxCell id="ext_pod_4" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;
+      &lt;tr&gt;
+        &lt;td style=&quot;width:30px;vertical-align:top;padding-top:4px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:14px;&quot;&gt;&lt;/span&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top;padding-left:4px;text-align:left;&quot;&gt;
+          &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F2A4A;line-height:1.2;&quot;&gt;HCPs / Healthcare Providers&lt;/div&gt;
+          &lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.2;margin-top:2px;&quot;&gt;Engage with medical content&lt;br/&gt;&amp; communications&lt;/div&gt;
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;strokeColor=#CCFBF1;fillColor=#F0FDFA;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1328" y="476" width="204" height="98" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#1E3A8A;strokeWidth=1.2;fillColor=#FFFFFF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="20" y="606" width="720" height="150" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_title" value="&lt;b&gt;ENTERPRISE SYSTEMS / DATA SOURCES (System of Record)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;fontSize=10;fontColor=#1E3A8A;align=center;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="20" y="610" width="720" height="18" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_0" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Salesforce&lt;br/&gt;Health Cloud&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Patient &amp; HCP&lt;br/&gt;engagement&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="28" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_1" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;SAP&lt;br/&gt;S/4HANA&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Finance, procurement,&lt;br/&gt;supply chain&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="116" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_2" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Veeva&lt;br/&gt;Vault&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Regulatory &amp;&lt;br/&gt;quality docs&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="204" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_3" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Clinical Trial&lt;br/&gt;Management (CTMS)&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Study, site &amp;&lt;br/&gt;subject mgmt&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="292" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_4" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Laboratory /&lt;br/&gt;LIMS Systems&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Lab data, results&lt;br/&gt;&amp; samples&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="380" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_5" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Safety Database&lt;br/&gt;(Argus-like)&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Safety cases,&lt;br/&gt;reports &amp; signals&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="468" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_6" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Data Lake /&lt;br/&gt;Warehouse&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Structured &amp;&lt;br/&gt;unstructured data&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="556" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ent_sys_7" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:11px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;margin-top:2px;&quot;&gt;Identity Provider /&lt;br/&gt;SSO&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:1px;&quot;&gt;Enterprise SSO&lt;br/&gt;&amp; identity mgmt&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="632" width="82" height="114" as="geometry"/></mxCell>
+        <mxCell id="ai_svc_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#7C3AED;strokeWidth=1.2;fillColor=#FAF5FF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="750" y="606" width="360" height="150" as="geometry"/></mxCell>
+        <mxCell id="ai_svc_title" value="&lt;b&gt;AI / KNOWLEDGE SERVICES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;fontSize=10;fontColor=#6D28D9;align=center;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="750" y="610" width="360" height="18" as="geometry"/></mxCell>
+        <mxCell id="ai_svc_0" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;&quot;&gt;Enterprise Search /&lt;br/&gt;Knowledge Base&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Search, taxonomy &amp; knowledge articles&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="758" y="632" width="110" height="114" as="geometry"/></mxCell>
+        <mxCell id="ai_svc_1" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;&quot;&gt;Vector Index /&lt;br/&gt;Semantic Search&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Embeddings store &amp; semantic retrieval&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="873" y="632" width="110" height="114" as="geometry"/></mxCell>
+        <mxCell id="ai_svc_2" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#6D28D9;line-height:1.15;margin-top:2px;&quot;&gt;Approved LLM Service&lt;br/&gt;(Google Vertex AI)&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Secure, governed LLM for enterprise use&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="988" y="632" width="110" height="114" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#15803D;strokeWidth=1.2;fillColor=#F0FDF4;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="1120" y="606" width="420" height="150" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_title" value="&lt;b&gt;PLATFORM SERVICES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;fontSize=10;fontColor=#15803D;align=center;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1120" y="610" width="420" height="18" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_0" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;&quot;&gt;API&lt;br/&gt;Gateway&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Routing, security&lt;br/&gt;&amp; throttling&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1128" y="632" width="96" height="114" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_1" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;&quot;&gt;Event Bus /&lt;br/&gt;Pub/Sub&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Realtime events&lt;br/&gt;&amp; async messaging&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1229" y="632" width="96" height="114" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_2" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;&quot;&gt;Workflow&lt;br/&gt;Orchestration&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Orchestrate&lt;br/&gt;processes &amp; rules&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1330" y="632" width="96" height="114" as="geometry"/></mxCell>
+        <mxCell id="plat_svc_3" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;&lt;span style=&quot;font-size:12.5px;&quot;&gt;●&lt;/span&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#14532D;line-height:1.15;margin-top:2px;&quot;&gt;Monitoring /&lt;br/&gt;Audit Logging&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;margin-top:2px;&quot;&gt;Metrics, logs,&lt;br/&gt;traces &amp; alerts&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1431" y="632" width="96" height="114" as="geometry"/></mxCell>
+        <mxCell id="ctrl_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=11;rounded=1;strokeColor=#0284C7;strokeWidth=1.2;fillColor=#F0F9FF;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;" vertex="1" parent="1"><mxGeometry x="20" y="766" width="1520" height="62" as="geometry"/></mxCell>
+        <mxCell id="ctrl_title" value="&lt;b&gt;CROSS-CUTTING CONTROLS &amp;amp; STANDARDS (Apply Across All Containers)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=11;verticalAlign=middle;fontSize=10;fontColor=#0369A1;align=center;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="20" y="768" width="1520" height="16" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_0" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;Security &amp; Privacy&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;Encryption, DLP &amp; privacy by design&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="30" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_1" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;Audit &amp; Compliance&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;Audit trails, retention, eDiscovery&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="281" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_2" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;Data Lineage &amp; Quality&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;Lineage, catalog, QC rules&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="532" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_3" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;Interoperability Standards &amp; APIs&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;HL7 FHIR, IDMP, CDISC, OpenAPI&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="783" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_4" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;GxP / 21 CFR Part 11&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;e-Records, eSignatures, validation&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1034" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="ct_pod_5" value="&lt;table style=&quot;width:100%;height:100%;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:20px;text-align:center;&quot;&gt;&lt;span style=&quot;font-size:10px;&quot;&gt;●&lt;/span&gt;&lt;/td&gt;&lt;td style=&quot;text-align:left;padding-left:4px;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;&quot;&gt;Zero Trust Architecture&lt;/div&gt;&lt;div style=&quot;font-size:9.5px;color:#64748B;line-height:1.1;&quot;&gt;Micro-segmentation, continuous verify&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;fontColor=#0F172A;fontSize=9.5;rounded=1;fillColor=#FFFFFF;strokeColor=#BAE6FD;shadow=0;spacing=6;verticalAlign=middle;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1285" y="786" width="242" height="36" as="geometry"/></mxCell>
+        <mxCell id="legend_footer" value="&lt;table style=&quot;width:100%;height:100%;text-align:left;&quot;&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;width:65px;vertical-align:middle;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;LEGEND:&lt;/td&gt;
+      &lt;td style=&quot;vertical-align:middle;&quot;&gt;
+        &lt;div style=&quot;display:flex;align-items:center;gap:16px;font-size:9.5px;color:#334155;&quot;&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span&gt;—&lt;/span&gt;&lt;div&gt;User Interaction&lt;/div&gt;&lt;/div&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;&quot;&gt;—&lt;/span&gt;&lt;div&gt;System Integration / Data Exchange&lt;/div&gt;&lt;/div&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#7C3AED;&quot;&gt;- - &lt;/span&gt;&lt;div&gt;AI / Knowledge Flow&lt;/div&gt;&lt;/div&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span style=&quot;color:#0D9488;&quot;&gt;- - &lt;/span&gt;&lt;div&gt;External Collaboration&lt;/div&gt;&lt;/div&gt;
+          &lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;span&gt;- - - &lt;/span&gt;&lt;div&gt;Governance / Control Flow&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/td&gt;
+      &lt;td style=&quot;width:180px;text-align:right;vertical-align:middle;font-size:9.5px;color:#64748B;&quot;&gt;
+        C4 LEVEL: Container &amp;bull; &amp;copy; 2026 NOVACURA
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;" style="text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;fontColor=#0F172A;fontSize=9.5;verticalAlign=middle;align=left;spacing=4;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="20" y="836" width="1520" height="32" as="geometry"/></mxCell>
+        <mxCell id="e_users_to_c1" value="Access via Secure Web Portal (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="1" source="internal_users_box" target="c4_cont_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_users_notifications" value="Notifications, tasks &amp; insights" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0;exitY=0.5;entryX=1;entryY=0.75;" edge="1" parent="1" source="c4_cont_9" target="internal_users_box"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c1_to_c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_0" target="c4_cont_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c2_to_c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_1" target="c4_cont_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c4_to_c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_3" target="c4_cont_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c5_to_c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_4" target="c4_cont_5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c7_to_c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_6" target="c4_cont_7"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c8_to_c9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_7" target="c4_cont_8"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c10_to_c11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_9" target="c4_cont_10"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c11_to_c12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endFill=1;startArrow=classic;startFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_10" target="c4_cont_11"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c1_to_c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_0" target="c4_cont_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c4_to_c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_3" target="c4_cont_6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_c7_to_c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="c4_cont_6" target="c4_cont_9"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ext_cnt_0" value="APIs &amp; Secure Data Exchange (SFTP / API)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_2" target="ext_pod_0"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ext_cnt_1" value="Submissions &amp; Responses (HTTPS / APIs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_5" target="ext_pod_1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ext_cnt_2" value="Regulatory Communications (IDMP / eCTD)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_8" target="ext_pod_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ext_cnt_3" value="Programs &amp; Communications (Secure Portal / APIs)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_11" target="ext_pod_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_ext_cnt_4" value="Insights, answers &amp; recommendations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=10;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_11" target="ext_pod_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

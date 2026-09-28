@@ -1,19 +1,20 @@
-# PromptCanvas — System Architecture & Technical Topology
+# PromptCanvas — System Architecture & Technical Topology (`v3.3.0`)
 
-Welcome to the **PromptCanvas** Architecture Specification. This document outlines the end-to-end system design, subsystem topology, compilation pipelines, validation engines, and data flow models for AI agents and enterprise developers.
+Welcome to the **PromptCanvas** Architecture Specification. This document outlines the end-to-end system design, 5-Tier Google/Gemini/DeepMind model stack, subsystem topology, clause-driven compilation pipelines, validation engines, and data flow models for AI agents and enterprise developers.
 
 ---
 
 ## 1. System Overview
 
-**PromptCanvas** is an enterprise-grade AI diagramming platform built on **Next.js 16 (App Router)** and **React 19**. It compiles natural language prompts, domain requirements, and reference models into production-certified **Draw.io XML (`<mxfile>`)** diagrams, high-resolution vector assets, and structured system documentation.
+**PromptCanvas** is an enterprise-grade AI diagramming and living specifications platform built on **Next.js 16 (App Router)** and **React 19**. It compiles natural language prompts, raster architecture diagrams, domain requirements, and reference models into production-certified **Draw.io XML (`<mxfile>`)** diagrams, high-resolution vector assets, and **16 synchronized Living Specifications**.
 
 ### Core Architectural Responsibilities
-1. **Prompt-to-Architecture Compilation**: Ingests unstructured enterprise text or structured intents and synthesizes complete, multi-tiered architectures using Gemini 2.5 / 3.7.
-2. **First-Principles XML & Geometric Synthesis**: Generates mathematically sound Draw.io XML graphs with strict 16:9 ultra-wide viewport containment, AABB collision auto-healing, and zero external icon CDN dependencies.
-3. **Multi-Vendor Vector Icon Integration**: Inlines authentic Google Cloud and SAP vector SVGs as RFC 2397 `data:image/svg+xml` URIs directly inside diagram nodes.
-4. **Autonomous Closed-Loop Quality Certification**: Enforces a 4-Phase Quality Validator (`evaluateStudio3Quality`) ensuring 0 spatial collisions, 100% viewport containment, and full XML schema validity before canvas streaming.
-5. **Dual-Engine Persistence**: Local-first development via SQLite (`dev.db`) with seamless PostgreSQL production synchronization.
+1. **Prompt-to-Architecture Compilation (5-Tier Model Stack)**: Ingests unstructured enterprise text or structured intents and synthesizes complete, multi-tiered architectures using the Canonical 5-Tier Google / Gemini / DeepMind Model Stack (`google-omni-1.1`, `gemini-3.1-pro-preview`, `gemini-3.8-flash`, `gemini-3.1-flash-live-preview`, `veo-3.1-generate-preview`, `lyria-3.5`, `gemini-3.1-flash-image-preview`, `gemini-3.1-flash-tts-preview`, `text-embedding-005`) centralized in `src/lib/geminiConfig.ts`.
+2. **Dynamic Clause-Driven Synthesis & Word-Safe Wrapping**: Extracts 4+ domain clauses (`extractPromptDomainClauses`) and populates multi-tier Google Cloud architecture cards (`adaptSavedGoogleCloudTemplateToPrompt`) and sequential swimlane flowcharts (`generateLogicalFlowchartDrawioXml`) with word-safe two-line wrapping (`formatTwoLineCardClause`) in `src/lib/promptDrivenDiagramSynthesizer.ts`.
+3. **2-Stage Vision Image-to-Draw.io XML Decompilation**: Converts uploaded raster architecture diagrams (PNG/JPG/WebP) into editable Draw.io XML with 100% verbatim text parity (`src/lib/deepmindVisionDecompiler.ts` & `/api/decompile-image`).
+4. **16 Synchronized Living Specifications**: Automatically compiles 16 architecture documents (PRD, SRS, HLD, LLD, API Contracts, Security & Threat Model, SRE Runbook, FinOps & TCO, etc.) with dynamic domain entities and protocols (`src/lib/spec/livingSpecsGenerator.ts`).
+5. **Autonomous Closed-Loop Quality Certification**: Enforces the 11-Gate Master Omni 1.1 Quality Suite (`scripts/runQualityGate.ts`) and 28-Workflow End-to-End Forensic Audit (`scratch/run_e2e_28_workflows_audit.ts`) ensuring 0 spatial collisions, 100% viewport containment, and full XML schema validity.
+6. **Dual-Engine Persistence**: Local-first development via SQLite (`dev.db`) with seamless PostgreSQL production synchronization.
 
 ---
 
@@ -22,21 +23,22 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 ```text
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                   CLIENT LAYER                                         │
-│  Next.js 16 App Router (React 19) · Studio 3 Workspace · Full-Page Deep Links (/studio3) │
+│  Next.js 16 App Router (React 19) · Unified Architecture Studio (/studio?id=<uuid>)    │
+│  Lightweight Redirect Shims: /workspace, /studio1, /gcp -> /studio                     │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │ REST / JSON-RPC / SSE
+                                            │ REST / JSON-RPC / SSE (Guarded via enforceGeminiRouteGuard)
                                             ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                                 API ROUTE CONTROLLERS                                  │
-│  /api/generate · /api/diagrams · /api/export · /api/quality · /api/templates           │
+│  /api/generate · /api/decompile-image · /api/diagrams · /api/export · /api/docgen      │
 └─────────────────────┬─────────────────────┬────────────────────┬───────────────────────┘
                       │                     │                    │
                       ▼                     ▼                    ▼
 ┌──────────────────────────┐ ┌─────────────────────────┐ ┌───────────────────────────────┐
 │     PROMPT COMPILER      │ │  CANONICAL MASTER ENGINE│ │    PERSISTENCE & LINEAGE      │
-│  • Gemini 2.5 / 3.7 LLM  │ │  • Blueprints 01 - 37   │ │  • Dual SQLite / PostgreSQL   │
-│  • Taxonomy Classification│ │  • Domain Flavoring     │ │  • Deep-link UUID routing    │
-│  • Few-Shot Grounding    │ │  • 16:9 Master Geometry │ │  • Version History Lineage    │
+│  • 5-Tier Gemini Stack   │ │  • 75 Blueprints (01-75)│ │  • Dual SQLite / PostgreSQL   │
+│  • Clause Synthesizer    │ │  • 60 Certified Matrix  │ │  • Deep-link UUID routing     │
+│  • 4-Cat Intent Guard    │ │  • 16:9 Master Geometry │ │  • Version History Lineage    │
 └─────────────┬────────────┘ └──────────────┬──────────┘ └───────────────┬───────────────┘
               │                             │                            │
               └──────────────────────┬──────┴────────────────────────────┘
@@ -47,11 +49,11 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 │  1. Zero-Mutation Canonical Guard  2. 2D AABB Collision Auto-Healing (30px safe margin)│
 │  3. 16:9 Viewport Bound Enforcer   4. XML Schema & Entity Escaping Sanitizer           │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
-                                            │ Certified XML
+                                            │ Certified XML + 16 Living Specs
                                             ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
 │                           EMBEDDED VIEWER & EXPORT RUNTIME                             │
-│  • viewer-static.min.js (Iframe)   • Headless Chrome PNG Renderer   • PPTX / DOCX Exporter│
+│  • DiagramViewerRenderSafe.tsx   • LivingSpecsViewer.tsx   • SVG / PNG / PPTX / DOCX   │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,23 +61,21 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 
 ## 3. Subsystem Breakdown & Directory Map
 
-### 3.1 Prompt Compiler (`src/lib/diagramCompiler.ts`, `prompts/`)
-- **Intent Extraction**: Dissects user prompts into primary domain entities, cloud tiers, data ingress pipelines, compute microservices, and external systems of record.
-- **Architectural Archetype Routing**: Maps prompt intent into one of five standard diagram classes:
-  - `conceptual_diagram` (High-level business capability & boundary level)
-  - `logical_architecture` (Functional microservices, buses, and orchestration)
-  - `technical_infrastructure` (VPC subnets, CIDRs, PSC endpoints, mTLS, HA)
-  - `erd` (Dimensional fact/dimension tables, vector stores, cardinality)
-  - `sequence_diagram` (Step-ordered lifecycle flows, enclaves, activation loops)
+### 3.1 Prompt Compiler & Clause Synthesizer (`src/lib/diagramCompiler.ts`, `src/lib/promptDrivenDiagramSynthesizer.ts`, `prompts/`)
+- **4-Category Conversational Non-Mutation Gate (`src/lib/intentGuard.ts`)**: Intercepts greetings (`"Hi"`), capability queries (`"who are you"`), courtesies (`"thanks"`), and short ambiguous inputs ($\le 2$ words) with zero canvas mutation and zero version increment.
+- **Intent Classification & Archetype Routing (`src/lib/router/intentClassifier.ts`)**: Maps architectural prompts into canonical diagram families (`conceptual_diagram`, `logical_architecture`, `technical_infrastructure`, `erd`, `sequence_diagram`, `dynamic_tiered_infographic`, or bespoke clause-driven synthesis).
+- **Dynamic Clause-Driven Synthesis (`src/lib/promptDrivenDiagramSynthesizer.ts`)**:
+  - `extractPromptDomainClauses(prompt)`: Splits multi-clause enterprise prompts on `->`, `;`, `,`, `with`, `featuring`, `using`, `across` and pairs each clause with authentic Google Cloud / enterprise services.
+  - `formatTwoLineCardClause(text, maxLine1, maxLine2)`: Word-boundary line splitter ensuring card subtitles never clip mid-word (`Cloud S...`).
 
-### 3.2 Master Blueprint Catalog (`src/lib/canonical/`, `templates/`)
-- Contains ground-truth reference architectures matching production blueprints (`images/01.png` to `images/37.png`).
-- **Zero-Mutation Preflight Passthrough**: The engine automatically detects canonical master templates (`archType.startsWith('canonical')`, `NOVACURA`, `template_0`) and passes them through preflight filters with **zero geometric or coordinate mutation**.
+### 3.2 Master Blueprint Catalog (`src/lib/canonical/`, `templates/master_blueprints/`)
+- Contains **75 canonical templates (`01` through `75`)** in `src/lib/canonical/canonicalTemplates.ts` (including Infographics `#52–#66` and Flow Diagrams `#67–#74` + `#75`) and **60 certified architecture blueprints** in `src/lib/blueprintKnowledgeMatrixNormalized.ts`.
+- **Zero-Mutation Preflight Passthrough**: `validateAndHealDrawioXml` and `preflightVerifyAndHealXmlAcrossAll6Audits` pass canonical templates through with **zero coordinate or geometric mutation**.
 - **Domain Flavoring**: Re-flavors titles, descriptions, and metric badges across financial, healthcare, supply chain, and retail domains without altering the master 2D geometry.
 
 ### 3.3 Vector Icon Architecture (`src/lib/gcpIcons.ts`, `src/lib/sapIcons.ts`)
-- **Strict Prohibition**: Never calls external icon CDNs (e.g. `api.iconify.design`), which fail in air-gapped or sandboxed environments.
-- **RFC 2397 Data URI Embedding**: Embeds authentic Google Cloud and SAP vector SVGs as base64 or URI-encoded strings directly inside the Draw.io node style:
+- **Strict Prohibition**: Never calls external icon CDNs (e.g. `api.iconify.design`) or uses raw Unicode emojis inside architecture cards.
+- **RFC 2397 Data URI Embedding**: Embeds authentic Google Cloud and SAP vector SVGs as URI-encoded strings directly inside Draw.io node styles:
   ```text
   shape=image;image=data:image/svg+xml,...;imageWidth=24;imageHeight=24;imageAlign=left;spacingLeft=40;
   ```
@@ -83,15 +83,15 @@ Welcome to the **PromptCanvas** Architecture Specification. This document outlin
 ### 3.4 Preflight Audit & Self-Healing Engine (`src/lib/preflightAuditEngine.ts`)
 Executes 4 deterministic validation gates on all generated XML:
 1. **XML Schema Integrity**: Enforces valid `<mxfile host="embed.diagrams.net"><diagram><mxGraphModel>` document envelopes.
-2. **2D Bounding Box Collision Healing**: Calculates Axis-Aligned Bounding Box (AABB) intersections. Intersecting nodes are automatically pushed rightward (for same-tier elements) or downward (for vertical flows) with a $30\text{px}$ safety margin.
+2. **2D Bounding Box Collision Healing**: Calculates Axis-Aligned Bounding Box (AABB) intersections and pushes overlapping nodes rightward or downward with a $30\text{px}$ safety margin.
 3. **High-Contrast Pill Badging**: Wraps connector labels touching borders in solid white/contrast pills (`labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=3;fontSize=8;fontStyle=1;`).
-4. **Point-to-Point Straightness**: Eliminates awkward $90^\circ$ stepped connector jogs across narrow channels by locking matching entry/exit coordinates ($Y_{\text{exit}} = Y_{\text{entry}}$).
+4. **Point-to-Point Orthogonal Routing**: Eliminates diagonal slants and awkward jogs by locking matching entry/exit coordinates.
 
 ### 3.5 Persistence & Database Engine (`src/lib/db.ts`)
 - **Dual-Engine Architecture**:
-  - Local Dev: Embedded SQLite (`dev.db`).
+  - Local Dev: Embedded SQLite (`dev.db`) with `PRAGMA foreign_keys = ON;`.
   - Production: Managed PostgreSQL via connection pools (`pg`).
-- **Schema Lineage**: Persists diagram versions, chat conversation turns, and architectural taxonomy tags with immutable UUIDs (`/studio3?id=<uuid>`).
+- **Schema Lineage**: Persists diagram versions, chat conversation turns, and architectural taxonomy tags with immutable UUIDs (`/studio?id=<uuid>`).
 
 ---
 
@@ -100,18 +100,18 @@ Executes 4 deterministic validation gates on all generated XML:
 PromptCanvas strictly enforces the separation of architectural abstractions:
 
 ### 1. Conceptual Tier (Rule 22: Capability & Boundary Level)
-- Operates strictly at the capability and boundary level, stripping away infrastructure mechanics (no VPCs, CIDRs, session cookies, web servers, or code packages) to highlight business value, intent, and domain relationships.
+- Operates strictly at the capability and boundary level, stripping away infrastructure mechanics to highlight business value, intent, and domain relationships.
 - Structured around the **4 Canonical Conceptual Flows**:
   1. **User Journey Flow (Experience Flow)**: High-level persona interaction and primary ingress entry points.
   2. **Business Process Flow (Value Stream)**: End-to-end business capability coordination, domain events, and milestones.
-  3. **Domain Data Flow**: Macroscopic information movement across bounded contexts (e.g., Raw ERP Data ➔ Semantic Layer ➔ Analytical Lakehouse ➔ Real-Time Context).
+  3. **Domain Data Flow**: Macroscopic information movement across bounded contexts.
   4. **Enterprise Integration Flow**: Coarse-grained boundary handoffs to external third parties, legacy ERPs, or partner ecosystems (A2A, MCP, REST).
 
 ### 2. Logical Tier
 - Functional microservice decomposition, component contracts, event streams, orchestration engines, and operational state transitions.
 
 ### 3. Technical & Infrastructure Tier (Rule 19)
-- Physical and cloud infrastructure: explicit VPC subnets, CIDR allocations (`10.128.0.0/16`), security perimeters (VPC-SC), private transit endpoints (PSC, Direct Egress), transport protocols (`gRPC over mTLS`, `JSON-RPC`), exact container runtimes (Cloud Run, GKE Autopilot), and Multi-AZ High Availability System Replication (HSR).
+- Physical and cloud infrastructure: explicit VPC subnets, CIDR allocations (`10.128.0.0/16`), security perimeters (VPC-SC), private transit endpoints (PSC, Direct Egress), transport protocols (`gRPC over mTLS`, `JSON-RPC`), exact container runtimes (Cloud Run, GKE Autopilot), and Multi-AZ High Availability.
 
 ---
 
@@ -119,26 +119,38 @@ PromptCanvas strictly enforces the separation of architectural abstractions:
 
 ```text
 PromptCanvas/
-├── AGENTS.md                  # Layer 1: Inviolable rules & architectural laws (Turn 0)
-├── ARCHITECTURE.md            # Layer 2: System topology, compiler pipelines, data flows
-├── SECURITY.md                # Layer 2: Threat model, SVG XSS, auth, workstation safety
-├── RUNBOOK.md                 # Layer 2: Operational commands, ports, E2E headless testing
-├── .agents/skills/            # Layer 3: Executable project skills (11 registered suites)
-│   ├── ai-prompt-evals/       # LLM prompt compiler accuracy benchmarks
-│   ├── visual-regression-testing/ # Headless Puppeteer pixel diff tests
-│   ├── cross-viewport-auditor/# Multi-breakpoint scaling verification
-│   ├── database-schema-guard/ # SQLite <-> Postgres type compatibility
-│   └── security-code-scanner/ # Static SVG XSS & secret leak scanning
+├── AGENTS.md                  # Layer 1: Unified global/project architectural laws (symlinked to ~/.gemini/config/AGENTS.md)
+├── skills.md                  # Layer 1: Unified global/project skill trigger registry (symlinked to ~/.gemini/config/skills.md)
+├── skills.json                # Layer 1: Machine-readable skill manifest (symlinked to ~/.gemini/config/skills.json)
+├── ARCHITECTURE.md            # Layer 2: System topology, 5-Tier model stack, compiler pipelines
+├── SECURITY.md                # Layer 2: Threat model, route guards, SVG XSS, workstation safety
+├── RUNBOOK.md                 # Layer 2: Operational commands, 28-workflow E2E audit, Argolis Cloud Run deploy
+├── .agents/
+│   ├── hooks.json             # Jetski lifecycle governance hooks (symlinked to ~/.gemini/config/hooks.json)
+│   └── skills/                # Layer 3: Executable project skills (13 registered skill suites synced with ~/.gemini/config/skills/)
+│       ├── ai-prompt-evals/
+│       ├── cross-viewport-auditor/
+│       ├── database-schema-guard/
+│       ├── diagram-decompilation-and-geometry/
+│       ├── diagram-generation-engine/
+│       ├── gcp-enterprise-diagram-engine/
+│       ├── load-and-stress-testing/
+│       ├── performance-and-telemetry/
+│       ├── puppeteer-pair-programming/
+│       ├── security-code-scanner/
+│       ├── ui-first-design-system/
+│       ├── universal-document-cloud-hub/
+│       └── visual-regression-testing/
 ├── src/
-│   ├── app/                   # Next.js 16 App Router pages & API routes
-│   └── lib/                   # Core engine, validators, DB, icons, canonical blueprints
-│       ├── canonical/         # Canonical blueprint implementations (01 - 37)
-│       ├── gcpIcons.ts        # Official Google Cloud vector SVG catalog
-│       ├── sapIcons.ts        # Official SAP Ecosystem vector SVG catalog
-│       ├── db.ts              # SQLite / PostgreSQL dual-engine database layer
-│       ├── diagramCompiler.ts # Draw.io XML generator & compiler
-│       └── preflightAuditEngine.ts # 4-Phase Quality Validator & AABB auto-healer
-├── diagrams/                  # Version-controlled production XML & PNG deliverables
-├── scripts/                   # Headless E2E runners, catalog QA suites, generator scripts
-└── scratch/                   # Ephemeral screenshots & diagnostic logs (gitignored)
+│   ├── app/                   # Next.js 16 App Router pages (/studio, /gallery, /docgen, /vision, etc.) & API routes
+│   └── lib/                   # Core engine, 5-tier geminiConfig, validators, DB, icons, canonical blueprints
+│       ├── canonical/         # 75 Canonical blueprint implementations (01 - 75)
+│       ├── geminiConfig.ts    # Authoritative 5-Tier Google/Gemini/DeepMind model registry
+│       ├── promptDrivenDiagramSynthesizer.ts # Clause-driven architecture & flowchart synthesizer
+│       ├── deepmindVisionDecompiler.ts       # 2-Stage Vision image-to-Draw.io XML decompiler
+│       ├── spec/livingSpecsGenerator.ts      # 16 synchronized Living Specifications compiler
+│       └── preflightAuditEngine.ts           # Quality Validator & AABB auto-healer
+├── templates/master_blueprints/ # 60 certified standalone .drawio.xml blueprints + all_master_templates.json
+├── scripts/                   # Quality gate runners, lifecycle hook guards, catalog validators
+└── scratch/                   # Ephemeral screenshots, E2E harnesses & diagnostic logs (gitignored)
 ```

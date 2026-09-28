@@ -1,4 +1,4 @@
-import { ArchitectureAst } from "../ast/architectureAst";
+import { ArchitectureAst, createDefaultFintechAst } from "../ast/architectureAst";
 
 export interface LivingSpecDocument {
   id: string;
@@ -17,9 +17,178 @@ export interface LivingSpecDocument {
   isSynced: boolean;
 }
 
-export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocument[] {
+function inferDomainLabel(projectTitle: string, rawDomain: string): string {
+  const lower = `${projectTitle} ${rawDomain}`.toLowerCase();
+  if (lower.includes('drone') || lower.includes('lidar') || lower.includes('robotics') || lower.includes('autonomous') || lower.includes('collision') || lower.includes('edge')) {
+    return 'AUTONOMOUS ROBOTICS, EDGE TELEMETRY & AI MESH';
+  }
+  if (lower.includes('hospital') || lower.includes('triage') || lower.includes('patient') || lower.includes('clinical') || lower.includes('hl7') || lower.includes('fhir') || lower.includes('sepsis') || lower.includes('icu')) {
+    return 'HEALTHCARE & CLINICAL TRIAGE AI';
+  }
+  if (lower.includes('sap') || lower.includes('manufacturing') || lower.includes('supply chain') || lower.includes('opc-ua')) {
+    return 'INDUSTRIAL MANUFACTURING & SUPPLY CHAIN';
+  }
+  if (lower.includes('secops') || lower.includes('chronicle') || lower.includes('cyber') || lower.includes('soar') || lower.includes('siem')) {
+    return 'ZERO-TRUST CYBERSECURITY & AUTONOMOUS SOC';
+  }
+  if (lower.includes('rag') || lower.includes('vector') || lower.includes('agentic') || lower.includes('llm') || lower.includes('vllm')) {
+    return 'ENTERPRISE AGENTIC AI & KNOWLEDGE PLATFORM';
+  }
+  if (rawDomain && rawDomain.toLowerCase() !== 'financial services & banking' && rawDomain.toLowerCase() !== 'fintech') {
+    return rawDomain.toUpperCase();
+  }
+  if (lower.includes('payment') || lower.includes('settlement') || lower.includes('bank') || lower.includes('fintech')) {
+    return 'FINANCIAL SERVICES & BANKING';
+  }
+  return 'ENTERPRISE CLOUD & AI ARCHITECTURE';
+}
+
+function extractActiveCanvasComponentTitles(ast: ArchitectureAst, activeXml?: string): Array<{ name: string; service: string; tier: string; sla: string }> {
+  const DEFAULT_IDS = new Set([
+    'c_armor', 'c_apigee', 'c_gke', 'c_redis', 'c_pubsub', 'c_vertex', 'c_spanner', 'c_bq',
+    'comp_armor', 'comp_glb', 'comp_gke', 'comp_spanner', 'comp_pubsub', 'comp_bq', 'comp_kms', 'comp_monitoring', 'comp_dr_gke', 'comp_dr_spanner'
+  ]);
+  const customAstComps = (ast.components || []).filter((c) => !DEFAULT_IDS.has(c.id));
+
+  const priorityNodes: Array<{ name: string; service: string; tier: string; sla: string }> = [];
+  const secondaryNodes: Array<{ name: string; service: string; tier: string; sla: string }> = [];
+
+  if (activeXml && typeof activeXml === 'string') {
+    const valRegex = /<mxCell[^>]*\bvalue="([^"]+)"[^>]*\bvertex="1"/gi;
+    let m: RegExpExecArray | null;
+    const seen = new Set<string>();
+    while ((m = valRegex.exec(activeXml)) !== null) {
+      const cellTag = m[0];
+      if (/\bid="(hdr_|tier_|bg_|poster_|legend|footer|swimlane)/i.test(cellTag)) continue;
+      const rawHtml = m[1]
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"');
+
+      const boldMatch = rawHtml.match(/<b[^>]*>([\s\S]*?)<\/b>/i);
+      const primaryText = (boldMatch ? boldMatch[1] : rawHtml)
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const fullDecoded = rawHtml
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const candidate = primaryText.length >= 6 ? primaryText : fullDecoded;
+      const titleWords = (ast.metadata?.projectTitle || '')
+        .toLowerCase()
+        .split(/[^a-z0-9]+/)
+        .filter((w) => w.length >= 4 && !['design', 'full', 'architecture', 'cloud', 'enterprise', 'system'].includes(w));
+
+      if (
+        candidate.length >= 6 &&
+        candidate.length <= 240 &&
+        !/^(1|2|3|4|5|6|7|8|9|0|\d{2}|AI|LR|TD|L[1-4]|Channels|Legend|Guardrails|RAG PIPELINE)$/i.test(candidate) &&
+        !candidate.startsWith('💬') &&
+        !candidate.startsWith('TIER ') &&
+        !candidate.startsWith('LAYER ') &&
+        !candidate.startsWith('CUMULATIVE ') &&
+        !candidate.includes('Generative Prompt:') &&
+        !candidate.includes('Google Cloud Reference Architecture')
+      ) {
+        const key = candidate.toLowerCase();
+        if (!seen.has(key)) {
+          seen.add(key);
+          const item = {
+            name: candidate.slice(0, 76),
+            service: 'Google Cloud Managed Service',
+            tier: (priorityNodes.length + secondaryNodes.length) < 2 ? 'ingress' : (priorityNodes.length + secondaryNodes.length) < 6 ? 'compute' : 'data',
+            sla: '99.999%',
+          };
+          const matchesDomainWord = titleWords.some((w) => key.includes(w));
+          if (matchesDomainWord || /^\[?\d+[a-z]?\]/.test(candidate) || /\bid="(c\d|n\d|node_|step_|t3_|t4_|t5_)/i.test(cellTag)) {
+            priorityNodes.push(item);
+          } else {
+            secondaryNodes.push(item);
+          }
+        }
+      }
+    }
+  }
+
+  const combined = [
+    ...priorityNodes,
+    ...customAstComps.map((c) => ({
+      name: c.name,
+      service: c.service,
+      tier: c.tier,
+      sla: c.sla || '99.999%',
+    })),
+    ...secondaryNodes,
+  ];
+
+  if (combined.length > 0) {
+    const unique: Array<{ name: string; service: string; tier: string; sla: string }> = [];
+    const seenNames = new Set<string>();
+    for (const item of combined) {
+      const k = item.name.toLowerCase();
+      if (!seenNames.has(k)) {
+        seenNames.add(k);
+        unique.push(item);
+      }
+      if (unique.length >= 10) break;
+    }
+    return unique;
+  }
+
+  return (ast.components || []).slice(0, 8).map((c) => ({
+    name: c.name,
+    service: c.service,
+    tier: c.tier,
+    sla: c.sla || '99.999%',
+  }));
+}
+
+export function generateAll16LivingSpecs(rawAst: ArchitectureAst, activeXml?: string): LivingSpecDocument[] {
+  const defaultAst = createDefaultFintechAst();
+  const ast: ArchitectureAst = {
+    metadata: {
+      ...defaultAst.metadata,
+      ...(rawAst?.metadata || {}),
+      drRegions:
+        Array.isArray(rawAst?.metadata?.drRegions) && rawAst.metadata.drRegions.length > 0
+          ? rawAst.metadata.drRegions
+          : defaultAst.metadata.drRegions,
+      compliance:
+        Array.isArray(rawAst?.metadata?.compliance) && rawAst.metadata.compliance.length > 0
+          ? rawAst.metadata.compliance
+          : defaultAst.metadata.compliance,
+    },
+    components:
+      Array.isArray(rawAst?.components) && rawAst.components.length > 0
+        ? rawAst.components
+        : defaultAst.components,
+    connections:
+      Array.isArray(rawAst?.connections) && rawAst.connections.length > 0
+        ? rawAst.connections
+        : defaultAst.connections,
+  };
   const meta = ast.metadata;
   const drRegion = meta.drRegions[0] || "europe-west1";
+  const resolvedDomain = inferDomainLabel(meta.projectTitle, meta.domain);
+  const liveComps = extractActiveCanvasComponentTitles(ast, activeXml);
+  const c0 = liveComps[0]?.name || "Edge Telemetry & API Ingress";
+  const c1 = liveComps[1]?.name || "Core Stream Orchestrator";
+  const c2 = liveComps[2]?.name || "Real-Time Decision & Policy Gate";
+  const c3 = liveComps[3]?.name || "Gemini 3.1 Pro + 3.8 Flash Reasoning Mesh";
+  const c4 = liveComps[4]?.name || "Distributed State & Vector Store";
+
+  const liveInventoryRows = liveComps
+    .map(
+      (c, idx) =>
+        `| **C-0${idx + 1}** | **${c.name}** | ${c.service} | ${c.tier.toUpperCase()} | ${c.sla} |`
+    )
+    .join("\n");
 
   return [
     // DOC-01: PRD
@@ -28,43 +197,48 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
       title: "Product Requirements Document (PRD)",
       shortTitle: "PRD",
       category: "product",
-      description: "Business requirements, user journeys, functional constraints, and success metrics.",
+      description: `Business requirements, synchronized canvas components, functional constraints, and KPIs for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
         "# Product Requirements Document (PRD)",
         "",
         "> [!NOTE]",
-        "> This document serves as the authoritative product specification for **" + meta.projectTitle + "** (" + meta.domain.toUpperCase() + "), defining business objectives, latency boundaries, regulatory compliance, and functional requirements.",
+        "> This document serves as the authoritative product specification for **" + meta.projectTitle + "** (**" + resolvedDomain + "**), dynamically synchronized with the active architecture canvas and defining business objectives, latency boundaries, regulatory compliance, and functional requirements.",
         "",
-        "## 1.0 Executive Problem Statement & Market Opportunity",
-        "Enterprise mission-critical financial and transactional workloads require continuous high-throughput processing across distributed global regions with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform consolidates multi-tenant API ingestion, real-time event streaming, and AI-grounded inference into an integrated, compliant ecosystem.",
+        "## 1.0 Executive Problem Statement & Architecture Scope",
+        "Mission-critical **" + resolvedDomain + "** workloads for **" + meta.projectTitle + "** require continuous high-throughput orchestration across **" + c0 + "**, **" + c1 + "**, and **" + c2 + "** with strict **" + meta.slaTarget + " availability** and zero data loss (**RPO = " + meta.targetRpo + "**). The platform unifies edge ingestion, real-time event streaming, and **Gemini 3.1 Pro + Gemini 3.8 Flash** grounded inference into an integrated, Zero-Trust ecosystem.",
+        "",
+        "## 1.5 Live Synchronized Canvas Component Inventory",
+        "| Component ID | Active Canvas Node / Subsystem | Cloud Backing Service | Architectural Tier | Target SLA |",
+        "| :--- | :--- | :--- | :--- | :--- |",
+        liveInventoryRows,
         "",
         "## 2.0 Key Performance Indicators (KPIs) & SLA Targets",
         "| Metric Category | Target KPI | Verification Mechanism | Incident Severity |",
         "| :--- | :--- | :--- | :--- |",
         "| **System Availability** | **" + meta.slaTarget + "** (< 5.26 mins/yr downtime) | Multi-Region Active-Active Dual-Hub (" + drRegion + ") | P1 Executive Escalation |",
-        "| **Transaction Latency** | **p95 < 25ms • p99 < 50ms** | Redis 7.2 In-Memory + ScaNN Vector Index | P2 SRE Alert Threshold |",
+        "| **End-to-End Latency** | **p95 < 25ms • p99 < 50ms** | " + c0 + " + Memorystore Redis 7.2 + ScaNN Index | P2 SRE Alert Threshold |",
         "| **Data Recovery Point** | **" + meta.targetRpo + " (Zero Data Loss)** | Cloud Spanner TrueTime Multi-Region Commit | P1 Regulatory Breach |",
         "| **Failover Recovery** | **" + meta.targetRto + "** | Automated Cloud DNS Healthcheck & Witness Quorum | P1 SLA Violation |",
-        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 3.7 Flash + ScaNN RAG | Automated Fallback |",
+        "| **AI Inference Precision**| **> 99.8% Precision @ < 20ms** | Vertex AI Gemini 3.8 Flash + Gemini 3.1 Pro + Omni 1.1 Audit | Automated Fallback |",
         "",
         "## 3.0 Functional Requirements (FR)",
-        "* **FR-101 (Idempotent Execution)**: Every incoming transaction payload must supply an idempotent UUIDv4 token cached in Redis 7.2 for 86,400s to eliminate duplicate processing under high concurrency.",
-        "* **FR-102 (Zero-Cleartext Ingress)**: Sensitive customer credentials, PII, and cardholder data must be tokenized at edge ingress via Cloud KMS HSM; cleartext PII must never touch application memory or unencrypted storage.",
-        "* **FR-103 (Sub-20ms AI Grounding)**: Transaction payloads must be vectorized into 768-dimensional embeddings and matched against historical baselines in under 20ms using Vertex ScaNN.",
-        "* **FR-104 (Distributed ACID Consistency)**: State changes must execute as two-phase ACID commits in Cloud Spanner, with continuous Change-Data-Capture (CDC) streamed to BigQuery Lakehouse for real-time auditability.",
-        "* **FR-105 (Multi-Region Disaster Recovery)**: System state must continuously replicate between primary region and standby region (" + drRegion + ") with automated health-check failover.",
+        "* **FR-101 (Deterministic Ingress & Telemetry)**: Every incoming payload across **" + c0 + "** must supply an idempotent UUIDv4 token cached in Redis 7.2 for 86,400s to guarantee exactly-once processing under high concurrency.",
+        "* **FR-102 (Zero-Cleartext Perimeter)**: Sensitive credentials, telemetry secrets, and regulated payloads traversing **" + c1 + "** must be tokenized at edge ingress via Cloud KMS HSM; cleartext secrets must never touch unencrypted storage.",
+        "* **FR-103 (Sub-20ms AI Grounding)**: Domain payloads in **" + c2 + "** must be vectorized into 768-dimensional `text-embedding-005` embeddings and evaluated by **Gemini 3.8 Flash** (`gemini-3.8-flash`) and **Gemini 3.1 Pro** (`gemini-3.1-pro-preview`) in under 20ms.",
+        "* **FR-104 (Distributed ACID Consistency)**: State transitions across **" + c4 + "** must execute as two-phase ACID commits in Cloud Spanner, with continuous Change-Data-Capture (CDC) streamed to BigQuery Lakehouse for real-time auditability.",
+        "* **FR-105 (Multi-Region Disaster Recovery)**: System state must continuously replicate between primary region (" + meta.primaryRegion + ") and standby region (" + drRegion + ") with automated health-check failover.",
         "* **FR-106 (Zero-Trust Identity Federation)**: All inter-service communications must enforce short-lived (3600s) SPIFFE/OIDC tokens via Workload Identity Federation without static API keys.",
         "",
         "## 4.0 Non-Functional Requirements (NFR)",
-        "* **NFR-201 (Throughput Scale)**: The architecture must scale elastically to sustain up to 50,000 transactions per second (TPS) without performance degradation.",
-        "* **NFR-202 (Regulatory Compliance)**: Full adherence to SOC2 Type II, PCI-DSS Level 1, ISO 27001, and HIPAA compliance baselines with hardware-isolated KMS CMEK encryption.",
-        "* **NFR-203 (Auditability & Lineage)**: 100% of transaction events and schema mutations must be cataloged in Dataplex with immutable WORM retention in Cloud Storage.",
+        "* **NFR-201 (Throughput Scale)**: The architecture must scale elastically to sustain up to 50,000 events/transactions per second (TPS) without performance degradation.",
+        "* **NFR-202 (Regulatory Compliance)**: Full adherence to SOC2 Type II, ISO 27001, PCI-DSS Level 1, and HIPAA compliance baselines with hardware-isolated KMS CMEK encryption.",
+        "* **NFR-203 (Auditability & Lineage)**: 100% of domain events and schema mutations must be cataloged in Dataplex with immutable WORM retention in Cloud Storage.",
         "",
         "## 5.0 Target User Personas",
-        "1. **Enterprise Customer / End User**: Submits high-velocity payment transactions and expects instantaneous sub-second settlement confirmation.",
-        "2. **Risk & Fraud Analyst**: Inspects automated AI inference reasoning traces and reviews model confidence scoring in real time.",
+        "1. **Domain Operator / Edge Client**: Interacts with **" + c0 + "** and expects deterministic sub-second execution confirmation.",
+        "2. **AI & Systems Architect**: Inspects **" + c2 + "** and **Gemini 3.1 Pro** reasoning traces and confidence scores in real time.",
         "3. **Lead SRE & Security Operations**: Monitors distributed telemetry, SLO burn rates, Cloud Armor WAF mitigations, and VPC Service Controls perimeters.",
         "",
         "---"
@@ -77,27 +251,27 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
       title: "Functional Design Document (FDD) & User Workflows",
       shortTitle: "FDD",
       category: "product",
-      description: "Business logic rules, state machine transitions, and interactive user journeys.",
+      description: `Business logic rules, state machine transitions, and interactive workflows for ${meta.projectTitle}.`,
       lastUpdated: meta.lastSyncTimestamp,
       isSynced: true,
       markdownContent: [
         "# Functional Design Document (FDD)",
         "",
-        "## 1.0 End-to-End User Journey & State Transitions",
-        "The system coordinates user interactions across five operational phases:",
-        "1. **Client Submission**: Client authenticates via OIDC / mTLS and submits payload with idempotency key.",
-        "2. **Edge Validation**: Cloud Armor inspects for OWASP Top 10 vulnerabilities and enforces rate limits.",
-        "3. **Synchronous Validation**: GKE Autopilot verifies account status and checks Redis cache for duplicate submission.",
-        "4. **AI-Assisted Evaluation**: Vertex AI ScaNN performs similarity search; Gemini 3.7 Flash evaluates business rules.",
-        "5. **Commit & Acknowledgement**: Cloud Spanner records immutable ledger entry and emits CDC event to Pub/Sub.",
+        "## 1.0 End-to-End Execution Journey & State Transitions (" + meta.projectTitle + ")",
+        "The system coordinates domain execution across five operational phases synchronized with the canvas:",
+        "1. **Phase 1 — Ingress & Telemetry (" + c0 + ")**: Client/edge node authenticates via OIDC / mTLS and submits structured payload with idempotency key.",
+        "2. **Phase 2 — Edge & Policy Validation (" + c1 + ")**: Cloud Armor & Apigee X inspect payloads and enforce rate limits and schema contracts.",
+        "3. **Phase 3 — Core Orchestration (" + c2 + ")**: GKE Autopilot / Cloud Run verifies state and checks Memorystore Redis 7.2 for duplicate execution.",
+        "4. **Phase 4 — AI-Grounded Reasoning (" + c3 + ")**: Vertex AI ScaNN performs vector similarity search; **Gemini 3.8 Flash** and **Gemini 3.1 Pro** evaluate domain policies.",
+        "5. **Phase 5 — State Commit & Event Broadcast (" + c4 + ")**: Cloud Spanner records immutable state entry and emits CDC event to Cloud Pub/Sub.",
         "",
         "## 2.0 Business Logic Exception Matrix",
         "| Exception Scenario | Detection Layer | System Action | Status Code |",
         "| :--- | :--- | :--- | :--- |",
-        "| Duplicate Idempotency Key | Redis 7.2 Layer | Return cached original response | 200 OK (Cached) |",
-        "| WAF Rate-Limit Exceeded | Cloud Armor | Drop connection with 429 Too Many Requests | 429 Too Many Requests |",
-        "| AI Model Scoring Timeout | Vertex AI Engine | Fallback to heuristic rule engine | 200 OK (Heuristic Fallback) |",
-        "| Database Deadlock / Abort | Spanner Driver | Automated exponential backoff retry (max 3) | 503 Unavailable (Retryable) |",
+        "| Duplicate Idempotency Key | Redis 7.2 Layer (" + c0 + ") | Return cached original response | 200 OK (Cached) |",
+        "| WAF Rate-Limit Exceeded | Cloud Armor Edge | Drop connection with 429 Too Many Requests | 429 Too Many Requests |",
+        "| AI Model Scoring Timeout | Vertex AI (" + c3 + ") | Fallback to deterministic rule engine | 200 OK (Deterministic Fallback) |",
+        "| Database Deadlock / Abort | Spanner Driver (" + c4 + ") | Automated exponential backoff retry (max 3) | 503 Unavailable (Retryable) |",
         "",
         "---"
       ].join("\n")
@@ -109,11 +283,11 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
       title: "High-Level Architecture Design (HLD)",
       shortTitle: "HLD",
       category: "architecture",
-      description: "Master 6-zone Google Cloud Reference Architecture topology and subsystem boundaries.",
+      description: `Master reference architecture topology and subsystem boundaries for ${meta.projectTitle}.`,
       embeddedFigure: {
         id: "Figure 3.1",
-        title: "6-Zone GCP Reference Topology",
-        description: "Full multi-region production cloud deployment with Zero-Trust VPC boundaries.",
+        title: `${meta.projectTitle} — Synchronized Canvas Topology`,
+        description: `Full multi-region production cloud deployment (${resolvedDomain}) with Zero-Trust VPC boundaries.`,
         diagramType: "topology"
       },
       lastUpdated: meta.lastSyncTimestamp,
@@ -122,20 +296,20 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
         "# High-Level Architecture Design (HLD)",
         "",
         "> [!NOTE]",
-        "> Designed for high-scale enterprise operations spanning **" + meta.primaryRegion + "** and **" + drRegion + "** with Zero-Trust VPC boundaries.",
+        "> Designed for **" + meta.projectTitle + "** (**" + resolvedDomain + "**) spanning **" + meta.primaryRegion + "** and **" + drRegion + "** with Zero-Trust VPC boundaries.",
         "",
         "## 1.0 Architectural Tenets & Trade-Off Analysis",
         "1. **External Consistency Over Eventual Reconciliation**: Cloud Spanner TrueTime GPS/atomic clocks provide strict serializability without replication lag.",
-        "2. **Defense-in-Depth Layering**: Ingress scrubbing (Cloud Armor) -> API Gateway (Apigee X) -> Private Subnet Mesh (GKE Autopilot) -> Encrypted DB (Cloud Spanner).",
+        "2. **Defense-in-Depth Layering**: Ingress scrubbing (**" + c0 + "**) -> Orchestration (**" + c1 + "**) -> Policy & AI Mesh (**" + c2 + "**) -> Encrypted State (**" + c4 + "**).",
         "3. **Zero-Trust Network Perimeter**: No public IPs on compute or database instances; all communication traverses Private Service Connect (PSC) and VPC-SC.",
         "",
-        "## 2.0 Subsystem Decomposition",
-        "* **Zone 1: Ingress & Edge**: Anycast External HTTPS GCLB + Cloud Armor L7 WAF + Apigee X API Gateway.",
-        "* **Zone 2: Application Core Mesh**: GKE Autopilot c3-standard-8 cluster + Cloud Run Gen2 + Memorystore Redis 7.2.",
-        "* **Zone 3: Real-Time Event Streaming**: Cloud Pub/Sub + Datastream CDC + Cloud Dataflow Apache Beam ETL.",
-        "* **Zone 4: Vertex AI Intelligence Hub**: ScaNN Vector Search + Model Armor Shield + Gemini 3.7 Flash & Pro Hybrid Engine.",
-        "* **Zone 5: Multi-Region Lakehouse & DB**: Cloud Spanner nam3 + BigQuery BigLake + Dual-Region Cloud Storage.",
-        "* **Zone 6: Zero-Trust Governance**: VPC Service Controls + Keyless Workload Identity + Cloud KMS HSM + Dataplex.",
+        "## 2.0 Synchronized Subsystem Decomposition",
+        "* **Zone 1 (Ingress & Edge)**: **" + c0 + "** backed by Anycast External HTTPS GCLB + Cloud Armor L7 WAF + Apigee X.",
+        "* **Zone 2 (Core Orchestration)**: **" + c1 + "** running on GKE Autopilot c3-standard-8 + Cloud Run Gen2 + Memorystore Redis 7.2.",
+        "* **Zone 3 (Real-Time Event Mesh)**: **" + c2 + "** powered by Cloud Pub/Sub + Datastream CDC + Cloud Dataflow Apache Beam.",
+        "* **Zone 4 (Vertex AI Intelligence Hub)**: **" + c3 + "** with ScaNN Vector Search + Model Armor Shield + **Gemini 3.1 Pro** & **Gemini 3.8 Flash**.",
+        "* **Zone 5 (Multi-Region Persistence)**: **" + c4 + "** on Cloud Spanner nam3 + BigQuery BigLake + Dual-Region Cloud Storage.",
+        "* **Zone 6 (Zero-Trust Governance)**: VPC Service Controls + Keyless Workload Identity + Cloud KMS HSM + **Omni 1.1** Certification.",
         "",
         "---"
       ].join("\n")
@@ -162,13 +336,13 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
         "## 1.0 Latency Budget Allocation (p99 Target < 50ms)",
         "| Step | Operation Description | Protocol / Transport | Source -> Destination | Target Latency |",
         "| :--- | :--- | :--- | :--- | :--- |",
-        "| **Step 1** | Edge TLS Termination & WAF Scrub | HTTPS (TLS 1.3) | Client -> Cloud Armor | < 4.0ms |",
-        "| **Step 2** | Token Authentication & Routing | HTTPS Anycast | GCLB -> Apigee X Gateway | < 3.5ms |",
-        "| **Step 3** | HSM Tokenization & Idempotency Lock | gRPC mTLS | Apigee X -> GKE / Redis 7.2 | < 2.0ms |",
-        "| **Step 4** | ScaNN Vector Embeddings Match | gRPC Internal | GKE -> Vertex Vector Search | < 12.0ms |",
-        "| **Step 5** | Gemini 3.7 Flash Inference | gRPC Internal | Vertex Search -> Gemini Core | < 18.0ms |",
-        "| **Step 6** | Spanner TrueTime 2PC ACID Commit | gRPC Private | GKE -> Cloud Spanner Leader | < 6.5ms |",
-        "| **Step 7** | Asynchronous Audit Event Stream | Pub/Sub Stream | GKE -> Pub/Sub / BigQuery | Async (< 2ms) |",
+        "| **Step 1** | Edge TLS Termination & WAF Scrub | HTTPS (TLS 1.3) | Client -> " + c0 + " | < 4.0ms |",
+        "| **Step 2** | Token Authentication & Routing | HTTPS Anycast | " + c0 + " -> " + c1 + " | < 3.5ms |",
+        "| **Step 3** | HSM Tokenization & Idempotency Lock | gRPC mTLS | " + c1 + " -> " + c2 + " / Redis 7.2 | < 2.0ms |",
+        "| **Step 4** | ScaNN Vector Embeddings Match | gRPC Internal | " + c2 + " -> Vertex Vector Search | < 12.0ms |",
+        "| **Step 5** | Gemini 3.8 Flash + 3.1 Pro Inference | gRPC Internal | Vertex Search -> Gemini 3.8 Flash | < 18.0ms |",
+        "| **Step 6** | Spanner TrueTime 2PC ACID Commit | gRPC Private | " + c3 + " -> " + c4 + " | < 6.5ms |",
+        "| **Step 7** | Asynchronous Audit Event Stream | Pub/Sub Stream | " + c4 + " -> Pub/Sub / BigQuery | Async (< 2ms) |",
         "| **TOTAL** | **End-to-End Execution Latency** | | **Client to Confirmed Response** | **46.0ms (p99 < 50ms)** |",
         "",
         "---"
@@ -251,9 +425,9 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
         "## 1.0 Comprehensive STRIDE Threat Mitigation Matrix",
         "| Threat ID | STRIDE Category | Threat Vector | Vulnerable Asset | Google Cloud Security Control | Residual Risk |",
         "| :--- | :--- | :--- | :--- | :--- | :--- |",
-        "| **TR-01** | **Spoofing** | Forged client identity or bearer token hijacking | Apigee Ingress | Mutual TLS (mTLS) + OAuth 2.0 PKCE + Identity-Aware Proxy (IAP) | Low |",
-        "| **TR-02** | **Tampering** | Man-in-the-middle transaction packet alteration | In-transit traffic | Enforced TLS 1.3 with AES-256-GCM + Dedicated Private Google Fiber | Very Low |",
-        "| **TR-03** | **Repudiation** | Client or user denies initiating transaction | Ledger Postings | Cryptographic audit streaming into WORM-compliant BigQuery storage | Very Low |",
+        "| **TR-01** | **Spoofing** | Forged client identity or bearer token hijacking | " + c0 + " | Mutual TLS (mTLS) + OAuth 2.0 PKCE + Identity-Aware Proxy (IAP) | Low |",
+        "| **TR-02** | **Tampering** | Man-in-the-middle packet alteration | In-transit traffic | Enforced TLS 1.3 with AES-256-GCM + Dedicated Private Google Fiber | Very Low |",
+        "| **TR-03** | **Repudiation** | Client or service denies initiating state change | " + c4 + " | Cryptographic audit streaming into WORM-compliant BigQuery storage | Very Low |",
         "| **TR-04** | **Information Disclosure** | Data exfiltration via compromised database credentials | Spanner / GCS | VPC Service Controls (VPC-SC) + Cloud KMS HSM (CMEK AES-256) | Very Low |",
         "| **TR-05** | **Denial of Service** | Volumetric Layer 7 HTTP flood attacking gateway | GCLB / GKE | Cloud Armor Adaptive Protection (30Gbps rate-limiting per IP) | Low |",
         "| **TR-06** | **Elevation of Privilege** | Container escape leading to cluster compromise | GKE Pods | Non-root Pod Security Standards + Workload Identity (No service keys) | Low |",
@@ -274,9 +448,12 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
       markdownContent: [
         "# AI System Card & Cognitive Architecture Spec",
         "",
-        "## 1.0 Foundation Model Provenance & Routing",
-        "* **Primary Reasoning Engine**: **Gemini 3.7 Flash** (Native Hybrid Reasoning with Dynamic Thinking budget).",
-        "* **Complex Orchestration Engine**: **Gemini 2.5 Pro** (Deep ReAct Planning, Tool Calling AST, 2M context window).",
+        "## 1.0 Foundation Model Provenance & 5-Tier Routing",
+        "* **Tier 0 Multimodal Certification Gate**: **Omni 1.1** (`google-omni-1.1` — 6-Audit Visual & Structural Judge).",
+        "* **Tier 1 Deep Reasoning & Architecture Synthesis**: **Gemini 3.1 Pro** (`gemini-3.1-pro-preview` — Deep ReAct Planning, Tool Calling AST, 2M context window).",
+        "* **Tier 2 High-Speed Interactive Copilot**: **Gemini 3.8 Flash** (`gemini-3.8-flash` — Sub-second Hybrid Reasoning & Intent Routing).",
+        "* **Tier 3 Real-Time Bidirectional Voice/Video**: **Gemini 3.1 Flash Live** (`gemini-3.1-flash-live-preview`).",
+        "* **Tier 4 Multimodal Media Synthesis**: **Veo 3.1** (`veo-3.1-generate-preview`), **Lyria 3.5** (`lyria-3.5`), **Gemini 3.1 Flash Image** (`gemini-3.1-flash-image-preview`), **Gemini 3.1 Flash TTS** (`gemini-3.1-flash-tts-preview`).",
         "* **Embedding Model**: **text-embedding-005** (768-dimensional normalized dense vectors).",
         "",
         "## 2.0 RAG Triad Evaluation Benchmarks",
@@ -498,7 +675,7 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
         "| :--- | :--- | :--- | :--- | :--- |",
         "| **Cloud Spanner (nam3)** | 3 Multi-Region Nodes | $2,980.00 | $1,788.00 (40% discount) | $0.035 |",
         "| **GKE Autopilot Compute** | 48 vCPU, 192GB RAM | $1,650.00 | $1,072.50 (35% discount) | $0.021 |",
-        "| **Vertex AI (Gemini 3.7)**| 50M Reasoning Tokens | $1,250.00 | $1,250.00 (On-Demand) | $0.025 |",
+        "| **Vertex AI (Gemini 3.8 / 3.1)**| 50M Reasoning Tokens | $1,250.00 | $1,250.00 (On-Demand) | $0.025 |",
         "| **Cloud Armor & GCLB** | 1 Global VIP + WAF Rules | $450.00 | $450.00 | $0.009 |",
         "| **Cloud Pub/Sub & Dataflow**| 5TB Stream Processing | $380.00 | $247.00 (35% discount) | $0.005 |",
         "| **TOTAL MONTHLY SPEND** | | **$6,710.00** | **$4,807.50 (28.3% savings)** | **$0.095 / 10k Tx** |",
@@ -556,7 +733,7 @@ export function generateAll16LivingSpecs(ast: ArchitectureAst): LivingSpecDocume
         "* **Status**: APPROVED (2026-08-20)",
         "* **Context**: High-speed similarity matching required for real-time anomaly detection at 50,000 queries per second.",
         "* **Decision**: Deploy Vertex AI ScaNN with Tree-AH quantization.",
-        "* **Consequences**: p99 latency < 2.5ms; seamless integration with Gemini 3.7 Flash reasoning pipelines.",
+        "* **Consequences**: p99 latency < 2.5ms; seamless integration with Gemini 3.8 Flash and Gemini 3.1 Pro reasoning pipelines.",
         "",
         "---"
       ].join("\n")

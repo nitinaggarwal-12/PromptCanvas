@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
-import { getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import { getEffectiveGeminiApiKey, getGeminiModel } from '@/lib/geminiConfig';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 
@@ -57,12 +57,22 @@ function getDomainContextualChips(
     ];
   }
 
-  // Biopharma / Default
+  if (d === 'biopharma' || /\b(pharma|clinical|fda|drug|gxp|novacura|oncology|genom|biotech)\b/i.test(projectTitle)) {
+    return [
+      { label: '🧬 Add 21 CFR Part 11 Electronic Signature Matrix', prompt: `Add an FDA 21 CFR Part 11 compliance chapter detailing dual-custody electronic signatures and SHA-256 audit stamping for ${projectTitle}.` },
+      { label: '🛡️ Add Pharmacovigilance Real-Time Adverse Event Gate', prompt: `Add an automated pharmacovigilance (PV) safety event detection gate with MedDRA ontology dictionary lookups.` },
+      { label: '🔬 Add ScaNN Vector Knowledge Retrieval to Diagram 2', prompt: `Update Diagram 2 to feature hybrid sparse-dense ScaNN vector indexing over clinical trial protocols and IND submissions.` },
+      { label: '⚖️ Add Human-in-the-Loop Medical Reviewer Workbench', prompt: `Add an architectural specification for human-in-the-loop (HITL) Medical Information Specialist review queues and overrides.` },
+    ];
+  }
+
+  // Dynamic Domain-Contextual Default (Zero Biopharma Leakage)
+  const cleanTitle = projectTitle || 'Enterprise Architecture';
   return [
-    { label: '🧬 Add 21 CFR Part 11 Electronic Signature Matrix', prompt: `Add an FDA 21 CFR Part 11 compliance chapter detailing dual-custody electronic signatures and SHA-256 audit stamping for ${projectTitle}.` },
-    { label: '🛡️ Add Pharmacovigilance Real-Time Adverse Event Gate', prompt: `Add an automated pharmacovigilance (PV) safety event detection gate with MedDRA ontology dictionary lookups.` },
-    { label: '🔬 Add ScaNN Vector Knowledge Retrieval to Diagram 2', prompt: `Update Diagram 2 to feature hybrid sparse-dense ScaNN vector indexing over clinical trial protocols and IND submissions.` },
-    { label: '⚖️ Add Human-in-the-Loop Medical Reviewer Workbench', prompt: `Add an architectural specification for human-in-the-loop (HITL) Medical Information Specialist review queues and overrides.` },
+    { label: `🛡️ Add STRIDE Threat & Zero-Trust Matrix`, prompt: `Add a comprehensive STRIDE threat model and zero-trust security controls matrix tailored specifically to ${cleanTitle}.` },
+    { label: `⚡ Add Sub-20ms Latency & SLO Budget Table`, prompt: `Add a quantitative latency budget, p99 SLO target table, and autoscaling circuit-breaker policy for ${cleanTitle}.` },
+    { label: `🔄 Update Diagram 1 with High-Availability Mesh`, prompt: `Update Diagram 1 to incorporate multi-region active-active failover, edge WAF protection, and dead-letter queue recovery for ${cleanTitle}.` },
+    { label: `⚖️ Add Architecture Decision Record (ADR) Ledger`, prompt: `Add a formal Architecture Decision Record (ADR) section evaluating core storage, messaging, and compute trade-offs for ${cleanTitle}.` },
   ];
 }
 
@@ -126,7 +136,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    const model = process.env.GEMINI_PRO_MODEL_ID || process.env.GEMINI_MODEL_ID || 'gemini-2.5-flash';
+    const model = getGeminiModel('pro');
 
     const systemInstruction = `You are PromptCanvas AI Assist, an elite Principal Enterprise Systems Architect.
 You assist users in refining, editing, and expanding enterprise architecture specification documents and visual diagrams.

@@ -4,9 +4,9 @@ import { getLatestDiagramVersion, getDiagramVersion, saveAuditReport, getAuditRe
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
-import { injectUseCaseFlavor } from '@/lib/diagramCleaner';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { cookies } from 'next/headers';
 
@@ -419,6 +419,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/audit' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   const user = await getAuthenticatedUser();
   const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
   const clientIp = rawIp.split(',')[0]?.trim() || '';
@@ -460,8 +463,6 @@ export async function POST(request: Request) {
 
     if (!xmlContent || xmlContent.length < 500) {
       xmlContent = getDefaultXmlForArchitecture(effectiveArchType, ucContext, userPrompt) || '';
-    } else {
-      xmlContent = injectUseCaseFlavor(xmlContent, ucContext, userPrompt);
     }
 
     const categoryKey = (PROMPTS[auditCategory as AuditCategory] ? auditCategory : 'security') as AuditCategory;

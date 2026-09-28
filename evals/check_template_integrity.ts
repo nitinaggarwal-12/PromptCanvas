@@ -49,7 +49,7 @@ const NAME_ASSERTIONS: Record<string, { must: string[]; forbid?: string[] }> = {
   vpc: { must: ['vpc', 'subnet', 'firewall', 'peering', 'nat', 'route', 'network'] },
   retail: { must: ['retail', 'ecommerce', 'e-commerce', 'store', 'cart', 'order', 'omnichannel', 'merchand'] },
   fintech: { must: ['payment', 'bank', 'financial', 'transaction', 'ledger', 'wealth', 'fraud', 'portfolio'] },
-  supply: { must: ['supply', 'logistic', 'inventory', 'warehouse', 'shipment', 'procure', 'supplier'] },
+  supply: { must: ['supply', 'logistic', 'inventory', 'warehouse', 'shipment', 'procure', 'supplier', 'cmms', 'erp', 'manufacturing', 'equipment', 'asset', 'fleet'] },
   hr: { must: ['hr', 'talent', 'workforce', 'employee', 'candidate', 'recruit', 'hiring'] },
   observability: { must: ['observab', 'metric', 'trace', 'log', 'slo', 'alert', 'monitor'] },
   finops: { must: ['cost', 'finops', 'billing', 'chargeback', 'budget', 'showback'] },
@@ -115,7 +115,8 @@ export function checkCorpus(files: string[]): Violation[] {
     const haystack = labels.join(' ').toLowerCase();
     const lowerName = name.toLowerCase();
     for (const [token, rule] of Object.entries(NAME_ASSERTIONS)) {
-      if (!lowerName.includes(token)) continue;
+      const tokenInFilename = new RegExp(`(^|[^a-z0-9])${token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`).test(lowerName);
+      if (!tokenInFilename) continue;
       // Short keywords ("hr", "ci", "cd", "pk") match inside unrelated words
       // ("through", "threshold"), which silently hides real mismatches.
       // Anything <= 4 chars must match on a word boundary.

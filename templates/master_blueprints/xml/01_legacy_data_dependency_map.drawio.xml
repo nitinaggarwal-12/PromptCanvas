@@ -1,0 +1,247 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_legacy_data_dependency_map" name="Google Cloud Discovery &amp; Assessment: Legacy Silos to Modern Cloud Migration Architecture (P1-APP-L-01)">
+    <!-- pc-catalog-id:legacy_data_dependency_map -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-canvas-header-stripped -->
+<!-- pc-blueprint-visual-system-v2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="920" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="784" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ==================== HEADER BANNER ==================== -->
+        
+        
+        
+        
+        <!-- Gemini (approved model) Badge -->
+        
+
+
+        <!-- ==================== COLUMN 1: ON-PREM LEGACY SILOS &amp; MONOLITHS ==================== -->
+        <mxCell id="col1_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="25" y="60" width="360" height="715" as="geometry"/>
+        </mxCell>
+        
+
+        <!-- 1.1 IBM z/OS Mainframe -->
+        <mxCell id="card_mainframe" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt; IBM z/OS MAINFRAME&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• High CPU During Peak&lt;br&gt;• Schema Drift&lt;br&gt;• Hardcoded Credentials, LAR&lt;br&gt;• Legacy NAS/SFTP Shares&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="12" width="340" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 1.2 Oracle 11g RAC Cluster -->
+        <mxCell id="card_oracle" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#991B1B;&quot;&gt; ORACLE 11g RAC CLUSTER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;padding-top:2px;&quot;&gt;• Oracle 11g RAC Cluster (Dual Node)&lt;br&gt;• 3,400+ Unindexed Stored Procedures&lt;br&gt;• Storage Legacy &amp;amp; Fragmented DB Clones&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="139" width="340" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 1.3 SAP ECC 6.0 On-Prem -->
+        <mxCell id="card_sap" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Crect%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%23008FD3%22%2F%3E%3Ctext%20x%3D%2224%22%20y%3D%2230%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2216%22%20font-weight%3D%22900%22%20fill%3D%22%23FFFFFF%22%20text-anchor%3D%22middle%22%3ESAP%3C%2Ftext%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt; SAP ECC 6.0 On-Prem&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• Compact 6.0.0 Monolith Core&lt;br&gt;• SAP ECC On-Prem ABAP Custom Modules&lt;br&gt;• Shadow Access &amp;amp; Legacy DB Locks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="266" width="340" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 1.4 Shadow Access &amp; MS SQL DBs -->
+        <mxCell id="card_shadow_sql" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#991B1B;&quot;&gt; Shadow Access &amp;amp; MS SQL DBs&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;padding-top:2px;&quot;&gt;• Complex Direct Query Paths&lt;br&gt;• Schema Drift &amp;amp; Unmonitored PII Data&lt;br&gt;• Hardcoded Credentials &amp;amp; Shared DB Locks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#B91C1C;strokeWidth=1.5;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="394" width="340" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 1.5 Legacy NAS/SFTP File Shares -->
+        <mxCell id="card_nas_shares" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Crect%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%228%22%20fill%3D%22%23008FD3%22%2F%3E%3Ctext%20x%3D%2224%22%20y%3D%2230%22%20font-family%3D%22Arial%2Csans-serif%22%20font-size%3D%2216%22%20font-weight%3D%22900%22%20fill%3D%22%23FFFFFF%22%20text-anchor%3D%22middle%22%3ESAP%3C%2Ftext%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#991B1B;&quot;&gt; Legacy NAS/SFTP File Shares&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• Legacy NAS/Shares, SAP File Shares&lt;br&gt;• Hardcoded Credentials &amp;amp; Unencrypted Cron Scripts&lt;br&gt;• Nightly Batch CSV Extracts &amp;amp; Raw XML Transfers&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DC2626;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="35" y="522" width="340" height="162" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 2: LEGACY SPAGHETTI INTEGRATION MATRIX ==================== -->
+        <mxCell id="col2_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="405" y="60" width="355" height="715" as="geometry"/>
+        </mxCell>
+        
+
+        <!-- 2.1 TIBCO / IBM MQ ESB BUS -->
+        <mxCell id="card_tibco_bus" value="&lt;b style=&quot;font-size:10px;color:#B45309;&quot;&gt;TIBCO / IBM MQ ESB BUS&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#64748B;&quot;&gt;High Peak CPU Load&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="415" y="16" width="160" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- 2.2 Informatica PowerCenter ETL -->
+        <mxCell id="card_informatica_etl" value="&lt;b style=&quot;font-size:9.5px;color:#B45309;&quot;&gt;Informatica&lt;br&gt;PowerCenter ETL&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Nightly Batch Bottleneck&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="415" y="146" width="160" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- 2.3 Point-to-Point Shell Scripts (1,200+) -->
+        <mxCell id="card_shell_scripts" value="&lt;b style=&quot;font-size:9.5px;color:#B45309;&quot;&gt;Point-to-Point&lt;br&gt;Shell Scripts (1,200+)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Unmonitored Cron Jobs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="415" y="276" width="160" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- 2.4 Cognos / Crystal Reports BI -->
+        <mxCell id="card_cognos_bi" value="&lt;b style=&quot;font-size:9.5px;color:#B45309;&quot;&gt;Cognos / Crystal&lt;br&gt;Reports BI&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Direct Production DB Query&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D97706;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="415" y="406" width="160" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- Floating Problem Callout Pills inside Spaghetti Matrix -->
+        <mxCell id="pill_prob_cpu" value="&lt;b style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;High CPU During Peak&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="39" width="145" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pill_prob_schema" value="&lt;b style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;Schema Drift Risk&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="169" width="145" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pill_prob_cred" value="&lt;b style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;Hardcoded Credentials&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="299" width="145" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pill_prob_locks" value="&lt;b style=&quot;font-size:9.5px;color:#B91C1C;&quot;&gt;Read-Only DB Locks&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="600" y="429" width="145" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pill_prob_unmanaged" value="&lt;b style=&quot;font-size:10px;color:#B91C1C;&quot;&gt;Unmanaged Shadow Data&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEE2E2;strokeColor=#EF4444;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="450" y="584" width="260" height="42" as="geometry"/>
+        </mxCell>
+
+        <!-- Complex Spaghetti Interconnect Lines -->
+        <mxCell id="spag_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#D97706;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_mainframe" target="card_tibco_bus">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#DC2626;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_oracle" target="card_informatica_etl">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#D97706;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_sap" target="card_shell_scripts">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#DC2626;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_shadow_sql" target="card_cognos_bi">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#D97706;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_tibco_bus" target="pill_prob_cpu">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#D97706;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_informatica_etl" target="pill_prob_schema">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="spag_7" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;curved=1;endArrow=none;strokeColor=#D97706;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;" edge="1" parent="1" source="card_shell_scripts" target="pill_prob_cred">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 3: GOOGLE CLOUD STRATOZONE &amp; DISCOVERY CENTER ==================== -->
+        <mxCell id="col3_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="780" y="60" width="395" height="715" as="geometry"/>
+        </mxCell>
+        
+
+        <!-- Central Globe / Circle: UNIFIED MIGRATION CATALOG -->
+        <mxCell id="card_unified_catalog" value="&lt;b style=&quot;font-size:10px;color:#1E40AF;&quot;&gt; GOOGLE CLOUD DISCOVERY &amp;amp; ASSESSMENT&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;font-weight:bold;&quot;&gt;UNIFIED MIGRATION CATALOG&lt;/span&gt;" style="shape=ellipse;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=2;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="16" width="185" height="185" as="geometry"/>
+        </mxCell>
+
+        <!-- Concentric Lifecycle Process Badges -->
+        <mxCell id="badge_disc" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Discovering...&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="219" width="185" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_prof" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Profiling...&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="264" width="185" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_class" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Classifying...&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="309" width="185" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="badge_rat" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Rationalizing...&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#93C5FD;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="354" width="185" height="35" as="geometry"/>
+        </mxCell>
+
+        <!-- Right Side Discovery Core Cards inside Column 3 -->
+        <!-- 3.1 StratoZone Collector Appliance -->
+        <mxCell id="card_stratozone" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; StratoZone&lt;br&gt;Collector Appliance&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Automated WMI &amp;amp; SSH Discovery&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="990" y="12" width="170" height="110" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.2 Google Cloud Migration Center -->
+        <mxCell id="card_migration_center" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:30px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;22&quot; height=&quot;22&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Google Cloud&lt;br&gt;Migration Center&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Central TCO &amp;amp; Asset Inventory&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="990" y="139" width="170" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.3 Sensitive Data Protection (DLP) -->
+        <mxCell id="card_dlp_inspect" value="&lt;b style=&quot;font-size:9.5px;color:#1E40AF;&quot;&gt; Sensitive Data&lt;br&gt;Protection (DLP)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Automated PII Masking &amp;amp; Audit&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="990" y="269" width="170" height="120" as="geometry"/>
+        </mxCell>
+
+        <!-- 3.4 Gemini (approved model) Architecture Reasoning -->
+        <mxCell id="card_gemini_reasoning" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2224%22%20r%3D%2222%22%20fill%3D%22%231E293B%22%2F%3E%3Cpath%20fill%3D%22%2338BDF8%22%20d%3D%22M24%208c0%208.8-7.2%2016-16%2016%208.8%200%2016%207.2%2016%2016%200-8.8%207.2-16%2016-16-8.8%200-16-7.2-16-16z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#2563EB;&quot;&gt; Gemini (approved model)&lt;br&gt;Architecture Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;• Automated 6Rs Migration Track Classification&lt;br&gt;• Wave Schedule &amp;amp; Dependency Optimization&lt;br&gt;• Legacy Monolith Code Refactoring Plan&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="790" y="409" width="370" height="275" as="geometry"/>
+        </mxCell>
+
+        <!-- Flow Arrows from Stages to Tools -->
+        <mxCell id="arr_st_1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="badge_disc" target="card_stratozone">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_st_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="badge_prof" target="card_migration_center">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_st_3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="badge_class" target="card_dlp_inspect">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="arr_st_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block;endFill=1;strokeColor=#2563EB;strokeWidth=1.2;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=0;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="badge_rat" target="card_gemini_reasoning">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== COLUMN 4: TARGET MODERN STATE &amp; WAVE PLAN ==================== -->
+        <mxCell id="col4_bg" value="" style="rounded=1;arcSize=2;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#22C55E;strokeWidth=1.5;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="1195" y="60" width="380" height="715" as="geometry"/>
+        </mxCell>
+        
+
+        <!-- 4.1 Wave 1: Lift &amp; Shift (Rehost) -->
+        <mxCell id="card_wave1" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#15803D;&quot;&gt; WAVE 1: LIFT &amp;amp; SHIFT (Rehost)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• Optimized Transformation (Compute Engine / Migrate to VMs)&lt;br&gt;• Defaulted Low-Risk Dependencies&lt;br&gt;• Outcome: Decommission &amp;amp; Retire On-Prem Hardware&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="12" width="360" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.2 Wave 2: Modernize DBs (Replatform) -->
+        <mxCell id="card_wave2" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#15803D;&quot;&gt; WAVE 2: MODERNIZE DBs (Replatform)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• Optimized Database Migration Service (DMS)&lt;br&gt;• Cloud SQL for PostgreSQL / AlloyDB Enterprise&lt;br&gt;• Outcome: Eliminate Oracle Licensing &amp;amp; Hardware Locks&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="139" width="360" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.3 Wave 3: Event-Driven &amp; AI (Refactor) -->
+        <mxCell id="card_wave3" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;font-weight:bold;color:#15803D;&quot;&gt; WAVE 3: EVENT-DRIVEN &amp;amp; AI (Refactor)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:9.5px;color:#475569;padding-top:2px;&quot;&gt;• Cloud Run Serverless Microservices &amp;amp; Pub/Sub EDA&lt;br&gt;• BigQuery Serverless Analytics &amp;amp; Vertex AI Models&lt;br&gt;• Outcome: workload-defined latency target Microservices &amp;amp; AI Cognitive Features&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="266" width="360" height="115" as="geometry"/>
+        </mxCell>
+
+        <!-- 4.4 Wave 4: Decommission &amp; Retire -->
+        <mxCell id="card_wave4" value="&lt;table style=&quot;width:100%;text-align:left;padding:6px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;font-weight:bold;color:#15803D;&quot;&gt; WAVE 4: DECOMMISSION &amp;amp; RETIRE&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:10px;color:#475569;padding-top:2px;&quot;&gt;• Full Datacenter Lease Termination&lt;br&gt;• Complete Archival to Cloud Storage Archive Class&lt;br&gt;• Outcome: 42% TCO OpEx Savings &amp;amp; Zero Technical Debt&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.2;align=left;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1205" y="394" width="360" height="290" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== CROSS-COLUMN INTER-TIER CONNECTORS ==================== -->
+        <!-- StratoZone -> Wave 1 -->
+        <mxCell id="arr_strato_wave1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="card_stratozone" target="card_wave1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Migration Center -> Wave 2 -->
+        <mxCell id="arr_mig_wave2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="card_migration_center" target="card_wave2">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- DLP -> Wave 3 -->
+        <mxCell id="arr_dlp_wave3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="card_dlp_inspect" target="card_wave3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Gemini Reasoning -> Wave 4 -->
+        <mxCell id="arr_gem_wave4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=10;endArrow=block;endFill=1;strokeColor=#16A34A;strokeWidth=1.5;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;" edge="1" parent="1" source="card_gemini_reasoning" target="card_wave4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+
+        <!-- ==================== FOOTER LEGEND ==================== -->
+        <!-- x = 25 .. 1575 (width = 1550, height = 36) -->
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Migration Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;On-Prem Legacy Silos &amp;amp; Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Non-Deterministic Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Spaghetti Integration Matrix&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Sensitive Data Protection (DLP) &amp;amp; Discovery&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Clear, Optimized Transformation Waves&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini (approved model)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="25" y="709" width="1550" height="36" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="footer_copyright" value="&lt;span style=&quot;font-size:10px;color:#94A3B8;&quot;&gt; 2026 Google LLC | Confidential &amp;amp; Proprietary&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1">
+          <mxGeometry x="25" y="749" width="300" height="14" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

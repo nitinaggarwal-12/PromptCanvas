@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { decompileArchitectureImageWithDeepMind } from '@/lib/deepmindVisionDecompiler';
 import { createDiagram } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 
 export async function POST(req: NextRequest) {
+  const guard = await enforceGeminiRouteGuard(req, { endpoint: 'api/decompile-image' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   try {
     const user = await getAuthenticatedUser();
     const body = await req.json();
@@ -38,7 +42,7 @@ export async function POST(req: NextRequest) {
         resolvedUseCase,
         'DeepMind Vision AST',
         user?.id,
-        'conceptual_diagram'
+        'vision_decompiled'
       );
       persistedId = saved?.diagram?.id;
     } catch (dbErr) {

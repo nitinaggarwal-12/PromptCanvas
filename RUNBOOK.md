@@ -34,10 +34,14 @@ npm test
 npm run validate:blueprints
 npm run validate:canvas
 
-# 6. Run Headless Chrome Real-Browser Journey
+# 6. Run 13-Point Studio Architecture & Intent Audit + 28-Workflow E2E Forensic Audit
+npm run test:studio1
+npx tsx scratch/run_e2e_28_workflows_audit.ts
+
+# 7. Run Headless Chrome Real-Browser Journey
 npx tsx scripts/e2e_real_browser_journey.ts
 
-# 7. Production Next.js Build (with 4GB Node heap allocation)
+# 8. Production Next.js Build (with 4GB Node heap allocation)
 npm run build
 ```
 

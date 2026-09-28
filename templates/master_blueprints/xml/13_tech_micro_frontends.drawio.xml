@@ -1,0 +1,178 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_tech_micro_frontends" name="Micro-Frontend &amp; Modular UI Presentation">
+    <!-- pc-canvas-header-stripped -->
+    <!-- pc-catalog-id:tech_micro_frontends -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="950" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="950" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ================= LEFT: CLIENT ACTORS &amp; STATIC CDN ================= -->
+        <!-- Cloud CDN Static Assets -->
+        <mxCell id="box_cdn" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;div style=&quot;font-size:18.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Google Cloud CDN&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Edge Caching &amp;amp; SSL Offload&lt;br&gt;JS Bundles, CSS &amp;amp; Shared Assets&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F9FF;strokeColor=#0284C7;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- End Users -->
+        <mxCell id="actor_user" value="&lt;div style=&quot;font-size:22px;&quot;&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;End Users&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Web &amp;amp; Mobile Browsers&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="150" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Real-Time WebSocket Server -->
+        <mxCell id="box_ws" value="&lt;div style=&quot;font-size:18.5px;&quot;&gt;&lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Real-Time WebSocket Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Cloud Run (WSS bidirectional)&lt;br&gt;Sub-20ms Real-Time Push&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="265" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= CENTER: HOST APPLICATION SHELL ================= -->
+        <mxCell id="box_host_shell" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=2;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="310" y="30" width="680" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="title_host_shell" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Enterprise Host Application Shell (Next.js / React 19)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Dynamic Module Federation Runtime, Client Event Bus, Auth Boundary &amp;amp; Theme Provider&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;spacingTop=3;whiteSpace=wrap;overflow=hidden;spacing=4;spacingLeft=4;spacingRight=4;spacingBottom=3;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="660" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Module 1: Navigation &amp; Global Header MFE -->
+        <mxCell id="mfe_header" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Remote MFE 1: Global Navigation &amp;amp; App Switcher&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Federated Remote URL: /remotes/header.js (Webpack 5 Container)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="180" width="620" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Module 2: Core Workspace / Canvas MFE -->
+        <mxCell id="mfe_workspace" value="&lt;b style=&quot;font-size:11.5px;color:#0F172A;&quot;&gt;Remote MFE 2: Architecture Canvas &amp;amp; Editor Studio&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Draw.io XML Viewport, Aspect Ratio Controls, Zoom/Pan &amp;amp; Multi-View Tabs&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="255" width="620" height="75" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Module 3: AI Assistant &amp; Chat Widget MFE -->
+        <mxCell id="mfe_chat" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Remote MFE 3: Gemini AI Copilot &amp;amp; Chat Widget&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Real-Time Streaming Tokens, MCP Tool Invocations, WebSocket State Sync&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="350" width="620" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Sub-Module 4: Analytics &amp; Metrics Dashboard MFE -->
+        <mxCell id="mfe_analytics" value="&lt;b style=&quot;font-size:11px;color:#0F172A;&quot;&gt;Remote MFE 4: FinOps &amp;amp; SRE Observability Cockpit&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Looker Embedded Dashboards, Token Quota Gauges, Error Budget Tracking&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="440" width="620" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- Shared Client Bus &amp; State Management -->
+        <mxCell id="mfe_bus" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Unified Cross-MFE Client Event Bus &amp;amp; Shared Store&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;BroadcastChannel API, RxJS Subject Bus, Shared Tailwind Design Tokens &amp;amp; Auth JWT Vault&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#475569;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="530" width="620" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Runtime Orchestrator / Error Boundary -->
+        <mxCell id="mfe_runtime" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Dynamic Module Orchestrator &amp;amp; Resilient Error Boundary&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;Automatic Remote Fallback, Circuit Breaker on Load Failure, Sub-millisecond Mount Lifecycle&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="340" y="605" width="620" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= RIGHT: BACKEND APIS &amp; IDENTITY ================= -->
+        <!-- Apigee API Gateway -->
+        <mxCell id="box_apigee" value="&lt;div style=&quot;font-size:18.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Apigee API Gateway&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;OAuth2 / JWT Token Validation&lt;br&gt;Rate Limiting &amp;amp; Route Dispatch&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#0F172A;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="140" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Backend Microservices -->
+        <mxCell id="box_backend_apis" value="&lt;div style=&quot;font-size:18.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Backend Microservices (Cloud Run)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;GraphQL &amp;amp; REST Domain APIs&lt;br&gt;Catalog, Orders, Diagrams &amp;amp; AI Agents&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#2563EB;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="275" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Google Cloud Identity Platform -->
+        <mxCell id="box_idp" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;div style=&quot;font-size:18.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;GCP Identity Platform (IdP)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;SAML 2.0 / OIDC Identity Federation&lt;br&gt;Multi-Factor Auth (MFA) &amp;amp; SSO&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#16A34A;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="410" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Cloud Logging &amp; SRE Observability -->
+        <mxCell id="box_obs" value="&lt;div style=&quot;font-size:18.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Cloud Logging &amp;amp; Trace&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;Client Error Telemetry, OpenTelemetry&lt;br&gt;Core Web Vitals (LCP, CLS, FID)&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#D97706;strokeWidth=1.5;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="545" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Personas Right -->
+        <mxCell id="persona_eng" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Crect%20x%3D%226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23F25022%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%237FBA00%22%2F%3E%3Crect%20x%3D%226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2300A4EF%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2226%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23FFB900%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;div style=&quot;font-size:20.5px;&quot;&gt; &lt;/div&gt;&lt;b style=&quot;font-size:9.5px;color:#0F172A;&quot;&gt;Frontend &amp;amp; SRE Teams&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:9.5px;color:#64748B;&quot;&gt;CI/CD Deployment &amp;amp; Monitoring&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#64748B;strokeWidth=1;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="340" width="220" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- ================= EXPLICIT SOLID CONNECTORS ================= -->
+        <!-- 1. End User -> Host App -->
+        <mxCell id="edge_user_host" value="1. HTTPS / WSS Ingress" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0F172A;strokeWidth=2;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#0F172A;" edge="1" parent="1" source="actor_user" target="box_host_shell">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 2. Host Shell <-> CDN -->
+        <mxCell id="edge_host_cdn" value="2. Dynamic Bundle Fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=block;startArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=9.5;fontColor=#0284C7;" edge="1" parent="1" source="box_host_shell" target="box_cdn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="208"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. Host Shell <-> WebSocket Server -->
+        <mxCell id="edge_host_ws" value="3. Bidirectional WSS Stream" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=block;startArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=9.5;fontColor=#16A34A;" edge="1" parent="1" source="box_host_shell" target="box_ws">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310" y="648"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Host Shell -> Apigee -->
+        <mxCell id="edge_host_apigee" value="4. REST/GraphQL Queries" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=2;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=10;fontColor=#2563EB;" edge="1" parent="1" source="box_host_shell" target="box_apigee">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="290"/>
+              <mxPoint x="1010" y="188"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 5. Apigee -> Backend Microservices -->
+        <mxCell id="edge_apigee_backend" value="5. Private Service Connect (PSC)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#2563EB;strokeWidth=1.8;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=9.5;fontColor=#2563EB;" edge="1" parent="1" source="box_apigee" target="box_backend_apis">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- 6. Host Shell <-> Identity Platform -->
+        <mxCell id="edge_host_idp" value="6. OIDC / SAML Auth &amp; Token Refresh" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#16A34A;strokeWidth=1.8;endArrow=block;startArrow=block;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=9.5;fontColor=#16A34A;" edge="1" parent="1" source="box_host_shell" target="box_idp">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="458"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Host Shell -> Cloud Logging &amp; Observability -->
+        <mxCell id="edge_host_obs" value="7. Web Vitals &amp; Crash Logs" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#D97706;strokeWidth=1.8;strokeDashArray=4 4;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;fontStyle=1;fontSize=9.5;fontColor=#D97706;" edge="1" parent="1" source="box_host_shell" target="box_obs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1010" y="593"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. Personas -> Backend &amp; Observability -->
+        <mxCell id="edge_eng_backend" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="persona_eng" target="box_backend_apis">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="385"/>
+              <mxPoint x="1300" y="323"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_eng_obs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#64748B;strokeWidth=1.2;endArrow=block;endFill=1;" edge="1" parent="1" source="persona_eng" target="box_obs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="385"/>
+              <mxPoint x="1300" y="593"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- BOTTOM FOOTER LEGEND -->
+        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#334155;&quot;&gt;&lt;b&gt;Architecture Legend:&lt;/b&gt;  HTTPS/REST Flow &amp;nbsp;|&amp;nbsp;  WebSocket Stream &amp;nbsp;|&amp;nbsp;  Module Federation Remote &amp;nbsp;|&amp;nbsp;  Telemetry &amp;amp; Logging &amp;nbsp;|&amp;nbsp;  Zero-Trust Identity Boundary&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+          <mxGeometry x="30" y="830" width="1540" height="34" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

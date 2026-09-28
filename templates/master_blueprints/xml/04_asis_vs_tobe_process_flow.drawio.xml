@@ -1,0 +1,1217 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_asis_vs_tobe_process_flow" name="05 — As-Is / To-Be">
+    <!-- pc-catalog-id:asis_vs_tobe_process_flow -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-canvas-header-stripped -->
+<!-- pc-blueprint-visual-system-v2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="904" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        
+        
+        <mxCell id="as_is_frame" value="" style="rounded=1;arcSize=3;fillColor=#FEF2F2;strokeColor=#F87171;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="12" width="610" height="618" as="geometry"/></mxCell>
+        <mxCell id="as_is_hdr_pill" value="&lt;b style=&quot;font-size:9.5px;color:#FFFFFF;letter-spacing:0.5px;&quot;&gt;AS-IS CURRENT STATE&lt;/b&gt;" style="rounded=0;fillColor=#DC2626;strokeColor=#DC2626;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;strokeWidth=1.2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="175" y="12" width="290" height="26" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;Siloed&lt;br/&gt;Systems&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z&quot;/&gt;&lt;polyline points=&quot;14 2 14 8 20 8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;Manual&lt;br/&gt;Processes&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="122" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;Data&lt;br/&gt;Inconsistency&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="220" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;Limited&lt;br/&gt;Visibility&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="318" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;23 6 13.5 15.5 8.5 10.5 1 18&quot;/&gt;&lt;polyline points=&quot;17 6 23 6 23 12&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;High&lt;br/&gt;Operational Cost&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="416" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_pp_5" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;polyline points=&quot;12 6 12 12 16 14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#991B1B;line-height:1.15;&quot;&gt;Long Time&lt;br/&gt;to Market&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="514" y="44" width="94" height="38" as="geometry"/></mxCell>
+        <mxCell id="as_is_lbl_channels" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;CHANNELS&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="92" width="82" height="68" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_channels" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="92" as="sourcePoint"/>
+          <mxPoint x="110" y="160" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="92"/>
+            <mxPoint x="110" y="160"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_lbl_apps" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z&quot;/&gt;&lt;polyline points=&quot;3.27 6.96 12 12.01 20.73 6.96&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;22.08&quot; x2=&quot;12&quot; y2=&quot;12&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;APPLICATIONS&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="170" width="82" height="78" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_apps" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="170" as="sourcePoint"/>
+          <mxPoint x="110" y="248" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="170"/>
+            <mxPoint x="110" y="248"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_lbl_data" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;DATA&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="258" width="82" height="76" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_data" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="258" as="sourcePoint"/>
+          <mxPoint x="110" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="258"/>
+            <mxPoint x="110" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_lbl_integration" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;INTEGRATION&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="344" width="82" height="74" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_integration" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="344" as="sourcePoint"/>
+          <mxPoint x="110" y="418" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="344"/>
+            <mxPoint x="110" y="418"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_lbl_infra" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;2&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;6.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;18&quot; x2=&quot;6.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;INFRASTRUCTURE&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="428" width="82" height="74" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_infra" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="428" as="sourcePoint"/>
+          <mxPoint x="110" y="502" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="428"/>
+            <mxPoint x="110" y="502"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_lbl_sec" value="&lt;div style=&quot;text-align:center;padding:2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#991B1B&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#991B1B;line-height:1.15;&quot;&gt;SECURITY &amp;amp;&lt;br/&gt;GOVERNANCE&lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="24" y="520" width="82" height="76" as="geometry"/></mxCell>
+        <mxCell id="as_is_div_sec" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#FECACA;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="110" y="520" as="sourcePoint"/>
+          <mxPoint x="110" y="596" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="110" y="520"/>
+            <mxPoint x="110" y="596"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_ch_0" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M6 18h8&quot;/&gt;&lt;path d=&quot;M3 22h18&quot;/&gt;&lt;path d=&quot;M14 22a7 7 0 1 0 0-14h-1&quot;/&gt;&lt;path d=&quot;M9 14h2&quot;/&gt;&lt;path d=&quot;M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z&quot;/&gt;&lt;path d=&quot;M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Research&lt;br/&gt;Teams&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="96" width="94" height="60" as="geometry"/></mxCell>
+        <mxCell id="as_is_ch_1" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Clinical&lt;br/&gt;Ops&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="218" y="96" width="94" height="60" as="geometry"/></mxCell>
+        <mxCell id="as_is_ch_2" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z&quot;/&gt;&lt;polyline points=&quot;14 2 14 8 20 8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Regulatory&lt;br/&gt;Affairs&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="318" y="96" width="94" height="60" as="geometry"/></mxCell>
+        <mxCell id="as_is_ch_3" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Commercial&lt;br/&gt;Teams&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="418" y="96" width="94" height="60" as="geometry"/></mxCell>
+        <mxCell id="as_is_ch_4" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2&quot;/&gt;&lt;path d=&quot;M12 17c-2 0-3-1-3-2s1-2 3-2 3 1 3 2-1 2-3 2z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Patients /&lt;br/&gt;HCPs&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="518" y="96" width="94" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_as_ch_app_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="165" y="156" as="sourcePoint"/>
+          <mxPoint x="158" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="165" y="156"/>
+            <mxPoint x="158" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="165" y="156" as="sourcePoint"/>
+          <mxPoint x="241" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="165" y="156"/>
+            <mxPoint x="241" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="156" as="sourcePoint"/>
+          <mxPoint x="241" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="156"/>
+            <mxPoint x="241" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="156" as="sourcePoint"/>
+          <mxPoint x="324" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="156"/>
+            <mxPoint x="324" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="156" as="sourcePoint"/>
+          <mxPoint x="407" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="156"/>
+            <mxPoint x="407" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="156" as="sourcePoint"/>
+          <mxPoint x="407" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="365" y="156"/>
+            <mxPoint x="407" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_6" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="156" as="sourcePoint"/>
+          <mxPoint x="490" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="365" y="156"/>
+            <mxPoint x="490" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_7" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="156" as="sourcePoint"/>
+          <mxPoint x="573" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="465" y="156"/>
+            <mxPoint x="573" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_8" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="565" y="156" as="sourcePoint"/>
+          <mxPoint x="407" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="565" y="156"/>
+            <mxPoint x="407" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_ch_app_9" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="565" y="156" as="sourcePoint"/>
+          <mxPoint x="490" y="174" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="565" y="156"/>
+            <mxPoint x="490" y="174"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_app_0" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Discovery Tools&lt;br/&gt;(Various)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="as_is_app_1" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;eTMF&lt;br/&gt;(On-Prem)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="201" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="as_is_app_2" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;CTMS&lt;br/&gt;(On-Prem)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="284" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="as_is_app_3" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Safety DB&lt;br/&gt;(Oracle)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="367" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="as_is_app_4" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Regulatory&lt;br/&gt;Submissions&lt;br/&gt;(FTP / Email)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="450" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="as_is_app_5" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Commercial&lt;br/&gt;Systems&lt;br/&gt;(ERP / CRM)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="533" y="174" width="80" height="70" as="geometry"/></mxCell>
+        <mxCell id="e_as_app_dt_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="158" y="244" as="sourcePoint"/>
+          <mxPoint x="165" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="158" y="244"/>
+            <mxPoint x="165" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="241" y="244" as="sourcePoint"/>
+          <mxPoint x="265" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="241" y="244"/>
+            <mxPoint x="265" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="241" y="244" as="sourcePoint"/>
+          <mxPoint x="465" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="241" y="244"/>
+            <mxPoint x="465" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="324" y="244" as="sourcePoint"/>
+          <mxPoint x="265" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="324" y="244"/>
+            <mxPoint x="265" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="407" y="244" as="sourcePoint"/>
+          <mxPoint x="365" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="407" y="244"/>
+            <mxPoint x="365" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="490" y="244" as="sourcePoint"/>
+          <mxPoint x="465" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="490" y="244"/>
+            <mxPoint x="465" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_app_dt_6" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="573" y="244" as="sourcePoint"/>
+          <mxPoint x="565" y="262" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="573" y="244"/>
+            <mxPoint x="565" y="262"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_dt_0" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;R&amp;amp;D Data&lt;br/&gt;(Disparate)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;shape=cylinder;whiteSpace=wrap;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="262" width="94" height="68" as="geometry"/></mxCell>
+        <mxCell id="as_is_dt_1" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Clinical Data&lt;br/&gt;(Siloed)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;shape=cylinder;whiteSpace=wrap;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="218" y="262" width="94" height="68" as="geometry"/></mxCell>
+        <mxCell id="as_is_dt_2" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Safety Data&lt;br/&gt;(Isolated)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;shape=cylinder;whiteSpace=wrap;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="318" y="262" width="94" height="68" as="geometry"/></mxCell>
+        <mxCell id="as_is_dt_3" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Regulatory Docs&lt;br/&gt;(File Shares)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;shape=cylinder;whiteSpace=wrap;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="418" y="262" width="94" height="68" as="geometry"/></mxCell>
+        <mxCell id="as_is_dt_4" value="&lt;div style=&quot;text-align:center;padding:4px 2px;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.2;&quot;&gt;Commercial Data&lt;br/&gt;(Separate)&lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;shape=cylinder;whiteSpace=wrap;overflow=hidden;spacing=6;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="518" y="262" width="94" height="68" as="geometry"/></mxCell>
+        <mxCell id="e_as_dt_int_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="165" y="330" as="sourcePoint"/>
+          <mxPoint x="178" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="165" y="330"/>
+            <mxPoint x="178" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="330" as="sourcePoint"/>
+          <mxPoint x="178" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="330"/>
+            <mxPoint x="178" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="330" as="sourcePoint"/>
+          <mxPoint x="303" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="330"/>
+            <mxPoint x="303" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="330" as="sourcePoint"/>
+          <mxPoint x="303" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="365" y="330"/>
+            <mxPoint x="303" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="330" as="sourcePoint"/>
+          <mxPoint x="428" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="365" y="330"/>
+            <mxPoint x="428" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="330" as="sourcePoint"/>
+          <mxPoint x="428" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="465" y="330"/>
+            <mxPoint x="428" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_6" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="330" as="sourcePoint"/>
+          <mxPoint x="553" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="465" y="330"/>
+            <mxPoint x="553" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_dt_int_7" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="565" y="330" as="sourcePoint"/>
+          <mxPoint x="553" y="348" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="565" y="330"/>
+            <mxPoint x="553" y="348"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_int_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Point-to-Point&lt;br/&gt;Interfaces&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="348" width="120" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_int_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Batch ETL&lt;br/&gt;&amp;amp; Scripts&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="243" y="348" width="120" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_int_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;File Transfers&lt;br/&gt;(FTP / SFTP)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="368" y="348" width="120" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_int_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z&quot;/&gt;&lt;polyline points=&quot;14 2 14 8 20 8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Email &amp;amp; Manual&lt;br/&gt;Handoffs&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="493" y="348" width="120" height="64" as="geometry"/></mxCell>
+        <mxCell id="e_as_int_inf_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="178" y="412" as="sourcePoint"/>
+          <mxPoint x="165" y="432" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="178" y="412"/>
+            <mxPoint x="165" y="432"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_int_inf_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="303" y="412" as="sourcePoint"/>
+          <mxPoint x="265" y="432" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="303" y="412"/>
+            <mxPoint x="265" y="432"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_int_inf_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="303" y="412" as="sourcePoint"/>
+          <mxPoint x="365" y="432" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="303" y="412"/>
+            <mxPoint x="365" y="432"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_int_inf_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="428" y="412" as="sourcePoint"/>
+          <mxPoint x="465" y="432" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="428" y="412"/>
+            <mxPoint x="465" y="432"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_int_inf_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="553" y="412" as="sourcePoint"/>
+          <mxPoint x="565" y="432" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="553" y="412"/>
+            <mxPoint x="565" y="432"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_inf_0" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;2&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;6.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;18&quot; x2=&quot;6.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;On-Prem&lt;br/&gt;Data Centers&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="432" width="94" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_inf_1" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;2&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;6.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;18&quot; x2=&quot;6.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;VMware&lt;br/&gt;Clusters&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="218" y="432" width="94" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_inf_2" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Traditional&lt;br/&gt;Databases&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="318" y="432" width="94" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_inf_3" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;File Servers&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="418" y="432" width="94" height="64" as="geometry"/></mxCell>
+        <mxCell id="as_is_inf_4" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#1E293B;line-height:1.15;&quot;&gt;Backup&lt;br/&gt;(Tape)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="518" y="432" width="94" height="64" as="geometry"/></mxCell>
+        <mxCell id="e_as_inf_sc_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="165" y="496" as="sourcePoint"/>
+          <mxPoint x="165" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="165" y="496"/>
+            <mxPoint x="165" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_inf_sc_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="265" y="496" as="sourcePoint"/>
+          <mxPoint x="265" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="265" y="496"/>
+            <mxPoint x="265" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_inf_sc_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="365" y="496" as="sourcePoint"/>
+          <mxPoint x="365" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="365" y="496"/>
+            <mxPoint x="365" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_inf_sc_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="465" y="496" as="sourcePoint"/>
+          <mxPoint x="465" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="465" y="496"/>
+            <mxPoint x="465" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_as_inf_sc_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#F87171;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=classic;endSize=3.5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="565" y="496" as="sourcePoint"/>
+          <mxPoint x="565" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="565" y="496"/>
+            <mxPoint x="565" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="as_is_sc_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#991B1B;line-height:1.15;&quot;&gt;Siloed Security&lt;br/&gt;Policies&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="118" y="524" width="94" height="72" as="geometry"/></mxCell>
+        <mxCell id="as_is_sc_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#991B1B;line-height:1.15;&quot;&gt;Manual Access&lt;br/&gt;Management&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="218" y="524" width="94" height="72" as="geometry"/></mxCell>
+        <mxCell id="as_is_sc_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#991B1B;line-height:1.15;&quot;&gt;Limited Audit&lt;br/&gt;&amp;amp; Monitoring&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="318" y="524" width="94" height="72" as="geometry"/></mxCell>
+        <mxCell id="as_is_sc_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#991B1B;line-height:1.15;&quot;&gt;Compliance&lt;br/&gt;Risks&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="418" y="524" width="94" height="72" as="geometry"/></mxCell>
+        <mxCell id="as_is_sc_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#DC2626&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#991B1B;line-height:1.15;&quot;&gt;Data Privacy&lt;br/&gt;Challenges&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#FECACA;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="518" y="524" width="94" height="72" as="geometry"/></mxCell>
+        <mxCell id="trans_box" value="" style="rounded=1;arcSize=3;fillColor=#EFF6FF;strokeColor=#93C5FD;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="636" y="12" width="250" height="618" as="geometry"/></mxCell>
+        <mxCell id="trans_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#1D4ED8;letter-spacing:0.5px;&quot;&gt;TRANSFORMATION BENEFITS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="636" y="20" width="250" height="24" as="geometry"/></mxCell>
+        <mxCell id="trans_arrow_left" value="" style="shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="618" y="239" width="24" height="52" as="geometry"/></mxCell>
+        <mxCell id="trans_arrow_right" value="" style="shape=singleArrow;arrowWidth=0.55;arrowSize=0.45;direction=east;fillColor=#BFDBFE;strokeColor=#3B82F6;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="878" y="239" width="24" height="52" as="geometry"/></mxCell>
+        <mxCell id="trans_c_0" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19.439 7.85c0-1.57-1.28-2.85-2.85-2.85h-1.74a3 3 0 0 0-5.698 0H7.41c-1.57 0-2.85 1.28-2.85 2.85v1.74a3 3 0 0 0 0 5.698V17c0 1.57 1.28 2.85 2.85 2.85h1.74a3 3 0 0 0 5.698 0h1.741c1.57 0 2.85-1.28 2.85-2.85v-1.74a3 3 0 0 0 0-5.698V7.85Z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;Integrated Platform&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Unified data, applications and processes across the value chain&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="50" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="trans_c_1" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;End-to-End Visibility&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Real-time insights and single source of truth&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="143" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="trans_c_2" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;AI &amp;amp; Automation&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Intelligent automation, predictive analytics and faster decisions&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="236" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="trans_c_3" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z&quot;/&gt;&lt;path d=&quot;m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z&quot;/&gt;&lt;path d=&quot;M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0&quot;/&gt;&lt;path d=&quot;M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;Faster Time to Market&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Standardized processes and modern technology accelerate delivery&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="329" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="trans_c_4" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;12&quot; y1=&quot;2&quot; x2=&quot;12&quot; y2=&quot;22&quot;/&gt;&lt;path d=&quot;M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;Lower Cost&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Cloud-native operations and automation reduce TCO&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="422" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="trans_c_5" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:8px;padding:6px 8px;width:218px;box-sizing:border-box;&quot;&gt;
+      &lt;div style=&quot;width:34px;height:34px;border-radius:17px;background:#DBEAFE;border:1.2px solid #3B82F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;flex:1;&quot;&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;Risk &amp;amp; Compliance&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Built-in security, privacy and regulatory compliance&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;padding=2;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="644" y="515" width="234" height="85" as="geometry"/></mxCell>
+        <mxCell id="to_be_frame" value="" style="rounded=1;arcSize=3;fillColor=#F0FDF4;strokeColor=#86EFAC;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="896" y="12" width="688" height="618" as="geometry"/></mxCell>
+        <mxCell id="to_be_hdr_pill" value="&lt;b style=&quot;font-size:9.5px;color:#FFFFFF;letter-spacing:0.5px;&quot;&gt;TO-BE FUTURE STATE&lt;/b&gt;" style="rounded=0;fillColor=#166534;strokeColor=#166534;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;strokeWidth=1.2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1095" y="12" width="290" height="26" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19.439 7.85c0-1.57-1.28-2.85-2.85-2.85h-1.74a3 3 0 0 0-5.698 0H7.41c-1.57 0-2.85 1.28-2.85 2.85v1.74a3 3 0 0 0 0 5.698V17c0 1.57 1.28 2.85 2.85 2.85h1.74a3 3 0 0 0 5.698 0h1.741c1.57 0 2.85-1.28 2.85-2.85v-1.74a3 3 0 0 0 0-5.698V7.85Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Integrated&lt;br/&gt;Platform&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Intelligent&lt;br/&gt;Automation&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1017" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Trusted&lt;br/&gt;&amp;amp; Compliant&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1128" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Real-time&lt;br/&gt;Insights&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1239" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;12&quot; y1=&quot;2&quot; x2=&quot;12&quot; y2=&quot;22&quot;/&gt;&lt;path d=&quot;M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Lower Cost&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1350" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_vh_5" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z&quot;/&gt;&lt;path d=&quot;m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z&quot;/&gt;&lt;path d=&quot;M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0&quot;/&gt;&lt;path d=&quot;M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Faster Time&lt;br/&gt;to Market&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1461" y="44" width="106" height="38" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_0" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M6 18h8&quot;/&gt;&lt;path d=&quot;M3 22h18&quot;/&gt;&lt;path d=&quot;M14 22a7 7 0 1 0 0-14h-1&quot;/&gt;&lt;path d=&quot;M9 14h2&quot;/&gt;&lt;path d=&quot;M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z&quot;/&gt;&lt;path d=&quot;M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Research&lt;br/&gt;Teams&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_1" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Clinical&lt;br/&gt;Ops&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1017" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_2" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z&quot;/&gt;&lt;polyline points=&quot;14 2 14 8 20 8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Regulatory&lt;br/&gt;Affairs&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1128" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_3" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Commercial&lt;br/&gt;Teams&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1239" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_4" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2&quot;/&gt;&lt;path d=&quot;M12 17c-2 0-3-1-3-2s1-2 3-2 3 1 3 2-1 2-3 2z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Patients /&lt;br/&gt;HCPs&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1350" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ch_5" value="&lt;div style=&quot;text-align:center;padding:4px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:3px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a2 2 0 0 0 0-2.8l-3.2-3.2a2 2 0 0 0-2.8 0L7 14.4&quot;/&gt;&lt;path d=&quot;m21.5 7-3.5-3.5a2 2 0 0 0-2.8 0L9.4 9.3&quot;/&gt;&lt;path d=&quot;m2 14.5 4.5 4.5a2 2 0 0 0 2.8 0l3.7-3.7&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:700;color:#166534;line-height:1.15;&quot;&gt;Partners &amp;amp;&lt;br/&gt;Vendors&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1461" y="94" width="106" height="52" as="geometry"/></mxCell>
+        <mxCell id="e_tobe_ch_bus" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="959" y="150" as="sourcePoint"/>
+          <mxPoint x="1461" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="959" y="150"/>
+            <mxPoint x="1461" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="959" y="146" as="sourcePoint"/>
+          <mxPoint x="959" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="959" y="146"/>
+            <mxPoint x="959" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1070" y="146" as="sourcePoint"/>
+          <mxPoint x="1070" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1070" y="146"/>
+            <mxPoint x="1070" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1181" y="146" as="sourcePoint"/>
+          <mxPoint x="1181" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1181" y="146"/>
+            <mxPoint x="1181" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1292" y="146" as="sourcePoint"/>
+          <mxPoint x="1292" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1292" y="146"/>
+            <mxPoint x="1292" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1403" y="146" as="sourcePoint"/>
+          <mxPoint x="1403" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1403" y="146"/>
+            <mxPoint x="1403" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_drop_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1461" y="146" as="sourcePoint"/>
+          <mxPoint x="1461" y="150" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1461" y="146"/>
+            <mxPoint x="1461" y="150"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="959" y="150" as="sourcePoint"/>
+          <mxPoint x="959" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="959" y="150"/>
+            <mxPoint x="959" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1070" y="150" as="sourcePoint"/>
+          <mxPoint x="1070" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1070" y="150"/>
+            <mxPoint x="1070" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1181" y="150" as="sourcePoint"/>
+          <mxPoint x="1181" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1181" y="150"/>
+            <mxPoint x="1181" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1292" y="150" as="sourcePoint"/>
+          <mxPoint x="1292" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1292" y="150"/>
+            <mxPoint x="1292" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1403" y="150" as="sourcePoint"/>
+          <mxPoint x="1403" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1403" y="150"/>
+            <mxPoint x="1403" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_ch_plat_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1461" y="150" as="sourcePoint"/>
+          <mxPoint x="1461" y="154" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1461" y="150"/>
+            <mxPoint x="1461" y="154"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="to_be_dig_plat" value="&lt;div style=&quot;font-size:10px;font-weight:900;color:#0F2A4A;text-align:center;padding-top:2px;&quot;&gt;NOVACURA DIGITAL PLATFORM (CLOUD-NATIVE)&lt;/div&gt;" style="rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="154" width="668" height="86" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_0" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;AI / ML&lt;br/&gt;Workbench&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="914" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_1" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;eTMF&lt;br/&gt;(Cloud)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1007" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_2" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;CTMS&lt;br/&gt;(Cloud)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1100" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_3" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Safety &amp;amp; PV&lt;br/&gt;(Cloud)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1193" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_4" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z&quot;/&gt;&lt;polyline points=&quot;14 2 14 8 20 8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Regulatory&lt;br/&gt;Submissions&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1286" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_5" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Commercial&lt;br/&gt;(ERP / CRM)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1379" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_da_6" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#2563EB&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2&quot;/&gt;&lt;path d=&quot;M12 17c-2 0-3-1-3-2s1-2 3-2 3 1 3 2-1 2-3 2z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Patient&lt;br/&gt;Engagement&lt;br/&gt;Portal&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1472" y="174" width="88" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_tobe_plat_data_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="958" y="248" as="sourcePoint"/>
+          <mxPoint x="958" y="240" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="958" y="248"/>
+            <mxPoint x="958" y="240"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_plat_data_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1144" y="248" as="sourcePoint"/>
+          <mxPoint x="1144" y="240" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1144" y="248"/>
+            <mxPoint x="1144" y="240"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_plat_data_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1330" y="248" as="sourcePoint"/>
+          <mxPoint x="1330" y="240" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1330" y="248"/>
+            <mxPoint x="1330" y="240"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_plat_data_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1516" y="248" as="sourcePoint"/>
+          <mxPoint x="1516" y="240" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1516" y="248"/>
+            <mxPoint x="1516" y="240"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="to_be_data_plat" value="&lt;div style=&quot;font-size:10px;font-weight:900;color:#166534;text-align:center;padding-top:2px;&quot;&gt;DATA PLATFORM (UNIFIED &amp;amp; GOVERNED)&lt;/div&gt;" style="rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#86EFAC;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="248" width="668" height="86" as="geometry"/></mxCell>
+        <mxCell id="to_be_gd_0" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Unified Data Lake&lt;br/&gt;(BigQuery / Cloud Storage)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="914" y="268" width="124" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gd_1" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Clinical Data&lt;br/&gt;(Structured)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1045" y="268" width="124" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gd_2" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;RWD &amp;amp; Real-World&lt;br/&gt;Data&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1176" y="268" width="124" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gd_3" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Metadata &amp;amp; Master&lt;br/&gt;Data Management&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1307" y="268" width="124" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gd_4" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;AI/ML Feature Store&lt;br/&gt;&amp;amp; Vector DB&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1438" y="268" width="124" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_tobe_data_int_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="970" y="344" as="sourcePoint"/>
+          <mxPoint x="970" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="970" y="344"/>
+            <mxPoint x="970" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_data_int_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1105" y="344" as="sourcePoint"/>
+          <mxPoint x="1105" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1105" y="344"/>
+            <mxPoint x="1105" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_data_int_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1240" y="344" as="sourcePoint"/>
+          <mxPoint x="1240" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1240" y="344"/>
+            <mxPoint x="1240" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_data_int_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1375" y="344" as="sourcePoint"/>
+          <mxPoint x="1375" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1375" y="344"/>
+            <mxPoint x="1375" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_data_int_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1510" y="344" as="sourcePoint"/>
+          <mxPoint x="1510" y="334" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1510" y="344"/>
+            <mxPoint x="1510" y="334"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="to_be_ti_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;API Gateway&lt;br/&gt;&amp;amp; Management&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="344" width="128" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ti_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Event Streaming&lt;br/&gt;(Pub/Sub)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1041" y="344" width="128" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ti_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Data Integration&lt;br/&gt;(Dataflow)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1176" y="344" width="128" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ti_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;MCP / A2A&lt;br/&gt;Connectivity&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1311" y="344" width="128" height="52" as="geometry"/></mxCell>
+        <mxCell id="to_be_ti_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a2 2 0 0 0 0-2.8l-3.2-3.2a2 2 0 0 0-2.8 0L7 14.4&quot;/&gt;&lt;path d=&quot;m21.5 7-3.5-3.5a2 2 0 0 0-2.8 0L9.4 9.3&quot;/&gt;&lt;path d=&quot;m2 14.5 4.5 4.5a2 2 0 0 0 2.8 0l3.7-3.7&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Partner &amp;amp; Vendor&lt;br/&gt;Integrations&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1446" y="344" width="128" height="52" as="geometry"/></mxCell>
+        <mxCell id="e_tobe_int_gcp_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="968" y="408" as="sourcePoint"/>
+          <mxPoint x="968" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="968" y="408"/>
+            <mxPoint x="968" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_int_gcp_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1077" y="408" as="sourcePoint"/>
+          <mxPoint x="1077" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1077" y="408"/>
+            <mxPoint x="1077" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_int_gcp_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1186" y="408" as="sourcePoint"/>
+          <mxPoint x="1186" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1186" y="408"/>
+            <mxPoint x="1186" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_int_gcp_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1295" y="408" as="sourcePoint"/>
+          <mxPoint x="1295" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1295" y="408"/>
+            <mxPoint x="1295" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_int_gcp_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1404" y="408" as="sourcePoint"/>
+          <mxPoint x="1404" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1404" y="408"/>
+            <mxPoint x="1404" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_int_gcp_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1513" y="408" as="sourcePoint"/>
+          <mxPoint x="1513" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1513" y="408"/>
+            <mxPoint x="1513" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="to_be_gcp_box" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpath%20fill%3D%22%23EA4335%22%20d%3D%22M24%209.5c3.54%200%206.71%201.22%209.21%203.6l6.85-6.85C35.9%202.38%2030.47%200%2024%200%2014.62%200%206.51%205.38%202.56%2013.22l7.98%206.19C12.43%2013.72%2017.74%209.5%2024%209.5z%22%2F%3E%3Cpath%20fill%3D%22%234285F4%22%20d%3D%22M46.98%2024.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58%202.96-2.26%205.48-4.78%207.18l7.73%206c4.51-4.18%207.09-10.36%207.09-17.65z%22%2F%3E%3Cpath%20fill%3D%22%23FBBC05%22%20d%3D%22M10.53%2028.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92%2016.46%200%2020.12%200%2024c0%203.88.92%207.54%202.56%2010.78l7.97-6.19z%22%2F%3E%3Cpath%20fill%3D%22%2334A853%22%20d%3D%22M24%2048c6.48%200%2011.93-2.13%2015.89-5.81l-7.73-6c-2.15%201.45-4.92%202.3-8.16%202.3-6.26%200-11.57-4.22-13.47-9.91l-7.98%206.19C6.51%2042.62%2014.62%2048%2024%2048z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F2A4A;text-align:center;padding-top:2px;&quot;&gt;GOOGLE CLOUD PLATFORM&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="408" width="668" height="86" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_0" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;2&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;6.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;18&quot; x2=&quot;6.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Compute&lt;br/&gt;(GKE / Cloud Run)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="914" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_1" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Storage&lt;br/&gt;(Cloud Storage)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1023" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_2" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;9&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M21 12c0 1.66-4 3-9 3s-9-1.34-9-3&quot;/&gt;&lt;path d=&quot;M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Databases&lt;br/&gt;(Spanner / AlloyDB)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1132" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_3" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Analytics&lt;br/&gt;(BigQuery)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1241" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_4" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;AI / ML&lt;br/&gt;(Vertex AI)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1350" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="to_be_gs_5" value="&lt;div style=&quot;text-align:center;padding:3px 2px;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;22&quot; y2=&quot;12&quot;/&gt;&lt;path d=&quot;M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Global Regions&lt;br/&gt;&amp;amp; Multi-Zone&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1459" y="428" width="102" height="60" as="geometry"/></mxCell>
+        <mxCell id="e_tobe_gcp_sec_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="959" y="494" as="sourcePoint"/>
+          <mxPoint x="959" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="959" y="494"/>
+            <mxPoint x="959" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_gcp_sec_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1070" y="494" as="sourcePoint"/>
+          <mxPoint x="1070" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1070" y="494"/>
+            <mxPoint x="1070" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_gcp_sec_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1181" y="494" as="sourcePoint"/>
+          <mxPoint x="1181" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1181" y="494"/>
+            <mxPoint x="1181" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_gcp_sec_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1292" y="494" as="sourcePoint"/>
+          <mxPoint x="1292" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1292" y="494"/>
+            <mxPoint x="1292" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_gcp_sec_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1403" y="494" as="sourcePoint"/>
+          <mxPoint x="1403" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1403" y="494"/>
+            <mxPoint x="1403" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="e_tobe_gcp_sec_5" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#16A34A;strokeWidth=1.5;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1514" y="494" as="sourcePoint"/>
+          <mxPoint x="1514" y="524" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1514" y="494"/>
+            <mxPoint x="1514" y="524"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="to_be_ts_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Zero Trust&lt;br/&gt;Security&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="to_be_ts_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;IAM &amp;amp; Least&lt;br/&gt;Privilege&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1017" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="to_be_ts_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Encryption&lt;br/&gt;(At Rest &amp;amp; In Transit)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1128" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="to_be_ts_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Audit Logging&lt;br/&gt;&amp;amp; Monitoring&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1239" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="to_be_ts_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Data Privacy&lt;br/&gt;&amp;amp; Governance&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1350" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="to_be_ts_5" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.15;&quot;&gt;Regulatory&lt;br/&gt;Compliance&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#BBF7D0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1461" y="524" width="106" height="72" as="geometry"/></mxCell>
+        <mxCell id="enablers_box" value="" style="rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="642" width="870" height="86" as="geometry"/></mxCell>
+        <mxCell id="enablers_hdr" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;letter-spacing:0.5px;&quot;&gt;KEY TECHNOLOGY ENABLERS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="16" y="648" width="870" height="18" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_0" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Google Cloud&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="24" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_1" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#7C3AED&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Vertex AI&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="95" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_2" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;BigQuery&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="166" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_3" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Cloud Storage&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="237" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_4" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Dataflow&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="308" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_5" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Pub/Sub&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="379" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_6" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#326CE5&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Kubernetes&lt;br/&gt;(GKE)&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="450" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_7" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Apigee&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="521" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_8" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#34A853&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Looker&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="592" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_9" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Dataplex&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="663" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_10" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#EA580C&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Gemini&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="734" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_tech_11" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:1px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;MCP / A2A&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="805" y="670" width="67" height="52" as="geometry"/></mxCell>
+        <mxCell id="outcomes_box" value="" style="rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="896" y="642" width="688" height="86" as="geometry"/></mxCell>
+        <mxCell id="outcomes_hdr" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;letter-spacing:0.5px;&quot;&gt;OUTCOMES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="896" y="648" width="688" height="18" as="geometry"/></mxCell>
+        <mxCell id="btm_out_0" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5&quot;/&gt;&lt;path d=&quot;M9 18h6&quot;/&gt;&lt;path d=&quot;M10 22h4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Innovative&lt;br/&gt;Therapies&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="906" y="670" width="126" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_out_1" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z&quot;/&gt;&lt;path d=&quot;M12 5v14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Improved Patient&lt;br/&gt;Outcomes&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1039" y="670" width="126" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_out_2" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Accessible &amp;amp;&lt;br/&gt;Affordable Care&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1172" y="670" width="126" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_out_3" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a2 2 0 0 0 0-2.8l-3.2-3.2a2 2 0 0 0-2.8 0L7 14.4&quot;/&gt;&lt;path d=&quot;m21.5 7-3.5-3.5a2 2 0 0 0-2.8 0L9.4 9.3&quot;/&gt;&lt;path d=&quot;m2 14.5 4.5 4.5a2 2 0 0 0 2.8 0l3.7-3.7&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Trusted by&lt;br/&gt;Partners&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1305" y="670" width="126" height="52" as="geometry"/></mxCell>
+        <mxCell id="btm_out_4" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;23 6 13.5 15.5 8.5 10.5 1 18&quot;/&gt;&lt;polyline points=&quot;17 6 23 6 23 12&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.15;&quot;&gt;Sustainable&lt;br/&gt;Growth&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1438" y="670" width="126" height="52" as="geometry"/></mxCell>
+        <mxCell id="legend_box" value="" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="736" width="1568" height="36" as="geometry"/></mxCell>
+        <mxCell id="leg_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;letter-spacing:1px;&quot;&gt;LEGEND:&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="20" y="740" width="55" height="28" as="geometry"/></mxCell>
+        <mxCell id="leg_as_is" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#DC2626;&quot;&gt;As-Is Components&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#FEE2E2;strokeColor=#F87171;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="80" y="742" width="105" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_to_be" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#166534;&quot;&gt;To-Be Components&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="190" y="742" width="105" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_flow_data" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#1D4ED8;&quot;&gt;&amp;mdash;&amp;rarr; Data / Process Flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="305" y="742" width="130" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_flow_man" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#DC2626;&quot;&gt;- - - &amp;rarr; Manual / Batch / File Flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="440" y="742" width="165" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_flow_auto" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#166534;&quot;&gt;&amp;mdash;&amp;rarr; Real-time / Automated Flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="610" y="742" width="160" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_onprem" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#475569&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;2&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;rect width=&quot;20&quot; height=&quot;8&quot; x=&quot;2&quot; y=&quot;14&quot; rx=&quot;2&quot; ry=&quot;2&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;6&quot; x2=&quot;6.01&quot; y2=&quot;6&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;18&quot; x2=&quot;6.01&quot; y2=&quot;18&quot;/&gt;&lt;/svg&gt;&lt;span style=&quot;font-size:10px;font-weight:700;color:#475569;&quot;&gt;On-Premise&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="780" y="742" width="90" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_cloud" value="&lt;div style=&quot;display:flex;align-items:center;gap:4px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z&quot;/&gt;&lt;/svg&gt;&lt;span style=&quot;font-size:10px;font-weight:700;color:#475569;&quot;&gt;Cloud&lt;/span&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="875" y="742" width="70" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_ver" value="&lt;span style=&quot;font-size:9.5px;font-weight:700;color:#64748B;&quot;&gt;v1.0 &amp;ndash; May 2024&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1460" y="740" width="116" height="28" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

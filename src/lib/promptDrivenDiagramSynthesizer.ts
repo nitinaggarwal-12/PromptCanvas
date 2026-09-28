@@ -90,14 +90,54 @@ function escHtml(str: string): string {
  * and modifies its header, prompt banner, and domain node cards so 100% of the prompt's
  * technical entities are embedded in the rich saved reference diagram.
  */
+function truncateAtWord(str: string, maxLen: number): string {
+  const s = String(str || '').trim();
+  if (s.length <= maxLen) return s;
+  const cut = s.slice(0, maxLen);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > maxLen * 0.55 ? cut.slice(0, lastSpace) : cut).replace(/[,;&+\-–—]+$/, '').trim();
+}
+
+function formatTwoLineCardClause(str: string, maxTotal = 34): string {
+  const clean = truncateAtWord(str, maxTotal);
+  const words = clean.split(/\s+/);
+  if (words.length <= 2 || clean.length <= 18) return escHtml(clean);
+  const mid = Math.ceil(words.length / 2);
+  return `${escHtml(words.slice(0, mid).join(' '))}&lt;br/&gt;${escHtml(words.slice(mid).join(' '))}`;
+}
+
+function extractPromptDomainClauses(prompt: string, fallbackTitle: string): [string, string, string, string] {
+  const cleaned = String(prompt || fallbackTitle || 'Enterprise Cloud Architecture')
+    .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+)?(flowchart\s+(for|of)\s+|infographic\s+(for|of)\s+|architecture\s+(for|of)\s+|diagram\s+(for|of)\s+)?/i, '')
+    .replace(/\b(architecture|diagram|blueprint|flowchart|topology)\s*$/i, '')
+    .trim();
+
+  const rawParts = cleaned
+    .split(/(?:,|&|\+|→|->|;|\band\b|\bwith\b)/i)
+    .map((s) =>
+      s
+        .replace(/^(flowchart\s+(for|of)\s+|architecture\s+(for|of)\s+|diagram\s+(for|of)\s+)/i, '')
+        .replace(/\b(architecture|diagram|blueprint|flowchart|topology)\s*$/i, '')
+        .trim()
+    )
+    .filter((s) => s.length >= 3);
+
+  const p0 = truncateAtWord(rawParts[0] || cleaned || 'Edge Telemetry Ingress', 36);
+  const p1 = truncateAtWord(rawParts[1] || `${p0} Processing`, 36);
+  const p2 = truncateAtWord(rawParts[2] || `${p0} Policy Gate`, 36);
+  const p3 = truncateAtWord(rawParts[3] || rawParts[2] || `${p1} Mesh`, 36);
+  return [p0, p1, p2, p3];
+}
+
 export function adaptSavedGoogleCloudTemplateToPrompt(
   prompt: string,
-  title: string,
+  title: string = truncateAtWord(prompt || 'Enterprise Cloud Architecture', 56),
   domain = 'Enterprise Cloud',
   badgeId?: string
 ): string {
-  const lower = `${title} ${prompt} ${domain}`.toLowerCase();
-  const numBadge = badgeId || (title.match(/^(\d{2})/) || ['', 'AI'])[1];
+  const safeTitle = title || truncateAtWord(prompt || 'Enterprise Cloud Architecture', 56);
+  const lower = `${safeTitle} ${prompt} ${domain}`.toLowerCase();
+  const numBadge = badgeId || (safeTitle.match(/^(\d{2})/) || ['', 'AI'])[1];
 
   let baseXml = '';
   let templateRefLabel = 'Google Cloud Reference Architecture v2.0';
@@ -244,7 +284,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/BeyondCorp Enterprise/gi, 'BeyondCorp Enterprise IAP + VPC Service Controls + Packet Mirroring'],
       [/Chronicle SIEM/gi, 'Google SecOps (Chronicle SIEM) Petabyte UDM + YARA-L 2.0'],
       [/Chronicle SOAR/gi, 'Chronicle SOAR + Automated Cloud Run Firewall Quarantine Playbooks'],
-      [/Security AI/gi, 'Gemini in Security Operations (Autonomous Alert Triage)']
+      [/Security AI/gi, 'Gemini 3.1 Pro in Security Operations (Autonomous Alert Triage)']
     ];
   } else if (lower.includes('hl7') || lower.includes('fhir') || lower.includes('dicom') || lower.includes('omop') || lower.includes('healthcare') || lower.includes('clinical')) {
     // Saved Template 49: Healthcare & Life Sciences Clinical AI Platform
@@ -255,7 +295,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/FHIR \/ HL7v2 Ingress/gi, 'Cloud Healthcare API (HL7v2, FHIR R4 &amp; DICOMweb) + Cloud DLP De-ID'],
       [/Dataflow Pipelines/gi, 'Cloud Dataflow Bronze-Silver-Gold Medallion Pipelines'],
       [/BigQuery Clinical/gi, 'BigQuery OMOP CDM Warehouse + Dataplex PHI Governance'],
-      [/Clinical AIAgents/gi, 'Vertex AI MedLM &amp; Gemini 2.5 Pro Clinical Summarization']
+      [/Clinical AIAgents/gi, 'Vertex AI MedLM &amp; Gemini 3.1 Pro Clinical Summarization']
     ];
   } else if (lower.includes('payment') || lower.includes('iso-20022') || lower.includes('settlement') || lower.includes('fraud') || lower.includes('spanner')) {
     // Saved Template 45: Enterprise API Integration, Payment Gateway & Event Mesh
@@ -268,16 +308,39 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/Vertex AI Agents/gi, 'Vertex AI Inline Fraud Scoring Engine (&lt;15ms P99 Latency)'],
       [/Cloud Spanner/gi, 'Cloud Spanner Multi-Region Externally Consistent ACID Ledger']
     ];
-  } else {
-    // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform (Default for RAG / Agentic / General)
+  } else if (lower.includes('rag') || lower.includes('scann') || lower.includes('vector mesh') || lower.includes('knowledge intelligence')) {
+    // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
-    templateRefLabel = 'Modified Saved Template #41 • Google Cloud Sovereign Agentic RAG, Gemini 2.5 Pro & ScaNN Vector Mesh';
+    templateRefLabel = 'Modified Saved Template #41 • Google Cloud Sovereign Agentic RAG, Gemini 3.1 Pro & ScaNN Vector Mesh';
     domainMutations = [
-      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'SOVEREIGN AGENTIC RAG, GEMINI 2.5 PRO &amp; VERTEX SCANN VECTOR MESH'],
+      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, 'SOVEREIGN AGENTIC RAG, GEMINI 3.1 PRO &amp; VERTEX SCANN VECTOR MESH'],
       [/API Gateway/gi, 'Apigee API Gateway (OAuth2/OIDC) + Cloud Armor WAF'],
-      [/Gemini 1\.5 Pro/gi, 'Gemini 2.5 Pro Multi-Agent Orchestrator'],
+      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro'],
+      [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash'],
+      [/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro Multi-Agent Orchestrator'],
       [/Vector Search/gi, 'Vertex AI Vector Search (ScaNN) + BigQuery Vector Store'],
       [/Cloud KMS/gi, 'Cloud KMS CMEK FIPS 140-3 L3 Hardware Encryption']
+    ];
+  } else {
+    // Dynamic Bespoke Domain Adaptation: Extract prompt clauses & populate Tier 3, Tier 4, and Tier 5 cards directly!
+    const [c0, c1, c2, c3] = extractPromptDomainClauses(prompt, title);
+    baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
+    templateRefLabel = `Google Cloud Reference Architecture v2.0 • Dynamic Domain Topology (${c0} • ${c1} • ${c2})`;
+    domainMutations = [
+      [/41\. Enterprise RAG &amp; Knowledge Intelligence Platform/gi, escHtml(title.toUpperCase())],
+      [/ENTERPRISE RAG &amp; KNOWLEDGE INTELLIGENCE PLATFORM/gi, escHtml(title.toUpperCase())],
+      [/KNOWLEDGE EXPERIENCE&lt;br\/&gt;&amp; ORCHESTRATION LAYER/gi, 'DOMAIN ORCHESTRATION&lt;br/&gt;&amp; TELEMETRY PIPELINE'],
+      [/RAG \/ REASONING&lt;br\/&gt;LAYER/gi, 'CORE AI &amp; COMPUTE&lt;br/&gt;EXECUTION MESH'],
+      [/Query&lt;br\/&gt;Understanding/gi, formatTwoLineCardClause(c0, 32)],
+      [/Search &amp; Retrieval&lt;br\/&gt;Orchestrator/gi, formatTwoLineCardClause(c1, 32)],
+      [/Prompt Assembly \/&lt;br\/&gt;Context Builder/gi, formatTwoLineCardClause(c2, 32)],
+      [/Citation &amp; Answer&lt;br\/&gt;Composer/gi, `${escHtml(truncateAtWord(c3, 22))}&lt;br/&gt;Controller`],
+      [/Query Rewriting \/&lt;br\/&gt;Decomposition/gi, `${escHtml(truncateAtWord(c0, 22))}&lt;br/&gt;Stream Ingest`],
+      [/Model Gateway \/&lt;br\/&gt;LLM Router/gi, `${escHtml(truncateAtWord(c1, 22))}&lt;br/&gt;Edge Router`],
+      [/Re-ranker \/&lt;br\/&gt;Relevance Layer/gi, `${escHtml(truncateAtWord(c2, 22))}&lt;br/&gt;Decision Engine`],
+      [/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro'],
+      [/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash'],
+      [/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro Multi-Agent Orchestrator'],
     ];
   }
 
@@ -286,6 +349,12 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   for (const [pattern, replacement] of domainMutations) {
     modifiedXml = modifiedXml.replace(pattern, replacement);
   }
+
+  // Ensure any remaining Gemini 1.5 references in adapted templates use Gemini 3.1 Pro / 3.8 Flash
+  modifiedXml = modifiedXml
+    .replace(/Gemini 1\.5&lt;br\/&gt;Pro/gi, 'Gemini 3.1&lt;br/&gt;Pro')
+    .replace(/Gemini 1\.5&lt;br\/&gt;Flash/gi, 'Gemini 3.8&lt;br/&gt;Flash')
+    .replace(/Gemini 1\.5 Pro/gi, 'Gemini 3.1 Pro');
 
   // Scrub any residual NOVACURA / Bio-Pharma / Veeva Vault / Pharmacovigilance strings
   modifiedXml = modifiedXml
@@ -303,14 +372,13 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   // Build the rich 3-line Header HTML containing:
   // 1) Exact Diagram Title
   // 2) Exact "💬 Generative Prompt: ..." banner (so opening the diagram ALWAYS shows the prompt!)
-  // 3) Modified Saved Template Reference & Complete Prompt Keyword Index (ensuring 100% semantic parity)
+  // 3) Modified Saved Template Reference (zero hidden 1px transparent spoofing divs!)
   const shortPromptDisplay = prompt.length > 145 ? prompt.slice(0, 142) + '...' : prompt;
   const newHeaderHtml =
     `<div style="font-family:Inter,sans-serif;width:1160px;overflow:hidden;">` +
     `<div style="font-size:17px;font-weight:900;color:#0F172A;letter-spacing:0.2px;line-height:20px;">${escHtml(title)}</div>` +
     `<div style="font-size:10px;font-weight:700;color:#0284C7;margin-top:2px;line-height:13px;">💬 Generative Prompt: "${escHtml(shortPromptDisplay)}"</div>` +
     `<div style="font-size:8.5px;font-weight:600;color:#475569;margin-top:2px;line-height:11px;">${escHtml(templateRefLabel)}</div>` +
-    `<div style="font-size:1px;color:transparent;line-height:1px;height:1px;overflow:hidden;">${escHtml(prompt)}</div>` +
     `</div>`;
 
   // Replace hdr_title cell with strict width=1160 at x=78 so it NEVER overlaps hdr_brand at x=1280
@@ -1018,7 +1086,7 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
 export function generateLogicalFlowchartDrawioXml(
   prompt: string,
   title?: string,
-  _direction: 'LR' | 'TD' = 'LR',
+  direction: 'LR' | 'TD' = 'LR',
   level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
 ): string {
   const isDefaultDemoPrompt =
@@ -1027,23 +1095,52 @@ export function generateLogicalFlowchartDrawioXml(
     prompt.includes('Global Real-Time Payments Mesh') ||
     prompt === 'Enterprise Process Flowchart';
 
+  const derivedPromptTitle = truncateAtWord(
+    String(prompt || '')
+      .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+)?(flowchart\s+(for|of)\s+|architecture\s+(for|of)\s+|diagram\s+(for|of)\s+)?/i, '')
+      .replace(/\b(architecture|diagram|blueprint|flowchart|topology)\s*$/i, '')
+      .trim(),
+    88
+  );
+
   const customTitle =
-    !isDefaultDemoPrompt && (title || prompt)
-      ? title && !title.includes('Global Real-Time Payments Mesh')
-        ? title.trim()
-        : prompt.trim().slice(0, 86)
+    !isDefaultDemoPrompt && (derivedPromptTitle || title)
+      ? derivedPromptTitle.length > 8
+        ? derivedPromptTitle
+        : title && !title.includes('Global Real-Time Payments Mesh')
+        ? truncateAtWord(title, 88)
+        : truncateAtWord(prompt, 88)
       : undefined;
 
-  if (level === 'L1') {
-    return generateGoogleCloudL1ExecutiveFlowchartXml(customTitle);
+  let xml =
+    level === 'L1'
+      ? generateGoogleCloudL1ExecutiveFlowchartXml(customTitle)
+      : level === 'L2'
+      ? generateGoogleCloudL2LogicalFlowchartXml(customTitle)
+      : level === 'L3'
+      ? generateGoogleCloudL3OperationalFlowchartXml(customTitle)
+      : generateGoogleCloudL4AgenticFlowchartXml(customTitle);
+
+  if (!isDefaultDemoPrompt && prompt.trim().length > 6) {
+    const [s1, s2, s3, s4] = extractPromptDomainClauses(prompt, customTitle || 'Process Flowchart');
+    xml = xml
+      .replace(/\[1\] Gemini Enterprise App/gi, `[1] ${escHtml(truncateAtWord(s1, 34))}`)
+      .replace(/\[1\] Client Portal/gi, `[1] ${escHtml(truncateAtWord(s1, 34))}`)
+      .replace(/\[1a\] Agent Designer Studio/gi, `[1a] ${escHtml(truncateAtWord(s2, 34))}`)
+      .replace(/\[1a\] Gemini Notebook/gi, `[1a] ${escHtml(truncateAtWord(s2, 34))}`)
+      .replace(/\[2\] API Gateway \(Apigee Enterprise\)/gi, `[2] ◆ Decision Gate: ${escHtml(truncateAtWord(s3, 30))}`)
+      .replace(/\[2b\] SIEM Rejection/gi, `[2b] ✕ Exception / Quarantine (${escHtml(truncateAtWord(s3, 22))})`)
+      .replace(/\[3\] ADK 2\.0 \/ GKE Orchestrator/gi, `[3] ${escHtml(truncateAtWord(s4, 30))} Orchestrator`)
+      .replace(/\[3\] Router \/ GKE Master Orchestrator/gi, `[3] ${escHtml(truncateAtWord(s4, 30))} Orchestrator`)
+      .replace(/\[3a\] Deep Research Agent/gi, `[3a] ${escHtml(truncateAtWord(s2, 28))} Analyzer`)
+      .replace(/TIER 1: ENTERPRISE AGENTIC WORKSPACE &amp; EDGE INGRESS/gi, `TIER 1: ${escHtml(truncateAtWord(s1, 34).toUpperCase())} &amp; INGRESS (${direction})`)
+      .replace(/TIER 1: ENTERPRISE AGENTIC WORKSPACE &amp; DEVELOPER STUDIO/gi, `TIER 1: ${escHtml(truncateAtWord(s1, 34).toUpperCase())} &amp; INGRESS (${direction})`)
+      .replace(/TIER 2: API GATEWAY &amp; ZERO-TRUST POLICY GATE/gi, `TIER 2: DECISION GATE &amp; POLICY VALIDATION (${escHtml(truncateAtWord(s3, 28).toUpperCase())})`)
+      .replace(/TIER 3: COGNITIVE MULTI-AGENT MESH &amp; ADK 2\.0 REASONING ENGINE/gi, `TIER 3: ${escHtml(truncateAtWord(s4, 32).toUpperCase())} &amp; AI EXECUTION ENGINE`);
   }
-  if (level === 'L2') {
-    return generateGoogleCloudL2LogicalFlowchartXml(customTitle);
-  }
-  if (level === 'L3') {
-    return generateGoogleCloudL3OperationalFlowchartXml(customTitle);
-  }
-  return generateGoogleCloudL4AgenticFlowchartXml(customTitle);
+
+  return xml;
 }
+
 
 

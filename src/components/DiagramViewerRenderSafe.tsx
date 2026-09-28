@@ -161,7 +161,7 @@ ${origin ? `<base href="${origin}/">` : ''}
       ? `position: relative; width: 100%; min-height: 100%; padding: 12px 10px 32px 10px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;`
       : allowFullScaleScroll
       ? `position: relative; width: 100%; min-width: 1640px; min-height: 1040px; padding: 24px; box-sizing: border-box; overflow: visible; background: ${bgColor}; display: flex; align-items: flex-start; justify-content: center;`
-      : `position: absolute; inset: 0; padding: 4px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
+      : `position: absolute; inset: 0; padding: 0px; box-sizing: border-box; overflow: hidden; background: ${bgColor}; display: flex; align-items: center; justify-content: center;`}
   }
   .mxgraph {
     ${fitToWidth
@@ -343,9 +343,12 @@ ${origin ? `<base href="${origin}/">` : ''}
         try {
           var svg = root.querySelector('svg');
           if (svg && typeof svg.getBBox === 'function') {
+            var xmlStr = String(configObj.xml || '');
+            var hasPosterBg = xmlStr.indexOf('id="poster_bg"') !== -1;
             var bbox = svg.getBBox();
             if (bbox && bbox.width > 20 && bbox.height > 20) {
-              var pad = 24;
+              var isPortraitPoster = bbox.height > bbox.width * 1.08;
+              var pad = (hasPosterBg || isPortraitPoster) ? 0 : 24;
               var vx = Math.floor(bbox.x - pad);
               var vy = Math.floor(bbox.y - pad);
               var vw = Math.ceil(bbox.width + pad * 2);

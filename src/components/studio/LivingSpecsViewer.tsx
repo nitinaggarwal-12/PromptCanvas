@@ -175,14 +175,14 @@ export function LivingSpecsViewer({
             </div>
 
             <div className="flex items-center gap-3 text-[11px] text-slate-500 font-mono">
-              <span>Updated: Just now</span>
+              <span>Updated: {activeDoc.lastUpdated || "Just now"}</span>
               <span>•</span>
-              <span>Version: 1.2.4-prod</span>
+              <span>Version: {versionName}</span>
             </div>
           </div>
 
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{activeDoc.title}</h1>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">{activeDoc.title} — {projectName}</h1>
             <p className="text-xs text-slate-600 mt-1.5 font-medium leading-relaxed">{activeDoc.description}</p>
           </div>
 
@@ -208,7 +208,7 @@ export function LivingSpecsViewer({
               <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />
               <div className="min-w-0">
                 <div className="text-[10px] uppercase font-mono font-bold text-slate-400">Compliance</div>
-                <div className="text-xs font-bold text-slate-800">SOC2 Type II / HIPAA</div>
+                <div className="text-xs font-bold text-slate-800">SOC2 Type II / ISO 27001</div>
               </div>
             </div>
 
@@ -216,7 +216,7 @@ export function LivingSpecsViewer({
               <Sparkles className="w-4 h-4 text-blue-500 shrink-0" />
               <div className="min-w-0">
                 <div className="text-[10px] uppercase font-mono font-bold text-slate-400">AI Grounding</div>
-                <div className="text-xs font-bold text-slate-800">Vertex AI / Gemini 3.7</div>
+                <div className="text-xs font-bold text-slate-800">Gemini 3.1 Pro + 3.8 Flash</div>
               </div>
             </div>
           </div>

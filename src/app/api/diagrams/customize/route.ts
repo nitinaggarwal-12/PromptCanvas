@@ -3,9 +3,13 @@ import { executeUnifiedDiagramPipeline } from '@/lib/unifiedDiagramEngine';
 import { getDiagram } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
+import { enforceGeminiRouteGuard, checkConversationalOrNonMutationIntent } from '@/lib/geminiRouteGuard';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
+  const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/diagrams/customize' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   const user = await getAuthenticatedUser();
   const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
   const clientIp = rawIp.split(',')[0]?.trim() || '';
@@ -34,6 +38,19 @@ export async function POST(request: Request) {
 
     if (!architectureType) {
       return NextResponse.json({ error: 'Missing architectureType' }, { status: 400 });
+    }
+
+    if (typeof prompt === 'string' && prompt.trim()) {
+      const intentCheck = checkConversationalOrNonMutationIntent(prompt.trim());
+      if (intentCheck.isNonMutation) {
+        return NextResponse.json({
+          success: true,
+          conversationalOnly: true,
+          mutationApplied: false,
+          replyMessage: intentCheck.replyMessage,
+          reasoning: intentCheck.replyMessage,
+        });
+      }
     }
 
     let effectivePrompt = prompt;

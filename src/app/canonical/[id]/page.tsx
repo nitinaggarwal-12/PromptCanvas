@@ -440,15 +440,17 @@ export default function CanonicalTemplateDetailPage() {
                   ✎ Edit in Studio
                 </Link>
               </div>
-              <div className="flex-1 min-h-0 relative overflow-hidden p-2">
-                <DiagramViewerRenderSafe
-                  xml={currentXml}
-                  minHeight={0}
-                  bgTheme={themeMode}
-                  diagramId={`canonical_${activeTemplate.id}`}
-                  diagramType={`canonical_${activeTemplate.id}`}
-                  aspectRatioId="16:9"
-                />
+              <div className="flex-1 min-h-0 relative overflow-hidden bg-slate-100/70">
+                <div className="absolute inset-3 w-[calc(100%-24px)] h-[calc(100%-24px)] rounded-xl border border-slate-200 bg-white shadow-md overflow-hidden">
+                  <DiagramViewerRenderSafe
+                    xml={currentXml}
+                    minHeight={0}
+                    bgTheme={themeMode}
+                    diagramId={`canonical_${activeTemplate.id}`}
+                    diagramType={`canonical_${activeTemplate.id}`}
+                    aspectRatioId="16:9"
+                  />
+                </div>
               </div>
             </div>
             </div>

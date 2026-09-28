@@ -168,3 +168,71 @@ export async function enforceGeminiRouteGuard(
     keySource: isGuest ? 'guest_system_key' : 'system_default',
   };
 }
+
+export interface ConversationalIntentCheck {
+  isNonMutation: boolean;
+  category?: 'greeting' | 'identity' | 'courtesy' | 'ambiguous';
+  replyMessage?: string;
+}
+
+/**
+ * Mandatory Dynamic Conversational & Intent Fuzzing Gate:
+ * Detects casual greetings ("Hi", "Hello"), identity queries ("who are you", "help"),
+ * courtesies ("thanks", "ok", "got it"), and short ambiguous non-architectural words ("fast", "scale", "blue")
+ * so endpoints never mutate diagrams or bump versions on non-architectural conversational inputs.
+ */
+export function checkConversationalOrNonMutationIntent(prompt: string): ConversationalIntentCheck {
+  const clean = (prompt || '').toLowerCase().replace(/[!?.,;:"']/g, '').trim();
+  const words = clean.split(/\s+/).filter(Boolean);
+
+  const greetings = new Set([
+    'hi', 'hello', 'hey', 'howdy', 'hola', 'sup', 'yo', 'greetings',
+    'hi there', 'hello there', 'hey there', 'good morning', 'good afternoon', 'good evening'
+  ]);
+  const identityPhrases = [
+    'who are you', 'who r you', 'who r u', 'who are u', 'what are you',
+    'what is this', 'what can you do', 'what do you do', 'what is your name', 'help', 'introduce yourself'
+  ];
+  const courtesyPhrases = new Set([
+    'thanks', 'thank you', 'thx', 'thank u', 'appreciate it', 'many thanks',
+    'ok', 'okay', 'cool', 'great', 'awesome', 'nice', 'good', 'perfect', 'got it', 'sounds good', 'bye', 'goodbye'
+  ]);
+  const ambiguousShortPhrases = new Set([
+    'fast', 'scale', 'blue', 'red', 'green', 'big', 'small', 'test', 'yes', 'no', 'maybe', 'more', 'less'
+  ]);
+
+  if (greetings.has(clean) || (words.length <= 2 && (words[0] === 'hi' || words[0] === 'hello' || words[0] === 'hey'))) {
+    return {
+      isNonMutation: true,
+      category: 'greeting',
+      replyMessage: "👋 Hello! I'm your PromptCanvas Architecture Co-Pilot (powered by Google Omni 1.1, Gemini 3.1 Pro & Gemini 3.8 Flash). Tell me what system, cloud topology, or domain infographic you'd like to design or refine!"
+    };
+  }
+
+  if (identityPhrases.some(p => clean === p || clean.startsWith(p + ' ')) || (clean.startsWith('who') && (clean.includes('you') || clean.includes(' u')))) {
+    return {
+      isNonMutation: true,
+      category: 'identity',
+      replyMessage: "🏛️ I am the PromptCanvas Architecture & Infographic Engine, orchestrated by Google Omni 1.1 with Gemini 3.1 Pro, Gemini 3.8 Flash, and Gemini Flash Live. I synthesize collision-free Draw.io XML blueprints, 6-Dimension Domain Research Infographics, and 19-Section Architecture Specifications."
+    };
+  }
+
+  if (courtesyPhrases.has(clean)) {
+    return {
+      isNonMutation: true,
+      category: 'courtesy',
+      replyMessage: "You're welcome! Let me know whenever you'd like to generate or refine an architecture diagram or specification."
+    };
+  }
+
+  if (ambiguousShortPhrases.has(clean)) {
+    return {
+      isNonMutation: true,
+      category: 'ambiguous',
+      replyMessage: `Could you clarify how you'd like to apply "${prompt.trim()}" to your architecture (e.g., "Design a low-latency caching tier with Redis" or "Scale GKE Autopilot across multi-region active-active zones")?`
+    };
+  }
+
+  return { isNonMutation: false };
+}
+

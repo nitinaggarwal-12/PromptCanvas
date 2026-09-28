@@ -158,13 +158,145 @@ const steps: GateStep[] = [
         }
       }
     }
+  },
+  {
+    name: 'Infographic Blueprints (#52–#66) 1:1 Native Canvas, Zero Double-Escape & Side-by-Side Parity Gate (Rule 43)',
+    category: 'INFOGRAPHIC_1TO1_PARITY',
+    fn: () => {
+      const { generateInfographicBlueprintXmlById } = require('../src/lib/canonical/infographicBlueprints52to66');
+      const expectedDims: Record<string, [number, number]> = {
+        '52': [1075, 1290],
+        '53': [1075, 1310],
+        '54': [886, 1024],
+        '55': [855, 1024],
+        '56': [765, 1024],
+        '57': [765, 1024],
+        '58': [765, 1024],
+        '59': [765, 1024],
+        '60': [765, 1024],
+        '61': [765, 1024],
+        '62': [765, 1024],
+        '63': [765, 1024],
+        '64': [765, 1024],
+        '65': [765, 1024],
+        '66': [765, 1024]
+      };
+
+      for (const [id, [w, h]] of Object.entries(expectedDims)) {
+        const xml = generateInfographicBlueprintXmlById(id);
+        if (!xml.includes(`pageWidth="${w}"`) || !xml.includes(`pageHeight="${h}"`)) {
+          throw new Error(`Infographic #${id} failed Native Pixel Canvas Lock: expected pageWidth="${w}" pageHeight="${h}"`);
+        }
+        if (!xml.includes('id="poster_bg"')) {
+          throw new Error(`Infographic #${id} missing mandatory id="poster_bg" background bounding box cell`);
+        }
+        if (/&amp;lt;(?:div|svg|span)\b/i.test(xml)) {
+          throw new Error(`Double-escaped HTML/SVG regression (&amp;lt;div or &amp;lt;svg) detected in Infographic #${id}`);
+        }
+      }
+
+      // Verify Side-by-Side zero-inset parity in DiagramViewerRenderSafe.tsx & Vision Decompiler registration
+      const viewerSrc = readFileSync(path.join(process.cwd(), 'src/components/DiagramViewerRenderSafe.tsx'), 'utf8');
+      if (!viewerSrc.includes('poster_bg')) {
+        throw new Error('src/components/DiagramViewerRenderSafe.tsx missing poster_bg zero-padding viewBox lock');
+      }
+      const visionSrc = readFileSync(path.join(process.cwd(), 'src/lib/deepmindVisionDecompiler.ts'), 'utf8');
+      if (!visionSrc.includes('generateInfographicBlueprintXmlById')) {
+        throw new Error('src/lib/deepmindVisionDecompiler.ts missing deterministic registration for #52-#66 Infographic Blueprints');
+      }
+    }
+  },
+  {
+    name: '5-Tier Model Stack, Universal Route Guard & Anti-Spoofing Audit Gate (v2.8.0)',
+    category: 'MODEL_STACK_AND_GUARDS',
+    fn: () => {
+      // 1. Verify 5-Tier model constants in src/lib/geminiConfig.ts
+      const cfgSrc = readFileSync(path.join(process.cwd(), 'src/lib/geminiConfig.ts'), 'utf8');
+      const requiredModelIds = [
+        'google-omni-1.1',
+        'gemini-3.1-pro-preview',
+        'gemini-3.8-flash',
+        'gemini-3.1-flash-live-preview',
+        'veo-3.1-generate-preview',
+        'lyria-3.5'
+      ];
+      for (const mId of requiredModelIds) {
+        if (!cfgSrc.includes(mId)) {
+          throw new Error(`src/lib/geminiConfig.ts missing required 5-Tier model constant: ${mId}`);
+        }
+      }
+
+      // 2. Verify deepDomainResearcher uses getGeminiModelWithFallbacks('pro') and has zero hardcoded gemini-2.5-flash override
+      const researcherSrc = readFileSync(path.join(process.cwd(), 'src/lib/research/deepDomainResearcher.ts'), 'utf8');
+      if (/modelName\s*=\s*['"]gemini-2\.5-flash['"]/.test(researcherSrc)) {
+        throw new Error('src/lib/research/deepDomainResearcher.ts contains hardcoded gemini-2.5-flash override');
+      }
+      if (!researcherSrc.includes("getGeminiModelWithFallbacks('pro')")) {
+        throw new Error("src/lib/research/deepDomainResearcher.ts must use getGeminiModelWithFallbacks('pro')");
+      }
+
+      // 3. Verify all prompt routes enforce enforceGeminiRouteGuard and checkConversationalOrNonMutationIntent
+      const conversationalGuardedRoutes = [
+        'src/app/api/generate/route.ts',
+        'src/app/api/compose/route.ts',
+        'src/app/api/diagrams/customize/route.ts',
+        'src/app/api/research-infographic/route.ts',
+        'src/app/api/infographic-blueprint/route.ts'
+      ];
+      for (const relRoute of conversationalGuardedRoutes) {
+        const src = readFileSync(path.join(process.cwd(), relRoute), 'utf8');
+        if (!src.includes('enforceGeminiRouteGuard') || !src.includes('checkConversationalOrNonMutationIntent')) {
+          throw new Error(`${relRoute} missing enforceGeminiRouteGuard or checkConversationalOrNonMutationIntent`);
+        }
+      }
+
+      // 3b. Verify all other Gemini-invoking routes enforce enforceGeminiRouteGuard
+      const allGeminiRoutes = [
+        'src/app/api/chat/route.ts',
+        'src/app/api/studio1/generate/route.ts',
+        'src/app/api/docgen/copilot/route.ts',
+        'src/app/api/docgen/generate/route.ts',
+        'src/app/api/audit/route.ts',
+        'src/app/api/audit/remediate/route.ts',
+        'src/app/api/generate/usecases/route.ts',
+        'src/app/api/export/terraform/route.ts'
+      ];
+      for (const relRoute of allGeminiRoutes) {
+        const src = readFileSync(path.join(process.cwd(), relRoute), 'utf8');
+        if (!src.includes('enforceGeminiRouteGuard')) {
+          throw new Error(`${relRoute} missing enforceGeminiRouteGuard`);
+        }
+      }
+
+      // 4. Verify Studio1 gates are enabled, audit/route.ts has zero injectUseCaseFlavor mutation, and dynamicTieredInfographic has zero Policy Harness / Knowledge Graph mad-libs
+      const studio1Src = readFileSync(path.join(process.cwd(), 'src/app/api/studio1/generate/route.ts'), 'utf8');
+      if (studio1Src.includes('ENFORCE_STUDIO1_GATES = false')) {
+        throw new Error('src/app/api/studio1/generate/route.ts has ENFORCE_STUDIO1_GATES = false');
+      }
+      const auditSrc = readFileSync(path.join(process.cwd(), 'src/app/api/audit/route.ts'), 'utf8');
+      if (auditSrc.includes('injectUseCaseFlavor')) {
+        throw new Error('src/app/api/audit/route.ts must not mutate audited XML via injectUseCaseFlavor');
+      }
+      const dynInfoSrc = readFileSync(path.join(process.cwd(), 'src/lib/canonical/dynamicTieredInfographic.ts'), 'utf8');
+      if (/\$\{subjectTopic\}\s+Policy Harness|\$\{subjectTopic\}\s+Knowledge Graph/.test(dynInfoSrc)) {
+        throw new Error('src/lib/canonical/dynamicTieredInfographic.ts contains banned Policy Harness / Knowledge Graph mad-libs');
+      }
+
+      // 5. Verify Single-Studio Consolidation: /workspace, /studio1, and /gcp must be lightweight redirect shims to /studio
+      for (const shimRoute of ['src/app/workspace/page.tsx', 'src/app/studio1/page.tsx', 'src/app/gcp/page.tsx']) {
+        const shimSrc = readFileSync(path.join(process.cwd(), shimRoute), 'utf8');
+        if (!shimSrc.includes('router.replace') || !shimSrc.includes('/studio') || shimSrc.split('\n').length > 40) {
+          throw new Error(`${shimRoute} must be a lightweight redirect shim (<40 lines) forwarding to /studio`);
+        }
+      }
+    }
   }
 ];
 
 async function runQualityGate() {
   console.log(`\n${BOLD}================================================================================${RESET}`);
-  console.log(`${BOLD}       GOOGLE OMNI 1.1 ARCHITECTURE & CANVAS MASTER QUALITY GATE          ${RESET}`);
-  console.log(`${BOLD}       Standards: 16:9 Widescreen | Zero Collisions | Pure Offline SVGs    ${RESET}`);
+  console.log(`${BOLD}       GOOGLE OMNI 1.1 ARCHITECTURE & CANVAS MASTER QUALITY GATE (v2.8.0) ${RESET}`);
+  console.log(`${BOLD}       Standards: 16:9 Widescreen | 5-Tier AI Stack | Zero Static Spoofing${RESET}`);
   console.log(`${BOLD}================================================================================${RESET}\n`);
 
   let passed = 0;
@@ -199,7 +331,7 @@ async function runQualityGate() {
   console.log(`Failed Gates:             ${failed}`);
 
   if (failed === 0) {
-    console.log(`\n${GREEN}${BOLD}🏆 CERTIFIED: All 5 Omni 1.1 architecture quality gates passed with 0 defects.${RESET}\n`);
+    console.log(`\n${GREEN}${BOLD}🏆 CERTIFIED: All ${steps.length} Omni 1.1 architecture quality gates passed with 0 defects.${RESET}\n`);
     process.exit(0);
   } else {
     console.error(`\n${RED}${BOLD}🚨 REJECTED: ${failed} quality gate(s) failed.${RESET}\n`);

@@ -233,17 +233,16 @@ Blocks merge on any L2 regression.
 **Nightly on `main` (~30 min):** full `dev` set, L1 + L2 + LLM judge. Posts a
 delta table against the last green run.
 
-**Model-bump gate — the important one.** Any change to `GEMINI_MODEL_ID` or a
+**Model-bump gate — the important one.** Any change to `src/lib/geminiConfig.ts` (`GEMINI_MODELS`) or a
 prompt file under `src/prompts/` triggers the full `dev` sweep and **blocks merge**
 unless:
 - L2 assertion pass rate ≥ previous − 2pp, and
-- LLM-judge mean composite ≥ previous − 0.15, and
+- LLM-judge (`google-omni-1.1` / `gemini-3.1-pro-preview`) mean composite ≥ previous − 0.15, and
 - validator first-pass rate ≥ previous − 3pp
 
-Right now `gemini-3.6-flash` is hardcoded and every upgrade is an uncontrolled
-quality event. This gate is what converts a model bump from a leap of faith into
-a measured decision — and it's the single most defensible engineering artifact
-you can show a reviewer.
+All models are centralized in `src/lib/geminiConfig.ts` (`google-omni-1.1`, `gemini-3.1-pro-preview`, `gemini-3.8-flash`, `gemini-3.1-flash-live-preview`, `veo-3.1-generate-preview`, `lyria-3.5`, `gemini-3.1-flash-image-preview`, `gemini-3.1-flash-tts-preview`, `text-embedding-005`). This gate converts any model bump into
+a measured, deterministic decision — and is a core engineering artifact
+verified by `npm run quality-gate`.
 
 **Release gate:** locked set + full human rating. Runs at most monthly.
 

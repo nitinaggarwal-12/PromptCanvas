@@ -21,8 +21,8 @@ import {
   validateStudio1GraphCompleteness,
 } from '@/lib/studio1ArchitectureCore';
 
-// Temporary Studio 1 recovery mode: validators report diagnostics but never block a renderable result.
-const ENFORCE_STUDIO1_GATES = false;
+// Studio 1 quality gate enforcement: validators enforce structural and semantic contracts.
+const ENFORCE_STUDIO1_GATES = true;
 const MODEL_DEADLINE_MS = Math.max(15_000, Math.min(60_000, Number(process.env.STUDIO1_MODEL_DEADLINE_MS || 45_000)));
 // Total wall-clock ceiling for all retry attempts of a single model call.
 // Sits above the per-attempt deadline so one transient 503 can be retried

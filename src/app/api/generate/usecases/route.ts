@@ -5,10 +5,14 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
+import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
+  const guard = await enforceGeminiRouteGuard(request, { endpoint: 'api/generate/usecases' });
+  if (!guard.allowed) return guard.errorResponse!;
+
   const user = await getAuthenticatedUser();
   const rawIp = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '';
   const clientIp = rawIp.split(',')[0]?.trim() || '';

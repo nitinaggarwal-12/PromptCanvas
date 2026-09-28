@@ -7,9 +7,13 @@ import { renderMarkdown } from '../../../lib/compose/renderMd';
 import { renderDocx } from '../../../lib/compose/renderDocx';
 import { getDiagramVersion, getDiagram, listDiagrams } from '@/lib/db';
 import { getAuthenticatedUser } from '@/lib/auth';
+import { enforceGeminiRouteGuard, checkConversationalOrNonMutationIntent } from '@/lib/geminiRouteGuard';
 
 export async function POST(req: NextRequest) {
   try {
+    const guard = await enforceGeminiRouteGuard(req, { endpoint: 'api/compose' });
+    if (!guard.allowed) return guard.errorResponse!;
+
     let user = null;
     try {
       user = await getAuthenticatedUser();
@@ -26,7 +30,20 @@ export async function POST(req: NextRequest) {
       graph_json: directGraphJson,
       title,
       domain,
+      prompt,
     } = body;
+
+    if (typeof prompt === 'string' && prompt.trim()) {
+      const convCheck = checkConversationalOrNonMutationIntent(prompt);
+      if (convCheck.isNonMutation) {
+        return NextResponse.json({
+          conversational: true,
+          intentCategory: convCheck.category,
+          message: convCheck.replyMessage,
+          mutated: false
+        });
+      }
+    }
 
     if (!archetypeId) {
       return NextResponse.json({ error: 'archetypeId is required' }, { status: 400 });

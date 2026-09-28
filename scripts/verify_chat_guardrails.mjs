@@ -9,12 +9,10 @@ const rootDir = path.resolve(__dirname, "..");
 
 // Prompt surfaces that MUST enforce 5-way intent classification.
 //
-// /studioprod, /studio2, and /workspace were removed/retired: those routes
-// were replaced by /studio, so the gate does not check retired redirect shims.
+// /studioprod, /studio2, /workspace, /studio1, and /gcp were removed/retired:
+// those routes were replaced by /studio, so the gate does not check retired redirect shims.
 const targetFiles = [
-  "src/app/gcp/page.tsx",
   "src/app/studio/page.tsx",
-  "src/app/studio1/page.tsx",
   "src/components/DocGenFloatingCopilot.tsx"
 ];
 

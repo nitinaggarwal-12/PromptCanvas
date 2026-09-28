@@ -5,6 +5,7 @@ import { validateAndHealDrawioXml } from './xmlHealer';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from './preflightAuditEngine';
 import { applyBlueprintVisualSystem } from './blueprintVisualSystem';
 import { createDiagram, saveDiagramVersion, getLatestDiagramVersion, updateDiagramArchitectureType } from './db';
+import { researchAndCompileDomainInfographic } from './research/deepDomainResearcher';
 
 export interface UnifiedDiagramRequest {
   prompt: string;
@@ -146,7 +147,18 @@ export async function executeUnifiedDiagramPipeline(
   const isAestheticPrompt = /^(?:make it (?:look )?(?:beautiful|clean|better|nice|modern|pretty|gorgeous|good|clear|sharp|crisp)|beautify|clean up|polish|improve styling|style it|fix layout|clean|prettier|crisp)[!.\s]*$/i.test(cleanPrompt);
 
   let customResult: CustomizationResult;
-  if (
+  if (effectiveArchType === 'dynamic_tiered_infographic' && !isTrivialPrompt) {
+    const researched = await researchAndCompileDomainInfographic(contextualPrompt);
+    customResult = {
+      xml: researched.xml,
+      reasoning: researched.researchBriefMarkdown,
+      businessUsecase: researched.dossier.canonicalLifecycleSummary,
+      technicalUsecase: researched.dossier.standardsAndProtocols.join(' • ') || 'Zero-collision calibrated widescreen 1600x1050 4-tier infographic.',
+      isFallback: !researched.isLiveResearched,
+      modelUsed: researched.modelUsed,
+      attribution: `Google Omni 1.1 + ${researched.modelUsed} 6-Dimension Domain Researcher`,
+    };
+  } else if (
     isTrivialPrompt ||
     effectiveArchType === 'context_harness_loop_graph' ||
     effectiveArchType === 'open_knowledge_infographic' ||

@@ -1,0 +1,515 @@
+<mxfile host="embed.diagrams.net">
+  <diagram id="catalog_value_stream_map" name="04 — Value Stream">
+    <!-- pc-catalog-id:value_stream_map -->
+<!-- pc-technical-accuracy-3-2 -->
+<!-- pc-canvas-header-stripped -->
+<!-- pc-blueprint-visual-system-v2 -->
+<!-- pc-semantic-icons-v1 -->
+<!-- pc-semantic-icons-v2 -->
+<!-- pc-text-containment-v1 -->
+<!-- pc-final-catalog-sanitize-v1 -->
+<mxGraphModel dx="1600" dy="960" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="904" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        
+        
+        <mxCell id="matrix_frame" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="12" width="1254" height="384" as="geometry"/></mxCell>
+        <mxCell id="lbl_val_stages" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;VALUE&lt;br/&gt;STAGES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="12" width="140" height="96" as="geometry"/></mxCell>
+        <mxCell id="lbl_key_act" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;KEY ACTIVITIES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="108" width="140" height="114" as="geometry"/></mxCell>
+        <mxCell id="lbl_val_metrics" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;VALUE METRICS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="222" width="140" height="114" as="geometry"/></mxCell>
+        <mxCell id="lbl_val_flow" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;VALUE FLOW&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="336" width="140" height="60" as="geometry"/></mxCell>
+        <mxCell id="div_row_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="16" y="108" as="sourcePoint"/>
+          <mxPoint x="1270" y="108" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="16" y="108"/>
+            <mxPoint x="1270" y="108"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_row_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="16" y="222" as="sourcePoint"/>
+          <mxPoint x="1270" y="222" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="16" y="222"/>
+            <mxPoint x="1270" y="222"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_row_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="16" y="336" as="sourcePoint"/>
+          <mxPoint x="1270" y="336" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="16" y="336"/>
+            <mxPoint x="1270" y="336"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_col_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="156" y="12" as="sourcePoint"/>
+          <mxPoint x="156" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="156" y="12"/>
+            <mxPoint x="156" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_col_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="378" y="12" as="sourcePoint"/>
+          <mxPoint x="378" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="378" y="12"/>
+            <mxPoint x="378" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_col_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="602" y="12" as="sourcePoint"/>
+          <mxPoint x="602" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="602" y="12"/>
+            <mxPoint x="602" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_col_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="826" y="12" as="sourcePoint"/>
+          <mxPoint x="826" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="826" y="12"/>
+            <mxPoint x="826" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="div_col_4" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;dashed=1;dashPattern=3 3;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1050" y="12" as="sourcePoint"/>
+          <mxPoint x="1050" y="396" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1050" y="12"/>
+            <mxPoint x="1050" y="396"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_hdr_0" value="&lt;div style=&quot;text-align:center;&quot;&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#166534;letter-spacing:0.5px;line-height:1.2;margin-bottom:6px;&quot;&gt;1. RESEARCH &amp;amp;&lt;br/&gt;DISCOVERY&lt;/div&gt;
+      &lt;div style=&quot;width:50px;height:50px;border-radius:25px;background:#166534;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 3px 6px rgba(0,0,0,0.12);&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;26&quot; height=&quot;26&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M6 18h8&quot;/&gt;&lt;path d=&quot;M3 22h18&quot;/&gt;&lt;path d=&quot;M14 22a7 7 0 1 0 0-14h-1&quot;/&gt;&lt;path d=&quot;M9 14h2&quot;/&gt;&lt;path d=&quot;M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z&quot;/&gt;&lt;path d=&quot;M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="156" y="14" width="222" height="90" as="geometry"/></mxCell>
+        <mxCell id="e_stage_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#334155;strokeWidth=2;endArrow=classic;endSize=5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="360" y="66" as="sourcePoint"/>
+          <mxPoint x="392" y="66" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="360" y="66"/>
+            <mxPoint x="392" y="66"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_act_0" value="&lt;div style=&quot;padding:6px 10px;&quot;&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#166534;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Target identification&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#166534;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Biology &amp;amp; assay research&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#166534;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Hit discovery &amp;amp; validation&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#166534;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Lead optimization&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#166534;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;In silico modeling&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="156" y="110" width="222" height="110" as="geometry"/></mxCell>
+        <mxCell id="stage_m_0_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#F0FDF4;border:1.2px solid #166534;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;6&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.2;&quot;&gt;Discovery&lt;br/&gt;Success Rate&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="164" y="228" width="206" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_m_0_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#F0FDF4;border:1.2px solid #166534;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M10 2v4.5L4.2 18.5a2 2 0 0 0 1.8 2.5h12a2 2 0 0 0 1.8-2.5L14 6.5V2&quot;/&gt;&lt;line x1=&quot;8.5&quot; y1=&quot;2&quot; x2=&quot;15.5&quot; y2=&quot;2&quot;/&gt;&lt;line x1=&quot;7&quot; y1=&quot;14&quot; x2=&quot;17&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#166534;line-height:1.2;&quot;&gt;Candidate&lt;br/&gt;Backlog&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="164" y="280" width="206" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_flow_0" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5&quot;/&gt;&lt;path d=&quot;M9 18h6&quot;/&gt;&lt;path d=&quot;M10 22h4&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Ideas &amp;amp; Hypotheses&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="166" y="342" width="202" height="42" as="geometry"/></mxCell>
+        <mxCell id="e_flow_0" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="370" y="363" as="sourcePoint"/>
+          <mxPoint x="386" y="363" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="370" y="363"/>
+            <mxPoint x="386" y="363"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_hdr_1" value="&lt;div style=&quot;text-align:center;&quot;&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;letter-spacing:0.5px;line-height:1.2;margin-bottom:6px;&quot;&gt;2. DEVELOPMENT&lt;/div&gt;
+      &lt;div style=&quot;width:50px;height:50px;border-radius:25px;background:#1D4ED8;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 3px 6px rgba(0,0,0,0.12);&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;26&quot; height=&quot;26&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M10 2v4.5L4.2 18.5a2 2 0 0 0 1.8 2.5h12a2 2 0 0 0 1.8-2.5L14 6.5V2&quot;/&gt;&lt;line x1=&quot;8.5&quot; y1=&quot;2&quot; x2=&quot;15.5&quot; y2=&quot;2&quot;/&gt;&lt;line x1=&quot;7&quot; y1=&quot;14&quot; x2=&quot;17&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="378" y="14" width="224" height="90" as="geometry"/></mxCell>
+        <mxCell id="e_stage_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#334155;strokeWidth=2;endArrow=classic;endSize=5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="584" y="66" as="sourcePoint"/>
+          <mxPoint x="616" y="66" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="584" y="66"/>
+            <mxPoint x="616" y="66"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_act_1" value="&lt;div style=&quot;padding:6px 10px;&quot;&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Preclinical studies&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Clinical trial design&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;CMC &amp;amp; formulation&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Biomarker development&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#1D4ED8;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Data management&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="378" y="110" width="224" height="110" as="geometry"/></mxCell>
+        <mxCell id="stage_m_1_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#EFF6FF;border:1.2px solid #1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#1D4ED8;line-height:1.2;&quot;&gt;Trials Started&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="386" y="228" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_m_1_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#EFF6FF;border:1.2px solid #1D4ED8;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#1D4ED8;line-height:1.2;&quot;&gt;Development&lt;br/&gt;Cycle Time&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="386" y="280" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_flow_1" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z&quot;/&gt;&lt;polyline points=&quot;3.27 6.96 12 12.01 20.73 6.96&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;22.08&quot; x2=&quot;12&quot; y2=&quot;12&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Validated Candidates&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="388" y="342" width="204" height="42" as="geometry"/></mxCell>
+        <mxCell id="e_flow_1" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="594" y="363" as="sourcePoint"/>
+          <mxPoint x="610" y="363" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="594" y="363"/>
+            <mxPoint x="610" y="363"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_hdr_2" value="&lt;div style=&quot;text-align:center;&quot;&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#6D28D9;letter-spacing:0.5px;line-height:1.2;margin-bottom:6px;&quot;&gt;3. MANUFACTURING&lt;/div&gt;
+      &lt;div style=&quot;width:50px;height:50px;border-radius:25px;background:#6D28D9;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 3px 6px rgba(0,0,0,0.12);&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;26&quot; height=&quot;26&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 4V8l-7 4V4H2z&quot;/&gt;&lt;path d=&quot;M18 16h2&quot;/&gt;&lt;path d=&quot;M18 12h2&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="602" y="14" width="224" height="90" as="geometry"/></mxCell>
+        <mxCell id="e_stage_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#334155;strokeWidth=2;endArrow=classic;endSize=5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="808" y="66" as="sourcePoint"/>
+          <mxPoint x="840" y="66" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="808" y="66"/>
+            <mxPoint x="840" y="66"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_act_2" value="&lt;div style=&quot;padding:6px 10px;&quot;&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#6D28D9;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Process development&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#6D28D9;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Scale-up &amp;amp; tech transfer&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#6D28D9;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;GMP manufacturing&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#6D28D9;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Quality control &amp;amp; testing&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#6D28D9;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Batch release&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="602" y="110" width="224" height="110" as="geometry"/></mxCell>
+        <mxCell id="stage_m_2_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#FAF5FF;border:1.2px solid #6D28D9;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#6D28D9;line-height:1.2;&quot;&gt;First Pass Yield&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="610" y="228" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_m_2_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#FAF5FF;border:1.2px solid #6D28D9;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;4&quot; x=&quot;8&quot; y=&quot;2&quot; rx=&quot;1&quot; ry=&quot;1&quot;/&gt;&lt;path d=&quot;M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2&quot;/&gt;&lt;path d=&quot;m9 14 2 2 4-4&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#6D28D9;line-height:1.2;&quot;&gt;Batch Release&lt;br/&gt;Cycle Time&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="610" y="280" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_flow_2" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Approved Therapy&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="612" y="342" width="204" height="42" as="geometry"/></mxCell>
+        <mxCell id="e_flow_2" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="818" y="363" as="sourcePoint"/>
+          <mxPoint x="834" y="363" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="818" y="363"/>
+            <mxPoint x="834" y="363"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_hdr_3" value="&lt;div style=&quot;text-align:center;&quot;&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#D97706;letter-spacing:0.5px;line-height:1.2;margin-bottom:6px;&quot;&gt;4. COMMERCIALIZATION&lt;/div&gt;
+      &lt;div style=&quot;width:50px;height:50px;border-radius:25px;background:#D97706;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 3px 6px rgba(0,0,0,0.12);&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;26&quot; height=&quot;26&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m3 11 18-5v12L3 14v-3z&quot;/&gt;&lt;path d=&quot;M11.6 16.8a3 3 0 1 1-5.8-1.6&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="826" y="14" width="224" height="90" as="geometry"/></mxCell>
+        <mxCell id="e_stage_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#334155;strokeWidth=2;endArrow=classic;endSize=5;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1032" y="66" as="sourcePoint"/>
+          <mxPoint x="1064" y="66" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1032" y="66"/>
+            <mxPoint x="1064" y="66"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_act_3" value="&lt;div style=&quot;padding:6px 10px;&quot;&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#D97706;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Regulatory submission&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#D97706;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Market access &amp;amp; pricing&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#D97706;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Launch planning&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#D97706;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Sales &amp;amp; distribution&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#D97706;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;HCP engagement&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="826" y="110" width="224" height="110" as="geometry"/></mxCell>
+        <mxCell id="stage_m_3_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#FFFBEB;border:1.2px solid #D97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;23 6 13.5 15.5 8.5 10.5 1 18&quot;/&gt;&lt;polyline points=&quot;17 6 23 6 23 12&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#D97706;line-height:1.2;&quot;&gt;Time to Market&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="834" y="228" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_m_3_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#FFFBEB;border:1.2px solid #D97706;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a2 2 0 0 0 0-2.8l-3.2-3.2a2 2 0 0 0-2.8 0L7 14.4&quot;/&gt;&lt;path d=&quot;m21.5 7-3.5-3.5a2 2 0 0 0-2.8 0L9.4 9.3&quot;/&gt;&lt;path d=&quot;m2 14.5 4.5 4.5a2 2 0 0 0 2.8 0l3.7-3.7&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#D97706;line-height:1.2;&quot;&gt;Market Access&lt;br/&gt;Coverage&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="834" y="280" width="208" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_flow_3" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;22&quot; y2=&quot;12&quot;/&gt;&lt;path d=&quot;M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Accessible to Patients&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="836" y="342" width="204" height="42" as="geometry"/></mxCell>
+        <mxCell id="e_flow_3" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="1042" y="363" as="sourcePoint"/>
+          <mxPoint x="1058" y="363" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="1042" y="363"/>
+            <mxPoint x="1058" y="363"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="stage_hdr_4" value="&lt;div style=&quot;text-align:center;&quot;&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0D9488;letter-spacing:0.5px;line-height:1.2;margin-bottom:6px;&quot;&gt;5. PATIENT OUTCOMES&lt;/div&gt;
+      &lt;div style=&quot;width:50px;height:50px;border-radius:25px;background:#0D9488;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 3px 6px rgba(0,0,0,0.12);&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;26&quot; height=&quot;26&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#FFFFFF&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2&quot;/&gt;&lt;path d=&quot;M12 17c-2 0-3-1-3-2s1-2 3-2 3 1 3 2-1 2-3 2z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="1050" y="14" width="220" height="90" as="geometry"/></mxCell>
+        <mxCell id="stage_act_4" value="&lt;div style=&quot;padding:6px 10px;&quot;&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#0D9488;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Patient onboarding&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#0D9488;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Therapy adherence&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#0D9488;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Outcomes monitoring&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#0D9488;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Real-world evidence&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;display:flex;align-items:flex-start;gap:5px;margin-bottom:3.5px;font-size:9.5px;font-weight:600;color:#1E293B;line-height:1.2;&quot;&gt;&lt;span style=&quot;color:#0D9488;font-weight:900;font-size:9.5px;line-height:1;&quot;&gt;•&lt;/span&gt;&lt;span&gt;Continuous support&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="1050" y="110" width="220" height="110" as="geometry"/></mxCell>
+        <mxCell id="stage_m_4_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#F0FDFA;border:1.2px solid #0D9488;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z&quot;/&gt;&lt;path d=&quot;M12 5v14&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0D9488;line-height:1.2;&quot;&gt;Patient Outcomes&lt;br/&gt;Improvement&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1058" y="228" width="204" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_m_4_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:8px;padding:3px 6px;&quot;&gt;
+        &lt;div style=&quot;width:30px;height:30px;border-radius:6px;background:#F0FDFA;border:1.2px solid #0D9488;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8&quot;/&gt;&lt;path d=&quot;M3 3v5h5&quot;/&gt;&lt;path d=&quot;M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16&quot;/&gt;&lt;path d=&quot;M16 21h5v-5&quot;/&gt;&lt;/svg&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0D9488;line-height:1.2;&quot;&gt;Real-World&lt;br/&gt;Impact&lt;/div&gt;
+      &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1058" y="280" width="204" height="44" as="geometry"/></mxCell>
+        <mxCell id="stage_flow_4" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;padding:2px 4px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Better Lives&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1060" y="342" width="200" height="42" as="geometry"/></mxCell>
+        <mxCell id="enablers_frame" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="406" width="1254" height="78" as="geometry"/></mxCell>
+        <mxCell id="lbl_val_enablers" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;VALUE&lt;br/&gt;ENABLERS&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="406" width="140" height="78" as="geometry"/></mxCell>
+        <mxCell id="div_col_enabler" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="156" y="406" as="sourcePoint"/>
+          <mxPoint x="156" y="484" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="156" y="406"/>
+            <mxPoint x="156" y="484"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="enabler_c_0" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04zM14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;DATA &amp;amp; AI&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;AI/ML, Predictive Modeling, Real-world Data, Advanced Analytics&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="164" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="enabler_c_1" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#F0F9FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;DIGITAL PLATFORMS&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;Unified R&amp;amp;D, Clinical, Manufacturing and Commercial Platforms&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="347" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="enabler_c_2" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z&quot;/&gt;&lt;path d=&quot;m9 12 2 2 4-4&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;QUALITY &amp;amp; COMPLIANCE&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;GxP Quality, Data Integrity, Regulatory Compliance&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="530" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="enabler_c_3" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#FAF5FF;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;TALENT &amp;amp; CULTURE&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;Scientific Excellence, Cross-functional Collaboration&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="713" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="enabler_c_4" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#FFFBEB;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;PARTNER ECOSYSTEM&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;CROs, CMOs, Academic Partners, Tech Partners&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="896" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="enabler_c_5" value="&lt;div style=&quot;display:flex;align-items:flex-start;gap:6px;padding:3px 4px;&quot;&gt;
+      &lt;div style=&quot;width:24px;height:24px;border-radius:12px;background:#F0FDFA;display:flex;align-items:center;justify-content:center;flex-shrink:0;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z&quot;/&gt;&lt;path d=&quot;M2 21c0-3 1.85-5.36 5.08-6 0-1.5 2-4 5-5&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div&gt;
+        &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;line-height:1.15;&quot;&gt;SUSTAINABILITY&lt;/div&gt;
+        &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:1.5px;&quot;&gt;Environmentally Responsible Operations&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1079" y="412" width="178" height="66" as="geometry"/></mxCell>
+        <mxCell id="tech_frame" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="492" width="1254" height="74" as="geometry"/></mxCell>
+        <mxCell id="lbl_tech_plat" value="&lt;b style=&quot;font-size:10px;color:#0F2A4A;&quot;&gt;TECHNOLOGY&lt;br/&gt;PLATFORM&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="492" width="140" height="74" as="geometry"/></mxCell>
+        <mxCell id="div_col_tech" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="156" y="492" as="sourcePoint"/>
+          <mxPoint x="156" y="566" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="156" y="492"/>
+            <mxPoint x="156" y="566"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="tech_gcp" value="&lt;div style=&quot;display:flex;align-items:center;justify-content:center;gap:6px;&quot;&gt;
+    &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+    &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Google Cloud&lt;/div&gt;
+  &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="164" y="500" width="110" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_0" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#7C3AED&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Vertex AI&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="282" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_1" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot; cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21 21-4.3-4.3&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;BigQuery&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="364" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_2" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Dataplex&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="446" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_3" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Dataflow&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="528" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_4" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#4285F4&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Pub/Sub&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="610" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_5" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0284C7&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Apigee&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="692" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_6" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#34A853&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;18&quot; y1=&quot;20&quot; x2=&quot;18&quot; y2=&quot;10&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;20&quot; x2=&quot;12&quot; y2=&quot;4&quot;/&gt;&lt;line x1=&quot;6&quot; y1=&quot;20&quot; x2=&quot;6&quot; y2=&quot;14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Looker&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="774" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_7" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#EA580C&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Gemini&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="856" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_8" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;rect x=&quot;16&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;2&quot; y=&quot;16&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;9&quot; y=&quot;2&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;12&quot; x2=&quot;12&quot; y2=&quot;8&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;MCP / A2A&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="938" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_9" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#326CE5&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Kubernetes&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1020" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_10" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#7B42BC&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z&quot;/&gt;&lt;polyline points=&quot;3.27 6.96 12 12.01 20.73 6.96&quot;/&gt;&lt;line x1=&quot;12&quot; y1=&quot;22.08&quot; x2=&quot;12&quot; y2=&quot;12&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;Terraform&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1102" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="tech_tile_11" value="&lt;div style=&quot;text-align:center;padding:2px 0;&quot;&gt;
+      &lt;div style=&quot;display:flex;justify-content:center;margin-bottom:2px;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0F172A&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:800;color:#0F172A;line-height:1.1;&quot;&gt;GitHub&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1184" y="500" width="76" height="58" as="geometry"/></mxCell>
+        <mxCell id="outcomes_frame" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="574" width="1254" height="56" as="geometry"/></mxCell>
+        <mxCell id="lbl_val_outcomes" value="&lt;b style=&quot;font-size:9.5px;color:#0F2A4A;&quot;&gt;VALUE&lt;br/&gt;OUTCOMES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=4;whiteSpace=wrap;overflow=hidden;spacingLeft=4;spacingRight=4;spacingTop=3;spacingBottom=3;" vertex="1" parent="1"><mxGeometry x="16" y="574" width="140" height="56" as="geometry"/></mxCell>
+        <mxCell id="div_col_outcomes" value="" edge="1" parent="1" style="edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;labelBackgroundColor=#FFFFFF;labelBorderColor=none;fontColor=#334155;endFill=1;">
+        <mxGeometry relative="1" as="geometry">
+          <mxPoint x="156" y="574" as="sourcePoint"/>
+          <mxPoint x="156" y="630" as="targetPoint"/>
+          <Array as="points">
+            <mxPoint x="156" y="574"/>
+            <mxPoint x="156" y="630"/>
+          </Array>
+        </mxGeometry>
+      </mxCell>
+        <mxCell id="vo_pill_0" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;polyline points=&quot;12 6 12 12 16 14&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Faster Innovation&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="164" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="vo_pill_1" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;6&quot;/&gt;&lt;path d=&quot;M15.477 12.89 17 22l-5-3-5 3 1.523-9.11&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Higher Quality&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="347" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="vo_pill_2" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Operational Excellence&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="530" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="vo_pill_3" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2&quot;/&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;4&quot;/&gt;&lt;polyline points=&quot;16 11 18 13 22 9&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Patient-Centricity&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="713" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="vo_pill_4" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;line x1=&quot;12&quot; y1=&quot;2&quot; x2=&quot;12&quot; y2=&quot;22&quot;/&gt;&lt;path d=&quot;M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Financial Performance&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="896" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="vo_pill_5" value="&lt;div style=&quot;display:flex;align-items:center;gap:6px;padding:3px 6px;&quot;&gt;
+      &lt;div style=&quot;flex-shrink:0;&quot;&gt;&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;18&quot; height=&quot;18&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#059669&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;10&quot;/&gt;&lt;line x1=&quot;2&quot; y1=&quot;12&quot; x2=&quot;22&quot; y2=&quot;12&quot;/&gt;&lt;path d=&quot;M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z&quot;/&gt;&lt;/svg&gt;&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0F172A;&quot;&gt;Societal Impact&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1079" y="582" width="178" height="40" as="geometry"/></mxCell>
+        <mxCell id="delivered_box" value="" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="1284" y="12" width="300" height="618" as="geometry"/></mxCell>
+        <mxCell id="delivered_hdr" value="&lt;b style=&quot;font-size:10.5px;color:#0F2A4A;letter-spacing:0.5px;&quot;&gt;DELIVERED OUTCOMES&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1284" y="18" width="300" height="24" as="geometry"/></mxCell>
+        <mxCell id="deliv_c_0" value="&lt;div style=&quot;padding:8px 10px;text-align:center;&quot;&gt;
+      &lt;div style=&quot;width:36px;height:36px;border-radius:18px;background:#F0FDF4;border:1.2px solid #166534;display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#166534&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5&quot;/&gt;&lt;path d=&quot;M9 18h6&quot;/&gt;&lt;path d=&quot;M10 22h4&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#166534;line-height:1.2;&quot;&gt;INNOVATIVE THERAPIES&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Bring novel treatments to patients faster&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1296" y="48" width="276" height="106" as="geometry"/></mxCell>
+        <mxCell id="deliv_c_1" value="&lt;div style=&quot;padding:8px 10px;text-align:center;&quot;&gt;
+      &lt;div style=&quot;width:36px;height:36px;border-radius:18px;background:#EFF6FF;border:1.2px solid #1D4ED8;display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#1D4ED8&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z&quot;/&gt;&lt;path d=&quot;M12 5v14&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#1D4ED8;line-height:1.2;&quot;&gt;IMPROVED PATIENT OUTCOMES&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Meaningful clinical and real-world impact&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1296" y="162" width="276" height="106" as="geometry"/></mxCell>
+        <mxCell id="deliv_c_2" value="&lt;div style=&quot;padding:8px 10px;text-align:center;&quot;&gt;
+      &lt;div style=&quot;width:36px;height:36px;border-radius:18px;background:#F0FDFA;border:1.2px solid #0D9488;display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#0D9488&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;9&quot; cy=&quot;7&quot; r=&quot;3.5&quot;/&gt;&lt;path d=&quot;M3 20a6 6 0 0 1 12 0&quot;/&gt;&lt;circle cx=&quot;16.5&quot; cy=&quot;8.5&quot; r=&quot;2.5&quot;/&gt;&lt;path d=&quot;M15 20a5 5 0 0 1 6 0&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#0D9488;line-height:1.2;&quot;&gt;ACCESSIBLE &amp;amp; AFFORDABLE CARE&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Wider access through efficient commercialization&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1296" y="276" width="276" height="106" as="geometry"/></mxCell>
+        <mxCell id="deliv_c_3" value="&lt;div style=&quot;padding:8px 10px;text-align:center;&quot;&gt;
+      &lt;div style=&quot;width:36px;height:36px;border-radius:18px;background:#FFFBEB;border:1.2px solid #D97706;display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#D97706&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;path d=&quot;m11 17 2 2a1 1 0 0 0 1.4 0l4.6-4.6a2 2 0 0 0 0-2.8l-3.2-3.2a2 2 0 0 0-2.8 0L7 14.4&quot;/&gt;&lt;path d=&quot;m21.5 7-3.5-3.5a2 2 0 0 0-2.8 0L9.4 9.3&quot;/&gt;&lt;path d=&quot;m2 14.5 4.5 4.5a2 2 0 0 0 2.8 0l3.7-3.7&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#D97706;line-height:1.2;&quot;&gt;TRUSTED BY PARTNERS&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Collaborate with best-in-class research &amp;amp; healthcare partners&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1296" y="390" width="276" height="106" as="geometry"/></mxCell>
+        <mxCell id="deliv_c_4" value="&lt;div style=&quot;padding:8px 10px;text-align:center;&quot;&gt;
+      &lt;div style=&quot;width:36px;height:36px;border-radius:18px;background:#FAF5FF;border:1.2px solid #6D28D9;display:flex;align-items:center;justify-content:center;margin:0 auto 4px auto;&quot;&gt;
+        &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;20&quot; height=&quot;20&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;#6D28D9&quot; stroke-width=&quot;2&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;&gt;&lt;polyline points=&quot;23 6 13.5 15.5 8.5 10.5 1 18&quot;/&gt;&lt;polyline points=&quot;17 6 23 6 23 12&quot;/&gt;&lt;/svg&gt;
+      &lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;font-weight:900;color:#6D28D9;line-height:1.2;&quot;&gt;SUSTAINABLE GROWTH&lt;/div&gt;
+      &lt;div style=&quot;font-size:9.5px;color:#64748B;font-weight:500;line-height:1.2;margin-top:2px;&quot;&gt;Drive long-term value for patients and stakeholders&lt;/div&gt;
+    &lt;/div&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;whiteSpace=wrap;shadow=0;spacing=6;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1"><mxGeometry x="1296" y="504" width="276" height="106" as="geometry"/></mxCell>
+        <mxCell id="legend_box" value="" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;whiteSpace=wrap;html=1;shadow=0;spacing=6;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="642" width="1568" height="42" as="geometry"/></mxCell>
+        <mxCell id="leg_title" value="&lt;b style=&quot;font-size:9.5px;color:#0F172A;letter-spacing:1px;&quot;&gt;LEGEND:&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="20" y="649" width="60" height="28" as="geometry"/></mxCell>
+        <mxCell id="leg_p_0" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#166534;&quot;&gt;Research &amp; Discovery&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#DCFCE7;strokeColor=#166534;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="80" y="651" width="135" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_p_1" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#1D4ED8;&quot;&gt;Development&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="222" y="651" width="100" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_p_2" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#6D28D9;&quot;&gt;Manufacturing&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#F3E8FF;strokeColor=#6D28D9;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="328" y="651" width="105" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_p_3" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#D97706;&quot;&gt;Commercialization&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#FEF3C7;strokeColor=#D97706;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="440" y="651" width="120" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_p_4" value="&lt;span style=&quot;font-size:10px;font-weight:800;color:#0D9488;&quot;&gt;Patient Outcomes&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#CCFBF1;strokeColor=#0D9488;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="566" y="651" width="115" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_sym_step" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#475569;&quot;&gt;Process / Stage&lt;/span&gt;" style="rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#475569;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;shadow=0;spacing=2;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="690" y="651" width="95" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_sym_flow" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#475569;&quot;&gt;&amp;mdash;&amp;rarr; Flow&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="795" y="651" width="70" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_sym_dash" value="&lt;span style=&quot;font-size:10px;font-weight:700;color:#475569;&quot;&gt;- - - &amp;rarr; Information / Feedback&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="870" y="651" width="160" height="24" as="geometry"/></mxCell>
+        <mxCell id="leg_copy" value="&lt;span style=&quot;font-size:9.5px;font-weight:700;color:#64748B;&quot;&gt;&amp;copy; 2024 NOVACURA Bio-Pharma&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;spacing=2;whiteSpace=wrap;overflow=hidden;" vertex="1" parent="1"><mxGeometry x="1400" y="649" width="176" height="28" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

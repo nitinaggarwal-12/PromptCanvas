@@ -69,12 +69,12 @@ const meta = arche.slice(metaStart, metaEnd === -1 ? undefined : metaEnd);
 const archetypeCount = (meta.match(/^\s*id:\s*'/gm) || []).length;
 check('Document Studio', archetypeCount, 'docgen', sidebar);
 
-// Obsolete route guard: /workspace is retired and must never appear as an href in UnifiedAppSidebar
-if (/href:\s*['"]\/workspace|href=['"]\/workspace/.test(sidebar)) {
-  console.error('❌ Obsolete Route Guard: UnifiedAppSidebar.tsx contains a link to retired route /workspace.');
+// Obsolete route guard: /workspace, /studio1, and /gcp are retired redirect shims to /studio and must never appear as an href in UnifiedAppSidebar
+if (/href:\s*['"]\/(?:workspace|studio1|gcp)|href=['"]\/(?:workspace|studio1|gcp)/.test(sidebar)) {
+  console.error('❌ Obsolete Route Guard: UnifiedAppSidebar.tsx contains a link to retired route (/workspace, /studio1, or /gcp).');
   failed++;
 } else {
-  console.log('✅ Obsolete Route Guard: Zero /workspace links in UnifiedAppSidebar.tsx');
+  console.log('✅ Obsolete Route Guard: Zero retired studio links (/workspace, /studio1, /gcp) in UnifiedAppSidebar.tsx');
 }
 
 if (failed) {

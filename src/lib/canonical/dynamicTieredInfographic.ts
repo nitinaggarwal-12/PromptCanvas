@@ -745,163 +745,163 @@ export function buildDynamicInfographicTiers(prompt: string): {
     tiers: [
       {
         num: '01',
-        title: 'SOURCE INGESTION & CONTEXT LAYER',
-        subtitle: `What the ${subjectTopic} system ingests, normalizes & contextualizes`,
+        title: 'INGESTION & PROTOCOL TELEMETRY PLANE',
+        subtitle: `High-throughput ingress, wire-protocol framing & schema normalization for ${subjectTopic}`,
         primaryColor: '#2563EB',
         lightBg: '#EFF6FF',
         borderColor: '#93C5FD',
         cards: [
           {
-            title: `${subjectTopic} Data Sources`,
+            title: `${subjectTopic} Ingress Gateways`,
             badge: 'INGESTION',
             bullets: [
-              `Primary ${subjectTopic} payloads & schemas`,
-              'Real-time streaming & batch API endpoints',
-              'Multi-format structural normalization'
+              `Primary ${subjectTopic} wire payloads & framing`,
+              'Sub-10ms streaming & batch gRPC/REST endpoints',
+              'Deterministic schema & boundary normalization'
             ]
           },
           {
-            title: 'Context & Schema Registry',
-            badge: 'CONTEXT',
+            title: 'Canonical Schema & Metadata Store',
+            badge: 'ONTOLOGY',
             bullets: [
-              'Canonical entity & metadata definitions',
-              'Semantic context window boundaries',
-              'Versioned schema contracts & lineage'
+              'Typed domain entity & lineage definitions',
+              'Deterministic payload contract validation',
+              'Cryptographic SHA-256 provenance stamping'
             ]
           },
           {
-            title: 'Access & Identity Perimeter',
+            title: 'Zero-Trust Identity & Perimeter',
             badge: 'SECURITY',
             bullets: [
-              'Role-based access control (RBAC / ABAC)',
-              'Field-level encryption & PII redaction',
-              'Cryptographic provenance verification'
+              'Mutual TLS (mTLS 1.3) & OIDC workload identity',
+              'Field-level envelope encryption (AES-256-GCM)',
+              'Strict ingress rate-limiting & WAF shielding'
             ]
           }
         ],
-        gateTitle: 'Schema & Context Valid?',
-        gatePassLabel: 'Verified Context',
-        bottomRuleText: `Rule 01: Enforce strict ${subjectTopic} schema contracts at ingestion before downstream processing.`
+        gateTitle: 'Ingress SLA & Schema Valid?',
+        gatePassLabel: 'Verified Payload',
+        bottomRuleText: `Rule 01: Enforce strict ${subjectTopic} wire-protocol framing and mTLS 1.3 identity verification at ingress.`
       },
       {
         num: '02',
-        title: 'ORCHESTRATION HARNESS & POLICY ENGINE',
-        subtitle: `Standing guardrails, tools, and execution policies around ${subjectTopic}`,
+        title: 'CONTROL PLANE & DETERMINISTIC EXECUTION',
+        subtitle: `State-machine orchestration, runtime routing & invariant enforcement for ${subjectTopic}`,
         primaryColor: '#7C3AED',
         lightBg: '#F5F3FF',
         borderColor: '#C4B5FD',
         cards: [
           {
-            title: `${subjectTopic} Policy Harness`,
-            badge: 'HARNESS',
+            title: `${subjectTopic} Control Plane`,
+            badge: 'CONTROL PLANE',
             bullets: [
-              'Deterministic compliance & policy rules',
-              'Automated pre-execution invariant checks',
-              'Zero-bypass operational boundaries'
+              'Deterministic DAG scheduling & state transitions',
+              'Pre-execution invariant & safety boundary checks',
+              'Zero-bypass operational isolation enclaves'
             ]
           },
           {
-            title: 'Tooling & Connector Mesh',
-            badge: 'ORCHESTRATION',
+            title: 'Service Mesh & Adapter Bus',
+            badge: 'ROUTING',
             bullets: [
-              'Typed synchronous & async service adapters',
-              'Idempotent transaction execution',
-              'Circuit-breaker & rate-limiting armor'
+              'Typed synchronous gRPC & async event adapters',
+              'Idempotent transaction commit coordination',
+              'Adaptive circuit-breaker & backpressure control'
             ]
           },
           {
-            title: 'Telemetry & Audit Logging',
-            badge: 'OBSERVABILITY',
+            title: 'Distributed Trace & Audit Ledger',
+            badge: 'TELEMETRY',
             bullets: [
-              'Immutable execution trace logs',
-              'Real-time latency & SLA monitoring',
-              'Forensic anomaly detection alerts'
+              'OpenTelemetry span propagation & W3C TraceContext',
+              'Real-time p99 latency & saturation telemetry',
+              'Append-only cryptographic audit event stream'
             ]
           }
         ],
-        gateTitle: 'Policy Harness Passed?',
-        gatePassLabel: 'Compliant Execution',
-        bottomRuleText: `Rule 02: Execute all ${subjectTopic} operations inside a policy-enforced harness with full audit telemetry.`
+        gateTitle: 'p99 Latency < 25ms & Compliant?',
+        gatePassLabel: 'Authorized State',
+        bottomRuleText: `Rule 02: Isolate ${subjectTopic} control-plane state transitions from high-throughput data-plane execution.`
       },
       {
         num: '03',
-        title: 'AUTONOMOUS VALIDATION & FEEDBACK LOOP',
-        subtitle: `Continuous verification, reconciliation & self-healing loop for ${subjectTopic}`,
+        title: 'CLOSED-LOOP VERIFICATION & RECONCILIATION',
+        subtitle: `Quantitative drift detection, fault quarantine & autonomous recovery for ${subjectTopic}`,
         primaryColor: '#EA580C',
         lightBg: '#FFF7ED',
         borderColor: '#FDBA74',
         cards: [
           {
-            title: 'Automated Quality Gate',
+            title: 'Quantitative Invariant Verifier',
             badge: 'VERIFICATION',
             bullets: [
-              'Multi-stage semantic & structural validation',
-              'Automated drift & regression detection',
-              'Deterministic pass/fail quality rubrics'
+              'Multi-stage structural & semantic parity checks',
+              'Real-time state drift & anomaly scoring',
+              'Deterministic pass/fail SLA threshold gating'
             ]
           },
           {
-            title: 'Self-Healing Reconciliation',
+            title: 'Autonomous Rollback & Quarantine',
             badge: 'REMEDIATION',
             bullets: [
-              'Closed-loop error diagnosis & retry',
-              'Automated state rollback on violation',
-              'Quarantine queue for unresolvable exceptions'
+              'Closed-loop root-cause isolation & bounded retry',
+              'Atomic state rollback on invariant violation',
+              'Dead-letter quarantine for unresolvable faults'
             ]
           },
           {
-            title: 'Continuous Optimization',
+            title: 'Closed-Loop Feedback Telemetry',
             badge: 'FEEDBACK',
             bullets: [
-              'Feedback telemetry back to ingestion layer',
-              'Adaptive threshold & rule refinement',
-              'Continuous throughput & accuracy tuning'
+              'Continuous calibration signals back to Tier 01',
+              'Dynamic routing weight & threshold tuning',
+              'Automated capacity & throughput optimization'
             ]
           }
         ],
-        gateTitle: 'Quality SLA Certified?',
+        gateTitle: 'Zero Drift & Parity >= 99.9%?',
         gatePassLabel: 'Certified Output',
-        bottomRuleText: `Rule 03: Every ${subjectTopic} state transition must pass closed-loop validation or trigger autonomous self-healing.`
+        bottomRuleText: `Rule 03: Every ${subjectTopic} state mutation must pass quantitative parity verification or trigger atomic rollback.`
       },
       {
         num: '04',
-        title: 'SEMANTIC KNOWLEDGE GRAPH & CONSUMPTION',
-        subtitle: `Connected entity topology, cross-domain intelligence & consumer APIs for ${subjectTopic}`,
+        title: 'SERVING TOPOLOGY & ENTERPRISE DELIVERY',
+        subtitle: `Low-latency serving stores, analytical projections & consumer syndication for ${subjectTopic}`,
         primaryColor: '#059669',
         lightBg: '#ECFDF5',
         borderColor: '#6EE7B7',
         cards: [
           {
-            title: `${subjectTopic} Knowledge Graph`,
-            badge: 'GRAPH',
+            title: `${subjectTopic} Serving Topology`,
+            badge: 'SERVING',
             bullets: [
-              'Connected entity & relationship topology',
-              'Cross-domain semantic link resolution',
-              'High-speed graph traversal & querying'
+              'Multi-region active-active indexed state store',
+              'Cross-entity lineage & relationship resolution',
+              'Sub-5ms point lookups & analytical projections'
             ]
           },
           {
-            title: 'Intelligence & Analytics Hub',
-            badge: 'INSIGHTS',
+            title: 'Operational Cockpit & Analytics',
+            badge: 'OBSERVABILITY',
             bullets: [
-              'Real-time executive KPI dashboards',
-              'Predictive topology & impact analysis',
-              'AI-ready grounded retrieval (RAG / GraphRAG)'
+              'Real-time executive SLO & golden-signal dashboards',
+              'Predictive blast-radius & dependency simulation',
+              'Grounded enterprise search & audit reporting'
             ]
           },
           {
-            title: 'Enterprise Consumer APIs',
+            title: 'External Consumer Syndication',
             badge: 'DELIVERY',
             bullets: [
-              'Low-latency GraphQL, REST & event streams',
-              'Multi-tenant partner & ecosystem syndication',
-              'SLA-backed enterprise data products'
+              'SLA-backed GraphQL, REST & webhook event streams',
+              'Multi-tenant partner isolation & quota governance',
+              'Versioned API contracts with zero-downtime rollout'
             ]
           }
         ],
-        gateTitle: 'Published to Graph?',
+        gateTitle: 'Multi-Region Quorum Commit?',
         gatePassLabel: 'Live in Production',
-        bottomRuleText: `Rule 04: Expose certified ${subjectTopic} intelligence via connected knowledge graph APIs and real-time event streams.`
+        bottomRuleText: `Rule 04: Serve certified ${subjectTopic} state through multi-region active-active projections with strict SLO guarantees.`
       }
     ]
   };

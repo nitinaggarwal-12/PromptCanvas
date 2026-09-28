@@ -67,6 +67,7 @@ import { generateDynamicTieredInfographicXml } from '@/lib/canonical/dynamicTier
 import { INFOGRAPHIC_BLUEPRINTS_LIST, generateInfographicBlueprintXmlById } from '@/lib/canonical/infographicBlueprints52to66';
 import { FLOW_DIAGRAM_BLUEPRINTS_67_TO_74, generateFlowDiagramBlueprintXmlById } from '@/lib/canonical/flowDiagramBlueprints67to74';
 import { synthesizePromptDrivenDiagramXml, generateLogicalFlowchartDrawioXml } from '@/lib/promptDrivenDiagramSynthesizer';
+import { getGcpArchitectureById } from '@/lib/gcpDialectA';
 
 export interface StudioVersionSnapshot {
   id: string;
@@ -819,7 +820,25 @@ function StudioMain() {
     const { prompt: planPrompt, diagramMode, level, direction, blueprintId, infographicBlueprintId } = pendingPlan;
     const nextTag = isNewDiagramDraft ? 'v1.0' : `v1.${versions.length}`;
     const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const title = ast.metadata.projectTitle || planPrompt.slice(0, 68) || 'Enterprise Architecture';
+    const rawPlanTitle = String(planPrompt || '')
+      .trim()
+      .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+)?/i, '')
+      .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
+      .replace(/\.$/, '')
+      .trim();
+    const wordSafePlanTitle =
+      rawPlanTitle.length > 96
+        ? rawPlanTitle.slice(0, 96).replace(/\s+\S*$/, '')
+        : rawPlanTitle;
+    const title =
+      wordSafePlanTitle.length > 8
+        ? wordSafePlanTitle.charAt(0).toUpperCase() + wordSafePlanTitle.slice(1)
+        : ast.metadata.projectTitle || 'Enterprise Architecture';
+
+    setAst((prev) => ({
+      ...prev,
+      metadata: { ...prev.metadata, projectTitle: title },
+    }));
 
     const activeInfoId =
       diagramMode === 'infographic'
@@ -831,11 +850,11 @@ function StudioMain() {
     let generatedXml = xml;
     if (activeInfoId) {
       generatedXml = generateInfographicBlueprintXmlById(activeInfoId, planPrompt, undefined, level);
-    } else if (diagramMode === 'blueprint') {
+    } else if (diagramMode === 'flowchart' || /\bflowchart\b/i.test(planPrompt)) {
+      generatedXml = generateLogicalFlowchartDrawioXml(planPrompt, title, direction, level);
+    } else if (diagramMode === 'blueprint' && (!planPrompt || planPrompt.trim().length < 16)) {
       const bp = CANONICAL_TEMPLATES.find((t) => t.id === blueprintId) || CANONICAL_TEMPLATES[0];
       generatedXml = bp.generateXml(selectedDomain, 'light');
-    } else if (diagramMode === 'flowchart') {
-      generatedXml = generateLogicalFlowchartDrawioXml(planPrompt, title, direction, level);
     } else {
       generatedXml = synthesizePromptDrivenDiagramXml(planPrompt, title, selectedDomain || 'Enterprise Cloud');
     }
@@ -1169,6 +1188,25 @@ function StudioMain() {
       }
     }
 
+    const archParam = searchParams.get('arch');
+    if (archParam && !hasLoadedUrlBlueprintRef.current) {
+      const gcpArch = getGcpArchitectureById(archParam);
+      if (gcpArch) {
+        hasLoadedUrlBlueprintRef.current = true;
+        setXml(gcpArch.generateXml());
+        setSelectedBlueprintId('custom');
+        setAst(prev => ({
+          ...prev,
+          metadata: {
+            ...prev.metadata,
+            projectTitle: gcpArch.title,
+            version: 'v1.0',
+            lastSyncTimestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        }));
+      }
+    }
+
     if (vParam) {
       setActiveVersionTag(vParam);
     }
@@ -1221,8 +1259,8 @@ function StudioMain() {
     }
   }, [isEditorMode, sessionId, selectedBlueprintId, activeView, activeDocId, selectedComponent, activeVersionTag, ast, xml, versions, messages]);
 
-  // Living Specs derived from AST
-  const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast), [ast]);
+  // Living Specs derived from AST + Active Canvas XML
+  const livingSpecs = useMemo(() => generateAll10LivingSpecs(ast, xml), [ast, xml]);
 
   // Handle Co-Pilot Prompt Execution with Dynamic Micro-Versioning (v1.0 -> v1.1 -> v1.2)
   const handleExecutePrompt = useCallback((promptText: string, explicitPersona?: string) => {
@@ -1704,21 +1742,37 @@ function StudioMain() {
         updated.metadata.projectTitle === 'Global Real-Time Payments Mesh & Settlement Engine' ||
         updated.metadata.projectTitle === 'Emergency Patient Ingress & Care Mesh' ||
         updated.metadata.projectTitle.startsWith('#00') ||
-        /^(design|architect|build|create|deploy|synthesize|a\s+tiered|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim()))
+        /^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart|infographic|a\s+tiered|\[p[1-7]\]|\[fork\]|\[vision\])/i.test(promptText.trim()))
     ) {
-      const derivedTitle = promptText
+      const rawTitle = promptText
         .trim()
-        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize)\s+(a\s+|an\s+|the\s+)?/i, '')
+        .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+)?/i, '')
+        .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
         .replace(/\.$/, '')
-        .slice(0, 78);
-      if (derivedTitle.length > 5 && versions.length <= 1) {
+        .trim();
+      const derivedTitle = rawTitle.length > 96 ? rawTitle.slice(0, 96).replace(/\s+\S*$/, '') : rawTitle;
+      if (derivedTitle.length > 5 && (versions.length <= 1 || /^(please\s+)?(design|architect|build|create|deploy|synthesize|flowchart|infographic)\b/i.test(promptText.trim()))) {
         updated.metadata.projectTitle = derivedTitle.charAt(0).toUpperCase() + derivedTitle.slice(1);
       }
     }
 
-    // Only replace the base diagram when explicitly requested on Prompt 1 (initial creation of bespoke non-default blueprint)
-    // Subsequent prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
-    const isExplicitFullResetPrompt = /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\])/i.test(promptText.trim());
+    const isExplicitFlowchartPrompt = /\bflowchart\b/i.test(promptText);
+    const isExplicitInfographicPrompt = /\binfographic\b/i.test(promptText);
+    const effectiveDiagramMode = isExplicitFlowchartPrompt
+      ? 'flowchart'
+      : isExplicitInfographicPrompt
+      ? 'infographic'
+      : selectedDiagramMode;
+    if (effectiveDiagramMode !== selectedDiagramMode) {
+      setSelectedDiagramMode(effectiveDiagramMode);
+    }
+
+    // Only replace the base diagram when explicitly requested on Prompt 1 or an explicit full architecture/flowchart/infographic design prompt
+    // Subsequent iterative prompts (Prompts 2..10+) within the project MUST evolve the active diagram cumulatively without wiping previous nodes!
+    const isExplicitFullResetPrompt =
+      /^(reset\s+canvas|start\s+over|\[p[1-7]\]|\[vision\]|(?:please\s+)?(?:design|architect|build|create|synthesize)\s+(?:a\s+|an\s+|the\s+)?(?:full|complete|new)\b|flowchart\s+for\b|infographic\s+for\b)/i.test(
+        promptText.trim()
+      );
     const isBespokeInitialDesignPrompt =
       isInitialProjectTurn && cleanPrompt.length >= 24;
 
@@ -1728,7 +1782,7 @@ function StudioMain() {
       .replace(/\bhoneycomb\b/gi, 'Distributed Cluster')
       .replace(/\bneural\b/gi, 'LLM Inference');
     const plannedStepsList =
-      selectedDiagramMode === 'flowchart'
+      effectiveDiagramMode === 'flowchart'
         ? [
             `[▶ Start Trigger] ---> (❶ Ingress) ---> [Step 1: Ingress (${selectedAbstractionLevel})]`,
             `[Step 1: Ingress] ---> (❷ Validate) ---> [◆ Decision: Policy & Safety Valid?]`,
@@ -1736,7 +1790,7 @@ function StudioMain() {
             `[◆ Decision Gate] ---> (✕ NO) ---> [Fallback / DLQ Retry] ---> (↩ Retry Backoff) ---> [Step 2]`,
             `[Step 3: Execution] ---> (✓ SLA Pass) ---> [Step 4: State Commit] ---> [■ Completed (200 OK)]`,
           ]
-        : selectedDiagramMode === 'infographic'
+        : effectiveDiagramMode === 'infographic'
         ? (() => {
             const ib = INFOGRAPHIC_BLUEPRINTS_LIST.find((b) => b.id === selectedInfographicBlueprintId) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
             return [
@@ -1746,7 +1800,7 @@ function StudioMain() {
             ];
           })()
         : [
-            `Blueprint #${selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId}: Load Certified Canonical Reference Topology`,
+            `Synthesize Dynamic Domain Topology (${updated.metadata.projectTitle.slice(0, 48)})`,
             `Apply Prompt Customization: "${sanitizedIntent.slice(0, 56)}"`,
             `Synchronize 16 Living Specifications & Governance Baseline`,
           ];
@@ -1754,7 +1808,7 @@ function StudioMain() {
     setPendingPlan({
       prompt: cleanPrompt,
       sanitizedPrompt: sanitizedIntent,
-      diagramMode: selectedDiagramMode,
+      diagramMode: effectiveDiagramMode,
       level: selectedAbstractionLevel,
       direction: selectedFlowDirection,
       blueprintId: selectedBlueprintId === 'custom' ? '01' : selectedBlueprintId,
@@ -1770,7 +1824,7 @@ function StudioMain() {
         {
           id: `msg_plan_${Date.now()}`,
           sender: 'assistant',
-          text: `🔍 Prompt Validation & Sanity Check Passed (${selectedDiagramMode.toUpperCase()}${selectedDiagramMode === 'infographic' ? ` #${selectedInfographicBlueprintId} (${ibName})` : ''} • ${selectedAbstractionLevel}${selectedDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''}). Review the Execution Plan above and click "✓ Approve Plan & Create v1.0" to generate v1.0 via Gemini Live API.`,
+          text: `🔍 Prompt Validation & Sanity Check Passed (${effectiveDiagramMode.toUpperCase()}${effectiveDiagramMode === 'infographic' ? ` #${selectedInfographicBlueprintId} (${ibName})` : ''} • ${selectedAbstractionLevel}${effectiveDiagramMode === 'flowchart' ? ' • ' + selectedFlowDirection : ''}). Review the Execution Plan above and click "✓ Approve Plan & Create v1.0" to generate v1.0 via Gemini Live API.`,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -1779,19 +1833,19 @@ function StudioMain() {
 
     const isGenerativeDesignPrompt = isExplicitFullResetPrompt || isBespokeInitialDesignPrompt;
     let activeBaseXml = xml;
-    if (isGenerativeDesignPrompt || selectedDiagramMode === 'flowchart' || selectedDiagramMode === 'infographic') {
+    if (isGenerativeDesignPrompt || effectiveDiagramMode === 'flowchart' || effectiveDiagramMode === 'infographic') {
       const synthesizedTitle = updated.metadata.projectTitle && updated.metadata.projectTitle !== 'ABC'
         ? updated.metadata.projectTitle
         : cleanPrompt.slice(0, 76);
       updated.metadata.projectTitle = synthesizedTitle;
-      if (selectedDiagramMode === 'flowchart' || /\bflowchart\b/i.test(promptText)) {
+      if (effectiveDiagramMode === 'flowchart') {
         activeBaseXml = generateLogicalFlowchartDrawioXml(
           promptText,
           synthesizedTitle,
           selectedFlowDirection,
           selectedAbstractionLevel
         );
-      } else if (selectedDiagramMode === 'infographic' || /\binfographic\b/i.test(promptText)) {
+      } else if (effectiveDiagramMode === 'infographic') {
         activeBaseXml = generateInfographicBlueprintXmlById(
           selectedInfographicBlueprintId,
           cleanPrompt,
@@ -1824,27 +1878,7 @@ function StudioMain() {
           selectedDomain || 'Enterprise Cloud'
         );
       }
-      setSelectedBlueprintId(selectedDiagramMode === 'infographic' ? selectedInfographicBlueprintId : 'custom');
-
-      // If this novel prompt triggered the dynamic Flash-AST -> Draw.io compiler,
-      // also run non-blocking Gemini 2.5 Flash topology enrichment (/api/studio-flash-drawio, ~1.8s)
-      if (activeBaseXml.includes('id="flash_dynamic_drawio"')) {
-        fetch('/api/studio-flash-drawio', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            prompt: promptText,
-            projectTitle: synthesizedTitle,
-          }),
-        })
-          .then((r) => (r.ok ? r.json() : null))
-          .then((data) => {
-            if (data?.success && typeof data.xml === 'string' && data.xml.includes('<mxfile')) {
-              setXml(data.xml);
-            }
-          })
-          .catch(() => {});
-      }
+      setSelectedBlueprintId(effectiveDiagramMode === 'infographic' ? selectedInfographicBlueprintId : 'custom');
 
       // Auto-persist to Library (/api/diagrams) so it is immediately available in /library
       fetch('/api/diagrams', {
@@ -1872,7 +1906,7 @@ function StudioMain() {
       (activeBaseXml.includes('id="z1_bg"') && activeBaseXml.includes('id="z2_bg"'));
     let baseUpdatedXml: string;
 
-    if (isGenerativeDesignPrompt && isInitialProjectTurn) {
+    if (isGenerativeDesignPrompt || effectiveDiagramMode === 'flowchart' || effectiveDiagramMode === 'infographic') {
       baseUpdatedXml = activeBaseXml;
     } else if (isSixZoneNativeCanvas && !isGenerativeDesignPrompt) {
       // Regenerates the 6-Zone GCP Native Architecture + Zone 7 Cumulative Extensions Grid (P1..P10+ in 5-col multi-row grid)
@@ -2169,7 +2203,22 @@ function StudioMain() {
       }
     } else if (combinedInput.includes('infographic')) {
       setSelectedBlueprintId('custom');
-      newXml = generateDynamicTieredInfographicXml(`${config.title || ''} ${config.description || ''}`);
+      const fullTitle = config.title && config.title.toUpperCase() !== 'ABC'
+        ? config.title
+        : (config.description || 'Enterprise Infographic Blueprint').trim().slice(0, 72);
+      newAst.metadata.projectTitle = fullTitle;
+      const infoTopic = `${config.title || ''} ${config.description || ''}`.trim();
+      newXml = generateDynamicTieredInfographicXml(infoTopic);
+      fetch('/api/infographic-blueprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: infoTopic, theme: 'light' }),
+      })
+        .then(r => (r.ok ? r.json() : null))
+        .then(data => {
+          if (data?.xml) setXml(data.xml);
+        })
+        .catch(() => {});
     } else if (config.description && config.description.trim().length > 4) {
       setSelectedBlueprintId('custom');
       const fullTitle = config.title && config.title.toUpperCase() !== 'ABC'
@@ -3568,26 +3617,22 @@ function StudioMain() {
                   {selectedBlueprintId === 'custom' && (
                     <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-2.5 shadow-2xs space-y-1.5">
                       <div className="flex items-center justify-between text-[10px] font-bold text-emerald-900">
-                        <span>⚡ Stage 1: Flash Generated Image</span>
+                        <span>⚡ Prompt-Driven Topology Active</span>
                         <span className="font-mono text-[9px] bg-emerald-200/80 text-emerald-950 px-1.5 py-0.5 rounded">
-                          → Draw.io XML
+                          Gemini 3.1 Pro + 3.8 Flash
                         </span>
                       </div>
-                      <a
-                        href="/images/flash_stratum_architecture.jpg"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="block overflow-hidden rounded-lg border border-emerald-300/80 shadow-xs hover:opacity-95 transition"
-                        title="Click to open full-resolution Flash Generated Reference Image"
-                      >
-                        <img
-                          src="/images/flash_stratum_architecture.jpg"
-                          alt="Gemini Flash Generated Architecture Reference"
-                          className="w-full h-28 object-cover"
-                        />
-                      </a>
+                      <div className="rounded-lg border border-emerald-200/90 bg-white px-2.5 py-2 text-[10px] text-slate-700 space-y-1">
+                        <div className="font-bold text-slate-900 truncate">
+                          {ast.metadata.projectTitle}
+                        </div>
+                        <div className="flex items-center justify-between text-[9px] text-emerald-700 font-semibold">
+                          <span>✓ Multi-Tier Draw.io XML Compiled</span>
+                          <span>✓ 16 Living Specs Synced</span>
+                        </div>
+                      </div>
                       <div className="text-[10px] text-slate-600 leading-tight">
-                        Decompiled from Flash visual layout into editable multi-stratum Draw.io XML on canvas.
+                        Synthesized directly from custom prompt clauses into collision-free Draw.io XML and synchronized across all 16 Living Specs.
                       </div>
                     </div>
                   )}
