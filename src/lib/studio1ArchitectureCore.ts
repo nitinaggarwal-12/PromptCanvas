@@ -279,7 +279,7 @@ export function validateStudio1ArchitectureQuality(
   const hasAiFlow = graph.edges.some(edge => edge.flowType === 'ai') || /\b(gemini|vertex|bedrock|sagemaker|azure openai|llm|model endpoint)\b/i.test(text);
   const hasNetwork = graph.edges.some(edge => edge.flowType === 'network') || /\b(vpc|subnet|load balanc|firewall|nat|dns|cdn|network)\b/i.test(text);
   const hasFailureSemantics = graph.nodes.some(node => node.kind === 'decision') || graph.edges.some(edge => edge.flowType === 'feedback' || Boolean(edge.condition)) || /\b(retry|dead[- ]letter|dlq|failover|circuit breaker|backup|replica|recovery)\b/i.test(text);
-  const gcpStreaming = STREAMING_SIGNAL.test(`${prompt} ${context.purpose || ''}`) && context.platform === 'gcp';
+  const gcpStreaming = /\b(event[- ]?stream|streaming pipeline|pub\/?sub|dataflow|apache beam|real[- ]?time stream)\b/i.test(`${prompt} ${context.purpose || ''}`) && context.platform === 'gcp';
   const serviceNodes = (serviceKey: string) => graph.nodes.filter(node => node.serviceKey === serviceKey);
   const pubsubNodes = serviceNodes('pubsub');
   const topicNodes = pubsubNodes.filter(node => /\btopic\b/i.test(`${node.label} ${node.description}`) && !/dead[- ]?letter|dlq/i.test(`${node.label} ${node.description}`));
@@ -348,12 +348,14 @@ export function validateStudio1ArchitectureQuality(
     addCheck('gcp_operations', 'Monitoring and logging', hasMonitoring && hasLogging, 'Represent Cloud Monitoring and Cloud Logging as distinct cross-cutting operational controls.', [...serviceNodes('cloud_monitoring'), ...serviceNodes('cloud_logging')].map(node => node.id));
     addCheck('gcp_streaming_path', 'Accurate streaming and failure path', hasAccurateStreamingPath, 'Required path: Pub/Sub topic → subscription → Dataflow → schema decision; valid records → BigQuery, invalid records → Cloud Storage quarantine; exhausted subscription deliveries → dead-letter topic → replay to the main topic.', graph.edges.map(edge => edge.id));
   }
+  const allowedExternalProviders = new Set(['external', 'client', 'user', 'partner', 'third_party', 'on_prem', 'hybrid', 'generic']);
   const incompatibleProviderNodes = graph.nodes.filter(node => {
-    const provider = (node.provider || '').toLowerCase();
-    if (context.platform === 'gcp') return Boolean(provider && !['gcp', 'google cloud'].includes(provider));
-    if (context.platform === 'aws') return Boolean(node.serviceKey || (provider && provider !== 'aws'));
-    if (context.platform === 'azure') return Boolean(node.serviceKey || (provider && provider !== 'azure'));
-    if (context.platform === 'vendor_neutral') return Boolean(node.serviceKey || provider);
+    const provider = (node.provider || '').toLowerCase().trim();
+    if (!provider || node.kind === 'actor' || node.kind === 'external' || allowedExternalProviders.has(provider)) return false;
+    if (context.platform === 'gcp') return !['gcp', 'google cloud', 'google'].includes(provider);
+    if (context.platform === 'aws') return Boolean(node.serviceKey || !['aws', 'amazon'].includes(provider));
+    if (context.platform === 'azure') return Boolean(node.serviceKey || !['azure', 'microsoft'].includes(provider));
+    if (context.platform === 'vendor_neutral') return Boolean(node.serviceKey || !['vendor_neutral', 'neutral'].includes(provider));
     return false;
   });
   addCheck('platform_compatibility', 'Platform and service compatibility', incompatibleProviderNodes.length === 0, incompatibleProviderNodes.length ? `Components conflict with the selected ${context.platform} platform: ${incompatibleProviderNodes.map(node => node.id).join(', ')}.` : 'Explicit providers and service icons match the selected platform.', incompatibleProviderNodes.map(node => node.id));

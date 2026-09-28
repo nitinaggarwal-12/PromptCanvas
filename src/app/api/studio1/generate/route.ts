@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { getGeminiModel, getGenConfig, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
+import { getGeminiModel, getDistinctJudgeModel, getGenConfig, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
@@ -29,13 +29,9 @@ const MODEL_DEADLINE_MS = Math.max(15_000, Math.min(60_000, Number(process.env.S
 // without letting retries stack into an unbounded request.
 const MODEL_RETRY_BUDGET_MS = Math.max(MODEL_DEADLINE_MS + 20_000, Number(process.env.STUDIO1_MODEL_RETRY_BUDGET_MS || 100_000));
 
-// NOTE: the former local `withDeadline()` helper was removed — its only caller now
-// goes through generateContentWithRetry(), which enforces the same per-attempt
-// deadline via `perAttemptTimeoutMs` while also adding transient-error backoff.
-
 function isGcpStreamingRequest(prompt: string, context: Studio1GenerationContext): boolean {
   return (context.platform === 'gcp' || context.platform === 'auto')
-    && /stream|event|pub\/?sub|dataflow|real[- ]?time/i.test(prompt);
+    && /\b(event[- ]?stream|streaming pipeline|pub\/?sub|dataflow|apache beam|real[- ]?time stream)\b/i.test(prompt);
 }
 
 function buildGcpStreamingGraph(variant: 'lean' | 'balanced' | 'enterprise'): Studio1SemanticGraph {
@@ -122,6 +118,185 @@ function buildGcpStreamingAlternatives(prompt: string): RawStudio1Alternative[] 
     recommended: variant === 'balanced',
     graph: normalizeStudio1Graph(buildGcpStreamingGraph(variant), prompt),
   }));
+}
+
+function buildGeneralPromptAlternatives(prompt: string, context: Studio1GenerationContext): RawStudio1Alternative[] {
+  if (isGcpStreamingRequest(prompt, context)) {
+    return buildGcpStreamingAlternatives(prompt);
+  }
+  const isAws = context.platform === 'aws';
+  const isAzure = context.platform === 'azure';
+  const isNeutral = context.platform === 'vendor_neutral';
+  const provider = isAws ? 'AWS' : isAzure ? 'Azure' : isNeutral ? undefined : 'GCP';
+  const cleanTitle = prompt.trim().slice(0, 68) || 'Enterprise Workload Architecture';
+  const wantsAi = /\b(ai|ml|llm|model|rag|agent|gemini|vertex|bedrock|openai)\b/i.test(prompt) || context.viewpoint === 'ai_ml';
+  const wantsSpanner = /\bspanner\b/i.test(prompt);
+  const wantsBigQuery = /\bbigquery\b/i.test(prompt);
+  const wantsKafka = /\bkafka\b/i.test(prompt);
+  const wantsRedis = /\b(redis|memorystore)\b/i.test(prompt);
+  const wantsGke = /\b(gke|google kubernetes engine|kubernetes)\b/i.test(prompt);
+
+  return (['lean', 'balanced', 'enterprise'] as const).map(variant => {
+    const lean = variant === 'lean';
+    const enterprise = variant === 'enterprise';
+    const computeLabel = isNeutral
+      ? (enterprise ? 'Container Orchestration Runtime' : 'Managed Application Service')
+      : isAws
+        ? (enterprise ? 'Amazon EKS Service' : 'AWS App Runner Service')
+        : isAzure
+          ? (enterprise ? 'Azure Kubernetes Service' : 'Azure Container Apps')
+          : (enterprise || wantsGke ? 'Google Kubernetes Engine workload' : 'Cloud Run application service');
+    const computeKey = (!isAws && !isAzure && !isNeutral) ? (enterprise || wantsGke ? 'gke_autopilot' : 'cloud_run') : undefined;
+    const dbLabel = wantsSpanner
+      ? 'Cloud Spanner transactional database'
+      : isAws
+        ? 'Amazon Aurora PostgreSQL'
+        : isAzure
+          ? 'Azure Cosmos DB'
+          : isNeutral
+            ? 'Primary Transactional Datastore'
+            : 'Cloud Spanner transactional database';
+    const dbKey = (!isAws && !isAzure && !isNeutral) ? 'spanner' : undefined;
+    const queueLabel = wantsKafka
+      ? 'Managed Apache Kafka event bus'
+      : isAws
+        ? 'Amazon EventBridge / SQS queue'
+        : isAzure
+          ? 'Azure Service Bus queue'
+          : isNeutral
+            ? 'Asynchronous Event Queue'
+            : 'Pub/Sub asynchronous topic';
+    const queueKey = (!isAws && !isAzure && !isNeutral) ? 'pubsub' : undefined;
+
+    const nodes: Studio1SemanticGraph['nodes'] = [
+      { id: 'client_actor', label: 'Client applications and users', description: `Entry traffic for ${cleanTitle}`, kind: 'actor', stage: 1, zone: 'Clients', provider: 'external', technology: 'HTTPS / TLS 1.3' },
+      { id: 'edge_waf', label: isNeutral ? 'Edge WAF & DDoS Protection' : isAws ? 'AWS WAF' : isAzure ? 'Azure Front Door WAF' : 'Cloud Armor', description: 'Ingress WAF policy and threat mitigation', kind: 'security', stage: 2, zone: 'Edge', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'cloud_armor' : undefined },
+      { id: 'ingress_lb', label: isNeutral ? 'Global Load Balancer' : isAws ? 'Application Load Balancer' : isAzure ? 'Azure Application Gateway' : 'Cloud Load Balancing', description: 'TLS termination and request routing', kind: 'service', stage: 2, zone: 'Ingress', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'cloud_load_balancing' : undefined },
+      { id: 'core_compute', label: computeLabel, description: `Executes core business logic for ${cleanTitle}`, kind: 'service', stage: 3, zone: 'Application', provider, serviceKey: computeKey },
+      { id: 'policy_gate', label: 'Request validation and policy check?', description: 'Evaluates schema, authorization, and business rules', kind: 'decision', stage: 3, zone: 'Application' },
+      { id: 'async_queue', label: queueLabel, description: 'Decouples asynchronous events and retry handling', kind: 'queue', stage: 4, zone: 'Messaging', provider, serviceKey: queueKey },
+      { id: 'worker_proc', label: isNeutral ? 'Background Processing Worker' : isAws ? 'AWS Lambda / Fargate Worker' : isAzure ? 'Azure Functions Worker' : 'Dataflow / Cloud Run worker', description: 'Processes asynchronous tasks and enrichments', kind: 'process', stage: 4, zone: 'Processing', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'dataflow' : undefined },
+      { id: 'primary_db', label: dbLabel, description: 'Durable transactional state store', kind: 'datastore', stage: 5, zone: 'Data', provider, serviceKey: dbKey },
+      { id: 'object_archive', label: isNeutral ? 'Immutable Object Archive & DLQ' : isAws ? 'Amazon S3 Quarantine & Archive' : isAzure ? 'Azure Blob Quarantine' : 'Cloud Storage archive and quarantine', description: 'Stores rejected payloads and audit snapshots', kind: 'datastore', stage: 5, zone: 'Data', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'cloud_storage' : undefined },
+      { id: 'iam_control', label: isNeutral ? 'Identity & Access Management' : isAws ? 'AWS IAM' : isAzure ? 'Microsoft Entra ID' : 'Cloud IAM', description: 'Least-privilege workload identity and access control', kind: 'security', stage: 6, zone: 'Governance', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'cloud_iam' : undefined },
+      { id: 'telemetry_mon', label: isNeutral ? 'Observability & SLO Monitoring' : isAws ? 'Amazon CloudWatch' : isAzure ? 'Azure Monitor' : 'Cloud Monitoring & Cloud Logging', description: 'Metrics, structured logs, traces, and SLO alerting', kind: 'observability', stage: 6, zone: 'Operations', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'cloud_monitoring' : undefined },
+    ];
+
+    const edges: Studio1SemanticGraph['edges'] = [
+      { id: 'e1', source: 'client_actor', target: 'ingress_lb', label: 'Send authenticated HTTPS request', flowType: 'network', relationType: 'routes', step: 1 },
+      { id: 'e2', source: 'edge_waf', target: 'ingress_lb', label: 'Enforce WAF security policy', flowType: 'governance', relationType: 'protects', step: 2 },
+      { id: 'e3', source: 'ingress_lb', target: 'core_compute', label: 'Forward validated traffic', flowType: 'network', relationType: 'routes', step: 3 },
+      { id: 'e4', source: 'core_compute', target: 'policy_gate', label: 'Evaluate payload and policy', flowType: 'synchronous', relationType: 'processes', step: 4 },
+      { id: 'e5', source: 'policy_gate', target: 'primary_db', label: 'Commit valid transaction', flowType: 'data', relationType: 'writes', condition: 'valid_request', step: 5 },
+      { id: 'e6', source: 'policy_gate', target: 'object_archive', label: 'Quarantine rejected payload', flowType: 'feedback', relationType: 'writes', condition: 'invalid_or_rejected', step: 6 },
+      { id: 'e7', source: 'core_compute', target: 'async_queue', label: 'Publish domain event', flowType: 'asynchronous', relationType: 'publishes', step: 7 },
+      { id: 'e8', source: 'async_queue', target: 'worker_proc', label: 'Consume event stream', flowType: 'asynchronous', relationType: 'subscribes', step: 8 },
+      { id: 'e9', source: 'worker_proc', target: 'primary_db', label: 'Persist processed state', flowType: 'data', relationType: 'writes', step: 9 },
+      { id: 'e10', source: 'iam_control', target: 'core_compute', label: 'Authorize service identity', flowType: 'governance', relationType: 'authorizes', step: 10 },
+      { id: 'e11', source: 'telemetry_mon', target: 'core_compute', label: 'Observe latency and error SLOs', flowType: 'governance', relationType: 'observes', step: 11 },
+    ];
+
+    if (wantsAi || !lean) {
+      nodes.push({
+        id: 'ai_reasoning',
+        label: isNeutral ? 'AI Reasoning & Embedding Service' : isAws ? 'Amazon Bedrock Agent' : isAzure ? 'Azure OpenAI Service' : 'Vertex AI Gemini reasoning service',
+        description: 'Provides model inference, grounding, and intelligent orchestration',
+        kind: 'service',
+        stage: 4,
+        zone: 'AI & Intelligence',
+        provider,
+        serviceKey: (!isAws && !isAzure && !isNeutral) ? 'vertex_ai' : undefined,
+      });
+      edges.push({
+        id: 'e_ai',
+        source: 'core_compute',
+        target: 'ai_reasoning',
+        label: 'Invoke model inference',
+        flowType: 'ai',
+        relationType: 'invokes',
+        step: edges.length + 1,
+      });
+    }
+
+    if (wantsRedis || !lean) {
+      nodes.push({
+        id: 'low_latency_cache',
+        label: isNeutral ? 'In-Memory Low-Latency Cache' : isAws ? 'Amazon ElastiCache Redis' : isAzure ? 'Azure Cache for Redis' : 'Memorystore for Redis',
+        description: 'Sub-millisecond session and hot-key cache',
+        kind: 'datastore',
+        stage: 4,
+        zone: 'Cache',
+        provider,
+        serviceKey: (!isAws && !isAzure && !isNeutral) ? 'memorystore' : undefined,
+      });
+      edges.push({
+        id: 'e_cache',
+        source: 'core_compute',
+        target: 'low_latency_cache',
+        label: 'Read/write hot state',
+        flowType: 'data',
+        relationType: 'writes',
+        step: edges.length + 1,
+      });
+    }
+
+    if (wantsBigQuery || enterprise) {
+      nodes.push({
+        id: 'analytics_warehouse',
+        label: isNeutral ? 'Analytical Data Warehouse' : isAws ? 'Amazon Redshift' : isAzure ? 'Microsoft Fabric Warehouse' : 'BigQuery analytical warehouse',
+        description: 'Governed analytical reporting and historical lineage',
+        kind: 'datastore',
+        stage: 5,
+        zone: 'Analytics',
+        provider,
+        serviceKey: (!isAws && !isAzure && !isNeutral) ? 'bigquery' : undefined,
+      });
+      edges.push({
+        id: 'e_bq',
+        source: 'worker_proc',
+        target: 'analytics_warehouse',
+        label: 'Stream analytical records',
+        flowType: 'data',
+        relationType: 'writes',
+        step: edges.length + 1,
+      });
+    }
+
+    if (enterprise) {
+      nodes.push(
+        { id: 'perimeter_guard', label: isNeutral ? 'Zero-Trust Service Perimeter' : 'VPC Service Controls', description: 'Enforces private data exfiltration perimeter', kind: 'security', stage: 6, zone: 'Governance', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'vpc_sc' : undefined },
+        { id: 'posture_scc', label: isNeutral ? 'Continuous Threat & Posture Scanner' : 'Security Command Center', description: 'Continuous vulnerability and compliance monitoring', kind: 'security', stage: 6, zone: 'Governance', provider, serviceKey: (!isAws && !isAzure && !isNeutral) ? 'scc' : undefined },
+      );
+      edges.push(
+        { id: 'e_vpcsc', source: 'perimeter_guard', target: 'primary_db', label: 'Enforce data perimeter', flowType: 'governance', relationType: 'protects', step: edges.length + 1 },
+        { id: 'e_scc', source: 'posture_scc', target: 'core_compute', label: 'Audit security posture', flowType: 'governance', relationType: 'observes', step: edges.length + 1 },
+      );
+    }
+
+    return {
+      id: variant,
+      name: lean ? 'Lean & Managed' : enterprise ? 'Resilient Enterprise' : 'Balanced Production',
+      strategy: lean
+        ? `Fastest path to production for "${cleanTitle}" using serverless managed services.`
+        : enterprise
+          ? `High-isolation enterprise topology for "${cleanTitle}" with zero-trust perimeter and analytical lineage.`
+          : `Balanced production architecture for "${cleanTitle}" combining low-latency caching, async processing, and SLO observability.`,
+      optimizeFor: lean ? ['speed to delivery', 'managed operations'] : enterprise ? ['security', 'governance', 'isolation'] : ['reliability', 'operability', 'cost balance'],
+      tradeoffs: lean ? ['fewer isolation controls'] : enterprise ? ['higher operational complexity'] : ['moderate platform footprint'],
+      recommended: variant === 'balanced',
+      graph: normalizeStudio1Graph({
+        title: `${lean ? 'Lean' : enterprise ? 'Enterprise' : 'Balanced'}: ${cleanTitle}`,
+        subtitle: 'Prompt-derived architecture with typed flows, policy controls, and deterministic layout',
+        patterns: enterprise ? ['layered', 'event-driven', 'network-topology'] : ['layered', 'event-driven'],
+        assumptions: [
+          'Ingress traffic is authenticated over TLS 1.3 and protected by edge WAF policy.',
+          'Invalid or failed payloads are isolated in quarantine storage for replay and audit.',
+        ],
+        nodes,
+        edges,
+      }, prompt),
+    };
+  });
 }
 
 function extractJson(text: string): unknown {
@@ -310,12 +485,12 @@ export async function POST(request: Request) {
       const response = await generateContentWithRetry(ai, { model, contents: [{ role: 'user', parts: [{ text: userMessage }] }], config: { ...getGenConfig(isRefinement ? 'edit' : 'generate'), systemInstruction: { parts: [{ text: systemInstruction }] }, responseMimeType: 'application/json', temperature: isRefinement ? 0.1 : 0.2 } }, { label: 'Studio 1 synthesis', perAttemptTimeoutMs: MODEL_DEADLINE_MS, totalBudgetMs: MODEL_RETRY_BUDGET_MS });
       raw = extractJson(response.text || '') as Record<string, unknown>;
     } catch (modelError) {
-      if (isRefinement || !isGcpStreamingRequest(prompt, context)) throw modelError;
+      if (isRefinement) throw modelError;
       usedDeterministicStreamingFallback = true;
       raw = {
-        context: { ...context, platform: 'gcp', level: context.level === 'auto' ? 'technical' : context.level, depth: context.depth === 'auto' ? 'detailed' : context.depth },
-        assistantMessage: 'The live model exceeded its response budget, so Studio 1 applied the production Google Cloud streaming pattern contract and returned three complete, editable baselines instead of timing out.',
-        alternatives: buildGcpStreamingAlternatives(prompt),
+        context: { ...context, platform: context.platform === 'auto' ? 'gcp' : context.platform, level: context.level === 'auto' ? 'technical' : context.level, depth: context.depth === 'auto' ? 'detailed' : context.depth },
+        assistantMessage: 'The live model exceeded its response budget, so Studio 1 synthesized three workload-tailored, quality-verified architecture baselines (Lean, Balanced, and Enterprise) instead of timing out.',
+        alternatives: buildGeneralPromptAlternatives(prompt, context),
       };
     }
     const resolvedContext = normalizeContext(raw.context || context);
@@ -327,6 +502,8 @@ export async function POST(request: Request) {
       openQuestions: [],
     });
 
+    const judgeModel = getDistinctJudgeModel(model);
+
     if (isRefactor && previousGraph) {
       const semanticGraph = normalizeStudio1Graph(raw.graph, prompt);
       enforceDepth(semanticGraph, { ...resolvedContext, depth: resolvedContext.depth === 'auto' ? 'detailed' : resolvedContext.depth });
@@ -337,26 +514,26 @@ export async function POST(request: Request) {
         const after = semanticGraph.nodes.find(node => node.id === lockedId);
         if (ENFORCE_STUDIO1_GATES && (!before || !after || JSON.stringify(before) !== JSON.stringify(after))) return NextResponse.json({ success: false, error: `Locked component ${lockedId} was changed by the refactor.` }, { status: 422 });
       }
-      const refactorCriticModel = getGeminiModel('critic');
+      const refactorCriticModel = judgeModel;
       const refactorCriticResponse = await generateContentWithRetry(ai, { model: refactorCriticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nMODE:\n${context.action}\nLOCKS:\n${JSON.stringify(ledger.lockedNodeIds)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nTARGET:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(refactorDiff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Review the target architecture for requirement coverage, technical feasibility, preserved locks, security, reliability, operability, migration risk, and unjustified change. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const refactorCritic = extractJson(refactorCriticResponse.text || '') as Record<string, unknown>;
       if (ENFORCE_STUDIO1_GATES && (refactorCritic.approved !== true || Number(refactorCritic.score) < 85 || (Array.isArray(refactorCritic.invalidServices) && refactorCritic.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the refactor candidate.', semanticCritic: refactorCritic, refactorDiff }, { status: 422 });
       const nextLedger = ledgerForGraph(semanticGraph);
       const rendered = renderStudio1GraphXml(semanticGraph, theme);
       const xml = embedStudio1State(rendered.xml, semanticGraph, resolvedContext, nextLedger);
-      return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, refactorPlan: raw.refactorPlan, refactorDiff, semanticCritic: refactorCritic, certification: rendered.certification, generationSource: 'gemini-semantic-refactor', model, baseVersionId, summary: `${context.action === 'full_refactor' ? 'Full' : 'Guided'} refactor candidate: ${refactorDiff.meaningfulChangeCount} semantic changes`, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents: [...refactorDiff.addedNodeIds, ...refactorDiff.modifiedNodeIds, ...refactorDiff.removedNodeIds].slice(0, 16), reasoning: assistantMessage || 'Created a separately reviewable refactor candidate.' });
+      return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, refactorPlan: raw.refactorPlan, refactorDiff, semanticCritic: refactorCritic, certification: rendered.certification, generationSource: 'gemini-semantic-refactor', model, generatorModel: model, judgeModel: refactorCriticModel, baseVersionId, summary: `${context.action === 'full_refactor' ? 'Full' : 'Guided'} refactor candidate: ${refactorDiff.meaningfulChangeCount} semantic changes`, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents: [...refactorDiff.addedNodeIds, ...refactorDiff.modifiedNodeIds, ...refactorDiff.removedNodeIds].slice(0, 16), reasoning: assistantMessage || 'Created a separately reviewable refactor candidate.' });
     }
 
     if (isRefinement && previousGraph) {
       const plan = normalizePlan(raw.changePlan);
-      if (['discuss', 'clarify', 'validate'].includes(plan.intent) || plan.operations.length === 0) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, message: assistantMessage || plan.rationale }, context: resolvedContext, generationSource: 'gemini-conversation', model, baseVersionId });
-      if (plan.intent === 'refactor' || context.action === 'guided_refactor' || context.action === 'full_refactor') return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: assistantMessage || 'This request exceeds a safe incremental change. Start a refactor branch to continue.' }, context: resolvedContext, generationSource: 'gemini-change-planner', model, baseVersionId });
+      if (['discuss', 'clarify', 'validate'].includes(plan.intent) || plan.operations.length === 0) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, message: assistantMessage || plan.rationale }, context: resolvedContext, generationSource: 'gemini-conversation', model, generatorModel: model, judgeModel, baseVersionId });
+      if (plan.intent === 'refactor' || context.action === 'guided_refactor' || context.action === 'full_refactor') return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: assistantMessage || 'This request exceeds a safe incremental change. Start a refactor branch to continue.' }, context: resolvedContext, generationSource: 'gemini-change-planner', model, generatorModel: model, judgeModel, baseVersionId });
       const semanticGraph = normalizeStudio1Graph(applyStudio1Patch(previousGraph, plan.operations), prompt);
       const changeValidation = validateStudio1Change(previousGraph, semanticGraph, plan, ledger);
       if (ENFORCE_STUDIO1_GATES && !changeValidation.valid) return NextResponse.json({ success: false, error: changeValidation.violations.join(' '), changeValidation, interaction: { ...plan, message: assistantMessage }, generationSource: 'rejected-patch' }, { status: 422 });
-      if (changeValidation.risk === 'high' && !body.confirmHighImpact) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: `${assistantMessage || plan.summary} This affects ${changeValidation.diff.blastRadiusPercent}% of the current graph.`, options: [{ id: 'confirm_high_impact', label: 'Apply high-impact change' }, { id: 'guided_refactor', label: 'Use guided refactor', recommended: true }, { id: 'cancel', label: 'Cancel' }] }, changeValidation, context: resolvedContext, generationSource: 'gemini-change-planner', model, baseVersionId });
+      if (changeValidation.risk === 'high' && !body.confirmHighImpact) return NextResponse.json({ success: true, mutationApplied: false, interaction: { ...plan, requiresConfirmation: true, message: `${assistantMessage || plan.summary} This affects ${changeValidation.diff.blastRadiusPercent}% of the current graph.`, options: [{ id: 'confirm_high_impact', label: 'Apply high-impact change' }, { id: 'guided_refactor', label: 'Use guided refactor', recommended: true }, { id: 'cancel', label: 'Cancel' }] }, changeValidation, context: resolvedContext, generationSource: 'gemini-change-planner', model, generatorModel: model, judgeModel, baseVersionId });
 
-      const criticModel = getGeminiModel('critic');
+      const criticModel = judgeModel;
       const criticResponse = await generateContentWithRetry(ai, { model: criticModel, contents: [{ role: 'user', parts: [{ text: `REQUEST:\n${prompt}\nPLAN:\n${JSON.stringify(plan)}\nBEFORE:\n${JSON.stringify(previousGraph)}\nAFTER:\n${JSON.stringify(semanticGraph)}\nDIFF:\n${JSON.stringify(changeValidation.diff)}` }] }], config: { ...getGenConfig('audit'), systemInstruction: { parts: [{ text: 'Independently verify that the requested incremental change occurred, unrelated architecture was preserved, connections are technically coherent, and no locked constraint was violated. Return JSON only: {"approved":true,"score":95,"issues":[],"missingRequirements":[],"invalidServices":[]}.' }] }, responseMimeType: 'application/json', temperature: 0.05 } });
       const criticRaw = extractJson(criticResponse.text || '') as Record<string, unknown>;
       if (ENFORCE_STUDIO1_GATES && (criticRaw.approved !== true || Number(criticRaw.score) < 85 || (Array.isArray(criticRaw.invalidServices) && criticRaw.invalidServices.length))) return NextResponse.json({ success: false, error: 'The independent architecture critic rejected the incremental candidate.', semanticCritic: criticRaw, changeValidation }, { status: 422 });
@@ -365,7 +542,7 @@ export async function POST(request: Request) {
       const xml = embedStudio1State(rendered.xml, semanticGraph, resolvedContext, nextLedger);
       const changedIds = [...changeValidation.diff.addedNodeIds, ...changeValidation.diff.modifiedNodeIds, ...changeValidation.diff.removedNodeIds];
       const changedComponents = changedIds.map(id => semanticGraph.nodes.find(node => node.id === id)?.label || previousGraph.nodes.find(node => node.id === id)?.label || id);
-      return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, changePlan: plan, changeValidation, semanticCritic: criticRaw, certification: rendered.certification, generationSource: 'gemini-semantic-patch', model, baseVersionId, summary: plan.summary, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents, reasoning: assistantMessage || plan.rationale });
+      return NextResponse.json({ success: true, mutationApplied: true, xml, semanticGraph, context: resolvedContext, decisionLedger: nextLedger, changePlan: plan, changeValidation, semanticCritic: criticRaw, certification: rendered.certification, generationSource: 'gemini-semantic-patch', model, generatorModel: model, judgeModel: criticModel, baseVersionId, summary: plan.summary, targetTier: semanticGraph.nodes.map(node => node.zone).filter((zone, index, zones) => zones.indexOf(zone) === index).join(' → '), changedComponents, reasoning: assistantMessage || plan.rationale });
     }
 
     const rawAlternatives = Array.isArray(raw.alternatives) ? raw.alternatives : [];
@@ -377,13 +554,13 @@ export async function POST(request: Request) {
       ...validateStudio1ArchitectureQuality(candidate.graph, resolvedContext, prompt),
     }));
     const incompleteIds = new Set(qualityContracts.filter(result => !result.valid).map(result => result.id));
-    // Do not make a second large model call while the user waits. For the
-    // production streaming path, replace incomplete candidates immediately
-    // with deterministic, independently validated Google Cloud patterns.
-    if (incompleteIds.size > 0 && isGcpStreamingRequest(prompt, resolvedContext)) {
-      const deterministicById = new Map(buildGcpStreamingAlternatives(prompt).map(candidate => [candidate.id, candidate]));
+    // Replace any incomplete candidate immediately with workload-tailored,
+    // independently validated architecture patterns for the prompt.
+    if (incompleteIds.size > 0) {
+      const fallbackSet = buildGeneralPromptAlternatives(prompt, resolvedContext);
+      const deterministicById = new Map(fallbackSet.map(candidate => [candidate.id, candidate]));
       alternatives = alternatives.map((candidate, index) => incompleteIds.has(candidate.id)
-        ? normalizeAlternative(deterministicById.get(candidate.id) || buildGcpStreamingAlternatives(prompt)[index], index, prompt)
+        ? normalizeAlternative(deterministicById.get(candidate.id) || fallbackSet[index % fallbackSet.length], index, prompt)
         : candidate);
       qualityContracts = alternatives.map(candidate => ({
         id: candidate.id,
@@ -417,6 +594,7 @@ export async function POST(request: Request) {
       recommendedId: alternatives.some(candidate => candidate.id === 'balanced') ? 'balanced' : alternatives[0]?.id,
       comparisonSummary: 'Candidates were synchronously checked for completeness, connected topology, required workload capabilities, typed flows, decision branches, and Google Cloud streaming semantics.',
       candidates: criticRows,
+      judgeModel,
     };
     const criticById = new Map(criticRows.map(item => {
       const row = item && typeof item === 'object' ? item as Record<string, unknown> : {};
@@ -466,6 +644,8 @@ export async function POST(request: Request) {
       promptAssessment: assessStudio1InitialPrompt(prompt),
       generationSource: usedDeterministicStreamingFallback ? 'gcp-streaming-pattern-contract-fallback' : 'gemini-semantic-candidate-tournament-v2',
       model,
+      generatorModel: model,
+      judgeModel,
     });
   } catch (error: any) {
     console.error('[studio1/generate] Studio 1 transaction failed:', error);

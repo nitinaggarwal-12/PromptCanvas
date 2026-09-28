@@ -99,6 +99,73 @@ export function getGeminiModelForArchitecture(archId?: string): string {
   return getGeminiModel('pro');
 }
 
+/**
+ * ⚖️ Cross-Model LLM-as-a-Judge Separation Engine
+ * Guarantees that the Judge / Critic model evaluating a diagram, refactor, patch, or specification
+ * report is NEVER the same model ID that generated the artifact from user inputs.
+ *
+ * - Generator = Flash (`gemini-3.8-flash` / `gemini-2.5-flash` / `gemini-3.1-flash-live-preview`)
+ *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-2.5-pro`)
+ * - Generator = Pro (`gemini-3.1-pro-preview`)
+ *   -> Judge = `gemini-3.8-flash` (fallback `gemini-2.5-pro`)
+ * - Generator = Fallback Pro (`gemini-2.5-pro`)
+ *   -> Judge = `gemini-3.1-pro-preview` (fallback `gemini-3.8-flash`)
+ */
+export function getDistinctJudgeModel(generatorModelId?: string): string {
+  const normalizedGen = (generatorModelId || '').trim().toLowerCase();
+  const proModel = getGeminiModel('pro'); // gemini-3.1-pro-preview
+  const flashModel = getGeminiModel('chat'); // gemini-3.8-flash
+
+  if (!normalizedGen) {
+    return proModel;
+  }
+  if (normalizedGen === proModel.toLowerCase()) {
+    // Generator used Gemini 3.1 Pro -> use Gemini 3.8 Flash as orthogonal cross-family Judge
+    return flashModel;
+  }
+  if (normalizedGen === flashModel.toLowerCase() || normalizedGen.includes('flash')) {
+    // Generator used Flash -> use Gemini 3.1 Pro as higher-order reasoning Judge
+    return proModel;
+  }
+  return normalizedGen === proModel.toLowerCase() ? flashModel : proModel;
+}
+
+export function getDistinctJudgeModelWithFallbacks(generatorModelId?: string): string[] {
+  const normalizedGen = (generatorModelId || '').trim().toLowerCase();
+  const primaryJudge = getDistinctJudgeModel(generatorModelId);
+  const candidates = [
+    primaryJudge,
+    GEMINI_PRO_MODEL_ID,
+    GEMINI_FLASH_MODEL_ID,
+    GEMINI_FALLBACK_PRO_MODEL_ID,
+    GEMINI_FALLBACK_FLASH_MODEL_ID,
+  ].filter((m) => m.toLowerCase() !== normalizedGen);
+  return Array.from(new Set(candidates));
+}
+
+export const LLM_JUDGE_MATRIX = {
+  diagramGenerationV2: {
+    generator: GEMINI_FLASH_MODEL_ID,
+    judge: GEMINI_PRO_MODEL_ID,
+    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+  },
+  studio1TournamentAndPatch: {
+    generator: GEMINI_PRO_MODEL_ID,
+    judge: GEMINI_FLASH_MODEL_ID,
+    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+  },
+  docgenReportSynthesis: {
+    generator: GEMINI_PRO_MODEL_ID,
+    judge: GEMINI_FLASH_MODEL_ID,
+    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+  },
+  sixAuditPostureSuite: {
+    generator: GEMINI_FLASH_MODEL_ID,
+    judge: GEMINI_PRO_MODEL_ID,
+    fallbackJudge: GEMINI_FALLBACK_PRO_MODEL_ID,
+  },
+} as const;
+
 export type GenConfigKind = 'generate' | 'edit' | 'repair' | 'audit' | 'narrative' | 'vision';
 
 export function getGenConfig(kind: GenConfigKind) {

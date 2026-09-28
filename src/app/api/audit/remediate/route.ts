@@ -6,7 +6,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getTechnicalArchitectureXml } from '@/lib/technicalArchitectureXmls';
 import { preflightVerifyAndHealXmlAcrossAll6Audits } from '@/lib/preflightAuditEngine';
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
@@ -73,19 +73,26 @@ ${remediationInstructions}
 4. Return ONLY valid, well-formed Draw.io XML wrapped inside <mxfile>...</mxfile>. Do NOT wrap in markdown code blocks or text outside XML.
 `;
 
-      const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
-      const ai = new GoogleGenAI({ apiKey: userApiKey });
-      const response = await generateContentWithRetry(ai, {
-        model: GEMINI_MODEL_ID,
-        contents: [
-          { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
-        ],
-        config: {
-          systemInstruction: prompt,
-        },
-      });
+      const userApiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey() || '';
+      if (userApiKey) {
+        try {
+          const ai = new GoogleGenAI({ apiKey: userApiKey });
+          const response = await generateContentWithRetry(ai, {
+            model: GEMINI_MODEL_ID,
+            contents: [
+              { text: `Here is the current Draw.io XML:\n\n${currentXml}` },
+            ],
+            config: {
+              systemInstruction: prompt,
+            },
+          });
 
-      rawXml = response.text?.trim() || '';
+          rawXml = response.text?.trim() || '';
+        } catch (remErr) {
+          console.warn('[Audit Remediate] Upstream Gemini fallback to preflight healer:', remErr);
+          rawXml = currentXml;
+        }
+      }
     }
 
     // Apply Pre-Flight 6-Audit Pre-Compiler Pass to guarantee zero visual collisions & 100% posture

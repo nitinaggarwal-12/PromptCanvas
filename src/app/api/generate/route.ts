@@ -198,10 +198,26 @@ export async function POST(request: Request) {
           const classification = await classifyIntent(prompt);
           if (classification) {
             if (classification.confidence < 0.6) {
+              const fallbackArchType =
+                classification.selectedType ||
+                classification.alternativeTypes?.[0] ||
+                'conceptual_diagram';
+              const disambigFallback = await executeUnifiedDiagramPipeline({
+                prompt,
+                diagramId,
+                architectureType: fallbackArchType,
+                name,
+                existingXml,
+                isPrivate: isPrivate,
+                userId: user?.id || null
+              });
               return NextResponse.json({
                 needsDisambiguation: true,
                 suggestedTypes: classification.alternativeTypes,
-                reasoning: classification.reasoning
+                reasoning: classification.reasoning,
+                xml: disambigFallback.xml,
+                diagram: disambigFallback.diagram,
+                version: disambigFallback.version,
               }, { status: 200 });
             }
 
@@ -229,36 +245,40 @@ export async function POST(request: Request) {
             }
           }
 
-          // Freeform prompt with LayoutEngineV2 -> run V2 Pipeline
-          const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID);
-          const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
-          const reasoning = v2Result.graph?.narrative?.reasoning || 'Automated multi-tier cloud topology generation.';
-          const businessUsecase = v2Result.graph?.narrative?.businessUsecase || 'Enterprise workload orchestration and service boundaries.';
-          const technicalUsecase = v2Result.graph?.narrative?.technicalUsecase || 'Microservices, data persistence, and security controls.';
+          // Freeform prompt with LayoutEngineV2 -> run V2 Pipeline with resilient fallback
+          try {
+            const v2Result = await runV2Pipeline(prompt, GEMINI_MODEL_ID);
+            const diagramName = name || (prompt.length > 45 ? `${prompt.slice(0, 40)}...` : prompt);
+            const reasoning = v2Result.graph?.narrative?.reasoning || 'Automated multi-tier cloud topology generation.';
+            const businessUsecase = v2Result.graph?.narrative?.businessUsecase || 'Enterprise workload orchestration and service boundaries.';
+            const technicalUsecase = v2Result.graph?.narrative?.technicalUsecase || 'Microservices, data persistence, and security controls.';
 
-          const { diagram, version } = await createDiagram(
-            diagramName,
-            v2Result.xml,
-            `V2 AI Generated: "${prompt.slice(0, 40)}"`,
-            prompt,
-            reasoning,
-            businessUsecase,
-            technicalUsecase,
-            user?.id || null,
-            'v2_freeform',
-            Boolean(isPrivate)
-          );
+            const { diagram, version } = await createDiagram(
+              diagramName,
+              v2Result.xml,
+              `V2 AI Generated: "${prompt.slice(0, 40)}"`,
+              prompt,
+              reasoning,
+              businessUsecase,
+              technicalUsecase,
+              user?.id || null,
+              'v2_freeform',
+              Boolean(isPrivate)
+            );
 
-          return NextResponse.json({
-            diagram,
-            version,
-            xml: v2Result.xml,
-            reasoning,
-            businessUsecase,
-            technicalUsecase,
-            graph: v2Result.graph,
-            telemetry: v2Result.telemetry
-          }, { status: 201 });
+            return NextResponse.json({
+              diagram,
+              version,
+              xml: v2Result.xml,
+              reasoning,
+              businessUsecase,
+              technicalUsecase,
+              graph: v2Result.graph,
+              telemetry: v2Result.telemetry
+            }, { status: 201 });
+          } catch (v2Err) {
+            console.warn('[Generate API] V2 pipeline failed, falling back to unified diagram pipeline:', v2Err);
+          }
         }
       }
     }

@@ -5,7 +5,7 @@ import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { cookies } from 'next/headers';
 
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { GEMINI_MODEL_ID, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
@@ -44,8 +44,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
-    const ai = new GoogleGenAI({ apiKey: userApiKey });
+    const userApiKey = guard.effectiveApiKey || getEffectiveGeminiApiKey() || '';
     const { diagramId, xmlContent: customXml, architectureType } = await request.json();
 
     let xmlContent = customXml;
@@ -60,35 +59,43 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'xmlContent or valid diagramId is required' }, { status: 400 });
     }
 
-    const response = await generateContentWithRetry(ai, {
-      model: GEMINI_MODEL_ID,
-      contents: [
-        { text: `Here is the Draw.io XML of the GCP architecture to convert to Terraform HCL:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
-      ],
-      config: {
-        systemInstruction: TERRAFORM_GCP_SYSTEM_PROMPT,
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            mainTf: { type: Type.STRING },
-            variablesTf: { type: Type.STRING },
-            outputsTf: { type: Type.STRING },
-            providerTf: { type: Type.STRING },
-            readme: { type: Type.STRING },
+    let textOutput = '';
+    if (userApiKey) {
+      try {
+        const ai = new GoogleGenAI({ apiKey: userApiKey });
+        const response = await generateContentWithRetry(ai, {
+          model: GEMINI_MODEL_ID,
+          contents: [
+            { text: `Here is the Draw.io XML of the GCP architecture to convert to Terraform HCL:\n\n\`\`\`xml\n${xmlContent}\n\`\`\`` },
+          ],
+          config: {
+            systemInstruction: TERRAFORM_GCP_SYSTEM_PROMPT,
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                mainTf: { type: Type.STRING },
+                variablesTf: { type: Type.STRING },
+                outputsTf: { type: Type.STRING },
+                providerTf: { type: Type.STRING },
+                readme: { type: Type.STRING },
+              },
+              required: ['mainTf', 'variablesTf', 'outputsTf', 'providerTf', 'readme'],
+            },
           },
-          required: ['mainTf', 'variablesTf', 'outputsTf', 'providerTf', 'readme'],
-        },
-      },
-    });
+        });
+        textOutput = response.text || '';
+      } catch (tfErr) {
+        console.warn('[Terraform Export] Upstream Gemini fallback to deterministic HCL:', tfErr);
+      }
+    }
 
-    const textOutput = response.text || '{}';
     let terraformData: { mainTf?: string; variablesTf?: string; outputsTf?: string; providerTf?: string; readme?: string } = {};
 
     try {
+      if (!textOutput) throw new Error('Empty upstream Terraform response');
       terraformData = JSON.parse(textOutput);
     } catch (e) {
-      console.error('Failed to parse Terraform JSON output:', e);
       terraformData = {
         providerTf: `terraform {\n  required_version = ">= 1.5.0"\n  required_providers {\n    google = {\n      source  = "hashicorp/google"\n      version = "~> 5.0"\n    }\n  }\n}\n\nprovider "google" {\n  project = var.project_id\n  region  = var.region\n  zone    = var.zone\n}\n`,
         variablesTf: `variable "project_id" {\n  description = "GCP Project ID"\n  type        = string\n}\n\nvariable "region" {\n  description = "GCP Region"\n  type        = string\n  default     = "us-central1"\n}\n\nvariable "zone" {\n  description = "GCP Zone"\n  type        = string\n  default     = "us-central1-a"\n}\n`,

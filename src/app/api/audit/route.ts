@@ -4,7 +4,7 @@ import { getLatestDiagramVersion, getDiagramVersion, saveAuditReport, getAuditRe
 import { getAuthenticatedUser } from '@/lib/auth';
 import { acquireGeminiLock, releaseGeminiLock, deriveLockKey } from '@/lib/geminiLock';
 import { getDefaultXmlForArchitecture } from '@/lib/architectureTypes';
-import { GEMINI_MODEL_ID } from '@/lib/geminiConfig';
+import { GEMINI_MODEL_ID, getDistinctJudgeModel, getEffectiveGeminiApiKey } from '@/lib/geminiConfig';
 import { generateContentWithRetry } from '@/lib/geminiRetryHelper';
 import { enforceGeminiRouteGuard } from '@/lib/geminiRouteGuard';
 import { toUserFacingMessage, toResponseStatus, parseUpstreamError } from '@/lib/ai/modelErrors';
@@ -453,11 +453,17 @@ export async function POST(request: Request) {
     const userPrompt = targetVersion.prompt || undefined;
 
     const combinedText = `${ucContext} ${userPrompt || ''}`.toLowerCase();
-    const isPipelineOrGenomicPrompt = combinedText.includes('genomic') || combinedText.includes('fastq') || combinedText.includes('variant') || combinedText.includes('gatk') || combinedText.includes('pipeline') || combinedText.includes('ci/cd') || combinedText.includes('bwa');
+    const isExplicitCicdOrGenomicPrompt =
+      combinedText.includes('genomic') ||
+      combinedText.includes('fastq') ||
+      combinedText.includes('gatk') ||
+      combinedText.includes('ci/cd') ||
+      combinedText.includes('bwa');
 
-    const effectiveArchType = isPipelineOrGenomicPrompt 
-      ? 'devops_cicd_pipeline' 
-      : (architectureType || targetVersion.architecture_type || 'conceptual_diagram');
+    const effectiveArchType =
+      architectureType ||
+      targetVersion.architecture_type ||
+      (isExplicitCicdOrGenomicPrompt ? 'devops_cicd_pipeline' : 'conceptual_diagram');
 
     let xmlContent = targetVersion.xml_content;
 
@@ -467,6 +473,8 @@ export async function POST(request: Request) {
 
     const categoryKey = (PROMPTS[auditCategory as AuditCategory] ? auditCategory : 'security') as AuditCategory;
     const selectedPrompt = PROMPTS[categoryKey];
+    const generatorModel = GEMINI_MODEL_ID;
+    const judgeModel = getDistinctJudgeModel(generatorModel);
 
     let score = 95;
     let report = '';
@@ -511,10 +519,10 @@ Respond strictly in JSON matching the schema provided:
       });
 
       if (lockAcquired) {
-        const userApiKey = request.headers.get('x-gemini-api-key') || process.env.GEMINI_API_KEY || '';
+        const userApiKey = request.headers.get('x-gemini-api-key') || guard.effectiveApiKey || getEffectiveGeminiApiKey();
         const ai = new GoogleGenAI({ apiKey: userApiKey });
         const response = await generateContentWithRetry(ai, {
-          model: GEMINI_MODEL_ID,
+          model: judgeModel,
           contents: multimodalContents,
           config: {
             systemInstruction,
@@ -610,6 +618,8 @@ Respond strictly in JSON matching the schema provided:
       score,
       report,
       gaps,
+      generatorModel,
+      judgeModel,
       savedReport,
       reportsHistory: allReports,
     });

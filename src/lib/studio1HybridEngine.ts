@@ -157,14 +157,111 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
   // the optional condition property is omitted. Preserve that meaning as an
   // explicit branch condition so a visually correct decision is also
   // semantically certifiable.
-  const decisionIds = new Set(nodes.filter(node => node.kind === 'decision').map(node => node.id));
-  for (const edge of edges) {
-    if (decisionIds.has(edge.source) && !edge.condition && !/^(?:request|event)$/i.test(edge.label)) {
-      edge.condition = edge.label;
+  const nodeById = new Map(nodes.map(node => [node.id, node]));
+  for (const node of nodes) {
+    if (node.kind === 'decision') {
+      const outgoing = edges.filter(edge => edge.source === node.id);
+      if (outgoing.length < 2) {
+        // A decision node with < 2 outgoing edges is a linear validation process step
+        node.kind = 'process';
+      } else {
+        const usedConditions = new Set<string>();
+        outgoing.forEach((edge, idx) => {
+          let cond = (edge.condition || (!/^(?:request|event)$/i.test(edge.label) ? edge.label : '') || `branch_${idx + 1}`).trim();
+          if (usedConditions.has(cond.toLowerCase())) {
+            cond = `${cond}_${idx + 1}`;
+          }
+          usedConditions.add(cond.toLowerCase());
+          edge.condition = cond.slice(0, 36);
+        });
+      }
     }
   }
 
-  edges.sort((left, right) => left.step - right.step).forEach((edge, index) => {
+  // Normalize backward stage edges as governance (for security/observability) or feedback
+  for (const edge of edges) {
+    const srcNode = nodeById.get(edge.source);
+    const tgtNode = nodeById.get(edge.target);
+    if (srcNode && tgtNode && tgtNode.stage < srcNode.stage && !['feedback', 'governance'].includes(edge.flowType)) {
+      if (srcNode.kind === 'security' || srcNode.kind === 'observability') {
+        edge.flowType = 'governance';
+        if (!edge.relationType) edge.relationType = srcNode.kind === 'security' ? 'protects' : 'observes';
+      } else {
+        edge.flowType = 'feedback';
+        if (!edge.relationType) edge.relationType = 'feedback';
+      }
+    }
+  }
+
+  // Deduplicate identical relationships
+  const uniqueRelationKeys = new Set<string>();
+  const dedupedEdges: Studio1SemanticEdge[] = [];
+  for (const edge of edges) {
+    const relKey = `${edge.source}>${edge.target}:${edge.flowType}:${edge.label.toLowerCase()}`;
+    if (!uniqueRelationKeys.has(relKey)) {
+      uniqueRelationKeys.add(relKey);
+      dedupedEdges.push(edge);
+    }
+  }
+
+  // Ensure every component participates in one connected end-to-end topology
+  if (nodes.length > 1) {
+    const buildAdjacency = () => {
+      const adj = new Map(nodes.map(n => [n.id, new Set<string>()]));
+      for (const e of dedupedEdges) {
+        adj.get(e.source)?.add(e.target);
+        adj.get(e.target)?.add(e.source);
+      }
+      return adj;
+    };
+    const getConnectedSet = () => {
+      const adj = buildAdjacency();
+      const visited = new Set<string>();
+      const queue = [nodes[0].id];
+      while (queue.length) {
+        const curr = queue.shift()!;
+        if (visited.has(curr)) continue;
+        visited.add(curr);
+        for (const nb of adj.get(curr) || []) {
+          if (!visited.has(nb)) queue.push(nb);
+        }
+      }
+      return visited;
+    };
+
+    let connected = getConnectedSet();
+    let autoEdgeIdx = 1;
+    for (const node of nodes) {
+      if (!connected.has(node.id)) {
+        const anchor =
+          nodes.find(n => connected.has(n.id) && (n.kind === 'service' || n.kind === 'process')) ||
+          nodes[0];
+        let edgeId = `auto_link_${autoEdgeIdx++}`;
+        while (edgeIds.has(edgeId)) edgeId = `auto_link_${autoEdgeIdx++}`;
+        edgeIds.add(edgeId);
+
+        const isControl = node.kind === 'security' || node.kind === 'observability';
+        const sourceId = isControl || node.stage <= anchor.stage ? node.id : anchor.id;
+        const targetId = sourceId === node.id ? anchor.id : node.id;
+        const flowType: Studio1FlowType = isControl ? 'governance' : 'synchronous';
+        const relationType: Studio1RelationType =
+          node.kind === 'security' ? 'protects' : node.kind === 'observability' ? 'observes' : 'invokes';
+
+        dedupedEdges.push({
+          id: edgeId,
+          source: sourceId,
+          target: targetId,
+          label: isControl ? (node.kind === 'security' ? 'Enforce policy' : 'Collect telemetry') : 'Coordinate flow',
+          flowType,
+          relationType,
+          step: dedupedEdges.length + 1,
+        });
+        connected = getConnectedSet();
+      }
+    }
+  }
+
+  dedupedEdges.sort((left, right) => left.step - right.step).forEach((edge, index) => {
     edge.step = index + 1;
   });
 
@@ -172,13 +269,20 @@ export function normalizeStudio1Graph(input: unknown, prompt: string): Studio1Se
     .filter((pattern): pattern is Studio1Pattern => PATTERNS.has(pattern as Studio1Pattern))
     .slice(0, 3);
 
+  const rawAssumptions = (Array.isArray(raw.assumptions) ? raw.assumptions : [])
+    .map(item => cleanText(item, '', 140))
+    .filter(Boolean)
+    .slice(0, 8);
+
   return {
     title: cleanText(raw.title, prompt.slice(0, 72) || 'Prompt-Generated Architecture', 96),
     subtitle: cleanText(raw.subtitle, 'Prompt-derived architecture with typed flows and deterministic layout', 170),
     patterns: patterns.length ? patterns : ['layered'],
-    assumptions: (Array.isArray(raw.assumptions) ? raw.assumptions : []).map(item => cleanText(item, '', 140)).filter(Boolean).slice(0, 8),
+    assumptions: rawAssumptions.length
+      ? rawAssumptions
+      : ['Workload components communicate over authenticated TLS with managed identity and observability controls.'],
     nodes,
-    edges,
+    edges: dedupedEdges,
   };
 }
 

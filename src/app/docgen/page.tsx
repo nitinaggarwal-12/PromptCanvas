@@ -4159,6 +4159,14 @@ function synthesizeCustomExecutiveDocument(
   doc = doc.replace(/Target Release:\s*Release 1 Controlled Production Pilot \(Q3 2026\)/gi, `Target Release: ${title} Production Pilot (Q3 2026)`);
   doc = doc.replace(/Enterprise Architecture Platform\s*—\s*Functional Specifications & Workflow Sequence/gi, `${title} — Functional Specifications & Architecture`);
 
+  // Scrub hardcoded fictional brand names unless explicitly present in user title/scope
+  const lowerInput = `${title} ${scope}`.toLowerCase();
+  for (const brand of ['NovaCura', 'AeroNode', 'ApexPay', 'OmniVue', 'WorkCloud']) {
+    if (!lowerInput.includes(brand.toLowerCase())) {
+      doc = doc.replace(new RegExp(`\\b${brand}\\b`, 'gi'), title || 'Enterprise System');
+    }
+  }
+
   // If effectiveDomain is not biopharma, scrub biopharma phrases from FDD
   if (effectiveDomain !== 'biopharma') {
     doc = doc

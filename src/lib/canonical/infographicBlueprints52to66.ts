@@ -169,15 +169,28 @@ export function generateInfographicBlueprintXmlById(
   spec?: DynamicInfographicSpec,
   level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
 ): string {
+  const effectiveTitleInput = spec?.title?.trim() || customTitle;
   const cleanCustomTitle =
-    customTitle &&
-    !customTitle.includes('Global Real-Time Payments Mesh') &&
-    customTitle.trim() !== ''
-      ? customTitle.trim()
+    effectiveTitleInput &&
+    !effectiveTitleInput.includes('Global Real-Time Payments Mesh') &&
+    effectiveTitleInput.trim() !== ''
+      ? effectiveTitleInput.trim()
       : undefined;
 
+  const baseXml = generateBaseInfographicBlueprintXmlById(id, cleanCustomTitle, level);
+  if (!cleanCustomTitle && !spec) {
+    return baseXml;
+  }
+  return applyDynamicInfographicSpecToXml(baseXml, id, cleanCustomTitle, spec);
+}
+
+function generateBaseInfographicBlueprintXmlById(
+  id: string,
+  cleanCustomTitle?: string,
+  level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
+): string {
   const meta = INFOGRAPHIC_BLUEPRINTS_LIST.find((m) => m.id === id) || INFOGRAPHIC_BLUEPRINTS_LIST[0];
-  const items = spec?.items && spec.items.length > 0 ? spec.items : null;
+  const items = null;
 
   // ============================================================================
   // 1. #52: ANATOMY / DECONSTRUCTION (Exact 1:1 Vector Twin of 52.png)
@@ -1886,4 +1899,118 @@ export function generateInfographicBlueprintXmlById(
     <mxCell id="ftr66" value="GOOGLE CLOUD • GEMINI • ENTERPRISE AGENT REFERENCE ARCHITECTURE • REVISION 2.4 • SEPTEMBER 2026" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#193B73;strokeColor=#193B73;fontColor=#FFFFFF;fontStyle=1;fontSize=10.5;letterSpacing=0.5;" vertex="1" parent="1"><mxGeometry x="0" y="990" width="765" height="34" as="geometry"/></mxCell>
   </root></mxGraphModel></diagram></mxfile>`;
 }
+
+function replaceCellValue(xml: string, cellId: string, newEscapedHtml: string): string {
+  const pattern = new RegExp(`(<mxCell\\s+id="${cellId}"\\s+value=")([^"]*)(")`, 'i');
+  if (!pattern.test(xml)) return xml;
+  return xml.replace(pattern, `$1${newEscapedHtml}$3`);
+}
+
+function applyDynamicInfographicSpecToXml(
+  xml: string,
+  id: string,
+  cleanCustomTitle?: string,
+  spec?: DynamicInfographicSpec
+): string {
+  let out = xml;
+  const effectiveTitle = spec?.title?.trim() || cleanCustomTitle;
+  const effectiveSub = spec?.subtitle?.trim();
+
+  if (effectiveTitle) {
+    if (id === '53') {
+      out = out.replace(
+        "How to use &lt;span style='color:#EA7A47;'&gt;Claude Code&lt;/span&gt; + &lt;span style='color:#3B82F6;'&gt;Codex&lt;/span&gt;",
+        esc(effectiveTitle)
+      );
+    } else if (id === '54') {
+      out = out.replace(
+        "GPT-6 Astra &lt;span style='color:#2D68FF;'&gt;Computer Use&lt;/span&gt;",
+        esc(effectiveTitle)
+      );
+    } else if (id === '55') {
+      out = out.replace(
+        "The AI Nobody &lt;span style='color:#60A5FA;'&gt;Signed Off&lt;/span&gt;",
+        esc(effectiveTitle)
+      );
+    }
+  }
+
+  if (effectiveSub) {
+    const defaultSubtitles: Record<string, string> = {
+      '53': 'Install the apps, add your tools, then check the result.',
+      '54': 'Set it up on a Mac, then copy four prompts that do real work.',
+      '55': 'Inside a company that thinks it has four tools',
+      '56': 'Comparing stateless model inference with a fully managed, enterprise grade agent runtime',
+      '57': 'Context compression and progressive token refinement on Google Cloud',
+      '58': 'The step-by-step blueprint to deploy and run secure&lt;br/&gt;autonomous agent workloads on Google Cloud',
+      '59': 'The phased, quarterly blueprint for enterprise-grade Agentic AI on Google Cloud',
+      '60': '&lt;b&gt;Google Cloud enterprise&lt;/b&gt; agent topology and secure runtimes',
+      '63': 'Conditional branching logic and decision paths',
+      '64': 'Multi-criteria evaluation and capability scoring',
+      '65': 'The evolution of Google Cloud agents from raw&lt;br/&gt;inference to fully autonomous systems',
+      '66': 'The autonomous self-healing agent loop and evaluation cycle',
+    };
+    const targetSub = defaultSubtitles[id];
+    if (targetSub && out.includes(targetSub)) {
+      out = out.replace(targetSub, esc(effectiveSub));
+    }
+  }
+
+  const takeawayText = spec?.takeaway?.trim() || spec?.footerText?.trim();
+  if (takeawayText) {
+    const takeawayCellIds = ['tk58', 'goal59', 'tk61', 'tk62', 'ev64'];
+    for (const tkId of takeawayCellIds) {
+      if (out.includes(`id="${tkId}"`)) {
+        out = replaceCellValue(
+          out,
+          tkId,
+          esc(`<div style="padding:10px 16px;text-align:left;font-family:Inter,sans-serif;font-size:13.5px;color:#0F172A;line-height:1.35;"><b>TAKEAWAY:</b> ${takeawayText}</div>`)
+        );
+      }
+    }
+  }
+
+  const dynItems = spec?.items && spec.items.length > 0 ? spec.items : null;
+  if (dynItems) {
+    const cellSlotsByBlueprint: Record<string, string[]> = {
+      '53': ['c53_codex', 'c53_proj', 'c53_claude', 'c53_files', 'c53_mcp', 'c53_cu', 'c53_adv', 'c53_fix'],
+      '54': ['job54_1', 'job54_2', 'job54_3', 'job54_4', 's54_1', 's54_2', 's54_3', 's54_4'],
+      '55': ['b55_0', 'b55_1', 'b55_2', 'b55_3', 'b55_4', 'b55_5', 'b55_6', 'b55_7'],
+      '56': ['R56_0', 'R56_1', 'R56_2', 'R56_3', 'R56_4', 'R56_5'],
+      '57': ['f57_0', 'f57_1', 'f57_2', 'f57_3'],
+      '58': ['r58_0', 'r58_1', 'r58_2', 'r58_3', 'r58_4', 'r58_5'],
+      '59': ['c59_0_1', 'c59_0_2', 'c59_1_1', 'c59_1_2', 'c59_2_1', 'c59_2_2', 'c59_3_1', 'c59_3_2'],
+      '60': ['n60_1b', 'n60_2b', 'n60_3b', 'n60_4b'],
+      '63': ['n63_rec', 'n63_eval', 'n63_dir', 'n63_inv', 'n63_exec', 'n63_loop', 'n63_fin'],
+      '64': ['c64_0_0', 'c64_1_0', 'c64_2_0', 'c64_3_0', 'c64_4_0'],
+      '65': ['l65_1', 'l65_2', 'l65_3', 'l65_4'],
+      '66': ['c66_1', 'c66_2', 'c66_3', 'c66_4'],
+    };
+
+    const slots = cellSlotsByBlueprint[id] || [];
+    slots.forEach((slotId, idx) => {
+      const it = dynItems[idx];
+      if (!it) return;
+      const codeStr = esc(it.code || `0${idx + 1}`);
+      const titleStr = esc(it.title || `Stage ${idx + 1}`);
+      const subStr = esc(it.badge || it.secondaryBadge || 'ACTIVE');
+      const descStr = esc(it.description || '');
+      const cardHtml = esc(
+        `<div style="padding:10px 12px;text-align:left;font-family:Inter,-apple-system,sans-serif;">` +
+          `<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">` +
+          `<span style="font-size:13.5px;font-weight:800;color:#0F172A;line-height:1.2;">${codeStr} | ${titleStr}</span>` +
+          `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:800;white-space:nowrap;">${subStr}</span>` +
+          `</div>` +
+          (descStr
+            ? `<div style="font-size:11.5px;color:#334155;margin-top:6px;line-height:1.3;">${descStr}</div>`
+            : '') +
+          `</div>`
+      );
+      out = replaceCellValue(out, slotId, cardHtml);
+    });
+  }
+
+  return out;
+}
+
 
