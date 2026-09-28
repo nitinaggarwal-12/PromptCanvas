@@ -2603,7 +2603,7 @@ function DocGenContent() {
                         5. Architectural Scope &amp; Topology Requirements Prompt
                       </label>
                       <span className="text-[10px] font-mono text-slate-400">
-                        Gemini 3.7 &bull; Real-Time AST
+                        Gemini 3.8 Flash &bull; Real-Time AST
                       </span>
                     </div>
                     <textarea

@@ -16,7 +16,7 @@ export function buildIncidentTriageSwimlaneXml(): string {
         <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:11px;color:#475569;font-weight:600;&quot;&gt;Day-2 Operational Playbook: L1 Automated Alerting &amp;amp; Gemini Cloud Assist $\rightarrow$ L2 Auto-Remediation $\rightarrow$ L3 Incident Commander War Room&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="34" width="1050" height="18" as="geometry"/>
         </mxCell>
-        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.7 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Assist RCA&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="top_gemini_badge" value="&lt;b style=&quot;font-size:14px;color:#2563EB;&quot;&gt;Gemini 3.8 Flash&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Cloud Assist RCA&lt;/span&gt;" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="1220" y="10" width="140" height="36" as="geometry"/>
         </mxCell>
 
@@ -32,7 +32,7 @@ export function buildIncidentTriageSwimlaneXml(): string {
           <mxGeometry x="50" y="110" width="260" height="100" as="geometry"/>
         </mxCell>
 
-        <mxCell id="node_gemini_assist_rca" value="&lt;b style=&quot;font-size:10px;color:#1D4ED8;&quot;&gt;Gemini 3.7 Flash Cloud Assist RCA&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Multi-Log Cross-Correlation (GKE + Cloud SQL)&lt;br&gt;Synthetic Trace Analysis &amp;amp; Blast Radius Estimation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="node_gemini_assist_rca" value="&lt;b style=&quot;font-size:10px;color:#1D4ED8;&quot;&gt;Gemini 3.8 Flash Cloud Assist RCA&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:8px;color:#475569;&quot;&gt;Multi-Log Cross-Correlation (GKE + Cloud SQL)&lt;br&gt;Synthetic Trace Analysis &amp;amp; Blast Radius Estimation&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#1D4ED8;strokeWidth=2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="370" y="110" width="280" height="100" as="geometry"/>
         </mxCell>
 
@@ -138,7 +138,7 @@ export function buildIncidentTriageSwimlaneXml(): string {
         </mxCell>
 
         <!-- Footer Legend -->
-        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;Escalation Matrix:&lt;/b&gt; 🔵 L1 Auto-Telemetry &amp;amp; Gemini Triage &amp;nbsp;|&amp;nbsp; 🟢 L2 Automated Remediation &amp;nbsp;|&amp;nbsp; 🔴 L3 SRE War Room &amp;amp; Post-Mortem &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 3.7 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;span style=&quot;font-size:9.5px;color:#475569;&quot;&gt;&lt;b&gt;Escalation Matrix:&lt;/b&gt; 🔵 L1 Auto-Telemetry &amp;amp; Gemini Triage &amp;nbsp;|&amp;nbsp; 🟢 L2 Automated Remediation &amp;nbsp;|&amp;nbsp; 🔴 L3 SRE War Room &amp;amp; Post-Mortem &amp;nbsp;|&amp;nbsp; ⚡ Powered by Gemini 3.8 Flash&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="655" width="1335" height="30" as="geometry"/>
         </mxCell>
 

@@ -4,7 +4,7 @@
  * 1. Ingress & Edge (Anycast Edge, Cloud Armor, External HTTPS GCLB, Apigee X)
  * 2. Application Core Mesh (GKE Autopilot, Cloud Run, Memorystore Redis)
  * 3. Real-Time Event Streaming (Cloud Pub/Sub, Datastream CDC, Cloud Dataflow Engine)
- * 4. Vertex AI & Intelligence Hub (ScaNN Vector Search, Model Armor Shield, Gemini 3.7 Flash & Pro Hybrid Engine)
+ * 4. Vertex AI & Intelligence Hub (ScaNN Vector Search, Model Armor Shield, Gemini 3.8 Flash & Pro Hybrid Engine)
  * 5. Multi-Region Lakehouse & DB (Cloud Spanner nam3, BigQuery Lakehouse, Cloud Storage Dual-Region)
  * 6. Zero-Trust Security Baseline (VPC-SC, Workload Identity, Cloud KMS HSM, Secret Manager, Dataplex, Cloud SCC)
  */

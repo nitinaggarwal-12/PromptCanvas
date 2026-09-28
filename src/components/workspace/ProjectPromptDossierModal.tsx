@@ -252,7 +252,7 @@ export const ProjectPromptDossierModal: React.FC<ProjectPromptDossierModalProps>
                 }`}>
                   <span className="text-xs font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                     <Cpu className="w-3.5 h-3.5" />
-                    <span>Gemini 3.7 Architectural Rationale &amp; Synthesis</span>
+                    <span>Gemini 3.8 Flash Architectural Rationale &amp; Synthesis</span>
                   </span>
                   <p className={`text-xs sm:text-sm leading-relaxed ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                     {currentVer.ai_reasoning}

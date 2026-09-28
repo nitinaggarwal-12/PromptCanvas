@@ -35,7 +35,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "P1-APP-L-01_legacy_data_dependency_map",
     "diagramName": "Google Cloud Discovery & Assessment: Legacy Silos to Modern Migration Waves",
     "intentKeywords": "legacy discovery, on-prem silos, mainframe, oracle rac, sap ecc, shadow db, sftp shares, spaghetti integration, stratozone, migration center, dlp, migration waves, 6rs, gemini reasoning",
-    "goldenExamplePayload": "Build a Google Cloud Discovery & Assessment architecture from on-prem legacy silos (IBM Mainframe, Oracle 11g RAC, SAP ECC, Shadow DBs, SFTP shares) through spaghetti integration matrix to Google Cloud StratoZone, Migration Center, Sensitive Data Protection (DLP), and Gemini 3.7 Flash 4-wave modern migration roadmap (Rehost, Replatform, Refactor, Retire).",
+    "goldenExamplePayload": "Build a Google Cloud Discovery & Assessment architecture from on-prem legacy silos (IBM Mainframe, Oracle 11g RAC, SAP ECC, Shadow DBs, SFTP shares) through spaghetti integration matrix to Google Cloud StratoZone, Migration Center, Sensitive Data Protection (DLP), and Gemini 3.8 Flash 4-wave modern migration roadmap (Rehost, Replatform, Refactor, Retire).",
     "uiCardDesc": "On-prem legacy silos, spaghetti integration mesh, StratoZone Discovery Appliance, Migration Center, DLP scanning, and 4-wave target modernization plan.",
     "phase": "Phase 1",
     "phaseName": "Phase 1: Current State Assessment & Baseline",
@@ -52,7 +52,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Compute Engine",
       "Database Migration Service (DMS)",
       "Cloud Run",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw On-Prem Legacy Silos & Monoliths (Mainframe, Oracle RAC, SAP ECC, Shadow DBs, NAS Shares). 2. Draw Legacy Spaghetti Integration Matrix (ESB Bus, ETL, Shell Scripts, BI). 3. Draw Google Cloud StratoZone & Discovery Center with DLP and Gemini reasoning. 4. Draw Target Modern State with 4 Transformation Waves (Rehost, Replatform, Refactor, Retire).",
     "advancedPromptLogic": "Include 4-wave migration execution velocity, legacy credential auditing, and automated DLP classification.",
@@ -115,7 +115,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Deploy",
       "Cloud Monitoring",
       "BigQuery Metrics Export",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw horizontal timeline chevron header (Inception -> Ingestion -> Model Prep -> Safety Eval -> Deploy). 2. Add stage cards with LT, PT, and %C&A KPIs. 3. Draw automated quality gate pills between stages. 4. Render bottom timeline showing Total Lead Time vs Processing Time ratio.",
     "advancedPromptLogic": "If [Lean Metric Breakdown] requested: Calculate Process Efficiency = (Total Processing Time / Total Lead Time) * 100% and render in executive summary callout.",
@@ -145,7 +145,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Dataflow",
       "BigQuery BigLake",
       "Vertex AI Agent Builder",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Looker Studio",
       "Cloud Storage"
     ],
@@ -209,7 +209,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Dataflow",
       "BigQuery BigLake",
       "Vertex AI Agent Builder",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Cloud Armor",
       "GKE Autopilot",
       "Looker"
@@ -227,7 +227,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "P3-AI-L-02_cognitive_architecture_agentic_rag",
     "diagramName": "Cognitive Architecture / Agentic RAG",
     "intentKeywords": "agentic rag, cognitive architecture, react loop, vector search, semantic embeddings, knowledge grounding, mcp tools",
-    "goldenExamplePayload": "Build a Cognitive Agentic RAG architecture featuring text-embedding-004 chunking, Vertex AI Vector Search, a 4-stage circular ReAct loop (Thought -> Action -> Observation -> Synthesis), and Gemini 3.7 Flash reasoning.",
+    "goldenExamplePayload": "Build a Cognitive Agentic RAG architecture featuring text-embedding-004 chunking, Vertex AI Vector Search, a 4-stage circular ReAct loop (Thought -> Action -> Observation -> Synthesis), and Gemini 3.8 Flash reasoning.",
     "uiCardDesc": "Multi-agent ReAct orchestration loop (Thought -> Action -> Observation -> Synthesis) with 100% circular ring geometry.",
     "phase": "Phase 3",
     "phaseName": "Phase 3: Target State Logical Architecture",
@@ -240,7 +240,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "coreGcpServices": [
       "Vertex AI Vector Search",
       "Vertex AI Agent Builder",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Cloud Storage",
       "Model Armor",
       "Cloud Functions MCP Tools"
@@ -258,7 +258,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "P3-AI-L-03_hub_and_spoke_agent_mesh",
     "diagramName": "Hub-and-Spoke Agent Configuration Map",
     "intentKeywords": "hub and spoke, multi-agent mesh, agent supervisor, domain agents, subagents, agent delegation",
-    "goldenExamplePayload": "Create a Hub-and-Spoke Multi-Agent Mesh with a central Gemini 3.7 Super-Orchestrator dispatching tasks to SQL Agent, Research Agent, and Compliance Agent with HITL fallback.",
+    "goldenExamplePayload": "Create a Hub-and-Spoke Multi-Agent Mesh with a central Gemini 3.8 Flash Super-Orchestrator dispatching tasks to SQL Agent, Research Agent, and Compliance Agent with HITL fallback.",
     "uiCardDesc": "Hub-and-Spoke agent coordination model with Super-Orchestrator Hub, Domain Spoke agents, and human review gates.",
     "phase": "Phase 3",
     "phaseName": "Phase 3: Target State Logical Architecture",
@@ -270,7 +270,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "defaultDirection": "LR",
     "coreGcpServices": [
       "Vertex AI Agent Builder",
-      "Gemini 3.7 Flash / Pro",
+      "Gemini 3.8 Flash / Pro",
       "Pub/Sub Agent Bus",
       "Cloud Run Agent Containers",
       "BigQuery Audit Log"
@@ -305,7 +305,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Dataplex Universal Catalog",
       "Cloud Data Fusion",
       "Looker Studio",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Ingestion Sources on left. 2. Draw 3-tier Medallion containers: Bronze Raw, Silver Refined, Gold Aggregated. 3. Overlay Dataplex governance fabric across all tiers. 4. Connect rightward to Looker Analytics and Gemini AI agent consumers.",
     "advancedPromptLogic": "Ensure 100% density with GE Industrial Cockpit, automated PII masking tags, and Data Lineage connectors.",
@@ -473,7 +473,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "P3-APP-L-10_multi_agent_sequence_flow",
     "diagramName": "Multi-Agent Execution Lifeline Sequence Diagram",
     "intentKeywords": "sequence diagram, uml lifeline, grpc flow, vpc-sc, hitl review, agent execution, chronological sequence",
-    "goldenExamplePayload": "Build a UML Sequence Diagram showing an end-user query flowing to API Gateway, prompt scanning in Model Armor, vector retrieval in Vertex Vector Search, Gemini 3.7 reasoning, a low-confidence Human-in-the-Loop review gate, and final verified response.",
+    "goldenExamplePayload": "Build a UML Sequence Diagram showing an end-user query flowing to API Gateway, prompt scanning in Model Armor, vector retrieval in Vertex Vector Search, Gemini 3.8 Flash reasoning, a low-confidence Human-in-the-Loop review gate, and final verified response.",
     "uiCardDesc": "Micro Dynamic UML sequence diagram modeling end-user requests, agent orchestration, confidence gating, and HITL review.",
     "phase": "Phase 3",
     "phaseName": "Phase 3: Target State Logical Architecture",
@@ -486,7 +486,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "coreGcpServices": [
       "Cloud Endpoints / Apigee",
       "Vertex AI Vector Search",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Model Armor",
       "Cloud Audit Logs",
       "PagerDuty / HITL Portal"
@@ -560,7 +560,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Security Command Center (SCC)",
       "Cloud Asset Inventory",
       "Config Sync",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw On-Premise & Transit Interconnect (Corporate DC, 100G Interconnect, Cloud HA VPN, NCC). 2. Draw Shared VPC Host Project (Cloud Router BGP, Cloud NAT/DNS, Cloud Armor WAF, PSC Hub). 3. Draw Workload Spoke Projects (GKE Autopilot, Serverless Direct VPC, PSA, Vertex AI Endpoints). 4. Draw Zero-Trust Perimeter (VPC-SC, Cloud KMS HSM, SCC, Org Policies). 5. Draw Observability & Management (Cloud Logging, Asset Inventory, Config Sync).",
     "advancedPromptLogic": "Enforce zero public IP ingress on workloads, 100G MACsec encryption SLA, and transitive PSC service mesh routing.",
@@ -622,7 +622,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI TPU v5e",
       "MCP Gateway",
       "Memorystore Redis",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Cloud Logging"
     ],
     "generativeBuildSequence": "1. Draw Ingress LB & Cloud Armor. 2. Draw Agent Gateway & Model Armor real-time prompt interceptor. 3. Draw GKE Autopilot Sandboxed Workers (MCP Tool Pods, ephemeral SSDs). 4. Draw Vertex AI TPU v5e serving and BigQuery telemetry.",
@@ -681,7 +681,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "defaultDirection": "LR",
     "coreGcpServices": [
       "Vertex AI Agent Builder",
-      "Gemini 3.7 Flash / Pro",
+      "Gemini 3.8 Flash / Pro",
       "Agent Registry",
       "Model Armor",
       "Vertex AI Model Evaluation",
@@ -715,7 +715,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud DLP",
       "Model Armor",
       "Vertex AI Guardrails",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Cloud Functions (Kill-Switch)",
       "Cloud Logging"
     ],
@@ -748,7 +748,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud KMS HSM",
       "Cloud Tasks HITL",
       "GKE Autopilot",
-      "Gemini 3.7 Flash",
+      "Gemini 3.8 Flash",
       "Cloud Audit Logs"
     ],
     "generativeBuildSequence": "1. Draw Developer IDE & Agent Manifest submission. 2. Draw Automated Security & Red-Teaming stage. 3. Draw Multi-Stakeholder Human Approval stage (Legal & AppSec). 4. Draw Binary Authorization KMS signing and Signed GKE deployment.",
@@ -877,7 +877,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI Embeddings",
       "BigQuery BigLake",
       "Cloud Dataflow",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Raw Multi-Modal Ingress (PDF, Audio, Video, Sensor). 2. Draw Multi-Modal AI Extraction Processors. 3. Draw Chunking & Embedding Generation Tier. 4. Write to BigQuery BigLake Vector Index and Looker Audit Dashboard.",
     "advancedPromptLogic": "If [High-Volume Batch OCR] requested: Add Cloud Tasks distribution and Document AI batch processing pools.",
@@ -1093,7 +1093,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "BigQuery Analytics",
       "Looker CoE Dashboard",
       "Cloud IAM",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Executive AI Steering Committee. 2. Draw Central AI CoE Core Team (Prompt Engineers, AI Security, Platform Leads). 3. Draw Embedded BU AI Squads. 4. Connect with Shared Asset Bus (Central Model Catalog, Prompt Templates, Evaluation Suite).",
     "advancedPromptLogic": "Include RACI responsibility matrix badges (Responsible, Accountable, Consulted, Informed) across governance milestones.",
@@ -1202,11 +1202,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "IND-FINTECH-01_IND-FINTECH-03_automated_personalized_financial_advising",
     "diagramName": "Automated Personalized Financial Advising",
     "intentKeywords": "fintech, financial advising, wealth management, document ocr, portfolio generation, dialogflow, pci-dss, sock2",
-    "goldenExamplePayload": "Create a Google Cloud FinTech solution architecture for Automated Personalized Financial Advising with GE Fintech Assistant app, Gemini 3.7 Pro Vision tax document parser, Dialogflow CX chat agent, and Looker portfolio analytics.",
-    "uiCardDesc": "Google Cloud Fintech Solution: Automated personalized financial advising with GE Fintech Assistant, Gemini 3.7 Pro Vision OCR, and Looker analytics.",
+    "goldenExamplePayload": "Create a Google Cloud FinTech solution architecture for Automated Personalized Financial Advising with GE Fintech Assistant app, Gemini 3.1 Pro Vision tax document parser, Dialogflow CX chat agent, and Looker portfolio analytics.",
+    "uiCardDesc": "Google Cloud Fintech Solution: Automated personalized financial advising with GE Fintech Assistant, Gemini 3.1 Pro Vision OCR, and Looker analytics.",
     "phase": "Phase 6",
     "phaseName": "Phase 6: Industry Specialized Solutions",
-    "phaseGoal": "Google Cloud Fintech Solution: Automated personalized financial advising with GE Fintech Assistant, Gemini 3.7 Pro Vision OCR, and Looker analytics.",
+    "phaseGoal": "Google Cloud Fintech Solution: Automated personalized financial advising with GE Fintech Assistant, Gemini 3.1 Pro Vision OCR, and Looker analytics.",
     "domain": "Industry",
     "abstractionLevel": "Industry",
     "stackLayer": "Layer 4 (Application)",
@@ -1218,7 +1218,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Storage",
       "BigQuery",
       "Cloud SQL",
-      "Vertex AI Gemini 3.7 Pro Vision",
+      "Vertex AI Gemini 3.1 Pro Vision",
       "Dialogflow CX",
       "Looker"
     ],
@@ -1254,7 +1254,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI Predictive Maintenance",
       "SAP PM Integration",
       "Looker OEE Cockpit",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Factory Floor & SCADA Ingress with GDC Edge. 2. Draw Cloud Streaming & Bigtable Time-Series. 3. Draw Vertex AI Predictive Maintenance Core with Gemini Anomaly Fuser. 4. Draw Looker OEE Cockpit & SAP PM Integration.",
     "advancedPromptLogic": "Include zero unplanned downtime SLA tags and automated technician work-order dispatch triggers.",
@@ -1300,11 +1300,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "IND-RETAIL-04_omnichannel_ecommerce_retail",
     "diagramName": "Google Cloud Retail Platform: OmniChannel Intelligent Commerce & Retail AI Architecture",
     "intentKeywords": "retail, ecommerce, omnichannel, vertex ai search for retail, personalization, product recommendations, inventory sync, alloydb pgvector, spanner cart, gemini concierge",
-    "goldenExamplePayload": "Build a Google Cloud Retail Platform OmniChannel Intelligent Commerce and Retail AI Architecture with Apigee API Gateway, Cloud CDN, Firebase Auth, Cloud Run retail microservices, Vertex AI Search for Retail, AlloyDB pgvector product index, Gemini 3.7 Pro shopping concierge, multi-region Cloud Spanner cart, Cloud Pub/Sub, BigQuery customer lakehouse, and Looker Merchandising cockpit.",
-    "uiCardDesc": "Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.7 Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.",
+    "goldenExamplePayload": "Build a Google Cloud Retail Platform OmniChannel Intelligent Commerce and Retail AI Architecture with Apigee API Gateway, Cloud CDN, Firebase Auth, Cloud Run retail microservices, Vertex AI Search for Retail, AlloyDB pgvector product index, Gemini 3.1 Pro shopping concierge, multi-region Cloud Spanner cart, Cloud Pub/Sub, BigQuery customer lakehouse, and Looker Merchandising cockpit.",
+    "uiCardDesc": "Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.8 Flash Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.",
     "phase": "Phase 6",
     "phaseName": "Phase 6: Industry Specialized Solutions",
-    "phaseGoal": "Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.7 Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.",
+    "phaseGoal": "Vertex AI Search & Recommendations, AlloyDB pgvector Discovery, Gemini 3.8 Flash Agentic Concierge, Multimodal Vision, Multi-Region Cloud Spanner Cart, Pub/Sub Event Bus & BigQuery Lakehouse.",
     "domain": "Industry",
     "abstractionLevel": "Industry",
     "stackLayer": "Layer 4 (Application)",
@@ -1321,7 +1321,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Pub/Sub",
       "BigQuery",
       "Looker Studio",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Shopper Ingress (Mobile App, Web Storefront, In-Store POS). 2. Draw Edge CDN & Personalization Tier (Vertex AI Search for Retail). 3. Draw Transaction Core (Cloud Spanner globally consistent inventory). 4. Draw BigQuery Customer 360 Analytics.",
     "advancedPromptLogic": "Include sub-100ms personalized catalog search SLAs and multi-region failover resilience.",
@@ -1336,11 +1336,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "IND-MFG-05_smart_manufacturing_iot",
     "diagramName": "Google Cloud Industry 4.0: Smart Factory IoT & Predictive Maintenance Platform",
     "intentKeywords": "smart factory, industry 4.0, iot edge, google distributed cloud edge, predictive maintenance, oee, scada, isa-95, alloydb digital twin, gemini anomaly fuser",
-    "goldenExamplePayload": "Design a Google Cloud Industry 4.0 Smart Factory IoT and Predictive Maintenance platform with GDC Edge gateways, Cloud Pub/Sub IIoT topics, AlloyDB ISA-95 Digital Twin schema, Cloud Dataflow streaming, Gemini 3.7 multimodal anomaly fuser, BigQuery time-series lakehouse, and Looker OEE Operations Cockpit.",
-    "uiCardDesc": "Asset Sensor Telemetry, Industrial IoT Edge Compute, AlloyDB Digital Twin (ISA-95), Gemini 3.7 Anomaly Fuser, and Looker OEE Cockpit.",
+    "goldenExamplePayload": "Design a Google Cloud Industry 4.0 Smart Factory IoT and Predictive Maintenance platform with GDC Edge gateways, Cloud Pub/Sub IIoT topics, AlloyDB ISA-95 Digital Twin schema, Cloud Dataflow streaming, Gemini 3.8 Flash multimodal anomaly fuser, BigQuery time-series lakehouse, and Looker OEE Operations Cockpit.",
+    "uiCardDesc": "Asset Sensor Telemetry, Industrial IoT Edge Compute, AlloyDB Digital Twin (ISA-95), Gemini 3.8 Flash Anomaly Fuser, and Looker OEE Cockpit.",
     "phase": "Phase 6",
     "phaseName": "Phase 6: Industry Specialized Solutions",
-    "phaseGoal": "Asset Sensor Telemetry, Industrial IoT Edge Compute, AlloyDB Digital Twin (ISA-95), Gemini 3.7 Anomaly Fuser, and Looker OEE Cockpit.",
+    "phaseGoal": "Asset Sensor Telemetry, Industrial IoT Edge Compute, AlloyDB Digital Twin (ISA-95), Gemini 3.8 Flash Anomaly Fuser, and Looker OEE Cockpit.",
     "domain": "Industry",
     "abstractionLevel": "Industry",
     "stackLayer": "Layer 4 (Application)",
@@ -1354,7 +1354,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI Predictive Maintenance",
       "BigQuery Time-Series Lakehouse",
       "Looker OEE Cockpit",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Smart Factory Floor with GDC Edge appliances. 2. Draw Edge-to-Cloud Pub/Sub Ingestion Bridge. 3. Draw Real-Time Bigtable Time-Series Analytics. 4. Draw Vertex AI Predictive Maintenance Model scoring machine health.",
     "advancedPromptLogic": "Include Overall Equipment Effectiveness (OEE) metrics dashboard and automated maintenance ticket creation.",
@@ -1369,11 +1369,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "IND-HR-06_workforce_talent_ai",
     "diagramName": "Google Cloud HR & Talent Solution: WorkforceAI People Intelligence Platform",
     "intentKeywords": "hr talent, workforce ai, resume parsing, candidate matching, skills vector, people analytics, unbiased hiring, document ai, alloydb pgvector, blind screening",
-    "goldenExamplePayload": "Build a WorkforceAI Enterprise HR Platform on GCP with Document AI resume parsing, Cloud DLP blind screening shield, AlloyDB pgvector skills graph, Gemini 3.7 candidate match evaluator, and Looker Recruiter Cockpit.",
-    "uiCardDesc": "Document AI Resume Parser, Cloud DLP PII Blind Screening, AlloyDB pgvector Enterprise Skills Graph, Gemini 3.7 Flash Match Evaluator & Looker Talent Cockpit.",
+    "goldenExamplePayload": "Build a WorkforceAI Enterprise HR Platform on GCP with Document AI resume parsing, Cloud DLP blind screening shield, AlloyDB pgvector skills graph, Gemini 3.8 Flash candidate match evaluator, and Looker Recruiter Cockpit.",
+    "uiCardDesc": "Document AI Resume Parser, Cloud DLP PII Blind Screening, AlloyDB pgvector Enterprise Skills Graph, Gemini 3.8 Flash Match Evaluator & Looker Talent Cockpit.",
     "phase": "Phase 6",
     "phaseName": "Phase 6: Industry Specialized Solutions",
-    "phaseGoal": "Document AI Resume Parser, Cloud DLP PII Blind Screening, AlloyDB pgvector Enterprise Skills Graph, Gemini 3.7 Flash Match Evaluator & Looker Talent Cockpit.",
+    "phaseGoal": "Document AI Resume Parser, Cloud DLP PII Blind Screening, AlloyDB pgvector Enterprise Skills Graph, Gemini 3.8 Flash Match Evaluator & Looker Talent Cockpit.",
     "domain": "Industry",
     "abstractionLevel": "Industry",
     "stackLayer": "Layer 4 (Application)",
@@ -1387,7 +1387,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Cloud Tasks Dispatcher",
       "BigQuery Workforce Lakehouse",
       "Looker Studio Cockpit",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Draw Applicant & Employee Ingress (ATS, LinkedIn, Internal HRIS). 2. Draw Document AI Resume & Review Parser. 3. Draw Skills Vector Embedding Engine in AlloyDB. 4. Draw Gemini Candidate Matcher with Bias Guardrails. 5. Draw Looker Talent Dashboard.",
     "advancedPromptLogic": "Enforce strict PII anonymization before LLM scoring to eliminate candidate demographic bias.",
@@ -1402,11 +1402,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "IND-HEALTH-07_IND-HEALTH-01_healthcare_fhir_hl7",
     "diagramName": "Google Cloud Healthcare & Life Sciences FHIR/HL7 Clinical AI Platform",
     "intentKeywords": "healthcare, fhir, hl7, cloud healthcare api, dicom, dlp phi, omop cdm, gemini clinical, hipaa baa, medical imaging, oncology trial matcher",
-    "goldenExamplePayload": "Design a Google Cloud Healthcare & Life Sciences FHIR / HL7 pipeline with Cloud Healthcare API, DLP 18 HIPAA PHI de-identification, OMOP BigQuery lakehouse, Vertex AI Medical Vision, and Gemini 3.7 clinical insights.",
-    "uiCardDesc": "HL7v2/FHIR R4/DICOM Ingestion via Cloud HA VPN, Cloud Healthcare API, BigQuery OMOP CDM Lakehouse, Vertex AI Search for Healthcare, Gemini 3.7 Clinical Reasoner & Looker Cockpit.",
+    "goldenExamplePayload": "Design a Google Cloud Healthcare & Life Sciences FHIR / HL7 pipeline with Cloud Healthcare API, DLP 18 HIPAA PHI de-identification, OMOP BigQuery lakehouse, Vertex AI Medical Vision, and Gemini 3.8 Flash clinical insights.",
+    "uiCardDesc": "HL7v2/FHIR R4/DICOM Ingestion via Cloud HA VPN, Cloud Healthcare API, BigQuery OMOP CDM Lakehouse, Vertex AI Search for Healthcare, Gemini 3.8 Flash Clinical Reasoner & Looker Cockpit.",
     "phase": "Phase 6",
     "phaseName": "Phase 6: Industry Specialized Solutions",
-    "phaseGoal": "HL7v2/FHIR R4/DICOM Ingestion via Cloud HA VPN, Cloud Healthcare API, BigQuery OMOP CDM Lakehouse, Vertex AI Search for Healthcare, Gemini 3.7 Clinical Reasoner & Looker Cockpit.",
+    "phaseGoal": "HL7v2/FHIR R4/DICOM Ingestion via Cloud HA VPN, Cloud Healthcare API, BigQuery OMOP CDM Lakehouse, Vertex AI Search for Healthcare, Gemini 3.8 Flash Clinical Reasoner & Looker Cockpit.",
     "domain": "Industry",
     "abstractionLevel": "Industry",
     "stackLayer": "Layer 4 (Application)",
@@ -1421,10 +1421,10 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI Medical Imaging Vision",
       "Cloud DLP PHI Shield",
       "Cloud KMS HSM CMEK",
-      "Gemini 3.7 Clinical Reasoner",
+      "Gemini 3.8 Flash Clinical Reasoner",
       "Looker Clinical Operations Cockpit"
     ],
-    "generativeBuildSequence": "1. Hospital EHR & Medical Devices (HL7v2, FHIR R4, DICOM). 2. Cloud Healthcare API & DLP 18 HIPAA PHI De-Identification. 3. Vertex AI & Gemini 3.7 Clinical Reasoner. 4. OMOP CDM BigQuery Lakehouse & Physician Cockpit.",
+    "generativeBuildSequence": "1. Hospital EHR & Medical Devices (HL7v2, FHIR R4, DICOM). 2. Cloud Healthcare API & DLP 18 HIPAA PHI De-Identification. 3. Vertex AI & Gemini 3.8 Flash Clinical Reasoner. 4. OMOP CDM BigQuery Lakehouse & Physician Cockpit.",
     "advancedPromptLogic": "If [Medical Imaging AI] requested: Add DICOM PACS store, Vertex AI Medical Vision model for CT/X-Ray pre-reads, and radiologist sign-off queue.",
     "requiredUserInputs": "System scope, component names, protocols",
     "prerequisite": "Initial architectural intent",
@@ -1468,7 +1468,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "ARCH-C4-02_ARCH-C4-03_c4_component_lld",
     "diagramName": "C4 Level 3 Component Diagram & Microservice LLD",
     "intentKeywords": "c4 component, c4 level 3, low level design, lld, microservice architecture, rest controller, domain service, repository pattern",
-    "goldenExamplePayload": "Design a C4 Level 3 Component Diagram for a payment microservice featuring Ingress Controllers, Auth Interceptors, SAGA Domain Services, Repositories, Redis Cache, and Cloud DBs powered by Gemini 3.7 Flash.",
+    "goldenExamplePayload": "Design a C4 Level 3 Component Diagram for a payment microservice featuring Ingress Controllers, Auth Interceptors, SAGA Domain Services, Repositories, Redis Cache, and Cloud DBs powered by Gemini 3.8 Flash.",
     "uiCardDesc": "Detailed container internal architecture: REST controllers, JWT auth interceptors, SAGA domain services, repositories, and outbox poller.",
     "phase": "Phase 7",
     "phaseName": "Phase 7: Universal Architecture Standards",
@@ -1484,7 +1484,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "SAGA Domain Service",
       "Outbox Table Poller",
       "AlloyDB PostgreSQL",
-      "Gemini 3.7 Flash API",
+      "Gemini 3.8 Flash API",
       "Cloud Pub/Sub"
     ],
     "generativeBuildSequence": "1. Container Boundary frame. 2. Ingress Controllers & Middleware (REST, gRPC, JWT Auth). 3. Core Domain Services (SAGA Fulfillment, Dynamic Pricing). 4. Persistence & Repositories (Postgres, Redis, Outbox). 5. Cloud DBs.",
@@ -1500,11 +1500,11 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "combinedId": "ARCH-BPMN-03_ARCH-BPMN-01_bpmn_process_workflow",
     "diagramName": "BPMN 2.0 Business Process & Autonomous Workflow",
     "intentKeywords": "bpmn, bpmn 2.0, business process, user task, service task, xor gateway, swimlane process, claims workflow",
-    "goldenExamplePayload": "Design a BPMN 2.0 business process workflow with User Task submission, Document AI OCR service task, Gemini 3.7 Flash fraud scoring, XOR branching gateway, and SAP ERP posting.",
-    "uiCardDesc": "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.7 Flash service tasks, and XOR gateways.",
+    "goldenExamplePayload": "Design a BPMN 2.0 business process workflow with User Task submission, Document AI OCR service task, Gemini 3.8 Flash fraud scoring, XOR branching gateway, and SAP ERP posting.",
+    "uiCardDesc": "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.8 Flash service tasks, and XOR gateways.",
     "phase": "Phase 7",
     "phaseName": "Phase 7: Universal Architecture Standards",
-    "phaseGoal": "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.7 Flash service tasks, and XOR gateways.",
+    "phaseGoal": "BPMN 2.0 standard process map featuring customer start/end events, user tasks, Gemini 3.8 Flash service tasks, and XOR gateways.",
     "domain": "Strategy & Governance",
     "abstractionLevel": "Logical",
     "stackLayer": "Layer 4 (Application)",
@@ -1513,7 +1513,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
     "coreGcpServices": [
       "BPMN 2.0 Engine",
       "Document AI OCR",
-      "Gemini 3.7 Flash Service Task",
+      "Gemini 3.8 Flash Service Task",
       "Cloud Tasks Dispatcher",
       "SAP ERP Gateway"
     ],
@@ -1579,7 +1579,7 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Sensitive Data Protection (DLP)",
       "BI Engine In-Memory Cache",
       "Looker Studio",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
     "generativeBuildSequence": "1. Raw Ingestion Bronze Layer tables with typed schemas. 2. Dataform / dbt Cleaned Silver Layer with SQL formulas. 3. Curated Gold Marts (Fact/Dim tables). 4. Downstream BI Metrics, Gemini RAG, and Dataplex Upstream Impact UI.",
     "advancedPromptLogic": "If [BCBS 239 Banking] requested: Add mathematical provenance hashing, aggregation formula validation, and immutable auditor exports.",
@@ -1611,9 +1611,9 @@ export const BLUEPRINT_KNOWLEDGE_MATRIX: BlueprintKnowledgeItem[] = [
       "Vertex AI Agent Builder",
       "Cloud Logging",
       "Pub/Sub",
-      "Gemini 3.7 Flash"
+      "Gemini 3.8 Flash"
     ],
-    "generativeBuildSequence": "1. Draw Model Clients on left (Gemini 3.7 Flash, Claude, IDE Agents). 2. Draw Central MCP Context Gateway (Authentication, Tool Discovery, Rate Limiting). 3. Draw Normalized MCP Server Proxies. 4. Draw Downstream Enterprise Resources (Databases, Git, APIs).",
+    "generativeBuildSequence": "1. Draw Model Clients on left (Gemini 3.8 Flash, Claude, IDE Agents). 2. Draw Central MCP Context Gateway (Authentication, Tool Discovery, Rate Limiting). 3. Draw Normalized MCP Server Proxies. 4. Draw Downstream Enterprise Resources (Databases, Git, APIs).",
     "advancedPromptLogic": "Include granular tool permission gating and audit logs for all autonomous tool executions.",
     "requiredUserInputs": "System scope, component names, protocols",
     "prerequisite": "Initial architectural intent",

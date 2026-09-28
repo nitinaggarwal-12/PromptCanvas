@@ -18,7 +18,7 @@
         
         
         
-        <!-- Gemini (approved model) Badge -->
+        <!-- Gemini 3.8 Flash Badge -->
         
 
 
@@ -162,8 +162,8 @@
           <mxGeometry x="990" y="269" width="170" height="120" as="geometry"/>
         </mxCell>
 
-        <!-- 3.4 Gemini (approved model) Architecture Reasoning -->
-        <mxCell id="card_gemini_reasoning" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2224%22%20r%3D%2222%22%20fill%3D%22%231E293B%22%2F%3E%3Cpath%20fill%3D%22%2338BDF8%22%20d%3D%22M24%208c0%208.8-7.2%2016-16%2016%208.8%200%2016%207.2%2016%2016%200-8.8%207.2-16%2016-16-8.8%200-16-7.2-16-16z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#2563EB;&quot;&gt; Gemini (approved model)&lt;br&gt;Architecture Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;• Automated 6Rs Migration Track Classification&lt;br&gt;• Wave Schedule &amp;amp; Dependency Optimization&lt;br&gt;• Legacy Monolith Code Refactoring Plan&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+        <!-- 3.4 Gemini 3.8 Flash Architecture Reasoning -->
+        <mxCell id="card_gemini_reasoning" value="&lt;table style=&quot;width:100%;height:100%;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;width:38px;vertical-align:middle;text-align:center;padding:0 5px 0 0;&quot;&gt;&lt;img src=&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2224%22%20r%3D%2222%22%20fill%3D%22%231E293B%22%2F%3E%3Cpath%20fill%3D%22%2338BDF8%22%20d%3D%22M24%208c0%208.8-7.2%2016-16%2016%208.8%200%2016%207.2%2016%2016%200-8.8%207.2-16%2016-16-8.8%200-16-7.2-16-16z%22%2F%3E%3C%2Fsvg%3E&quot; width=&quot;28&quot; height=&quot;28&quot; style=&quot;object-fit:contain;&quot;/&gt;&lt;/td&gt;&lt;td style=&quot;vertical-align:middle;text-align:left;min-width:0;&quot;&gt;&lt;b style=&quot;font-size:10.5px;color:#2563EB;&quot;&gt; Gemini 3.8 Flash&lt;br&gt;Architecture Reasoning&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:10px;color:#475569;&quot;&gt;• Automated 6Rs Migration Track Classification&lt;br&gt;• Wave Schedule &amp;amp; Dependency Optimization&lt;br&gt;• Legacy Monolith Code Refactoring Plan&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;strokeWidth=1.5;align=center;verticalAlign=middle;padding=6;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
           <mxGeometry x="790" y="409" width="370" height="275" as="geometry"/>
         </mxCell>
 
@@ -233,7 +233,7 @@
 
         <!-- ==================== FOOTER LEGEND ==================== -->
         <!-- x = 25 .. 1575 (width = 1550, height = 36) -->
-        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Migration Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;On-Prem Legacy Silos &amp;amp; Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Non-Deterministic Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Spaghetti Integration Matrix&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Sensitive Data Protection (DLP) &amp;amp; Discovery&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Clear, Optimized Transformation Waves&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini (approved model)&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:9.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Migration Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;On-Prem Legacy Silos &amp;amp; Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Non-Deterministic Monoliths&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Legacy Spaghetti Integration Matrix&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Sensitive Data Protection (DLP) &amp;amp; Discovery&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b&gt;Clear, Optimized Transformation Waves&lt;/b&gt;&lt;/td&gt;&lt;td&gt; &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Powered by Gemini 3.8 Flash&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;align=center;verticalAlign=middle;shadow=0;spacing=6;arcSize=8;overflow=hidden;spacingLeft=8;spacingRight=8;spacingTop=5;spacingBottom=5;" vertex="1" parent="1">
           <mxGeometry x="25" y="709" width="1550" height="36" as="geometry"/>
         </mxCell>
 

@@ -18,7 +18,7 @@ The production build now executes the blueprint certification gate before the Ne
 3. All 50 catalog IDs must resolve to structurally valid mxGraph XML.
 4. Canonical identities must remain unique; duplicate resolved XML or internal diagram IDs fail certification.
 5. Exact catalog outputs must carry the expected canonical identity marker.
-6. Current terminology gate rejects known stale names including Gemini 3.7, Cloud Source Repositories, Dataplex Data/Universal Catalog, Cloud DLP, Anthos Service Mesh and legacy Global HTTPS Load Balancer wording.
+6. Current terminology gate rejects known stale names including Gemini 3.8 Flash, Cloud Source Repositories, Dataplex Data/Universal Catalog, Cloud DLP, Anthos Service Mesh and legacy Global HTTPS Load Balancer wording.
 7. Every non-notation blueprint must pass the semantic-icon transform.
 8. Every non-notation blueprint must pass the text-containment transform.
 9. Every non-notation blueprint must pass the final readability sanitizer.

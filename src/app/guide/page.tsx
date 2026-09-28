@@ -371,7 +371,7 @@ const PERSONA_WORKFLOWS: Record<PersonaKey, PersonaWorkflow> = {
         stepNumber: 2,
         title: 'Inspecting AI Intelligence Core',
         whereToClick: 'Canvas -> Column 3 & 4',
-        description: 'Validate sub-10ms similarity recall and Gemini 3.7 Pro Concierge microservices with BigQuery Lakehouse tables.',
+        description: 'Validate sub-10ms similarity recall and Gemini 3.1 Pro Concierge microservices with BigQuery Lakehouse tables.',
         validationChecklist: ['AlloyDB pgvector connects to Cloud Run and BigQuery'],
         tip: 'Check vector dimension parameters on the embedding nodes.'
       },

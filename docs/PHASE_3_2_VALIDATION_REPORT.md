@@ -13,7 +13,7 @@ The phase intentionally focused on architecture correctness, current product sem
 
 - `blueprintTechnicalAccuracy.ts`: conservative high-confidence current-product terminology replacements.
 - `blueprintTextContainment.ts`: wrap, hidden overflow, interior spacing/padding, adaptive dense-card font scaling, readability floor for non-notation diagrams.
-- `architectureTypesVisual.ts`: current customer-facing names, descriptions and prompts for the highest-risk templates; Gemini 3.7 and other stale terms normalized from visible catalog metadata.
+- `architectureTypesVisual.ts`: current customer-facing names, descriptions and prompts for the highest-risk templates; Gemini 3.8 Flash and other stale terms normalized from visible catalog metadata.
 - `/api/blueprints/quality-report`: production-resolver QA endpoint covering all 50 catalog IDs and reporting structure, duplicate output/diagram IDs, stale terms, emoji risk, tiny fonts, text overflow heuristics, containment markers and sparse/simple-layout risk.
 
 ## High-risk blueprint rebuilds completed

@@ -163,7 +163,7 @@ export const WelcomeGetStartedSlate: React.FC<WelcomeGetStartedSlateProps> = ({
               <div>
                 <h2 className="font-black text-lg sm:text-xl">Describe with AI</h2>
                 <p className={`text-xs sm:text-sm mt-1 leading-normal ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                  Type system requirements. Gemini 3.7 Flash will compile it into collision-free vector architecture.
+                  Type system requirements. Gemini 3.8 Flash will compile it into collision-free vector architecture.
                 </p>
               </div>
 

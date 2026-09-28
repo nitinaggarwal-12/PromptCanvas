@@ -86,7 +86,7 @@ export function buildDataResidencySovereignMapXml(): string {
         </mxCell>
 
         <!-- EU Restricted GCP APIs & Vertex AI -->
-        <mxCell id="box_restricted_api_eu" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🧠 Vertex AI Local Sovereign Inference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Gemini 3.7 In-Region Execution&lt;br&gt;• Zero-Data Retention SLA&lt;br&gt;• EU Customer-Managed Keys (CMEK)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+        <mxCell id="box_restricted_api_eu" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🧠 Vertex AI Local Sovereign Inference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Gemini 3.8 Flash In-Region Execution&lt;br&gt;• Zero-Data Retention SLA&lt;br&gt;• EU Customer-Managed Keys (CMEK)&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
           <mxGeometry x="350" y="195" width="250" height="110" as="geometry"/>
         </mxCell>
 
@@ -124,7 +124,7 @@ export function buildDataResidencySovereignMapXml(): string {
         </mxCell>
 
         <!-- US Restricted GCP APIs & Vertex AI -->
-        <mxCell id="box_restricted_api_us" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🧠 Vertex AI Local Sovereign Inference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Gemini 3.7 US Local Execution&lt;br&gt;• HIPAA Enforced BAA Perimeter&lt;br&gt;• US Cloud KMS CMEK Isolation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
+        <mxCell id="box_restricted_api_us" value="&lt;table style=&quot;width:100%;padding:4px;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:11px;font-weight:bold;color:#0F172A;&quot;&gt;🧠 Vertex AI Local Sovereign Inference&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8.5px;color:#334155;line-height:1.3;padding-top:2px;&quot;&gt;• Gemini 3.8 Flash US Local Execution&lt;br&gt;• HIPAA Enforced BAA Perimeter&lt;br&gt;• US Cloud KMS CMEK Isolation&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.2;align=left;verticalAlign=top;padding=4;" vertex="1" parent="1">
           <mxGeometry x="350" y="535" width="250" height="110" as="geometry"/>
         </mxCell>
 

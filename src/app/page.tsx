@@ -316,7 +316,7 @@ export default function LandingPage() {
       <section className="relative w-full max-w-8xl mx-auto px-4 sm:px-6 md:px-12 pt-8 sm:pt-12 md:pt-20 pb-16 md:pb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center z-10">
         <div className="lg:col-span-7 flex flex-col items-start text-left space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-600 dark:text-teal-300 text-sm font-semibold tracking-wide animate-pulse">
-            <Sparkles className="w-4 h-4" /> Powered by Gemini 3.7 Flash &amp; Draw.io
+            <Sparkles className="w-4 h-4" /> Powered by Gemini 3.8 Flash &amp; Draw.io
           </div>
           
           <h1 className={`text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] ${isLight ? 'text-slate-900' : 'text-white'}`}>

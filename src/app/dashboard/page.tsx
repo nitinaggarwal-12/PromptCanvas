@@ -381,7 +381,7 @@ function DashboardContent() {
                     <CheckCheck className="w-3 h-3" /> Certified Ready
                   </span>
                   <span className="hidden lg:inline-flex items-center gap-1 text-[10px] text-teal-600 dark:text-teal-400 font-mono font-bold">
-                    <Zap className="w-3 h-3" /> 1.1s Gemini 3.7
+                    <Zap className="w-3 h-3" /> 1.1s Gemini 3.8 Flash
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-xl truncate">

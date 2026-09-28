@@ -298,7 +298,7 @@ export const GeminiEnterpriseBottomChat: React.FC<GeminiEnterpriseBottomChatProp
           </div>
           <div>
             <span className={`text-xs font-black block leading-none ${isLight ? 'text-slate-900' : 'text-white'}`}>Gemini Enterprise</span>
-            <span className={`text-[9px] font-mono leading-none ${isLight ? 'text-teal-700 font-bold' : 'text-teal-400'}`}>3.7 Flash AI</span>
+            <span className={`text-[9px] font-mono leading-none ${isLight ? 'text-teal-700 font-bold' : 'text-teal-400'}`}>3.8 Flash AI</span>
           </div>
         </div>
 

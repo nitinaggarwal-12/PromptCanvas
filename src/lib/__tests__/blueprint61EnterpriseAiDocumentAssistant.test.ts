@@ -33,8 +33,11 @@ function assertArchitectureSemantics(xml: string) {
 }
 
 function decodeRuntimeDiagram(xml: string): string {
-  const body = xml.match(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/i)?.[1] || '';
+  const body = xml.match(/<diagram\b[^>]*>([\s\S]*?)<\/diagram>/i)?.[1]?.trim() || '';
   expect(body.length).toBeGreaterThan(1000);
+  if (body.includes('<mxGraphModel')) {
+    return body;
+  }
   return decodeURIComponent(inflateRawSync(Buffer.from(body, 'base64')).toString('utf8'));
 }
 

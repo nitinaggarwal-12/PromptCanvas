@@ -6,14 +6,17 @@ import {
   getExactCatalogBlueprintXml,
 } from '../blueprintExactResolver';
 
-describe('exact 50-blueprint catalog resolver', () => {
-  it('defines exactly 50 canonical blueprint identities', () => {
-    expect(CATALOG_CANONICAL_IDS).toHaveLength(50);
-    expect(new Set(CATALOG_CANONICAL_IDS).size).toBe(50);
+describe('exact 60-blueprint catalog resolver', () => {
+  it('defines exactly 60 canonical blueprint identities', () => {
+    expect(CATALOG_CANONICAL_IDS).toHaveLength(60);
+    expect(new Set(CATALOG_CANONICAL_IDS).size).toBe(60);
   });
 
-  it('has an exact factory for every catalog blueprint except the dedicated #6 enterprise-reference override', () => {
-    const expectedFactoryIds = CATALOG_CANONICAL_IDS.filter(id => id !== 'unified_system_view');
+  it('has an exact factory for every catalog blueprint except the dedicated #6 enterprise-reference override (plus reserved #61)', () => {
+    const expectedFactoryIds = [
+      ...CATALOG_CANONICAL_IDS.filter(id => id !== 'unified_system_view'),
+      'enterprise_ai_document_assistant',
+    ];
     expect(Object.keys(CATALOG_EXACT_FACTORIES).sort()).toEqual([...expectedFactoryIds].sort());
     expect(getExactCatalogBlueprintXml('unified_system_view')).toBeNull();
   });

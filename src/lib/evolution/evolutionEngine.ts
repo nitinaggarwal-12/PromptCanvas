@@ -316,7 +316,7 @@ export const EVOLUTION_STEPS: EvolutionStep[] = [
     versionName: "v10.0 • Sovereign AI Cloud & EU Data Residency",
     domain: "Sovereign Cloud & Global Governance",
     projectTitle: "Global Sovereign AI Platform & Federated Data Residency Grid",
-    prompt: "Finalize as Sovereign AI Cloud: Enforce Dual EU Data Sovereignty (europe-west1 + europe-west3), FIPS 140-3 CMEK keys, Dataplex Universal Catalog, and Gemini 3.7 Dynamic Reasoning.",
+    prompt: "Finalize as Sovereign AI Cloud: Enforce Dual EU Data Sovereignty (europe-west1 + europe-west3), FIPS 140-3 CMEK keys, Dataplex Universal Catalog, and Gemini 3.8 Flash Dynamic Reasoning.",
     description: "Strict EU data residency, zero cross-border telemetry leakage, and sovereign multi-region AI orchestration.",
     persona: "Lead Cloud Architect",
     slaTarget: "99.999%",

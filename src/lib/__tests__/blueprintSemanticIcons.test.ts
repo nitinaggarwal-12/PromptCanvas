@@ -5,7 +5,8 @@ describe('blueprint semantic icon system', () => {
   it('adds recognizable vendor identity to a sufficiently large service card', () => {
     const xml = '<mxGraphModel><root><mxCell id="sf" value="&lt;b&gt;Salesforce CRM&lt;/b&gt;&lt;br&gt;Commercial workflow" style="rounded=1;fillColor=#FFFFFF;strokeColor=#1A73E8;fontSize=11;" vertex="1" parent="1"><mxGeometry x="10" y="10" width="220" height="80" as="geometry"/></mxCell></root></mxGraphModel>';
     const polished = applyBlueprintSemanticIcons(xml, 'conceptual_diagram');
-    expect(polished).toContain('cdn.simpleicons.org/salesforce');
+    expect(polished).toContain('data:image/svg+xml');
+    expect(polished).toContain('%2300A1E0');
     expect(polished).toContain('Salesforce CRM');
     expect(polished).toContain('pc-semantic-icons-v1');
   });

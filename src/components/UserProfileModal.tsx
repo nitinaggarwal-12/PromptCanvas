@@ -292,7 +292,7 @@ export function UserProfileModal({ isOpen, onClose, user, onUpdateUser, onLogout
                 <span className="text-xs font-extrabold uppercase tracking-wider text-teal-600 dark:text-teal-400">Active AI Model Tier</span>
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-teal-500 text-slate-950">ENTERPRISE PRO</span>
               </div>
-              <h3 className="text-base font-black">Gemini 3.1 Pro Vision &amp; Gemini 3.7 Flash</h3>
+              <h3 className="text-base font-black">Gemini 3.1 Pro Vision &amp; Gemini 3.8 Flash</h3>
               <p className={`text-xs mt-1 leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
                 Full multimodal 1:1 visual twin decompilation, zero-collision Draw.io XML compilation, and automated Omni 1.1 forensic auditing active across Architecture Studio, Prompt Lab, and Image to Diagram.
               </p>

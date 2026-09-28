@@ -13,12 +13,12 @@ export function buildEcommerceRetailXml(): string {
         <mxCell id="main_title" value="&lt;b style=&quot;font-size:16.5px;color:#0F172A;letter-spacing:-0.2px;&quot;&gt;GOOGLE CLOUD RETAIL PLATFORM: OMNICHANNEL INTELLIGENT COMMERCE &amp;amp; RETAIL AI (R-AI) ARCHITECTURE&lt;/b&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="10" width="1280" height="22" as="geometry"/>
         </mxCell>
-        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9px;color:#475569;font-weight:700;letter-spacing:0.1px;&quot;&gt;Vertex AI Search &amp;amp; Recommendations for Retail, AlloyDB AI pgvector Product Discovery, Gemini 3.7 Pro Agentic Concierge, Multimodal Vision API, Multi-Region Cloud Spanner Global Cart, Pub/Sub Event Bus, &amp;amp; BigQuery Lakehouse&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="main_subtitle" value="&lt;span style=&quot;font-size:9px;color:#475569;font-weight:700;letter-spacing:0.1px;&quot;&gt;Vertex AI Search &amp;amp; Recommendations for Retail, AlloyDB AI pgvector Product Discovery, Gemini 3.1 Pro Agentic Concierge, Multimodal Vision API, Multi-Region Cloud Spanner Global Cart, Pub/Sub Event Bus, &amp;amp; BigQuery Lakehouse&lt;/span&gt;" style="text;html=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="65" y="32" width="1280" height="16" as="geometry"/>
         </mxCell>
         
-        <!-- Gemini 3.7 Flash Badge -->
-        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.7 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Retail AI Core Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
+        <!-- Gemini 3.8 Flash Badge -->
+        <mxCell id="top_gemini_badge" value="&lt;table style=&quot;width:100%;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td style=&quot;font-size:12.5px;font-weight:bold;color:#38BDF8;&quot;&gt;✨ Gemini 3.8 Flash&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;font-size:8px;color:#94A3B8;font-weight:600;&quot;&gt;Retail AI Core Engine&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;arcSize=20;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#1E293B;strokeWidth=1.5;align=center;verticalAlign=middle;shadow=1;" vertex="1" parent="1">
           <mxGeometry x="1380" y="8" width="195" height="42" as="geometry"/>
         </mxCell>
 
@@ -195,7 +195,7 @@ export function buildEcommerceRetailXml(): string {
         <mxCell id="sub_chat_context" value="&lt;b style=&quot;font-size:7px;color:#334155;&quot;&gt;Session History&lt;br&gt;&amp;amp; Dialogue Context&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="805" y="275" width="100" height="75" as="geometry"/>
         </mxCell>
-        <mxCell id="sub_gemini_brain" value="&lt;b style=&quot;font-size:8px;color:#9333EA;&quot;&gt;✨ Gemini 3.7 Pro&lt;br&gt;Reasoning Agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="sub_gemini_brain" value="&lt;b style=&quot;font-size:8px;color:#9333EA;&quot;&gt;✨ Gemini 3.1 Pro&lt;br&gt;Reasoning Agent&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAF5FF;strokeColor=#A855F7;strokeWidth=1.2;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="915" y="275" width="110" height="75" as="geometry"/>
         </mxCell>
         <mxCell id="sub_chat_output" value="&lt;b style=&quot;font-size:6.5px;color:#15803D;&quot;&gt;Personalized Advice:&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size:6px;color:#475569;&quot;&gt;• Fit &amp;amp; Style Curation&lt;br&gt;• Cross-sell Suggestions&lt;br&gt;• Cart Optimization&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#86EFAC;strokeWidth=1;align=left;verticalAlign=middle;padding=2;" vertex="1" parent="1">
@@ -337,7 +337,7 @@ export function buildEcommerceRetailXml(): string {
 
         <!-- ==================== FOOTER LEGEND ==================== -->
         <!-- x = 25 .. 1575 (width = 1550, height = 36) -->
-        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Retail Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Omni-Channel Edge &amp;amp; Apigee&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Serverless Microservices&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Vertex AI &amp;amp; AlloyDB Vectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Data Platform (Spanner / BigQuery)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;── &lt;b&gt;10/10 Protocol Connectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 3.7 Flash Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+        <mxCell id="footer_legend" value="&lt;table style=&quot;width:100%;font-size:7.5px;color:#334155;text-align:center;&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;b style=&quot;color:#0F172A;&quot;&gt;Retail Architecture Legend:&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🔵 &lt;b&gt;Omni-Channel Edge &amp;amp; Apigee&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟢 &lt;b&gt;Serverless Microservices&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟣 &lt;b&gt;Vertex AI &amp;amp; AlloyDB Vectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;🟡 &lt;b&gt;Data Platform (Spanner / BigQuery)&lt;/b&gt;&lt;/td&gt;&lt;td&gt;── &lt;b&gt;10/10 Protocol Connectors&lt;/b&gt;&lt;/td&gt;&lt;td&gt;✨ &lt;b style=&quot;color:#1D4ED8;&quot;&gt;Gemini 3.8 Flash Engine&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
           <mxGeometry x="25" y="785" width="1550" height="36" as="geometry"/>
         </mxCell>
 
