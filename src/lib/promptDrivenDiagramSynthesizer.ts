@@ -15,6 +15,7 @@
  */
 
 import { generateTemplate38CloudLandingZoneXml } from './canonical/template38CloudLandingZone';
+import { generateTemplate40EnterpriseGenAiPlatformXml } from './canonical/template40EnterpriseGenAiPlatform';
 import { generateTemplate41EnterpriseRagPlatformXml } from './canonical/template41EnterpriseRagPlatform';
 import { generateTemplate42ModernDataLakehouseDataMeshXml } from './canonical/template42ModernDataLakehouseDataMesh';
 import { generateTemplate43RealTimeStreamingEventEnterpriseXml } from './canonical/template43RealTimeStreamingEventEnterprise';
@@ -30,6 +31,22 @@ import {
   generateGoogleCloudL3OperationalFlowchartXml,
   generateGoogleCloudL4AgenticFlowchartXml,
 } from './canonical/googleCloudFlowchartBlueprints';
+import { CANONICAL_TEMPLATES } from './canonical/canonicalTemplates';
+import type {
+  GeminiArchitecturalDecision,
+  ArchitecturePerspective,
+  AbstractionDetailLevel,
+  FlowDirectionOption,
+} from './geminiArchitecturalDecisionEngine';
+
+export interface PromptSynthesisOptions {
+  noTemplate?: boolean;
+  blueprintId?: string;
+  perspective?: ArchitecturePerspective;
+  level?: AbstractionDetailLevel;
+  direction?: FlowDirectionOption;
+  geminiDecision?: GeminiArchitecturalDecision | null;
+}
 
 export interface SynthesizedNode {
   id: string;
@@ -84,12 +101,6 @@ function escHtml(str: string): string {
     .replace(/>/g, '&gt;');
 }
 
-/**
- * Selects the matching Saved Google Cloud Reference Architecture v2.0 Master Template
- * (Templates 38, 41, 42, 43, 44, 45, 46, 48, 49, 50) based on the architectural prompt
- * and modifies its header, prompt banner, and domain node cards so 100% of the prompt's
- * technical entities are embedded in the rich saved reference diagram.
- */
 function truncateAtWord(str: string, maxLen: number): string {
   const s = String(str || '').trim();
   if (s.length <= maxLen) return s;
@@ -133,32 +144,169 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
   prompt: string,
   title: string = truncateAtWord(prompt || 'Enterprise Cloud Architecture', 56),
   domain = 'Enterprise Cloud',
-  badgeId?: string
+  badgeId?: string,
+  options?: PromptSynthesisOptions
 ): string {
-  const safeTitle = title || truncateAtWord(prompt || 'Enterprise Cloud Architecture', 56);
+  const safeTitle =
+    options?.geminiDecision?.tailoredSpec?.diagramTitle ||
+    title ||
+    truncateAtWord(prompt || 'Enterprise Cloud Architecture', 56);
   const lower = `${safeTitle} ${prompt} ${domain}`.toLowerCase();
-  const numBadge = badgeId || (safeTitle.match(/^(\d{2})/) || ['', 'AI'])[1];
+  const explicitBpId = options?.blueprintId || badgeId;
+  const numBadge = explicitBpId || (safeTitle.match(/^(\d{2})/) || ['', 'AI'])[1];
+  const perspBadge = options?.perspective || options?.geminiDecision?.recommendedPerspective || 'Logical';
+  const levelBadge = options?.level || options?.geminiDecision?.recommendedLevel || 'L3';
 
   let baseXml = '';
-  let templateRefLabel = 'Google Cloud Reference Architecture v2.0';
+  let templateRefLabel = `Google Cloud Reference Architecture • ${perspBadge} (${levelBadge})`;
   let domainMutations: Array<[RegExp, string]> = [];
 
   const isVerticalStratumCrossSection =
-    (lower.includes('vllm') || lower.includes('h100') || lower.includes('honeycomb')) &&
-    (lower.includes('stratum') || lower.includes('vertical cross-section') || lower.includes('speculative decoding'));
+    explicitBpId === 'stratum_l4' ||
+    ((lower.includes('vllm') || lower.includes('h100') || lower.includes('honeycomb')) &&
+      (lower.includes('stratum') || lower.includes('vertical cross-section') || lower.includes('speculative decoding')));
 
   if (isVerticalStratumCrossSection) {
-    return generateVerticalStratumCrossSectionXml(prompt, title);
+    return generateVerticalStratumCrossSectionXml(prompt, safeTitle);
+  }
+
+  // Helper to build Template #40 mutations from either Gemini API's template40Adaptation or domain fallback
+  const buildTemplate40Mutations = (): Array<[RegExp, string]> => {
+    const t40 = options?.geminiDecision?.tailoredSpec?.template40Adaptation;
+    if (t40 && Array.isArray(t40.personas) && t40.personas.length >= 5 && Array.isArray(t40.agents) && t40.agents.length >= 7) {
+      return [
+        [/Business Users/gi, escHtml(truncateAtWord(t40.personas[0], 18))],
+        [/Analysts/gi, escHtml(truncateAtWord(t40.personas[1], 18))],
+        [/Developers/gi, escHtml(truncateAtWord(t40.personas[2], 18))],
+        [/Operations/gi, escHtml(truncateAtWord(t40.personas[3], 18))],
+        [/External Partners/gi, escHtml(truncateAtWord(t40.personas[4], 18))],
+        [/Web App/gi, escHtml(truncateAtWord(t40.channels?.[0] || 'Capsule HUD', 18))],
+        [/Mobile App/gi, escHtml(truncateAtWord(t40.channels?.[1] || 'Mobile Cockpit', 18))],
+        [/Chat \/ Messaging/gi, escHtml(truncateAtWord(t40.channels?.[2] || 'Quantum Comms', 18))],
+        [/API \/ SDK/gi, escHtml(truncateAtWord(t40.channels?.[3] || 'TrueTime SDK', 18))],
+        [/Contact Center/gi, escHtml(truncateAtWord(t40.channels?.[4] || 'Mission Control', 18))],
+        [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, `Gemini Enterprise \/&lt;br\/&gt;${escHtml(truncateAtWord(t40.copilotName || 'Chronos Copilot', 26))}`],
+        [/Hello! How can I help you\?/gi, escHtml(truncateAtWord(t40.copilotStatus || 'Target State: Verified & Locked', 32))],
+        [/Supervisor \/ Orchestrator Agent/gi, escHtml(truncateAtWord(t40.supervisorTitle || 'Gemini Enterprise Multi-Agent Supervisor', 64))],
+        [/Agent Router \/ Planner \/ Task Decomposer/gi, escHtml(truncateAtWord(t40.supervisorSubtitle || 'Vertex AI Agent Builder • Task Planner & Decomposer', 74))],
+        [/Research Agent/gi, escHtml(truncateAtWord(t40.agents[0].name, 20))],
+        [/Web research, market intel, competitors/gi, escHtml(truncateAtWord(t40.agents[0].role, 46))],
+        [/Analytics Agent/gi, escHtml(truncateAtWord(t40.agents[1].name, 20))],
+        [/Data analysis, BI, insight generation/gi, escHtml(truncateAtWord(t40.agents[1].role, 46))],
+        [/Workflow Agent/gi, escHtml(truncateAtWord(t40.agents[2].name, 20))],
+        [/Process automation, orchestration/gi, escHtml(truncateAtWord(t40.agents[2].role, 46))],
+        [/Support Agent/gi, escHtml(truncateAtWord(t40.agents[3].name, 20))],
+        [/Customer support, Q&amp;amp;A, case mgmt/gi, escHtml(truncateAtWord(t40.agents[3].role, 46))],
+        [/Retrieval Agent/gi, escHtml(truncateAtWord(t40.agents[4].name, 20))],
+        [/Semantic search, RAG, context retrieval/gi, escHtml(truncateAtWord(t40.agents[4].role, 46))],
+        [/Code Agent/gi, escHtml(truncateAtWord(t40.agents[5].name, 20))],
+        [/Code gen, review, refactor, debug/gi, escHtml(truncateAtWord(t40.agents[5].role, 46))],
+        [/Compliance Agent/gi, escHtml(truncateAtWord(t40.agents[6].name, 20))],
+        [/Policy check, PII, regulatory compliance/gi, escHtml(truncateAtWord(t40.agents[6].role, 46))],
+        [/1\.5 Pro \/ 1\.5 Flash/gi, escHtml(truncateAtWord(t40.models?.primaryPro || 'Enterprise 3.1 Pro', 22))],
+        [/1\.5 Pro \(Vision\)/gi, escHtml(truncateAtWord(t40.models?.visionModel || 'Spacetime Vision', 22))],
+        [/Gemma/gi, escHtml(truncateAtWord(t40.models?.specializedModel || 'TPU v5p Sim', 18))],
+        [/\(7B \/ 28B\)/gi, escHtml(truncateAtWord(t40.models?.specializedSub || '(Quantum Flux)', 18))],
+        [/Customer CRM/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[0] || 'Capsule Sensors', 18))],
+        [/Core ERP/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[1] || 'Flux Reactor PLC', 18))],
+        [/ITSM Platform/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[2] || 'Beacon Network', 18))],
+        [/HCM \/ HRIS/gi, escHtml(truncateAtWord(t40.enterpriseSystems?.[3] || 'Bio-Stasis Pod', 18))],
+        [/Spanner/gi, escHtml(truncateAtWord(t40.primaryDatabase || 'Spanner TrueTime', 20))],
+      ];
+    }
+    return [
+      [/Business Users/gi, 'Chrononauts'],
+      [/Analysts/gi, 'Physicists'],
+      [/Developers/gi, 'Chronos Eng'],
+      [/Operations/gi, 'Flight Ops'],
+      [/External Partners/gi, 'Epoch Beacons'],
+      [/Web App/gi, 'Capsule HUD'],
+      [/Mobile App/gi, 'Chronos Suit'],
+      [/Chat \/ Messaging/gi, 'Quantum Comms'],
+      [/API \/ SDK/gi, 'TrueTime SDK'],
+      [/Contact Center/gi, 'Mission Control'],
+      [/Enterprise Copilots \/&lt;br\/&gt;Chat UI \/ Portal/gi, 'Gemini Enterprise \/&lt;br\/&gt;Chronos Capsule Copilot'],
+      [/Hello! How can I help you\?/gi, 'Target Epoch: 2150 CE Locked'],
+      [/Supervisor \/ Orchestrator Agent/gi, 'Gemini Enterprise Chronos Supervisor &amp; Temporal Trajectory Orchestrator'],
+      [/Agent Router \/ Planner \/ Task Decomposer/gi, 'Vertex AI Agent Builder • Closed-Timelike-Curve (CTC) Planner &amp; Epoch Decomposer'],
+      [/Research Agent/gi, 'Epoch Intel Agent'],
+      [/Web research, market intel, competitors/gi, 'Historical era, cultural &amp; linguistic grounding'],
+      [/Analytics Agent/gi, 'Relativity Agent'],
+      [/Data analysis, BI, insight generation/gi, 'Spacetime ephemeris, gravity well &amp; drift calc'],
+      [/Workflow Agent/gi, 'Jump Seq Agent'],
+      [/Process automation, orchestration/gi, 'Flux coil charge sequence &amp; jump orchestration'],
+      [/Support Agent/gi, 'Bio-Stasis Agent'],
+      [/Customer support, Q&amp;amp;A, case mgmt/gi, 'Chrononaut vitals, radiation &amp; stasis telemetry'],
+      [/Retrieval Agent/gi, 'Temporal RAG Agent'],
+      [/Semantic search, RAG, context retrieval/gi, 'Multi-millennia ScaNN vector &amp; era retrieval'],
+      [/Code Agent/gi, 'CTC Solver Agent'],
+      [/Code gen, review, refactor, debug/gi, 'Closed-timelike-curve tensor &amp; jump solver'],
+      [/Compliance Agent/gi, 'Paradox Guard'],
+      [/Policy check, PII, regulatory compliance/gi, 'Grandfather-paradox &amp; causality invariant check'],
+      [/1\.5 Pro \/ 1\.5 Flash/gi, 'Enterprise 3.1 Pro'],
+      [/1\.5 Pro \(Vision\)/gi, 'Spacetime Vision'],
+      [/Gemma/gi, 'TPU v5p Sim'],
+      [/\(7B \/ 28B\)/gi, '(Quantum Flux)'],
+      [/Customer CRM/gi, 'Capsule Sensors'],
+      [/Core ERP/gi, 'Flux Reactor PLC'],
+      [/ITSM Platform/gi, 'Beacon Network'],
+      [/HCM \/ HRIS/gi, 'Bio-Stasis Pod'],
+      [/Spanner/gi, 'Spanner TrueTime'],
+    ];
+  };
+
+  // 1. If an explicit Canonical Blueprint ID ("01".."75") was selected by Gemini API or User Dropdown:
+  if (explicitBpId && explicitBpId !== 'custom' && explicitBpId !== 'process_flow') {
+    const paddedId = explicitBpId.padStart(2, '0');
+    if (paddedId === '40') {
+      baseXml = generateTemplate40EnterpriseGenAiPlatformXml('enterprise', 'light');
+      templateRefLabel = `Modified Saved Template #40 • [${perspBadge} · ${levelBadge}] ${
+        options?.geminiDecision?.tailoredSpec?.diagramSubtitle ||
+        'Google Cloud & Gemini Enterprise Multi-Agent Platform'
+      }`;
+      domainMutations = buildTemplate40Mutations();
+    } else {
+      const matchedTpl = CANONICAL_TEMPLATES.find((t) => t.id === paddedId || t.id === explicitBpId);
+      if (matchedTpl) {
+        baseXml = matchedTpl.generateXml(domain === 'All' ? 'enterprise' : domain, 'light');
+        templateRefLabel = `Modified Saved Template #${matchedTpl.id} (${matchedTpl.name}) • [${perspBadge} · ${levelBadge}]`;
+        const subs =
+          options?.geminiDecision?.tailoredSpec?.customSubsystems ||
+          extractRichPromptSubsystems(prompt, safeTitle);
+        const t40 = options?.geminiDecision?.tailoredSpec?.template40Adaptation;
+        domainMutations = [
+          [new RegExp(matchedTpl.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), escHtml(truncateAtWord(safeTitle, 44))],
+          [/Research Scientists/gi, escHtml(truncateAtWord(t40?.personas?.[0] || 'Chrononauts & Pilots', 22))],
+          [/Clinical Operations/gi, escHtml(truncateAtWord(t40?.personas?.[1] || 'Quantum Physicists', 22))],
+          [/Regulatory Affairs Team/gi, escHtml(truncateAtWord(t40?.personas?.[2] || 'Temporal Engineers', 22))],
+          [/Safety \/ PV Specialists/gi, escHtml(truncateAtWord(t40?.personas?.[3] || 'Paradox Safety Ops', 22))],
+          [/R&amp;D &amp; Clinical/gi, escHtml(truncateAtWord(subs[0] || 'Capsule Cockpit HUD', 24))],
+          [/Regulatory Affairs/gi, escHtml(truncateAtWord(subs[1] || 'Apigee X & Cloud Armor', 24))],
+          [/Pharmacovigilance/gi, escHtml(truncateAtWord(subs[2] || 'Quantum KMS & Guard', 24))],
+          [/Quality &amp; Manufacturing/gi, escHtml(truncateAtWord(subs[3] || 'Gemini 3.1 Pro Core', 24))],
+          [/Medical Information/gi, escHtml(truncateAtWord(subs[4] || 'Vertex AI TPU v5p', 24))],
+          [/Commercial Insights/gi, escHtml(truncateAtWord(subs[5] || 'Spanner Graph RAG', 24))],
+          [/Document &amp; Knowledge Hub/gi, escHtml(truncateAtWord(subs[7] || 'Pub/Sub Flux Bus', 24))],
+          [/AI Copilot &amp; Orchestration/gi, escHtml(truncateAtWord(subs[6] || 'Causality Gate', 24))],
+          [/Customer CRM/gi, escHtml(truncateAtWord(subs[0] || 'Edge Telemetry HUD', 22))],
+          [/Core ERP/gi, escHtml(truncateAtWord(subs[4] || 'Core Orchestrator', 22))],
+          [/Cloud Spanner/gi, escHtml(truncateAtWord(subs[9] || 'Spanner TrueTime DB', 22))],
+        ];
+      }
+    }
   }
 
   const isAwsBedrockPrompt =
-    lower.includes('amazon bedrock') ||
-    lower.includes('aws bedrock') ||
-    lower.includes('sagemaker') ||
-    (lower.includes('bedrock') && !lower.includes('foundation bedrock') && !lower.includes('infrastructure bedrock')) ||
-    (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile'));
+    !baseXml &&
+    (lower.includes('amazon bedrock') ||
+      lower.includes('aws bedrock') ||
+      lower.includes('sagemaker') ||
+      (lower.includes('bedrock') && !lower.includes('foundation bedrock') && !lower.includes('infrastructure bedrock')) ||
+      (lower.includes('aws') && !lower.includes('to gcp') && !lower.includes('alloydb') && !lower.includes('decompile')));
 
-  if (isAwsBedrockPrompt) {
+  if (baseXml) {
+    // Already resolved via explicit blueprint selection or Gemini decision above
+  } else if (isAwsBedrockPrompt) {
     // Saved Template 41 adapted for AWS Cloud Reference Architecture v2.0 (Amazon Bedrock + Amazon SageMaker + Redshift + Claude)
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
     templateRefLabel = 'Modified Saved Template #41 • AWS Well-Architected Cloud Reference Architecture v2.0 (Amazon Bedrock, SageMaker, Redshift & Claude)';
@@ -308,6 +456,11 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
       [/Vertex AI Agents/gi, 'Vertex AI Inline Fraud Scoring Engine (&lt;15ms P99 Latency)'],
       [/Cloud Spanner/gi, 'Cloud Spanner Multi-Region Externally Consistent ACID Ledger']
     ];
+  } else if (lower.includes('time machine') || lower.includes('time travel') || lower.includes('temporal capsule') || lower.includes('chronos')) {
+    // Saved Template 40: Enterprise GenAI & Multi-Agent Platform customized for Chronos Time Machine Capsule on GCP & Gemini Enterprise
+    baseXml = generateTemplate40EnterpriseGenAiPlatformXml('enterprise', 'light');
+    templateRefLabel = `Modified Saved Template #40 • [${perspBadge} · ${levelBadge}] Google Cloud & Gemini Enterprise Chronos Time Machine Capsule & Temporal Navigation Platform`;
+    domainMutations = buildTemplate40Mutations();
   } else if (lower.includes('rag') && (lower.includes('scann') || lower.includes('vector mesh') || lower.includes('knowledge intelligence'))) {
     // Saved Template 41: Enterprise RAG & Knowledge Intelligence Platform
     baseXml = generateTemplate41EnterpriseRagPlatformXml('saas', 'light');
@@ -323,7 +476,15 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     ];
   } else {
     // 100% Zero-Template Custom Architecture Synthesis for any brand-new requirement prompt
-    return synthesizeZeroTemplateCustomArchitectureXml(prompt, safeTitle, domain);
+    return synthesizeZeroTemplateCustomArchitectureXml(
+      prompt,
+      safeTitle,
+      domain,
+      options?.geminiDecision?.tailoredSpec?.customSubsystems,
+      options?.geminiDecision?.tailoredSpec?.decisionGateQuestion,
+      levelBadge,
+      perspBadge
+    );
   }
 
   // Apply domain mutations to the saved template XML
@@ -343,7 +504,7 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     .replace(/NOVACURA/gi, 'ENTERPRISE')
     .replace(/Veeva Vault/gi, 'Cloud Storage Archive')
     .replace(/Pharmacovigilance/gi, 'Automated Governance')
-    .replace(/17 Identity &amp; Access Flow/gi, escHtml(title));
+    .replace(/17 Identity &amp; Access Flow/gi, escHtml(safeTitle));
 
   // Update hdr_num badge cell if present
   modifiedXml = modifiedXml.replace(
@@ -351,23 +512,37 @@ export function adaptSavedGoogleCloudTemplateToPrompt(
     `$1${escAttr(numBadge)}$2`
   );
 
-  // Build the rich 3-line Header HTML containing:
-  // 1) Exact Diagram Title
-  // 2) Exact "💬 Generative Prompt: ..." banner (so opening the diagram ALWAYS shows the prompt!)
-  // 3) Modified Saved Template Reference (zero hidden 1px transparent spoofing divs!)
   const shortPromptDisplay = prompt.length > 145 ? prompt.slice(0, 142) + '...' : prompt;
-  const newHeaderHtml =
-    `<div style="font-family:Inter,sans-serif;width:1160px;overflow:hidden;">` +
-    `<div style="font-size:17px;font-weight:900;color:#0F172A;letter-spacing:0.2px;line-height:20px;">${escHtml(title)}</div>` +
-    `<div style="font-size:10px;font-weight:700;color:#0284C7;margin-top:2px;line-height:13px;">💬 Generative Prompt: "${escHtml(shortPromptDisplay)}"</div>` +
-    `<div style="font-size:8.5px;font-weight:600;color:#475569;margin-top:2px;line-height:11px;">${escHtml(templateRefLabel)}</div>` +
-    `</div>`;
-
-  // Replace hdr_title cell with strict width=1160 at x=78 so it NEVER overlaps hdr_brand at x=1280
-  if (modifiedXml.includes('id="hdr_title"')) {
+  const headerBadgeNum = explicitBpId && /^\d+$/.test(explicitBpId) ? explicitBpId.padStart(2, '0') : '40';
+  if (modifiedXml.includes('id="hdr_sub"')) {
+    const t40HeaderLeft =
+      `<div style="font-family:Inter,sans-serif;overflow:hidden;">` +
+      `<div style="font-size:16.5px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:20px;"><span style="color:#1D4ED8;">${escHtml(headerBadgeNum)}.</span> ${escHtml(truncateAtWord(safeTitle.replace(/^#?\d+\s*•?\s*/i, ''), 50))} <span style="background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;border-radius:4px;padding:1px 6px;font-size:9px;vertical-align:middle;">${escHtml(perspBadge.toUpperCase())} · ${escHtml(levelBadge)}</span></div>` +
+      `<div style="font-size:9.5px;font-weight:700;color:#0284C7;margin-top:2px;line-height:12px;">▸ Generative Prompt: "${escHtml(truncateAtWord(shortPromptDisplay, 78))}"</div>` +
+      `</div>`;
+    const t40HeaderRight =
+      `<div style="font-family:Inter,sans-serif;overflow:hidden;">` +
+      `<div style="font-size:10px;font-weight:800;color:#1E3A8A;line-height:14px;">${escHtml(truncateAtWord(templateRefLabel, 84))}</div>` +
+      `<div style="font-size:8.5px;font-weight:600;color:#475569;margin-top:2px;line-height:11px;">End-to-End Governed Multi-Agent AI, Spanner TrueTime &amp; Vertex AI TPU v5p Topology on Google Cloud</div>` +
+      `</div>`;
+    modifiedXml = modifiedXml
+      .replace(
+        /<mxCell id="hdr_title"[\s\S]*?<\/mxCell>/,
+        `<mxCell id="hdr_title" value="${escAttr(t40HeaderLeft)}" style="whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="16" y="8" width="660" height="40" as="geometry"/></mxCell>`
+      )
+      .replace(
+        /<mxCell id="hdr_sub"[\s\S]*?<\/mxCell>/,
+        `<mxCell id="hdr_sub" value="${escAttr(t40HeaderRight)}" style="whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="684" y="8" width="656" height="40" as="geometry"/></mxCell>`
+      );
+  } else if (modifiedXml.includes('id="hdr_title"')) {
+    const newHeaderHtml =
+      `<div style="font-family:Inter,sans-serif;max-width:1020px;overflow:hidden;">` +
+      `<div style="font-size:15.5px;font-weight:900;color:#0F172A;letter-spacing:0.1px;line-height:19px;">${escHtml(truncateAtWord(safeTitle, 64))} <span style="background:#EFF6FF;color:#1D4ED8;border:1px solid #93C5FD;border-radius:4px;padding:1px 6px;font-size:8.5px;vertical-align:middle;">#${escHtml(headerBadgeNum)} · ${escHtml(perspBadge.toUpperCase())} · ${escHtml(levelBadge)}</span></div>` +
+      `<div style="font-size:9.5px;font-weight:700;color:#0284C7;margin-top:2px;line-height:12px;">▸ Generative Prompt: "${escHtml(truncateAtWord(shortPromptDisplay, 86))}" • ${escHtml(truncateAtWord(templateRefLabel, 56))}</div>` +
+      `</div>`;
     modifiedXml = modifiedXml.replace(
-      /<mxCell id="hdr_title"[\s\S]*?<\/mxCell>/,
-      `<mxCell id="hdr_title" value="${escAttr(newHeaderHtml)}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;" vertex="1" parent="1"><mxGeometry x="78" y="8" width="1160" height="54" as="geometry"/></mxCell>`
+      /(<mxCell id="hdr_title"\s+value=")[^"]*(")/,
+      `$1${escAttr(newHeaderHtml)}$2`
     );
   }
 
@@ -388,21 +563,81 @@ export function renderPromptArchitectureToDrawioXml(spec: PromptArchitectureSpec
 }
 
 /**
- * Entry point used by Studio (/studio) and Studio 1 (/studio1) when executing a generative prompt.
- * When `options.noTemplate` is true, bypasses all canonical blueprint templates and synthesizes
- * a 100% prompt-driven custom Draw.io architecture AST from scratch.
+ * Entry point used by Dashboard (/dashboard), Studio (/studio), and Studio 1 (/studio1)
+ * when previewing or executing a generative prompt.
+ * Supports:
+ * - Explicit `perspective` ('Conceptual' | 'Logical' | 'Technical' | 'Process')
+ * - Explicit `level` ('L1' | 'L2' | 'L3' | 'L4')
+ * - Explicit `direction` ('LR' | 'TD')
+ * - Explicit `blueprintId` ('01'..'75' | 'custom' | 'process_flow' | 'stratum_l4')
+ * - Live `geminiDecision` from POST /api/architect-decision
  */
 export function synthesizePromptDrivenDiagramXml(
   prompt: string,
   projectTitle?: string,
   domain = 'Enterprise Cloud',
-  options?: { noTemplate?: boolean }
+  options?: PromptSynthesisOptions
 ): string {
-  const cleanTitle = projectTitle || prompt.slice(0, 72);
-  if (options?.noTemplate) {
-    return synthesizeZeroTemplateCustomArchitectureXml(prompt, cleanTitle, domain);
+  const cleanTitle =
+    options?.geminiDecision?.tailoredSpec?.diagramTitle ||
+    projectTitle ||
+    prompt.slice(0, 72);
+  const customSubs = options?.geminiDecision?.tailoredSpec?.customSubsystems;
+  const gateQ = options?.geminiDecision?.tailoredSpec?.decisionGateQuestion;
+  const level = options?.level || options?.geminiDecision?.recommendedLevel || 'L3';
+  const perspective = options?.perspective || options?.geminiDecision?.recommendedPerspective || 'Logical';
+  const direction = options?.direction || options?.geminiDecision?.recommendedDirection || 'LR';
+
+  // 1. Explicit Zero-Template Custom 4-Tier Architecture View
+  if (options?.blueprintId === 'custom') {
+    return synthesizeZeroTemplateCustomArchitectureXml(
+      prompt,
+      cleanTitle,
+      domain,
+      customSubs,
+      gateQ,
+      level,
+      perspective
+    );
   }
-  return adaptSavedGoogleCloudTemplateToPrompt(prompt, cleanTitle, domain);
+
+  // 2. Explicit Process Flowchart View (or Process perspective with noTemplate)
+  if (
+    options?.blueprintId === 'process_flow' ||
+    (perspective === 'Process' && options?.noTemplate)
+  ) {
+    return synthesizeZeroTemplateFlowchartXml(prompt, cleanTitle, direction, level, customSubs, gateQ);
+  }
+
+  // 3. Explicit Deep Technical L4 4-Stratum Cross-Section View
+  if (
+    options?.blueprintId === 'stratum_l4' ||
+    (perspective === 'Technical' && level === 'L4' && options?.noTemplate)
+  ) {
+    return generateVerticalStratumCrossSectionXml(prompt, cleanTitle);
+  }
+
+  // 4. Fallback Zero-Template Custom 4-Tier Architecture View
+  if (options?.noTemplate) {
+    return synthesizeZeroTemplateCustomArchitectureXml(
+      prompt,
+      cleanTitle,
+      domain,
+      customSubs,
+      gateQ,
+      level,
+      perspective
+    );
+  }
+
+  // 4. Canonical Blueprint Adaptation (using explicit blueprintId or Gemini's recommended blueprint)
+  return adaptSavedGoogleCloudTemplateToPrompt(
+    prompt,
+    cleanTitle,
+    domain,
+    options?.blueprintId || options?.geminiDecision?.recommendedBlueprintId,
+    options
+  );
 }
 
 /**
@@ -1068,6 +1303,24 @@ export function generateVerticalStratumCrossSectionXml(prompt: string, title: st
  * so that 100% of cards in a zero-template synthesis are derived directly from the user's prompt.
  */
 export function extractRichPromptSubsystems(prompt: string, fallbackTitle: string): string[] {
+  const rawLower = `${prompt} ${fallbackTitle}`.toLowerCase();
+  if (rawLower.includes('time machine') || rawLower.includes('time travel') || rawLower.includes('temporal capsule') || rawLower.includes('chronos')) {
+    return [
+      'Time Machine Capsule HUD',
+      'Cloud LB & Apigee Gateway',
+      'Cloud Armor WAF & KMS PQC',
+      'Gemini Temporal Navigator',
+      'GKE & Workflows Chronos',
+      'Vertex TPU v5p Simulator',
+      'Gemini Causality Guard',
+      'Pub/Sub DLQ & Epoch Lock',
+      'Memorystore Ephemeris Cache',
+      'Spanner TrueTime Ledger',
+      'BigQuery & Vertex Vector DB',
+      'Cloud Trace & Clock HUD',
+    ];
+  }
+
   const cleaned = String(prompt || fallbackTitle || 'Custom Cloud Architecture')
     .replace(/^(please\s+)?((design|architect|build|create|deploy|synthesize|generate|draw|show)\s+)?(a\s+|an\s+|the\s+)?(full\s+|complete\s+|enterprise\s+|brand[- ]new\s+)?(flowchart\s+(for|of)\s+|infographic\s+(for|of)\s+|architecture\s+(for|of)\s+|diagram\s+(for|of)\s+)?/i, '')
     .replace(/\b(architecture|diagram|blueprint|flowchart|topology)\s*\.?$/i, '')
@@ -1081,27 +1334,43 @@ export function extractRichPromptSubsystems(prompt: string, fallbackTitle: strin
         .replace(/\b(architecture|diagram|blueprint|flowchart|topology)\s*\.?$/i, '')
         .trim()
     )
-    .filter((s) => s.length >= 3);
+    .filter((s) => s.length >= 3 && !/^(gcp|aws|azure|google cloud|gemini|gemini enterprise|vertex ai)$/i.test(s));
 
-  const base = parts[0] || truncateAtWord(cleaned, 36) || 'Edge Ingress Gateway';
-  const defaults = [
-    base,
-    `${truncateAtWord(base, 22)} API Gateway & Mesh`,
-    `Zero-Trust mTLS & Identity Guard`,
-    `${truncateAtWord(base, 22)} Core Orchestrator`,
-    `Distributed Event & Stream Bus`,
-    `Real-Time Processing & Inference Engine`,
-    `Schema, Policy & SLA Contract Validator`,
-    `Dead-Letter Quarantine & Backoff Replay`,
-    `Low-Latency In-Memory State Cache`,
-    `Multi-Region ACID Transactional Ledger`,
-    `Analytical Lakehouse & Immutable Audit Store`,
-    `OpenTelemetry SLO & Security Posture HUD`,
-  ];
+  const isGcpGemini = /\b(gcp|google cloud|gemini|vertex|spanner|bigquery|gke)\b/i.test(rawLower);
+  const base = parts[0] || truncateAtWord(cleaned, 28) || 'Edge Ingress Gateway';
+  const defaults = isGcpGemini
+    ? [
+        truncateAtWord(base, 26),
+        `Cloud LB & Apigee X Gateway`,
+        `Cloud Armor WAF & KMS PQC`,
+        `Gemini Enterprise Supervisor`,
+        `GKE Autopilot & Workflows`,
+        `Vertex AI Reasoning Engine`,
+        `Gemini Safety & DLP Guard`,
+        `Cloud Pub/Sub DLQ Replay`,
+        `Memorystore Context Cache`,
+        `Cloud Spanner ACID Ledger`,
+        `BigQuery & Vertex Vector DB`,
+        `Cloud Trace & FinOps HUD`,
+      ]
+    : [
+        truncateAtWord(base, 26),
+        `${truncateAtWord(base, 18)} API Gateway`,
+        `Zero-Trust mTLS & WAF Guard`,
+        `${truncateAtWord(base, 18)} Orchestrator`,
+        `Distributed Event Stream Bus`,
+        `Real-Time Inference Engine`,
+        `Schema & Policy Validator`,
+        `Dead-Letter Backoff Replay`,
+        `Low-Latency State Cache`,
+        `Multi-Region ACID Ledger`,
+        `Analytical Lakehouse Store`,
+        `OpenTelemetry & SLO HUD`,
+      ];
 
   const result: string[] = [];
   for (let i = 0; i < 12; i++) {
-    const candidate = parts[i] ? truncateAtWord(parts[i], 38) : defaults[i];
+    const candidate = parts[i] ? truncateAtWord(parts[i], 28) : defaults[i];
     result.push(candidate);
   }
   return result;
@@ -1116,14 +1385,19 @@ export function extractRichPromptSubsystems(prompt: string, fallbackTitle: strin
 export function synthesizeZeroTemplateCustomArchitectureXml(
   prompt: string,
   title?: string,
-  domain = 'Enterprise Cloud'
+  domain = 'Enterprise Cloud',
+  customSubsystems?: string[],
+  decisionGateQuestion?: string,
+  level = 'L2',
+  perspective = 'Logical'
 ): string {
   const displayTitle = truncateAtWord(
     title && !title.includes('Global Real-Time Payments') ? title : prompt || 'Custom Enterprise Architecture',
     76
   );
   const shortPrompt = String(prompt || displayTitle).replace(/\s+/g, ' ').trim().slice(0, 128);
-  const subs = extractRichPromptSubsystems(prompt, displayTitle);
+  const baseSubs = extractRichPromptSubsystems(prompt, displayTitle);
+  const subs = customSubsystems && customSubsystems.length >= 12 ? customSubsystems : baseSubs;
 
   const renderSvg = (kind: 'ingress' | 'mesh' | 'shield' | 'compute' | 'stream' | 'db', stroke = '#FFFFFF') => {
     if (kind === 'ingress') {
@@ -1158,7 +1432,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     const hdr =
       `<div style="font-family:Inter,-apple-system,sans-serif;display:inline-flex;align-items:center;gap:6px;background:${badgeBg};border:1px solid ${borderHex};border-radius:5px;padding:2px 8px;">` +
       `<span style="background:#FFFFFF;color:${badgeText};border:1px solid ${borderHex};border-radius:3px;padding:1px 5px;font-size:8px;font-weight:900;letter-spacing:0.4px;white-space:nowrap;">${escHtml(tag)}</span>` +
-      `<span style="font-size:9.5px;font-weight:900;color:#0F172A;letter-spacing:0.2px;white-space:nowrap;">${escHtml(bandTitle)}</span>` +
+      `<span style="font-size:9px;font-weight:900;color:#0F172A;letter-spacing:0.2px;white-space:nowrap;">${escHtml(truncateAtWord(bandTitle, 24))}</span>` +
       `</div>`;
     return `<mxCell id="${id}" value="${escAttr(hdr)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=${bgFill};strokeColor=${borderHex};strokeWidth=2;arcSize=5;verticalAlign=top;align=left;spacingTop=4;spacingLeft=8;shadow=0;" vertex="1" parent="1"><mxGeometry x="48" y="${y}" width="1172" height="${h}" as="geometry"/></mxCell>`;
   };
@@ -1193,15 +1467,15 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
       `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;">` +
       `<div style="display:flex;align-items:center;gap:5px;">` +
       `<span style="display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:4px;background:${accentHex};">${renderSvg(iconKind)}</span>` +
-      `<span style="font-size:10.2px;font-weight:900;color:${titleHex};">${escHtml(truncateAtWord(cardTitle, 32))}</span>` +
+      `<span style="font-size:9.8px;font-weight:900;color:${titleHex};white-space:nowrap;">${escHtml(truncateAtWord(cardTitle, 28))}</span>` +
       `</div>` +
-      `<span style="background:${badgeBg};color:${subHex};border:1px solid ${accentHex};border-radius:4px;padding:1px 4px;font-size:7px;font-weight:800;">${escHtml(badge)}</span>` +
+      `<span style="background:${badgeBg};color:${subHex};border:1px solid ${accentHex};border-radius:4px;padding:1px 4px;font-size:7px;font-weight:800;white-space:nowrap;">${escHtml(badge)}</span>` +
       `</div>` +
       `<div style="font-size:8.4px;font-weight:700;color:${subHex};margin-bottom:2px;">${escHtml(truncateAtWord(subtitle, 42))}</div>` +
       bulletHtml +
       `<div style="margin-top:4px;padding-top:3px;border-top:1px dashed ${accentHex};display:flex;justify-content:space-between;font-size:7.4px;font-weight:800;color:${subHex};">` +
       `<span>${escHtml(slaSpec)}</span>` +
-      `<span>PROMPT AST</span>` +
+      `<span>${escHtml(level)} · ${escHtml(perspective.toUpperCase())}</span>` +
       `</div>` +
       `</div>`;
 
@@ -1236,21 +1510,22 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;width:1556px;padding:6px 14px;">` +
     `<div>` +
     `<div style="display:flex;align-items:center;gap:10px;">` +
-    `<span style="background:#38BDF8;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">ZERO-TEMPLATE CUSTOM SYNTHESIS · 100% PROMPT-DRIVEN AST</span>` +
+    `<span style="background:#38BDF8;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">GEMINI AST SYNTHESIS · ${escHtml(level)} ${escHtml(perspective.toUpperCase())}</span>` +
     `<span style="font-size:15px;font-weight:900;color:#F8FAFC;letter-spacing:0.2px;">${escHtml(displayTitle)}</span>` +
     `</div>` +
-    `<div style="font-size:9.5px;font-weight:600;color:#93C5FD;margin-top:3px;">💬 Generative Prompt: "${escHtml(shortPrompt)}" • Domain: ${escHtml(domain.toUpperCase())} • No Pre-Canned Blueprint Template Used</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#93C5FD;margin-top:3px;">▸ Generative Prompt: "${escHtml(shortPrompt)}" • Domain: ${escHtml(domain.toUpperCase())} • Perspective: ${escHtml(perspective)} (${escHtml(level)})</div>` +
     `</div>` +
     `<div style="display:flex;gap:8px;">` +
-    `<span style="background:#1E293B;color:#38BDF8;border:1px solid #0284C7;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">NO BLUEPRINT TEMPLATE</span>` +
+    `<span style="background:#1E293B;color:#38BDF8;border:1px solid #0284C7;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">${escHtml(perspective.toUpperCase())} · ${escHtml(level)}</span>` +
     `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">16:9 AST VERIFIED</span>` +
     `</div>` +
     `</div>`;
 
+  const gateQText = decisionGateQuestion || `${truncateAtWord(subs[6], 22)} Valid?`;
   const gateHtml =
     `<div style="font-family:Inter,-apple-system,sans-serif;text-align:center;padding:4px;">` +
     `<div style="font-size:8px;font-weight:900;color:#EA580C;">◆ DECISION GATE</div>` +
-    `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:11.5px;margin-top:2px;">${escHtml(truncateAtWord(subs[6], 24))}&lt;br/&gt;Contract Valid?</div>` +
+    `<div style="font-size:9.5px;font-weight:900;color:#0F172A;line-height:11.5px;margin-top:2px;">${escHtml(truncateAtWord(gateQText, 28))}</div>` +
     `</div>`;
 
   const cells: string[] = [
@@ -1259,7 +1534,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     `<mxCell id="hdr_title" value="${escAttr(topBannerHtml)}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#0284C7;strokeWidth=2;arcSize=6;verticalAlign=middle;align=left;" vertex="1" parent="1"><mxGeometry x="48" y="14" width="1584" height="60" as="geometry"/></mxCell>`,
 
     // TIER 01: INGRESS & PERIMETER
-    makeTierBand('zt_tier_1', 'TIER 01 · INGRESS', `EDGE INGRESS & PERIMETER (${subs[0].toUpperCase()})`, 90, 166, '#EFF6FF', '#0284C7', '#E0F2FE', '#0369A1'),
+    makeTierBand('zt_tier_1', 'TIER 01 · INGRESS', 'EDGE INGRESS & PERIMETER', 90, 166, '#EFF6FF', '#0284C7', '#E0F2FE', '#0369A1'),
     makeNodeCard(
       'zt_t1_c1',
       'ingress',
@@ -1316,7 +1591,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     ),
 
     // TIER 02: CORE COMPUTE & ORCHESTRATION
-    makeTierBand('zt_tier_2', 'TIER 02 · COMPUTE', `CORE ORCHESTRATION & EXECUTION (${subs[3].toUpperCase()})`, 312, 168, '#F5F3FF', '#7C3AED', '#EDE9FE', '#6D28D9'),
+    makeTierBand('zt_tier_2', 'TIER 02 · COMPUTE', 'CORE ORCHESTRATION & AI', 312, 168, '#F5F3FF', '#7C3AED', '#EDE9FE', '#6D28D9'),
     makeNodeCard(
       'zt_t2_c1',
       'compute',
@@ -1373,7 +1648,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     ),
 
     // TIER 03: POLICY DECISION GATE & QUARANTINE
-    makeTierBand('zt_tier_3', 'TIER 03 · VALIDATION', `POLICY DECISION GATE & FAULT ISOLATION (${subs[6].toUpperCase()})`, 536, 168, '#FFF7ED', '#EA580C', '#FFEDD5', '#C2410C'),
+    makeTierBand('zt_tier_3', 'TIER 03 · VALIDATION', 'POLICY DECISION GATE', 536, 168, '#FFF7ED', '#EA580C', '#FFEDD5', '#C2410C'),
     makeNodeCard(
       'zt_t3_c1',
       'shield',
@@ -1413,7 +1688,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     ),
 
     // TIER 04: TRANSACTIONAL STATE & ANALYTICAL PERSISTENCE
-    makeTierBand('zt_tier_4', 'TIER 04 · DATA STORE', `TRANSACTIONAL STATE & ANALYTICAL LEDGER (${subs[9].toUpperCase()})`, 760, 176, '#ECFDF5', '#059669', '#D1FAE5', '#047857'),
+    makeTierBand('zt_tier_4', 'TIER 04 · DATA STORE', 'STATE & ANALYTICAL LEDGER', 760, 176, '#ECFDF5', '#059669', '#D1FAE5', '#047857'),
     makeNodeCard(
       'zt_t4_c1',
       'db',
@@ -1481,7 +1756,7 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
       'zt_obs_1',
       'shield',
       'KMS & IAM',
-      `Zero-Trust Policy (${truncateAtWord(subs[2], 18)})`,
+      `Zero-Trust Policy Guard`,
       'Least-Privilege Workload Identity & CMEK Vault',
       [
         'Hardware-backed key rotation & envelope encryption',
@@ -1564,13 +1839,13 @@ export function synthesizeZeroTemplateCustomArchitectureXml(
     makeEdge('zt_e_2b', 'zt_t2_c2', 'zt_t2_c3', '❷c Publish Stream', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C', dashed: true }),
     makeEdge('zt_e_2_obs', 'zt_t2_c3', 'zt_obs_2', 'OTLP Spans', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#7C3AED', dashed: true }),
 
-    makeEdge('zt_e_v2_left', 'zt_t2_c1', 'zt_t3_c1', '❸a Validate Payload', { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, color: '#EA580C', offsetY: -10 }),
+    makeEdge('zt_e_v2_left', 'zt_t2_c1', 'zt_t3_c1', '❸a Validate Payload', { exitX: 0.85, exitY: 1, entryX: 0.85, entryY: 0, color: '#EA580C', offsetY: -10 }),
     makeEdge('zt_e_3a', 'zt_t3_c1', 'zt_t3_gate', '❸b Policy Gate', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C' }),
     makeEdge('zt_e_3_no', 'zt_t3_gate', 'zt_t3_c3', '✕ NO (Quarantine)', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#DC2626', dashed: true }),
     makeEdge('zt_e_3_retry', 'zt_t3_c3', 'zt_t2_c3', '↩ Backoff Replay', { exitX: 0.5, exitY: 0, entryX: 0.5, entryY: 1, color: '#0D9488', dashed: true, offsetY: -10 }),
     makeEdge('zt_e_3_obs', 'zt_t3_c3', 'zt_obs_3', 'Audit Alert', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#EA580C', dashed: true }),
 
-    makeEdge('zt_e_v3_cache', 'zt_t3_c1', 'zt_t4_c1', '❹a Cache Hydrate', { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, color: '#059669', dashed: true, offsetY: -10 }),
+    makeEdge('zt_e_v3_cache', 'zt_t3_c1', 'zt_t4_c1', '❹a Cache Hydrate', { exitX: 0.85, exitY: 1, entryX: 0.85, entryY: 0, color: '#059669', dashed: true, offsetY: -10 }),
     makeEdge('zt_e_v3_yes', 'zt_t3_gate', 'zt_t4_c2', '✓ YES (Commit State)', { exitX: 0.5, exitY: 1, entryX: 0.5, entryY: 0, color: '#059669', offsetY: -10 }),
     makeEdge('zt_e_4a', 'zt_t4_c1', 'zt_t4_c2', 'Read/Write Sync', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#059669' }),
     makeEdge('zt_e_4b', 'zt_t4_c2', 'zt_t4_c3', '❹b CDC Lineage', { exitX: 1, exitY: 0.5, entryX: 0, entryY: 0.5, color: '#059669', dashed: true }),
@@ -1593,23 +1868,26 @@ export function synthesizeZeroTemplateFlowchartXml(
   prompt: string,
   title?: string,
   direction: 'LR' | 'TD' = 'LR',
-  level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2'
+  level: 'L1' | 'L2' | 'L3' | 'L4' = 'L2',
+  customSubsystems?: string[],
+  decisionGateQuestion?: string
 ): string {
   const displayTitle = truncateAtWord(title || prompt || 'Custom Logical Process Flowchart', 76);
   const shortPrompt = String(prompt || displayTitle).replace(/\s+/g, ' ').trim().slice(0, 128);
-  const subs = extractRichPromptSubsystems(prompt, displayTitle);
+  const baseSubs = extractRichPromptSubsystems(prompt, displayTitle);
+  const subs = customSubsystems && customSubsystems.length >= 12 ? customSubsystems : baseSubs;
 
   const topBannerHtml =
     `<div style="font-family:Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:space-between;width:1556px;padding:6px 14px;">` +
     `<div>` +
     `<div style="display:flex;align-items:center;gap:10px;">` +
-    `<span style="background:#10B981;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">ZERO-TEMPLATE LOGICAL FLOWCHART · ${escHtml(level)} · ${escHtml(direction)}</span>` +
+    `<span style="background:#10B981;color:#0F172A;border-radius:4px;padding:2px 8px;font-size:9.5px;font-weight:900;letter-spacing:0.7px;">PROCESS FLOWCHART SYNTHESIS · ${escHtml(level)} · ${escHtml(direction)}</span>` +
     `<span style="font-size:15px;font-weight:900;color:#F8FAFC;letter-spacing:0.2px;">${escHtml(displayTitle)}</span>` +
     `</div>` +
-    `<div style="font-size:9.5px;font-weight:600;color:#6EE7B7;margin-top:3px;">💬 Flowchart Prompt: "${escHtml(shortPrompt)}" • 6 Sequential Steps (❶..❻) • 2 Diamond Decision Gates • Closed-Loop Retry</div>` +
+    `<div style="font-size:9.5px;font-weight:600;color:#6EE7B7;margin-top:3px;">▸ Flowchart Prompt: "${escHtml(shortPrompt)}" • 6 Sequential Steps (❶..❻) • 2 Diamond Decision Gates • Closed-Loop Retry</div>` +
     `</div>` +
     `<div style="display:flex;gap:8px;">` +
-    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">NO BLUEPRINT TEMPLATE</span>` +
+    `<span style="background:#1E293B;color:#34D399;border:1px solid #10B981;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">PROCESS FLOW · ${escHtml(level)}</span>` +
     `<span style="background:#1E293B;color:#38BDF8;border:1px solid #0284C7;border-radius:6px;padding:4px 9px;font-size:9px;font-weight:800;">${escHtml(level)} · ${escHtml(direction)} FLOW</span>` +
     `</div>` +
     `</div>`;
@@ -1653,10 +1931,11 @@ export function synthesizeZeroTemplateFlowchartXml(
   };
 
   const makeDiamond = (id: string, gateNum: string, question: string, stroke: string, x: number, y: number, w = 176, h = 112) => {
+    const qClean = question.replace(/\?+$/, '');
     const html =
       `<div style="font-family:Inter,-apple-system,sans-serif;text-align:center;padding:4px;">` +
       `<div style="font-size:8px;font-weight:900;color:${stroke};">◆ GATE ${escHtml(gateNum)}</div>` +
-      `<div style="font-size:9px;font-weight:900;color:#0F172A;line-height:11px;margin-top:2px;">${escHtml(truncateAtWord(question, 26))}?</div>` +
+      `<div style="font-size:9px;font-weight:900;color:#0F172A;line-height:11px;margin-top:2px;">${escHtml(truncateAtWord(qClean, 26))}?</div>` +
       `</div>`;
     return `<mxCell id="${id}" value="${escAttr(html)}" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=${stroke};strokeWidth=2.2;shadow=0;" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`;
   };
@@ -1677,6 +1956,8 @@ export function synthesizeZeroTemplateFlowchartXml(
     return `<mxCell id="${id}" value="${escAttr(label)}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=${color};strokeWidth=2;${dash}endArrow=block;endFill=1;fontSize=8;fontStyle=1;fontColor=#0F172A;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;exitX=${exitX};exitY=${exitY};entryX=${entryX};entryY=${entryY};" edge="1" parent="1" source="${source}" target="${target}"><mxGeometry relative="1" as="geometry"/></mxCell>`;
   };
 
+  const gate1Q = decisionGateQuestion || `${truncateAtWord(subs[2], 22)} Valid`;
+
   const cells: string[] = [
     `<mxCell id="0"/>`,
     `<mxCell id="1" parent="0"/>`,
@@ -1687,7 +1968,7 @@ export function synthesizeZeroTemplateFlowchartXml(
     `<mxCell id="fc_start" value="▶ START TRIGGER&lt;br/&gt;${escHtml(truncateAtWord(subs[0], 20))}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=#10B981;strokeWidth=2;arcSize=50;fontColor=#34D399;fontSize=9.5;fontStyle=1;align=center;" vertex="1" parent="1"><mxGeometry x="72" y="164" width="156" height="64" as="geometry"/></mxCell>`,
     makeStepBox('fc_s1', '1', subs[0], 'Ingress & Payload Framing', `Accepts ${subs[0]} requests with schema version tags`, 'SLA: p99 < 6ms', '#2563EB', 320, 140),
     makeStepBox('fc_s2', '1a', subs[1], 'Identity & Contract Normalization', `Normalizes ${subs[1]} context & verifies credentials`, 'mTLS 1.3 + OIDC', '#2563EB', 690, 140),
-    makeDiamond('fc_g1', '1', `${truncateAtWord(subs[2], 22)} Valid`, '#EA580C', 1066, 140),
+    makeDiamond('fc_g1', '1', gate1Q, '#EA580C', 1066, 140),
     makeStepBox('fc_q1', '2b', `✕ Quarantine (${truncateAtWord(subs[2], 18)})`, 'Dead-Letter Isolation & Retry Queue', `Quarantines invalid ${subs[2]} payloads for backoff retry`, 'DLQ + Alert', '#DC2626', 1336, 140),
 
     // LANE 2: CORE ORCHESTRATION, EXECUTION & SLA GATE (y=376..626)

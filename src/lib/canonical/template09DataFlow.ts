@@ -27,23 +27,12 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
         <span style="font-size:24px;font-weight:900;color:#FFFFFF;font-family:sans-serif;">09</span>
       </td>
       <td style="padding-left:14px;vertical-align:middle;">
-        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;font-family:sans-serif;">DATA FLOW ARCHITECTURE</div>
-        <div style="font-size:12.5px;font-weight:600;color:#64748B;margin-top:2px;">NOVACURA Enterprise AI Platform for Biopharma</div>
+        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;font-family:sans-serif;">Enterprise Data Flow Architecture</div>
+        <div style="font-size:12px;font-weight:600;color:#64748B;margin-top:2px;">End-to-End Ingestion, Medallion Lakehouse Processing, Semantic Serving &amp; Governed Consumption</div>
       </td>
     </tr>
   </table>`;
-  text("header_title", titleHtml, 20, 16, 950, 52, "align=left;");
-
-  const logoHtml = `<table style="text-align:right;float:right;">
-    <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
-      <td style="vertical-align:middle;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
-        <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
-      </td>
-    </tr>
-  </table>`;
-  text("header_logo", logoHtml, 1260, 16, 280, 48, "align=right;");
+  text("header_title", titleHtml, 20, 16, 1150, 52, "align=left;");
 
   // =========================================================================
   // 2. TOP STEP PROCESS INDICATORS (1 TO 6) (x: 230 to 1340, y: 76 to 120)
@@ -76,8 +65,8 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("sources_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>DATA SOURCES</b>", 20, 130, 160, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   const sources = [
-    { title: "Enterprise Applications", items: ["Veeva Vault (RIM / eTMF)", "Veeva CRM", "SAP S/4HANA", "Oracle EBS / Financials", "ServiceNow"], icon: "●" },
-    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical (Medidata)", "EDC (Rave / OpenClinica)", "LIMS, ELN", "Safety / PV Systems", "Imaging Repositories"], icon: "●" },
+    { title: "Enterprise Applications", items: ["Regulatory Vault (RIM / eTMF)", "Life Sciences CRM", "Enterprise ERP Core", "Financial Ledger Core", "Enterprise ITSM"], icon: "●" },
+    { title: "Clinical & R&D Systems", items: ["CTMS, eClinical Systems", "Electronic Data Capture (EDC)", "LIMS, Electronic Lab Notebook", "Safety / PV Systems", "Imaging Repositories"], icon: "●" },
     { title: "External & Partner Data", items: ["CRO / Partner Portals", "Public Databases", "Regulatory Authorities", "Market & Competitor Data"], icon: "●" },
     { title: "Unstructured Content", items: ["PDF / Word / PPT", "Emails", "Scientific Publications", "Reports / Spreadsheets"], icon: "●" },
     { title: "Real-time Streams", items: ["IoT / Sensors (Manufacturing)", "Field Data / Wearables", "Clickstream / Web Events", "System Logs / Audit Events"], icon: "●" },
@@ -110,10 +99,10 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   });
 
   // =========================================================================
-  // 5. NOVACURA PLATFORM (GOOGLE CLOUD) (x: 295 to 940, y: 130 to 670)
+  // 5. CORE DATA & AI PLATFORM BOUNDARY (x: 295 to 940, y: 130 to 670)
   // =========================================================================
   rect("plat_main_frame", "", 295, 130, 645, 540, "rounded=1;strokeColor=#0F2A4A;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
-  rect("plat_main_hdr", "<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>NOVACURA PLATFORM (GOOGLE CLOUD)</b>", 295, 130, 645, 24, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
+  rect("plat_main_hdr", "<b style='font-size:10.5px;color:#FFFFFF;letter-spacing:1px;'>CORE DATA &amp; AI PLATFORM BOUNDARY (CLOUD LAKEHOUSE)</b>", 295, 130, 645, 24, "rounded=0;fillColor=#0F2A4A;strokeColor=#0F2A4A;align=center;");
 
   // 1. Landing Zone (Raw) (x: 305 to 415)
   rect("lz_frame", "", 305, 158, 110, 502, "rounded=1;fillColor=#F0FDF4;strokeColor=#BBF7D0;");
@@ -196,33 +185,33 @@ export function generateTemplate09DataFlowXml(domainFlavor = "biopharma", theme:
   rect("consumers_hdr", "<b style='font-size:8.5px;color:#FFFFFF;'>CONSUMERS</b>", 950, 130, 130, 24, "rounded=0;fillColor=#7C3AED;strokeColor=#7C3AED;align=center;");
 
   const consumers = [
-    { title: "Web & Mobile Apps", icon: "●" },
-    { title: "Dashboards &\nBI (Looker)", icon: "●" },
-    { title: "AI Agents & Apps", icon: "●" },
-    { title: "Notebooks &\nData Science", icon: "●" },
-    { title: "Partner / External\nApplications", icon: "●" },
+    { title: "Web &amp; Mobile Apps", sub: "React SSR • OIDC • <50ms Edge P99", icon: "●" },
+    { title: "Dashboards &amp;\nBI Analytics", sub: "Semantic Marts • Row-Level ACL", icon: "●" },
+    { title: "AI Agents &amp; Apps", sub: "Grounded RAG • Tool Calling", icon: "●" },
+    { title: "Notebooks &amp;\nData Science", sub: "Feature Store • Managed Jupyter", icon: "●" },
+    { title: "Partner / External\nApplications", sub: "mTLS API • OAuth 2.0 • FHIR", icon: "●" },
   ];
   consumers.forEach((cs, i) => {
     const csy = 162 + i * 100;
-    const html = `<div style="text-align:center;padding:2px;"><span style="font-size:18px;">${cs.icon}</span><div style="font-size:7.5px;font-weight:800;color:#6D28D9;margin-top:3px;line-height:1.15;">${cs.title.replace(/\n/g, "<br/>")}</div></div>`;
+    const html = `<div style="text-align:center;padding:4px;"><span style="font-size:16px;">${cs.icon}</span><div style="font-size:8px;font-weight:800;color:#6D28D9;margin-top:3px;line-height:1.15;">${cs.title.replace(/\n/g, "<br/>")}</div><div style="font-size:8px;color:#64748B;margin-top:2px;line-height:1.15;">${cs.sub}</div></div>`;
     rect(`cs_pod_${i}`, html, 956, csy, 118, 92, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;");
   });
 
   // Business Outcomes on Far Right
   rect("outcomes_box", "", 1090, 130, 450, 540, "rounded=1;strokeColor=#15803D;strokeWidth=1.2;fillColor=#F0FDF4;shadow=0;");
-  rect("outcomes_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>BUSINESS OUTCOMES</b>", 1090, 130, 450, 24, "rounded=0;fillColor=#15803D;strokeColor=#15803D;align=center;");
+  rect("outcomes_hdr", "<b style='font-size:9.5px;color:#FFFFFF;'>BUSINESS OUTCOMES &amp; VALUE REALIZATION</b>", 1090, 130, 450, 24, "rounded=0;fillColor=#15803D;strokeColor=#15803D;align=center;");
 
   const outcomes = [
-    { title: "Faster Decision Making", icon: "⏱" },
-    { title: "Operational Efficiency", icon: "●" },
-    { title: "Risk & Compliance", icon: "●" },
-    { title: "Cost Optimization", icon: "●" },
-    { title: "Better Patient Outcomes", icon: "🩺" },
-    { title: "Innovation & Growth", icon: "●" },
+    { title: "Faster Decision Making", desc: "Real-time streaming telemetry &amp; curated Gold marts reduce insight latency from days to <5 seconds", kpi: "10x Faster Time-to-Insight", icon: "●" },
+    { title: "Operational Efficiency", desc: "Automated CDC, schema validation &amp; self-healing DAGs eliminate manual ETL triage overhead", kpi: "-65% Manual Data Ops", icon: "●" },
+    { title: "Risk &amp; GxP Compliance", desc: "End-to-end column lineage, PII/PHI redaction &amp; immutable 21 CFR Part 11 audit trails", kpi: "100% Audit Traceability", icon: "●" },
+    { title: "Cloud FinOps Optimization", desc: "Tiered storage lifecycle, partition pruning &amp; slot auto-scaling optimize compute spend", kpi: "-38% TCO / Query Cost", icon: "●" },
+    { title: "Accelerated Clinical &amp; Patient Outcomes", desc: "Unified RWE, safety signal detection &amp; trial enrollment analytics accelerate therapy delivery", kpi: "+28% Trial Velocity", icon: "●" },
+    { title: "AI-Native Innovation &amp; Growth", desc: "Governed vector embeddings &amp; enterprise RAG unlock autonomous domain copilots at scale", kpi: "99.95% Grounded Accuracy", icon: "●" },
   ];
   outcomes.forEach((oc, i) => {
     const ocy = 165 + i * 82;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:34px;text-align:center;"><span style="font-size:18px;">${oc.icon}</span></td><td style="text-align:left;padding-left:6px;"><div style="font-size:9px;font-weight:800;color:#14532D;">${oc.title}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;border-collapse:collapse;"><tr><td style="width:30px;text-align:center;vertical-align:middle;"><span style="font-size:16px;">${oc.icon}</span></td><td style="text-align:left;padding:4px 8px;vertical-align:middle;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:9px;font-weight:900;color:#14532D;">${oc.title}</span><span style="background:#DCFCE7;color:#15803D;border:1px solid #86EFAC;font-size:7.5px;font-weight:800;padding:1px 6px;border-radius:999px;">${oc.kpi}</span></div><div style="font-size:8px;color:#334155;margin-top:2px;line-height:1.2;">${oc.desc}</div></td></tr></table>`;
     rect(`oc_pod_${i}`, html, 1100, ocy, 430, 74, "rounded=1;fillColor=#FFFFFF;strokeColor=#BBF7D0;");
   });
 

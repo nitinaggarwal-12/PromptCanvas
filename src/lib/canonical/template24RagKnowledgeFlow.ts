@@ -214,16 +214,40 @@ export function generateTemplate24RagKnowledgeFlowXml(
   cell("box_rag_patts", "", 16, 510, 850, 124, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   
   const ragPatterns = [
-    { title: "Naive RAG", flow: "    ", sub: "Simple retrieval + gen" },
-    { title: "Advanced RAG", flow: "      ", sub: "Rerank for relevance" },
-    { title: "Multi-Query RAG", flow: "      ", sub: "Query expansion" },
-    { title: "Sub-Question RAG", flow: "      ", sub: "Break complex Qs" },
-    { title: "Graph RAG", flow: "    ", sub: "Relationship context" },
-    { title: "Agentic RAG", flow: "      ", sub: "Agents &amp; tools" }
+    {
+      title: "Naive RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><rect x="4" y="5" width="18" height="12" rx="2" fill="#3B82F6"/><rect x="34" y="5" width="18" height="12" rx="2" fill="#0284C7"/><rect x="64" y="5" width="18" height="12" rx="2" fill="#7C3AED"/><path d="M22 11H34M52 11H64" stroke="#1E293B" stroke-width="1.4"/></svg>`,
+      sub: "Query &rarr; Vector Top-K &rarr; LLM"
+    },
+    {
+      title: "Advanced RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><rect x="2" y="5" width="14" height="12" rx="2" fill="#3B82F6"/><rect x="24" y="5" width="14" height="12" rx="2" fill="#0284C7"/><rect x="46" y="5" width="14" height="12" rx="2" fill="#EA580C"/><rect x="68" y="5" width="14" height="12" rx="2" fill="#7C3AED"/><path d="M16 11H24M38 11H46M60 11H68" stroke="#1E293B" stroke-width="1.3"/></svg>`,
+      sub: "Rewrite + Cross-Encoder Rerank"
+    },
+    {
+      title: "Multi-Query RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><circle cx="10" cy="11" r="4" fill="#2563EB"/><rect x="34" y="2" width="16" height="5" rx="1" fill="#0284C7"/><rect x="34" y="9" width="16" height="5" rx="1" fill="#0284C7"/><rect x="34" y="16" width="16" height="5" rx="1" fill="#0284C7"/><circle cx="74" cy="11" r="4" fill="#7C3AED"/><path d="M14 11L34 4M14 11H34M14 11L34 18M50 4L70 11M50 11H70M50 18L70 11" stroke="#475569" stroke-width="1.1"/></svg>`,
+      sub: "Parallel Sub-Query Fan-Out + RRF"
+    },
+    {
+      title: "Sub-Question RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><polygon points="10,4 18,11 10,18 2,11" fill="#EA580C"/><rect x="30" y="5" width="20" height="12" rx="2" fill="#0D9488"/><rect x="62" y="5" width="20" height="12" rx="2" fill="#7C3AED"/><path d="M18 11H30M50 11H62" stroke="#1E293B" stroke-width="1.4"/></svg>`,
+      sub: "Decompose Complex Multi-Hop Qs"
+    },
+    {
+      title: "Graph RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><circle cx="18" cy="6" r="3.5" fill="#0D9488"/><circle cx="12" cy="17" r="3.5" fill="#0D9488"/><circle cx="28" cy="16" r="3.5" fill="#0D9488"/><path d="M18 6L12 17L28 16Z" stroke="#0D9488" stroke-width="1.2" fill="none"/><rect x="54" y="5" width="24" height="12" rx="2" fill="#7C3AED"/><path d="M32 12H54" stroke="#1E293B" stroke-width="1.4"/></svg>`,
+      sub: "Knowledge Graph + Vector Hybrid"
+    },
+    {
+      title: "Agentic RAG",
+      svg: `<svg width="86" height="22" viewBox="0 0 86 22" style="display:inline-block;"><rect x="6" y="5" width="22" height="12" rx="2" fill="#7C3AED"/><circle cx="46" cy="6" r="3.5" fill="#2563EB"/><circle cx="46" cy="16" r="3.5" fill="#16A34A"/><rect x="64" y="5" width="16" height="12" rx="2" fill="#0F2A4A"/><path d="M28 9L42 6M28 13L42 16M50 6L64 9M50 16L64 13" stroke="#475569" stroke-width="1.2"/></svg>`,
+      sub: "Tool Routing + Self-Reflection"
+    }
   ];
   ragPatterns.forEach((rp, idx) => {
     const rpx = 26 + idx * 138;
-    cell(`rp_${idx}`, `<div style="font-size:7.5px;font-weight:900;color:#1E40AF;text-align:center;">${rp.title}</div><div style="font-size:12px;text-align:center;margin:4px 0;">${rp.flow}</div><div style="font-size:8px;color:#64748B;text-align:center;">${rp.sub}</div>`, rpx, 526, 128, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
+    cell(`rp_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${rp.title}</div><div style="text-align:center;margin:4px 0;">${rp.svg}</div><div style="font-size:8px;color:#475569;text-align:center;line-height:1.15;">${rp.sub}</div>`, rpx, 526, 128, 96, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=3;");
   });
 
   // RAG Response Example (w=346, x=874)

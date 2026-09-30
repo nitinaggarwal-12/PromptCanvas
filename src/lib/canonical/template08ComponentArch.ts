@@ -26,37 +26,8 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   // =========================================================================
   // 1. TOP HEADER BANNER & LOGO
   // =========================================================================
-  const subTitle = isRetail
-    ? "08 — COMPONENT ARCHITECTURE | OMNIVUE Hyper-Scale Omnichannel E-Commerce Platform"
-    : isFintech
-    ? "08 — COMPONENT ARCHITECTURE | NEXUSFIN High-Speed Wealth Engine"
-    : isManufacturing
-    ? "08 — COMPONENT ARCHITECTURE | SYNACTIVE Industrial IoT & Drone Fleet Platform"
-    : isSaas
-    ? "08 — COMPONENT ARCHITECTURE | AETHER Multi-Tenant Cloud Platform"
-    : "08 — COMPONENT ARCHITECTURE | Enterprise Architecture Platform";
-
-  const familySub = isRetail
-    ? "Core Architecture Family | Omnichannel Retail &amp; Logistics"
-    : isFintech
-    ? "Core Architecture Family | Autonomous FinTech &amp; Wealth"
-    : isManufacturing
-    ? "Core Architecture Family | Industrial IoT &amp; Autonomous Fleet"
-    : isSaas
-    ? "Core Architecture Family | Autonomous Multi-Tenant SaaS"
-    : "Core Architecture Family | Enterprise Product";
-
-  const brandIcon = isRetail ? "●" : isFintech ? "●" : isManufacturing ? "●" : isSaas ? "●" : "●";
-  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isManufacturing ? "SYNACTIVE" : isSaas ? "AETHER" : "ENTERPRISE";
-  const brandTagline = isRetail
-    ? "Hyper-Scale Commerce. Intelligent Fulfillment."
-    : isFintech
-    ? "Autonomous Wealth. Zero-Latency Execution."
-    : isManufacturing
-    ? "Industrial IoT. Real-Time Telemetry."
-    : isSaas
-    ? "Autonomous Multi-Tenant Cloud Scale."
-    : "Scalable. Resilient. Secure.";
+  const subTitle = "C4 Component Architecture";
+  const familySub = "C4 Level 3 Component Boundary — Controllers, Domain Services, AI Orchestrators &amp; Data Adapters";
 
   const titleHtml = `<table style="border-collapse:collapse;">
     <tr>
@@ -64,23 +35,12 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
         <span style="font-size:24px;font-weight:900;color:#FFFFFF;font-family:sans-serif;">08</span>
       </td>
       <td style="padding-left:14px;vertical-align:middle;">
-        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;font-family:sans-serif;">${subTitle}</div>
-        <div style="font-size:12.5px;font-weight:600;color:#64748B;margin-top:2px;">${familySub}</div>
+        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;font-family:sans-serif;">${subTitle}</div>
+        <div style="font-size:12px;font-weight:600;color:#64748B;margin-top:2px;">${familySub}</div>
       </td>
     </tr>
   </table>`;
-  text("header_title", titleHtml, 20, 14, 950, 52, "align=left;");
-
-  const logoHtml = `<table style="text-align:right;float:right;">
-    <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;">${brandIcon}</span></td>
-      <td style="vertical-align:middle;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">${brandName}</div>
-        <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">${brandTagline}</div>
-      </td>
-    </tr>
-  </table>`;
-  text("header_logo", logoHtml, 1260, 14, 280, 48, "align=right;");
+  text("header_title", titleHtml, 20, 14, 1150, 52, "align=left;");
 
   // =========================================================================
   // 2. PRIMARY USERS TOP BAR (x: 210 to 1330, y: 70 to 118)
@@ -984,33 +944,34 @@ export function generateTemplate08ComponentArchXml(domainFlavor = "biopharma", t
   c.push(`<mxCell id="arr_lyE_to_ext4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="ly_box_E" target="ext_card_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // 4. Inter-Tier Vertical Arrows between Layer Components (A <-> B <-> C <-> D <-> E <-> F <-> G)
+  // Routed via columns 1..4 (x >= 450) so zero vertical arrows ever cross the left-aligned layer titles (x=244..404)
   // Layer A <-> B (Synchronous Solid Blue)
-  c.push(`<mxCell id="arr_ly_A_to_B_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.2;entryY=0;" edge="1" parent="1" source="it_A_0" target="it_B_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_A_to_B_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_1" target="it_B_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_A_to_B_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_1" target="it_B_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_A_to_B_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_2" target="it_B_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_A_to_B_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_A_3" target="it_B_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Layer B <-> C (Synchronous Solid Blue)
-  c.push(`<mxCell id="arr_ly_B_to_C_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_0" target="it_C_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_B_to_C_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_3" target="it_C_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_B_to_C_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_4" target="it_C_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_B_to_C_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_1" target="it_C_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_B_to_C_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_3" target="it_C_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_B_to_C_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_B_4" target="it_C_5"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Layer C <-> D (AI & Knowledge Purple Dashed)
-  c.push(`<mxCell id="arr_ly_C_to_D_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_0" target="it_D_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_C_to_D_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_4" target="it_D_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_C_to_D_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_1" target="it_D_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_C_to_D_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_3" target="it_D_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_C_to_D_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_C_5" target="it_D_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Layer D <-> E (AI & Knowledge Purple Dashed / Blue)
-  c.push(`<mxCell id="arr_ly_D_to_E_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_0" target="it_E_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_D_to_E_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_1" target="it_E_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_D_to_E_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_3" target="it_E_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_D_to_E_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=4 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_D_4" target="it_E_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Layer E <-> F (Async Event Orange Dashed)
-  c.push(`<mxCell id="arr_ly_E_to_F_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_0" target="it_F_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_E_to_F_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_1" target="it_F_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
-  c.push(`<mxCell id="arr_ly_E_to_F_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_3" target="it_F_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_E_to_F_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_1" target="it_F_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_E_to_F_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_2" target="it_F_2"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_E_to_F_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=1.5;dashed=1;dashPattern=6 4;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_E_4" target="it_F_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Layer F <-> G (Cross-cutting / Control Slate Dashed)
-  c.push(`<mxCell id="arr_ly_F_to_G_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_0" target="it_G_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="arr_ly_F_to_G_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_1" target="it_G_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_F_to_G_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_2" target="it_G_3"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="arr_ly_F_to_G_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#475569;strokeWidth=1.5;startArrow=classic;startFill=1;endArrow=classic;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="it_F_4" target="it_G_4"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 

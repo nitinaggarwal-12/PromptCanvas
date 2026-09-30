@@ -98,15 +98,16 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   // =========================================================================
   // 1. TOP HEADER BANNER
   // =========================================================================
-  const titleHtml = `<div style="font-size:24px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">02 — Capability Map | NOVACURA Bio-Pharma Platform</div>` +
-    `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">Core Architecture Family | Bio-Pharma Product</div>`;
-  cell("hdr_title", titleHtml, 16, 12, 1000, 44, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+  cell("hdr_num", "<b style='font-size:16px;color:#ffffff;'>02</b>", 16, 14, 38, 38, "rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A8A;strokeColor=#1E3A8A;fontStyle=1;align=center;");
+  const titleHtml = `<div style="font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.15;">02 — Enterprise Capability Map Architecture</div>` +
+    `<div style="font-size:11.5px;font-weight:700;color:#475569;margin-top:3px;">Core Architecture Family — L1/L2 Business Capability Taxonomy, Experience Layer, Value Outcomes &amp; Shared Digital Foundation</div>`;
+  cell("hdr_title", titleHtml, 64, 10, 1100, 46, "whiteSpace=wrap;overflow=hidden;text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   // =========================================================================
   // 2. TOP CONTAINER: USER / BUSINESS EXPERIENCE LAYER (x: 260, y: 76, w: 1080, h: 96)
   // =========================================================================
   cell("exp_layer", "", 260, 76, 1080, 96, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#C4B5FD;strokeWidth=1.5;");
-  cell("exp_title", "USER / BUSINESS EXPERIENCE LAYER", 260, 80, 1080, 16, "html=1;fontColor=#6D28D9;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("exp_title", "USER / BUSINESS EXPERIENCE LAYER", 260, 80, 1080, 16, "text;strokeColor=none;fillColor=none;html=1;fontColor=#6D28D9;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const expCards: { title: string; desc: string; icon: keyof typeof SVG }[] = [
     { title: "Role-Based Portals", desc: "Tailored experiences for every role and function", icon: "portal" },
@@ -116,7 +117,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   ];
   expCards.forEach((ec, i) => {
     const x = 274 + i * 264;
-    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(ec.icon, "#6D28D9", 20)}</div><div><div style="font-size:9.5px;font-weight:800;color:#4C1D95;line-height:1.15;">${ec.title}</div><div style="font-size:7.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${ec.desc}</div></div></div>`;
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(ec.icon, "#6D28D9", 20)}</div><div><div style="font-size:9.5px;font-weight:800;color:#4C1D95;line-height:1.15;">${ec.title}</div><div style="font-size:8px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${ec.desc}</div></div></div>`;
     cell(`exp_c_${i}`, html, x, 100, 252, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#DDD6FE;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
@@ -139,7 +140,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   ];
   outcomes.forEach((o, i) => {
     const y = 256 + i * 82;
-    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(o.icon, "#1D4ED8", 18)}</div><div><div style="font-size:9.5px;font-weight:800;color:#1E3A8A;line-height:1.15;">${o.title}</div><div style="font-size:7.5px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${o.desc}</div></div></div>`;
+    const html = `<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 6px;"><div style="padding-top:2px;">${svgIcon(o.icon, "#1D4ED8", 18)}</div><div><div style="font-size:9.5px;font-weight:800;color:#1E3A8A;line-height:1.15;">${o.title}</div><div style="font-size:8px;color:#475569;font-weight:500;line-height:1.2;margin-top:2px;">${o.desc}</div></div></div>`;
     cell(`out_c_${i}`, html, 24, y, 190, 74, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#DBEAFE;strokeWidth=1.2;html=1;align=left;verticalAlign=top;padding=2;");
   });
 
@@ -169,14 +170,10 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   });
 
   // =========================================================================
-  // 5. CENTER MAIN CONTAINER: NOVACURA Bio-Pharma Platform (x: 242, y: 196, w: 1116, h: 560)
+  // 5. CENTER MAIN CONTAINER: CORE BUSINESS CAPABILITIES (x: 242, y: 196, w: 1116, h: 560)
   // =========================================================================
   cell("core_box", "", 242, 196, 1116, 560, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#1D4ED8;strokeWidth=2.2;");
-
-  // Brand Header
-  const brandLogoSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 32 32" fill="none"><path d="M4 26L12 6L16 16L20 6L28 26H22L18 16L16 21L14 16L10 26H4Z" fill="#1D4ED8"/></svg>`;
-  const brandHtml = `<div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 0;"><div style="flex-shrink:0;">${brandLogoSvg}</div><div style="text-align:left;"><div style="font-size:20px;font-weight:900;color:#1E3A8A;letter-spacing:1px;line-height:1;">NOVACURA Bio-Pharma Platform</div><div style="font-size:10px;font-weight:800;color:#0284C7;letter-spacing:1.5px;line-height:1;margin-top:2px;">CORE BUSINESS CAPABILITIES</div></div></div>`;
-  cell("core_brand", brandHtml, 260, 204, 1080, 36, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("core_title", "CORE BUSINESS CAPABILITIES (L1–L2 DOMAIN TAXONOMY)", 260, 206, 1080, 24, "text;strokeColor=none;fillColor=none;html=1;fontColor=#1E3A8A;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;");
 
   // 8 Capability Pods Helper with proportional zero-void scaling
   const capPod = (
@@ -284,7 +281,7 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
   // 6. BOTTOM CONTAINER: SHARED DIGITAL FOUNDATION (x: 242, y: 772, w: 1116, h: 104)
   // =========================================================================
   cell("found_box", "", 242, 772, 1116, 104, "rounded=1;arcSize=4;fillColor=#F0F9FF;strokeColor=#38BDF8;strokeWidth=1.5;");
-  cell("found_title", "SHARED DIGITAL FOUNDATION", 242, 776, 1116, 16, "html=1;fontColor:#0284C7;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("found_title", "SHARED DIGITAL FOUNDATION", 242, 776, 1116, 16, "text;strokeColor=none;fillColor=none;html=1;fontColor=#0284C7;fontSize=10.5;fontStyle=1;align=center;verticalAlign=middle;");
 
   const foundationCards: { title: string; desc: string; icon: keyof typeof SVG }[] = [
     { title: "Integrations & Connectivity", desc: "Enterprise & partner systems, APIs, data exchange and ecosystem connectivity", icon: "link" },
@@ -347,16 +344,10 @@ export function generateTemplate02CapabilityMapXml(domainFlavor = "biopharma", t
     { x: 1358, y: 476 }
   ]);
 
-  // Bottom 1: Core Platform <-> Shared Foundation (Vertical Blue Double Arrow at X=800)
-  rawEdge("e_core_to_found", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
+  // Bottom: Core Platform <-> Shared Foundation (Vertical Blue Double Arrow at X=800)
+  rawEdge("e_core_to_found", "edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
     { x: 800, y: 756 },
     { x: 800, y: 772 }
-  ]);
-
-  // Bottom 2: Shared Foundation <-> Legend (Vertical Blue Double Arrow at X=800)
-  rawEdge("e_found_to_legend", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#0284C7;strokeWidth=1.8;endArrow=classic;startArrow=classic;endSize=4;startSize=4;", [
-    { x: 800, y: 876 },
-    { x: 800, y: 896 }
   ]);
 
   return `<mxfile host="embed.diagrams.net">

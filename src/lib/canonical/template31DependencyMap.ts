@@ -199,20 +199,20 @@ export function generateTemplate31DependencyMapXml(
   // 1. Dependency Catalog (y=74, h=250)
   rect("box_r_cat", "", 1224, 74, 296, 250, "strokeColor=#1E3A8A;fillColor=#FFFFFF;strokeWidth=1.5;align=left;verticalAlign=top;");
   rect("lbl_r_cat", `<b style="font-size:10.5px;color:#FFFFFF;letter-spacing:0.5px;">DEPENDENCY CATALOG (KEY)</b>`, 1224, 74, 296, 22, "fillColor=#1E3A8A;strokeColor=#1E3A8A;rounded=0;align=center;");
-  const catTableHtml = `<table style='width:100%;border-collapse:collapse;font-size:7.5px;'>
+  const catTableHtml = `<table style='width:100%;border-collapse:collapse;font-size:7px;line-height:1.12;'>
     <tr style='font-weight:800;border-bottom:1px solid #CBD5E1;background:#F8FAFC;'>
-      <td style='padding:2px;'>ID</td><td>FROM</td><td>TO</td><td>TYPE</td><td style='text-align:center;'>CRIT</td><td>OWNER</td>
+      <td style='padding:1.5px 2px;'>ID</td><td>FROM</td><td>TO</td><td>TYPE</td><td style='text-align:center;'>CRIT</td><td>OWNER</td>
     </tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-01</td><td>Web Portal</td><td>API Gateway</td><td>REST API/HTTPS</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Platform Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-02</td><td>API Gateway</td><td>Auth Service</td><td>OAuth / JWT</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Security Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-03</td><td>API Gateway</td><td>AI Service</td><td>gRPC / Internal</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>ML/AI Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-04</td><td>AI Service</td><td>Vector DB</td><td>Data Read/Write</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Data Eng Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-05</td><td>Document Processing</td><td>Document Store</td><td>Data Read/Write</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Data Eng Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-06</td><td>Search &amp; RAG Service</td><td>Data Warehouse</td><td>Data Read</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Data Eng Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-07</td><td>Reporting &amp; Analytics</td><td>Data Warehouse</td><td>Data Read</td><td style='text-align:center;color:#EAB308;font-weight:900;'>🟡</td><td>Analytics Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-08</td><td>API Gateway</td><td>Salesforce</td><td>API Integration</td><td style='text-align:center;color:#EA580C;font-weight:900;'>🟠</td><td>Integration Team</td></tr>
-    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:2px;'>D-09</td><td>All Apps</td><td>Cloud Armor / Sec</td><td>Access / Secur</td><td style='text-align:center;color:#DC2626;font-weight:900;'></td><td>Security Team</td></tr>
-    <tr><td style='padding:2px;'>D-10</td><td>All Infra</td><td>Cloud Monitoring &amp; Logging</td><td>Observability</td><td style='text-align:center;color:#16A34A;font-weight:900;'>🟢</td><td>SRE Team</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-01</td><td>Web Portal</td><td>API Gateway</td><td>REST/HTTPS</td><td style='text-align:center;color:#DC2626;font-weight:900;'>Crit</td><td>Platform</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-02</td><td>API Gateway</td><td>Auth Service</td><td>OAuth/JWT</td><td style='text-align:center;color:#DC2626;font-weight:900;'>Crit</td><td>Security</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-03</td><td>API Gateway</td><td>AI Service</td><td>gRPC/mTLS</td><td style='text-align:center;color:#DC2626;font-weight:900;'>Crit</td><td>ML/AI</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-04</td><td>AI Service</td><td>Vector DB</td><td>HNSW R/W</td><td style='text-align:center;color:#DC2626;font-weight:900;'>Crit</td><td>Data Eng</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-05</td><td>Doc Processing</td><td>Doc Store</td><td>Object R/W</td><td style='text-align:center;color:#EA580C;font-weight:900;'>High</td><td>Data Eng</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-06</td><td>Search &amp; RAG</td><td>Data Warehouse</td><td>SQL Read</td><td style='text-align:center;color:#EA580C;font-weight:900;'>High</td><td>Data Eng</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-07</td><td>Reporting BI</td><td>Data Warehouse</td><td>OLAP Read</td><td style='text-align:center;color:#CA8A04;font-weight:900;'>Med</td><td>Analytics</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-08</td><td>API Gateway</td><td>Enterprise CRM</td><td>REST Sync</td><td style='text-align:center;color:#EA580C;font-weight:900;'>High</td><td>Integration</td></tr>
+    <tr style='border-bottom:1px solid #F1F5F9;'><td style='padding:1.5px 2px;'>D-09</td><td>All Apps</td><td>WAF &amp; Edge Sec</td><td>Zero-Trust</td><td style='text-align:center;color:#DC2626;font-weight:900;'>Crit</td><td>Security</td></tr>
+    <tr><td style='padding:1.5px 2px;'>D-10</td><td>All Infra</td><td>Cloud Telemetry</td><td>OTel Logs</td><td style='text-align:center;color:#16A34A;font-weight:900;'>Low</td><td>SRE Team</td></tr>
   </table>`;
   text("txt_r_cat", catTableHtml, 1226, 98, 292, 222, "align=left;verticalAlign=top;padding=2;");
 

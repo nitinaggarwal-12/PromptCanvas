@@ -460,29 +460,29 @@ export function generateTemplate38CloudLandingZoneXml(
   cell("tier5_box", "", 172, 550, 1098, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const sharedServices = [
-    { t: "Artifact Registry<br/><span style='font-size:7px;color:#64748B;'>(Containers, Helm)</span>", svg: SVG.box, w: 104 },
-    { t: "Cloud Build / Deploy<br/><span style='font-size:7px;color:#64748B;'>(CI/CD)</span>", svg: SVG.repeat, w: 106 },
-    { t: "Secret Manager<br/><span style='font-size:7px;color:#64748B;'>(Secrets &amp; Configs)</span>", svg: SVG.lock, w: 106 },
-    { t: "Cloud KMS<br/><span style='font-size:7px;color:#64748B;'>(Encryption Keys)</span>", svg: SVG.key, w: 102 },
-    { t: "Certificate Manager<br/><span style='font-size:7px;color:#64748B;'>(TLS Certs)</span>", svg: SVG.shield, w: 104 },
-    { t: "GKE / Cloud Run<br/><span style='font-size:7px;color:#64748B;'>(Platform)</span>", svg: SVG.server, w: 102 },
-    { t: "Service Catalog<br/><span style='font-size:7px;color:#64748B;'>(Terraform / Blueprints)</span>", svg: SVG.folder, w: 114 },
-    { t: "Internal Developer Portal<br/><span style='font-size:7px;color:#64748B;'>(Backstage)</span>", svg: SVG.code, w: 118 },
-    { t: "API Management<br/><span style='font-size:7px;color:#64748B;'>(Apigee X)</span>", svg: SVG.tree, w: 102 },
-    { t: "Bastion / Admin<br/><span style='font-size:7px;color:#64748B;'>(IAP / OS Login)</span>", svg: SVG.user, w: 104 }
+    { t: "Artifact Registry<br/><span style='font-size:8px;color:#64748B;'>(Containers, Helm)</span>", svg: SVG.box, w: 102 },
+    { t: "Cloud Build / Deploy<br/><span style='font-size:8px;color:#64748B;'>(CI/CD)</span>", svg: SVG.repeat, w: 104 },
+    { t: "Secret Manager<br/><span style='font-size:8px;color:#64748B;'>(Secrets &amp; Configs)</span>", svg: SVG.lock, w: 104 },
+    { t: "Cloud KMS<br/><span style='font-size:8px;color:#64748B;'>(Encryption Keys)</span>", svg: SVG.key, w: 98 },
+    { t: "Certificate Manager<br/><span style='font-size:8px;color:#64748B;'>(TLS Certs)</span>", svg: SVG.shield, w: 102 },
+    { t: "GKE / Cloud Run<br/><span style='font-size:8px;color:#64748B;'>(Platform)</span>", svg: SVG.server, w: 98 },
+    { t: "Service Catalog<br/><span style='font-size:8px;color:#64748B;'>(Terraform / IaC)</span>", svg: SVG.folder, w: 108 },
+    { t: "Developer Portal<br/><span style='font-size:8px;color:#64748B;'>(IDP Catalog)</span>", svg: SVG.code, w: 108 },
+    { t: "API Management<br/><span style='font-size:8px;color:#64748B;'>(Apigee X)</span>", svg: SVG.tree, w: 98 },
+    { t: "Bastion / Admin<br/><span style='font-size:8px;color:#64748B;'>(IAP / OS Login)</span>", svg: SVG.user, w: 100 }
   ];
-  let curSsX = 180;
+  let curSsX = 178;
   sharedServices.forEach((ss, idx) => {
     cell(
       `ss_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;">` +
       `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${ss.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;">${ss.t}</div></div>`,
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;">${ss.t}</div></div>`,
       curSsX,
       558,
       ss.w,
       44,
-      "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
+      "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
     );
     curSsX += ss.w + 6;
   });
@@ -492,31 +492,31 @@ export function generateTemplate38CloudLandingZoneXml(
   cell("tier6_box", "", 172, 616, 1098, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const secServices = [
-    { t: "Security Command<br/>Center (SCC)", svg: SVG.shield, w: 98 },
-    { t: "Cloud Armor<br/><span style='font-size:7px;color:#64748B;'>(WAF / DDoS)</span>", svg: SVG.lock, w: 84 },
-    { t: "Cloud Logging<br/><span style='font-size:7px;color:#64748B;'>(Centralized)</span>", svg: SVG.clipboard, w: 84 },
-    { t: "Cloud Monitoring<br/><span style='font-size:7px;color:#64748B;'>(Centralized)</span>", svg: SVG.chart, w: 88 },
-    { t: "Audit Logs<br/><span style='font-size:7px;color:#64748B;'>(Admin / Data)</span>", svg: SVG.clipboard, w: 82 },
-    { t: "Policy Enforcement<br/><span style='font-size:7px;color:#64748B;'>(Org Policies)</span>", svg: SVG.bank, w: 94 },
-    { t: "DLP<br/><span style='font-size:7px;color:#64748B;'>(Data Loss Prevention)</span>", svg: SVG.search, w: 92 },
-    { t: "Cloud KMS<br/><span style='font-size:7px;color:#64748B;'>(Key Rotation)</span>", svg: SVG.key, w: 80 },
-    { t: "Vulnerability Scanning<br/><span style='font-size:7px;color:#64748B;'>(Artifact / VM)</span>", svg: SVG.alert, w: 98 },
-    { t: "Posture Management<br/><span style='font-size:7px;color:#64748B;'>(Asset Inventory)</span>", svg: SVG.clipboard, w: 94 },
-    { t: "VPC Service Controls<br/><span style='font-size:7px;color:#64748B;'>(Perimeter)</span>", svg: SVG.shield, w: 94 },
-    { t: "SIEM / SOC<br/><span style='font-size:7px;color:#64748B;'>(Compliance)</span>", svg: SVG.chart, w: 78 }
+    { t: "Security Command<br/>Center (SCC)", svg: SVG.shield, w: 92 },
+    { t: "Cloud Armor<br/><span style='font-size:8px;color:#64748B;'>(WAF / DDoS)</span>", svg: SVG.lock, w: 80 },
+    { t: "Cloud Logging<br/><span style='font-size:8px;color:#64748B;'>(Centralized)</span>", svg: SVG.clipboard, w: 80 },
+    { t: "Cloud Monitoring<br/><span style='font-size:8px;color:#64748B;'>(Centralized)</span>", svg: SVG.chart, w: 84 },
+    { t: "Audit Logs<br/><span style='font-size:8px;color:#64748B;'>(Admin / Data)</span>", svg: SVG.clipboard, w: 78 },
+    { t: "Policy Engine<br/><span style='font-size:8px;color:#64748B;'>(Org Policies)</span>", svg: SVG.bank, w: 86 },
+    { t: "Cloud DLP<br/><span style='font-size:8px;color:#64748B;'>(Data Redaction)</span>", svg: SVG.search, w: 84 },
+    { t: "Cloud KMS<br/><span style='font-size:8px;color:#64748B;'>(Key Rotation)</span>", svg: SVG.key, w: 78 },
+    { t: "Vuln Scanning<br/><span style='font-size:8px;color:#64748B;'>(Artifact / VM)</span>", svg: SVG.alert, w: 88 },
+    { t: "Posture Mgmt<br/><span style='font-size:8px;color:#64748B;'>(Asset Inventory)</span>", svg: SVG.clipboard, w: 88 },
+    { t: "VPC Service Ctrls<br/><span style='font-size:8px;color:#64748B;'>(Perimeter)</span>", svg: SVG.shield, w: 88 },
+    { t: "SIEM / SOC<br/><span style='font-size:8px;color:#64748B;'>(Compliance)</span>", svg: SVG.chart, w: 76 }
   ];
-  let curSecX = 180;
+  let curSecX = 178;
   secServices.forEach((sec, idx) => {
     cell(
       `sec_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;">` +
       `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2">${sec.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;">${sec.t}</div></div>`,
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;">${sec.t}</div></div>`,
       curSecX,
       624,
       sec.w,
       44,
-      "rounded=1;arcSize=4;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
+      "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#FEF2F2;strokeColor=#FECACA;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
     );
     curSecX += sec.w + 6;
   });
@@ -526,53 +526,53 @@ export function generateTemplate38CloudLandingZoneXml(
   cell("tier7_box", "", 172, 682, 1098, 64, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const dataServices = [
-    { t: "Pub/Sub<br/><span style='font-size:7px;color:#64748B;'>(Messaging)</span>", svg: SVG.repeat, w: 78 },
-    { t: "Dataflow<br/><span style='font-size:7px;color:#64748B;'>(Stream &amp; Batch)</span>", svg: SVG.repeat, w: 82 },
-    { t: "BigQuery<br/><span style='font-size:7px;color:#64748B;'>(Data Warehouse)</span>", svg: SVG.database, w: 88 },
-    { t: "Cloud Storage<br/><span style='font-size:7px;color:#64748B;'>(Data Lake)</span>", svg: SVG.cloud, w: 82 },
-    { t: "Dataproc<br/><span style='font-size:7px;color:#64748B;'>(Hadoop / Spark)</span>", svg: SVG.server, w: 82 },
-    { t: "Cloud Composer<br/><span style='font-size:7px;color:#64748B;'>(Orchestration)</span>", svg: SVG.tree, w: 88 },
-    { t: "Data Fusion<br/><span style='font-size:7px;color:#64748B;'>(ETL)</span>", svg: SVG.repeat, w: 74 },
-    { t: "App Integration<br/><span style='font-size:7px;color:#64748B;'>(Workflows)</span>", svg: SVG.app, w: 84 },
-    { t: "Eventarc<br/><span style='font-size:7px;color:#64748B;'>(Event Bus)</span>", svg: SVG.repeat, w: 72 },
-    { t: "Data Catalog<br/><span style='font-size:7px;color:#64748B;'>(Discovery)</span>", svg: SVG.search, w: 78 },
-    { t: "Dataplex<br/><span style='font-size:7px;color:#64748B;'>(Lake Governance)</span>", svg: SVG.shield, w: 84 },
-    { t: "Vertex AI<br/><span style='font-size:7px;color:#64748B;'>(ML Platform)</span>", svg: SVG.chart, w: 78 },
-    { t: "Vector Search<br/><span style='font-size:7px;color:#64748B;'>(Knowledge)</span>", svg: SVG.search, w: 80 }
+    { t: "Pub/Sub<br/><span style='font-size:8px;color:#64748B;'>(Messaging)</span>", svg: SVG.repeat, w: 76 },
+    { t: "Dataflow<br/><span style='font-size:8px;color:#64748B;'>(Stream &amp; Batch)</span>", svg: SVG.repeat, w: 80 },
+    { t: "BigQuery<br/><span style='font-size:8px;color:#64748B;'>(Data Warehouse)</span>", svg: SVG.database, w: 84 },
+    { t: "Cloud Storage<br/><span style='font-size:8px;color:#64748B;'>(Data Lake)</span>", svg: SVG.cloud, w: 80 },
+    { t: "Dataproc<br/><span style='font-size:8px;color:#64748B;'>(Hadoop / Spark)</span>", svg: SVG.server, w: 80 },
+    { t: "Cloud Composer<br/><span style='font-size:8px;color:#64748B;'>(Orchestration)</span>", svg: SVG.tree, w: 84 },
+    { t: "Data Fusion<br/><span style='font-size:8px;color:#64748B;'>(ETL)</span>", svg: SVG.repeat, w: 72 },
+    { t: "App Integration<br/><span style='font-size:8px;color:#64748B;'>(Workflows)</span>", svg: SVG.app, w: 82 },
+    { t: "Eventarc<br/><span style='font-size:8px;color:#64748B;'>(Event Bus)</span>", svg: SVG.repeat, w: 70 },
+    { t: "Data Catalog<br/><span style='font-size:8px;color:#64748B;'>(Discovery)</span>", svg: SVG.search, w: 76 },
+    { t: "Dataplex<br/><span style='font-size:8px;color:#64748B;'>(Lake Governance)</span>", svg: SVG.shield, w: 80 },
+    { t: "Vertex AI<br/><span style='font-size:8px;color:#64748B;'>(ML Platform)</span>", svg: SVG.chart, w: 76 },
+    { t: "Vector Search<br/><span style='font-size:8px;color:#64748B;'>(Knowledge)</span>", svg: SVG.search, w: 78 }
   ];
-  let curDsX = 180;
+  let curDsX = 178;
   dataServices.forEach((ds, idx) => {
     cell(
       `ds_${idx}`,
       `<div style="display:flex;align-items:center;gap:4px;">` +
       `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2">${ds.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;">${ds.t}</div></div>`,
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;">${ds.t}</div></div>`,
       curDsX,
       688,
       ds.w,
       40,
-      "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
+      "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;html=1;align=left;verticalAlign=middle;padding=2;"
     );
-    curDsX += ds.w + 6;
+    curDsX += ds.w + 5;
   });
-  cell("t7_footer", `<div style="font-size:7.5px;font-weight:800;color:#64748B;text-align:center;">Application / Data / AI Teams Consume Shared Services Securely via IAM, VPC, and Policy Guardrails</div>`, 172, 730, 1098, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("t7_footer", `<div style="font-size:8px;font-weight:800;color:#64748B;text-align:center;">Application / Data / AI Teams Consume Shared Services Securely via IAM, VPC, and Policy Guardrails</div>`, 172, 730, 1098, 14, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // ==================== TIER 8: RELIABILITY, BACKUP, DR & PLATFORM OPERATIONS (y=752..812, h=60) ====================
   tierBadge("8", "Reliability, Backup,<br/>DR &amp; Platform<br/>Operations", 752, 60, "#0284C7");
   cell("tier8_box", "", 172, 752, 1098, 60, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const opsServices = [
-    { t: "Backup &amp; DR<br/><span style='font-size:7px;color:#64748B;'>(Org Policy)</span>", svg: SVG.shield, w: 90 },
-    { t: "Cloud Backup<br/><span style='font-size:7px;color:#64748B;'>(Backups)</span>", svg: SVG.cloud, w: 86 },
-    { t: "Cross-Region Replic.<br/><span style='font-size:7px;color:#64748B;'>(Storage/DB)</span>", svg: SVG.globe, w: 98 },
-    { t: "DR Testing<br/><span style='font-size:7px;color:#64748B;'>(Runbooks)</span>", svg: SVG.clipboard, w: 84 },
-    { t: "SRE / Platform Ops<br/><span style='font-size:7px;color:#64748B;'>(Engineering)</span>", svg: SVG.gear, w: 98 },
-    { t: "Incident Mgmt<br/><span style='font-size:7px;color:#64748B;'>(PagerDuty)</span>", svg: SVG.alert, w: 88 },
-    { t: "Monitoring Dash.<br/><span style='font-size:7px;color:#64748B;'>(Grafana/Cloud)</span>", svg: SVG.chart, w: 96 },
-    { t: "SLO / SLA Mgmt<br/><span style='font-size:7px;color:#64748B;'>(Objectives)</span>", svg: SVG.checkCircle, w: 90 },
-    { t: "Runbooks &amp; Auto.<br/><span style='font-size:7px;color:#64748B;'>(Cloud Runbooks)</span>", svg: SVG.code, w: 96 },
-    { t: "Multi-Region Resil.<br/><span style='font-size:7px;color:#64748B;'>(Active/Active)</span>", svg: SVG.globe, w: 98 },
-    { t: "Platform Health<br/><span style='font-size:7px;color:#64748B;'>(Health Checks)</span>", svg: SVG.checkCircle, w: 88 }
+    { t: "Backup &amp; DR<br/><span style='font-size:8px;color:#64748B;'>(Org Policy)</span>", svg: SVG.shield, w: 90 },
+    { t: "Cloud Backup<br/><span style='font-size:8px;color:#64748B;'>(Backups)</span>", svg: SVG.cloud, w: 86 },
+    { t: "Cross-Region Replic.<br/><span style='font-size:8px;color:#64748B;'>(Storage/DB)</span>", svg: SVG.globe, w: 98 },
+    { t: "DR Testing<br/><span style='font-size:8px;color:#64748B;'>(Runbooks)</span>", svg: SVG.clipboard, w: 84 },
+    { t: "SRE / Platform Ops<br/><span style='font-size:8px;color:#64748B;'>(Engineering)</span>", svg: SVG.gear, w: 98 },
+    { t: "Incident Mgmt<br/><span style='font-size:8px;color:#64748B;'>(On-Call Routing)</span>", svg: SVG.alert, w: 88 },
+    { t: "Monitoring Dash.<br/><span style='font-size:8px;color:#64748B;'>(Cloud Metrics)</span>", svg: SVG.chart, w: 96 },
+    { t: "SLO / SLA Mgmt<br/><span style='font-size:8px;color:#64748B;'>(Objectives)</span>", svg: SVG.checkCircle, w: 90 },
+    { t: "Runbooks &amp; Auto.<br/><span style='font-size:8px;color:#64748B;'>(Cloud Runbooks)</span>", svg: SVG.code, w: 96 },
+    { t: "Multi-Region Resil.<br/><span style='font-size:8px;color:#64748B;'>(Active/Active)</span>", svg: SVG.globe, w: 98 },
+    { t: "Platform Health<br/><span style='font-size:8px;color:#64748B;'>(Health Checks)</span>", svg: SVG.checkCircle, w: 88 }
   ];
   let curOpsX = 180;
   opsServices.forEach((ops, idx) => {

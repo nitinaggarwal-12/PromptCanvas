@@ -20,6 +20,7 @@
 
 const E = (v?: string | null) =>
   (v ?? "")
+    .replace(/&amp;/g, "&")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -68,10 +69,12 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   const isFintech = domainFlavor === "fintech";
   const isMfg = domainFlavor === "manufacturing" || domainFlavor === "energy";
 
-  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) => {
+    const normStyle = v ? (style.includes("whiteSpace=wrap") ? style : `whiteSpace=wrap;html=1;${style}`) : style;
     c.push(
-      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${normStyle}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
+  };
 
   const rawEdge = (
     id: string,
@@ -107,11 +110,11 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     : "End-to-End Enterprise Architecture, Workflow Choreography &amp; Quality Gates";
 
   const platformName = isRetail
-    ? "OMNIVUE RETAIL &amp; SUPPLY CHAIN"
+    ? "COMMERCE &amp; SUPPLY CHAIN PLATFORM"
     : isFintech
-    ? "NEXUSFIN WEALTH &amp; PAYMENTS"
+    ? "WEALTH &amp; PAYMENTS PLATFORM"
     : isMfg
-    ? "SYNACTIVE SMART GRID &amp; INDUSTRIAL IOT"
+    ? "SMART GRID &amp; INDUSTRIAL IOT PLATFORM"
     : "ENTERPRISE ARCHITECTURE PLATFORM";
 
   const brandTag = isRetail
@@ -122,7 +125,7 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     ? "Industrial IoT. Real-Time Telemetry."
     : "Scalable. Resilient. Secure.";
 
-  const brandName = isRetail ? "OMNIVUE" : isFintech ? "NEXUSFIN" : isMfg ? "SYNACTIVE" : "ENTERPRISE";
+  const brandName = "ENTERPRISE";
 
   const titleHtml = `<div style="font-size:22px;font-weight:900;color:#0F172A;letter-spacing:-0.2px;line-height:1.1;">BUSINESS PROCESS / SWIMLANE — ${platformName}</div>` +
     `<div style="font-size:13px;font-weight:700;color:#475569;margin-top:2px;">${subTitle}</div>`;
@@ -199,8 +202,8 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
         { id: "lane_security", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "PAYMENT &amp; FRAUD<br/>SECURITY", desc: "PCI tokenization &amp;<br/>fraud scoring" },
         { id: "lane_wms", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "WAREHOUSE<br/>OPERATIONS (WMS)", desc: "Slotting, pick &amp; pack,<br/>cross-docking" },
         { id: "lane_carrier", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "CARRIER &amp; 3PL<br/>LOGISTICS", desc: "Route optimization &amp;<br/>last-mile dispatch" },
-        { id: "lane_shopper", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "SHOPPER &amp; PRIME<br/>CUSTOMER", desc: "Real-time tracking &amp;<br/>delivery confirmation" },
-        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "DATA &amp; EVENT<br/>STREAM PLATFORM", desc: "Kafka telemetry &amp;<br/>Spanner inventory" },
+        { id: "lane_shopper", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "SHOPPER &amp; LOYALTY<br/>CUSTOMER", desc: "Real-time tracking &amp;<br/>delivery confirmation" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "DATA &amp; EVENT<br/>STREAM PLATFORM", desc: "Event telemetry &amp;<br/>Spanner inventory" },
       ]
     : isFintech
     ? [
@@ -209,7 +212,7 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
         { id: "lane_risk", y: 290, h: 94, icon: "shieldCheck", color: "#0D9488", title: "RISK &amp; COMPLIANCE<br/>(SEC / FINRA)", desc: "Pre-trade limits &amp;<br/>AML sanctions check" },
         { id: "lane_matching", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "MATCHING ENGINE<br/>&amp; DMA", desc: "Sub-ms execution &amp;<br/>liquidity pool fill" },
         { id: "lane_clearing", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "CLEARING &amp; CUSTODY<br/>(DTCC / SWIFT)", desc: "RTGS settlement &amp;<br/>ISO 20022 wire" },
-        { id: "lane_client", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "CLIENT INVESTOR<br/>&amp; WEALTH", desc: "Portfolio dashboard<br/>&amp; P&L confirmation" },
+        { id: "lane_client", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "CLIENT INVESTOR<br/>&amp; WEALTH", desc: "Portfolio dashboard<br/>&amp; P&amp;L confirmation" },
         { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "CORE FINANCIAL<br/>SPANNER LEDGER", desc: "Double-entry general<br/>ledger &amp; audit trail" },
       ]
     : isMfg
@@ -220,7 +223,7 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
         { id: "lane_bess", y: 384, h: 94, icon: "factory", color: "#6D28D9", title: "BESS &amp; MICROGRID<br/>INVERTERS", desc: "Battery energy storage<br/>&amp; solar power flow" },
         { id: "lane_trading", y: 478, h: 94, icon: "truck", color: "#EA580C", title: "ENERGY TRADING<br/>&amp; P2P SETTLEMENT", desc: "Renewable credit ledger<br/>&amp; utility billing" },
         { id: "lane_operator", y: 572, h: 94, icon: "heartUser", color: "#059669", title: "UTILITY &amp; GRID<br/>OPERATORS", desc: "Grid stability view &amp;<br/>demand response alerts" },
-        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "SPANNER TELEMETRY<br/>&amp; TIME-SERIES MESH", desc: "Kafka real-time stream<br/>&amp; BigQuery analytics" },
+        { id: "lane_platform", y: 666, h: 118, icon: "database", color: "#0F2A4A", title: "SPANNER TELEMETRY<br/>&amp; TIME-SERIES MESH", desc: "Real-time stream<br/>&amp; BigQuery analytics" },
       ]
     : [
         { id: "lane_research", y: 102, h: 94, icon: "microscope", color: "#166534", title: "RESEARCH<br/>SCIENTIST", desc: "Discover &amp; validate<br/>novel therapies" },
@@ -234,14 +237,14 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
 
   lanes.forEach((lane, idx) => {
     if (idx > 0) {
-      rawEdge(`div_lane_${idx}`, "edgeStyle=none;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;", [
+      rawEdge(`div_lane_${idx}`, "edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#E2E8F0;strokeWidth=1.2;endArrow=none;", [
         { x: 16, y: lane.y },
         { x: 1584, y: lane.y }
       ]);
     }
 
     // Lane Role Pod (Left Column x=16..196)
-    const podHtml = `<div style="display:flex;align-items:center;gap:8px;padding:4px 6px;"><div style="width:34px;height:34px;border-radius:17px;background:${lane.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${svgIcon(lane.icon as keyof typeof SVG, "#FFFFFF", 18)}</div><div><div style="font-size:9.5px;font-weight:900;color:${lane.color};line-height:1.15;">${lane.title}</div><div style="font-size:7.5px;color:#64748B;font-weight:500;line-height:1.15;margin-top:2px;">${lane.desc}</div></div></div>`;
+    const podHtml = `<div style="display:flex;align-items:center;gap:8px;padding:4px 6px;"><div style="width:34px;height:34px;border-radius:17px;background:${lane.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">${svgIcon(lane.icon as keyof typeof SVG, "#FFFFFF", 18)}</div><div><div style="font-size:9.5px;font-weight:900;color:${lane.color};line-height:1.15;">${lane.title}</div><div style="font-size:8px;color:#64748B;font-weight:500;line-height:1.15;margin-top:2px;">${lane.desc}</div></div></div>`;
     cell(`${lane.id}_pod`, podHtml, 16, lane.y, 184, lane.h, "text;html=1;strokeColor=none;fillColor=#FFFFFF;align=left;verticalAlign=middle;padding=2;");
   });
 
@@ -252,29 +255,29 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   };
 
   const decisionDiamond = (id: string, title: string, x: number, y: number, w: number, h: number, strokeColor = "#F59E0B", fillColor = "#FFFBEB") => {
-    const html = `<div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;">${title.replace("\n", "<br/>")}</div>`;
+    const html = `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;line-height:1.1;">${title.replace("\n", "<br/>")}</div>`;
     cell(id, html, x, y, w, h, `rhombus;whiteSpace=wrap;html=1;fillColor=${fillColor};strokeColor=${strokeColor};strokeWidth=1.5;align=center;verticalAlign=middle;padding=2;`);
   };
 
   // --- ROW 1: RESEARCH SCIENTIST (y=102..196, centerY=149) ---
-  stepCard("card_id_targets", "Identify\nTargets", 220, 122, 78, 54, "#166534", "target");
-  stepCard("card_lead_disc", "Lead\nDiscovery", 324, 122, 78, 54, "#166534", "flask");
-  stepCard("card_lead_opt", "Lead\nOptimization", 428, 122, 84, 54, "#166534", "molecule");
-  stepCard("card_cand_sel", "Candidate\nSelection", 552, 122, 84, 54, "#1D4ED8", "documentCheck");
-  stepCard("card_preclin", "Preclinical\nStudies", 662, 122, 84, 54, "#1D4ED8", "flask");
+  stepCard("card_id_targets", "Identify\nTargets", 220, 118, 78, 52, "#166534", "target");
+  stepCard("card_lead_disc", "Lead\nDiscovery", 324, 118, 78, 52, "#166534", "flask");
+  stepCard("card_lead_opt", "Lead\nOptimization", 428, 118, 84, 52, "#166534", "molecule");
+  stepCard("card_cand_sel", "Candidate\nSelection", 552, 118, 84, 52, "#1D4ED8", "documentCheck");
+  stepCard("card_preclin", "Preclinical\nStudies", 662, 118, 84, 52, "#1D4ED8", "flask");
 
-  // Decision 1: Proceed to Clinical Trials? (Centered between Row 1 and Row 2)
-  decisionDiamond("dec_proceed_trials", "Proceed to\nClinical\nTrials?", 620, 196, 76, 50, "#10B981", "#ECFDF5");
+  // Decision 1: Proceed to Clinical Trials? (Positioned with 16px clear separation above Row 2 cards)
+  decisionDiamond("dec_proceed_trials", "Proceed to\nClinical\nTrials?", 610, 178, 76, 48, "#10B981", "#ECFDF5");
 
   // --- ROW 2: CLINICAL OPERATIONS (y=196..290, centerY=243) ---
-  stepCard("card_ind_sub", "IND\nSubmission", 500, 240, 78, 50, "#1D4ED8", "documentCheck");
-  stepCard("card_phase1", "Clinical Trials\nPhase I", 606, 240, 84, 50, "#1D4ED8", "users");
-  stepCard("card_phase2", "Clinical Trials\nPhase II", 716, 240, 84, 50, "#1D4ED8", "users");
-  stepCard("card_phase3", "Clinical Trials\nPhase III", 826, 240, 84, 50, "#1D4ED8", "users");
-  stepCard("card_nda_sub", "NDA / BLA\nSubmission", 936, 240, 84, 50, "#1D4ED8", "documentCheck");
+  stepCard("card_ind_sub", "IND\nSubmission", 500, 240, 78, 48, "#1D4ED8", "documentCheck");
+  stepCard("card_phase1", "Clinical Trials\nPhase I", 606, 240, 84, 48, "#1D4ED8", "users");
+  stepCard("card_phase2", "Clinical Trials\nPhase II", 716, 240, 84, 48, "#1D4ED8", "users");
+  stepCard("card_phase3", "Clinical Trials\nPhase III", 826, 240, 84, 48, "#1D4ED8", "users");
+  stepCard("card_nda_sub", "NDA / BLA\nSubmission", 936, 240, 84, 48, "#1D4ED8", "documentCheck");
 
   // Decision 2: Regulatory Approval? (Between Row 2 and Row 3)
-  decisionDiamond("dec_reg_approval", "Regulatory\nApproval?", 1080, 240, 80, 50, "#F59E0B", "#FFFBEB");
+  decisionDiamond("dec_reg_approval", "Regulatory\nApproval?", 1080, 240, 80, 48, "#F59E0B", "#FFFBEB");
 
   // --- ROW 3: REGULATORY AFFAIRS (y=290..384, centerY=337) ---
   stepCard("card_reg_strat", "Regulatory\nStrategy", 220, 310, 80, 54, "#0D9488", "document");
@@ -303,7 +306,7 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
   const platformPods = isRetail
     ? [
         { title: "Catalog & SKU<br/>Data Ingestion", icon: "database", x: 216, w: 104 },
-        { title: "Real-Time Event<br/>Stream (Kafka)", icon: "network", x: 326, w: 104 },
+        { title: "Real-Time Event<br/>Stream (Pub/Sub)", icon: "network", x: 326, w: 104 },
         { title: "Recommendation &<br/>Pricing ML (Vertex)", icon: "brain", x: 436, w: 104 },
         { title: "Order History &<br/>Inventory Ledger", icon: "folder", x: 546, w: 114 },
         { title: "PCI Tokenizer &<br/>Fraud Shield", icon: "shieldCheck", x: 666, w: 108 },
@@ -313,7 +316,7 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     : isFintech
     ? [
         { title: "Tick & Quote<br/>Feed Ingestion", icon: "database", x: 216, w: 104 },
-        { title: "Sub-ms Event<br/>Mesh (Kafka/Flink)", icon: "network", x: 326, w: 104 },
+        { title: "Sub-ms Event<br/>Mesh (Pub/Sub)", icon: "network", x: 326, w: 104 },
         { title: "Vertex AI Real-Time<br/>Fraud Anomaly ML", icon: "brain", x: 436, w: 104 },
         { title: "Cloud Spanner<br/>Double-Entry Ledger", icon: "folder", x: 546, w: 114 },
         { title: "KMS Tokenizer &<br/>mTLS Zero-Trust", icon: "shieldCheck", x: 666, w: 108 },
@@ -323,11 +326,11 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
     : isMfg
     ? [
         { title: "OCPP & MQTT<br/>Sensor Ingestion", icon: "database", x: 216, w: 104 },
-        { title: "Time-Series Telemetry<br/>Stream (Kafka)", icon: "network", x: 326, w: 104 },
+        { title: "Time-Series Telemetry<br/>Stream (Pub/Sub)", icon: "network", x: 326, w: 104 },
         { title: "Vertex AI Dynamic<br/>Load Balancer ML", icon: "brain", x: 436, w: 104 },
         { title: "Cloud Spanner<br/>Energy & V2G Ledger", icon: "folder", x: 546, w: 114 },
         { title: "ISO 15118 Security<br/>& HSM Enclave", icon: "shieldCheck", x: 666, w: 108 },
-        { title: "Grid Audit Trail<br/>& Billing Lineage", icon: "search", x: 780, w: 98 },
+        { title: "Grid Audit Trail<br/>& Billing Lineage", icon: "search", x: 680, w: 98 },
         { title: "Grid Telemetry &<br/>BESS Dashboards", icon: "chart", x: 884, w: 98 },
       ]
     : [
@@ -341,85 +344,86 @@ export function generateTemplate03SwimlaneXml(domainFlavor = "biopharma", theme:
       ];
 
   platformPods.forEach((pod, i) => {
-    const html = `<div style="text-align:center;padding:4px 2px;"><div style="display:flex;justify-content:center;margin-bottom:2px;">${svgIcon(pod.icon as keyof typeof SVG, "#0F2A4A", 18)}</div><div style="font-size:7.5px;font-weight:800;color:#0F2A4A;line-height:1.15;">${pod.title}</div></div>`;
+    const html = `<div style="text-align:center;padding:4px 2px;"><div style="display:flex;justify-content:center;margin-bottom:2px;">${svgIcon(pod.icon as keyof typeof SVG, "#0F2A4A", 18)}</div><div style="font-size:8px;font-weight:800;color:#0F2A4A;line-height:1.15;">${pod.title}</div></div>`;
     cell(`pod_plat_${i}`, html, pod.x, 680, pod.w, 90, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Right Enclosure inside Row 7: KEY SYSTEMS & TOOLS (Examples) (x: 994..1572, w: 578, h: 90)
   const sysTools = isRetail
     ? [
-        { title: "Stripe", sub: "PCI CDE Vault", color: "#635BFF" },
-        { title: "Shopify", sub: "Commerce API", color: "#96BF48" },
-        { title: "SAP S/4", sub: "Inventory ERP", color: "#0F172A" },
-        { title: "Manhattan", sub: "Active WMS", color: "#0284C7" },
-        { title: "FedEx/UPS", sub: "Carrier Fleet", color: "#EA580C" },
+        { title: "Payment Vault", sub: "PCI CDE Vault", color: "#635BFF" },
+        { title: "Commerce API", sub: "Storefront Core", color: "#16A34A" },
+        { title: "Enterprise ERP", sub: "Inventory ERP", color: "#0F172A" },
+        { title: "Active WMS", sub: "Warehouse Mgmt", color: "#0284C7" },
+        { title: "Carrier Fleet", sub: "3PL Logistics", color: "#EA580C" },
       ]
     : isFintech
     ? [
-        { title: "Bloomberg", sub: "Market Feed", color: "#EA580C" },
+        { title: "Market Feed", sub: "Tick & Quote", color: "#EA580C" },
         { title: "FIX 4.4", sub: "DMA Gateway", color: "#0284C7" },
-        { title: "Plaid", sub: "Open Banking", color: "#0F172A" },
-        { title: "DTCC", sub: "RTGS Clearing", color: "#2563EB" },
-        { title: "Swift", sub: "ISO 20022", color: "#16A34A" },
+        { title: "Open Banking", sub: "Account Link", color: "#0F172A" },
+        { title: "RTGS Clearing", sub: "Custody Core", color: "#2563EB" },
+        { title: "ISO 20022", sub: "Wire Network", color: "#16A34A" },
       ]
     : isMfg
     ? [
         { title: "OCPP 2.0", sub: "EV Protocol", color: "#16A34A" },
-        { title: "Tesla BESS", sub: "Megapack Invert", color: "#DC2626" },
-        { title: "SAP PM", sub: "Plant ERP", color: "#0F172A" },
+        { title: "Grid BESS", sub: "Inverter Array", color: "#DC2626" },
+        { title: "Plant ERP", sub: "Asset Mgmt", color: "#0F172A" },
         { title: "MQTT Edge", sub: "SCADA Broker", color: "#0284C7" },
         { title: "ISO 15118", sub: "Plug & Charge", color: "#7C3AED" },
       ]
     : [
-        { title: "Veeva", sub: "Veeva Vault", color: "#EA580C" },
-        { title: "Medidata", sub: "Rave EDC", color: "#0284C7" },
-        { title: "SAP", sub: "S/4HANA", color: "#0F172A" },
-        { title: "IQVIA", sub: "Orchestrate", color: "#2563EB" },
-        { title: "Salesforce", sub: "Health Cloud", color: "#0284C7" },
+        { title: "Reg Vault", sub: "eTMF / RIM", color: "#EA580C" },
+        { title: "Clinical EDC", sub: "Trial Capture", color: "#0284C7" },
+        { title: "Core ERP", sub: "Supply & Finance", color: "#0F172A" },
+        { title: "RWE Hub", sub: "Trial Orchestration", color: "#2563EB" },
+        { title: "Health CRM", sub: "Patient Portal", color: "#0284C7" },
       ];
 
-  const sysBoxHtml = `<div style="padding:4px 6px;">
+  const sysBoxHtml = `<div style="padding:4px 8px;width:560px;box-sizing:border-box;">
     <div style="font-size:8.5px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;text-align:center;margin-bottom:4px;">KEY SYSTEMS &amp; TOOLS (Examples)</div>
-    <div style="display:flex;justify-content:space-around;align-items:center;margin-bottom:4px;">
-      ${sysTools.map(t => `<div style="text-align:center;"><div style="font-size:10px;font-weight:900;color:${t.color};">${t.title}</div><div style="font-size:6.5px;color:#64748B;">${t.sub}</div></div>`).join('')}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;width:100%;">
+      ${sysTools.map(t => `<div style="text-align:center;flex:1;"><div style="font-size:10px;font-weight:900;color:${t.color};">${t.title}</div><div style="font-size:8px;color:#64748B;">${t.sub}</div></div>`).join('')}
     </div>
-    <div style="display:flex;justify-content:space-around;align-items:center;border-top:1px dashed #CBD5E1;padding-top:2px;">
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("cloud", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Google Cloud</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("search", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">BigQuery</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("network", "#4285F4", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Spanner</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("sparkles", "#7C3AED", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Vertex AI</div></div>
-      <div style="text-align:center;"><div style="display:flex;justify-content:center;">${svgIcon("chart", "#34A853", 12)}</div><div style="font-size:6px;color:#475569;font-weight:700;">Looker</div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px dashed #CBD5E1;padding-top:3px;width:100%;">
+      <div style="text-align:center;flex:1;"><div style="display:flex;justify-content:center;">${svgIcon("cloud", "#4285F4", 12)}</div><div style="font-size:8px;color:#475569;font-weight:700;">Google Cloud</div></div>
+      <div style="text-align:center;flex:1;"><div style="display:flex;justify-content:center;">${svgIcon("search", "#4285F4", 12)}</div><div style="font-size:8px;color:#475569;font-weight:700;">BigQuery</div></div>
+      <div style="text-align:center;flex:1;"><div style="display:flex;justify-content:center;">${svgIcon("network", "#4285F4", 12)}</div><div style="font-size:8px;color:#475569;font-weight:700;">Spanner</div></div>
+      <div style="text-align:center;flex:1;"><div style="display:flex;justify-content:center;">${svgIcon("sparkles", "#7C3AED", 12)}</div><div style="font-size:8px;color:#475569;font-weight:700;">Vertex AI</div></div>
+      <div style="text-align:center;flex:1;"><div style="display:flex;justify-content:center;">${svgIcon("chart", "#34A853", 12)}</div><div style="font-size:8px;color:#475569;font-weight:700;">Looker</div></div>
     </div>
   </div>`;
-  cell("box_key_systems", sysBoxHtml, 994, 680, 578, 90, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;html=1;align=left;verticalAlign=top;padding=1;");
+  cell("box_key_systems", sysBoxHtml, 994, 680, 578, 90, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#93C5FD;strokeWidth=1.5;html=1;align=center;verticalAlign=middle;padding=1;");
 
   // ==================== 4. WORKFLOW CONNECTORS ====================
   // Row 1 Connections
-  rawEdge("e_id_to_disc", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 298, y: 149 }, { x: 324, y: 149 }]);
-  rawEdge("e_disc_to_opt", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 402, y: 149 }, { x: 428, y: 149 }]);
-  rawEdge("e_opt_to_cand", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 512, y: 149 }, { x: 552, y: 149 }]);
-  rawEdge("e_cand_to_preclin", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 636, y: 149 }, { x: 662, y: 149 }]);
+  rawEdge("e_id_to_disc", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 298, y: 144 }, { x: 324, y: 144 }]);
+  rawEdge("e_disc_to_opt", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 402, y: 144 }, { x: 428, y: 144 }]);
+  rawEdge("e_opt_to_cand", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#166534;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 512, y: 144 }, { x: 552, y: 144 }]);
+  rawEdge("e_cand_to_preclin", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;", [{ x: 636, y: 144 }, { x: 662, y: 144 }]);
 
   // Preclinical Studies -> Decision 1
   rawEdge("e_preclin_to_dec1", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=classic;endSize=4;", [
-    { x: 704, y: 176 },
-    { x: 704, y: 221 },
-    { x: 696, y: 221 }
+    { x: 704, y: 170 },
+    { x: 704, y: 202 },
+    { x: 686, y: 202 }
   ]);
 
   // Decision 1 Branches:
-  // Yes -> Phase I (Row 2)
-  rawEdge("e_dec1_yes", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=classic;endSize=4;", [
-    { x: 658, y: 246 },
-    { x: 658, y: 265 },
-    { x: 648, y: 265 }
+  // Yes -> Phase I (Row 2) - routed cleanly into top of Phase I with label offset to right in open space
+  rawEdge("e_dec1_yes", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#10B981;strokeWidth=1.5;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;fontSize=8;fontStyle=1;fontColor=#059669;", [
+    { x: 686, y: 202 },
+    { x: 702, y: 202 },
+    { x: 702, y: 252 },
+    { x: 690, y: 252 }
   ], "Yes");
 
   // No -> Return loop back to Candidate Selection / Lead Opt (Dashed Red)
-  rawEdge("e_dec1_no", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;", [
-    { x: 620, y: 221 },
-    { x: 470, y: 221 },
-    { x: 470, y: 176 }
+  rawEdge("e_dec1_no", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#EF4444;strokeWidth=1.5;dashed=1;dashPattern=4 3;endArrow=classic;endSize=4;labelBackgroundColor=#FFFFFF;fontSize=8;fontStyle=1;fontColor=#DC2626;", [
+    { x: 610, y: 202 },
+    { x: 470, y: 202 },
+    { x: 470, y: 170 }
   ], "No");
 
   // Regulatory Row 3 Pre-IND -> IND Submission (Row 2)

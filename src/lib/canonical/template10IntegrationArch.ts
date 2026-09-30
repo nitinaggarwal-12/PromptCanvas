@@ -178,32 +178,32 @@ export function generateTemplate10IntegrationArchXml(domainFlavor = "biopharma",
   rect("consumers_hdr", "<b style='font-size:9px;color:#FFFFFF;'>INTEGRATION CONSUMERS</b>", 1025, 126, 245, 26, "rounded=0;fillColor=#1E3A8A;strokeColor=#1E3A8A;align=center;");
 
   // Platform Services Section
-  text("plat_cons_title", "<b>NOVACURA PLATFORM SERVICES</b>", 1025, 158, 245, 14, "fontSize=7.5;fontColor=#1E3A8A;align=center;");
+  text("plat_cons_title", "<b>CORE PLATFORM SERVICES</b>", 1025, 158, 245, 14, "fontSize=8;fontColor=#1E3A8A;align=center;");
   const platCons = [
-    { title: "Data Ingestion Services", icon: "●" },
-    { title: "AI / ML Services", icon: "●" },
-    { title: "Workflow & Automation", icon: "●" },
-    { title: "Analytics & Reporting", icon: "●" },
-    { title: "Search & Discovery", icon: "●" },
+    { title: "Data Ingestion Services", sub: "CDC • Streaming Pub/Sub • Schema Validation", icon: "●" },
+    { title: "AI / ML Services", sub: "Vector Grounding • Feature Store • Guardrails", icon: "●" },
+    { title: "Workflow &amp; Automation", sub: "Stateful DAGs • Event Triggers • HITL Approvals", icon: "●" },
+    { title: "Analytics &amp; Reporting", sub: "Curated Gold Marts • Semantic BI • KPI Alerts", icon: "●" },
+    { title: "Search &amp; Discovery", sub: "Hybrid BM25 + HNSW Vector Index • <25ms", icon: "●" },
   ];
   platCons.forEach((pc, i) => {
     const pcy = 178 + i * 48;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${pc.title}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${pc.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0F172A;">${pc.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${pc.sub}</div></td></tr></table>`;
     rect(`pc_pod_${i}`, html, 1033, pcy, 229, 42, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;");
   });
 
   // External Consumers Section
-  text("ext_cons_title", "<b>EXTERNAL CONSUMERS</b>", 1025, 432, 245, 14, "fontSize=7.5;fontColor=#0D9488;align=center;");
+  text("ext_cons_title", "<b>EXTERNAL CONSUMERS</b>", 1025, 432, 245, 14, "fontSize=8;fontColor=#0D9488;align=center;");
   const extCons = [
-    { title: "Downstream Applications", icon: "●" },
-    { title: "Partner Applications", icon: "●" },
-    { title: "Regulatory Submissions", icon: "●" },
-    { title: "Data Sharing Exports", icon: "●" },
-    { title: "Third-party Analytics", icon: "●" },
+    { title: "Downstream Applications", sub: "REST / GraphQL • OAuth 2.0 • Webhook Push", icon: "●" },
+    { title: "Partner Applications", sub: "Mutual TLS (mTLS) • B2B API Gateway", icon: "●" },
+    { title: "Regulatory Submissions", sub: "eCTD 4.0 • ISO IDMP • HL7 FHIR R4", icon: "●" },
+    { title: "Data Sharing Exports", sub: "Parquet / Iceberg • Signed URL • SFTP", icon: "●" },
+    { title: "Third-Party Analytics", sub: "Tokenized Views • Differential Privacy", icon: "●" },
   ];
   extCons.forEach((ec, i) => {
     const ecy = 452 + i * 40;
-    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ec.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:7.5px;font-weight:800;color:#0F172A;">${ec.title}</div></td></tr></table>`;
+    const html = `<table style="width:100%;height:100%;"><tr><td style="width:20px;text-align:center;"><span style="font-size:13px;">${ec.icon}</span></td><td style="text-align:left;padding-left:4px;"><div style="font-size:8px;font-weight:800;color:#0F172A;">${ec.title}</div><div style="font-size:8px;color:#64748B;line-height:1.1;">${ec.sub}</div></td></tr></table>`;
     rect(`ec_pod_${i}`, html, 1033, ecy, 229, 36, "rounded=1;fillColor=#F0FDFA;strokeColor=#CCFBF1;");
   });
 

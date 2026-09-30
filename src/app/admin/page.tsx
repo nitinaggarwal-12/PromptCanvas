@@ -124,6 +124,14 @@ export default function SuperAdminDashboard() {
 
             <div className="flex items-center gap-2.5">
               <Link
+                href="/changelog"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-colors"
+                title="Open Unified Changelog & 2-Way Google Sheets Sync"
+              >
+                <span>Changelog &amp; 2-Way Sheet Sync</span>
+              </Link>
+
+              <Link
                 href="/dashboard"
                 className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
                 title="Return to Operations Dashboard"

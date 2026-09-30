@@ -40,22 +40,12 @@ export function generateTemplate13DecisionFlowXml(
   };
 
   // =========================================================================
-  // 1. MASTER HEADER & TOP BRAND BLOCK
+  // 1. MASTER HEADER
   // =========================================================================
-  rect("logo_box", "<div style='font-family:Inter,sans-serif;text-align:left;line-height:1.1;'>" +
-    "<div style='font-size:18px;font-weight:900;color:#0F2A4A;display:flex;align-items:center;gap:6px;'><span style='color:#1E40AF;font-size:22px;'></span> NOVACURA</div>" +
-    "<div style='font-size:7.5px;font-weight:800;color:#475569;letter-spacing:1px;margin-top:2px;'>BIO-PHARMA INTELLIGENCE</div>" +
-    "</div>", 20, 14, 180, 45, "strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
-
   rect("hdr_title", "<div style='font-family:Inter,sans-serif;text-align:center;line-height:1.2;'>" +
-    "<div style='font-size:21px;font-weight:900;color:#0F172A;letter-spacing:0.3px;'>NovaCura Bio-Pharma Platform — Decision Flow / Tree Diagram</div>" +
-    "<div style='font-size:11px;font-style:italic;color:#1E3A8A;font-weight:600;margin-top:3px;'>Decisioning for medical, clinical, regulatory, safety, and quality workflows</div>" +
-    "</div>", 220, 12, 1100, 48, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
-
-  rect("hdr_gcp", "<div style='font-family:Inter,sans-serif;text-align:right;line-height:1.2;'>" +
-    "<div style='font-size:14px;font-weight:800;color:#4285F4;display:flex;align-items:center;justify-content:flex-end;gap:5px;'> Google Cloud</div>" +
-    "<div style='font-size:8px;color:#64748B;font-weight:600;'>Running on Google Cloud</div>" +
-    "</div>", 1330, 14, 250, 45, "strokeColor=none;fillColor=none;align=right;verticalAlign=middle;");
+    "<div style='font-size:21px;font-weight:900;color:#0F172A;letter-spacing:0.3px;'>13 — Decision Flow &amp; Routing Tree Architecture</div>" +
+    "<div style='font-size:11px;font-style:italic;color:#1E3A8A;font-weight:600;margin-top:3px;'>Deterministic &amp; Agentic Decisioning for Medical, Clinical, Regulatory, Safety, and Quality Workflows</div>" +
+    "</div>", 220, 12, 1160, 48, "strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
 
   // =========================================================================
   // 2. LEFT SIDEBAR (x=20..185, w=165)

@@ -1242,17 +1242,55 @@ function StudioMain() {
     const blueprintParam = searchParams.get('blueprint') || searchParams.get('templateId');
     const domainParam = searchParams.get('domain') || 'enterprise';
     const promptParam = searchParams.get('prompt');
+    const perspectiveParam = searchParams.get('perspective') as any;
+    const levelParam = searchParams.get('level') as any;
+    const directionParam = searchParams.get('direction') as any;
     const autoGenerateParam = searchParams.get('autoGenerate');
     if ((blueprintParam || promptParam) && !hasLoadedUrlBlueprintRef.current) {
       const bp =
-        blueprintParam && blueprintParam !== 'custom'
+        blueprintParam &&
+        blueprintParam !== 'custom' &&
+        blueprintParam !== 'process_flow' &&
+        blueprintParam !== 'stratum_l4'
           ? CANONICAL_TEMPLATES.find(t => t.id === blueprintParam || t.id === blueprintParam.padStart(2, '0'))
           : undefined;
 
-      if (promptParam && promptParam.trim().length > 0 && (autoGenerateParam === '1' || blueprintParam === 'custom')) {
+      if (
+        promptParam &&
+        promptParam.trim().length > 0 &&
+        (autoGenerateParam === '1' ||
+          blueprintParam === 'custom' ||
+          blueprintParam === 'process_flow' ||
+          blueprintParam === 'stratum_l4')
+      ) {
         hasLoadedUrlBlueprintRef.current = true;
         const cleanPrompt = promptParam.trim();
         const domainPreset = DOMAIN_PRESETS.find(d => d.id === domainParam) || DOMAIN_PRESETS[0];
+
+        // Check if Dashboard stored a pre-rendered XML + Gemini Architect Decision in sessionStorage
+        let pendingLaunch: any = null;
+        try {
+          const rawPending = sessionStorage.getItem('promptcanvas_pending_studio_launch');
+          if (rawPending) {
+            const parsed = JSON.parse(rawPending);
+            if (parsed && parsed.prompt === cleanPrompt) {
+              pendingLaunch = parsed;
+            }
+          }
+        } catch {
+          // ignore
+        }
+
+        const effPerspective = perspectiveParam || pendingLaunch?.perspective || 'Logical';
+        const effLevel = levelParam || pendingLaunch?.level || 'L3';
+        const effDirection = directionParam || pendingLaunch?.direction || 'LR';
+        if (effLevel && ['L1', 'L2', 'L3', 'L4'].includes(effLevel)) {
+          setSelectedAbstractionLevel(effLevel);
+        }
+        if (effDirection && ['LR', 'TD'].includes(effDirection)) {
+          setSelectedFlowDirection(effDirection);
+        }
+
         const rawTitle = cleanPrompt
           .replace(/^(please\s+)?(design|architect|build|create|deploy|synthesize|generate|draw|flowchart\s+for|infographic\s+for)\s+(a\s+|an\s+|the\s+)?(full\s+|complete\s+|new\s+)?/i, '')
           .replace(/\s+(architecture|diagram|flowchart|blueprint|topology)\.?$/i, '')
@@ -1260,26 +1298,56 @@ function StudioMain() {
           .trim();
         const derivedTitle = rawTitle.length > 72 ? rawTitle.slice(0, 72).replace(/\s+\S*$/, '') : rawTitle;
         const projectTitle = bp
-          ? `#${bp.id} • ${derivedTitle || bp.name}`
+          ? `#${bp.id} [${effPerspective} · ${effLevel}] • ${derivedTitle || bp.name}`
+          : blueprintParam === 'process_flow'
+          ? `Process Flowchart [${effLevel} · ${effDirection}] • ${derivedTitle}`
+          : blueprintParam === 'stratum_l4'
+          ? `L4 Technical 4-Stratum • ${derivedTitle}`
           : derivedTitle
-          ? `${derivedTitle} Architecture`
+          ? `${derivedTitle} (${effPerspective} · ${effLevel})`
           : 'Custom Synthesized Architecture';
 
         const isInfographicBp = bp && INFOGRAPHIC_BLUEPRINTS_LIST.some(b => b.id === bp.id);
         const isFlowchartPrompt =
-          /\bflowchart\b/i.test(cleanPrompt) || (bp && Number(bp.id) >= 67 && Number(bp.id) <= 74);
+          blueprintParam === 'process_flow' ||
+          effPerspective === 'Process' ||
+          /\bflowchart\b/i.test(cleanPrompt) ||
+          (bp && Number(bp.id) >= 67 && Number(bp.id) <= 74);
 
         let synthesizedXml = '';
-        if (isInfographicBp && bp) {
+        if (pendingLaunch?.preRenderedXml && pendingLaunch.blueprintId === blueprintParam) {
+          synthesizedXml = pendingLaunch.preRenderedXml;
+          if (blueprintParam === 'process_flow' || effPerspective === 'Process') {
+            setSelectedDiagramMode('flowchart');
+          } else if (isInfographicBp && bp) {
+            setSelectedDiagramMode('infographic');
+            setSelectedInfographicBlueprintId(bp.id);
+          } else {
+            setSelectedDiagramMode('blueprint');
+          }
+        } else if (isInfographicBp && bp) {
           setSelectedDiagramMode('infographic');
           setSelectedInfographicBlueprintId(bp.id);
-          synthesizedXml = generateInfographicBlueprintXmlById(bp.id, cleanPrompt, undefined, 'L2');
-        } else if (isFlowchartPrompt) {
+          synthesizedXml = generateInfographicBlueprintXmlById(bp.id, cleanPrompt, undefined, effLevel);
+        } else if (isFlowchartPrompt && (!bp || blueprintParam === 'process_flow')) {
           setSelectedDiagramMode('flowchart');
-          synthesizedXml = generateLogicalFlowchartDrawioXml(cleanPrompt, projectTitle, 'LR', 'L2');
+          synthesizedXml = synthesizePromptDrivenDiagramXml(cleanPrompt, projectTitle, domainPreset.name, {
+            blueprintId: 'process_flow',
+            perspective: 'Process',
+            level: effLevel,
+            direction: effDirection,
+            geminiDecision: pendingLaunch?.geminiDecision,
+          });
         } else {
           setSelectedDiagramMode('blueprint');
-          synthesizedXml = synthesizePromptDrivenDiagramXml(cleanPrompt, projectTitle, domainPreset.name);
+          synthesizedXml = synthesizePromptDrivenDiagramXml(cleanPrompt, projectTitle, domainPreset.name, {
+            noTemplate: blueprintParam === 'custom',
+            blueprintId: blueprintParam || '40',
+            perspective: effPerspective,
+            level: effLevel,
+            direction: effDirection,
+            geminiDecision: pendingLaunch?.geminiDecision,
+          });
         }
 
         setSelectedBlueprintId(bp ? bp.id : 'custom');
@@ -1326,14 +1394,25 @@ function StudioMain() {
             id: `v_home_${Date.now()}`,
             versionTag: 'v1.0',
             timestamp: nowTime,
-            author: 'Home Launchpad AI',
-            actionSummary: bp
-              ? `Customized Template #${bp.id} (${bp.name}) with prompt: "${cleanPrompt}"`
-              : `Synthesized Custom Architecture from prompt: "${cleanPrompt}"`,
+            author: 'Gemini Architect Engine',
+            actionSummary: `[${effPerspective} · ${effLevel}] ${
+              bp
+                ? `Tailored Template #${bp.id} (${bp.name})`
+                : blueprintParam === 'process_flow'
+                ? `Synthesized Process Flowchart (${effDirection})`
+                : blueprintParam === 'stratum_l4'
+                ? 'Synthesized L4 Technical 4-Stratum Stack'
+                : 'Synthesized Custom 4-Tier AST'
+            } for: "${cleanPrompt}"`,
             ast: updatedAst,
             xml: synthesizedXml
           }
         ]);
+
+        const gemDec = pendingLaunch?.geminiDecision;
+        const modLines = Array.isArray(gemDec?.plannedModificationsSummary)
+          ? gemDec.plannedModificationsSummary.map((m: string) => `- ${m}`).join('\n')
+          : `- Customized subsystem nodes and headers for "${cleanPrompt}"`;
 
         setMessages([
           {
@@ -1345,15 +1424,21 @@ function StudioMain() {
           {
             id: `msg_home_ai_${Date.now() + 1}`,
             sender: 'assistant',
-            text: bp
-              ? `✨ **Synthesized v1.0 from Home Dashboard** using **Template #${bp.id} (${bp.name})** tailored to your prompt:\n\n> *"${cleanPrompt}"*\n\nAll layers, components, and Living Specifications (DOC-01 through DOC-16) are now synchronized on the Studio canvas. Ask me below to add nodes, modify tiers, or run a resilience audit!`
-              : `✨ **Synthesized Custom v1.0 Architecture from Home Dashboard** (Zero-Template Bespoke Engine):\n\n> *"${cleanPrompt}"*\n\nAll layers, components, and Living Specifications (DOC-01 through DOC-16) are now synchronized on the Studio canvas.`,
+            text: `✨ **Synthesized v1.0 Architecture (${effPerspective} Perspective • ${effLevel} Detail Level)**\n\n- **Selected Blueprint**: ${
+              bp
+                ? `#${bp.id} — ${bp.name}`
+                : blueprintParam === 'process_flow'
+                ? 'Custom Process Flowchart (6 Steps + 2 Diamond Decision Gates)'
+                : blueprintParam === 'stratum_l4'
+                ? 'L4 Technical 4-Stratum Deep Cross-Section'
+                : 'Zero-Template Custom 4-Tier AST'
+            }\n- **Gemini Perspective Reasoning**: ${
+              gemDec?.perspectiveReasoning || `Selected ${effPerspective} (${effLevel}) view.`
+            }\n\n**Planned Modifications Applied:**\n${modLines}`,
             timestamp: nowTime,
             actionSummary: {
               versionTag: 'v1.0',
-              canvasDiff: bp
-                ? `Tailored Template #${bp.id} (${bp.name}) to prompt requirements.`
-                : `Synthesized bespoke multi-tier topology from prompt.`,
+              canvasDiff: `Rendered ${effPerspective} (${effLevel}) diagram tailored to prompt requirements.`,
               specDiff: `Synchronized DOC-01 through DOC-16 for ${projectTitle}.`
             }
           }

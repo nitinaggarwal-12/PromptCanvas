@@ -104,7 +104,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
           <mxGeometry x="114" y="200" width="332" height="32" as="geometry" />
         </mxCell>
         <mxCell id="c01_pill_prompt_l" value="Your prompt" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="126" y="200" width="150" height="32" as="geometry" />
+          <mxGeometry x="126" y="200" width="135" height="32" as="geometry" />
         </mxCell>
         <mxCell id="c01_pill_prompt_r" value="the current request" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=13.5;fontColor=#78716C;" vertex="1" parent="1">
           <mxGeometry x="266" y="200" width="168" height="32" as="geometry" />
@@ -202,11 +202,11 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
           <mxGeometry x="114" y="465" width="380" height="20" as="geometry" />
         </mxCell>
 
-        <!-- Pill 1: CLAUDE.md | rules -->
+        <!-- Pill 1: AGENTS.md | rules -->
         <mxCell id="c02_pill_claude" value="" style="rounded=1;arcSize=22;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E9D5FF;strokeWidth=1.4;" vertex="1" parent="1">
           <mxGeometry x="114" y="492" width="220" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="c02_pill_claude_l" value="CLAUDE.md" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+        <mxCell id="c02_pill_claude_l" value="AGENTS.md" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
           <mxGeometry x="126" y="492" width="120" height="34" as="geometry" />
         </mxCell>
         <mxCell id="c02_pill_claude_r" value="rules" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=13.5;fontColor=#78716C;" vertex="1" parent="1">
@@ -218,7 +218,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
           <mxGeometry x="114" y="536" width="220" height="34" as="geometry" />
         </mxCell>
         <mxCell id="c02_pill_skills_l" value="Skills" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
-          <mxGeometry x="126" y="536" width="80" height="34" as="geometry" />
+          <mxGeometry x="126" y="536" width="66" height="34" as="geometry" />
         </mxCell>
         <mxCell id="c02_pill_skills_r" value="repeatable jobs" style="text;html=1;strokeColor=none;fillColor=none;align=right;verticalAlign=middle;fontSize=13.5;fontColor=#78716C;" vertex="1" parent="1">
           <mxGeometry x="196" y="536" width="126" height="34" as="geometry" />
@@ -303,7 +303,7 @@ export function buildTemplate52ContextHarnessLoopGraphXml(customTitle?: string):
         <mxCell id="c02_prompt_tag" value="PROMPT" style="rounded=1;arcSize=24;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#D6D1C4;strokeWidth=1.2;fontColor=#64748B;fontSize=11.5;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="112" y="626" width="70" height="28" as="geometry" />
         </mxCell>
-        <mxCell id="c02_prompt_text" value="Read CLAUDE.md. Use the connected tools and skills needed for this job. Flag any conflicting rules before you start work." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
+        <mxCell id="c02_prompt_text" value="Read AGENTS.md. Use the connected tools and skills needed for this job. Flag any conflicting rules before you start work." style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=15;fontColor=#475569;" vertex="1" parent="1">
           <mxGeometry x="194" y="618" width="785" height="44" as="geometry" />
         </mxCell>
         <mxCell id="c02_prompt_btn" value="${escAttr(upArrowSvg)}" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#1E293B;strokeColor=none;" vertex="1" parent="1">

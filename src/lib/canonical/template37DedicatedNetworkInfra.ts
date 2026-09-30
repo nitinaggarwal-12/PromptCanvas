@@ -468,7 +468,7 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   });
 
   // Arrow from Attachments to Producer Services
-  cell("lbl_psc_access", `<span style="font-size:7.5px;font-weight:900;color:#7C3AED;">Private Service<br/>Access (PSC)</span>`, 700, 620, 58, 24, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
+  cell("lbl_psc_access", `<span style="font-size:7px;font-weight:900;color:#7C3AED;background:#FFFFFF;padding:1px 3px;border-radius:2px;">Private Service<br/>Access (PSC)</span>`, 700, 610, 58, 22, "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;");
   rawEdge("e_psc_access", "edgeStyle=none;strokeColor=#7C3AED;strokeWidth=1.8;dashed=1;dashPattern=4 2;endArrow=classic;endSize=4;", [
     { x: 698, y: 644 },
     { x: 760, y: 644 }
@@ -527,32 +527,32 @@ export function generateTemplate37DedicatedNetworkInfraXml(
   cell("tier7_box", "", 172, 700, 1098, 80, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
 
   const egressNodes = [
-    { t: "Workloads<br/><span style='font-size:7px;color:#64748B;'>(Private IP)</span>", svg: SVG.server, w: 90 },
-    { t: "Cloud NAT<br/><span style='font-size:7px;color:#64748B;'>(Outbound SNAT)</span>", svg: SVG.globe, w: 100 },
-    { t: "Private Google Access<br/><span style='font-size:7px;color:#64748B;'>(Access Google APIs)</span>", svg: SVG.cloud, w: 120 },
-    { t: "Egress Firewall /<br/>Secure Web Proxy", svg: SVG.shield, w: 120 },
-    { t: "DNS Policy<br/><span style='font-size:7px;color:#64748B;'>(Cloud DNS Policy)</span>", svg: SVG.globe, w: 100 }
+    { t: "Workloads<br/><span style='font-size:8px;color:#64748B;'>(Private IP)</span>", svg: SVG.server, w: 86 },
+    { t: "Cloud NAT<br/><span style='font-size:8px;color:#64748B;'>(Outbound SNAT)</span>", svg: SVG.globe, w: 94 },
+    { t: "Private Google Access<br/><span style='font-size:8px;color:#64748B;'>(Access Google APIs)</span>", svg: SVG.cloud, w: 108 },
+    { t: "Egress Firewall /<br/>Secure Web Proxy", svg: SVG.shield, w: 108 },
+    { t: "DNS Policy<br/><span style='font-size:8px;color:#64748B;'>(Cloud DNS Policy)</span>", svg: SVG.globe, w: 92 }
   ];
-  let curEgX = 180;
+  let curEgX = 178;
   egressNodes.forEach((en, idx) => {
     cell(
       `eg_${idx}`,
       `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;">` +
       `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${en.svg}</svg>` +
-      `<div style="font-size:7.5px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${en.t}</div></div>`,
+      `<div style="font-size:8px;font-weight:900;color:#0F172A;line-height:1.15;margin-top:2px;">${en.t}</div></div>`,
       curEgX,
       708,
       en.w,
       64,
-      "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;"
+      "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1;html=1;align=center;verticalAlign=middle;padding=2;"
     );
 
     const arrowCol = idx === 0 ? "#16A34A" : idx === 1 ? "#16A34A" : "#2563EB";
-    rawEdge(`e_eg_${idx}`, `edgeStyle=none;strokeColor=${arrowCol};strokeWidth=1.8;endArrow=classic;endSize=4;`, [
+    rawEdge(`e_eg_${idx}`, `edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=${arrowCol};strokeWidth=1.8;endArrow=classic;endSize=4;`, [
       { x: curEgX + en.w, y: 740 },
-      { x: curEgX + en.w + 14, y: 740 }
+      { x: curEgX + en.w + 10, y: 740 }
     ]);
-    curEgX += en.w + 14;
+    curEgX += en.w + 10;
   });
 
   // Controlled Egress Destinations Container

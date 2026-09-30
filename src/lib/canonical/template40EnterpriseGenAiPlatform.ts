@@ -70,19 +70,22 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   const isDark = theme === "dark";
   const c: string[] = [];
 
-  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) =>
+  const cell = (id: string, v: string, x: number, y: number, w: number, h: number, style: string) => {
+    const normStyle = v ? (style.includes("whiteSpace=wrap") ? style : `whiteSpace=wrap;html=1;${style}`) : style;
     c.push(
-      `<mxCell id="${id}" value="${E(v)}" style="${style}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
+      `<mxCell id="${id}" value="${E(v)}" style="${normStyle}" vertex="1" parent="1"><mxGeometry x="${x}" y="${y}" width="${w}" height="${h}" as="geometry"/></mxCell>`
     );
+  };
 
   const rawEdge = (
     id: string,
     style: string,
     pts: { x: number; y: number }[]
   ) => {
+    const normStyle = style.replace("edgeStyle=none;", "edgeStyle=orthogonalEdgeStyle;rounded=1;");
     if (pts.length === 2) {
       c.push(
-        `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+        `<mxCell id="${id}" edge="1" parent="1" style="${normStyle}">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
             <mxPoint x="${pts[1].x}" y="${pts[1].y}" as="targetPoint"/>
@@ -92,7 +95,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     } else {
       const midPts = pts.slice(1, -1).map(p => `<mxPoint x="${p.x}" y="${p.y}"/>`).join("\n            ");
       c.push(
-        `<mxCell id="${id}" edge="1" parent="1" style="${style}">
+        `<mxCell id="${id}" edge="1" parent="1" style="${normStyle}">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="${pts[0].x}" y="${pts[0].y}" as="sourcePoint"/>
             <mxPoint x="${pts[pts.length - 1].x}" y="${pts[pts.length - 1].y}" as="targetPoint"/>
@@ -179,7 +182,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   usersList.forEach((u, i) => {
     const ux = 140 + i * 67;
-    cell(`u_${i}`, `<div style="text-align:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${u.svg}</svg><div style="font-size:7.5px;font-weight:800;color:#0F172A;margin-top:3px;line-height:1.15;">${u.t}</div></div>`, ux, 58, 64, 62, "rounded=1;fillColor=#F8FAFC;strokeColor=none;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`u_${i}`, `<div style="text-align:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${u.svg}</svg><div style="font-size:8px;font-weight:800;color:#0F172A;margin-top:3px;line-height:1.15;">${u.t}</div></div>`, ux, 58, 64, 62, "rounded=1;fillColor=#F8FAFC;strokeColor=none;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Channels Pod (w=854)
@@ -189,7 +192,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   const channelsList = [
     { t: "Web App", svg: SVG.globe },
     { t: "Mobile App", svg: SVG.phone },
-    { t: "Teams / Slack", svg: SVG.message },
+    { t: "Chat / Messaging", svg: SVG.message },
     { t: "API / SDK", svg: SVG.code },
     { t: "Contact Center", svg: SVG.headset }
   ];
@@ -199,7 +202,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   });
 
   // Enterprise Copilots Pod (Right inside Channels)
-  cell("copilot_chat", `<div style="text-align:center;"><div style="font-size:8.5px;font-weight:900;color:#6D28D9;">Enterprise Copilots /<br/>Chat UI / Portal</div><div style="font-size:7.5px;font-weight:700;color:#64748B;margin-top:2px;background:#FAF5FF;padding:2px 6px;border-radius:4px;border:1px dashed #DDD6FE;">Hello! How can I help you?</div></div>`, 1080, 60, 252, 60, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("copilot_chat", `<div style="text-align:center;"><div style="font-size:8.5px;font-weight:900;color:#6D28D9;">Enterprise Copilots /<br/>Chat UI / Portal</div><div style="font-size:8px;font-weight:700;color:#64748B;margin-top:2px;background:#FAF5FF;padding:2px 6px;border-radius:4px;border:1px dashed #DDD6FE;">Hello! How can I help you?</div></div>`, 1080, 60, 252, 60, "rounded=1;fillColor=#FAF5FF;strokeColor=#DDD6FE;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Connectors: Users -> Channels
   rawEdge("e_u_ch", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
@@ -208,7 +211,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ]);
 
   // Flow Step 1 Badge between Channels & Edge
-  flowBadge("step_1", "1", 396, 120, "#7C3AED");
+  flowBadge("step_1", "1", 396, 108, "#7C3AED");
 
   // Connector: Channels -> Edge Gateway
   rawEdge("e_ch_edge", "edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.5;endArrow=classic;endSize=4;", [
@@ -231,7 +234,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   iamItems.forEach((im, i) => {
     const imx = 140 + i * 70;
-    cell(`im_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${im.svg}</svg><div style="font-size:7.5px;font-weight:800;color:#0F172A;margin-top:2px;">${im.t}</div></div>`, imx, 150, 66, 50, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`im_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${im.svg}</svg><div style="font-size:8px;font-weight:800;color:#0F172A;margin-top:2px;">${im.t}</div></div>`, imx, 150, 66, 50, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Edge & Access Management
@@ -246,7 +249,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   edgeItems.forEach((em, i) => {
     const emx = 436 + i * 76;
-    cell(`em_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${em.svg}</svg><div style="font-size:7.5px;font-weight:800;color:#0F172A;margin-top:2px;">${em.t}</div></div>`, emx, 150, 72, 50, "rounded=1;fillColor=#F0FDFA;strokeColor=#99F6E4;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`em_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${em.svg}</svg><div style="font-size:8px;font-weight:800;color:#0F172A;margin-top:2px;">${em.t}</div></div>`, emx, 150, 72, 50, "rounded=1;fillColor=#F0FDFA;strokeColor=#99F6E4;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Tenant / Workspace Isolation
@@ -257,7 +260,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     const tcx = 836 + i * 162;
     cell(`tc_${i}`, `<div style="text-align:center;"><div style="font-size:8.5px;font-weight:900;color:#0F172A;">${tc}</div><div style="display:flex;justify-content:center;gap:4px;margin-top:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${SVG.users}</svg></div></div>`, tcx, 150, 154, 38, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
-  cell("lbl_tenant_iso", "Isolation: Projects • Folders • VPC SC • Namespaces", 826, 188, 514, 14, "fontColor:#64748B;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_tenant_iso", "Isolation: Projects • Folders • VPC SC • Namespaces", 826, 188, 514, 14, "fontColor:#64748B;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
 
   // Connectors within Tier 2
   rawEdge("e_iam_edge", "edgeStyle=none;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
@@ -284,7 +287,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
 
   // Left Column: Agent Platform Services
   cell("box_t3_plat", "", 142, 218, 144, 168, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
-  cell("lbl_t3_plat", "Agent Platform Services", 142, 220, 144, 14, "fontColor:#6D28D9;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_t3_plat", "Agent Platform Services", 142, 220, 144, 14, "fontColor:#6D28D9;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const platSvcs = [
     { t: "Session Manager", svg: SVG.clipboard },
     { t: "State Manager", svg: SVG.database },
@@ -294,7 +297,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   platSvcs.forEach((ps, i) => {
     const psy = 238 + i * 29;
-    cell(`ps_${i}`, `<div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2">${ps.svg}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${ps.t}</span></div>`, 146, psy, 136, 26, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=left;verticalAlign=middle;padding=3;");
+    cell(`ps_${i}`, `<div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2">${ps.svg}</svg><span style="font-size:8px;font-weight:800;color:#0F172A;">${ps.t}</span></div>`, 146, psy, 136, 26, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=left;verticalAlign=middle;padding=3;");
   });
 
   // Center Orchestration Enclave
@@ -307,19 +310,19 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     { t: "Research Agent", sub: "Web research, market intel, competitors", svg: SVG.search },
     { t: "Analytics Agent", sub: "Data analysis, BI, insight generation", svg: SVG.chart },
     { t: "Workflow Agent", sub: "Process automation, orchestration", svg: SVG.gear },
-    { t: "Support Agent", sub: "Customer support, Q&A, case mgmt", svg: SVG.headset },
+    { t: "Support Agent", sub: "Customer support, Q&amp;A, case mgmt", svg: SVG.headset },
     { t: "Retrieval Agent", sub: "Semantic search, RAG, context retrieval", svg: SVG.brain },
     { t: "Code Agent", sub: "Code gen, review, refactor, debug", svg: SVG.code },
     { t: "Compliance Agent", sub: "Policy check, PII, regulatory compliance", svg: SVG.shield }
   ];
   agentList.forEach((ag, i) => {
     const agx = 294 + i * 105;
-    cell(`ag_${i}`, `<div style="text-align:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2">${ag.svg}</svg><div style="font-size:8px;font-weight:900;color:#5B21B6;margin-top:2px;">${ag.t}</div><div style="font-size:7px;color:#64748B;line-height:1.15;margin-top:2px;">${ag.sub}</div></div>`, agx, 280, 102, 106, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=center;verticalAlign=middle;padding=3;");
+    cell(`ag_${i}`, `<div style="text-align:center;padding:2px 4px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B21B6" stroke-width="2">${ag.svg}</svg><div style="font-size:8px;font-weight:900;color:#5B21B6;margin-top:2px;">${ag.t}</div><div style="font-size:8px;color:#64748B;line-height:1.15;margin-top:2px;white-space:normal;word-break:break-word;">${ag.sub}</div></div>`, agx, 280, 102, 106, "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=center;verticalAlign=middle;padding=3;");
   });
 
   // Right Column: Agent Governance
   cell("box_t3_gov", "", 1038, 218, 294, 168, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;");
-  cell("lbl_t3_gov", "Agent Governance", 1038, 220, 294, 14, "fontColor:#6D28D9;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_t3_gov", "Agent Governance", 1038, 220, 294, 14, "fontColor:#6D28D9;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const govItems = [
     { t: "Prompt Templates", svg: SVG.clipboard },
     { t: "Skill Library", svg: SVG.box },
@@ -329,7 +332,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   govItems.forEach((gi, i) => {
     const giy = 238 + i * 29;
-    cell(`gi_${i}`, `<div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2">${gi.svg}</svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${gi.t}</span></div>`, 1044, giy, 282, 26, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=left;verticalAlign=middle;padding=3;");
+    cell(`gi_${i}`, `<div style="display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6D28D9" stroke-width="2">${gi.svg}</svg><span style="font-size:8px;font-weight:800;color:#0F172A;">${gi.t}</span></div>`, 1044, giy, 282, 26, "rounded=1;fillColor=#FFFFFF;strokeColor=#DDD6FE;html=1;align=left;verticalAlign=middle;padding=3;");
   });
 
   // Connectors inside Tier 3
@@ -361,8 +364,8 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
     { x: 1030, y: 265 }
   ]);
 
-  // Flow Step 5 Badge to Right Sidebar Governance
-  flowBadge("step_5", "5", 1344, 168, "#7C3AED");
+  // Flow Step 5 Badge to Right Sidebar Governance (centered cleanly in channel between x=1340 and x=1354)
+  flowBadge("step_5", "5", 1332, 168, "#7C3AED");
   rawEdge("e_sup_gov_sb", "edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#7C3AED;strokeWidth=1.5;dashed=1;dashPattern=5 3;endArrow=classic;endSize=4;", [
     { x: 1030, y: 234 },
     { x: 1340, y: 234 },
@@ -383,7 +386,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
 
   // Safety & Grounding Controls
   cell("box_t4_safety", "", 134, 398, 160, 100, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;");
-  cell("lbl_t4_safety", "Safety & Grounding Controls", 134, 400, 160, 14, "fontColor=#0284C7;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_t4_safety", "Safety & Grounding Controls", 134, 400, 160, 14, "fontColor=#0284C7;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const safetyList = [
     "Input / Output Filters",
     "PII / DLP Checks",
@@ -393,24 +396,24 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   safetyList.forEach((sl, i) => {
     const sly = 416 + i * 16;
-    cell(`sl_${i}`, `<div style="display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${sl}</span></div>`, 138, sly, 152, 14, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`sl_${i}`, `<div style="display:flex;align-items:center;gap:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="font-size:8px;font-weight:800;color:#0F172A;">${sl}</span></div>`, 138, sly, 152, 14, "whiteSpace=wrap;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // Center: Model Gateway / LLM Router
   cell("box_t4_router", "", 300, 398, 764, 100, "rounded=1;arcSize=4;fillColor=#F0F9FF;strokeColor=#BAE6FD;strokeWidth=1.2;");
   cell("lbl_t4_router", "Model Gateway / LLM Router", 300, 400, 764, 14, "fontColor=#0284C7;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("lbl_t4_sub", "Route • Select • Ensemble • Fallback • Cost / Latency Optimization", 300, 414, 764, 12, "fontColor:#64748B;fontSize=7.5;align=center;verticalAlign=middle;");
+  cell("lbl_t4_sub", "Route • Select • Ensemble • Fallback • Cost / Latency Optimization", 300, 414, 764, 12, "fontColor:#64748B;fontSize=8;align=center;verticalAlign=middle;");
 
   // Model Cards
   const modelCards = [
     { t: "Gemini", sub: "1.5 Pro / 1.5 Flash", svg: SVG.sparkles },
     { t: "Gemini", sub: "1.5 Pro (Vision)", svg: SVG.eye },
     { t: "Gemma", sub: "(7B / 28B)", svg: SVG.brain },
-    { t: "Other Foundation", sub: "Anthropic, Llama, Mistral", svg: SVG.globe }
+    { t: "Other Foundation", sub: "Partner &amp; Open Weight Models", svg: SVG.globe }
   ];
   modelCards.forEach((mc, i) => {
     const mcx = 308 + i * 130;
-    cell(`mc_${i}`, `<div style="text-align:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2">${mc.svg}</svg><div style="font-size:8.5px;font-weight:900;color:#0F172A;margin-top:2px;">${mc.t}</div><div style="font-size:7.5px;color:#64748B;font-weight:700;">${mc.sub}</div></div>`, mcx, 430, 124, 62, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`mc_${i}`, `<div style="text-align:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2">${mc.svg}</svg><div style="font-size:8.5px;font-weight:900;color:#0F172A;margin-top:2px;">${mc.t}</div><div style="font-size:8px;color:#64748B;font-weight:700;">${mc.sub}</div></div>`, mcx, 430, 124, 62, "rounded=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;html=1;align=center;verticalAlign=middle;padding=2;");
     rawEdge(`e_router_mc_${i}`, "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;endSize=4;", [
       { x: mcx + 62, y: 426 },
       { x: mcx + 62, y: 430 }
@@ -424,7 +427,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   smallPills.forEach((sp, i) => {
     const spx = 836 + (i % 2) * 110;
     const spy = 448 + Math.floor(i / 2) * 20;
-    cell(`spill_${i}`, `<div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;">${sp}</div>`, spx, spy, 106, 18, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+    cell(`spill_${i}`, `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;">${sp}</div>`, spx, spy, 106, 18, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
   rawEdge("e_router_small", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;endSize=4;", [
     { x: 944, y: 426 },
@@ -463,7 +466,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ]);
 
   // Flow Step 6 Badge to Observability Sidebar
-  flowBadge("step_6", "6", 1344, 456, "#0284C7");
+  flowBadge("step_6", "6", 1332, 456, "#0284C7");
   rawEdge("e_ops_obs_sb", "edgeStyle=none;strokeColor=#0284C7;strokeWidth=1.5;endArrow=classic;endSize=4;", [
     { x: 1340, y: 466 },
     { x: 1354, y: 466 }
@@ -491,7 +494,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   memCards.forEach((mc, i) => {
     const mcx = 134 + i * 242;
-    cell(`mem_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${mc.svg}</svg><div style="font-size:8px;font-weight:900;color:#0F172A;margin-top:2px;">${mc.t}</div><div style="font-size:7px;color:#64748B;line-height:1.15;margin-top:2px;">${mc.sub}</div></div>`, mcx, 504, 236, 54, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`mem_${i}`, `<div style="text-align:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2">${mc.svg}</svg><div style="font-size:8px;font-weight:900;color:#0F172A;margin-top:2px;">${mc.t}</div><div style="font-size:8px;color:#64748B;line-height:1.15;margin-top:2px;">${mc.sub}</div></div>`, mcx, 504, 236, 54, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Memory Inter-card bidirectional connectors
@@ -505,7 +508,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   }
 
   // RAG Pipeline Steps (y=562..594)
-  cell("lbl_rag_pipe", "- RAG Pipeline -", 134, 560, 1206, 12, "fontColor:#2563EB;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_rag_pipe", "- RAG Pipeline -", 134, 560, 1206, 12, "fontColor:#2563EB;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const ragSteps = [
     { n: "●", t: "Retrieve", sub: "(Top-K)" },
     { n: "●", t: "Rerank", sub: "(Relevance)" },
@@ -515,7 +518,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ];
   ragSteps.forEach((rs, i) => {
     const rsx = 200 + i * 210;
-    cell(`rs_${i}`, `<div style="display:flex;align-items:center;gap:4px;justify-content:center;"><span style="color:#2563EB;font-weight:900;font-size:10px;">${rs.n}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${rs.t}</span><span style="font-size:7px;color:#64748B;">${rs.sub}</span></div>`, rsx, 574, 180, 22, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+    cell(`rs_${i}`, `<div style="display:flex;align-items:center;gap:4px;justify-content:center;"><span style="color:#2563EB;font-weight:900;font-size:10px;">${rs.n}</span><span style="font-size:8px;font-weight:800;color:#0F172A;">${rs.t}</span><span style="font-size:8px;color:#64748B;">${rs.sub}</span></div>`, rsx, 574, 180, 22, "rounded=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
   });
 
   // Chained arrows between RAG Pipeline steps
@@ -541,19 +544,19 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   tierLabel("6", "TOOL / PROTOCOL<br/>INTEGRATION LAYER", 606, 50);
 
   // MCP Tool Gateway
-  cell("box_t6_mcp", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">MCP Tool Gateway</div><div style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${SVG.plug}</svg></div><div style="font-size:7px;color:#64748B;">MCP Server</div></div>`, 134, 606, 170, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("box_t6_mcp", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">MCP Tool Gateway</div><div style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${SVG.plug}</svg></div><div style="font-size:8px;color:#64748B;">MCP Server</div></div>`, 134, 606, 170, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tool Registry
-  cell("box_t6_reg", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Tool Registry</div><div style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${SVG.box}</svg></div><div style="font-size:7px;color:#64748B;">Tools, Functions, APIs, Templates</div></div>`, 310, 606, 170, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("box_t6_reg", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Tool Registry</div><div style="margin-top:2px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2">${SVG.box}</svg></div><div style="font-size:8px;color:#64748B;">Tools, Functions, APIs, Templates</div></div>`, 310, 606, 170, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Connectors / Adapters
-  cell("box_t6_conn", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Connectors / Adapters</div><div style="font-size:7px;color:#0F172A;margin-top:4px;">Prebuilt Connectors<br/>Custom Adapters</div></div>`, 486, 606, 180, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("box_t6_conn", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Connectors / Adapters</div><div style="font-size:8px;color:#0F172A;margin-top:4px;">Prebuilt Connectors<br/>Custom Adapters</div></div>`, 486, 606, 180, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Execution Services
-  cell("box_t6_exec", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Execution Services</div><div style="display:flex;justify-content:space-around;font-size:7px;color:#0F172A;margin-top:6px;"><span>Function Calling</span><span>Workflow Engine<br/>(Cloud Workflows)</span><span>Job Scheduler<br/>(Cloud Scheduler)</span></div></div>`, 672, 606, 380, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("box_t6_exec", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Execution Services</div><div style="display:flex;justify-content:space-around;font-size:8px;color:#0F172A;margin-top:6px;"><span>Function Calling</span><span>Workflow Engine<br/>(Cloud Workflows)</span><span>Job Scheduler<br/>(Cloud Scheduler)</span></div></div>`, 672, 606, 380, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Integration & Protocols
-  cell("box_t6_proto", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Integration & Protocols</div><div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:7px;color:#0F172A;margin-top:4px;"><span>MCP</span><span>REST</span><span>SQL</span><span>Events (Pub/Sub)</span><span>gRPC</span><span>SFTP</span><span>Webhooks</span></div></div>`, 1058, 606, 282, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
+  cell("box_t6_proto", `<div style="text-align:center;"><div style="font-size:8px;font-weight:900;color:#0D9488;">Integration & Protocols</div><div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:8px;color:#0F172A;margin-top:4px;"><span>MCP</span><span>REST</span><span>SQL</span><span>Events (Pub/Sub)</span><span>gRPC</span><span>SFTP</span><span>Webhooks</span></div></div>`, 1058, 606, 282, 66, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=middle;padding=2;");
 
   // Tier 6 Horizontal Connectors
   rawEdge("e_t6_mcp_reg", "edgeStyle=none;strokeColor=#0D9488;strokeWidth=1.5;endArrow=classic;endSize=4;", [
@@ -580,38 +583,38 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   // Top Sub-boxes
   // Structured Apps (w=260)
   cell("box_t7_struct", "", 134, 678, 260, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_struct", "Enterprise Applications (Structured)", 134, 680, 260, 12, "fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const structApps = ["Salesforce (CRM)", "SAP (ERP)", "ServiceNow (ITSM)", "Workday (HR)"];
+  cell("lbl_t7_struct", "Enterprise Applications (Structured)", 134, 680, 260, 12, "fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const structApps = ["Customer CRM", "Core ERP", "ITSM Platform", "HCM / HRIS"];
   structApps.forEach((sa, i) => {
     const sax = 138 + i * 63;
-    cell(`sa_${i}`, `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;">${sa}</div>`, sax, 694, 60, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+    cell(`sa_${i}`, `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;">${sa}</div>`, sax, 694, 60, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
 
   // Unstructured Content (w=250)
   cell("box_t7_unstruct", "", 400, 678, 250, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_unstruct", "Collaboration & Content (Unstructured)", 400, 680, 250, 12, "fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
-  const unstructApps = ["SharePoint", "Google Drive", "Confluence", "Docs / Wikis"];
+  cell("lbl_t7_unstruct", "Collaboration & Content (Unstructured)", 400, 680, 250, 12, "fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
+  const unstructApps = ["Doc Portals", "Google Drive", "Knowledge Base", "Docs / Wikis"];
   unstructApps.forEach((ua, i) => {
     const uax = 404 + i * 60;
-    cell(`ua_${i}`, `<div style="font-size:7px;font-weight:800;color:#0F172A;text-align:center;">${ua}</div>`, uax, 694, 58, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+    cell(`ua_${i}`, `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;">${ua}</div>`, uax, 694, 58, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
 
   // Databases & Stores (w=330)
   cell("box_t7_dbs", "", 656, 678, 330, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_dbs", "Databases & Data Stores", 656, 680, 330, 12, "fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_t7_dbs", "Databases & Data Stores", 656, 680, 330, 12, "fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const dbsList = ["AlloyDB", "Cloud SQL", "Spanner", "Bigtable"];
   dbsList.forEach((db, i) => {
     const dbx = 662 + i * 80;
-    cell(`db_${i}`, `<div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;">${db}</div>`, dbx, 694, 76, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+    cell(`db_${i}`, `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;">${db}</div>`, dbx, 694, 76, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
 
   // Analytics & Platform (w=348)
   cell("box_t7_analytics", "", 992, 678, 348, 52, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_analytics", "Analytics & Data Platform (GCP)", 992, 680, 348, 12, "fontColor=#1E40AF;fontSize=7.5;fontStyle=1;align=center;verticalAlign=middle;");
+  cell("lbl_t7_analytics", "Analytics & Data Platform (GCP)", 992, 680, 348, 12, "fontColor=#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const analyticsList = ["BigQuery", "Dataplex", "Data Catalog", "Looker"];
   analyticsList.forEach((an, i) => {
     const anx = 998 + i * 84;
-    cell(`an_${i}`, `<div style="font-size:7.5px;font-weight:800;color:#0F172A;text-align:center;">${an}</div>`, anx, 694, 80, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
+    cell(`an_${i}`, `<div style="font-size:8px;font-weight:800;color:#0F172A;text-align:center;">${an}</div>`, anx, 694, 80, 32, "rounded=1;fillColor=#F8FAFC;strokeColor=#E2E8F0;html=1;align=center;verticalAlign=middle;");
   });
 
   // Connectors from Tier 6 down into Tier 7
@@ -631,15 +634,15 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   // Bottom Row: Data Types, Platforms, Formats (y=734..780)
   // Data & Content Types (w=380)
   cell("box_t7_types", "", 134, 734, 380, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_types", "Data & Content Types: Documents (PDF/Word) • Email/Calendar • Chat • Images/Media • Logs • APIs", 134, 736, 380, 42, "fontColor:#0F172A;fontSize=7.5;align=center;verticalAlign=middle;whiteSpace=wrap;");
+  cell("lbl_t7_types", "Data & Content Types: Documents (PDF/Word) • Email/Calendar • Chat • Images/Media • Logs • APIs", 134, 736, 380, 42, "fontColor:#0F172A;fontSize=8;align=center;verticalAlign=middle;whiteSpace=wrap;");
 
   // Data Platforms (w=420)
   cell("box_t7_infra", "", 520, 734, 420, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_infra", "Data Platforms (GCP): Cloud Storage (Object) • Pub/Sub (Streaming) • Dataflow (Batch/Stream) • Datastream (CDC)", 520, 736, 420, 42, "fontColor:#0F172A;fontSize=7.5;align=center;verticalAlign=middle;whiteSpace=wrap;");
+  cell("lbl_t7_infra", "Data Platforms (GCP): Cloud Storage (Object) • Pub/Sub (Streaming) • Dataflow (Batch/Stream) • Datastream (CDC)", 520, 736, 420, 42, "fontColor:#0F172A;fontSize=8;align=center;verticalAlign=middle;whiteSpace=wrap;");
 
-  // Data Formats (w=394)
-  cell("box_t7_formats", "", 946, 734, 394, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
-  cell("lbl_t7_formats", "Data Formats: Structured (Transactional) • Unstructured (Docs/Media) • Semi-structured (JSON/XML) • Streaming", 946, 736, 394, 42, "fontColor:#0F172A;fontSize=7.5;align=center;verticalAlign=middle;whiteSpace=wrap;");
+  // Data Formats (w=380)
+  cell("box_t7_formats", "", 946, 734, 380, 46, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;");
+  cell("lbl_t7_formats", "Data Formats: Structured (Transactional) • Unstructured (Docs/Media) • Semi-structured (JSON/XML) • Streaming", 946, 736, 380, 42, "fontColor:#0F172A;fontSize=8;align=center;verticalAlign=middle;whiteSpace=wrap;");
 
   // Up/Down connectors between Tier 7 top & bottom
   rawEdge("e_t7_updown1", "edgeStyle=none;strokeColor=#1E40AF;strokeWidth=1.2;startArrow=classic;endArrow=classic;startSize=3;endSize=3;", [
@@ -656,7 +659,7 @@ export function generateTemplate40EnterpriseGenAiPlatformXml(
   ]);
 
   // Flow Step 10 Badge to Platform Operations Sidebar
-  flowBadge("step_10", "10", 1344, 742, "#1E40AF");
+  flowBadge("step_10", "10", 1332, 742, "#1E40AF");
   rawEdge("e_data_ops_sb", "edgeStyle=none;strokeColor=#1E40AF;strokeWidth=1.5;endArrow=classic;endSize=4;", [
     { x: 1340, y: 752 },
     { x: 1354, y: 752 }

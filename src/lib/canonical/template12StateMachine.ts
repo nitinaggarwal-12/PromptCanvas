@@ -431,37 +431,37 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:8px;">
       <tr>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Clinical Trials<br>Database</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Regulatory<br>Documents</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Scientific<br>Literature</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Internal<br>Knowledge Base</div>
         </td>
       </tr>
       <tr>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Study Protocols</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>SOPs &amp; Policies</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Historical Q&amp;A</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>External APIs</div>
         </td>
       </tr>
@@ -475,37 +475,37 @@ export function generateTemplate12StateMachineXml(domainFlavor = "biopharma", th
     <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:8px;">
       <tr>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Vertex AI<br>(LLM &amp; RAG)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>BigQuery<br>(Vector Search)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Dataproc<br>(Spark)</div>
         </td>
         <td style="padding:4px;width:25%;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Cloud Storage<br>(Artifacts)</div>
         </td>
       </tr>
       <tr>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Cloud Functions<br>(Orchestration)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Cloud Run<br>(Services)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Pub/Sub<br>(Events)</div>
         </td>
         <td style="padding:4px;">
-          <div style="font-size:18px;margin-bottom:2px;"></div>
+          <div style="font-size:18px;margin-bottom:2px;">●</div>
           <div>Cloud Armor<br>(Guardrails)</div>
         </td>
       </tr>

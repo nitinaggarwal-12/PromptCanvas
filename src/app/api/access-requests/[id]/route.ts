@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAuthenticatedUser } from '@/lib/auth';
-import { resolveAccessRequest } from '@/lib/db';
+import { resolveAccessRequest, recordChangelogEntry } from '@/lib/db';
 
 interface RouteParams {
   params: Promise<{
@@ -26,6 +26,23 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
     const resolved = await resolveAccessRequest(id, user.id, status);
 
+    await recordChangelogEntry({
+      event_category: 'STATUS_CHANGED',
+      actor_id: user.id,
+      actor_name: user.name || user.email,
+      actor_email: user.email,
+      actor_role: user.global_role || 'Owner',
+      entity_type: 'AccessRequest',
+      entity_id: id,
+      entity_name: `Access Request #${id.slice(0, 8)}`,
+      field_changed: 'status',
+      old_value: 'Pending',
+      new_value: status,
+      summary: `${user.name || user.email} changed Access Request #${id.slice(0, 8)} status from "Pending" to "${status}" in UI and synced to Google Sheet [Tracker!E:E].`,
+      source: 'UI',
+      sheet_row_ref: 'Tracker!E:E',
+    });
+
     return NextResponse.json({
       success: true,
       accessRequest: resolved,
@@ -36,3 +53,4 @@ export async function PUT(request: Request, { params }: RouteParams) {
     return NextResponse.json({ error: msg }, { status: 400 });
   }
 }
+

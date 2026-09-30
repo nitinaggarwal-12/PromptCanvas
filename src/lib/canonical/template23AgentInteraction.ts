@@ -52,7 +52,7 @@ export function generateTemplate23AgentInteractionXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">ENTERPRISE CLOUD</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -60,36 +60,36 @@ export function generateTemplate23AgentInteractionXml(
   </div>`;
   cell("hdr_obj", objHtml, 1140, 12, 380, 54, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  // ==================== 2. LEFT COLUMN (x=16..170, y=78..560, w=154) ====================
-  // 1. User & Channels (h=240)
-  cell("box_l_users", "", 16, 78, 154, 240, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
-  cell("lbl_l_users", "USER &amp; CHANNELS", 16, 82, 154, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
+  // ==================== 2. LEFT COLUMN (x=16..170, y=78..450, w=154) ====================
+  // 1. User & Channels (h=204, y=78..282)
+  cell("box_l_users", "", 16, 78, 154, 204, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  cell("lbl_l_users", "USER &amp; CHANNELS", 16, 80, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8.5;fontStyle=1;html=1;align=center;verticalAlign=middle;");
   
   const userChannels = [
     { t: "Web / Portal", icon: "●" },
     { t: "Mobile App", icon: "●" },
-    { t: "Slack / Teams", icon: "●" },
+    { t: "Team ChatOps", icon: "●" },
     { t: "Email / Notifications", icon: "●" },
     { t: "API / Webhook", icon: "●" }
   ];
   userChannels.forEach((uc, idx) => {
-    const ucy = 108 + idx * 40;
-    cell(`uc_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:13px;">${uc.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${uc.t}</span></div>`, 24, ucy, 138, 34, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
+    const ucy = 102 + idx * 35;
+    cell(`uc_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:12px;">${uc.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;">${uc.t}</span></div>`, 24, ucy, 138, 30, "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
-  // 2. Entry Points (h=230)
-  cell("box_l_entry", "", 16, 328, 154, 230, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
-  cell("lbl_l_entry", "ENTRY POINTS", 16, 332, 154, 20, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
+  // 2. Entry Points (h=160, y=290..450)
+  cell("box_l_entry", "", 16, 290, 154, 160, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#7C3AED;strokeWidth=1.5;");
+  cell("lbl_l_entry", "ENTRY POINTS", 16, 292, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#7C3AED;fontSize=8.5;fontStyle=1;align=center;verticalAlign=middle;");
   
   const entryPoints = [
     { t: "User Query", icon: "●" },
-    { t: "Scheduled Trigger", icon: "⏰" },
+    { t: "Scheduled Trigger", icon: "●" },
     { t: "Event / Webhook", icon: "●" },
     { t: "System API Call", icon: "●" }
   ];
   entryPoints.forEach((ep, idx) => {
-    const epy = 358 + idx * 48;
-    cell(`ep_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:13px;">${ep.icon}</span><span style="font-size:7.5px;font-weight:800;color:#0F172A;">${ep.t}</span></div>`, 24, epy, 138, 40, "rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=left;verticalAlign=middle;padding=2;");
+    const epy = 314 + idx * 33;
+    cell(`ep_${idx}`, `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;"><span style="font-size:12px;">${ep.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;">${ep.t}</span></div>`, 24, epy, 138, 29, "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#FAF5FF;strokeColor=#E9D5FF;html=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   // Pure 0° Horizontal flow edge from Channels to Flow
@@ -179,17 +179,41 @@ export function generateTemplate23AgentInteractionXml(
   cell("lbl_patterns", "AGENT COLLABORATION PATTERNS (Examples)", 16, 460, 1504, 16, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=9;fontStyle=1;align=center;verticalAlign=middle;");
 
   const patterns = [
-    { title: "Supervisor Pattern", sub: "1 orchestrator manages<br/>and delegates to workers", icon: "●" },
-    { title: "Peer-to-Peer Pattern", sub: "Agents collaborate as<br/>equals", icon: "●" },
-    { title: "Pipeline Pattern", sub: "Sequential handoff through<br/>specialized agents", icon: "●" },
-    { title: "Blackboard Pattern", sub: "Agents read/write to<br/>shared blackboard", icon: "●" },
-    { title: "Hierarchical Pattern", sub: "Multi-level orchestration<br/>&amp; delegation", icon: "●" },
-    { title: "Human-in-the-Loop", sub: "Human review/approval at<br/>key checkpoints", icon: "●" }
+    {
+      title: "Supervisor Pattern",
+      sub: "1 orchestrator manages<br/>and delegates to workers",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><circle cx="32" cy="5" r="4" fill="#1D4ED8"/><circle cx="14" cy="21" r="3.5" fill="#3B82F6"/><circle cx="32" cy="21" r="3.5" fill="#3B82F6"/><circle cx="50" cy="21" r="3.5" fill="#3B82F6"/><path d="M32 9L14 17M32 9V17M32 9L50 17" stroke="#1D4ED8" stroke-width="1.4"/></svg>`
+    },
+    {
+      title: "Peer-to-Peer Pattern",
+      sub: "Agents collaborate as<br/>autonomous equals",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><circle cx="16" cy="13" r="4" fill="#0D9488"/><circle cx="32" cy="5" r="4" fill="#0D9488"/><circle cx="48" cy="13" r="4" fill="#0D9488"/><circle cx="32" cy="21" r="4" fill="#0D9488"/><path d="M20 11L28 7M36 7L44 11M44 15L36 19M28 19L20 15M20 13H44" stroke="#0D9488" stroke-width="1.3"/></svg>`
+    },
+    {
+      title: "Pipeline Pattern",
+      sub: "Sequential handoff through<br/>specialized stage agents",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><rect x="6" y="8" width="12" height="10" rx="2" fill="#2563EB"/><rect x="26" y="8" width="12" height="10" rx="2" fill="#2563EB"/><rect x="46" y="8" width="12" height="10" rx="2" fill="#2563EB"/><path d="M18 13H26M38 13H46" stroke="#1E40AF" stroke-width="1.6"/></svg>`
+    },
+    {
+      title: "Blackboard Pattern",
+      sub: "Agents read/write to<br/>shared state blackboard",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><rect x="18" y="3" width="28" height="8" rx="2" fill="#7C3AED"/><circle cx="16" cy="21" r="3.5" fill="#9333EA"/><circle cx="32" cy="21" r="3.5" fill="#9333EA"/><circle cx="48" cy="21" r="3.5" fill="#9333EA"/><path d="M24 11L16 17M32 11V17M40 11L48 17" stroke="#7C3AED" stroke-width="1.3" stroke-dasharray="2,2"/></svg>`
+    },
+    {
+      title: "Hierarchical Pattern",
+      sub: "Multi-tier orchestration<br/>&amp; domain delegation",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><circle cx="32" cy="4" r="3.5" fill="#1E40AF"/><circle cx="20" cy="13" r="3" fill="#2563EB"/><circle cx="44" cy="13" r="3" fill="#2563EB"/><circle cx="12" cy="22" r="2.5" fill="#60A5FA"/><circle cx="26" cy="22" r="2.5" fill="#60A5FA"/><circle cx="38" cy="22" r="2.5" fill="#60A5FA"/><circle cx="52" cy="22" r="2.5" fill="#60A5FA"/><path d="M32 7.5L20 10M32 7.5L44 10M20 16L12 19.5M20 16L26 19.5M44 16L38 19.5M44 16L52 19.5" stroke="#1E40AF" stroke-width="1.2"/></svg>`
+    },
+    {
+      title: "Human-in-the-Loop",
+      sub: "Expert review/approval at<br/>critical GxP checkpoints",
+      svg: `<svg width="64" height="26" viewBox="0 0 64 26" style="display:inline-block;"><rect x="8" y="8" width="12" height="10" rx="2" fill="#7C3AED"/><polygon points="32,6 39,13 32,20 25,13" fill="#EA580C"/><circle cx="52" cy="10" r="3" fill="#16A34A"/><path d="M47 20c0-3 2.5-4.5 5-4.5s5 1.5 5 4.5" stroke="#16A34A" stroke-width="1.5" fill="none"/><path d="M20 13H25M39 13H46" stroke="#475569" stroke-width="1.4"/></svg>`
+    }
   ];
 
   patterns.forEach((pt, idx) => {
     const ptx = 26 + idx * 248;
-    cell(`pt_${idx}`, `<div style="font-size:8px;font-weight:900;color:#1E40AF;text-align:center;">${pt.title}</div><div style="font-size:16px;text-align:center;margin:3px 0;">${pt.icon}</div><div style="font-size:8px;color:#64748B;text-align:center;line-height:1.15;">${pt.sub}</div>`, ptx, 480, 238, 98, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=4;");
+    cell(`pt_${idx}`, `<div style="font-size:8.5px;font-weight:900;color:#1E40AF;text-align:center;">${pt.title}</div><div style="text-align:center;margin:4px 0;">${pt.svg}</div><div style="font-size:8px;color:#475569;text-align:center;line-height:1.15;">${pt.sub}</div>`, ptx, 480, 238, 98, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=center;verticalAlign=top;padding=4;");
   });
 
   // ==================== 6. RIGHT SIDEBAR (x=1230..1520, y=78..450, w=290, h=372) ====================

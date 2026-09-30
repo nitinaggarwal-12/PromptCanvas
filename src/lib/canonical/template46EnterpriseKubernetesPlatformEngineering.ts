@@ -379,7 +379,7 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
   // -------------------------------------------------------------------------
   cell("t7_frame", "", 1166, 72, 354, 242, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t7_badge", "7", 1172, 78, 22, 22, "rounded=1;arcSize=6;fillColor=#7C3AED;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t7_lbl", `<b style="font-size:8.5px;color:#7C3AED;">GOVERNANCE &amp; COMPLIANCE</b><br/><span style="font-size:7px;color:#64748B;">Governed • Policy-Driven • Compliant</span>`, 1198, 78, 220, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t7_lbl", `<b style="font-size:8.5px;color:#7C3AED;">GOVERNANCE &amp; COMPLIANCE</b><br/><span style="font-size:8px;color:#64748B;">Governed • Policy-Driven • Compliant</span>`, 1198, 76, 260, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const govItems = [
     { title: "Policy Management", icon: "shield" },
@@ -396,16 +396,16 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
     const col = i % 2;
     const row = Math.floor(i / 2);
     const gx = 1174 + col * 168;
-    const gy = 108 + row * 37;
+    const gy = 114 + row * 36;
     cell(`t7_i_${i}_box`, "", gx, gy, 162, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;");
     const gHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;">
       ${svgIcon(gi.icon as any, "#7C3AED", 12)}
-      <span style="font-size:7px;font-weight:700;color:#0F172A;">${gi.title}</span>
+      <span style="font-size:8px;font-weight:700;color:#0F172A;">${gi.title}</span>
     </div>`;
     cell(`t7_i_${i}_lbl`, gHtml, gx, gy, 162, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
-  cell("t7_scorecard", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:7.5px;font-weight:800;color:#7C3AED;">
+  cell("t7_scorecard", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;font-weight:800;color:#7C3AED;">
     ${svgIcon("chart", "#7C3AED", 12)} Platform Scorecard
   </div>`, 1174, 276, 336, 28, "rounded=1;arcSize=8;fillColor=#FAF5FF;strokeColor=#E9D5FF;strokeWidth=1;html=1;align=center;verticalAlign=middle;");
 
@@ -414,7 +414,7 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
   // -------------------------------------------------------------------------
   cell("t8_frame", "", 1166, 322, 354, 252, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t8_badge", "8", 1172, 328, 22, 22, "rounded=1;arcSize=6;fillColor=#16A34A;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t8_lbl", `<b style="font-size:8.5px;color:#16A34A;">OBSERVABILITY &amp; OPERATIONS</b><br/><span style="font-size:7px;color:#64748B;">Monitor • Detect • Respond</span>`, 1198, 328, 220, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t8_lbl", `<b style="font-size:8.5px;color:#16A34A;">OBSERVABILITY &amp; OPERATIONS</b><br/><span style="font-size:8px;color:#64748B;">Monitor • Detect • Respond</span>`, 1198, 326, 260, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const obsItems = [
     { title: "Unified Monitoring", icon: "chart" },
@@ -431,16 +431,16 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
     const col = i % 2;
     const row = Math.floor(i / 2);
     const ox = 1174 + col * 168;
-    const oy = 358 + row * 37;
+    const oy = 364 + row * 37;
     cell(`t8_i_${i}_box`, "", ox, oy, 162, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;");
     const oHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;">
       ${svgIcon(oi.icon as any, "#16A34A", 12)}
-      <span style="font-size:7px;font-weight:700;color:#0F172A;">${oi.title}</span>
+      <span style="font-size:8px;font-weight:700;color:#0F172A;">${oi.title}</span>
     </div>`;
     cell(`t8_i_${i}_lbl`, oHtml, ox, oy, 162, 30, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
-  cell("t8_dashboard", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:7.5px;font-weight:800;color:#16A34A;">
+  cell("t8_dashboard", `<div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;font-weight:800;color:#16A34A;">
     ${svgIcon("monitor", "#16A34A", 12)} Operations Dashboard
   </div>`, 1174, 532, 336, 28, "rounded=1;arcSize=8;fillColor=#F0FDF4;strokeColor=#BBF7D0;strokeWidth=1;html=1;align=center;verticalAlign=middle;");
 
@@ -449,7 +449,7 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
   // -------------------------------------------------------------------------
   cell("t9_frame", "", 1166, 582, 354, 240, "rounded=1;arcSize=3;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1;");
   cell("t9_badge", "9", 1172, 588, 22, 22, "rounded=1;arcSize=6;fillColor=#EA580C;fontColor=#FFFFFF;fontSize=11;fontStyle=1;align=center;verticalAlign=middle;");
-  cell("t9_lbl", `<b style="font-size:8.5px;color:#EA580C;">PLATFORM OPERATIONS</b><br/><span style="font-size:7px;color:#64748B;">Operate • Optimize • Evolve</span>`, 1198, 588, 220, 24, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
+  cell("t9_lbl", `<b style="font-size:8.5px;color:#EA580C;">PLATFORM OPERATIONS</b><br/><span style="font-size:8px;color:#64748B;">Operate • Optimize • Evolve</span>`, 1198, 586, 260, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;");
 
   const opsItems = [
     { title: "Release Management", icon: "repeat" },
@@ -466,7 +466,7 @@ export function generateTemplate46EnterpriseKubernetesPlatformEngineeringXml(
     const col = i % 2;
     const row = Math.floor(i / 2);
     const opx = 1174 + col * 168;
-    const opy = 618 + row * 36;
+    const opy = 624 + row * 35;
     cell(`t9_i_${i}_box`, "", opx, opy, 162, 30, "rounded=1;arcSize=4;fillColor=#FFFFFF;strokeColor=#E2E8F0;strokeWidth=1;");
     const opHtml = `<div style="display:flex;align-items:center;gap:6px;padding:0 6px;">
       ${svgIcon(op.icon as any, "#EA580C", 12)}

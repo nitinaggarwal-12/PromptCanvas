@@ -92,37 +92,31 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
 } {
   const combined = `${detectedTitle} ${promptText}`.toLowerCase();
 
-  // 1. Blueprint 01: Novacura Bio-Pharma Platform System Context
+  // 1. Blueprint 01: System Context Architecture
   if (
     badgeNumber === '01' ||
-    (/\b01\b/.test(combined) && (/system\s+context/i.test(combined) || /novacura/i.test(combined) || /bio-pharma/i.test(combined))) ||
-    (/novacura/i.test(combined) && /system\s+context/i.test(combined)) ||
-    (/bio-pharma/i.test(combined) && /system\s+context/i.test(combined)) ||
-    (/01/i.test(combined) && /novacura/i.test(combined))
+    (/\b01\b/.test(combined) && (/system\s+context/i.test(combined) || /bio-pharma/i.test(combined))) ||
+    (/bio-pharma/i.test(combined) && /system\s+context/i.test(combined))
   ) {
     return {
       isMatch: true,
       id: '01',
-      title: '01 — System Context | NOVACURA Bio-Pharma Platform',
+      title: '01 — System Context Architecture',
       xml: getVisionConverted01Xml(),
       family: 'SYSTEM_CONTEXT',
       badge: '01',
-      brandBlock: {
-        logoText: 'NOVACURA',
-        subtitle: 'Transforming Therapies. Improving Lives.'
-      }
     };
   }
 
-  // 2. Blueprint GCP-MULTIAGENT-01: Google Multiagent AI System
+  // 2. Blueprint GCP-MULTIAGENT-01: Enterprise Multiagent AI System
   if (
     /gcp-multiagent-01/i.test(combined) ||
-    ((/multiagent/i.test(combined) || /multi-agent/i.test(combined)) && (/coordinator/i.test(combined) || /model armor/i.test(combined) || /adk/i.test(combined) || /google/i.test(combined) || /orchestrat/i.test(combined)))
+    ((/multiagent/i.test(combined) || /multi-agent/i.test(combined)) && (/coordinator/i.test(combined) || /model armor/i.test(combined) || /adk/i.test(combined) || /orchestrat/i.test(combined)))
   ) {
     return {
       isMatch: true,
       id: 'GCP-MULTIAGENT-01',
-      title: 'Google Multiagent AI System',
+      title: 'Enterprise Multi-Agent AI System',
       xml: generateGoogleMultiagentArchitectureXml(),
       family: 'AGENTIC_AI',
       badge: '01'
@@ -138,14 +132,10 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
     return {
       isMatch: true,
       id: '04',
-      title: '04 — Value Stream Delivery | NOVACURA',
+      title: '04 — Value Stream Delivery Architecture',
       xml: generateTemplate04ValueStreamXml('biopharma', 'light'),
       family: 'VALUE_STREAM',
       badge: '04',
-      brandBlock: {
-        logoText: 'NOVACURA',
-        subtitle: 'Transforming Therapies. Improving Lives.'
-      }
     };
   }
 
@@ -153,19 +143,15 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
   if (
     badgeNumber === '10' ||
     (/\b10\b/.test(combined) && /integration/i.test(combined)) ||
-    (/enterprise\s+integration/i.test(combined) && (/apigee/i.test(combined) || /datastream/i.test(combined) || /backbone/i.test(combined)))
+    (/enterprise\s+integration/i.test(combined) && (/gateway/i.test(combined) || /datastream/i.test(combined) || /backbone/i.test(combined)))
   ) {
     return {
       isMatch: true,
       id: '10',
-      title: '10 — Enterprise Integration Architecture | NOVACURA',
+      title: '10 — Enterprise Integration Architecture',
       xml: generateTemplate10IntegrationArchXml('biopharma', 'light'),
       family: 'INTEGRATION',
       badge: '10',
-      brandBlock: {
-        logoText: 'NOVACURA',
-        subtitle: 'Transforming Therapies. Improving Lives.'
-      }
     };
   }
 
@@ -178,14 +164,10 @@ export function matchMasterBlueprint(detectedTitle: string, promptText: string, 
     return {
       isMatch: true,
       id: '20',
-      title: '20 — DevSecOps CI/CD Pipeline | NOVACURA',
+      title: '20 — DevSecOps CI/CD Pipeline Architecture',
       xml: generateTemplate20CiCdPipelineXml('biopharma', 'light'),
       family: 'CICD',
       badge: '20',
-      brandBlock: {
-        logoText: 'NOVACURA',
-        subtitle: 'Transforming Therapies. Improving Lives.'
-      }
     };
   }
 

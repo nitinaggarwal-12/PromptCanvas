@@ -264,7 +264,7 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   }
 
   // Row 3 Relationships
-  edge("rel_study_trial", "1\nproduces\n*", 262, 370, 262, 395, "#0F172A", false, "diamond");
+  edge("rel_study_trial", "1 : N", 262, 370, 262, 395, "#0F172A", false, "diamond");
   edge("rel_trial_patient", "1   places_order   *", 325, 445, 370, 445, "#0F172A", false, "diamond");
   edge("rel_patient_event", "1    dispatches    *", 485, 445, 530, 445, "#0F172A", false, "diamond");
   edge("rel_kb_ai_model", "used_by", 745, 355, 727, 400, "#0F172A", true, "open");
@@ -524,30 +524,30 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   const summaryHtml = `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">ENTITY SUMMARY</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.4;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span>~ 24 core entities</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span>~ 36 relationships</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span>7 business domains</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span>Extensible &amp; future-proof</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span>Built for compliance (${complianceLabel})</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span>~ 24 core entities</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span>~ 36 relationships</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span>7 business domains</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span>Extensible &amp; future-proof</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span>Built for compliance (${complianceLabel})</span></div>
     </div>
   </div>`;
   rect("card_entity_summary", summaryHtml, 20, 815, 220, 145, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
-  // Card 2: TECHNOLOGY STACK (GOOGLE CLOUD) (x: 250, w: 370)
+  // Card 2: TECHNOLOGY STACK (x: 250, w: 370)
   const techStackHtml = `<div style="padding:6px 8px;">
-    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">TECHNOLOGY STACK (GOOGLE CLOUD)</div>
-    <table style="width:100%;text-align:center;font-size:7.5px;font-weight:700;color:#1E293B;margin-top:6px;">
+    <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">ENTERPRISE DATA &amp; AI TECHNOLOGY STACK</div>
+    <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:6px;border-collapse:separate;border-spacing:4px;">
       <tr>
-        <td style="padding:2px;width:25%;"><div style="font-size:16px;"></div><div>Cloud Spanner</div></td>
-        <td style="padding:2px;width:25%;"><div style="font-size:16px;"></div><div>BigQuery</div></td>
-        <td style="padding:2px;width:25%;"><div style="font-size:16px;"></div><div>Vertex AI</div></td>
-        <td style="padding:2px;width:25%;"><div style="font-size:16px;"></div><div>Dataproc (Spark)</div></td>
+        <td style="padding:4px;width:25%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;"><div style="font-size:14px;">●</div><div>Distributed SQL</div></td>
+        <td style="padding:4px;width:25%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;"><div style="font-size:14px;">●</div><div>Data Warehouse</div></td>
+        <td style="padding:4px;width:25%;background:#FAF5FF;border:1px solid #DDD6FE;border-radius:4px;"><div style="font-size:14px;">●</div><div>AI Runtime</div></td>
+        <td style="padding:4px;width:25%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;"><div style="font-size:14px;">●</div><div>Managed Spark</div></td>
       </tr>
       <tr>
-        <td style="padding:2px;"><div style="font-size:16px;"></div><div>Pub/Sub</div></td>
-        <td style="padding:2px;"><div style="font-size:16px;"></div><div>Cloud Storage</div></td>
-        <td style="padding:2px;"><div style="font-size:16px;"></div><div>Data Catalog</div></td>
-        <td style="padding:2px;"><div style="font-size:16px;"></div><div>IAM</div></td>
+        <td style="padding:4px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;"><div style="font-size:14px;">●</div><div>Event Pub/Sub</div></td>
+        <td style="padding:4px;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:4px;"><div style="font-size:14px;">●</div><div>Object Storage</div></td>
+        <td style="padding:4px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;"><div style="font-size:14px;">●</div><div>Data Catalog</div></td>
+        <td style="padding:4px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;"><div style="font-size:14px;">●</div><div>Zero-Trust IAM</div></td>
       </tr>
     </table>
   </div>`;
@@ -556,18 +556,18 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
   // Card 3: DATA FLOW HINT (x: 630, w: 470)
   const flowHintHtml = `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">DATA FLOW HINT</div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:7.5px;font-weight:700;margin-top:8px;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:8px;font-weight:700;margin-top:8px;">
       <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataSource<br><span style="font-size:8px;color:#64748B;">(External)</span></div>
-      <span></span>
+      <span style="color:#0284C7;font-weight:900;">&rarr;</span>
       <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">Ingestion<br><span style="font-size:8px;color:#64748B;">(Job)</span></div>
-      <span></span>
+      <span style="color:#0284C7;font-weight:900;">&rarr;</span>
       <div style="border:1px solid #0284C7;background:#EFF6FF;padding:4px 6px;border-radius:4px;text-align:center;">DataAsset<br><span style="font-size:8px;color:#64748B;">(Storage)</span></div>
-      <span></span>
+      <span style="color:#7C3AED;font-weight:900;">&rarr;</span>
       <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Indexed in<br><span style="font-size:8px;color:#64748B;">KB / Embedding</span></div>
-      <span></span>
+      <span style="color:#7C3AED;font-weight:900;">&rarr;</span>
       <div style="border:1px solid #7C3AED;background:#FAF5FF;padding:4px 6px;border-radius:4px;text-align:center;">Used by<br><span style="font-size:8px;color:#64748B;">AI Models</span></div>
     </div>
-    <div style="font-size:7.5px;color:#475569;text-align:center;margin-top:8px;font-style:italic;">Feedback loop from Response Audit / Metrics Improvement</div>
+    <div style="font-size:8px;color:#475569;text-align:center;margin-top:8px;font-style:italic;">Closed-loop feedback from Response &rarr; Audit / Metrics &rarr; Continuous Improvement</div>
   </div>`;
   rect("card_data_flow_hint", flowHintHtml, 630, 815, 470, 145, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");
 
@@ -576,49 +576,49 @@ export function generateTemplate14DataModelErdXml(domainFlavor = "biopharma", th
     ? `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Catalog Search</b> CatalogItem + SkuEmbedding + RecEngine</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Order Fulfillment</b> Order + Shipment + Warehouse</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Cart Checkout</b> Cart + CartItem + PaymentGateway</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Fraud &amp; Risk</b> PricingPolicy + FraudRule + ChargebackRisk</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Catalog Search:</b> CatalogItem + SkuEmbedding + RecEngine</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Order Fulfillment:</b> Order + Shipment + Warehouse</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Cart Checkout:</b> Cart + CartItem + PaymentGateway</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Fraud &amp; Risk:</b> PricingPolicy + FraudRule + ChargebackRisk</span></div>
     </div>
   </div>`
     : isFintech
     ? `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Algorithmic Trading</b> TradeOrder + ExecutionFill + RiskModel</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Real-Time Settlement</b> PaymentInstruction + TransferLeg + Spanner</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Fraud Anomaly Detection</b> Trader + FraudCase + Graph ML</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>AML &amp; Sanctions</b> RiskPolicy + AMLRule + SAR Log</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Algorithmic Trading:</b> TradeOrder + ExecutionFill + RiskModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Real-Time Settlement:</b> PaymentInstruction + TransferLeg + Spanner</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Fraud Anomaly Detection:</b> Trader + FraudCase + Graph ML</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>AML &amp; Sanctions:</b> RiskPolicy + AMLRule + SAR Log</span></div>
     </div>
   </div>`
     : isManufacturing
     ? `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Fleet Ingestion</b> DroneProfile + TelemetryCatalog + FlightModel</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Airspace Dispatch</b> FlightMission + FlightCorridor + VertiportHub</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Collision Guard</b> AirspacePolicy + CollisionRule + GeofenceRisk</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Live Telemetry Stream</b> SCADAConnector + UTMGateway + ADS_BFeed</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Fleet Ingestion:</b> DroneProfile + TelemetryCatalog + FlightModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Airspace Dispatch:</b> FlightMission + FlightCorridor + VertiportHub</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Collision Guard:</b> AirspacePolicy + CollisionRule + GeofenceRisk</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Live Telemetry Stream:</b> SCADAConnector + UTMGateway + ADS_BFeed</span></div>
     </div>
   </div>`
     : isSaas
     ? `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Tenant Provisioning</b> TenantProfile + TenantConfig + SubscriptionTier</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>API Gateway Routing</b> ApiRequest + ApiResponse + ServiceCatalog</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Rate Limiting &amp; Quota</b> TenantPolicy + RateLimitRule + QuotaModel</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Metering &amp; Ingestion</b> CloudConnector + APIGateway + UsageEventFeed</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Tenant Provisioning:</b> TenantProfile + TenantConfig + SubscriptionTier</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>API Gateway Routing:</b> ApiRequest + ApiResponse + ServiceCatalog</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Rate Limiting &amp; Quota:</b> TenantPolicy + RateLimitRule + QuotaModel</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Metering &amp; Ingestion:</b> CloudConnector + APIGateway + UsageEventFeed</span></div>
     </div>
   </div>`
     : `<div style="padding:6px 8px;">
     <div style="font-size:9.5px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:3px;letter-spacing:0.5px;text-align:center;">USE CASE MAPPING (Examples)</div>
     <div style="font-size:8px;color:#1E293B;line-height:1.45;margin-top:6px;">
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Protocol Intelligence</b> Document + KB + AI Model</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Safety Signal Detection</b> Patient + Event + AI</span></div>
-      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Regulatory Q&amp;A</b> KB + Prompt + Response</span></div>
-      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;"></span><span><b>Audit &amp; Compliance</b> Policy + AuditLog + Metrics</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Protocol Intelligence:</b> Document + KB + AI Model</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Safety Signal Detection:</b> Patient + Event + AI</span></div>
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Regulatory Q&amp;A:</b> KB + Prompt + Response</span></div>
+      <div style="display:flex;align-items:center;gap:4px;"><span style="color:#16A34A;font-weight:900;">✓</span><span><b>Audit &amp; Compliance:</b> Policy + AuditLog + Metrics</span></div>
     </div>
   </div>`;
   rect("card_use_cases", useCaseHtml, 1110, 815, 470, 145, "fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.2;align=left;verticalAlign=top;");

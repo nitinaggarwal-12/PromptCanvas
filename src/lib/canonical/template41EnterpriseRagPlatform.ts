@@ -395,12 +395,12 @@ export function generateTemplate41EnterpriseRagPlatformXml(
 
   // Left Ingestion Pipeline Components (6 components)
   const t6Components: { t: string; icon: keyof typeof SVG; color: string; w: number }[] = [
-    { t: "Connectors /<br/>Adapters", icon: "plug", color: "#EA580C", w: 100 },
-    { t: "Document Parsers /<br/>OCR", icon: "document", color: "#EA580C", w: 120 },
-    { t: "ETL / Workflow Engine<br/><span style='font-size:6.5px;color:#64748B;font-weight:600;'>(Cloud Workflows)</span>", icon: "gear", color: "#EA580C", w: 130 },
-    { t: "Content Classification /<br/>Labeling <span style='font-size:6.5px;color:#64748B;font-weight:600;'>(Vertex AI)</span>", icon: "tag", color: "#EA580C", w: 140 },
-    { t: "Deduplication /<br/>Quality Checks", icon: "checkCircle", color: "#EA580C", w: 120 },
-    { t: "CDC / Sync<br/>Services", icon: "repeat", color: "#EA580C", w: 100 }
+    { t: "Connectors /<br/>Adapters", icon: "plug", color: "#EA580C", w: 96 },
+    { t: "Document Parsers /<br/>OCR", icon: "document", color: "#EA580C", w: 116 },
+    { t: "ETL / Workflow Engine<br/><span style='font-size:8px;color:#64748B;font-weight:600;'>(Cloud Workflows)</span>", icon: "gear", color: "#EA580C", w: 124 },
+    { t: "Content Classification /<br/>Labeling <span style='font-size:8px;color:#64748B;font-weight:600;'>(Vertex AI)</span>", icon: "tag", color: "#EA580C", w: 132 },
+    { t: "Deduplication /<br/>Quality Checks", icon: "checkCircle", color: "#EA580C", w: 114 },
+    { t: "CDC / Sync<br/>Services", icon: "repeat", color: "#EA580C", w: 96 }
   ];
   let curT6X = 176;
   t6Components.forEach((comp, idx) => {
@@ -411,9 +411,9 @@ export function generateTemplate41EnterpriseRagPlatformXml(
       510,
       comp.w,
       58,
-      "rounded=1;arcSize=4;fillColor=#FFF7ED;strokeColor=#FFEDD5;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=3;"
+      "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#FFF7ED;strokeColor=#FFEDD5;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=3;"
     );
-    curT6X += comp.w + 10;
+    curT6X += comp.w + 8;
   });
 
   // Right Enclave: Protocols & Ingestion Modes (Dashed Box)
@@ -454,10 +454,10 @@ export function generateTemplate41EnterpriseRagPlatformXml(
   cell("t7_z1", "", 174, 590, 176, 116, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
   cell("t7_z1_lbl", "Collaboration & Content", 174, 592, 176, 14, "html=1;fontColor:#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const z1Items: { t: string; icon: keyof typeof SVG; color: string }[] = [
-    { t: "SharePoint", icon: "folder", color: "#0284C7" },
+    { t: "Document Portal", icon: "folder", color: "#0284C7" },
     { t: "Google Drive", icon: "cloud", color: "#16A34A" },
-    { t: "Confluence", icon: "document", color: "#2563EB" },
-    { t: "Notion", icon: "document", color: "#0F172A" },
+    { t: "Knowledge Wiki", icon: "document", color: "#2563EB" },
+    { t: "Workspace Docs", icon: "document", color: "#0F172A" },
     { t: "Docs / Wikis", icon: "document", color: "#7C3AED" }
   ];
   z1Items.forEach((it, idx) => {
@@ -465,18 +465,18 @@ export function generateTemplate41EnterpriseRagPlatformXml(
     const row = Math.floor(idx / 2);
     const zx = 180 + col * 84;
     const zy = 614 + row * 28;
-    cell(`t7_z1_${idx}`, `<div style="display:flex;align-items:center;gap:4px;">${svgIcon(it.icon, it.color, 14)}<span style="font-size:7.5px;font-weight:800;color:#0F172A;">${it.t}</span></div>`, zx, zy, 80, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
+    cell(`t7_z1_${idx}`, `<div style="display:flex;align-items:center;gap:4px;">${svgIcon(it.icon, it.color, 14)}<span style="font-size:8px;font-weight:800;color:#0F172A;">${it.t}</span></div>`, zx, zy, 80, 26, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
   });
 
   // Zone 2: Enterprise Apps (w=176)
   cell("t7_z2", "", 356, 590, 176, 116, "rounded=1;arcSize=4;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;");
   cell("t7_z2_lbl", "Enterprise Apps", 356, 592, 176, 14, "html=1;fontColor:#1E40AF;fontSize=8;fontStyle=1;align=center;verticalAlign=middle;");
   const z2Items: { t: string; icon: keyof typeof SVG; color: string }[] = [
-    { t: "Salesforce", icon: "cloud", color: "#0284C7" },
-    { t: "ServiceNow", icon: "gear", color: "#16A34A" },
-    { t: "Workday", icon: "user", color: "#EA580C" },
-    { t: "SAP", icon: "database", color: "#2563EB" },
-    { t: "Jira", icon: "checkCircle", color: "#0284C7" }
+    { t: "Enterprise CRM", icon: "cloud", color: "#0284C7" },
+    { t: "Enterprise ITSM", icon: "gear", color: "#16A34A" },
+    { t: "Enterprise HCM", icon: "user", color: "#EA580C" },
+    { t: "Enterprise ERP", icon: "database", color: "#2563EB" },
+    { t: "Issue Tracker", icon: "checkCircle", color: "#0284C7" }
   ];
   z2Items.forEach((it, idx) => {
     const col = idx % 2;

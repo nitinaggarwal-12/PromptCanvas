@@ -27,23 +27,12 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
         <span style="font-size:24px;font-weight:900;color:#FFFFFF;font-family:sans-serif;">07</span>
       </td>
       <td style="padding-left:14px;vertical-align:middle;">
-        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:1px;font-family:sans-serif;">07 — C4 CONTAINER | NOVACURA Bio-Pharma Platform</div>
-        <div style="font-size:12.5px;font-weight:600;color:#64748B;margin-top:2px;">Core Architecture Family | Bio-Pharma Product</div>
+        <div style="font-size:22px;font-weight:900;color:#0F2A4A;letter-spacing:0.5px;font-family:sans-serif;">C4 Container Architecture</div>
+        <div style="font-size:12px;font-weight:600;color:#64748B;margin-top:2px;">C4 Level 2 Container Boundary — Role Portals, Domain Microservices, Lakehouse &amp; Governed AI Runtime</div>
       </td>
     </tr>
   </table>`;
-  text("header_title", titleHtml, 20, 16, 950, 52, "align=left;");
-
-  const logoHtml = `<table style="text-align:right;float:right;">
-    <tr>
-      <td style="vertical-align:middle;padding-right:6px;"><span style="font-size:26px;"></span></td>
-      <td style="vertical-align:middle;text-align:left;">
-        <div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1.5px;line-height:1;">NOVACURA</div>
-        <div style="font-size:8px;font-weight:700;color:#64748B;line-height:1;margin-top:2px;">Transforming Therapies. Improving Lives.</div>
-      </td>
-    </tr>
-  </table>`;
-  text("header_logo", logoHtml, 1260, 16, 280, 48, "align=right;");
+  text("header_title", titleHtml, 20, 16, 1150, 52, "align=left;");
 
   // =========================================================================
   // 2. LEFT PANEL: INTERNAL USERS (x: 20 to 220, y: 78 to 660)
@@ -82,9 +71,7 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   rect("plat_cont_frame", "", 230, 78, 1080, 582, "rounded=1;strokeColor=#0284C7;strokeWidth=2;fillColor=#FFFFFF;shadow=0;");
 
   const platHdrHtml = `<div style="display:flex;align-items:center;justify-content:center;gap:6px;">
-    <span style="font-size:22px;"></span>
-    <span style="font-size:18px;font-weight:900;color:#0F2A4A;letter-spacing:1.5px;">NOVACURA</span>
-    <span style="font-size:11px;font-weight:800;color:#0284C7;letter-spacing:1px;margin-left:4px;">BIO-PHARMA PLATFORM</span>
+    <span style="font-size:13px;font-weight:900;color:#0F2A4A;letter-spacing:0.6px;">CORE CONTAINER BOUNDARY (12 APPLICATION &amp; PLATFORM CONTAINERS IN SCOPE)</span>
   </div>`;
   text("plat_hdr", platHdrHtml, 240, 82, 1060, 32, "align=center;");
 
@@ -266,10 +253,10 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   // 8. CONTAINER-TO-CONTAINER WORKFLOW EDGES & PROTOCOL CONNECTORS (Pure 0°, 90°, 180°, 270°)
   // =========================================================================
   // User Access to Container 1 (User Experience Portal) - Pure 0° Horizontal
-  c.push(`<mxCell id="e_users_to_c1" value="Access via Secure Web Portal (HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" edge="1" parent="1" source="internal_users_box" target="c4_cont_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_users_to_c1" value="OIDC / TLS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.8;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=8;fontColor=#1D4ED8;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.18;entryX=0;entryY=0.5;" edge="1" parent="1" source="internal_users_box" target="c4_cont_0"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   
   // Notifications from AI Copilot (Container 10 / index 9) back to Internal Users - Pure 180° Horizontal
-  c.push(`<mxCell id="e_users_notifications" value="Notifications, tasks &amp; insights" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0;exitY=0.5;entryX=1;entryY=0.75;" edge="1" parent="1" source="c4_cont_9" target="internal_users_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+  c.push(`<mxCell id="e_users_notifications" value="HITL Alert" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#7C3AED;strokeWidth=1.4;dashed=1;dashPattern=4 4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=8;fontColor=#7C3AED;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=0;exitY=0.5;entryX=1;entryY=0.75;" edge="1" parent="1" source="c4_cont_9" target="internal_users_box"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
   // Row 1 Container Flow: 1 -> 2 -> 3 (Pure 0° Horizontal)
   c.push(`<mxCell id="e_c1_to_c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_0" target="c4_cont_1"><mxGeometry relative="1" as="geometry"/></mxCell>`);
@@ -292,16 +279,16 @@ export function generateTemplate07C4ContainerXml(domainFlavor = "biopharma", the
   c.push(`<mxCell id="e_c4_to_c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4_cont_3" target="c4_cont_6"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   c.push(`<mxCell id="e_c7_to_c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1D4ED8;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="c4_cont_6" target="c4_cont_9"><mxGeometry relative="1" as="geometry"/></mxCell>`);
 
-  // External Partners Connections (Right, Green - Pure 0° Horizontal)
+  // External Partners Connections (Right, Green - Pure 0° Horizontal with compact protocol tags)
   const extLabels = [
-    "APIs &amp; Secure Data Exchange (SFTP / API)",
-    "Submissions &amp; Responses (HTTPS / APIs)",
-    "Regulatory Communications (IDMP / eCTD)",
-    "Programs &amp; Communications (Secure Portal / APIs)",
-    "Insights, answers &amp; recommendations",
+    "SFTP / REST",
+    "HTTPS / eCRF",
+    "IDMP / eCTD",
+    "FHIR Portal",
+    "MedInfo API",
   ];
   extLabels.forEach((lbl, i) => {
-    c.push(`<mxCell id="e_ext_cnt_${i}" value="${lbl}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=7.5;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_${Math.min(i * 3 + 2, 11)}" target="ext_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
+    c.push(`<mxCell id="e_ext_cnt_${i}" value="${lbl}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=1.4;endArrow=classic;endFill=1;startArrow=classic;startFill=1;fontSize=8;fontColor=#15803D;fontStyle=1;labelBackgroundColor=#FFFFFF;labelBorderColor=#CBD5E1;padding=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="c4_cont_${Math.min(i * 3 + 2, 11)}" target="ext_pod_${i}"><mxGeometry relative="1" as="geometry"/></mxCell>`);
   });
 
   return `<mxfile host="embed.diagrams.net">

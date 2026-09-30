@@ -128,15 +128,15 @@ export function generateTemplate29CutoverRunbookXml(
   rect("env_prod", `<div style="font-size:20px;"></div><div style="font-size:9.5px;font-weight:900;color:#16A34A;">NovaCura<br/>(Prod)</div>`, 1344, 132, 78, 70, "fillColor=#F0FDF4;strokeColor=#16A34A;strokeWidth=2;rounded=1;align=center;verticalAlign=middle;");
 
   const gcpServices = [
-    { n: "Vertex AI (Models)", icon: "●" },
-    { n: "BigQuery (Data)", icon: "●" },
-    { n: "Cloud SQL (OLTP)", icon: "●" },
-    { n: "Cloud Storage (Docs)", icon: "●" },
-    { n: "Secret Manager", icon: "●" }
+    { n: "AI Model Runtime" },
+    { n: "Data Lakehouse" },
+    { n: "Relational OLTP" },
+    { n: "Object Storage" },
+    { n: "Secret Vault" }
   ];
   gcpServices.forEach((gs, i) => {
     const gy = 120 + i * 21;
-    rect(`env_svc_${i}`, `<div style="font-size:8px;font-weight:700;">${gs.icon} ${gs.n}</div>`, 1432, gy, 82, 19, "fillColor=#FAF5FF;strokeColor=#E9D5FF;rounded=1;align=left;verticalAlign=middle;padding=2;");
+    rect(`env_svc_${i}`, `<div style="font-size:8px;font-weight:700;white-space:nowrap;">• ${gs.n}</div>`, 1430, gy, 88, 19, "fillColor=#FAF5FF;strokeColor=#E9D5FF;rounded=1;align=left;verticalAlign=middle;padding=2;");
   });
 
   rect("env_badge_bottom", `<div style="font-size:8px;color:#1E40AF;line-height:1.25;padding:2px 4px;"><b>Ingress:</b> Global Anycast Any-Region Load Balancer<br/><b>Target SLO:</b> &le; 15s traffic propagation &amp; DNS TTL</div>`, 1182, 236, 330, 56, "fillColor=#EFF6FF;strokeColor=#BFDBFE;rounded=1;strokeWidth=1.2;align=center;verticalAlign=middle;");

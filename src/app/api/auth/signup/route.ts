@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createUser, getUserByEmail, createSession, logUserEvent, migrateGuestContent, checkIpEventRateLimit } from '@/lib/db';
+import { createUser, getUserByEmail, createSession, logUserEvent, migrateGuestContent, checkIpEventRateLimit, recordChangelogEntry } from '@/lib/db';
 import { hashPassword, setSessionCookie, SESSION_MAX_AGE_DAYS, getAuthenticatedUser } from '@/lib/auth';
 
 export async function POST(request: Request) {
@@ -59,6 +59,22 @@ export async function POST(request: Request) {
     }
 
     await logUserEvent(newUser.id, 'SIGNUP', ipAddress, userAgent);
+    await recordChangelogEntry({
+      event_category: 'USER_ADDED',
+      actor_id: newUser.id,
+      actor_name: newUser.name || normalizedEmail.split('@')[0],
+      actor_email: newUser.email,
+      actor_role: 'Author',
+      entity_type: 'User',
+      entity_id: newUser.id,
+      entity_name: `${newUser.name || 'New User'} (${newUser.email})`,
+      field_changed: 'user_created',
+      old_value: 'None',
+      new_value: 'Author',
+      summary: `New user ${newUser.name || newUser.email} registered via UI and synced to Google Sheet [Users!A:F].`,
+      source: 'UI',
+      sheet_row_ref: 'Users!A:F',
+    });
 
     return NextResponse.json({
       success: true,

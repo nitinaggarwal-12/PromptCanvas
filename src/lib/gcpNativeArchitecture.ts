@@ -608,11 +608,11 @@ export function generateGcpNativeArchitectureXml(options: GcpNativeArchOptions =
   if (hasKafka) {
     cells.push(createEdge("e6_kafka", "n_kafka", "n_pubsub", "❻a", "Mirror Streams", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
     cells.push(createEdge("e7_cdc", "n_datastream", "n_kafka", "❻b", "CDC Replicate", "#D97706", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-    cells.push(createEdge("e8_flow", "n_pubsub", "n_dataflow", "❼", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e8_flow", "n_pubsub", "n_dataflow", "❼", "Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
   } else {
     cells.push(createEdge("e6", "n_gke", "n_pubsub", "❻", "Publish CDC Event", "#EA580C", { dashed: 1, exitX: 1, exitY: 0.8, entryX: 0.4, entryY: 0, waypoints: [{ x: 824, y: 202 }, { x: 824, y: 502 }, { x: 384, y: 502 }], labelPosition: "above", isDark }));
     cells.push(createEdge("e7", "n_datastream", "n_pubsub", "❼", "WAL CDC", "#EA580C", { dashed: 1, exitX: 0, exitY: 0.5, entryX: 1, entryY: 0.5, labelPosition: "above", directStraight: true, isDark }));
-    cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Liquid Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
+    cells.push(createEdge("e8", "n_pubsub", "n_dataflow", "❽", "Sharding", "#EA580C", { dashed: 1, exitX: 0.5, exitY: 1, entryX: 0.235, entryY: 0, labelPosition: "right", directStraight: true, isDark }));
   }
 
   // Zone 4 AI Hub Connectors

@@ -74,11 +74,11 @@ export function generateTemplate51GraphTheoryLearningRoadmapXml(
   edge('edge_ac', 'node_alice', 'node_carol', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=6;');
   edge('edge_bc', 'node_bob', 'node_carol', 'edgeStyle=none;strokeColor=#2563EB;strokeWidth=1.8;endArrow=classic;endSize=6;');
 
-  const legendHtml = `<div style="display:flex;align-items:center;justify-content:space-around;width:100%;height:100%;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;box-sizing:border-box;font-size:10px;font-weight:700;color:#1E293B;">
-    <div> <strong>Vertex</strong> (Node)</div>
-    <div> <strong>Edge</strong> (Link)</div>
-    <div> <strong>Adjacency</strong></div>
-    <div> <strong>Degree</strong></div>
+  const legendHtml = `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:100%;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:6px;padding:6px 10px;box-sizing:border-box;font-size:9.5px;font-weight:700;color:#1E293B;white-space:nowrap;">
+    <div><span style="color:#2563EB;">●</span> <strong>Vertex</strong> (Node)</div>
+    <div><span style="color:#0284C7;">―</span> <strong>Edge</strong> (Link)</div>
+    <div><span style="color:#059669;">⇄</span> <strong>Adjacency</strong></div>
+    <div><span style="color:#7C3AED;">#</span> <strong>Degree</strong></div>
   </div>`;
   cell('sec1_legend', legendHtml, 30, 360, 355, 46, 'text;html=1;whiteSpace=wrap;overflow=hidden;');
 

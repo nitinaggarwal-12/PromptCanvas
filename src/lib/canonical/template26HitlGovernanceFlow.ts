@@ -51,7 +51,7 @@ export function generateTemplate26HitlGovernanceFlowXml(
     "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;"
   );
 
-  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:24px;font-weight:900;color:#0284C7;letter-spacing:1px;">NOVACURA</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
+  const brandHtml = `<table style="width:100%;border-collapse:collapse;"><tr><td style="width:36px;vertical-align:middle;text-align:center;"><span style="font-size:32px;"></span></td><td style="text-align:left;vertical-align:middle;padding-left:8px;"><div style="font-size:20px;font-weight:900;color:#0284C7;letter-spacing:1px;">ENTERPRISE CLOUD</div><div style="font-size:10.5px;color:#64748B;font-weight:600;font-style:italic;">AI-Powered Regulatory Intelligence Platform</div></td></tr></table>`;
   cell("hdr_brand", brandHtml, 860, 12, 270, 54, "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;");
 
   const objHtml = `<div style='white-space:normal;word-break:break-word;font-size:10.5px;font-weight:900;color:#1E3A8A;margin-bottom:2px;'>OBJECTIVE</div><div style='white-space:normal;word-break:break-word;font-size:8.5px;line-height:1.35;color:#0F172A;'>
@@ -59,8 +59,8 @@ export function generateTemplate26HitlGovernanceFlowXml(
   </div>`;
   cell("hdr_obj", objHtml, 1140, 12, 380, 54, "overflow=hidden;whiteSpace=wrap;rounded=1;arcSize=8;fillColor=#EFF6FF;strokeColor=#BFDBFE;strokeWidth=1.2;html=1;align=left;verticalAlign=middle;padding=6;");
 
-  // ==================== 2. LEFT COLUMN: INPUTS & TRIGGERS (x=16..170, y=78..520, w=154) ====================
-  cell("box_inputs", "", 16, 78, 154, 442, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
+  // ==================== 2. LEFT COLUMN: INPUTS & TRIGGERS (x=16..170, y=78..444, w=154) ====================
+  cell("box_inputs", "", 16, 78, 154, 366, "rounded=1;arcSize=8;fillColor=#FFFFFF;strokeColor=#2563EB;strokeWidth=1.5;");
   cell("lbl_inputs", "INPUTS &amp; TRIGGERS", 16, 80, 154, 18, "text;html=1;strokeColor=none;fillColor=none;fontColor=#1E40AF;fontSize=8;fontStyle=1;html=1;align=center;verticalAlign=middle;");
 
   const inputTriggers = [
@@ -73,8 +73,8 @@ export function generateTemplate26HitlGovernanceFlowXml(
     { t: "Risk / Anomaly Detected", icon: "●" }
   ];
   inputTriggers.forEach((it, idx) => {
-    const ity = 104 + idx * 58;
-    cell(`it_trig_${idx}`, `<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">${it.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 24, ity, 138, 50, "rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=3;");
+    const ity = 102 + idx * 48;
+    cell(`it_trig_${idx}`, `<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:12px;">${it.icon}</span><span style="font-size:8px;font-weight:800;color:#0F172A;line-height:1.15;">${it.t}</span></div>`, 24, ity, 138, 42, "whiteSpace=wrap;rounded=1;arcSize=4;fillColor=#F8FAFC;strokeColor=#CBD5E1;html=1;align=left;verticalAlign=middle;padding=3;");
   });
 
   // ==================== 3. CENTER: HITL WORKFLOW & RACI (x=180..1220, y=78..450, w=1040) ====================

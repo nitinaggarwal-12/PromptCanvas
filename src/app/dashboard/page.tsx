@@ -60,6 +60,15 @@ import { DOC_ARCHETYPES_META, DocArchetypeMeta, BlueprintSlot } from '@/lib/comp
 import { loadAllHistoricalProjects, HistoricalProjectItem } from '@/components/DocGenHistoryModal';
 import { AppHeader } from '@/components/AppHeader';
 import { synthesizePromptDrivenDiagramXml } from '@/lib/promptDrivenDiagramSynthesizer';
+import {
+  GeminiArchitecturalDecision,
+  ArchitecturePerspective,
+  AbstractionDetailLevel,
+  FlowDirectionOption,
+  getTemplatePerspective,
+  getTemplateDetailLevels,
+  buildStructuredFallbackDecision,
+} from '@/lib/geminiArchitecturalDecisionEngine';
 
 interface DashboardStarterPrompt {
   id: string;
@@ -69,7 +78,17 @@ interface DashboardStarterPrompt {
   recommendedId: string;
 }
 
+const DEFAULT_DASHBOARD_PROMPT =
+  'Build a time machine capsule for time travel using GCP and Gemini Enterprise';
+
 const DASHBOARD_STARTER_PROMPTS: DashboardStarterPrompt[] = [
+  {
+    id: 'time_machine_gcp',
+    label: 'Time Machine Capsule (GCP + Gemini)',
+    badge: 'CHRONOS AI',
+    prompt: DEFAULT_DASHBOARD_PROMPT,
+    recommendedId: '40',
+  },
   {
     id: 'aws_cloud_ai',
     label: 'AWS Cloud AI Stack',
@@ -106,106 +125,6 @@ const DASHBOARD_STARTER_PROMPTS: DashboardStarterPrompt[] = [
     recommendedId: '52',
   },
 ];
-
-function rankTemplatesForPrompt(promptText: string): Array<{ template: CanonicalTemplate; score: number; reason: string }> {
-  const q = promptText.trim().toLowerCase();
-  return CANONICAL_TEMPLATES.map((tpl) => {
-    let score = 10;
-    let reason = `${tpl.family} Reference Blueprint`;
-    const nameLower = tpl.name.toLowerCase();
-    const purposeLower = (tpl.primaryPurpose || '').toLowerCase();
-    const compStr = (tpl.keyComponents || []).join(' ').toLowerCase();
-    const combined = `${nameLower} ${purposeLower} ${compStr} ${tpl.family.toLowerCase()}`;
-
-    if (!q) {
-      if (tpl.id === '24') return { template: tpl, score: 98, reason: 'Featured AI & RAG Reference Blueprint' };
-      if (tpl.id === '34') return { template: tpl, score: 95, reason: 'Featured Multi-Cloud & Hybrid Topology' };
-      if (tpl.id === '16') return { template: tpl, score: 92, reason: 'Featured Cloud Deployment Architecture' };
-      if (tpl.id === '18') return { template: tpl, score: 89, reason: 'Featured Zero-Trust Security Boundary' };
-      return { template: tpl, score: 50 - (parseInt(tpl.id, 10) || 25) * 0.2, reason };
-    }
-
-    const words = q.split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
-    for (const w of words) {
-      if (nameLower.includes(w)) score += 18;
-      if (compStr.includes(w)) score += 14;
-      if (purposeLower.includes(w)) score += 10;
-    }
-
-    if (/\b(aws|amazon|bedrock|sagemaker|eks|redshift|opensearch|aurora|cloudfront|lambda)\b/.test(q)) {
-      if (tpl.id === '34') {
-        score += 65;
-        reason = 'Best match for AWS / Multi-Cloud & Regional Cloud AI Topology';
-      } else if (tpl.id === '24' || tpl.id === '23') {
-        score += 55;
-        reason = 'Best match for Cloud AI, RAG Knowledge Base & Agent Orchestration';
-      } else if (tpl.id === '16' || tpl.id === '07') {
-        score += 45;
-        reason = 'Best match for Cloud Compute, EKS Containers & VPC Deployment';
-      }
-    }
-
-    if (/\b(rag|vector|knowledge|embedding|search|vertex|gemini|llm|claude)\b/.test(q)) {
-      if (tpl.id === '24') {
-        score += 60;
-        reason = 'Best match for Vector RAG, Embeddings & Knowledge Retrieval';
-      } else if (tpl.id === '23' || tpl.id === '40') {
-        score += 48;
-        reason = 'Best match for Multi-Agent AI & Foundation Model Orchestration';
-      }
-    }
-
-    if (/\b(agent|agentic|autonomous|orchestrat|tool|mcp)\b/.test(q)) {
-      if (tpl.id === '23') {
-        score += 62;
-        reason = 'Best match for Multi-Agent Interaction & Tool Routing';
-      } else if (tpl.id === '52') {
-        score += 50;
-        reason = 'Best match for Agent Context + Harness + Loop Topology';
-      }
-    }
-
-    if (/\b(ha|dr|disaster|failover|multi-region|spanner|active-active|resilien|rpo|rto)\b/.test(q)) {
-      if (tpl.id === '19') {
-        score += 68;
-        reason = 'Best match for Multi-Region Active-Active HA & Disaster Recovery';
-      } else if (tpl.id === '15' || tpl.id === '34') {
-        score += 48;
-        reason = 'Best match for Global Network & Geographic Failover';
-      }
-    }
-
-    if (/\b(security|zero-trust|waf|armor|kms|cmek|hsm|iam|threat|stride|firewall|enclave)\b/.test(q)) {
-      if (tpl.id === '18') {
-        score += 68;
-        reason = 'Best match for Zero-Trust Security & Trust Boundary Enclaves';
-      } else if (tpl.id === '17' || tpl.id === '27') {
-        score += 54;
-        reason = 'Best match for Identity Federation & STRIDE Threat Defense';
-      }
-    }
-
-    if (/\b(flow|flowchart|sequence|step|pipeline|stream|kafka|pubsub|kinesis|event)\b/.test(q)) {
-      if (tpl.id === '09' || tpl.id === '11' || tpl.id === '67') {
-        score += 62;
-        reason = 'Best match for Event Streaming, Data Pipelines & Step Sequences';
-      }
-    }
-
-    if (/\b(infographic|poster|executive|charlie|harness)\b/.test(q)) {
-      if (tpl.id === '52' || tpl.id === '53' || tpl.id === '56') {
-        score += 75;
-        reason = 'Best match for Executive Architecture Infographic Poster';
-      }
-    }
-
-    if (combined.includes(q.slice(0, 16))) {
-      score += 25;
-    }
-
-    return { template: tpl, score, reason };
-  }).sort((a, b) => b.score - a.score);
-}
 
 // Family Metadata with dedicated icons and styling accents
 export const FAMILY_CARDS_META = [
@@ -295,11 +214,19 @@ function DashboardContent() {
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFamily, setSelectedFamily] = useState<string>('All');
-  const [selectedDomain, setSelectedDomain] = useState<string>('All');
+  const [selectedDomain, setSelectedDomain] = useState<string>('enterprise');
 
-  // Create New Diagram (Prompt + AI Template Recommender + Hover Preview) State
-  const [createPrompt, setCreatePrompt] = useState<string>('');
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('24');
+  // Create New Diagram (Prompt + Live Gemini API Architect Decision + Pre-Generation Filter Dropdowns + Multi-Picture Preview)
+  const [createPrompt, setCreatePrompt] = useState<string>(DEFAULT_DASHBOARD_PROMPT);
+  const [geminiDecision, setGeminiDecision] = useState<GeminiArchitecturalDecision>(() =>
+    buildStructuredFallbackDecision(DEFAULT_DASHBOARD_PROMPT)
+  );
+  const [isAnalyzingGemini, setIsAnalyzingGemini] = useState<boolean>(false);
+  const [selectedPerspective, setSelectedPerspective] = useState<ArchitecturePerspective | 'All'>('Logical');
+  const [selectedLevel, setSelectedLevel] = useState<AbstractionDetailLevel | 'All'>('L3');
+  const [selectedDirection, setSelectedDirection] = useState<FlowDirectionOption>('LR');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('40');
+  const [previewMode, setPreviewMode] = useState<'tailored' | 'as_is'>('tailored');
   const [userLockedTemplate, setUserLockedTemplate] = useState<boolean>(false);
   const [hoveredTemplateId, setHoveredTemplateId] = useState<string | null>(null);
   const [localStudioSessions, setLocalStudioSessions] = useState<Array<{
@@ -390,47 +317,270 @@ function DashboardContent() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  // Live AI Template Ranking based on createPrompt
-  const rankedRecommendations = useMemo(() => {
-    return rankTemplatesForPrompt(createPrompt);
-  }, [createPrompt]);
+  const userLockedTemplateRef = React.useRef(userLockedTemplate);
+  useEffect(() => {
+    userLockedTemplateRef.current = userLockedTemplate;
+  }, [userLockedTemplate]);
 
-  const topRecommendedMatch = rankedRecommendations[0] || {
-    template: CANONICAL_TEMPLATES[0],
-    score: 95,
-    reason: 'Certified Reference Architecture',
+  // Live Gemini API Architectural Decision Call (POST /api/architect-decision)
+  const runGeminiArchitectAnalysis = React.useCallback(
+    async (promptToAnalyze: string, forceApplyDecision = false) => {
+      const trimmed = promptToAnalyze.trim();
+      if (trimmed.length < 4) return;
+      setIsAnalyzingGemini(true);
+      try {
+        const res = await fetch('/api/architect-decision', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: trimmed }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.decision) {
+            const dec: GeminiArchitecturalDecision = data.decision;
+            setGeminiDecision(dec);
+            if (!userLockedTemplateRef.current || forceApplyDecision) {
+              setSelectedPerspective(dec.recommendedPerspective || 'Logical');
+              setSelectedLevel(dec.recommendedLevel || 'L3');
+              setSelectedDirection(dec.recommendedDirection || 'LR');
+              if (dec.recommendedDomain) {
+                setSelectedDomain(dec.recommendedDomain);
+              }
+              setSelectedTemplateId(dec.recommendedBlueprintId || '40');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('[Dashboard] Gemini architect decision fallback:', err);
+      } finally {
+        setIsAnalyzingGemini(false);
+      }
+    },
+    []
+  );
+
+  // Automatically trigger Gemini API Architectural Decision when createPrompt changes (debounced 350ms)
+  useEffect(() => {
+    const trimmed = createPrompt.trim();
+    if (trimmed.length < 4) return;
+    // Update fallback synchronously only if prompt actually changed, then fetch live Gemini API decision
+    setGeminiDecision((prev) =>
+      prev.prompt.trim().toLowerCase() === trimmed.toLowerCase()
+        ? prev
+        : buildStructuredFallbackDecision(trimmed)
+    );
+    const timer = setTimeout(() => {
+      runGeminiArchitectAnalysis(trimmed, false);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [createPrompt, runGeminiArchitectAnalysis]);
+
+  // Filter corresponding Canonical Templates by the user's selected Perspective (Conceptual/Logical/Technical/Process) & Detail Level (L1-L4)
+  const correspondingTemplatesForFilters = useMemo(() => {
+    const list = CANONICAL_TEMPLATES.filter((tpl) => {
+      const tplPersp = getTemplatePerspective(tpl);
+      const tplLevels = getTemplateDetailLevels(tpl);
+      const matchesPersp = selectedPerspective === 'All' || tplPersp === selectedPerspective;
+      const matchesLevel = selectedLevel === 'All' || tplLevels.includes(selectedLevel as AbstractionDetailLevel);
+      const matchesFam = selectedFamily === 'All' || tpl.family.toLowerCase() === selectedFamily.toLowerCase();
+      const q = searchQuery.trim().toLowerCase();
+      const matchesSearch =
+        !q ||
+        tpl.name.toLowerCase().includes(q) ||
+        tpl.id.includes(q) ||
+        tpl.family.toLowerCase().includes(q) ||
+        (tpl.primaryPurpose && tpl.primaryPurpose.toLowerCase().includes(q));
+      return matchesPersp && matchesLevel && matchesFam && matchesSearch;
+    });
+    return list.length > 0
+      ? list
+      : CANONICAL_TEMPLATES.filter((tpl) =>
+          selectedPerspective === 'All' ? true : getTemplatePerspective(tpl) === selectedPerspective
+        );
+  }, [selectedPerspective, selectedLevel, selectedFamily, searchQuery]);
+
+  // Handler when the user changes the Perspective Dropdown (Conceptual / Logical / Technical / Process)
+  const handlePerspectiveChange = (newPersp: ArchitecturePerspective | 'All') => {
+    setSelectedPerspective(newPersp);
+    setUserLockedTemplate(true);
+    if (newPersp === 'Process') {
+      // Switch immediately to the Process Flowchart picture (or Gemini's Process blueprint match)
+      const procBp = geminiDecision?.perspectiveMatches?.Process?.blueprintId || '13';
+      setSelectedLevel(geminiDecision?.perspectiveMatches?.Process?.recommendedLevel || 'L2');
+      setSelectedTemplateId(procBp === '13' ? 'process_flow' : procBp);
+    } else if (newPersp === 'Conceptual') {
+      const concBp = geminiDecision?.perspectiveMatches?.Conceptual?.blueprintId || '01';
+      setSelectedLevel('L1');
+      setSelectedTemplateId(concBp);
+    } else if (newPersp === 'Technical') {
+      const techBp = geminiDecision?.perspectiveMatches?.Technical?.blueprintId || '16';
+      if (selectedLevel === 'L4') {
+        setSelectedTemplateId('stratum_l4');
+      } else {
+        setSelectedLevel('L3');
+        setSelectedTemplateId(techBp);
+      }
+    } else if (newPersp === 'Logical') {
+      const logBp = geminiDecision?.perspectiveMatches?.Logical?.blueprintId || geminiDecision?.recommendedBlueprintId || '40';
+      setSelectedLevel('L3');
+      setSelectedTemplateId(logBp);
+    }
   };
 
-  // Auto-select the #1 AI-recommended template as the user types, unless they explicitly locked a choice
-  useEffect(() => {
-    if (!userLockedTemplate && createPrompt.trim().length > 0 && topRecommendedMatch?.template) {
-      setSelectedTemplateId(topRecommendedMatch.template.id);
+  // Handler when the user changes the Detail Level Dropdown (L1 / L2 / L3 / L4)
+  const handleLevelChange = (newLevel: AbstractionDetailLevel | 'All') => {
+    setSelectedLevel(newLevel);
+    setUserLockedTemplate(true);
+    if (newLevel === 'L4') {
+      setSelectedPerspective('Technical');
+      setSelectedTemplateId('stratum_l4');
+    } else if (newLevel === 'L1' && selectedPerspective !== 'Conceptual') {
+      setSelectedPerspective('Conceptual');
+      setSelectedTemplateId(geminiDecision?.perspectiveMatches?.Conceptual?.blueprintId || '01');
+    } else if (newLevel !== 'All') {
+      // Ensure selectedTemplateId is valid for the current perspective/level or keep current
+      const matching = CANONICAL_TEMPLATES.filter(
+        (t) =>
+          (selectedPerspective === 'All' || getTemplatePerspective(t) === selectedPerspective) &&
+          getTemplateDetailLevels(t).includes(newLevel)
+      );
+      if (
+        selectedTemplateId !== 'custom' &&
+        selectedTemplateId !== 'process_flow' &&
+        selectedTemplateId !== 'stratum_l4' &&
+        matching.length > 0 &&
+        !matching.some((m) => m.id === selectedTemplateId)
+      ) {
+        setSelectedTemplateId(matching[0].id);
+      }
     }
-  }, [createPrompt, userLockedTemplate, topRecommendedMatch]);
+  };
 
-  // Resolved Preview Template (Hover takes priority over Selected so hovering any template previews it "As-Is")
+  // Top recommended match from Gemini Decision
+  const topRecommendedMatch = useMemo(() => {
+    const recId = geminiDecision?.recommendedBlueprintId || '40';
+    const tpl =
+      CANONICAL_TEMPLATES.find((t) => t.id === recId.padStart(2, '0') || t.id === recId) ||
+      CANONICAL_TEMPLATES.find((t) => t.id === '40') ||
+      CANONICAL_TEMPLATES[0];
+    return {
+      template: tpl,
+      score: 99,
+      reason: geminiDecision?.blueprintReasoning || 'Selected by Gemini Architectural Decision Engine',
+    };
+  }, [geminiDecision]);
+
+  // Resolved Preview Template (Hover takes priority over Selected)
+  const effectivePreviewId = hoveredTemplateId || selectedTemplateId || topRecommendedMatch.template.id;
+
   const activePreviewTemplate = useMemo(() => {
-    if (hoveredTemplateId && hoveredTemplateId !== 'custom') {
-      return CANONICAL_TEMPLATES.find((t) => t.id === hoveredTemplateId) || topRecommendedMatch.template;
-    }
-    if (selectedTemplateId && selectedTemplateId !== 'custom') {
-      return CANONICAL_TEMPLATES.find((t) => t.id === selectedTemplateId) || topRecommendedMatch.template;
-    }
-    return topRecommendedMatch.template;
-  }, [hoveredTemplateId, selectedTemplateId, topRecommendedMatch]);
-
-  // Preview XML for the Right-Side Sticky Stage
-  const activePreviewXml = useMemo(() => {
-    const domFlavor = selectedDomain === 'All' ? 'enterprise' : selectedDomain;
-    if (!hoveredTemplateId && selectedTemplateId === 'custom' && createPrompt.trim().length >= 8) {
-      return synthesizePromptDrivenDiagramXml(
-        createPrompt.trim(),
-        createPrompt.trim().slice(0, 64),
-        domFlavor
+    if (
+      effectivePreviewId &&
+      effectivePreviewId !== 'custom' &&
+      effectivePreviewId !== 'process_flow' &&
+      effectivePreviewId !== 'stratum_l4'
+    ) {
+      return (
+        CANONICAL_TEMPLATES.find(
+          (t) => t.id === effectivePreviewId.padStart(2, '0') || t.id === effectivePreviewId
+        ) || topRecommendedMatch.template
       );
     }
+    return topRecommendedMatch.template;
+  }, [effectivePreviewId, topRecommendedMatch]);
+
+  // Live Multi-Picture Preview XML for the Right-Side Sticky Stage!
+  // Renders a genuinely distinct diagram picture depending on Perspective (Conceptual / Logical / Technical / Process),
+  // Detail Level (L1 / L2 / L3 / L4), Selected Template (#01..#75 / custom / process_flow / stratum_l4), and Preview Mode (Tailored vs As-Is).
+  const activePreviewXml = useMemo(() => {
+    const domFlavor = selectedDomain === 'All' ? 'enterprise' : selectedDomain;
+    const effPersp: ArchitecturePerspective =
+      selectedPerspective === 'All' ? geminiDecision.recommendedPerspective : selectedPerspective;
+    const effLevel: AbstractionDetailLevel =
+      selectedLevel === 'All' ? geminiDecision.recommendedLevel : selectedLevel;
+    const hasPrompt = createPrompt.trim().length >= 4;
+
+    // 1. Bespoke Process Flowchart Picture (6 Steps + 2 Diamond Decision Gates + Retry Loop)
+    if (effectivePreviewId === 'process_flow') {
+      return synthesizePromptDrivenDiagramXml(
+        createPrompt.trim() || DEFAULT_DASHBOARD_PROMPT,
+        geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim().slice(0, 64),
+        domFlavor,
+        {
+          blueprintId: 'process_flow',
+          perspective: 'Process',
+          level: effLevel,
+          direction: selectedDirection,
+          geminiDecision,
+        }
+      );
+    }
+
+    // 2. Bespoke L4 Technical 4-Stratum Cross-Section Picture
+    if (effectivePreviewId === 'stratum_l4') {
+      return synthesizePromptDrivenDiagramXml(
+        createPrompt.trim() || DEFAULT_DASHBOARD_PROMPT,
+        geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim().slice(0, 64),
+        domFlavor,
+        {
+          blueprintId: 'stratum_l4',
+          perspective: 'Technical',
+          level: 'L4',
+          direction: selectedDirection,
+          geminiDecision,
+        }
+      );
+    }
+
+    // 3. Zero-Template Custom 4-Tier AST Picture
+    if (effectivePreviewId === 'custom') {
+      return synthesizePromptDrivenDiagramXml(
+        createPrompt.trim() || DEFAULT_DASHBOARD_PROMPT,
+        geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim().slice(0, 64),
+        domFlavor,
+        {
+          noTemplate: true,
+          blueprintId: 'custom',
+          perspective: effPersp,
+          level: effLevel,
+          direction: selectedDirection,
+          geminiDecision,
+        }
+      );
+    }
+
+    // 4. Canonical Blueprint (#01..#75):
+    // If Preview Mode is "Tailored to Your Prompt" (and not hovering a catalog card solely for raw inspection),
+    // synthesize the prompt-modified version of that exact blueprint so the user sees their prompt applied!
+    if (previewMode === 'tailored' && hasPrompt && !hoveredTemplateId) {
+      return synthesizePromptDrivenDiagramXml(
+        createPrompt.trim(),
+        geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim().slice(0, 64),
+        domFlavor,
+        {
+          blueprintId: activePreviewTemplate.id,
+          perspective: effPersp,
+          level: effLevel,
+          direction: selectedDirection,
+          geminiDecision,
+        }
+      );
+    }
+
+    // Otherwise ("As-Is Base Template" mode or catalog hover), render the unmodified reference template XML
     return activePreviewTemplate.generateXml(domFlavor, 'light');
-  }, [hoveredTemplateId, selectedTemplateId, createPrompt, activePreviewTemplate, selectedDomain]);
+  }, [
+    effectivePreviewId,
+    selectedDomain,
+    selectedPerspective,
+    selectedLevel,
+    selectedDirection,
+    previewMode,
+    createPrompt,
+    hoveredTemplateId,
+    activePreviewTemplate,
+    geminiDecision,
+  ]);
 
   // Combined Existing Projects for Zone 2 ("Continue Where You Left Off")
   const existingWorkspaceProjects = useMemo(() => {
@@ -521,13 +671,35 @@ function DashboardContent() {
     const domParam = selectedDomain === 'All' ? 'enterprise' : selectedDomain;
     const trimmedPrompt = createPrompt.trim();
     const targetBlueprint = selectedTemplateId || topRecommendedMatch.template.id;
+    const effPersp = selectedPerspective === 'All' ? geminiDecision.recommendedPerspective : selectedPerspective;
+    const effLevel = selectedLevel === 'All' ? geminiDecision.recommendedLevel : selectedLevel;
+
+    try {
+      sessionStorage.setItem(
+        'promptcanvas_pending_studio_launch',
+        JSON.stringify({
+          prompt: trimmedPrompt,
+          blueprintId: targetBlueprint,
+          perspective: effPersp,
+          level: effLevel,
+          direction: selectedDirection,
+          domain: domParam,
+          previewMode,
+          preRenderedXml: activePreviewXml,
+          geminiDecision,
+        })
+      );
+    } catch {
+      // ignore storage quota errors
+    }
+
     if (trimmedPrompt) {
       router.push(
-        `/studio?blueprint=${encodeURIComponent(targetBlueprint)}&prompt=${encodeURIComponent(trimmedPrompt)}&domain=${encodeURIComponent(domParam)}&autoGenerate=1`
+        `/studio?blueprint=${encodeURIComponent(targetBlueprint)}&perspective=${encodeURIComponent(effPersp)}&level=${encodeURIComponent(effLevel)}&direction=${encodeURIComponent(selectedDirection)}&prompt=${encodeURIComponent(trimmedPrompt)}&domain=${encodeURIComponent(domParam)}&autoGenerate=1`
       );
     } else {
       router.push(
-        `/studio?blueprint=${encodeURIComponent(targetBlueprint === 'custom' ? '24' : targetBlueprint)}&domain=${encodeURIComponent(domParam)}`
+        `/studio?blueprint=${encodeURIComponent(targetBlueprint === 'custom' ? '40' : targetBlueprint)}&domain=${encodeURIComponent(domParam)}`
       );
     }
   };
@@ -877,29 +1049,44 @@ function DashboardContent() {
                 </div>
               </section>
 
-              {/* ZONE 3: CREATE NEW DIAGRAM — SPLIT-VIEW PROMPT + AI TEMPLATE RECOMMENDER & LIVE HOVER PREVIEW */}
+              {/* ZONE 3: CREATE NEW DIAGRAM — GEMINI API ARCHITECT DECISION + PRE-GENERATION FILTER DROPDOWNS + MULTI-PICTURE LIVE PREVIEW */}
               <section
-                aria-label="Create New Diagram — Prompt and AI Template Recommender"
+                id="dashboard-create-diagram-section"
+                aria-label="Create New Diagram — Gemini API Architect Decision, Filter Dropdowns, and Multi-Picture Preview"
                 className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
               >
-                {/* LEFT HALF (7 COLS): PROMPT COMPOSER + AI RECOMMENDED TEMPLATES + 75 TEMPLATE CATALOG */}
+                {/* LEFT HALF (7 COLS): PROMPT COMPOSER + PRE-GEN FILTER DROPDOWNS + GEMINI API DECISION + CORRESPONDING TEMPLATES */}
                 <div className="lg:col-span-7 space-y-5">
-                  {/* Step 1: Prompt Input Card */}
-                  <div className="bg-white border-2 border-teal-500/30 rounded-3xl p-5 shadow-sm space-y-4">
-                    <div className="flex items-center justify-between gap-2">
+                  {/* Step 1: Prompt Input + Pre-Generation Filter Dropdowns + Gemini API Decision */}
+                  <div className="bg-white border-2 border-teal-500/30 rounded-3xl p-5 shadow-sm space-y-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs">
                           1
                         </div>
                         <div>
                           <h2 className="text-sm sm:text-base font-black text-slate-900">
-                            Create a New Architecture Diagram
+                            Describe Your Architecture &amp; Choose Your Perspective Before Generating
                           </h2>
                           <p className="text-[11px] text-slate-500">
-                            Describe what you want to build. AI automatically recommends the best starting template below, or you can pick any template (or Zero-Template Custom).
+                            Gemini API analyzes your prompt to recommend the Perspective (<code className="font-mono font-bold text-teal-700">Conceptual / Logical / Technical / Process</code>), Level (<code className="font-mono font-bold text-teal-700">L1–L4</code>), Blueprint, and Modifications &mdash; and you can override any dropdown below to preview different diagram pictures immediately.
                           </p>
                         </div>
                       </div>
+
+                      <button
+                        id="dashboard-ask-gemini-architect-btn"
+                        type="button"
+                        onClick={() => {
+                          setUserLockedTemplate(false);
+                          runGeminiArchitectAnalysis(createPrompt, true);
+                        }}
+                        disabled={isAnalyzingGemini}
+                        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white font-black text-xs shadow-xs transition cursor-pointer flex items-center gap-1.5 shrink-0 disabled:opacity-60"
+                      >
+                        <RefreshCw className={`w-3.5 h-3.5 ${isAnalyzingGemini ? 'animate-spin' : ''}`} />
+                        <span>{isAnalyzingGemini ? 'Gemini API Deciding...' : 'Ask Gemini API Architect'}</span>
+                      </button>
                     </div>
 
                     <div className="space-y-2.5">
@@ -913,8 +1100,8 @@ function DashboardContent() {
                           setCreatePrompt(e.target.value);
                           setUserLockedTemplate(false);
                         }}
-                        rows={3}
-                        placeholder="Describe your target architecture (e.g., 'Create an AWS Cloud AI architecture with Amazon Bedrock, SageMaker, OpenSearch Vector DB, and S3 Lakehouse')..."
+                        rows={2}
+                        placeholder="Describe your target architecture (e.g., 'Build a time machine capsule for time travel using GCP and Gemini Enterprise')..."
                         className="w-full rounded-2xl border border-slate-300 bg-slate-50/70 focus:bg-white focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20 p-3.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 outline-none transition resize-none font-medium"
                       />
 
@@ -948,129 +1135,339 @@ function DashboardContent() {
                       </div>
                     </div>
 
-                    {/* Step 2: AI-Recommended Best Templates Strip */}
-                    <div className="pt-3 border-t border-slate-200 space-y-3">
+                    {/* ===================================================================== */}
+                    {/* STEP 2: PRE-GENERATION FILTER DROPDOWN BAR & CORRESPONDING TEMPLATES  */}
+                    {/* ===================================================================== */}
+                    <div
+                      id="dashboard-pregen-filter-bar"
+                      className="rounded-2xl border-2 border-indigo-500/30 bg-gradient-to-br from-indigo-50/50 via-white to-teal-50/40 p-4 space-y-3.5"
+                    >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <span className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 font-black text-xs flex items-center justify-center">
+                          <span className="w-6 h-6 rounded-lg bg-indigo-600 text-white font-black text-xs flex items-center justify-center">
                             2
                           </span>
-                          <span className="text-xs font-black text-slate-900">
-                            AI-Suggested Best Templates for Your Prompt
-                          </span>
+                          <div>
+                            <h3 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
+                              <span>Pre-Generation Architecture Filter Dropdowns &amp; Corresponding Template Picker</span>
+                            </h3>
+                            <p className="text-[10.5px] text-slate-600">
+                              Change any dropdown below to filter corresponding templates and immediately preview its distinct diagram picture on the right before generating.
+                            </p>
+                          </div>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-500">
-                          Hover any option to preview &ldquo;As-Is&rdquo; on the right &rarr;
+                        <span className="text-[10px] font-mono font-extrabold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-300">
+                          {correspondingTemplatesForFilters.length} Matching Templates + 3 Custom Synthesizers
                         </span>
                       </div>
 
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {/* Dropdown 1: Diagram Perspective (Conceptual / Logical / Technical / Process) */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-perspective-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            1. Diagram Perspective
+                          </label>
+                          <select
+                            id="filter-perspective-select"
+                            value={selectedPerspective}
+                            onChange={(e) => handlePerspectiveChange(e.target.value as ArchitecturePerspective | 'All')}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 outline-none cursor-pointer"
+                          >
+                            <option value="Logical">Logical — Subsystems, Agents &amp; Data Tiers</option>
+                            <option value="Process">Process — Sequential Workflow &amp; Decision Gates</option>
+                            <option value="Conceptual">Conceptual — Executive Context &amp; Value Map</option>
+                            <option value="Technical">Technical — Cloud VPC, GKE/TPU &amp; Deep Spec</option>
+                            <option value="All">All Perspectives (Browse All 75)</option>
+                          </select>
+                        </div>
+
+                        {/* Dropdown 2: Detail Level (L1, L2, L3, L4) */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-level-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            2. Abstraction Detail Level (L1–L4)
+                          </label>
+                          <select
+                            id="filter-level-select"
+                            value={selectedLevel}
+                            onChange={(e) => handleLevelChange(e.target.value as AbstractionDetailLevel | 'All')}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-500/20 outline-none cursor-pointer"
+                          >
+                            <option value="L1">L1 — Executive / System Context View</option>
+                            <option value="L2">L2 — Container / Subsystem / Process Flow</option>
+                            <option value="L3">L3 — Component / Technical Cloud Topology</option>
+                            <option value="L4">L4 — Operational / 4-Stratum Deep Spec</option>
+                            <option value="All">All Levels (L1–L4)</option>
+                          </select>
+                        </div>
+
+                        {/* Dropdown 3: Corresponding Blueprint Template */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-template-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            3. Corresponding Blueprint Template
+                          </label>
+                          <select
+                            id="filter-template-select"
+                            value={selectedTemplateId}
+                            onChange={(e) => {
+                              setSelectedTemplateId(e.target.value);
+                              setUserLockedTemplate(true);
+                            }}
+                            className="w-full rounded-xl border border-teal-500 bg-teal-50/50 px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20 outline-none cursor-pointer"
+                          >
+                            <optgroup label="Bespoke AI Synthesis (Zero Fixed Template)">
+                              <option value="custom">✨ Zero-Template Custom 4-Tier AST (From Prompt)</option>
+                              <option value="process_flow">🔀 Custom Process Flowchart (6 Steps + 2 Diamond Gates)</option>
+                              <option value="stratum_l4">⚡ L4 Technical 4-Stratum Deep Cross-Section</option>
+                            </optgroup>
+                            <optgroup
+                              label={`Corresponding ${selectedPerspective === 'All' ? 'All' : selectedPerspective} Templates (${correspondingTemplatesForFilters.length})`}
+                            >
+                              {correspondingTemplatesForFilters.map((tpl) => {
+                                const p = getTemplatePerspective(tpl);
+                                const lvls = getTemplateDetailLevels(tpl).join('/');
+                                const isGemRec = tpl.id === geminiDecision.recommendedBlueprintId.padStart(2, '0');
+                                return (
+                                  <option key={tpl.id} value={tpl.id}>
+                                    {isGemRec ? '★ [Gemini Pick] ' : ''}#{tpl.id} [{p} • {lvls}] — {tpl.name}
+                                  </option>
+                                );
+                              })}
+                            </optgroup>
+                          </select>
+                        </div>
+
+                        {/* Dropdown 4: Flow Direction (LR / TD) */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-direction-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            4. Flow Orientation (LR / TD)
+                          </label>
+                          <select
+                            id="filter-direction-select"
+                            value={selectedDirection}
+                            onChange={(e) => setSelectedDirection(e.target.value as FlowDirectionOption)}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-indigo-600 outline-none cursor-pointer"
+                          >
+                            <option value="LR">LR — Left-to-Right Flow</option>
+                            <option value="TD">TD — Top-Down Hierarchy</option>
+                          </select>
+                        </div>
+
+                        {/* Dropdown 5: Industry Domain */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-domain-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            5. Industry / Cloud Domain
+                          </label>
+                          <select
+                            id="filter-domain-select"
+                            value={selectedDomain}
+                            onChange={(e) => setSelectedDomain(e.target.value)}
+                            className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-indigo-600 outline-none cursor-pointer"
+                          >
+                            <option value="enterprise">Enterprise Cloud &amp; AI (Default)</option>
+                            {DOMAIN_PRESETS.map((d) => (
+                              <option key={d.id} value={d.id}>
+                                {d.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Dropdown 6: Live Preview Render Mode (Tailored to Prompt vs As-Is Base Template) */}
+                        <div className="space-y-1">
+                          <label
+                            htmlFor="filter-preview-mode-select"
+                            className="block text-[10px] font-black uppercase tracking-wider text-slate-700"
+                          >
+                            6. Live Preview Picture Mode
+                          </label>
+                          <select
+                            id="filter-preview-mode-select"
+                            value={previewMode}
+                            onChange={(e) => setPreviewMode(e.target.value as 'tailored' | 'as_is')}
+                            className="w-full rounded-xl border border-emerald-500 bg-emerald-50/50 px-3 py-2 text-xs font-extrabold text-slate-900 focus:border-emerald-600 outline-none cursor-pointer"
+                          >
+                            <option value="tailored">🎯 Tailored to Your Prompt (with Gemini Modifications)</option>
+                            <option value="as_is">📐 As-Is Base Reference Template (Unmodified)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* ===================================================================== */}
+                    {/* STEP 3: GEMINI API ARCHITECTURAL DECISION & PLANNED MODIFICATIONS     */}
+                    {/* ===================================================================== */}
+                    <div
+                      id="gemini-architect-decision-panel"
+                      className="rounded-2xl border border-slate-200 bg-slate-50/90 p-4 space-y-3.5"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 font-black text-xs flex items-center justify-center">
+                            3
+                          </span>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs font-black text-slate-900">
+                                Gemini API Architectural Decision &amp; Planned Modifications
+                              </span>
+                              <span
+                                className={`text-[9.5px] font-mono font-extrabold px-2 py-0.5 rounded-md border ${
+                                  geminiDecision.isLiveGeminiDecision
+                                    ? 'bg-emerald-500/15 text-emerald-800 border-emerald-500/30'
+                                    : 'bg-sky-500/15 text-sky-800 border-sky-500/30'
+                                }`}
+                              >
+                                {isAnalyzingGemini
+                                  ? '⟳ CALLING GEMINI API...'
+                                  : geminiDecision.isLiveGeminiDecision
+                                  ? `✓ LIVE GEMINI API (${geminiDecision.modelUsed})`
+                                  : `⚡ ARCHITECT DECISION ENGINE (${geminiDecision.modelUsed})`}
+                              </span>
+                            </div>
+                            <p className="text-[10.5px] text-slate-500">
+                              Click any of the 4 Perspective cards below to switch the preview picture on the right and compare Conceptual vs Logical vs Technical vs Process.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 4 Perspective Cards (Conceptual, Logical, Technical, Process) — Clicking any switches the right-hand preview picture! */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {rankedRecommendations.slice(0, 3).map((rec, idx) => {
-                          const isSelected = selectedTemplateId === rec.template.id;
+                        {(['Logical', 'Process', 'Conceptual', 'Technical'] as ArchitecturePerspective[]).map((persp) => {
+                          const match = geminiDecision.perspectiveMatches?.[persp];
+                          if (!match) return null;
+                          const isGemRecommended = geminiDecision.recommendedPerspective === persp;
+                          const isCurrentlyActive =
+                            selectedPerspective === persp &&
+                            (selectedTemplateId === match.blueprintId ||
+                              (persp === 'Process' && selectedTemplateId === 'process_flow') ||
+                              (persp === 'Technical' && selectedTemplateId === 'stratum_l4'));
+
                           return (
                             <div
-                              key={rec.template.id}
-                              id={`dashboard-rec-tpl-${rec.template.id}`}
-                              onMouseEnter={() => setHoveredTemplateId(rec.template.id)}
-                              onMouseLeave={() => setHoveredTemplateId(null)}
-                              onClick={() => {
-                                setSelectedTemplateId(rec.template.id);
-                                setUserLockedTemplate(true);
-                              }}
+                              key={persp}
+                              id={`dashboard-persp-card-${persp}`}
+                              onClick={() => handlePerspectiveChange(persp)}
                               className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
-                                isSelected
-                                  ? 'bg-teal-50/70 border-2 border-teal-600 shadow-xs'
-                                  : 'bg-slate-50/80 hover:bg-white border-slate-200 hover:border-teal-400'
+                                isCurrentlyActive
+                                  ? 'bg-teal-50/90 border-2 border-teal-600 shadow-xs'
+                                  : 'bg-white hover:bg-slate-50 border-slate-200 hover:border-teal-400'
                               }`}
                             >
                               <div className="space-y-1">
-                                <div className="flex items-center justify-between gap-1.5">
+                                <div className="flex items-center justify-between gap-1.5 flex-wrap">
                                   <span
                                     className={`text-[9.5px] font-mono font-extrabold px-2 py-0.5 rounded-md border ${
-                                      idx === 0
+                                      isGemRecommended
                                         ? 'bg-emerald-500/15 text-emerald-800 border-emerald-500/30'
-                                        : 'bg-slate-200/70 text-slate-700 border-slate-300'
+                                        : 'bg-indigo-500/10 text-indigo-800 border-indigo-500/20'
                                     }`}
                                   >
-                                    {idx === 0 ? '★ #1 BEST TEMPLATE MATCH' : `RUNNER-UP #${idx + 1}`}
+                                    {isGemRecommended ? `★ GEMINI PICK: ${persp.toUpperCase()}` : `${persp.toUpperCase()} VIEW`}
                                   </span>
-                                  <span className="text-[10px] font-mono font-bold text-slate-500">
-                                    #{rec.template.id} &bull; {rec.template.level}
+                                  <span className="text-[10px] font-mono font-bold text-slate-600">
+                                    #{match.blueprintId} &bull; {match.recommendedLevel}
                                   </span>
                                 </div>
                                 <div className="text-xs font-black text-slate-900 line-clamp-1">
-                                  {rec.template.name}
+                                  {persp === 'Process'
+                                    ? `Process Flowchart & #${match.blueprintId} (${match.blueprintName})`
+                                    : `#${match.blueprintId} — ${match.blueprintName}`}
                                 </div>
-                                <p className="text-[10.5px] text-slate-600 line-clamp-1">
-                                  {rec.reason}
+                                <p className="text-[10.5px] text-slate-600 line-clamp-2 leading-snug">
+                                  {match.whyChosen}
                                 </p>
                               </div>
-                              <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px] font-bold">
-                                <span className={isSelected ? 'text-teal-700' : 'text-slate-500'}>
-                                  {isSelected ? '✓ Selected for Generation' : 'Click to use this template'}
+                              <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/70 text-[10px] font-bold">
+                                <span className={isCurrentlyActive ? 'text-teal-700 font-black' : 'text-slate-500'}>
+                                  {isCurrentlyActive ? '✓ Showing Picture on Right' : `Click to preview ${persp} picture`}
                                 </span>
-                                <span className="text-teal-600 font-mono">Preview &rarr;</span>
+                                <span className="text-teal-600 font-mono">Switch Picture &rarr;</span>
                               </div>
                             </div>
                           );
                         })}
+                      </div>
 
-                        {/* Option 4: Zero-Template Custom AI Synthesis */}
-                        <div
-                          id="dashboard-rec-tpl-custom"
-                          onMouseEnter={() => setHoveredTemplateId('custom')}
-                          onMouseLeave={() => setHoveredTemplateId(null)}
-                          onClick={() => {
-                            setSelectedTemplateId('custom');
-                            setUserLockedTemplate(true);
-                          }}
-                          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 ${
-                            selectedTemplateId === 'custom'
-                              ? 'bg-indigo-50/80 border-2 border-indigo-600 shadow-xs'
-                              : 'bg-slate-50/80 hover:bg-white border-slate-200 hover:border-indigo-400'
-                          }`}
-                        >
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-between gap-1.5">
-                              <span className="text-[9.5px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-800 border border-indigo-500/30">
-                                ✨ ZERO-TEMPLATE CUSTOM
-                              </span>
-                              <span className="text-[10px] font-mono font-bold text-indigo-600">
-                                Bespoke AI
-                              </span>
-                            </div>
-                            <div className="text-xs font-black text-slate-900 line-clamp-1">
-                              Synthesize From Scratch (No Fixed Template)
-                            </div>
-                            <p className="text-[10.5px] text-slate-600 line-clamp-1">
-                              Builds a bespoke 7-tier cloud topology directly from your prompt entities.
-                            </p>
+                      {/* Detailed Gemini Reasoning & Planned Modifications Box */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                        <div className="rounded-xl bg-white border border-slate-200 p-3 space-y-1.5">
+                          <div className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-indigo-700">
+                            Why Gemini Picked {geminiDecision.recommendedPerspective} ({geminiDecision.recommendedLevel}) &amp; Blueprint #{geminiDecision.recommendedBlueprintId}
                           </div>
-                          <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-[10px] font-bold">
-                            <span className={selectedTemplateId === 'custom' ? 'text-indigo-700' : 'text-slate-500'}>
-                              {selectedTemplateId === 'custom' ? '✓ Selected for Generation' : 'Click for custom synthesis'}
-                            </span>
-                            <span className="text-indigo-600 font-mono">Custom &rarr;</span>
+                          <p className="text-[11px] text-slate-700 leading-relaxed">
+                            <strong>Perspective ({geminiDecision.recommendedPerspective}):</strong> {geminiDecision.perspectiveReasoning}
+                          </p>
+                          <p className="text-[11px] text-slate-700 leading-relaxed">
+                            <strong>Detail Level ({geminiDecision.recommendedLevel}):</strong> {geminiDecision.levelReasoning}
+                          </p>
+                          <p className="text-[11px] text-slate-700 leading-relaxed">
+                            <strong>Blueprint (#{geminiDecision.recommendedBlueprintId}):</strong> {geminiDecision.blueprintReasoning}
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl bg-white border border-slate-200 p-3 space-y-1.5">
+                          <div className="text-[10px] font-mono font-extrabold uppercase tracking-wider text-teal-700">
+                            What Modifications Gemini Makes to the Template
+                          </div>
+                          <ul className="space-y-1 text-[11px] text-slate-700">
+                            {(geminiDecision.plannedModificationsSummary || []).map((mod, i) => (
+                              <li key={i} className="flex items-start gap-1.5 leading-snug">
+                                <span className="text-teal-600 font-black shrink-0">&bull;</span>
+                                <span>{mod}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="pt-1.5 border-t border-slate-100 flex flex-wrap gap-1">
+                            {(geminiDecision.tailoredSpec?.customSubsystems || []).slice(0, 6).map((sub, idx) => (
+                              <span
+                                key={idx}
+                                className="text-[9.5px] font-mono font-bold px-2 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200"
+                              >
+                                {sub}
+                              </span>
+                            ))}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Step 3: Browse or Hover All 75 Templates Catalog */}
+                  {/* Step 4: Browse Corresponding Templates Filtered by Perspective & Level */}
                   <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
                         <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
                           <Layers className="w-4 h-4 text-teal-600" />
-                          <span>Or Choose Any of the {CANONICAL_TEMPLATES.length} Certified Templates</span>
+                          <span>
+                            Corresponding Templates for{' '}
+                            <span className="text-teal-700">
+                              {selectedPerspective === 'All' ? 'All Perspectives' : `${selectedPerspective} Perspective`}
+                            </span>{' '}
+                            ({selectedLevel === 'All' ? 'L1–L4' : selectedLevel})
+                          </span>
                         </h3>
                         <p className="text-[11px] text-slate-500">
-                          Hover over any template card to inspect its &ldquo;As-Is&rdquo; diagram on the right. Click to select it for your prompt.
+                          Click any template card below to preview it on the right (or hover to inspect its raw reference topology).
                         </p>
                       </div>
                       <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
-                        Showing {filteredBlueprints.length} of {CANONICAL_TEMPLATES.length}
+                        Showing {correspondingTemplatesForFilters.length} Matching Templates
                       </span>
                     </div>
 
@@ -1092,11 +1489,13 @@ function DashboardContent() {
                       ))}
                     </div>
 
-                    {/* Compact Scrollable Grid of Templates with Hover-to-Preview */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[420px] overflow-y-auto pr-1">
-                      {filteredBlueprints.map((tpl) => {
+                    {/* Compact Scrollable Grid of Corresponding Templates */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+                      {correspondingTemplatesForFilters.map((tpl) => {
                         const isSelected = selectedTemplateId === tpl.id;
                         const isHovered = hoveredTemplateId === tpl.id;
+                        const tplPersp = getTemplatePerspective(tpl);
+                        const tplLvls = getTemplateDetailLevels(tpl).join('/');
                         return (
                           <div
                             key={tpl.id}
@@ -1118,7 +1517,7 @@ function DashboardContent() {
                             <div className="space-y-1">
                               <div className="flex items-center justify-between gap-1.5">
                                 <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-teal-500/15 text-teal-800 border border-teal-500/20">
-                                  #{tpl.id} &bull; {tpl.family}
+                                  #{tpl.id} &bull; {tplPersp} &bull; {tplLvls}
                                 </span>
                                 {isSelected && (
                                   <span className="text-[9.5px] font-mono font-black text-teal-700 bg-teal-100 px-1.5 py-0.5 rounded">
@@ -1140,8 +1539,11 @@ function DashboardContent() {
                   </div>
                 </div>
 
-                {/* RIGHT HALF (5 COLS): STICKY "AS-IS" TEMPLATE PREVIEW STAGE + SEND & GENERATE CTA */}
-                <div className="lg:col-span-5 lg:sticky lg:top-20 bg-white border-2 border-slate-200 rounded-3xl p-5 shadow-md space-y-4">
+                {/* RIGHT HALF (5 COLS): MULTI-PICTURE LIVE PREVIEW STAGE + 5-PICTURE SWITCHER + SEND & GENERATE CTA */}
+                <div
+                  id="dashboard-live-preview-stage"
+                  className="lg:col-span-5 lg:sticky lg:top-20 bg-white border-2 border-slate-200 rounded-3xl p-5 shadow-md space-y-4"
+                >
                   {/* Top Preview Status Header */}
                   <div className="flex items-start justify-between gap-2 border-b border-slate-200 pb-3">
                     <div className="space-y-1 min-w-0">
@@ -1150,32 +1552,41 @@ function DashboardContent() {
                           <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-sky-500/15 text-sky-800 border border-sky-500/30">
                             👁️ HOVER PREVIEW (AS-IS TEMPLATE)
                           </span>
-                        ) : selectedTemplateId === 'custom' ? (
-                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-800 border border-indigo-500/30">
-                            ✨ ZERO-TEMPLATE CUSTOM PREVIEW
-                          </span>
-                        ) : selectedTemplateId === topRecommendedMatch.template.id ? (
+                        ) : effectivePreviewId === 'process_flow' ? (
                           <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
-                            ★ #1 AI-RECOMMENDED TEMPLATE
+                            🔀 PROCESS FLOWCHART PICTURE ({selectedLevel === 'All' ? 'L2' : selectedLevel} • {selectedDirection})
+                          </span>
+                        ) : effectivePreviewId === 'stratum_l4' ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-800 border border-purple-500/30">
+                            ⚡ L4 TECHNICAL 4-STRATUM PICTURE
+                          </span>
+                        ) : effectivePreviewId === 'custom' ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-800 border border-indigo-500/30">
+                            ✨ ZERO-TEMPLATE CUSTOM AST PICTURE
+                          </span>
+                        ) : previewMode === 'tailored' ? (
+                          <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-800 border border-emerald-500/30">
+                            🎯 TAILORED TO PROMPT • #{activePreviewTemplate.id} ({selectedPerspective === 'All' ? getTemplatePerspective(activePreviewTemplate) : selectedPerspective} · {selectedLevel === 'All' ? activePreviewTemplate.level : selectedLevel})
                           </span>
                         ) : (
                           <span className="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded-md bg-teal-500/15 text-teal-800 border border-teal-500/30">
-                            ✓ SELECTED BASE TEMPLATE
+                            📐 AS-IS TEMPLATE • #{activePreviewTemplate.id}
                           </span>
                         )}
-                        <span className="text-[10px] font-mono font-bold text-slate-500">
-                          {selectedTemplateId === 'custom' && !hoveredTemplateId
-                            ? 'Dynamic 7-Tier Synthesis'
-                            : `#${activePreviewTemplate.id} • ${activePreviewTemplate.family} • ${activePreviewTemplate.level}`}
-                        </span>
                       </div>
                       <h3
                         id="dashboard-preview-stage-title"
                         className="text-sm sm:text-base font-black text-slate-900 truncate"
                       >
-                        {selectedTemplateId === 'custom' && !hoveredTemplateId
-                          ? createPrompt.trim() || 'Zero-Template Custom AI Architecture'
-                          : `${activePreviewTemplate.name} (As-Is Preview)`}
+                        {effectivePreviewId === 'process_flow' && !hoveredTemplateId
+                          ? `Process Flowchart: ${geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim()}`
+                          : effectivePreviewId === 'stratum_l4' && !hoveredTemplateId
+                          ? `L4 Technical 4-Stratum: ${geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim()}`
+                          : effectivePreviewId === 'custom' && !hoveredTemplateId
+                          ? `Custom 4-Tier AST: ${geminiDecision?.tailoredSpec?.diagramTitle || createPrompt.trim()}`
+                          : previewMode === 'tailored' && !hoveredTemplateId
+                          ? `#${activePreviewTemplate.id} ${activePreviewTemplate.name} — Tailored to Prompt`
+                          : `#${activePreviewTemplate.id} ${activePreviewTemplate.name} (As-Is Preview)`}
                       </h3>
                     </div>
 
@@ -1190,25 +1601,151 @@ function DashboardContent() {
                     </button>
                   </div>
 
+                  {/* 5-Picture Quick Switcher Bar — Lets User Compare Distinct Diagram Pictures Before Generating! */}
+                  <div id="preview-picture-switcher" className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-500">
+                      <span>Compare Different Diagram Pictures for Your Prompt:</span>
+                      <span className="font-mono text-teal-700">1-Click Live Picture Switch</span>
+                    </div>
+                    <div className="grid grid-cols-5 gap-1.5">
+                      <button
+                        id="preview-pic-btn-Logical"
+                        type="button"
+                        onClick={() => {
+                          setSelectedPerspective('Logical');
+                          setSelectedLevel('L3');
+                          setSelectedTemplateId(geminiDecision?.perspectiveMatches?.Logical?.blueprintId || '40');
+                          setPreviewMode('tailored');
+                          setUserLockedTemplate(true);
+                        }}
+                        className={`px-2 py-1.5 rounded-xl text-[10px] font-black border transition cursor-pointer text-center ${
+                          !hoveredTemplateId &&
+                          selectedPerspective === 'Logical' &&
+                          selectedTemplateId !== 'custom' &&
+                          selectedTemplateId !== 'process_flow' &&
+                          selectedTemplateId !== 'stratum_l4'
+                            ? 'bg-teal-600 text-white border-teal-600 shadow-xs'
+                            : 'bg-slate-50 hover:bg-teal-50 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        <div>Logical</div>
+                        <div className="text-[8.5px] font-mono opacity-80">#{geminiDecision?.perspectiveMatches?.Logical?.blueprintId || '40'} L3</div>
+                      </button>
+
+                      <button
+                        id="preview-pic-btn-Process"
+                        type="button"
+                        onClick={() => {
+                          setSelectedPerspective('Process');
+                          setSelectedLevel('L2');
+                          setSelectedTemplateId('process_flow');
+                          setPreviewMode('tailored');
+                          setUserLockedTemplate(true);
+                        }}
+                        className={`px-2 py-1.5 rounded-xl text-[10px] font-black border transition cursor-pointer text-center ${
+                          !hoveredTemplateId &&
+                          selectedTemplateId !== 'custom' &&
+                          (selectedTemplateId === 'process_flow' || selectedPerspective === 'Process')
+                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                            : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        <div>Process</div>
+                        <div className="text-[8.5px] font-mono opacity-80">Flow L2</div>
+                      </button>
+
+                      <button
+                        id="preview-pic-btn-Conceptual"
+                        type="button"
+                        onClick={() => {
+                          setSelectedPerspective('Conceptual');
+                          setSelectedLevel('L1');
+                          setSelectedTemplateId(geminiDecision?.perspectiveMatches?.Conceptual?.blueprintId || '01');
+                          setPreviewMode('tailored');
+                          setUserLockedTemplate(true);
+                        }}
+                        className={`px-2 py-1.5 rounded-xl text-[10px] font-black border transition cursor-pointer text-center ${
+                          !hoveredTemplateId &&
+                          selectedPerspective === 'Conceptual' &&
+                          selectedTemplateId !== 'custom'
+                            ? 'bg-sky-600 text-white border-sky-600 shadow-xs'
+                            : 'bg-slate-50 hover:bg-sky-50 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        <div>Conceptual</div>
+                        <div className="text-[8.5px] font-mono opacity-80">#{geminiDecision?.perspectiveMatches?.Conceptual?.blueprintId || '01'} L1</div>
+                      </button>
+
+                      <button
+                        id="preview-pic-btn-Technical"
+                        type="button"
+                        onClick={() => {
+                          setSelectedPerspective('Technical');
+                          setSelectedLevel('L4');
+                          setSelectedTemplateId('stratum_l4');
+                          setPreviewMode('tailored');
+                          setUserLockedTemplate(true);
+                        }}
+                        className={`px-2 py-1.5 rounded-xl text-[10px] font-black border transition cursor-pointer text-center ${
+                          !hoveredTemplateId &&
+                          selectedTemplateId !== 'custom' &&
+                          (selectedTemplateId === 'stratum_l4' || selectedPerspective === 'Technical')
+                            ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                            : 'bg-slate-50 hover:bg-purple-50 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        <div>Technical</div>
+                        <div className="text-[8.5px] font-mono opacity-80">L4 Deep</div>
+                      </button>
+
+                      <button
+                        id="preview-pic-btn-Custom"
+                        type="button"
+                        onClick={() => {
+                          setSelectedPerspective('Logical');
+                          setSelectedLevel('L2');
+                          setSelectedTemplateId('custom');
+                          setPreviewMode('tailored');
+                          setUserLockedTemplate(true);
+                        }}
+                        className={`px-2 py-1.5 rounded-xl text-[10px] font-black border transition cursor-pointer text-center ${
+                          !hoveredTemplateId && selectedTemplateId === 'custom'
+                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs'
+                            : 'bg-slate-50 hover:bg-indigo-50 text-slate-700 border-slate-200'
+                        }`}
+                      >
+                        <div>Custom</div>
+                        <div className="text-[8.5px] font-mono opacity-80">Zero-Tpl</div>
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Live Vector Diagram Preview Box */}
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2 overflow-hidden shadow-inner">
                     <DiagramViewerRenderSafe
-                      key={`${activePreviewTemplate.id}_${selectedTemplateId}_${createPrompt.slice(0, 24)}`}
+                      key={`${effectivePreviewId}_${selectedPerspective}_${selectedLevel}_${selectedDirection}_${previewMode}_${createPrompt.slice(0, 28)}`}
                       xml={activePreviewXml}
                       aspectRatioId="16:9"
                       bgTheme="light"
                     />
                   </div>
 
-                  {/* Template Purpose & Key Components */}
+                  {/* Active Picture Explanation & Subsystems */}
                   <div className="space-y-2 bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80">
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {selectedTemplateId === 'custom' && !hoveredTemplateId
-                        ? 'Generates a bespoke multi-tier Draw.io architecture diagram directly from your prompt entities (AWS, GCP, Azure, AI, Data, Security) without locking to a static template.'
+                    <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                      {effectivePreviewId === 'process_flow' && !hoveredTemplateId
+                        ? `Process Flowchart View (${selectedLevel} • ${selectedDirection}): Renders 6 sequential steps (❶–❻), 2 diamond decision gates ("${geminiDecision?.tailoredSpec?.decisionGateQuestion || 'Causality & Policy Valid?'}"), and closed-loop DLQ backoff retry.`
+                        : effectivePreviewId === 'stratum_l4' && !hoveredTemplateId
+                        ? 'L4 Technical 4-Stratum Cross-Section: Renders physical GPU/TPU hardware strata, speculative decoding pods, honeycomb vector memory, and telemetry sidecar.'
+                        : effectivePreviewId === 'custom' && !hoveredTemplateId
+                        ? 'Zero-Template Custom 4-Tier AST: Synthesizes a bespoke 4-tier architecture + right-hand governance rail directly from your prompt subsystems.'
                         : activePreviewTemplate.primaryPurpose}
                     </p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {(activePreviewTemplate.keyComponents || []).slice(0, 6).map((comp, idx) => (
+                      {(previewMode === 'tailored' && geminiDecision?.tailoredSpec?.customSubsystems?.length
+                        ? geminiDecision.tailoredSpec.customSubsystems.slice(0, 6)
+                        : (activePreviewTemplate.keyComponents || []).slice(0, 6)
+                      ).map((comp, idx) => (
                         <span
                           key={idx}
                           className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700"
@@ -1229,11 +1766,13 @@ function DashboardContent() {
                     >
                       <Sparkles className="w-4 h-4" />
                       <span>
-                        {createPrompt.trim()
-                          ? selectedTemplateId === 'custom'
-                            ? 'Send & Generate Custom Diagram in Studio'
-                            : `Send & Customize #${selectedTemplateId} in Studio`
-                          : `Open #${activePreviewTemplate.id} in Studio Canvas`}
+                        {effectivePreviewId === 'process_flow'
+                          ? `Open Process Flowchart (${selectedLevel} • ${selectedDirection}) in Studio`
+                          : effectivePreviewId === 'stratum_l4'
+                          ? 'Open L4 Technical 4-Stratum Diagram in Studio'
+                          : effectivePreviewId === 'custom'
+                          ? 'Open Zero-Template Custom AST in Studio'
+                          : `Open Tailored #${activePreviewTemplate.id} (${selectedPerspective === 'All' ? geminiDecision.recommendedPerspective : selectedPerspective} · ${selectedLevel === 'All' ? geminiDecision.recommendedLevel : selectedLevel}) in Studio`}
                       </span>
                       <ArrowRight className="w-4 h-4" />
                     </button>

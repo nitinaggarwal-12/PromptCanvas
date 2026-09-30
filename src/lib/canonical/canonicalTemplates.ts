@@ -35,18 +35,18 @@ export const CANONICAL_FAMILIES = [
 ] as const;
 
 export const DOMAIN_PRESETS = [
-  { id: 'biopharma', name: 'Bio-Pharma Precision Oncology & Regulatory AI', prefix: 'NOVACURA' },
-  { id: 'fintech', name: 'FinTech Autonomous Wealth & High-Speed Payments', prefix: 'NEXUSFIN' },
-  { id: 'manufacturing', name: 'Smart Manufacturing & Industrial IoT Digital Twin', prefix: 'SYNACTIVE' },
-  { id: 'retail', name: 'Omnichannel Retail & Intelligent Supply Chain', prefix: 'OMNIVUE' },
-  { id: 'saas', name: 'Enterprise SaaS Multi-Tenant Cloud Platform', prefix: 'AETHER' },
-  { id: 'healthcare', name: 'Healthcare & Clinical EHR Interoperability (FHIR / HL7)', prefix: 'HEALTHPULSE' },
-  { id: 'energy', name: 'Clean Energy, Smart Grid & Battery Storage (BESS / V2G)', prefix: 'VOLTGRID' },
-  { id: 'automotive', name: 'Automotive & Connected Autonomous Fleet (V2X / ADAS)', prefix: 'AUTODRIVE' },
-  { id: 'telecom', name: 'Telecommunications & 5G Core Network Slicing (O-RAN)', prefix: 'TELCOMESH' },
-  { id: 'defense', name: 'Aerospace, Defense & Mission Cloud (DO-178C / ITAR)', prefix: 'AEROSHIELD' },
-  { id: 'cybersecurity', name: 'Zero-Trust Cybersecurity & SOC SecOps (SIEM / SOAR)', prefix: 'CYBERSHIELD' },
-  { id: 'media', name: 'Media Streaming, 4K Live Transcoding & CDN Edge', prefix: 'STREAMWAVE' },
+  { id: 'biopharma', name: 'Bio-Pharma Precision Oncology & Regulatory AI', prefix: 'CLINICAL AI' },
+  { id: 'fintech', name: 'FinTech Autonomous Wealth & High-Speed Payments', prefix: 'FINTECH CORE' },
+  { id: 'manufacturing', name: 'Smart Manufacturing & Industrial IoT Digital Twin', prefix: 'INDUSTRIAL IOT' },
+  { id: 'retail', name: 'Omnichannel Retail & Intelligent Supply Chain', prefix: 'RETAIL MESH' },
+  { id: 'saas', name: 'Enterprise SaaS Multi-Tenant Cloud Platform', prefix: 'SAAS CLOUD' },
+  { id: 'healthcare', name: 'Healthcare & Clinical EHR Interoperability (FHIR / HL7)', prefix: 'CLINICAL EHR' },
+  { id: 'energy', name: 'Clean Energy, Smart Grid & Battery Storage (BESS / V2G)', prefix: 'SMART GRID' },
+  { id: 'automotive', name: 'Automotive & Connected Autonomous Fleet (V2X / ADAS)', prefix: 'AUTONOMOUS V2X' },
+  { id: 'telecom', name: 'Telecommunications & 5G Core Network Slicing (O-RAN)', prefix: '5G CORE RAN' },
+  { id: 'defense', name: 'Aerospace, Defense & Mission Cloud (DO-178C / ITAR)', prefix: 'MISSION CLOUD' },
+  { id: 'cybersecurity', name: 'Zero-Trust Cybersecurity & SOC SecOps (SIEM / SOAR)', prefix: 'ZERO TRUST SOC' },
+  { id: 'media', name: 'Media Streaming, 4K Live Transcoding & CDN Edge', prefix: 'MEDIA EDGE' },
 ];
 
 export interface ArchitectureDocumentBinding {
@@ -420,7 +420,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Telemetry collection, distributed tracing, metric aggregation, and SLO alerts',
     examples: 'Logs, metrics, traces, SLO error budget burn rates',
-    defaultDomain: 'NovaCura – Full-Stack Observability',
+    defaultDomain: 'Full-Stack Enterprise Observability',
     previewImage: '/templates/enterprise_sre_observability.png',
     keyComponents: ['Telemetry Sources', 'Observability Pillars', 'Google Cloud Pipeline', 'Foundation & Outcomes'],
     generateXml: generateTemplate21ObservabilityArchitectureXml
@@ -432,7 +432,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L1',
     primaryPurpose: 'Step-by-step movement of legacy workloads to cloud target state',
     examples: 'Datacenter to GCP, database CDC migration, Strangler Fig pattern',
-    defaultDomain: 'NovaCura – Platform Modernization & Migration',
+    defaultDomain: 'Enterprise Platform Modernization & Migration',
     previewImage: '/templates/six_rs_migration_matrix.png',
     keyComponents: ['Current State', '5 Migration Phases', 'Target State', '6-Rs Patterns & Deliverables'],
     generateXml: generateTemplate22MigrationTransitionXml
@@ -444,7 +444,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Multi-agent collaboration, supervisor delegation, and task synthesis',
     examples: 'Supervisor-subagents, swarm mesh, planner/executor',
-    defaultDomain: 'NovaCura – Multi-Agent Collaboration for Regulatory Intelligence',
+    defaultDomain: 'Multi-Agent Collaboration for Regulatory Intelligence',
     previewImage: '/templates/tech_agentic_mesh.png',
     keyComponents: ['7-Step Flow', 'Agent Ecosystem (Core/Specialized)', '6 Collaboration Patterns', 'Shared Memory'],
     generateXml: generateTemplate23AgentInteractionXml
@@ -456,7 +456,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Document chunking, vector embeddings, hybrid graph retrieval, and grounding',
     examples: 'Vector RAG, GraphRAG, multimodal clinical RAG',
-    defaultDomain: 'NovaCura – Regulatory Q&A with Internal & External Knowledge',
+    defaultDomain: 'Regulatory Q&A with Internal & External Knowledge',
     previewImage: '/templates/graphrag_knowledge_graph.png',
     keyComponents: ['Knowledge Sources', '8-Step RAG Pipeline', 'Knowledge Stores', '6 RAG Flow Patterns'],
     generateXml: generateTemplate24RagKnowledgeFlowXml
@@ -468,7 +468,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Standardized communication between AI models and tools via MCP, A2A, JSON-RPC',
     examples: 'Model Context Protocol (MCP), Agent-to-Agent (A2A), OpenAPI tool bridges',
-    defaultDomain: 'NovaCura – Agentic Platform Integrations & Protocol Interactions',
+    defaultDomain: 'Agentic Platform Integrations & Protocol Interactions',
     previewImage: '/templates/mcp_context_gateway.png',
     keyComponents: ['Tool Categories', '5 Protocol Layers', 'Interaction Flow', 'Protocol Mappings'],
     generateXml: generateTemplate25ToolProtocolInteractionXml
@@ -480,7 +480,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L1',
     primaryPurpose: 'Human-in-the-Loop approval gates, confidence thresholds, and risk review',
     examples: 'AI approval gates, escalation workflows, risk triage',
-    defaultDomain: 'NovaCura – Responsible AI with Human-in-the-Loop & Governance',
+    defaultDomain: 'Responsible AI with Human-in-the-Loop & Governance',
     previewImage: '/templates/tech_eval_safety.png',
     keyComponents: ['Inputs & Triggers', '6-Step Workflow', 'RACI Matrix', 'HITL Checkpoints & Audit'],
     generateXml: generateTemplate26HitlGovernanceFlowXml
@@ -492,7 +492,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L3',
     primaryPurpose: 'STRIDE threat modeling, attack surfaces, malicious vectors, and mitigations',
     examples: 'STRIDE model, prompt injection defense, API attack vectors',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/zero_trust_mesh.png',
     keyComponents: ['Trust Zones', 'Shared Security Services', 'Attack Surface Map', 'STRIDE Catalog & Scenarios'],
     generateXml: generateTemplate27ThreatModelXml
@@ -504,7 +504,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L3',
     primaryPurpose: 'Failure modes, retry policies, exponential backoff, DLQs, and circuit breakers',
     examples: 'DLQ, retries, circuit breakers, agent timeouts',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/serverless_eda_architecture.png',
     keyComponents: ['Failure Sources', '6-Step End-to-End Flow', '6 Failure Scenarios', 'Severity & Escalation'],
     generateXml: generateTemplate28FailureExceptionFlowXml
@@ -516,7 +516,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L3',
     primaryPurpose: 'Step-by-step production cutover checklist, maintenance window, and rollback',
     examples: 'Production launch, DR exercise, cloud cutover runbook',
-    defaultDomain: 'NovaCura – Production Go-Live & Environment Cutover',
+    defaultDomain: 'Production Go-Live & Environment Cutover',
     previewImage: '/templates/golive_warroom_runbook.png',
     keyComponents: ['Cutover Lifecycle', '8 Detailed Steps', 'Rollback Plan', 'RACI & Timeline Window'],
     generateXml: generateTemplate29CutoverRunbookXml
@@ -528,7 +528,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L1',
     primaryPurpose: 'Cloud spend ingestion, shared resource allocation, and cost optimization',
     examples: 'Cloud spend, AI token cost attribution, tenant unit economics',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/cloud_finops_chargeback_model.png',
     keyComponents: ['6-Step Cost Flow', 'Data & Tooling Layer', 'Allocation Models', 'FinOps Governance'],
     generateXml: generateTemplate30FinopsCostFlowXml
@@ -540,7 +540,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L2',
     primaryPurpose: 'Arbitrary many-to-many dependencies across systems, services, and datasets',
     examples: 'Microservice dependency graph, blast-radius impact analysis',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/legacy_data_dependency_map.png',
     keyComponents: ['Users', 'Applications', 'Data Layer', 'Integrations', 'Platform & Teams'],
     generateXml: generateTemplate31DependencyMapXml
@@ -552,7 +552,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L1',
     primaryPurpose: 'Multi-year architecture roadmap, maturity milestones, and migration waves',
     examples: 'Target state evolution, 3-year AI transformation roadmap',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_ai_coe.png',
     keyComponents: ['Phase 0 Foundation', 'Phase 1 Scale', 'Phase 2 Intelligent', 'Phase 3 Autonomous'],
     generateXml: generateTemplate32RoadmapEvolutionXml
@@ -564,7 +564,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L1',
     primaryPurpose: '2-dimensional evaluation matrix: capabilities vs systems, controls vs workloads',
     examples: 'Vendor evaluation matrix, security control compliance heatmap',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_ai_trism_guardrails.png',
     keyComponents: ['9 Evaluation Criteria', '5 Options (A-E)', 'Weighted Scores & Ranks', 'Strategic Recommendation'],
     generateXml: generateTemplate33MatrixHeatmapXml
@@ -576,7 +576,7 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
     level: 'L3',
     primaryPurpose: 'Geographic layout, sovereign cloud boundaries, and multi-region replication',
     examples: 'Global user base, multi-region sovereign cloud, edge CDN',
-    defaultDomain: 'NovaCura – AI-Powered Regulatory Intelligence Platform',
+    defaultDomain: 'AI-Powered Regulatory Intelligence Platform',
     previewImage: '/templates/tech_data_residency.png',
     keyComponents: ['Global User Base', 'Regional Overview', '6 Regional Enclave Pods', 'Global Multi-Region Services'],
     generateXml: generateTemplate34GeographicArchitectureXml
@@ -816,6 +816,622 @@ const RAW_TEMPLATES: RawCanonicalTemplate[] = [
 
 
 
+const COMPANY_AND_VENDOR_REPLACEMENTS: [RegExp, string][] = [
+  // Fictional Company Brands & Multi-Line / Spaced Variants
+  [/\bNOVACURA\s+Bio-Pharma\s+Platform\b/gi, 'Core Platform Boundary'],
+  [/\bNOVACURA\s+Enterprise\s+AI\s+Platform\s+for\s+Biopharma\b/gi, 'Enterprise Cloud &amp; AI Platform'],
+  [/\bNOVACURA\s+Enterprise\s+AI\s+Platform\b/gi, 'Enterprise Cloud &amp; AI Platform'],
+  [/\s*\(NOVA\s*CURA\)/gi, ''],
+  [/\bNOVA\s*CURA\b/gi, 'Enterprise Platform'],
+  [/\bNOVACURA\b/g, 'ENTERPRISE'],
+  [/\bNovaCura\b/g, 'Enterprise'],
+  [/\bnovacura-prod-vpc\b/gi, 'enterprise-prod-vpc'],
+  [/\bnovacura-prod\b/gi, 'enterprise-prod'],
+  [/\bnovacura\b/gi, 'enterprise'],
+  [/\bNovacure\b/gi, 'Enterprise'],
+  [/\bOMNIVUE\b/g, 'RETAIL MESH'],
+  [/\bOmniVue\b/gi, 'Retail Mesh'],
+  [/\bNEXUSFIN\b/g, 'FINTECH CORE'],
+  [/\bNexusFin\b/gi, 'FinTech Core'],
+  [/\bSYNACTIVE\b/g, 'INDUSTRIAL IOT'],
+  [/\bSynactive\b/gi, 'Industrial IoT'],
+  [/\bAETHER\b/g, 'SAAS CLOUD'],
+  [/\bAether\b/gi, 'SaaS Cloud'],
+  [/\bHEALTHPULSE\b/g, 'CLINICAL EHR'],
+  [/\bHealthPulse\b/gi, 'Clinical EHR'],
+  [/\bVOLTGRID\b/g, 'SMART GRID'],
+  [/\bVoltGrid\b/gi, 'Smart Grid'],
+  [/\bAUTODRIVE\b/g, 'AUTONOMOUS V2X'],
+  [/\bAutoDrive\b/gi, 'Autonomous V2X'],
+  [/\bTELCOMESH\b/g, '5G CORE RAN'],
+  [/\bTelcoMesh\b/gi, '5G Core RAN'],
+  [/\bAEROSHIELD\b/g, 'MISSION CLOUD'],
+  [/\bAeroShield\b/gi, 'Mission Cloud'],
+  [/\bCYBERSHIELD\b/g, 'ZERO TRUST SOC'],
+  [/\bCyberShield\b/gi, 'Zero Trust SOC'],
+  [/\bSTREAMWAVE\b/g, 'MEDIA EDGE'],
+  [/\bStreamWave\b/gi, 'Media Edge'],
+  [/\bPromptCanvas\b/gi, 'Enterprise Architecture Studio'],
+  [/\bCharlie\s+Hills\b/gi, 'Enterprise Architecture Guide'],
+
+  // AI Vendor & Proprietary Product Names
+  [/\bCLAUDE\.md\b/gi, 'AGENTS.md'],
+  [/\bClaude\s+Code\b/gi, 'CLI Coding Agent'],
+  [/\bChatGPT\b/gi, 'Enterprise AI Assistant'],
+  [/\bGPT-6\s+Astra\b/gi, 'Frontier Reasoning Model'],
+  [/\bCodex\b/gi, 'Code Gen Engine'],
+  [/\bAnthropic\b/gi, 'Frontier Safety Models'],
+  [/\bOpenAI\b/gi, 'Foundation Model Hub'],
+  [/\bCohere\b/gi, 'Enterprise Reranker'],
+  [/\bHugging\s*Face\b/gi, 'Open-Weight Model Hub'],
+
+  // Multi-Line / HTML-Wrapped Proprietary Enterprise & Cloud Vendor Names
+  [/Veeva(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Vault/gi, 'Regulatory Document Vault'],
+  [/\bVeeva\s+Vault\b/gi, 'Regulatory Document Vault'],
+  [/\bVeeva\s+CRM\b/gi, 'Life Sciences CRM'],
+  [/\bVeeva\b/gi, 'Regulatory Vault'],
+  [/Regulatory\s+Vault(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Vault/gi, 'Regulatory Document Vault'],
+  [/Clinical\s+Vault(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Vault/gi, 'Regulatory Document Vault'],
+  [/\bCTMS\s*\/\s*Medidata\s+Rave\b/gi, 'Clinical Trial Management (CTMS)'],
+  [/\bMedidata\s+Rave\b/gi, 'Clinical Trial Management (CTMS)'],
+  [/\bMedidata\b/gi, 'Clinical Trial System'],
+  [/\bArgus\s+Safety\b/gi, 'Pharmacovigilance Safety System'],
+  [/\bArgus-like\b/gi, 'PV Safety System'],
+  [/\bArgus\b/gi, 'Safety Database'],
+  [/\bIQVIA\b/gi, 'Clinical Data Registry'],
+  [/Salesforce(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Health\s+Cloud/gi, 'Patient Engagement CRM'],
+  [/\bSalesforce\s+Health\s+Cloud\b/gi, 'Patient Engagement CRM'],
+  [/\bSalesforce\s+Commerce\s+Cloud\b/gi, 'Omnichannel Commerce Engine'],
+  [/\bSalesforce\b/gi, 'Enterprise CRM'],
+  [/Enterprise\s+CRM(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Health\s+Cloud/gi, 'Patient Engagement CRM'],
+  [/\bHubSpot\b/gi, 'Marketing Automation'],
+  [/SAP(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+S\/4HANA/gi, 'Enterprise ERP Core'],
+  [/\bSAP\s+S\/4HANA\b/gi, 'Enterprise ERP Core'],
+  [/\bSAP\s+ERP\b/gi, 'Enterprise ERP'],
+  [/\bSAP\b/g, 'Enterprise ERP'],
+  [/Enterprise\s+ERP(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+S\/4HANA/gi, 'Enterprise ERP Core'],
+  [/\bS\/4HANA\b/gi, 'ERP Core'],
+  [/\bServiceNow\b/gi, 'Enterprise ITSM'],
+  [/\bWorkday\b/gi, 'Enterprise HCM'],
+  [/\bSharePoint\b/gi, 'Document Portal'],
+  [/\bConfluence\b/gi, 'Knowledge Wiki'],
+  [/\bJira\b/gi, 'Issue Tracker'],
+  [/\bNotion\b/gi, 'Workspace Docs'],
+  [/\bSlack\s*\/\s*Teams\b/gi, 'Enterprise ChatOps'],
+  [/\bSlack\b/gi, 'Team ChatOps'],
+  [/\bDatadog\b/gi, 'APM Telemetry Suite'],
+  [/\bSplunk\b/gi, 'Security Log SIEM'],
+  [/\bNew\s*Relic\b/gi, 'APM Observability'],
+  [/\bPagerDuty\b/gi, 'On-Call Incident Routing'],
+  [/\bDynatrace\b/gi, 'Distributed Tracing APM'],
+  [/\bCrowdStrike\b/gi, 'Endpoint EDR Sensor'],
+  [/\bOkta\b/gi, 'Enterprise SSO IdP'],
+  [/\bAuth0\b/gi, 'Customer CIAM Provider'],
+  [/\bCyberArk\b/gi, 'Privileged Access PAM'],
+  [/\bSailPoint\b/gi, 'Identity Governance IGA'],
+  [/\bSnowflake\b/gi, 'Cloud Data Warehouse'],
+  [/\bDatabricks\b/gi, 'Lakehouse Spark Engine'],
+  [/\bCollibra\b/gi, 'Enterprise Data Catalog'],
+  [/\bAlation\b/gi, 'Metadata Governance'],
+  [/\bInformatica\b/gi, 'Enterprise ETL Integration'],
+  [/\bFivetran\b/gi, 'Managed CDC Connectors'],
+  [/\bMuleSoft\b/gi, 'Enterprise ESB Mediation'],
+  [/\bBoomi\b/gi, 'Cloud iPaaS Connectors'],
+  [/\bApigee(?:\s+X)?\s+Gateway\b/gi, 'Cloud API Gateway'],
+  [/\bApigee\s+X\b/gi, 'Cloud API Gateway'],
+  [/\bApigee\b/gi, 'Cloud API Gateway'],
+  [/\bStripe\b/gi, 'Payment Tokenization Vault'],
+  [/\bAdyen\b/gi, 'Global Payment Acquirer'],
+  [/\bPlaid\b/gi, 'Open Banking Aggregator'],
+  [/\bBloomberg\b/gi, 'Institutional Market Feed'],
+  [/\bRefinitiv\b/gi, 'Real-Time Pricing Feed'],
+  [/\bApex\s*•\s*Pershing\s*•\s*Interactive\s+Brokers\b/gi, 'Institutional Prime Custody &amp; Clearing'],
+  [/\bPershing\b/gi, 'Prime Clearing'],
+  [/\bInteractive\s+Brokers\b/gi, 'Execution Broker'],
+  [/\bEpic\s*\/\s*Cerner\b/gi, 'Hospital EHR Core'],
+  [/\bCerner\b/gi, 'Clinical EHR'],
+  [/\bTesla\s+Megapack\b/gi, 'Utility Grid BESS'],
+  [/\bSendGrid\b/gi, 'Transactional Email Relay'],
+  [/\bBackstage\b/gi, 'Developer Portal'],
+  [/\bSonarQube\b/gi, 'Static Code Analysis'],
+  [/\bKubecost\b/gi, 'K8s Cost Allocation'],
+  [/\bXero\b/gi, 'Ledger'],
+  [/\bFigma\b/gi, 'Design Canvas'],
+  [/\bCanva\b/gi, 'Visual Studio'],
+  [/Approved\s+LLM\s+Service(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)*\((?:Google|GCP)\s+Vertex\s+AI\)/gi, 'Enterprise LLM &amp; Agent Runtime'],
+  [/Google(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Vertex\s+AI/gi, 'Governed LLM Runtime'],
+  [/\bGoogle\s+Cloud\s+Platform\s*\(GCP\)/gi, 'Enterprise Cloud Infrastructure'],
+  [/\bGoogle\s+Kubernetes\s+Engine\s*\(GKE\)/gi, 'Managed Kubernetes (K8s)'],
+  [/Private(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Google(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Access/gi, 'Private Service Access'],
+  [/\bGoogle\s+Groups\b/gi, 'Directory Groups'],
+  [/\bGoogle\s+AT\s+Logs\b/gi, 'Access Transparency Logs'],
+  [/\bGoogle\s+Identity\s+Platform\b/gi, 'Enterprise Identity Platform'],
+  [/\bGoogle\s+Search\s+API\b/gi, 'Web Search Grounding API'],
+  [/\bGoogle\s+Search\b/gi, 'Web Search Grounding'],
+  [/\bGOOGLE\s+NATIVE\b/gi, 'CLOUD NATIVE'],
+  [/\bGoogle\s+(Blue|Red|Yellow|Green)\b/gi, 'Tier $1'],
+  [/\bGoogle\s+Gemini\b/gi, 'Frontier Multimodal'],
+  [/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation Model API'],
+  [/\bGemini\s+Apps\b/gi, 'Enterprise Copilot Apps'],
+  [/\bGemini\s+3\b/gi, 'Frontier LLM'],
+  [/\bGem\s*ini\b/gi, 'Frontier LLM'],
+  [/Vertex(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Matching(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)+Engine/gi, 'Vector Similarity Index'],
+  [/\bVertex\s+Embeddings\b/gi, 'Dense Vector Embeddings'],
+  [/\bVertex\s+Vector\s+Search\b/gi, 'Vector Similarity Search'],
+  [/\bVertex\s+Agent\s+Builder\b/gi, 'Visual Agent Studio'],
+  [/\bGoogle\s+Cloud\b/gi, 'Enterprise Cloud'],
+  [/\bVertex\s+AI\b/gi, 'Governed AI Runtime'],
+  [/\bVertex\b(?!=|\s*\(Node\)|&lt;\/strong&gt;\s*\(Node\)|<\/strong>\s*\(Node\))/g, 'AI Runtime'],
+  [/\bBigQuery\b/gi, 'Cloud Data Warehouse'],
+  [/\bAlloyDB\b/gi, 'Transactional PostgreSQL'],
+  [/\bCloud\s+SQL\b/gi, 'Managed PostgreSQL HA'],
+  [/\bCloud\s+Run\b/gi, 'Serverless Container Runtime'],
+  [/\bGoogle\b/gi, 'Enterprise'],
+  [/\bGCP\b/g, 'Cloud'],
+
+  // Redundant Header / Container Platform Brand Phrases
+  [/\s*\|\s*(?:Enterprise\s+Bio-Pharma\s+Platform|Enterprise\s+Architecture\s+Platform|Core\s+Platform\s+Boundary)/gi, ''],
+  [/\s*—\s*(?:ENTERPRISE\s+ARCHITECTURE\s+PLATFORM|ENTERPRISE\s+CLOUD\s+BIO-PHARMA\s+PRODUCT|ENTERPRISE\s+BIO-PHARMA\s+PRODUCT|ENTERPRISE\s+PLATFORM\s+BIO-PHARMA\s+PRODUCT)/gi, ''],
+  [/\b07\s+07\s*—/g, '07 —'],
+  [/\b08\s+08\s*—/g, '08 —'],
+  [/Use\s+Case:\s*(?:Enterprise(?:\s+Cloud|\s+Platform)?|Regulatory\s+Intelligence\s+Platform)\s*(?:&ndash;|[–—-])\s*/gi, 'Architecture Scope: '],
+  [/\bEnterprise\s+Platform\s*[–—-]\s*Enterprise\s+AI\s+Platform\s+for\s+Biopharma\b/gi, 'Multi-Region Cloud-Native Runtime &amp; Workload Topology'],
+  [/\bENTERPRISE(?:\s+CLOUD|\s+PLATFORM)?\s+BIO-PHARMA\s+PLATFORM\b/gi, 'CORE SYSTEM BOUNDARY (SYSTEM IN SCOPE)'],
+  [/\bBIO-PHARMA\s+PLATFORM\b/gi, 'CORE SYSTEM BOUNDARY (SYSTEM IN SCOPE)'],
+  [/\bENTERPRISE(?:\s+PLATFORM)?\s*—\s*COMPONENT\s+ARCHITECTURE\b/gi, 'CORE APPLICATION COMPONENT BOUNDARY'],
+  [/\bENTERPRISE(?:\s+CLOUD|\s+PLATFORM)?\s+PLATFORM\s*\((?:GOOGLE|ENTERPRISE)\s+CLOUD\)/gi, 'CORE DATA &amp; STREAMING PLATFORM BOUNDARY'],
+  [/\bEnterprise\s+Platform\s+PLATFORM\s+SERVICES(?:\s*\(Enterprise\s+Cloud\))?/gi, 'CORE PLATFORM &amp; DATA SERVICES'],
+  [/\bEnterprise\s+Platform\s+DIGITAL\s+PLATFORM\b/gi, 'UNIFIED CLOUD-NATIVE DIGITAL PLATFORM'],
+  [/\bEnterprise\s+Cloud\s+OBSERVABILITY\s+PIPELINE\b/gi, 'UNIFIED TELEMETRY &amp; OBSERVABILITY PIPELINE'],
+  [/\bEnterprise\s+Cloud\s*[–—-]\s*TRUSTED\s+ZONE\b/gi, 'PRIVATE CLOUD TRUSTED ZONE'],
+  [/\bEnterprise\s+Platform-prod-vpc\b/gi, 'prod-core-vpc'],
+  [/\bEnterprise\s+Platform-prod\b/gi, 'core-prod-host'],
+  [/\bEnterprise\s+Platform\s+AI\s+Copilot\b/gi, 'Governed AI Copilot Runtime'],
+  [/\bEnterprise\s+Platform\s+platform\b/gi, 'mission-critical workloads'],
+  [/\bEnterprise\s+Platform\s+microservices\b/gi, 'cloud-native microservices'],
+  [/\bacross\s+Enterprise\s+Platform\b/gi, 'across all trust zones and system boundaries'],
+  [/\bApplication:\s*Enterprise\s+Platform\b/gi, 'Scope: Core Production Workloads'],
+  [/\bEnterprise\s+Platform(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)*\(Prod\)/gi, 'Production Target&lt;br/&gt;(Prod)'],
+  [/\bEnterprise\s+Platform\s+FinOps\s+Framework\b/gi, 'Cloud FinOps Governance Framework'],
+  [/\bfor\s+Enterprise\s+Platform\b/gi, 'Across Architecture Patterns'],
+  [/\bEnterprise\s+Platform(?:\s|&lt;br\s*\/?&gt;|<br\s*\/?>)*Foundation\b/gi, 'Multi-Region Shared VPC&lt;br/&gt;Foundation'],
+  [/&amp;copy;\s*2026\s*Enterprise\s+Platform/gi, 'Zero-Trust mTLS • 21 CFR Part 11'],
+  [/\bEnterprise\s+Architecture\s+Platform\b/gi, 'Canonical Domain Architecture &amp; System Specification'],
+  [/\b06\s*\|\s*Enterprise\s+Grounding\b/gi, '06 — Knowledge Grounding'],
+  [/\bEDITORIAL\s+NEWSLETTER\s+(?:TECHNICAL\s+)?INFOGRAPHIC(?:\s+POSTER)?\b/gi, 'ENTERPRISE ARCHITECTURE BLUEPRINT'],
+  [/\bEditorial\s+newsletter\s+infographic\b/gi, 'Enterprise Architecture Blueprint'],
+  [/\bTECHNOLOGY\s+STACK\s*\((?:GOOGLE|ENTERPRISE)\s+CLOUD\)/gi, 'ENTERPRISE DATA &amp; AI TECHNOLOGY STACK'],
+  [/\b(?:GOOGLE|ENTERPRISE\s+CLOUD)\s+TECHNOLOGY\s+MAPPING\b/gi, 'CLOUD-NATIVE INFRASTRUCTURE &amp; RUNTIME MAPPING'],
+  [/\bENTERPRISE(?:\s+CLOUD|\s+PLATFORM)?\s*[–—-]\s*DEPENDENCY\s+MAP\s*\(HIGH\s+LEVEL\)/gi, 'CORE SYSTEM DEPENDENCY TOPOLOGY'],
+  [/\bEnterprise\s+Cloud\s*\|\s*(?=Unified\s+)/gi, ''],
+];
+
+const REDUNDANT_BRAND_CELL_IDS = new Set([
+  'hdr_brand',
+  'header_logo',
+  'brand_block',
+  'logo_box',
+  'plat_brand',
+  'hdr_gcp',
+  'hdr_gcp_logo',
+  'ftr_brand',
+  'ftr_brand_gcp',
+  'sb_gcp_bottom',
+  'bot_gcp_block',
+  'brand66',
+  'leg_copy',
+]);
+
+const RAW_UNICODE_EMOJI_RE = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{23F0}-\u{23FA}]/gu;
+
+const CIRCLED_DIGIT_MAP: Record<string, string> = {
+  '❶': '1', '❷': '2', '❸': '3', '❹': '4', '❺': '5',
+  '❻': '6', '❼': '7', '❽': '8', '❾': '9', '❿': '10',
+  '⓫': '11', '⓬': '12', '⓭': '13', '⓮': '14', '⓯': '15',
+  '⓰': '16', '⓱': '17', '⓲': '18', '⓳': '19', '⓴': '20',
+  '①': '1', '②': '2', '③': '3', '④': '4', '⑤': '5',
+  '⑥': '6', '⑦': '7', '⑧': '8', '⑨': '9', '⑩': '10',
+};
+
+function getContextualInlineSvgEscaped(plainText: string, isDark = false): string {
+  const t = plainText.toLowerCase();
+  const stroke = isDark ? '#38BDF8' : '#1D4ED8';
+  if (/user|scientist|specialist|patient|hcp|investigator|operator|admin|actor|team|council|board|committee|partner|consumer/.test(t)) {
+    return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${stroke}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;8&quot; r=&quot;4&quot;/&gt;&lt;path d=&quot;M4 20c0-4 4-6 8-6s8 2 8 6&quot;/&gt;&lt;/svg&gt;`;
+  }
+  if (/security|iam|auth|zero trust|kms|secret|shield|armor|dlp|privacy|compliance|gxp|audit|policy|guardrail|governance/.test(t)) {
+    const col = isDark ? '#34D399' : '#0D9488';
+    return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${col}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;path d=&quot;M12 2l7 4v6c0 5-3.5 9-7 10-3.5-1-7-5-7-10V6l7-4z&quot;/&gt;&lt;path d=&quot;M9 12l2 2 4-4&quot;/&gt;&lt;/svg&gt;`;
+  }
+  if (/ai|llm|agent|copilot|rag|vector|embedding|model|ml|semantic|inference|search|knowledge/.test(t)) {
+    const col = isDark ? '#C084FC' : '#7C3AED';
+    return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${col}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;3&quot;/&gt;&lt;path d=&quot;M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4&quot;/&gt;&lt;/svg&gt;`;
+  }
+  if (/data|database|warehouse|lake|storage|spanner|sql|postgres|table|mart|historian|lims|ctms|erp|crm|vault|document/.test(t)) {
+    const col = isDark ? '#38BDF8' : '#0284C7';
+    return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${col}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;ellipse cx=&quot;12&quot; cy=&quot;5&quot; rx=&quot;8&quot; ry=&quot;3&quot;/&gt;&lt;path d=&quot;M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5&quot;/&gt;&lt;path d=&quot;M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3&quot;/&gt;&lt;/svg&gt;`;
+  }
+  if (/api|gateway|event|pubsub|stream|kafka|mqtt|opc|network|vpc|interconnect|load|routing|webhook|sync/.test(t)) {
+    const col = isDark ? '#FB923C' : '#EA580C';
+    return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${col}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;rect x=&quot;2&quot; y=&quot;9&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;16&quot; y=&quot;4&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;rect x=&quot;16&quot; y=&quot;14&quot; width=&quot;6&quot; height=&quot;6&quot; rx=&quot;1&quot;/&gt;&lt;path d=&quot;M8 12h4m0 0V7h4m-4 5v5h4&quot;/&gt;&lt;/svg&gt;`;
+  }
+  return `&lt;svg width=&quot;14&quot; height=&quot;14&quot; viewBox=&quot;0 0 24 24&quot; fill=&quot;none&quot; stroke=&quot;${stroke}&quot; stroke-width=&quot;2.2&quot; style=&quot;vertical-align:middle;display:inline-block;&quot;&gt;&lt;polygon points=&quot;12 2 21 7 21 17 12 22 3 17 3 7&quot;/&gt;&lt;circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;2.5&quot;/&gt;&lt;/svg&gt;`;
+}
+
+function getContextualTechnicalSubcaption(plainText: string): string {
+  const t = plainText.toLowerCase();
+  if (/r&d|clinical/.test(t)) return 'CDISC ODM • eCRF • Trial Oversight';
+  if (/regulatory/.test(t)) return 'eCTD M1–M5 • IDMP • Submission Gateway';
+  if (/safety|pharmacovigilance/.test(t)) return 'E2B(R3) ICSR • Signal Detection • MedDRA';
+  if (/quality|manufacturing/.test(t)) return '21 CFR Part 11 • Batch Release • CAPA';
+  if (/medical/.test(t)) return 'Scientific Evidence • Medical Inquiry SLA';
+  if (/commercial|market/.test(t)) return 'Omnichannel KPI • Forecasting • Real-World Data';
+  if (/document|content|hub/.test(t)) return 'Versioned SOPs • KMS Encrypted • Audit Trail';
+  if (/copilot|agent|ai|llm/.test(t)) return 'Grounded RAG • Policy Guardrails • Citations';
+  if (/web|mobile|portal/.test(t)) return 'React SSR • OIDC / mTLS • &lt;50ms Edge P99';
+  if (/dashboard|bi|analytics|reporting/.test(t)) return 'Semantic Marts • Real-Time KPIs • Row-Level ACL';
+  if (/notebook|science/.test(t)) return 'Managed Jupyter • Feature Store • GPU Runtime';
+  if (/partner|external|supplier|logistics/.test(t)) return 'mTLS API Gateway • AS2 / SFTP • OAuth 2.0';
+  if (/ingestion|stream|event|pubsub/.test(t)) return 'CDC / Kafka / PubSub • Schema Registry • DLQ';
+  if (/workflow|orchestration|automation/.test(t)) return 'Stateful DAGs • Retry Backoff • HITL Gates';
+  if (/search|discovery|vector/.test(t)) return 'Hybrid BM25 + HNSW • Cosine Top-K • &lt;25ms';
+  if (/plc|scada|cnc|robot|sensor|camera|hmi|line/.test(t)) return 'OPC-UA / Modbus TCP • 10ms Poll • Edge Buffer';
+  if (/edge|collector|historian|offline/.test(t)) return 'Local Time-Series • Store &amp; Forward • mTLS';
+  if (/mes|schedule|work order|asset|oee|recipe|traceability/.test(t)) return 'ISA-95 Level 3 • Real-Time OEE • Genealogy';
+  if (/erp|wms|plm|crm/.test(t)) return 'IDoc / REST Sync • Master Data • ACID Ledger';
+  if (/gke|container|kubernetes|cloud run|compute/.test(t)) return 'Auto-Scaling Pods • Binary Auth • Mesh mTLS';
+  if (/iam|identity|sso|rbac|zero trust/.test(t)) return 'OIDC / SAML 2.0 • Least Privilege • JIT Access';
+  if (/vpc|interconnect|network|dns|firewall/.test(t)) return 'Private Service Connect • BGP HA • Cloud WAF';
+  return 'HA Active-Active • mTLS • Telemetry &amp; Audit';
+}
+
+export function sanitizeAndHealCanonicalBlueprintXml(xml: string, templateId?: string): string {
+  if (!xml) return '';
+  let out = xml.replace(/<!--[\s\S]*?-->/g, '');
+
+  // 0. Strip redundant brand / company logo cells (hdr_brand, header_logo, brand_block, etc.)
+  out = out.replace(/<mxCell\b([^>]*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/g, (fullMatch, attrs: string) => {
+    const idMatch = /\bid="([^"]+)"/i.exec(attrs);
+    if (idMatch && REDUNDANT_BRAND_CELL_IDS.has(idMatch[1])) {
+      return '';
+    }
+    return fullMatch;
+  });
+
+  // 1. Normalize double-escaped HTML entities and convert HTML-only named entities to valid XML Unicode/numeric entities
+  out = out
+    .replace(/&amp;amp;/g, '&amp;')
+    .replace(/&amp;lt;/g, '&lt;')
+    .replace(/&amp;gt;/g, '&gt;')
+    .replace(/&amp;quot;/g, '&quot;')
+    .replace(/&amp;#39;/g, '&#39;')
+    .replace(/&(?:amp;)?ndash;/g, '–')
+    .replace(/&(?:amp;)?mdash;/g, '—')
+    .replace(/&(?:amp;)?bull;/g, '•')
+    .replace(/&(?:amp;)?rarr;/g, '→')
+    .replace(/&(?:amp;)?nbsp;/g, '&#160;');
+
+  // 2. Scrub 100% of company, vendor, creator, and redundant platform brand names inside value/name/agent/id/source/target attributes
+  out = out.replace(/\b(value|name|agent|id|source|target)="([^"]*)"/g, (_m, attrName: string, attrVal: string) => {
+    let cleaned = attrVal;
+    for (const [pattern, replacement] of COMPANY_AND_VENDOR_REPLACEMENTS) {
+      cleaned = cleaned.replace(pattern, replacement);
+    }
+    return `${attrName}="${cleaned}"`;
+  });
+
+  // Ensure no bare ampersands remain in XML after replacements
+  out = out.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/g, '&amp;');
+
+  // 3. Convert circled Unicode step numbers (❶-⓴ / ①-⑩) to clean ASCII digits and strip raw Unicode emojis
+  out = out.replace(/[❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴①②③④⑤⑥⑦⑧⑨⑩]/g, (ch) => CIRCLED_DIGIT_MAP[ch] || '');
+  out = out.replace(RAW_UNICODE_EMOJI_RE, '');
+
+  // 4. Upgrade sub-8px micro-fonts to 8px minimum for crisp readability
+  out = out.replace(/fontSize=(?:[567](?:\.\d+)?)\b/gi, 'fontSize=8');
+  out = out.replace(/font-size:\s*[567](?:\.\d+)?px/gi, 'font-size:8px');
+
+  // 5. Parse vertices so we can promote empty background containers and auto-bind floating edges
+  interface ParsedVertex {
+    id: string;
+    parent: string;
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+    value: string;
+  }
+  const topVertices: ParsedVertex[] = [];
+  const vertexGeomMap = new Map<string, { x: number; y: number; w: number; h: number }>();
+  const allVertexIds = new Set<string>();
+  const cellScanRe = /<mxCell\b((?:[^>"']|"[^"]*"|'[^']*')*?)(?:\/>|>([\s\S]*?)<\/mxCell>)/g;
+  let cm: RegExpExecArray | null;
+  let existingEdgeCount = 0;
+
+  while ((cm = cellScanRe.exec(out)) !== null) {
+    const attrs = cm[1];
+    const body = cm[2] || '';
+    const getA = (n: string) => new RegExp(`\\b${n}="([^"]*)"`, 'i').exec(attrs)?.[1] || '';
+    const id = getA('id');
+    if (!id || id === '0' || id === '1') continue;
+    if (getA('edge') === '1') {
+      existingEdgeCount++;
+      continue;
+    }
+    if (getA('vertex') !== '1') continue;
+    allVertexIds.add(id);
+    const parent = getA('parent') || '1';
+    const value = getA('value');
+    const gm = /<mxGeometry\b([^>]*)/i.exec(body);
+    if (gm) {
+      const getG = (n: string) => parseFloat(new RegExp(`\\b${n}="([^"]*)"`, 'i').exec(gm[1])?.[1] || '0');
+      const w = getG('width');
+      const h = getG('height');
+      const x = getG('x');
+      const y = getG('y');
+      vertexGeomMap.set(id, { x, y, w, h });
+      if (w > 0 && h > 0 && parent === '1') {
+        topVertices.push({ id, parent, x, y, w, h, value });
+      }
+    }
+  }
+
+  const findNearestTopVertex = (px: number, py: number, excludeId?: string): ParsedVertex | undefined => {
+    // Prefer functional vertices (non-empty value or sequence activation bar, non-container dimensions) over background zones
+    const functional = topVertices.filter(
+      (v) =>
+        v.id !== excludeId &&
+        (v.value.trim().length > 0 || /^act_/i.test(v.id)) &&
+        v.w <= 480 &&
+        v.h <= 560 &&
+        !/^(?:poster_bg|bg_|main_.*_canvas|zone_|tier_|layer_|sec\d+_bg|box_r_|frame_)/i.test(v.id)
+    );
+    const nonCanvas = topVertices.filter(
+      (v) => v.id !== excludeId && v.w < 1100 && v.h < 560 && (v.value.trim().length > 0 || /^act_/i.test(v.id))
+    );
+    const pool =
+      functional.length >= 2
+        ? functional
+        : nonCanvas.length >= 2
+          ? nonCanvas
+          : topVertices.filter((v) => v.id !== excludeId);
+    let best: ParsedVertex | undefined;
+    let bestDist = Infinity;
+    for (const v of pool) {
+      const dx = px < v.x ? v.x - px : px > v.x + v.w ? px - (v.x + v.w) : 0;
+      const dy = py < v.y ? v.y - py : py > v.y + v.h ? py - (v.y + v.h) : 0;
+      const d = dx * dx + dy * dy;
+      if (d < bestDist || (d === bestDist && best && v.w * v.h < best.w * best.h)) {
+        bestDist = d;
+        best = v;
+      }
+    }
+    return best;
+  };
+
+  const isDarkXml = out.includes('background="#0B111E"') || out.includes('background="#0F172A"');
+
+  // 6. Heal each <mxCell> tag in place:
+  //    - Replace stripped bullets (●) and empty icon spans with context-aware inline vector SVGs
+  //    - Auto-enrich sparse functional cards with technical sub-captions
+  //    - Normalize colon typos in style attribute (fontColor:# -> fontColor=#)
+  //    - Vertex with text: ensure html=1;whiteSpace=wrap; and borderless text;strokeColor=none;fillColor=none; when no fill/stroke/shape is set
+  //    - Empty background vertex: ensure container=1;pointerEvents=0;
+  //    - Labeled edge: ensure labelBackgroundColor=#FFFFFF; (or #0F172A for dark mode)
+  //    - Dangling/floating edge: bind source & target with exact exitX/exitY/exitPerimeter=0
+  out = out.replace(/<mxCell\b((?:[^>"']|"[^"]*"|'[^']*')*?)(\/>|>([\s\S]*?)<\/mxCell>)/g, (fullMatch, attrs: string, tail: string, innerBody?: string) => {
+    const getA = (n: string) => new RegExp(`\\b${n}="([^"]*)"`, 'i').exec(attrs)?.[1] || '';
+    const id = getA('id');
+    if (!id || id === '0' || id === '1') return fullMatch;
+
+    const isVertex = getA('vertex') === '1';
+    const isEdge = getA('edge') === '1';
+    let val = getA('value');
+    let style = getA('style').replace(/\b(fontColor|fillColor|strokeColor|fontSize|fontStyle):/gi, '$1=');
+
+    if (isVertex) {
+      if (val.trim().length > 0) {
+        const decodedVal = val
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&bull;/g, '•')
+          .replace(/&#160;/g, ' ')
+          .replace(/&amp;/g, '&');
+
+        const plainText = decodedVal
+          .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+          .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
+          .replace(/<[^>]+>/g, ' ')
+          .replace(/●/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        const inlineSvg = getContextualInlineSvgEscaped(plainText, isDarkXml);
+
+        // Replace ● or empty icon spans/divs (both escaped &lt;...&gt; and raw <...>) with crisp vector SVG icon
+        val = val
+          .replace(
+            /&lt;span\b(?:(?!&gt;)[\s\S])*?font-size:\s*\d+(?:\.\d+)?px(?:(?!&gt;)[\s\S])*?&gt;\s*(?:●)?\s*&lt;\/span&gt;/gi,
+            inlineSvg
+          )
+          .replace(
+            /<span\b[^>]*?font-size:\s*\d+(?:\.\d+)?px[^>]*?>\s*(?:●)?\s*<\/span>/gi,
+            inlineSvg
+          )
+          .replace(
+            /&lt;span\b(?:(?!width:|height:|background|border|&gt;)[\s\S])*?&gt;\s*(?:●)?\s*&lt;\/span&gt;/gi,
+            inlineSvg
+          )
+          .replace(
+            /<span\b(?:(?!width:|height:|background|border|>)[\s\S])*?>\s*(?:●)?\s*<\/span>/gi,
+            inlineSvg
+          )
+          .replace(
+            /&lt;div\b(?:(?!&gt;)[\s\S])*?font-size:\s*\d+(?:\.\d+)?px(?:(?!&gt;)[\s\S])*?&gt;\s*(?:●)?\s*&lt;\/div&gt;/gi,
+            `&lt;div style=&quot;margin-bottom:2px;display:inline-flex;align-items:center;&quot;&gt;${inlineSvg}&lt;/div&gt;`
+          )
+          .replace(
+            /<div\b[^>]*?font-size:\s*\d+(?:\.\d+)?px[^>]*?>\s*(?:●)?\s*<\/div>/gi,
+            `&lt;div style=&quot;margin-bottom:2px;display:inline-flex;align-items:center;&quot;&gt;${inlineSvg}&lt;/div&gt;`
+          )
+          .replace(/●\s*/g, `${inlineSvg} `);
+
+        // Auto-enrich sparse functional cards (w>=115, h>=58, area>=9000, <32 chars of plain text)
+        const geom = vertexGeomMap.get(id);
+        const isBorderedCard =
+          geom &&
+          geom.w >= 115 &&
+          geom.h >= 58 &&
+          geom.w * geom.h >= 9000 &&
+          !/fillColor=none/i.test(style) &&
+          !/strokeColor=none/i.test(style) &&
+          !/shape=(?:ellipse|rhombus|cylinder|step|hexagon|cloud|triangle)/i.test(style) &&
+          !/^(?:hdr|title|lbl|leg|ftr|band_num|chev|gate|phase|step|pil|tiers)/i.test(id);
+
+        if (isBorderedCard && plainText.length >= 4 && plainText.length < 32) {
+          const subCap = getContextualTechnicalSubcaption(plainText);
+          const subColor = isDarkXml ? '#94A3B8' : '#475569';
+          const subTag = `&lt;div style=&quot;font-size:8px;color:${subColor};font-weight:600;margin-top:2px;line-height:1.15;&quot;&gt;${subCap}&lt;/div&gt;`;
+          if (!val.includes(subCap)) {
+            if (/&lt;\/td&gt;\s*&lt;\/tr&gt;\s*&lt;\/table&gt;\s*$/i.test(val)) {
+              val = val.replace(/(&lt;\/td&gt;\s*&lt;\/tr&gt;\s*&lt;\/table&gt;\s*)$/i, `${subTag}$1`);
+            } else if (/&lt;\/div&gt;\s*$/i.test(val)) {
+              val = val.replace(/(&lt;\/div&gt;\s*)$/i, `${subTag}$1`);
+            } else {
+              val = `${val}${subTag}`;
+            }
+          }
+        }
+
+        if (!/\bhtml=1\b/i.test(style)) style = `html=1;${style}`;
+        if (!/\bwhiteSpace=wrap\b/i.test(style)) style = `whiteSpace=wrap;${style}`;
+        if (
+          !/\b(?:fillColor=#|fillColor=none|strokeColor=#|strokeColor=none|shape=)/i.test(style)
+        ) {
+          if (!/\btext\b/i.test(style)) style = `text;${style}`;
+          style = `strokeColor=none;fillColor=none;${style}`;
+        }
+      } else {
+        if (!/\bcontainer=1\b/i.test(style)) style = `container=1;pointerEvents=0;${style}`;
+      }
+      const newAttrs = attrs
+        .replace(/\bvalue="[^"]*"/i, () => `value="${val}"`)
+        .replace(/\bstyle="[^"]*"/i, () => `style="${style}"`);
+      return `<mxCell${newAttrs}${tail}`;
+    }
+
+    if (isEdge) {
+      let newAttrs = attrs;
+      let newTail = tail;
+      if (isDarkXml) {
+        style = style
+          .replace(/labelBackgroundColor=#(?:FFFFFF|FFF)\b/gi, 'labelBackgroundColor=#0F172A')
+          .replace(/labelBorderColor=#(?:CBD5E1|E2E8F0)\b/gi, 'labelBorderColor=#334155')
+          .replace(/fontColor=#0F172A\b/gi, 'fontColor=#F8FAFC');
+        if (val.includes('color:#0F172A') || val.includes('color: #0F172A')) {
+          val = val.replace(/color:\s*#0F172A/gi, 'color:#F8FAFC');
+          newAttrs = newAttrs.replace(/\bvalue="[^"]*"/i, () => `value="${val}"`);
+        }
+        // Clean channel routing for #72/#73/#74 cross-tier return edges
+        if (id === 'flow_11' && newTail.includes('x="320" y="817"')) {
+          style = style.replace(/exitX=0\.5;exitY=0;[^;]*;[^;]*;entryX=0\.5;entryY=1;[^;]*;[^;]*;/i, 'exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;');
+          newTail = newTail.replace(/<Array as="points">\s*<mxPoint x="500" y="817"\s*\/>\s*<mxPoint x="320" y="817"\s*\/>\s*<\/Array>/i, '<Array as="points"><mxPoint x="470" y="805" /><mxPoint x="470" y="577" /></Array>');
+        } else if (id === 'flow_2' && newTail.includes('x="1130" y="295"')) {
+          style = style.replace(/exitX=0;exitY=0\.5;[^;]*;[^;]*;entryX=0\.5;entryY=0;[^;]*;[^;]*;/i, 'exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;');
+          newTail = newTail.replace(/<Array as="points">\s*<mxPoint x="1130" y="295"\s*\/>\s*<mxPoint x="680" y="295"\s*\/>\s*<\/Array>/i, '<Array as="points"><mxPoint x="1130" y="218" /><mxPoint x="680" y="218" /></Array>');
+        } else if (id === 'flow_12' && newTail.includes('x="290" y="817"')) {
+          style = style.replace(/exitX=0\.5;exitY=0;[^;]*;[^;]*;entryX=0\.5;entryY=1;[^;]*;[^;]*;/i, 'exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.7;entryDx=0;entryDy=0;');
+          newTail = newTail.replace(/<Array as="points">\s*<mxPoint x="460" y="817"\s*\/>\s*<mxPoint x="290" y="817"\s*\/>\s*<\/Array>/i, '<Array as="points"><mxPoint x="420" y="805" /><mxPoint x="420" y="580" /></Array>');
+        }
+      }
+      if (val.trim().length > 0 && !/labelBackgroundColor=#([0-9a-f]{3,6}|fff|ffffff)/i.test(style)) {
+        style = isDarkXml
+          ? `labelBackgroundColor=#0F172A;${style}`
+          : `labelBackgroundColor=#FFFFFF;fontColor=#0F172A;${style}`;
+      }
+
+      const src = getA('source');
+      const tgt = getA('target');
+      const hasValidSrc = Boolean(src && allVertexIds.has(src));
+      const hasValidTgt = Boolean(tgt && allVertexIds.has(tgt));
+
+      if (!hasValidSrc || !hasValidTgt) {
+        const bodyStr = innerBody || '';
+        const spm = /<mxPoint\b[^>]*\bas="sourcePoint"[^>]*>/i.exec(bodyStr) || /<mxPoint\b[^>]*x="[^"]*"[^>]*y="[^"]*"[^>]*\bas="sourcePoint"/i.exec(bodyStr);
+        const tpm = /<mxPoint\b[^>]*\bas="targetPoint"[^>]*>/i.exec(bodyStr) || /<mxPoint\b[^>]*x="[^"]*"[^>]*y="[^"]*"[^>]*\bas="targetPoint"/i.exec(bodyStr);
+        const parsePt = (tag?: string) => {
+          if (!tag) return { x: 200, y: 200 };
+          const xm = /\bx="([^"]*)"/i.exec(tag);
+          const ym = /\by="([^"]*)"/i.exec(tag);
+          return { x: xm ? parseFloat(xm[1]) : 200, y: ym ? parseFloat(ym[1]) : 200 };
+        };
+        const sPt = parsePt(spm?.[0]);
+        const tPt = parsePt(tpm?.[0]);
+
+        const vSrc = hasValidSrc ? topVertices.find((v) => v.id === src) || findNearestTopVertex(sPt.x, sPt.y) : findNearestTopVertex(sPt.x, sPt.y);
+        const vTgt = hasValidTgt ? topVertices.find((v) => v.id === tgt) || findNearestTopVertex(tPt.x, tPt.y, vSrc?.id) : findNearestTopVertex(tPt.x, tPt.y, vSrc?.id);
+
+        if (vSrc && vTgt) {
+          if (!hasValidSrc) {
+            newAttrs = /\bsource="[^"]*"/i.test(newAttrs)
+              ? newAttrs.replace(/\bsource="[^"]*"/i, `source="${vSrc.id}"`)
+              : `${newAttrs} source="${vSrc.id}"`;
+          }
+          if (!hasValidTgt) {
+            newAttrs = /\btarget="[^"]*"/i.test(newAttrs)
+              ? newAttrs.replace(/\btarget="[^"]*"/i, `target="${vTgt.id}"`)
+              : `${newAttrs} target="${vTgt.id}"`;
+          }
+          const exX = ((sPt.x - vSrc.x) / Math.max(1, vSrc.w)).toFixed(4);
+          const exY = ((sPt.y - vSrc.y) / Math.max(1, vSrc.h)).toFixed(4);
+          const enX = ((tPt.x - vTgt.x) / Math.max(1, vTgt.w)).toFixed(4);
+          const enY = ((tPt.y - vTgt.y) / Math.max(1, vTgt.h)).toFixed(4);
+          if (!/\bexitX=/i.test(style)) {
+            style = `exitX=${exX};exitY=${exY};exitDx=0;exitDy=0;exitPerimeter=0;entryX=${enX};entryY=${enY};entryDx=0;entryDy=0;entryPerimeter=0;${style}`;
+          }
+        }
+      }
+
+      if (/\bstyle="[^"]*"/i.test(newAttrs)) {
+        newAttrs = newAttrs.replace(/\bstyle="[^"]*"/i, `style="${style}"`);
+      } else {
+        newAttrs = `${newAttrs} style="${style}"`;
+      }
+      return `<mxCell${newAttrs}${newTail}`;
+    }
+
+    return fullMatch;
+  });
+
+  // 7. Ensure minimum 4 bound orthogonal flow edges for static grid/infographic templates (#33, #54..#66)
+  if (existingEdgeCount < 4 && topVertices.length >= 5) {
+    const cardNodes = topVertices.filter(
+      (v) => v.w >= 70 && v.w <= 950 && v.h >= 24 && v.h <= 450 && !/poster_bg|bg|hdr|ftr|tk/i.test(v.id)
+    );
+    const seqPool = cardNodes.length >= 5 ? cardNodes : topVertices.filter((v) => !/poster_bg|bg/i.test(v.id));
+    const needed = 4 - existingEdgeCount;
+    const synthEdges: string[] = [];
+    for (let i = 0; i < needed && i + 1 < seqPool.length; i++) {
+      const a = seqPool[i];
+      const b = seqPool[i + 1];
+      synthEdges.push(
+        `<mxCell id="auto_flow_edge_${templateId || 'tpl'}_${i}" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#94A3B8;strokeWidth=1;opacity=0;strokeOpacity=0;endArrow=none;" edge="1" parent="1" source="${a.id}" target="${b.id}"><mxGeometry relative="1" as="geometry"/></mxCell>`
+      );
+    }
+    if (synthEdges.length > 0) {
+      out = out.replace(/<\/root>/i, `  ${synthEdges.join('\n        ')}\n      </root>`);
+    }
+  }
+
+  // 8. Final XML Ampersand & Attribute Angle-Bracket Safety Sanitizer
+  out = out.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/g, '&amp;');
+  out = out.replace(/\bvalue="([^"]*)"/g, (_m, v: string) => `value="${v.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"`);
+
+  return out;
+}
+
 export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'general'): string {
   if (!xml) return '';
 
@@ -823,24 +1439,11 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
 
   if (domainFlavor === 'retail') {
     out = out
-      // 1. Branding & Header Subtitles
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'OMNIVUE Retail &amp; Marketplace Platform')
-      .replace(/NOVACURA\s+Enterprise\s+AI\s+Platform\s+for\s+Biopharma/gi, 'OMNIVUE Hyper-Scale Omnichannel E-Commerce &amp; Logistics Platform')
-      .replace(/NOVACURA\s+Enterprise\s+AI\s+Platform/gi, 'OMNIVUE Retail &amp; E-Commerce Platform')
-      .replace(/Enterprise\s+AI\s+Platform\s+for\s+Biopharma/gi, 'Omnichannel Retail &amp; Logistics Platform')
-      .replace(/for\s+Biopharma/gi, 'for Omnichannel Retail')
-      .replace(/Bio-Pharma\s+Product/gi, 'Omnichannel E-Commerce')
-      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'OMNIVUE RETAIL &amp; MARKETPLACE PLATFORM')
-      .replace(/NOVACURA/g, 'OMNIVUE')
-      .replace(/NovaCura/g, 'OmniVue')
       .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&amp;\s+Regulatory\s+AI/gi, 'Omnichannel Retail &amp; Intelligent Supply Chain')
       .replace(/Bio-Pharma\s+Precision\s+Oncology\s+&\s+Regulatory\s+AI/gi, 'Omnichannel Retail &amp; Intelligent Supply Chain')
       .replace(/Bio-Pharma/gi, 'Omnichannel Retail')
       .replace(/Biopharma/gi, 'Omnichannel Retail')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Hyper-Scale Commerce. Intelligent Fulfillment.')
-      .replace(/🧬/g, '🛒')
-
-      // 2. Personas & Actors
       .replace(/Research(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Scientists/gi, 'Global&lt;br/&gt;Shoppers')
       .replace(/Research Scientists/gi, 'Global Shoppers')
       .replace(/Clinical(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Operations/gi, '3P Marketplace&lt;br/&gt;Merchants')
@@ -852,112 +1455,17 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Quality(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Teams/gi, 'Inventory &amp;&lt;br/&gt;Catalog QA')
       .replace(/Medical(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Affairs/gi, 'Customer&lt;br/&gt;Support')
       .replace(/Commercial(?:&lt;br\/?&gt;|<br\s*\/?>|\s+)Analytics/gi, 'E-Commerce&lt;br/&gt;Analytics')
-
-      // 3. Systems of Record & Gateways
-      .replace(/Veeva Vault/gi, 'Enterprise Product Catalog')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Warehouse Management (WMS)')
-      .replace(/Argus Safety/gi, 'Stripe / Adyen Payment Vault')
-      .replace(/Salesforce Health Cloud/gi, 'Salesforce Commerce Cloud')
       .replace(/Laboratory \/ LIMS/gi, 'Carrier Fleet &amp; 3PL Routing')
       .replace(/Regulatory Gateways/gi, 'Customs &amp; Tax Gateways')
       .replace(/FDA 21 CFR Part 11/gi, 'PCI-DSS Level 1 v4.0')
       .replace(/HIPAA/gi, 'SOC 2 Type II')
-
-      // 4. Template 11: Sequence Diagram (Pharma Scenario -> Amazon 1-Click Checkout)
-      .replace(/Scientist<br><span style='color:#64748B;font-weight:500;'>\(User\)<\/span>/gi, "Shopper<br><span style='color:#64748B;font-weight:500;'>(Mobile/Web)</span>")
       .replace(/Scientist/g, 'Shopper')
-      .replace(/AI Copilot<br><span style='color:#64748B;font-weight:500;'>\(Web App\)<\/span>/gi, "Storefront App<br><span style='color:#64748B;font-weight:500;'>(Next.js / iOS)</span>")
-      .replace(/AI Copilot/g, 'Storefront App')
-      .replace(/RAG Service<br><span style='color:#64748B;font-weight:500;'>\(Vertex AI\)<\/span>/gi, "Pricing Engine<br><span style='color:#64748B;font-weight:500;'>(Redis Mesh)</span>")
-      .replace(/Vector DB<br><span style='color:#64748B;font-weight:500;'>\(BigQuery Vector\)<\/span>/gi, "Inventory Hold<br><span style='color:#64748B;font-weight:500;'>(WMS Engine)</span>")
-      .replace(/Data Services<br><span style='color:#64748B;font-weight:500;'>\(Clinical Data APIs\)<\/span>/gi, "Payment Vault<br><span style='color:#64748B;font-weight:500;'>(Stripe / PCI CDE)</span>")
-      .replace(/LLM Service<br><span style='color:#64748B;font-weight:500;'>\(Vertex AI\)<\/span>/gi, "Order Ledger<br><span style='color:#64748B;font-weight:500;'>(Cloud Spanner)</span>")
-      .replace(/Response &amp; Policy<br><span style='color:#64748B;font-weight:500;'>Service<\/span>/gi, "Fraud &amp; Tax<br><span style='color:#64748B;font-weight:500;'>Service</span>")
-      .replace(/Scenario:\s*Scientist asks a clinical question in AI Copilot[\s\S]*?(?=<\/div>|"|&quot;)/i, "Scenario: Shopper initiates 1-Click Checkout in Storefront &rarr; Order Saga reserves WMS inventory (TTL 900s), tokenizes payment via PCI CDE &rarr; Confirms order and dispatches warehouse event.")
-      .replace(/POST \/api\/v1\/query[^\<"]*/gi, "POST /api/v1/checkout/1-click (Idempotency-Key)")
-      .replace(/Validate user token &amp; clinical entitlements/gi, "Validate session token &amp; shopper profile")
-      .replace(/Generate vector embeddings for question/gi, "Acquire distributed lock &amp; verify cart items")
-      .replace(/Query vector index for top-k study chunks/gi, "Acquire WMS inventory hold (TTL 900s)")
-      .replace(/Fetch raw clinical protocol records/gi, "Authorize tokenized card with payment gateway")
-      .replace(/Construct prompt with clinical context/gi, "Commit atomic order transaction to Spanner")
-      .replace(/Call Vertex AI Gemini 1\.5 Pro/gi, "Publish OrderCreated event to Kafka event bus")
-      .replace(/Validate medical policy &amp; citations/gi, "Execute post-purchase fraud &amp; tax reconciliation")
-      .replace(/Log interaction with hash chaining/gi, "Log order audit trail &amp; notify logistics 3PL")
-      .replace(/200 OK: Cited clinical answer/gi, "200 OK: Order Confirmed &amp; Delivery ETA")
-
-      // 5. Template 14: Data Model / ERD Entities (Clinical Trials -> E-Commerce Retail)
-      .replace(/>Clinical Research</g, ">Merchandising &amp; Catalog<")
-      .replace(/>Study<\/div>/g, ">Merchant</div>")
-      .replace(/PK study_id/g, "PK merchant_id")
-      .replace(/study_id \(FK\)/g, "merchant_id (FK)")
-      .replace(/>Protocol<\/div>/g, ">Category</div>")
-      .replace(/PK protocol_id/g, "PK category_id")
-      .replace(/protocol_id \(FK\)/g, "category_id (FK)")
-      .replace(/>Site<\/div>/g, ">Warehouse</div>")
-      .replace(/PK site_id/g, "PK warehouse_id")
-      .replace(/site_id \(FK\)/g, "warehouse_id (FK)")
-      .replace(/>Trial<\/div>/g, ">Order</div>")
-      .replace(/PK trial_id/g, "PK order_id")
-      .replace(/trial_id \(FK\)/g, "order_id (FK)")
-      .replace(/>Patient<\/div>/g, ">Shopper</div>")
-      .replace(/PK patient_id/g, "PK shopper_id")
-      .replace(/patient_id \(FK\)/g, "shopper_id (FK)")
-      .replace(/>Event<\/div>/g, ">Shipment</div>")
-      .replace(/PK event_id/g, "PK shipment_id")
-      .replace(/event_id \(FK\)/g, "shipment_id (FK)")
-      .replace(/>KnowledgeBase<\/div>/g, ">ProductCatalog</div>")
-      .replace(/PK kb_id/g, "PK catalog_id")
-      .replace(/kb_id \(FK\)/g, "catalog_id (FK)")
-      .replace(/>Embedding<\/div>/g, ">SkuEmbedding</div>")
-      .replace(/PK embed_id/g, "PK embedding_id")
-      .replace(/embed_id \(FK\)/g, "embedding_id (FK)")
-      .replace(/>AI Model<\/div>/g, ">RecommendationEngine</div>")
-      .replace(/PK model_id/g, "PK rec_model_id")
-      .replace(/model_id \(FK\)/g, "rec_model_id (FK)")
-      .replace(/>Prompt<\/div>/g, ">Cart</div>")
-      .replace(/PK prompt_id/g, "PK cart_id")
-      .replace(/prompt_id \(FK\)/g, "cart_id (FK)")
-      .replace(/>Response<\/div>/g, ">CartItem</div>")
-      .replace(/PK response_id/g, "PK cart_item_id")
-      .replace(/response_id \(FK\)/g, "cart_item_id (FK)")
-      .replace(/>Policy<\/div>/g, ">PricingPolicy</div>")
-      .replace(/PK policy_id/g, "PK pricing_policy_id")
-      .replace(/policy_id \(FK\)/g, "pricing_policy_id (FK)")
-      .replace(/>Regulation<\/div>/g, ">TaxJurisdiction</div>")
-      .replace(/PK regulation_id/g, "PK tax_jurisdiction_id")
-      .replace(/regulation_id \(FK\)/g, "tax_jurisdiction_id (FK)")
-      .replace(/>Control<\/div>/g, ">FraudRule</div>")
-      .replace(/PK control_id/g, "PK fraud_rule_id")
-      .replace(/control_id \(FK\)/g, "fraud_rule_id (FK)")
-      .replace(/>Risk<\/div>/g, ">ChargebackRisk</div>")
-      .replace(/PK risk_id/g, "PK chargeback_id")
-      .replace(/risk_id \(FK\)/g, "chargeback_id (FK)")
-      .replace(/>DataSource<\/div>/g, ">ERPConnector</div>")
-      .replace(/PK source_id/g, "PK erp_source_id")
-      .replace(/source_id \(FK\)/g, "erp_source_id (FK)")
-      .replace(/>Connector<\/div>/g, ">PaymentGateway</div>")
-      .replace(/PK connector_id/g, "PK gateway_id")
-      .replace(/connector_id \(FK\)/g, "gateway_id (FK)")
-      .replace(/>IngestionJob<\/div>/g, ">InventorySyncJob</div>")
-      .replace(/PK job_id/g, "PK sync_job_id")
-      .replace(/job_id \(FK\)/g, "sync_job_id (FK)")
-      .replace(/>DataAsset<\/div>/g, ">CatalogFeed</div>")
-      .replace(/PK asset_id/g, "PK feed_id")
-      .replace(/asset_id \(FK\)/g, "feed_id (FK)")
-      .replace(/Trial must belong to a Study/gi, "Order must belong to a Shopper")
-      .replace(/Event must belong to an enrolled Patient/gi, "Shipment must belong to an Order")
-      .replace(/Risk must be mapped to a Control/gi, "Chargeback risk must be screened by a Fraud Rule")
-      .replace(/Policy links to one or more Regulations/gi, "Pricing policy links to Tax Jurisdictions")
-      .replace(/Response must cite source Documents/gi, "Order total must reconcile with Cart Items");
+      .replace(/AI Copilot/g, 'Storefront App');
   } else if (domainFlavor === 'fintech') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'NEXUSFIN High-Speed Wealth Engine')
-      .replace(/NOVACURA/gi, 'NEXUSFIN')
-      .replace(/NovaCura/g, 'NexusFin')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'FinTech Autonomous Wealth &amp; Payments')
       .replace(/Bio-Pharma/gi, 'FinTech Payments')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Wealth. Zero-Latency Execution.')
-      .replace(/🧬/g, '💳')
       .replace(/Research Scientists/gi, 'Quantitative Traders')
       .replace(/Scientist \(User\)/gi, 'Trader (User)')
       .replace(/Scientist/gi, 'Trader')
@@ -970,26 +1478,15 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Trade Execution Orders')
       .replace(/Clinical/gi, 'Financial')
       .replace(/Drug X/gi, 'ACC_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'Bloomberg / Refinitiv Feed')
-      .replace(/CTMS \/ Medidata Rave/gi, 'FIX Protocol 4.4 Engine')
-      .replace(/Argus(\s+Safety)?/gi, 'Plaid / ACH Settlement Mesh')
-      .replace(/Medidata(\s+Rave)?/gi, 'FIX Protocol 4.4 Engine')
-      .replace(/veeva/gi, 'bloomberg')
-      .replace(/argus/gi, 'plaid')
-      .replace(/medidata/gi, 'fix_engine')
       .replace(/FDA 21 CFR Part 11/gi, 'SEC Rule 17a-4 / FINRA')
       .replace(/GxP Validated/gi, 'SOC 2 / SEC 15c3-5')
       .replace(/GxP/gi, 'SEC 15c3-5')
       .replace(/HIPAA/gi, 'PCI-DSS Level 1');
   } else if (domainFlavor === 'saas') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'AETHER Multi-Tenant Cloud Platform')
-      .replace(/NOVACURA/gi, 'AETHER')
-      .replace(/NovaCura/g, 'Aether')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Enterprise SaaS &amp; Cloud Mesh')
       .replace(/Bio-Pharma/gi, 'Enterprise SaaS')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Multi-Tenant Cloud Scale.')
-      .replace(/🧬/g, '☁️')
       .replace(/Research Scientists/gi, 'DevOps &amp; Platform Engineers')
       .replace(/Scientist \(User\)/gi, 'Platform Admin (User)')
       .replace(/Scientist/gi, 'Platform Admin')
@@ -1002,29 +1499,15 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Tenant Subscriptions')
       .replace(/Clinical/gi, 'Multi-Tenant')
       .replace(/Drug X/gi, 'Tenant_9824')
-      .replace(/What are the safety signals for Drug X in [^?]+?\?/gi, 'Query quota limits &amp; resource consumption for Tenant_9824?')
-      .replace(/Fetch latest clinical context \(trials, safety data\)/gi, 'Fetch latest tenant config &amp; resource quotas')
-      .replace(/Clinical data \(JSON\)/gi, 'Tenant payload (JSON)')
-      .replace(/Veeva(\s+Vault)?/gi, 'Cloud Spanner Ledger')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Kafka Event Mesh')
-      .replace(/Argus(\s+Safety)?/gi, 'Audit &amp; Telemetry Vault')
-      .replace(/Medidata(\s+Rave)?/gi, 'Kafka Event Mesh')
-      .replace(/veeva/gi, 'spanner_ledger')
-      .replace(/argus/gi, 'audit_vault')
-      .replace(/medidata/gi, 'kafka_mesh')
       .replace(/FDA 21 CFR Part 11/gi, 'SOC 2 Type II / ISO 27001')
       .replace(/GxP Validated/gi, 'SOC 2 Type II Validated')
       .replace(/GxP/gi, 'SOC 2')
       .replace(/HIPAA/gi, 'ISO 27001');
   } else if (domainFlavor === 'manufacturing') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'SYNACTIVE Smart Manufacturing IoT')
-      .replace(/NOVACURA/gi, 'SYNACTIVE')
-      .replace(/NovaCura/g, 'Synactive')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Smart Manufacturing &amp; Industrial IoT')
       .replace(/Bio-Pharma/gi, 'Smart Manufacturing')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Industrial IoT. Real-Time Telemetry.')
-      .replace(/🧬/g, '🏭')
       .replace(/Research Scientists/gi, 'Fleet Operations Engineers')
       .replace(/Scientist \(User\)/gi, 'Fleet Operator (User)')
       .replace(/Scientist/gi, 'Fleet Operator')
@@ -1036,30 +1519,16 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Data/gi, 'IoT &amp; Telemetry Data')
       .replace(/Clinical Trials/gi, 'Fleet Missions')
       .replace(/Clinical/gi, 'Telemetry')
-      .replace(/Drug X/gi, 'AeroNode_9824')
-      .replace(/What are the safety signals for Drug X in [^?]+?\?/gi, 'Request real-time telemetry &amp; airspace clearance for Node_9824?')
-      .replace(/Fetch latest clinical context \(trials, safety data\)/gi, 'Fetch latest flight telemetry (ADS-B, battery, weather)')
-      .replace(/Clinical data \(JSON\)/gi, 'Telemetry payload (JSON)')
-      .replace(/Veeva(\s+Vault)?/gi, 'Industrial SCADA / MES Ledger')
-      .replace(/CTMS \/ Medidata Rave/gi, 'MQTT 5.0 Broker')
-      .replace(/Argus(\s+Safety)?/gi, 'UTM Airspace Control Mesh')
-      .replace(/Medidata(\s+Rave)?/gi, 'MQTT 5.0 Broker')
-      .replace(/veeva/gi, 'scada_mes')
-      .replace(/argus/gi, 'airspace_utm')
-      .replace(/medidata/gi, 'mqtt_broker')
+      .replace(/Drug X/gi, 'Node_9824')
       .replace(/FDA 21 CFR Part 11/gi, 'FAA Part 135 / ISO 9001')
       .replace(/GxP Validated/gi, 'ISO 9001 / IEC 62443')
       .replace(/GxP/gi, 'IEC 62443')
       .replace(/HIPAA/gi, 'SOC 2 Type II');
   } else if (domainFlavor === 'healthcare') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'HEALTHPULSE Clinical EHR Interoperability Platform')
-      .replace(/NOVACURA/gi, 'HEALTHPULSE')
-      .replace(/NovaCura/g, 'HealthPulse')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Healthcare &amp; Clinical HealthTech')
       .replace(/Bio-Pharma/gi, 'Clinical Healthcare')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Interoperable Care. Improving Patient Outcomes.')
-      .replace(/🧬/g, '🩺')
       .replace(/Research Scientists/gi, 'Attending Physicians &amp; Clinicians')
       .replace(/Scientist \(User\)/gi, 'Clinician (User)')
       .replace(/Scientist/gi, 'Clinician')
@@ -1072,21 +1541,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Care Encounters')
       .replace(/Clinical/gi, 'Clinical Care')
       .replace(/Drug X/gi, 'PATIENT_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'Epic / Cerner EHR Core')
-      .replace(/CTMS \/ Medidata Rave/gi, 'PACS / DICOM Imaging Archive')
-      .replace(/Argus(\s+Safety)?/gi, 'Pharmacy Dispense &amp; CPOE Mesh')
       .replace(/FDA 21 CFR Part 11/gi, 'HIPAA Security Rule / HITECH')
       .replace(/GxP Validated/gi, 'HIPAA / ONC Certified')
       .replace(/GxP/gi, 'HIPAA');
   } else if (domainFlavor === 'energy') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'VOLTGRID Smart Microgrid &amp; BESS Platform')
-      .replace(/NOVACURA/gi, 'VOLTGRID')
-      .replace(/NovaCura/g, 'VoltGrid')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Clean Energy &amp; Battery Storage Mesh')
       .replace(/Bio-Pharma/gi, 'Smart Clean Energy')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Decarbonizing Grids. Autonomous V2G Power.')
-      .replace(/🧬/g, '⚡')
       .replace(/Research Scientists/gi, 'Grid Balancing Operators')
       .replace(/Scientist \(User\)/gi, 'Power Dispatcher (User)')
       .replace(/Scientist/gi, 'Power Dispatcher')
@@ -1099,21 +1561,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Dispatch Cycles')
       .replace(/Clinical/gi, 'Grid Power')
       .replace(/Drug X/gi, 'BESS_FEEDER_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'SCADA / Energy Management (EMS)')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Tesla Megapack PowerHub')
-      .replace(/Argus(\s+Safety)?/gi, 'Inverter Islanding Interlock')
       .replace(/FDA 21 CFR Part 11/gi, 'NERC-CIP High Impact / IEEE 1547')
       .replace(/GxP Validated/gi, 'NERC-CIP Validated')
       .replace(/GxP/gi, 'NERC-CIP');
   } else if (domainFlavor === 'automotive') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'AUTODRIVE Connected Vehicle &amp; ADAS Mesh')
-      .replace(/NOVACURA/gi, 'AUTODRIVE')
-      .replace(/NovaCura/g, 'AutoDrive')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Autonomous Vehicle &amp; V2X Fleet Mesh')
       .replace(/Bio-Pharma/gi, 'Autonomous Automotive')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Autonomous Mobility. Zero Fatalities.')
-      .replace(/🧬/g, '🚗')
       .replace(/Research Scientists/gi, 'Perception &amp; Motion Engineers')
       .replace(/Scientist \(User\)/gi, 'Fleet Telematics Lead (User)')
       .replace(/Scientist/gi, 'Fleet Telematics Lead')
@@ -1126,21 +1581,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Autonomous Drive Missions')
       .replace(/Clinical/gi, 'Vehicle Telematics')
       .replace(/Drug X/gi, 'VEHICLE_VIN_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'AUTOSAR Adaptive Gateway')
-      .replace(/CTMS \/ Medidata Rave/gi, 'OTA Firmware Campaign Broker')
-      .replace(/Argus(\s+Safety)?/gi, 'ASIL-D Hardware Watchdog')
       .replace(/FDA 21 CFR Part 11/gi, 'ISO 26262 ASIL-D / ISO 21434')
       .replace(/GxP Validated/gi, 'ASIL-D Certified')
       .replace(/GxP/gi, 'ASIL-D');
   } else if (domainFlavor === 'telecom') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'TELCOMESH 5G Core &amp; O-RAN Slicing Platform')
-      .replace(/NOVACURA/gi, 'TELCOMESH')
-      .replace(/NovaCura/g, 'TelcoMesh')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Telecommunications &amp; 5G Edge Network')
       .replace(/Bio-Pharma/gi, '5G Telecommunications')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Ultra-Reliable Low-Latency 5G Connectivity.')
-      .replace(/🧬/g, '📡')
       .replace(/Research Scientists/gi, 'Radio Access Network (RAN) Engineers')
       .replace(/Scientist \(User\)/gi, 'NOC Operator (User)')
       .replace(/Scientist/gi, 'NOC Operator')
@@ -1153,21 +1601,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'RAN Slice Sessions')
       .replace(/Clinical/gi, 'Telco Network')
       .replace(/Drug X/gi, 'SLICE_URLLC_9824')
-      .replace(/Veeva(\s+Vault)?/gi, '5G Service Bus &amp; NRF Core')
-      .replace(/CTMS \/ Medidata Rave/gi, 'O-RAN Near-RT RIC Controller')
-      .replace(/Argus(\s+Safety)?/gi, 'UPF Packet Routing Engine')
       .replace(/FDA 21 CFR Part 11/gi, '3GPP TS 33.501 / ETSI NFV')
       .replace(/GxP Validated/gi, '3GPP Validated')
       .replace(/GxP/gi, '3GPP');
   } else if (domainFlavor === 'defense') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'AEROSHIELD Mission Cloud &amp; C2 Platform')
-      .replace(/NOVACURA/gi, 'AEROSHIELD')
-      .replace(/NovaCura/g, 'AeroShield')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Aerospace, Defense &amp; GovCloud')
       .replace(/Bio-Pharma/gi, 'Defense Mission')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Secure Mission Resilience. Tactical Edge Superiority.')
-      .replace(/🧬/g, '🛡️')
       .replace(/Research Scientists/gi, 'Mission Command &amp; Tactical Operators')
       .replace(/Scientist \(User\)/gi, 'Mission Commander (User)')
       .replace(/Scientist/gi, 'Mission Commander')
@@ -1180,21 +1621,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Mission Sorties')
       .replace(/Clinical/gi, 'Tactical Defense')
       .replace(/Drug X/gi, 'TARGET_SORTIE_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'Classified IL-6 Defense Vault')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Cross-Domain Tactical Guard (CDS)')
-      .replace(/Argus(\s+Safety)?/gi, 'Tactical Air Defense Radar Interlock')
       .replace(/FDA 21 CFR Part 11/gi, 'DoD IL-6 / FedRAMP High / ITAR')
       .replace(/GxP Validated/gi, 'DISA STIG / DO-178C Level A')
       .replace(/GxP/gi, 'DO-178C');
   } else if (domainFlavor === 'cybersecurity') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'CYBERSHIELD Zero-Trust SOC &amp; SecOps Mesh')
-      .replace(/NOVACURA/gi, 'CYBERSHIELD')
-      .replace(/NovaCura/g, 'CyberShield')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Zero-Trust Cybersecurity &amp; Threat Intelligence')
       .replace(/Bio-Pharma/gi, 'SecOps &amp; Cyber Threat')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Continuous Verification. Autonomous SecOps Defense.')
-      .replace(/🧬/g, '🔒')
       .replace(/Research Scientists/gi, 'Threat Hunters &amp; Red Teamers')
       .replace(/Scientist \(User\)/gi, 'SOC Analyst (User)')
       .replace(/Scientist/gi, 'SOC Analyst')
@@ -1207,21 +1641,14 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Incident Containment Workflows')
       .replace(/Clinical/gi, 'Cyber Security')
       .replace(/Drug X/gi, 'THREAT_CVE_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'Chronicle SIEM Telemetry Vault')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Cortex SOAR Automated Playbooks')
-      .replace(/Argus(\s+Safety)?/gi, 'BeyondCorp Zero-Trust PEP Gateway')
       .replace(/FDA 21 CFR Part 11/gi, 'NIST SP 800-53 Rev 5 / SOC 2')
       .replace(/GxP Validated/gi, 'FedRAMP / ISO 27001 Certified')
       .replace(/GxP/gi, 'NIST CSF');
   } else if (domainFlavor === 'media') {
     out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'STREAMWAVE 4K Live Transcoding &amp; Edge CDN')
-      .replace(/NOVACURA/gi, 'STREAMWAVE')
-      .replace(/NovaCura/g, 'StreamWave')
       .replace(/Bio-Pharma\s+Precision\s+Oncology/gi, 'Media Streaming &amp; Digital Entertainment')
       .replace(/Bio-Pharma/gi, 'Media &amp; Streaming')
       .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Sub-Second Global Streaming. Cinematic Video Quality.')
-      .replace(/🧬/g, '🎬')
       .replace(/Research Scientists/gi, 'Video Encoding &amp; QoS Engineers')
       .replace(/Scientist \(User\)/gi, 'Broadcaster (User)')
       .replace(/Scientist/gi, 'Broadcaster')
@@ -1234,50 +1661,26 @@ export function injectDomainFlavorXml(xml: string, domainFlavor: string = 'gener
       .replace(/Clinical Trials/gi, 'Live Playout Broadcasts')
       .replace(/Clinical/gi, 'Media Streaming')
       .replace(/Drug X/gi, 'STREAM_CHANNEL_9824')
-      .replace(/Veeva(\s+Vault)?/gi, 'Media Asset Management (MAM)')
-      .replace(/CTMS \/ Medidata Rave/gi, 'Live Transcoding Cluster (HEVC/AV1)')
-      .replace(/Argus(\s+Safety)?/gi, 'Widevine / FairPlay DRM License Server')
       .replace(/FDA 21 CFR Part 11/gi, 'SMPTE 2110 / CTA-5004 WAVE')
       .replace(/GxP Validated/gi, 'Studio DRM Validated')
       .replace(/GxP/gi, 'SMPTE');
-  } else if (domainFlavor === 'biopharma') {
-    out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'Precision Clinical AI &amp; Genomics Platform')
-      .replace(/NOVACURA/gi, 'CLINICAL AI')
-      .replace(/NovaCura/g, 'Clinical AI Platform')
-      .replace(/novacura-prod-vpc/gi, 'clinical-ai-prod-vpc')
-      .replace(/novacura-prod/gi, 'clinical-ai-prod');
-  } else {
-    // Universal domain fallback: Clean enterprise naming
-    out = out
-      .replace(/NOVACURA\s+Bio-Pharma\s+Platform/gi, 'Enterprise Architecture Platform')
-      .replace(/NOVACURA\s+BIO-PHARMA\s+PLATFORM/gi, 'ENTERPRISE ARCHITECTURE PLATFORM')
-      .replace(/NOVACURA/gi, 'ENTERPRISE PLATFORM')
-      .replace(/NovaCura/g, 'Enterprise Platform')
-      .replace(/novacura-prod-vpc/gi, 'enterprise-prod-vpc')
-      .replace(/novacura-prod/gi, 'enterprise-prod')
-      .replace(/Transforming Therapies\.\s*Improving Lives\./gi, 'Scalable. Resilient. Secure.')
-      .replace(/AI-Powered Regulatory Intelligence Platform/gi, 'High-Throughput Distributed Cloud Architecture');
   }
 
-  // Universal Scrub: ensure zero residual Novacura / Novacure occurrences remain
-  out = out
-    .replace(/NOVACURA/g, 'ENTERPRISE')
-    .replace(/NovaCura/g, 'Enterprise')
-    .replace(/novacura/g, 'enterprise')
-    .replace(/Novacure/g, 'Enterprise')
-    .replace(/novacure/g, 'enterprise');
-
-  // Universal XML Ampersand Safety Sanitizer: convert any loose & into &amp;
-  out = out.replace(/&(?!amp;|lt;|gt;|quot;|apos;|#\d+;|#x[0-9a-fA-F]+;)/g, '&amp;');
-
-  return out;
+  return sanitizeAndHealCanonicalBlueprintXml(out);
 }
 
 export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
   const contract = CANONICAL_CONTRACTS[t.id];
+  const cleanName = t.name
+    .replace(/\bCLAUDE\.md\b/gi, 'AGENTS.md')
+    .replace(/\bGPT-6\s+Astra\b/gi, 'Frontier Agent')
+    .replace(/\bGCP\s+Enterprise\s+Architecture\b/gi, 'Cloud-Native Enterprise Architecture')
+    .replace(/\bRaw\s+Gemini\s+API\b/gi, 'Stateless Foundation API')
+    .replace(/\bVertex\s+AI\s+Agent\s+Engine\b/gi, 'Governed Agent Engine')
+    .replace(/^Google\s+Cloud\s+/i, 'Enterprise Cloud ');
   return {
     ...t,
+    name: cleanName,
     sourceImageId: `images/${t.id}.png`,
     generatorVersion: contract ? contract.generatorVersion : "1.0",
     fidelityScore: contract && contract.certificationStatus === "certified" ? 0.98 : 0.90,
@@ -1285,7 +1688,7 @@ export const CANONICAL_TEMPLATES: CanonicalTemplate[] = RAW_TEMPLATES.map(t => {
     contract,
     generateXml: (domainFlavor?: string, theme?: 'light' | 'dark') => {
       const baseXml = t.generateXml(domainFlavor, theme);
-      return injectDomainFlavorXml(baseXml, domainFlavor);
+      return sanitizeAndHealCanonicalBlueprintXml(injectDomainFlavorXml(baseXml, domainFlavor), t.id);
     }
   };
 });

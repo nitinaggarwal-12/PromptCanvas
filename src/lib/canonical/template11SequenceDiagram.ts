@@ -200,17 +200,17 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
   };
 
   act("act_user", "p_user", 165, 545, "#EFF6FF", "#3B82F6");
-  act("act_copilot", "p_copilot", 190, 510, "#EFF6FF", "#3B82F6");
-  act("act_gateway", "p_gateway", 215, 95, "#F0FDFA", "#0D9488");
-  act("act_auth", "p_auth", 235, 45, "#F0F9FF", "#0284C7");
-  act("act_orch", "p_orch", 300, 395, "#FAF5FF", "#7C3AED");
-  act("act_rag", "p_rag", 390, 135, "#FAF5FF", "#7C3AED");
+  act("act_copilot", "p_copilot", 170, 530, "#EFF6FF", "#3B82F6");
+  act("act_gateway", "p_gateway", 200, 110, "#F0FDFA", "#0D9488");
+  act("act_auth", "p_auth", 225, 55, "#F0F9FF", "#0284C7");
+  act("act_orch", "p_orch", 275, 425, "#FAF5FF", "#7C3AED");
+  act("act_rag", "p_rag", 370, 155, "#FAF5FF", "#7C3AED");
   act("act_vdb", "p_vdb", 395, 38, "#F0F9FF", "#0284C7");
-  act("act_data", "p_data", 465, 45, "#F0FDF4", "#059669");
-  act("act_llm", "p_llm", 545, 55, "#FAF5FF", "#7C3AED");
-  act("act_policy", "p_policy", 595, 55, "#FAF5FF", "#6D28D9");
-  act("act_audit", "p_audit", 665, 50, "#F0F9FF", "#0284C7");
-  act("act_mon", "p_mon", 685, 30, "#F0F9FF", "#0284C7");
+  act("act_data", "p_data", 445, 65, "#F0FDF4", "#059669");
+  act("act_llm", "p_llm", 535, 65, "#FAF5FF", "#7C3AED");
+  act("act_policy", "p_policy", 590, 60, "#FAF5FF", "#6D28D9");
+  act("act_audit", "p_audit", 665, 55, "#F0F9FF", "#0284C7");
+  act("act_mon", "p_mon", 685, 35, "#F0F9FF", "#0284C7");
 
   // =========================================================================
   // 4. SEQUENCE MESSAGES & NUMBERED STEPS (1..20)
@@ -592,28 +592,28 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
     <table style="width:100%;font-size:8px;color:#1E293B;line-height:1.35;margin-top:4px;">
       <tr>
         <td style="width:50%;vertical-align:top;padding-right:6px;">
-          <div><b style="color:#1D4ED8;"></b> User asks question in AI Copilot</div>
-          <div><b style="color:#1D4ED8;"></b> Request sent to API Gateway</div>
-          <div><b style="color:#0D9488;"></b> Gateway validates access token</div>
-          <div><b style="color:#64748B;"></b> Token validation response</div>
-          <div><b style="color:#0D9488;"></b> Request forwarded to Orchestrator</div>
-          <div><b style="color:#7C3AED;"></b> Plan retrieval and data sources</div>
-          <div><b style="color:#7C3AED;"></b> Send query to RAG service</div>
-          <div><b style="color:#7C3AED;"></b> Perform vector search</div>
-          <div><b style="color:#64748B;"></b> Return top-k documents</div>
-          <div><b style="color:#7C3AED;"></b> Fetch latest domain data</div>
+          <div><b style="color:#1D4ED8;">01.</b> User asks question in AI Copilot</div>
+          <div><b style="color:#1D4ED8;">02.</b> Request sent to API Gateway</div>
+          <div><b style="color:#0D9488;">03.</b> Gateway validates access token</div>
+          <div><b style="color:#64748B;">04.</b> Token validation response</div>
+          <div><b style="color:#0D9488;">05.</b> Request forwarded to Orchestrator</div>
+          <div><b style="color:#7C3AED;">06.</b> Plan retrieval and data sources</div>
+          <div><b style="color:#7C3AED;">07.</b> Send query to RAG service</div>
+          <div><b style="color:#7C3AED;">08.</b> Perform vector search</div>
+          <div><b style="color:#64748B;">09.</b> Return top-k documents</div>
+          <div><b style="color:#7C3AED;">10.</b> Fetch latest domain data</div>
         </td>
         <td style="width:50%;vertical-align:top;padding-left:6px;">
-          <div><b style="color:#64748B;">⓫</b> Return domain payload</div>
-          <div><b style="color:#64748B;">⓬</b> Return combined context</div>
-          <div><b style="color:#7C3AED;">⓭</b> Send context to LLM for reasoning</div>
-          <div><b style="color:#64748B;">⓮</b> LLM returns answer</div>
-          <div><b style="color:#6D28D9;">⓯</b> Apply safety and quality checks</div>
-          <div><b style="color:#64748B;">⓰</b> Return final answer to Copilot</div>
-          <div><b style="color:#1D4ED8;">⓱</b> Display answer to user</div>
-          <div><b style="color:#0284C7;">⓲</b> Log interaction for audit</div>
-          <div><b style="color:#0284C7;">⓳</b> Persist logs</div>
-          <div><b style="color:#0284C7;">⓴</b> Emit metrics &amp; traces</div>
+          <div><b style="color:#64748B;">11.</b> Return domain payload</div>
+          <div><b style="color:#64748B;">12.</b> Return combined context</div>
+          <div><b style="color:#7C3AED;">13.</b> Send context to LLM for reasoning</div>
+          <div><b style="color:#64748B;">14.</b> LLM returns answer</div>
+          <div><b style="color:#6D28D9;">15.</b> Apply safety and quality checks</div>
+          <div><b style="color:#64748B;">16.</b> Return final answer to Copilot</div>
+          <div><b style="color:#1D4ED8;">17.</b> Display answer to user</div>
+          <div><b style="color:#0284C7;">18.</b> Log interaction for audit</div>
+          <div><b style="color:#0284C7;">19.</b> Persist logs</div>
+          <div><b style="color:#0284C7;">20.</b> Emit metrics &amp; traces</div>
         </td>
       </tr>
     </table>
@@ -648,37 +648,41 @@ export function generateTemplate11SequenceDiagramXml(domainFlavor = "biopharma",
 
   // Card 4: TECHNOLOGY STACK (x: 880, w: 385)
   const card4Html = `<div style="padding:8px 10px;">
-    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;text-align:center;">TECHNOLOGY STACK (GOOGLE CLOUD)</div>
-    <table style="width:100%;text-align:center;font-size:8.5px;font-weight:700;color:#1E293B;margin-top:10px;">
+    <div style="font-size:10px;font-weight:900;color:#0F2A4A;border-bottom:1.5px solid #E2E8F0;padding-bottom:4px;letter-spacing:0.5px;text-align:center;">ENTERPRISE DATA &amp; AI TECHNOLOGY STACK</div>
+    <table style="width:100%;text-align:center;font-size:8px;font-weight:700;color:#1E293B;margin-top:8px;border-collapse:separate;border-spacing:6px;">
       <tr>
-        <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>Apigee X</div>
+        <td style="padding:6px;width:33%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#0F2A4A;">Cloud API Gateway</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">mTLS &amp; Rate Limiting</div>
         </td>
-        <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>Cloud Identity</div>
+        <td style="padding:6px;width:33%;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#0F2A4A;">Cloud Identity IAM</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">OIDC / JWT RBAC</div>
         </td>
-        <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>Vertex AI</div>
-        </td>
-        <td style="padding:6px;width:25%;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>BigQuery<br>Vector Search</div>
+        <td style="padding:6px;width:34%;background:#FAF5FF;border:1px solid #DDD6FE;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#6D28D9;">Governed AI Runtime</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">LLM &amp; Policy Guardrails</div>
         </td>
       </tr>
       <tr>
-        <td style="padding:6px;"></td>
-        <td style="padding:6px;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>Cloud Logging</div>
+        <td style="padding:6px;background:#F0F9FF;border:1px solid #BAE6FD;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#0369A1;">Vector Search Index</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">HNSW Top-K Retrieval</div>
         </td>
-        <td style="padding:6px;">
-          <div style="font-size:20px;margin-bottom:2px;"></div>
-          <div>Cloud Monitoring</div>
+        <td style="padding:6px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#15803D;">Immutable Audit Log</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">21 CFR Part 11 Ledger</div>
         </td>
-        <td style="padding:6px;"></td>
+        <td style="padding:6px;background:#FFF7ED;border:1px solid #FED7AA;border-radius:4px;">
+          <div style="font-size:16px;margin-bottom:2px;">●</div>
+          <div style="font-weight:800;color:#C2410C;">APM &amp; OpenTelemetry</div>
+          <div style="font-size:8px;color:#64748B;font-weight:600;">P99 Latency &amp; Traces</div>
+        </td>
       </tr>
     </table>
   </div>`;

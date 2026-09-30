@@ -89,6 +89,7 @@ const NAV_GROUPS: NavGroup[] = [
     id: 'operate',
     label: 'Govern & Learn',
     items: [
+      { id: 'changelog', name: 'Changelog & Sheet Sync', icon: History, href: '/changelog', badge: '2-WAY', badgeColor: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30' },
       { id: 'audit', name: 'Audit, FinOps & Health', icon: ShieldCheck, href: '/audit', badge: '100%', badgeColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' },
       { id: 'guide', name: 'Guides & Playbooks', icon: BookOpen, href: '/guide' },
     ],
